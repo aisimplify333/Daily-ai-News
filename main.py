@@ -3,13 +3,13 @@ import feedparser
 import edge_tts
 import google.generativeai as genai
 import asyncio
-import html  # <--- NEW: This tool cleans text for XML
+import html
 from datetime import datetime, timezone
 from email.utils import format_datetime
 
-# --- CONFIGURATION (VERIFY THIS MATCHES YOUR GITHUB) ---
-GITHUB_USERNAME = "aisimplify333" 
-REPO_NAME = "Daily-ai-News" # Check capitalization! Matches your GitHub repo name exactly?
+# --- CONFIGURATION ---
+GITHUB_USERNAME = "aisimplify333"
+REPO_NAME = "Daily-ai-News"  # Must match your GitHub Repo capitalization exactly
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml"
@@ -20,7 +20,6 @@ VOICE = "en-US-EricNeural"
 def get_latest_news():
     print("Scanning the web for AI news...")
     news_items = []
-    headers = {'User-Agent': 'Mozilla/5.0'} 
     for url in RSS_FEEDS:
         try:
             feed = feedparser.parse(url)
@@ -43,6 +42,7 @@ def generate_script(news, sponsors):
     print("Connecting to AI Brain...")
     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
     
+    # Auto-select best model
     target_model = "models/gemini-1.5-flash"
     try:
         for m in genai.list_models():
@@ -55,10 +55,8 @@ def generate_script(news, sponsors):
     
     prompt = f"""
     You are the host of 'AI Daily'. Today is {datetime.now().strftime('%B %d, %Y')}.
-    
     News: {news}
     Sponsors: {sponsors}
-    
     TASK: Write a 3-minute script.
     1. Intro: "Welcome to AI Daily for [Date]."
     2. Cover 3 news items.
@@ -74,32 +72,43 @@ async def generate_audio(text, filename):
     communicate = edge_tts.Communicate(text, VOICE)
     await communicate.save(filename)
 
-# --- STEP 5: UPDATE RSS FEED (FIXED) ---
+# --- STEP 5: UPDATE RSS FEED (REBUILD STRATEGY) ---
 def update_rss(audio_filename, script_summary):
     rss_file = "feed.xml"
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
     file_url = f"{base_url}/{audio_filename}"
     now = format_datetime(datetime.now(timezone.utc))
     
-    # SANITIZE INPUTS (The Fix)
-    # This converts "&" to "&amp;" so XML doesn't break
-    clean_summary = html.escape(script_summary[:300]) 
+    # Clean the text to prevent XML errors
+    clean_summary = html.escape(script_summary[:250].replace('\n', ' ')) 
     clean_title = f"AI Daily News - {datetime.now().strftime('%B %d')}"
     
-    new_item = f"""
-    <item>
+    # 1. Create the New Item Block
+    new_item = f"""    <item>
       <title>{clean_title}</title>
       <description>{clean_summary}...</description>
-      <enclosure url="{file_url}" length="5000000" type="audio/mpeg"/>
+      <enclosure url="{file_url}" length="4000000" type="audio/mpeg"/>
       <guid>{file_url}</guid>
       <pubDate>{now}</pubDate>
-    </item>
-    """
-    
-    # Create file if it doesn't exist
-    if not os.path.exists(rss_file):
-        print("Creating new feed.xml...")
-        header = f"""<?xml version="1.0" encoding="UTF-8"?>
+    </item>"""
+
+    # 2. Read Existing Items (If file exists)
+    existing_items = ""
+    if os.path.exists(rss_file):
+        try:
+            with open(rss_file, 'r') as f:
+                content = f.read()
+                # Extract everything between the channel tags to preserve history
+                if "<item>" in content:
+                    parts = content.split('<item>')
+                    # Reconstruct items (skip the first split which is the header)
+                    for part in parts[1:]:
+                        existing_items += "    <item>" + part.split('</channel>')[0]
+        except:
+            print("Old feed was corrupt. Starting fresh.")
+
+    # 3. Write the WHOLE file from scratch (Header + New Item + Old Items + Footer)
+    final_content = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
     <title>AI Daily News</title>
@@ -108,20 +117,14 @@ def update_rss(audio_filename, script_summary):
     <language>en-us</language>
     <itunes:category text="Technology"/>
     <itunes:image href="{base_url}/logo.png"/>
-    </channel>
+{new_item}
+{existing_items}
+  </channel>
 </rss>"""
-        with open(rss_file, "w") as f: f.write(header)
 
-    # Insert new item
-    with open(rss_file, "r") as f: content = f.read()
-    
-    if "" in content:
-        content = content.replace("", new_item + "\n    ")
-    else:
-        content = content.replace("</channel>", new_item + "\n  </channel>")
-        
-    with open(rss_file, "w") as f: f.write(content)
-    print("RSS Feed updated successfully.")
+    with open(rss_file, "w") as f:
+        f.write(final_content)
+    print("RSS Feed rebuilt successfully.")
 
 # --- MAIN ---
 if __name__ == "__main__":
@@ -131,10 +134,10 @@ if __name__ == "__main__":
         news = get_latest_news()
         sponsors = get_sponsors()
         script = generate_script(news, sponsors)
-        
         today_str = datetime.now().strftime('%Y-%m-%d')
         filename = f"podcast_{today_str}.mp3"
         
         asyncio.run(generate_audio(script, filename))
         update_rss(filename, script)
         print("Done! Ready to push.")
+        
