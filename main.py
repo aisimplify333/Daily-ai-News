@@ -114,7 +114,7 @@ def update_rss(audio_filename, script_summary):
     <itunes:author>AI Simplify Media</itunes:author>
     <itunes:owner>
         <itunes:name>AI Simplify Media</itunes:name>
-        <itunes:email>podcast@aisimplify.com</itunes:email>
+        <itunes:email>aisimplify333@gmail.com</itunes:email>
     </itunes:owner>
     <itunes:category text="Technology">
         <itunes:category text="Tech News"/>
@@ -129,7 +129,7 @@ def update_rss(audio_filename, script_summary):
     with open(rss_file, "w") as f:
         f.write(final_content)
     print("RSS Feed rebuilt successfully.")
-    
+
 # --- MAIN ---
 if __name__ == "__main__":
     if "GEMINI_API_KEY" not in os.environ:
