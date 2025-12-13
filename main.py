@@ -3,12 +3,13 @@ import feedparser
 import edge_tts
 import google.generativeai as genai
 import asyncio
+import html  # <--- NEW: This tool cleans text for XML
 from datetime import datetime, timezone
 from email.utils import format_datetime
 
-# --- CONFIGURATION (EDIT THIS) ---
-GITHUB_USERNAME = "aisimplify333"
-REPO_NAME = "daily-ai-news"
+# --- CONFIGURATION (VERIFY THIS MATCHES YOUR GITHUB) ---
+GITHUB_USERNAME = "aisimplify333" 
+REPO_NAME = "Daily-ai-News" # Check capitalization! Matches your GitHub repo name exactly?
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml"
@@ -42,7 +43,6 @@ def generate_script(news, sponsors):
     print("Connecting to AI Brain...")
     genai.configure(api_key=os.environ["GEMINI_API_KEY"])
     
-    # Auto-select model
     target_model = "models/gemini-1.5-flash"
     try:
         for m in genai.list_models():
@@ -74,18 +74,22 @@ async def generate_audio(text, filename):
     communicate = edge_tts.Communicate(text, VOICE)
     await communicate.save(filename)
 
-# --- STEP 5: UPDATE RSS FEED ---
+# --- STEP 5: UPDATE RSS FEED (FIXED) ---
 def update_rss(audio_filename, script_summary):
     rss_file = "feed.xml"
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
     file_url = f"{base_url}/{audio_filename}"
     now = format_datetime(datetime.now(timezone.utc))
     
-    # XML Template for a new item
+    # SANITIZE INPUTS (The Fix)
+    # This converts "&" to "&amp;" so XML doesn't break
+    clean_summary = html.escape(script_summary[:300]) 
+    clean_title = f"AI Daily News - {datetime.now().strftime('%B %d')}"
+    
     new_item = f"""
     <item>
-      <title>AI Daily News - {datetime.now().strftime('%B %d')}</title>
-      <description>{script_summary[:300]}...</description>
+      <title>{clean_title}</title>
+      <description>{clean_summary}...</description>
       <enclosure url="{file_url}" length="5000000" type="audio/mpeg"/>
       <guid>{file_url}</guid>
       <pubDate>{now}</pubDate>
@@ -94,6 +98,7 @@ def update_rss(audio_filename, script_summary):
     
     # Create file if it doesn't exist
     if not os.path.exists(rss_file):
+        print("Creating new feed.xml...")
         header = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
@@ -102,6 +107,7 @@ def update_rss(audio_filename, script_summary):
     <link>{base_url}</link>
     <language>en-us</language>
     <itunes:category text="Technology"/>
+    <itunes:image href="{base_url}/logo.png"/>
     </channel>
 </rss>"""
         with open(rss_file, "w") as f: f.write(header)
@@ -109,7 +115,6 @@ def update_rss(audio_filename, script_summary):
     # Insert new item
     with open(rss_file, "r") as f: content = f.read()
     
-    # Simple insertion before the placeholder or end of channel
     if "" in content:
         content = content.replace("", new_item + "\n    ")
     else:
@@ -123,19 +128,13 @@ if __name__ == "__main__":
     if "GEMINI_API_KEY" not in os.environ:
         print("ERROR: Run 'export GEMINI_API_KEY=...' first.")
     else:
-        # 1. Generate Content
         news = get_latest_news()
         sponsors = get_sponsors()
         script = generate_script(news, sponsors)
         
-        # 2. Audio Filename (Date-based)
         today_str = datetime.now().strftime('%Y-%m-%d')
         filename = f"podcast_{today_str}.mp3"
         
-        # 3. Save Audio
         asyncio.run(generate_audio(script, filename))
-        
-        # 4. Update RSS
         update_rss(filename, script)
         print("Done! Ready to push.")
-    
