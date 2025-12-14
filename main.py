@@ -153,7 +153,7 @@ def update_rss(audio_filename, script_summary):
     <itunes:author>AI Simplify Media</itunes:author>
     <itunes:owner>
         <itunes:name>AI Simplify Media</itunes:name>
-        <itunes:email>YOUR_REAL_EMAIL_HERE</itunes:email>
+        <itunes:email>aisimplify333@gmail.com</itunes:email>
     </itunes:owner>
     <itunes:category text="Technology">
         <itunes:category text="Tech News"/>
