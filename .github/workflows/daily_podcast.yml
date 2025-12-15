@@ -2,9 +2,8 @@ name: Daily AI Podcast Generator
 
 on:
   schedule:
-    # Runs at 09:00 UTC daily (which is 4:00 AM EST)
     - cron: '0 9 * * *'
-  workflow_dispatch: # Allows manual testing
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -20,7 +19,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11' # Fixed: Uses newer Python
+          python-version: '3.11'
 
       - name: Install FFmpeg
         run: |
@@ -33,7 +32,7 @@ jobs:
 
       - name: Run the Podcast Script
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # Fixed: Unlocks the AI Writer
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python main.py
 
