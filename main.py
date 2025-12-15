@@ -11,11 +11,11 @@ import xml.etree.ElementTree as ET
 from email.utils import formatdate
 from pydub import AudioSegment
 
-# --- CONFIGURATION (FILL THESE IN!) ---
-GITHUB_USERNAME = "aisimplify333"  # <--- I grabbed this from your screenshot!
+# --- CONFIGURATION (YOU MUST FILL THESE IN FOR SPOTIFY!) ---
+GITHUB_USERNAME = "aisimplify333"  
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@gmail.com" # <--- Spotify needs this to verify ownership
-AUTHOR_NAME = "The AI Edge Host"          # <--- Valid author name
+YOUR_EMAIL = "aisimplify333@gmail.com" # <--- Spotify WILL REJECT if you don't change this
+AUTHOR_NAME = "AI Simplify Media"                # <--- Spotify WILL REJECT if you don't change this
 
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
@@ -153,9 +153,9 @@ def generate_rss_feed():
     # ITUNES SPECIFIC TAGS (Required by Spotify)
     ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
     
-    # Cover Art
+    # Cover Art (Updated to match YOUR file name: logo.png)
     image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
-    image.set("href", f"{base_url}/cover.jpg") # <--- Checks for cover.jpg
+    image.set("href", f"{base_url}/logo.png") 
     
     # Owner Info
     owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
