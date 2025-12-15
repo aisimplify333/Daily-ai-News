@@ -14,8 +14,8 @@ from pydub import AudioSegment
 # --- CONFIGURATION (YOU MUST FILL THESE IN FOR SPOTIFY!) ---
 GITHUB_USERNAME = "aisimplify333"  
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@gmail.com" # <--- Spotify WILL REJECT if you don't change this
-AUTHOR_NAME = "AI Simplify Media"                # <--- Spotify WILL REJECT if you don't change this
+YOUR_EMAIL = "aisimplify333@GMAIL.COM"
+AUTHOR_NAME = "AI_Simplify_Media"
 
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
