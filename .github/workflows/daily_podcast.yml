@@ -4,10 +4,10 @@ on:
   schedule:
     # Runs at 09:00 UTC daily (which is 4:00 AM EST)
     - cron: '0 9 * * *'
-  workflow_dispatch: # Allows you to run this manually with a button click to test it
+  workflow_dispatch: # Allows manual testing
 
 permissions:
-  contents: write # CRITICAL: Allows the bot to save the MP3 back to your repo
+  contents: write
 
 jobs:
   build:
@@ -20,10 +20,9 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.11' # Fixed: Uses newer Python
 
       - name: Install FFmpeg
-        # Required for pydub to save MP3 files
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
@@ -33,6 +32,8 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run the Podcast Script
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # Fixed: Unlocks the AI Writer
         run: |
           python main.py
 
@@ -40,8 +41,6 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          # Add the specific files we want to save
           git add *.mp3 feed.xml
-          # Commit only if there are changes
           git commit -m "Automated: New Daily Podcast Episode" || echo "No changes to commit"
           git push
