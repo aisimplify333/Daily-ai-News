@@ -84,7 +84,7 @@ def rewrite_script(raw_news, sponsor_text=None):
 
     print("Sending news to Gemini for rewriting...")
     genai.configure(api_key=GOOGLE_API_KEY)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-1.5-flash-001')
 
     # Add sponsor instruction if exists
     sponsor_instruction = ""
