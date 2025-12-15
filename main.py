@@ -11,16 +11,20 @@ import xml.etree.ElementTree as ET
 from email.utils import formatdate
 from pydub import AudioSegment
 
-# --- CONFIGURATION (YOU MUST FILL THESE IN!) ---
+# --- CONFIGURATION (FILL THESE IN!) ---
 GITHUB_USERNAME = "aisimplify333"  
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@GMAIL.COM" # <--- Spotify NEEDS this
-AUTHOR_NAME = "AI_Simplify_Media"                # --- Spotify NEEDS this
+YOUR_EMAIL = "aisimplify333.COM" 
+AUTHOR_NAME = "AI_Simplify_Media"
 
+# --- EXPANDED NEWS SOURCES ---
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
-    "https://www.theverge.com/rss/artificial-intelligence/index.xml"
+    "https://www.theverge.com/rss/artificial-intelligence/index.xml",
+    "https://venturebeat.com/category/ai/feed/",  # Added for Business AI
+    "https://arstechnica.com/tag/ai/feed/"        # Added for Deep Tech
 ]
+
 GOOGLE_API_KEY = os.environ.get('GEMINI_API_KEY')
 VOICE = "en-US-ChristopherNeural"
 TODAY = datetime.date.today()
@@ -54,7 +58,8 @@ def get_latest_news():
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
-            for entry in feed.entries[:3]:
+            # Limit to 2 stories per feed to keep it focused but diverse
+            for entry in feed.entries[:2]:
                 summary = entry.summary if 'summary' in entry else entry.title
                 clean_summary = re.sub('<[^<]+?>', '', summary)
                 news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {clean_summary[:300]}")
@@ -65,7 +70,7 @@ def get_latest_news():
         return None
     return "\n\n".join(news_items)
 
-# --- STEP 3: REWRITE WITH AI (AUTO-DETECT) ---
+# --- STEP 3: REWRITE WITH AI (STRICTER PROMPT) ---
 def rewrite_script(raw_news, sponsor_text=None):
     if not GOOGLE_API_KEY:
         print("Error: GEMINI_API_KEY not found.")
@@ -73,10 +78,9 @@ def rewrite_script(raw_news, sponsor_text=None):
 
     genai.configure(api_key=GOOGLE_API_KEY)
     
-    print("Asking Google for available models...")
+    # Auto-detect logic
     working_model = None
     priority_models = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash']
-    
     try:
         available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
         for p_model in priority_models:
@@ -84,8 +88,7 @@ def rewrite_script(raw_news, sponsor_text=None):
                 if p_model in av_model:
                     working_model = av_model
                     break
-            if working_model: break
-            
+            if working_model: break     
         if not working_model:
             for m in available_models:
                 if 'gemini' in m:
@@ -94,25 +97,32 @@ def rewrite_script(raw_news, sponsor_text=None):
     except Exception as e:
         print(f"Error listing models: {e}")
 
-    if not working_model:
-        working_model = 'gemini-1.5-flash'
-
-    print(f"SUCCESS: Using AI Model -> {working_model}")
+    if not working_model: working_model = 'gemini-1.5-flash'
+    
+    print(f"Using Model: {working_model}")
     model = genai.GenerativeModel(working_model)
 
+    # --- UPDATED PROMPT ---
     prompt = f"""
-    You are the host of "The AI Edge", a daily 3-minute news podcast.
+    You are the host of "The AI Edge", a daily news podcast.
     {f"MENTION SPONSOR: {sponsor_text}" if sponsor_text else ""}
-    News: {raw_news}
-    Task: Write a lively, engaging script. 
-    - Start: "Welcome back to The AI Edge."
-    - Style: Conversational, like a radio DJ.
-    - End: "That's your AI Edge for today. See you tomorrow."
+    
+    Here are today's top stories:
+    {raw_news}
+
+    STRICT INSTRUCTIONS:
+    1. Write ONLY the spoken dialogue. 
+    2. DO NOT write stage directions like *intro music plays* or [End of episode].
+    3. DO NOT describe the audio. Just speak.
+    4. Start immediately with: "Welcome back to The AI Edge."
+    5. End immediately with: "That's your AI Edge for today. See you tomorrow."
+    6. Keep it professional but high energy.
     """
     
     try:
         response = model.generate_content(prompt)
-        return response.text.replace("*", "")
+        clean_text = response.text.replace("*", "").replace("[", "").replace("]", "")
+        return clean_text
     except Exception as e:
         print(f"AI Generation Failed: {e}")
         return None
@@ -134,49 +144,37 @@ async def generate_audio(text):
     except Exception as e:
         print(f"Audio mixing error: {e}")
 
-# --- STEP 5: GENERATE RSS FEED (FIXED DUPLICATE ATTRIBUTE) ---
+# --- STEP 5: GENERATE RSS FEED ---
 def generate_rss_feed():
     print("Generating feed.xml...")
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
-    
-    # 1. Register namespace (This adds 'xmlns:itunes' automatically)
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
-    
-    # 2. Create Element (Removed the manual 'xmlns' attribute to stop duplication)
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
     
-    # Required Tags
     ET.SubElement(channel, "title").text = "The AI Edge: Daily News"
     ET.SubElement(channel, "description").text = "Your daily dose of AI news, generated by AI."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
-    
-    # ITUNES SPECIFIC TAGS
     ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
     
-    # Cover Art (Matches logo.png)
     image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
     image.set("href", f"{base_url}/logo.png") 
     
-    # Owner Info
     owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
     ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = YOUR_EMAIL
     ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}name").text = AUTHOR_NAME
 
-    # Category
     category = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}category")
     category.set("text", "Technology")
 
-    # Scan for MP3 files
-    for filename in sorted(os.listdir(".")):
+    for filename in sorted(os.listdir("."), reverse=True): # Reverse so newest is top
         if filename.endswith(".mp3") and filename.startswith("podcast_"):
             item = ET.SubElement(channel, "item")
             ET.SubElement(item, "title").text = f"AI News: {filename.replace('podcast_', '').replace('.mp3', '')}"
             ET.SubElement(item, "description").text = "Today's top AI stories."
             ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
             ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
-            
             try:
                 date_str = filename.replace("podcast_", "").replace(".mp3", "")
                 pub_date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
