@@ -11,11 +11,11 @@ import xml.etree.ElementTree as ET
 from email.utils import formatdate
 from pydub import AudioSegment
 
-# --- CONFIGURATION (YOU MUST FILL THESE IN FOR SPOTIFY!) ---
+# --- CONFIGURATION (YOU MUST FILL THESE IN!) ---
 GITHUB_USERNAME = "aisimplify333"  
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@GMAIL.COM"
-AUTHOR_NAME = "AI_Simplify_Media"
+YOUR_EMAIL = "aisimplify333@GMAIL.COM" # <--- Spotify NEEDS this
+AUTHOR_NAME = "AI_Simplify_Media"                # --- Spotify NEEDS this
 
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
@@ -134,14 +134,16 @@ async def generate_audio(text):
     except Exception as e:
         print(f"Audio mixing error: {e}")
 
-# --- STEP 5: GENERATE RSS FEED (SPOTIFY COMPLIANT) ---
+# --- STEP 5: GENERATE RSS FEED (FIXED DUPLICATE ATTRIBUTE) ---
 def generate_rss_feed():
     print("Generating feed.xml...")
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
     
-    # Register ITUNES namespace
+    # 1. Register namespace (This adds 'xmlns:itunes' automatically)
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
-    rss = ET.Element("rss", version="2.0", **{"xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd"})
+    
+    # 2. Create Element (Removed the manual 'xmlns' attribute to stop duplication)
+    rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
     
     # Required Tags
@@ -150,10 +152,10 @@ def generate_rss_feed():
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
     
-    # ITUNES SPECIFIC TAGS (Required by Spotify)
+    # ITUNES SPECIFIC TAGS
     ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
     
-    # Cover Art (Updated to match YOUR file name: logo.png)
+    # Cover Art (Matches logo.png)
     image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
     image.set("href", f"{base_url}/logo.png") 
     
