@@ -14,7 +14,7 @@ from pydub import AudioSegment
 # --- CONFIGURATION (FILL THESE IN!) ---
 GITHUB_USERNAME = "aisimplify333"  
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333.COM" 
+YOUR_EMAIL = "aisimplify333@gmail.COM" 
 AUTHOR_NAME = "AI_Simplify_Media"
 
 # --- EXPANDED NEWS SOURCES ---
