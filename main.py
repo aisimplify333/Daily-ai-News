@@ -7,9 +7,15 @@ import google.generativeai as genai
 import re
 import json
 import random
+import xml.etree.ElementTree as ET
+from email.utils import formatdate
 from pydub import AudioSegment
 
 # --- CONFIGURATION ---
+# !!! CHANGE THIS TO YOUR ACTUAL GITHUB USERNAME !!!
+GITHUB_USERNAME = "aisimplify333" 
+REPO_NAME = "Daily-ai-News"
+
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml"
@@ -24,7 +30,6 @@ SPONSORS_FILE = "sponsors.json"
 # --- STEP 1: GET SPONSOR ---
 def get_sponsor():
     if not os.path.exists(SPONSORS_FILE):
-        print("No sponsors.json found. Skipping.")
         return None
     try:
         with open(SPONSORS_FILE, "r") as f:
@@ -32,8 +37,8 @@ def get_sponsor():
             if data and isinstance(data, list):
                 sponsor = random.choice(data)
                 return f"Today's episode is brought to you by {sponsor.get('name')}. {sponsor.get('copy')}"
-    except Exception as e:
-        print(f"Error reading sponsors: {e}")
+    except Exception:
+        return None
     return None
 
 # --- STEP 2: GET NEWS ---
@@ -59,7 +64,7 @@ def get_latest_news():
         return None
     return "\n\n".join(news_items)
 
-# --- STEP 3: REWRITE WITH AI (AUTO-DETECT + CHATTY PERSONALITY) ---
+# --- STEP 3: REWRITE WITH AI (AUTO-DETECT) ---
 def rewrite_script(raw_news, sponsor_text=None):
     if not GOOGLE_API_KEY:
         print("Error: GEMINI_API_KEY not found.")
@@ -67,46 +72,41 @@ def rewrite_script(raw_news, sponsor_text=None):
 
     genai.configure(api_key=GOOGLE_API_KEY)
     
-    # --- AUTO-DETECT WORKING MODEL ---
     print("Asking Google for available models...")
     working_model = None
+    priority_models = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash']
+    
     try:
-        # Loop through available models to find one that supports content generation
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                if 'gemini' in m.name:
-                    working_model = m.name
-                    break # Stop at the first valid one
+        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
+        for p_model in priority_models:
+            for av_model in available_models:
+                if p_model in av_model:
+                    working_model = av_model
+                    break
+            if working_model: break
+            
+        if not working_model:
+            for m in available_models:
+                if 'gemini' in m:
+                    working_model = m
+                    break
     except Exception as e:
         print(f"Error listing models: {e}")
 
     if not working_model:
-        # Fallback if auto-detect fails
-        working_model = 'gemini-1.5-flash' 
-    
+        working_model = 'gemini-1.5-flash'
+
     print(f"SUCCESS: Using AI Model -> {working_model}")
     model = genai.GenerativeModel(working_model)
-    # --------------------------------------
-
-    # --- THE CHATTY PROMPT ---
-    sponsor_instruction = ""
-    if sponsor_text:
-        sponsor_instruction = f"IMPORTANT: After the introduction, casually mention this sponsor: '{sponsor_text}'"
 
     prompt = f"""
-    You are the host of "The AI Edge", a daily 3-5 minute news podcast.
-    
-    {sponsor_instruction}
-
-    Here are the raw news stories from today:
-    {raw_news}
-
-    Task: Write a fun, engaging, and professional script.
-    - Start exactly with: "Welcome back to The AI Edge, I'm your host."
-    - If there is a sponsor, read it naturally early in the show.
-    - Group related stories together.
-    - Use a conversational tone (like a radio host).
-    - End exactly with: "That's your AI Edge for today. See you tomorrow."
+    You are the host of "The AI Edge", a daily 3-minute news podcast.
+    {f"MENTION SPONSOR: {sponsor_text}" if sponsor_text else ""}
+    News: {raw_news}
+    Task: Write a lively, engaging script. 
+    - Start: "Welcome back to The AI Edge."
+    - Style: Conversational, like a radio DJ.
+    - End: "That's your AI Edge for today. See you tomorrow."
     """
     
     try:
@@ -118,30 +118,55 @@ def rewrite_script(raw_news, sponsor_text=None):
 
 # --- STEP 4: GENERATE AUDIO ---
 async def generate_audio(text):
-    print(f"Generating audio ({len(text)} chars)...")
+    print(f"Generating audio...")
     communicate = edge_tts.Communicate(text, VOICE)
     await communicate.save(TEMP_VOICE_FILE)
     
     print("Mixing audio...")
     try:
         voice = AudioSegment.from_file(TEMP_VOICE_FILE)
-        
-        # Load intro/outro if they exist, otherwise silence
-        if os.path.exists("intro.mp3"):
-            intro = AudioSegment.from_file("intro.mp3")
-        else:
-            intro = AudioSegment.silent(1000)
-            
-        if os.path.exists("outro.mp3"):
-            outro = AudioSegment.from_file("outro.mp3")
-        else:
-            outro = AudioSegment.silent(1000)
-        
+        intro = AudioSegment.from_file("intro.mp3") if os.path.exists("intro.mp3") else AudioSegment.silent(1000)
+        outro = AudioSegment.from_file("outro.mp3") if os.path.exists("outro.mp3") else AudioSegment.silent(1000)
         final = intro + voice + outro
         final.export(OUTPUT_FILE, format="mp3")
         print(f"DONE! Saved to {OUTPUT_FILE}")
     except Exception as e:
         print(f"Audio mixing error: {e}")
+
+# --- STEP 5: GENERATE RSS FEED (NEW!) ---
+def generate_rss_feed():
+    print("Generating feed.xml...")
+    base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
+    
+    rss = ET.Element("rss", version="2.0", **{"xmlns:itunes": "http://www.itunes.com/dtds/podcast-1.0.dtd"})
+    channel = ET.SubElement(rss, "channel")
+    
+    ET.SubElement(channel, "title").text = "The AI Edge: Daily News"
+    ET.SubElement(channel, "description").text = "Your daily dose of AI news, generated by AI."
+    ET.SubElement(channel, "language").text = "en-us"
+    ET.SubElement(channel, "link").text = base_url
+    
+    # Scan for MP3 files
+    for filename in sorted(os.listdir(".")):
+        if filename.endswith(".mp3") and filename.startswith("podcast_"):
+            item = ET.SubElement(channel, "item")
+            ET.SubElement(item, "title").text = f"AI News: {filename.replace('podcast_', '').replace('.mp3', '')}"
+            ET.SubElement(item, "description").text = "Today's top AI stories."
+            ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
+            ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
+            
+            # Simple date handling
+            try:
+                date_str = filename.replace("podcast_", "").replace(".mp3", "")
+                pub_date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+                ET.SubElement(item, "pubDate").text = formatdate(pub_date.timestamp())
+            except:
+                pass
+
+    tree = ET.ElementTree(rss)
+    ET.indent(tree, space="  ", level=0)
+    tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
+    print("feed.xml created successfully!")
 
 # --- MAIN ---
 if __name__ == "__main__":
@@ -152,5 +177,6 @@ if __name__ == "__main__":
         if script:
             loop = asyncio.get_event_loop_policy().get_event_loop()
             loop.run_until_complete(generate_audio(script))
+            generate_rss_feed() # <--- THIS IS THE MAGIC LINE
     else:
         print("No news found.")
