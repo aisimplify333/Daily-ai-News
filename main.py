@@ -1,187 +1,170 @@
-import os
 import feedparser
+import datetime
+import os
+import asyncio
 import edge_tts
 import google.generativeai as genai
-import asyncio
-import html
-from datetime import datetime, timezone
-from email.utils import format_datetime
+import re
+import json
+import random
 from pydub import AudioSegment
 
 # --- CONFIGURATION ---
-GITHUB_USERNAME = "aisimplify333"
-REPO_NAME = "Daily-ai-News"
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml"
 ]
-VOICE = "en-US-ChristopherNeural"  # Updated to the better voice
+# Gets the API Key from GitHub Secrets
+GOOGLE_API_KEY = os.environ.get('GEMINI_API_KEY')
+VOICE = "en-US-ChristopherNeural"
+TODAY = datetime.date.today()
+OUTPUT_FILE = f"podcast_{TODAY}.mp3"
+TEMP_VOICE_FILE = "temp_voice.mp3"
+SPONSORS_FILE = "sponsors.json"
 
-# --- STEP 1: GET NEWS ---
+# --- STEP 1: GET SPONSOR ---
+def get_sponsor():
+    """Reads the sponsors.json file and picks a random active sponsor."""
+    if not os.path.exists(SPONSORS_FILE):
+        print("No sponsors.json found. Skipping sponsor.")
+        return None
+    
+    try:
+        with open(SPONSORS_FILE, "r") as f:
+            data = json.load(f)
+            # Assuming structure is a list of dicts with 'name' and 'copy'
+            if data and isinstance(data, list):
+                sponsor = random.choice(data)
+                return f"Today's episode is brought to you by {sponsor.get('name')}. {sponsor.get('copy')}"
+    except Exception as e:
+        print(f"Error reading sponsors: {e}")
+    
+    return None
+
+# --- STEP 2: GET NEWS ---
 def get_latest_news():
     print("Scanning the web for AI news...")
     news_items = []
-    hheaders = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-    'Referer': 'https://www.google.com/'
-}
+    
+    # Robust headers to look like a real human (prevents blocking)
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+        'Referer': 'https://www.google.com/'
+    }
+
     for url in RSS_FEEDS:
         try:
-            feed = feedparser.parse(url)
-            if feed.entries:
-                for entry in feed.entries[:3]:
-                    news_items.append(f"- {entry.title}: {entry.summary[:200]}...")
-        except: continue
-    if not news_items: return "General AI news update."
-    return "\n".join(news_items[:5])
+            print(f"Checking {url}...")
+            feed = feedparser.parse(url, agent=headers['User-Agent'])
+            
+            if not feed.entries:
+                continue
+                
+            for entry in feed.entries[:3]: # Grab top 3 stories per feed
+                summary = entry.summary if 'summary' in entry else entry.title
+                clean_summary = re.sub('<[^<]+?>', '', summary) # Remove HTML
+                clean_text = f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {clean_summary[:300]}"
+                news_items.append(clean_text)
+                
+        except Exception as e:
+            print(f"Error reading feed {url}: {e}")
+            continue
 
-# --- STEP 2: GET SPONSORS ---
-def get_sponsors():
-    try:
-        with open('sponsors.json', 'r') as f: return f.read()
-    except: return "No sponsors."
+    if not news_items:
+        return None
+    
+    return "\n\n".join(news_items)
 
-# --- STEP 3: GENERATE SCRIPT (FIXED MODEL SELECTOR) ---
-def generate_script(news, sponsors):
-    print("Connecting to AI Brain...")
-    genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-    
-    # AUTO-DETECT BEST MODEL
-    # This loop asks Google what models are available and picks the first valid 'Gemini' one.
-    target_model = "models/gemini-pro" # Safe fallback
-    try:
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods and 'gemini' in m.name:
-                target_model = m.name
-                break
-    except Exception as e:
-        print(f"Model list failed, using fallback: {e}")
-    
-    print(f"Using Model: {target_model}")
-    model = genai.GenerativeModel(target_model)
-    
+# --- STEP 3: REWRITE WITH AI ---
+def rewrite_script(raw_news, sponsor_text=None):
+    if not GOOGLE_API_KEY:
+        print("Error: GEMINI_API_KEY not found in Secrets.")
+        return None
+
+    print("Sending news to Gemini for rewriting...")
+    genai.configure(api_key=GOOGLE_API_KEY)
+    model = genai.GenerativeModel('gemini-pro')
+
+    # Add sponsor instruction if exists
+    sponsor_instruction = ""
+    if sponsor_text:
+        sponsor_instruction = f"IMPORTANT: After the introduction, casually mention this sponsor: '{sponsor_text}'"
+
     prompt = f"""
-    You are the host of 'The AI Edge'. Today is {datetime.now().strftime('%B %d, %Y')}.
-    News: {news}
-    Sponsors: {sponsors}
+    You are the host of "The AI Edge", a daily 3-5 minute news podcast.
     
-    TASK: Write the BODY of the script only. 
-    - DO NOT write "Welcome to the AI Edge".
-    - DO NOT write "Intro music".
-    - Start directly with: "Here is what's happening today..."
-    - Cover 3 news items.
-    - Insert a natural ad read.
-    - End with: "That's your AI Edge for today. See you tomorrow."
+    {sponsor_instruction}
+
+    Here are the raw news stories from today:
+    {raw_news}
+
+    Task: Write a fun, engaging, and professional script.
+    - Start exactly with: "Welcome back to The AI Edge, I'm your host."
+    - If there is a sponsor, read it naturally early in the show.
+    - Group related stories together.
+    - Use a conversational tone (like a radio host).
+    - End exactly with: "That's your AI Edge for today. See you tomorrow."
     """
+    
     response = model.generate_content(prompt)
-    return response.text
+    return response.text.replace("*", "") # Remove bold markdown
 
-# --- STEP 4: GENERATE & MIX AUDIO (TUNED FOR REALISM) ---
-async def produce_episode(script_text, filename):
-    print("Generating voice parts with 'Broadcaster' tuning...")
+# --- STEP 4: GENERATE AUDIO & MIX ---
+async def generate_audio(text):
+    print("Generating voice audio...")
+    communicate = edge_tts.Communicate(text, VOICE)
+    await communicate.save(TEMP_VOICE_FILE)
     
-    # SETTINGS: 
-    # rate="-10%"  -> Slows him down to human speaking speed
-    # pitch="-5Hz" -> Lowers voice slightly for "Radio DJ" effect
-    
-    # 1. Generate the Hardcoded Intro
-    intro_text = "Welcome to The AI Edge, Your home for Daily News and Tools for the AI industry."
-    await edge_tts.Communicate(intro_text, VOICE, rate="-10%", pitch="-5Hz").save("temp_intro_voice.mp3")
-    
-    # 2. Generate the Main Body (News)
-    await edge_tts.Communicate(script_text, VOICE, rate="-10%", pitch="-5Hz").save("temp_body_voice.mp3")
-    
-    print("Mixing audio layers...")
-    
+    print("Mixing with Intro/Outro...")
     try:
-        music_intro = AudioSegment.from_mp3("intro.mp3")
-        music_outro = AudioSegment.from_mp3("outro.mp3")
-    except:
-        print("WARNING: Music files not found! Using silence instead.")
-        music_intro = AudioSegment.silent(duration=1000)
-        music_outro = AudioSegment.silent(duration=1000)
-
-    voice_intro = AudioSegment.from_mp3("temp_intro_voice.mp3")
-    voice_body = AudioSegment.from_mp3("temp_body_voice.mp3")
-    
-    # Lower music volume
-    music_intro = music_intro - 15  # Quieter to let the deep voice shine
-    music_outro = music_outro - 15
-
-    # Mix: Intro Music (fade out) + Voice + Outro Music (fade in)
-    final_mix = music_intro.fade_out(2500) + voice_intro + voice_body + music_outro.fade_in(2500)
-    
-    final_mix.export(filename, format="mp3")
-    
-    # Cleanup
-    if os.path.exists("temp_intro_voice.mp3"): os.remove("temp_intro_voice.mp3")
-    if os.path.exists("temp_body_voice.mp3"): os.remove("temp_body_voice.mp3")
-    
-# --- STEP 5: UPDATE RSS ---
-def update_rss(audio_filename, script_summary):
-    rss_file = "feed.xml"
-    base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
-    file_url = f"{base_url}/{audio_filename}"
-    now = format_datetime(datetime.now(timezone.utc))
-    clean_summary = html.escape(script_summary[:250].replace('\n', ' ')) 
-    clean_title = f"AI Daily News - {datetime.now().strftime('%B %d')}"
-    
-    new_item = f"""    <item>
-      <title>{clean_title}</title>
-      <description>{clean_summary}...</description>
-      <enclosure url="{file_url}" length="4000000" type="audio/mpeg"/>
-      <guid>{file_url}</guid>
-      <pubDate>{now}</pubDate>
-    </item>"""
-
-    existing_items = ""
-    if os.path.exists(rss_file):
-        try:
-            with open(rss_file, 'r') as f:
-                content = f.read()
-                if "<item>" in content:
-                    parts = content.split('<item>')
-                    for part in parts[1:]:
-                        existing_items += "    <item>" + part.split('</channel>')[0]
-        except: pass
-
-    final_content = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:googleplay="http://www.google.com/schemas/play-podcasts/1.0">
-  <channel>
-    <title>The AI Edge: Daily News &amp; Tools</title>
-    <description>Your daily 5-minute download on the Artificial Intelligence revolution.</description>
-    <link>{base_url}</link>
-    <language>en-us</language>
-    <copyright>2025 AI Simplify Media</copyright>
-    <itunes:author>AI Simplify Media</itunes:author>
-    <itunes:owner>
-        <itunes:name>AI Simplify Media</itunes:name>
-        <itunes:email>aisimplify333@gmail.com</itunes:email>
-    </itunes:owner>
-    <itunes:category text="Technology">
-        <itunes:category text="Tech News"/>
-    </itunes:category>
-    <itunes:image href="{base_url}/logo.png"/>
-    <itunes:explicit>no</itunes:explicit>
-{new_item}
-{existing_items}
-  </channel>
-</rss>"""
-    with open(rss_file, "w") as f: f.write(final_content)
-    print("RSS Feed rebuilt successfully.")
-
-# --- MAIN ---
-if __name__ == "__main__":
-    if "GEMINI_API_KEY" not in os.environ:
-        print("ERROR: Run 'export GEMINI_API_KEY=...' first.")
-    else:
-        news = get_latest_news()
-        sponsors = get_sponsors()
-        script_body = generate_script(news, sponsors)
-        today_str = datetime.now().strftime('%Y-%m-%d')
-        filename = f"podcast_{today_str}.mp3"
+        # Load the generated voice
+        voice_audio = AudioSegment.from_file(TEMP_VOICE_FILE)
         
-        asyncio.run(produce_episode(script_body, filename))
-        update_rss(filename, script_body)
-        print("Done! Episode mixed and rendered.")
+        # Load Intro (or silence if missing)
+        if os.path.exists("intro.mp3"):
+            intro_audio = AudioSegment.from_file("intro.mp3")
+        else:
+            print("Warning: intro.mp3 not found. Using silence.")
+            intro_audio = AudioSegment.silent(duration=1000)
+
+        # Load Outro (or silence if missing)
+        if os.path.exists("outro.mp3"):
+            outro_audio = AudioSegment.from_file("outro.mp3")
+        else:
+            print("Warning: outro.mp3 not found. Using silence.")
+            outro_audio = AudioSegment.silent(duration=1000)
+
+        # Mix: Intro -> Voice -> Outro
+        final_podcast = intro_audio + voice_audio + outro_audio
+        
+        # Export final file
+        final_podcast.export(OUTPUT_FILE, format="mp3")
+        print(f"Success! Saved to {OUTPUT_FILE}")
+        
+    except Exception as e:
+        print(f"Error mixing audio: {e}")
+
+# --- MAIN LOOP ---
+if __name__ == "__main__":
+    # 1. Get News
+    raw_news = get_latest_news()
+    
+    # 2. Get Sponsor
+    sponsor_msg = get_sponsor()
+    
+    if raw_news:
+        # 3. Write Script (News + Sponsor)
+        final_script = rewrite_script(raw_news, sponsor_msg)
+        
+        if final_script:
+            # 4. Create Audio
+            loop = asyncio.get_event_loop_policy().get_event_loop()
+            try:
+                loop.run_until_complete(generate_audio(final_script))
+            finally:
+                pass
+        else:
+            print("Failed to generate script.")
+    else:
+        print("No news found today.")
