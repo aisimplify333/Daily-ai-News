@@ -1,3 +1,21 @@
+import subprocess
+import sys
+import importlib
+
+# --- STEP 0: SELF-CORRECTION (CRITICAL FIX) ---
+# This forces the server to download the newest Google Brain before starting.
+# It solves the "404 Model Not Found" and "Deprecation" errors.
+def install_updates():
+    try:
+        print("FORCE UPDATING Google AI Library...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", "google-generativeai"])
+        print("Update complete. Library is fresh.")
+    except Exception as e:
+        print(f"Update warning: {e}")
+
+install_updates()
+
+# --- IMPORTS (Must be after the update) ---
 import feedparser
 import datetime
 import os
@@ -14,7 +32,7 @@ from openai import OpenAI
 # --- CONFIGURATION (FILL THESE IN!) ---
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify3333@GMAIL.COM"  
+YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media"
 
 # --- CONFIGURATION: BALANCED SOURCE LIST ---
@@ -64,35 +82,34 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:12]) 
 
-# --- STEP 3: WRITE THE SCRIPT (SMART FAIL-OVER) ---
+# --- STEP 3: WRITE THE SCRIPT (SMART MODEL SELECTOR) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
+    
+    # Configure using the newly updated library
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # 1. IDENTIFY MODELS
-    pro_model = None
-    flash_model = None
+    # --- FIND THE BEST AVAILABLE BRAIN ---
+    target_model = "models/gemini-1.5-flash" # Default safe choice
     
     try:
-        print("Scanning available Gemini models...")
+        print("Scanning for available Gemini models...")
         for m in genai.list_models():
             if 'generateContent' in m.supported_generation_methods:
-                name = m.name
-                # Avoid 'latest' or 'exp' to reduce 404/Quota risks
-                if "gemini-1.5-pro" in name and "latest" not in name and "exp" not in name:
-                    pro_model = name
-                if "gemini-1.5-flash" in name and "latest" not in name and "exp" not in name:
-                    flash_model = name
+                # Prefer Pro if available (smarter), otherwise Flash (safer)
+                if "gemini-1.5-pro" in m.name and "latest" not in m.name:
+                    target_model = m.name
+                elif "gemini-1.5-flash" in m.name and "latest" not in m.name and "gemini-1.5-pro" not in target_model:
+                    target_model = m.name
     except Exception as e:
-        print(f"Error listing models: {e}")
+        print(f"Model scan warning: {e}. using default.")
 
-    # Fallbacks if scan fails
-    if not pro_model: pro_model = "models/gemini-1.5-pro"
-    if not flash_model: flash_model = "models/gemini-1.5-flash"
+    print(f"Using Script Writer: {target_model}")
+    model = genai.GenerativeModel(target_model)
 
-    # --- PREPARE PROMPT ---
+    # --- SPONSOR SETUP ---
     sponsor_txt = ""
     sponsor_name = "The AI Edge Supporters"
     if sponsor:
@@ -100,6 +117,7 @@ def generate_script(raw_news, sponsor):
         copy = sponsor.get('copy', 'Link in bio.')
         sponsor_txt = f"SPONSOR DETAILS: Name: {sponsor_name}. Copy: {copy}."
 
+    # --- PROMPT ---
     prompt = f"""
     You are the Showrunner for "The AI Edge".
     Target Length: 15 Minutes (Minimum 2800 Words).
@@ -112,61 +130,30 @@ def generate_script(raw_news, sponsor):
     INSTRUCTIONS:
     - **FORMAT:** ALEX: (text) / JAMIE: (text) / RUFUS: (text)
     - **RUFUS:** Serious tone. Uses words like "Legislation" and "Antitrust."
+    - **CONFLICT:** Jamie must aggressively disagree with Alex.
     
-    STRUCTURE & SPONSORS:
-    1. THE HOOK (2 mins): 
-       - ALEX: "Welcome back to The AI Edge!"
-       - JAMIE: Hypes the conflict.
-       - ROADMAP: Alex lists the 3 specific topics coming up.
-       - CATCHPHRASE: "Let's get to it."
-
-    2. THE HOT TAKE (5 mins): Alex & Jamie debate Story #1. Jamie interrupts frequently.
-
-    3. THE FIELD REPORT (3 mins): 
-       - Alex throws to Rufus in London.
-       - RUFUS reports on Regulation/Lawsuits.
-       - Rufus signs off "Back to you, Alex."
-
-    4. MID-ROLL AD (45 sec): 
-       - Jamie interrupts: "Hold on, quick shoutout."
-       - Jamie reads: "{sponsor_txt}"
-       - Make it sound natural.
-
-    5. SECOND STORY (3 mins): Social impact debate.
-
-    6. SPEED ROUND (2 mins): Headlines.
-
-    7. OUTRO & POST-ROLL (1 min): 
-       - Alex: "That's the Edge for today."
-       - **POST-ROLL:** Alex says: "Huge thank you to {sponsor_name} for making this show possible. Check the link in the description."
-       - JAMIE: "See ya!"
+    STRUCTURE:
+    1. HOOK (2 min): High energy intro. Roadmap topics. Catchphrase: "Let's get to it."
+    2. DEEP DIVE (5 min): Debate Story #1. High conflict.
+    3. FIELD REPORT (3 min): Alex throws to Rufus. Rufus covers Law/Money.
+    4. MID-ROLL (45 sec): Jamie reads: "{sponsor_txt}". Natural flow.
+    5. STORY 2 (3 min): Social impact debate.
+    6. SPEED ROUND (2 min): Headlines.
+    7. OUTRO (1 min): Alex credits sponsor {sponsor_name}. Sign off.
 
     RAW NEWS:
     {raw_news}
     """
 
-    # --- ATTEMPT 1: TRY PRO (High Intelligence) ---
     try:
-        print(f"Attempting generation with PRO model: {pro_model}")
-        model = genai.GenerativeModel(pro_model)
         response = model.generate_content(prompt)
-        print("Success with PRO model.")
+        print("Script generated successfully.")
         return response.text
     except Exception as e:
-        print(f"PRO model failed (likely Rate Limit): {e}")
-        print("Switching to FLASH backup...")
-    
-    # --- ATTEMPT 2: FLASH BACKUP (High Reliability) ---
-    try:
-        model = genai.GenerativeModel(flash_model)
-        response = model.generate_content(prompt)
-        print("Success with FLASH model.")
-        return response.text
-    except Exception as e:
-        print(f"CRITICAL: Both models failed. {e}")
+        print(f"Script Generation Failed: {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO (3 VOICE SUPPORT) ---
+# --- STEP 4: GENERATE AUDIO (3 VOICES) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -187,15 +174,13 @@ def generate_audio_openai(script_text):
         
         # --- DETECT 3 VOICES ---
         if "ALEX" in text.upper()[:10]: 
-            current_voice = "onyx"  # Deep Male (Anchor)
+            current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
-            
         elif "JAMIE" in text.upper()[:10]:
-            current_voice = "nova"  # Energetic Female (Pundit)
+            current_voice = "nova"
             text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
-            
         elif "RUFUS" in text.upper()[:10]:
-            current_voice = "fable" # British/Formal Male (Reporter)
+            current_voice = "fable"
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
             
         text = text.replace("*", "").replace("#", "")
