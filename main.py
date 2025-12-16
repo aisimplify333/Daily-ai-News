@@ -61,15 +61,40 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:10])
 
-# --- STEP 3: WRITE THE SCRIPT (HARDCODED RELIABLE MODEL) ---
+# --- STEP 3: WRITE THE SCRIPT (THE "HEATED" PROMPT) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # --- THE FIX: USE THE STABLE MODEL (1500 req/day limit) ---
-    model_name = 'gemini-1.5-flash' 
+    # --- SMART MODEL SELECTOR ---
+    model_name = None
+    available_models = []
+    try:
+        print("Scanning available Gemini models...")
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                available_models.append(m.name)
+        
+        # 1. Look for reliable 1.5 Flash
+        for m in available_models:
+            if "gemini" in m and "1.5" in m and "flash" in m:
+                model_name = m
+                break
+        
+        # 2. Fallback to any Pro (excluding 2.5)
+        if not model_name:
+             for m in available_models:
+                if "gemini" in m and "pro" in m and "2.5" not in m:
+                    model_name = m
+                    break
+    except Exception as e:
+        print(f"Error listing models: {e}")
+
+    if not model_name:
+        model_name = "models/gemini-pro"
+    
     print(f"Using Script Writer: {model_name}")
     model = genai.GenerativeModel(model_name)
 
@@ -79,29 +104,28 @@ def generate_script(raw_news, sponsor):
         copy = sponsor.get('copy', 'Link in bio.')
         sponsor_txt = f"NOTE: At minute 8, have JAMIE say: 'Big thanks to {name}. {copy}'"
 
-    # --- PROMPT ---
+    # --- UPDATED PROMPT: INSTRUCTIONS FOR VOLUME/ANGER ---
     prompt = f"""
     You are the Showrunner for "The AI Edge".
-    Target Length: 15 Minutes (approx 2000+ words).
+    Target Length: 15 Minutes.
     
     CHARACTERS:
-    - ALEX: Main host. Deep voice.
-    - JAMIE: Co-host. High energy, interrupts.
+    - ALEX: Main host. Optimistic, professional.
+    - JAMIE: Co-host. Skeptical, passionate, gets angry easily.
 
     INSTRUCTIONS:
-    - Write a long, deep-dive podcast script.
-    - Use this EXACT format:
-      ALEX: (text here)
-      JAMIE: (text here)
-    - Do NOT use Markdown bolding (**). 
+    - Write a script formatted: ALEX: (text) / JAMIE: (text)
+    - **USE CAPS LOCK FOR EMPHASIS.** - If they are arguing, use UPPERCASE to signal loudness.
+      - Example: JAMIE: "Are you kidding? THAT IS DANGEROUS!"
+    - **Create Conflict:** Alex loves the tech. Jamie fears it. They must interrupt each other.
     
     STRUCTURE:
-    1. INTRO (1 min): High energy.
-    2. DEEP DIVE (6 mins): Debate the #1 story.
+    1. THE HOOK (1-2 mins): High energy welcome + Roadmap of topics + Catchphrase "Let's get to it."
+    2. THE HOT TAKE (6 mins): Debate the #1 story. Jamie interrupts frequently. 
     3. AD BREAK (30 sec): Jamie reads the sponsor.
-    4. SECOND STORY (4 mins): Discuss impact.
-    5. SPEED ROUND (3 mins): Headlines.
-    6. OUTRO: Sign off.
+    4. SECOND STORY (4 mins): Discuss impact on society.
+    5. SPEED ROUND (3 mins): Rapid fire headlines.
+    6. OUTRO: Quick sign off.
 
     RAW NEWS:
     {raw_news}
@@ -111,10 +135,6 @@ def generate_script(raw_news, sponsor):
     try:
         response = model.generate_content(prompt)
         print("Script generated successfully.")
-        # DEBUG SCRIPT PREVIEW
-        print("="*30)
-        print(f"DEBUG SCRIPT PREVIEW:\n{response.text[:1000]}")
-        print("="*30)
         return response.text
     except Exception as e:
         print(f"Script Generation Failed: {e}")
@@ -132,13 +152,12 @@ def generate_audio_openai(script_text):
     lines = script_text.split('\n')
     print(f"Processing {len(lines)} lines...")
     
-    # DEFAULT VOICE (Start with Alex)
     current_voice = "onyx" 
     
     count = 0
     for line in lines:
         text = line.strip()
-        if not text: continue # Skip empty lines
+        if not text: continue 
         
         # --- DETECT VOICE CHANGE ---
         if "ALEX" in text.upper()[:10]: 
@@ -149,10 +168,9 @@ def generate_audio_openai(script_text):
             current_voice = "nova"
             text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
             
-        # Clean up weird markdown if it exists
+        # Remove asterisks but KEEP exclamation points and CAPS for emphasis
         text = text.replace("*", "").replace("#", "")
         
-        # If the line was JUST a name tag, skip it
         if not text or len(text) < 2: continue
             
         try:
