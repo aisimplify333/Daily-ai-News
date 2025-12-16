@@ -18,7 +18,8 @@ import re
 import json
 import feedparser
 import datetime
-import xml.etree.ElementTree as ET  # <--- CRITICAL FIX FOR RSS CRASH
+# CRITICAL FIX: This import prevents the RSS crash at the end
+import xml.etree.ElementTree as ET 
 from email.utils import formatdate
 from pydub import AudioSegment
 from openai import OpenAI
@@ -80,42 +81,43 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:12]) 
 
-# --- CRITICAL: PRECISE MODEL FINDER ---
-def find_best_model(client):
-    print("--- DIAGNOSTIC: LISTING AVAILABLE MODELS ---")
-    valid_model = None
-    try:
-        all_models = list(client.models.list())
-        # We define a strict priority list based on what we saw in your logs
-        priority_list = [
-            "gemini-2.5-flash",       # Top choice (Fast & New)
-            "gemini-2.0-flash",       # Backup
-            "gemini-1.5-flash",       # Reliable classic
-            "gemini-flash-latest"     # Generic fallback
-        ]
-        
-        available_names = [m.name.replace("models/", "") for m in all_models]
-        
-        # Check priority list against available models
-        for target in priority_list:
-            if target in available_names:
-                valid_model = target
-                break
-        
-        # Fallback: If exact match fails, find ANY flash model that isn't audio/vision
-        if not valid_model:
-            for name in available_names:
-                if "flash" in name and "audio" not in name and "vision" not in name and "image" not in name:
-                    valid_model = name
-                    break
-                    
-    except Exception as e:
-        print(f"Error listing models: {e}")
+# --- CRITICAL: ROBUST MODEL SELECTOR ---
+def generate_content_with_retry(client, prompt):
+    # We try these models in order. 
+    # 1. gemini-1.5-flash: Best balance of speed/quota (1500 req/day)
+    # 2. gemini-2.0-flash: Newer, good fallback
+    # 3. gemini-flash-latest: The "whatever works" option
+    model_priority = [
+        "gemini-1.5-flash", 
+        "gemini-2.0-flash", 
+        "gemini-flash-latest"
+    ]
     
-    print(f"--- SELECTED MODEL: {valid_model} ---")
-    return valid_model
+    for model_name in model_priority:
+        print(f"Attempting generation with model: {model_name}...")
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=prompt
+            )
+            print(f"SUCCESS with {model_name}!")
+            return response.text
+        except Exception as e:
+            # Check for Quota (429) or Not Found (404)
+            error_str = str(e)
+            if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
+                print(f"⚠️ Quota exceeded for {model_name}. Switching to backup...")
+            elif "404" in error_str or "NOT_FOUND" in error_str:
+                print(f"⚠️ Model {model_name} not found. Switching to backup...")
+            else:
+                print(f"❌ Error with {model_name}: {e}")
+            
+            # Continue to the next model in the loop
+            continue
+            
+    return None
 
-# --- SCRIPT GENERATOR ---
+# --- MAIN SCRIPT GENERATOR ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
@@ -128,11 +130,7 @@ def generate_script(raw_news, sponsor):
         print(f"Client Init Error: {e}")
         return None
 
-    target_model = find_best_model(client)
-    if not target_model:
-        print("CRITICAL: No valid Gemini models found.")
-        return None
-
+    # SPONSOR
     sponsor_txt = "our amazing sponsors"
     if sponsor:
         sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
@@ -164,17 +162,8 @@ def generate_script(raw_news, sponsor):
     {raw_news}
     """
 
-    try:
-        print(f"Generating content with {target_model}...")
-        response = client.models.generate_content(
-            model=target_model,
-            contents=prompt
-        )
-        print("Script generated successfully.")
-        return response.text
-    except Exception as e:
-        print(f"Generation Failed: {e}")
-        return None
+    # Use the new Robust Selector
+    return generate_content_with_retry(client, prompt)
 
 # --- AUDIO GENERATION ---
 def generate_audio_openai(script_text):
@@ -209,7 +198,7 @@ def generate_audio_openai(script_text):
         if not text or len(text) < 2: continue
             
         try:
-            # FIXED: Syntax update
+            # FIXED: New Syntax to avoid deprecation warnings
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice=current_voice,
@@ -239,7 +228,6 @@ def generate_audio_openai(script_text):
 # --- RSS FEED ---
 def generate_rss_feed():
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
-    # This ET definition was missing in the 7-minute run, causing the final crash
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
