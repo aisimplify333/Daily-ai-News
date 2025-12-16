@@ -1,42 +1,39 @@
 import subprocess
 import sys
 
-# --- CRITICAL: INSTALL THE NEW V2 LIBRARY ---
-# The old 'google-generativeai' is dead. We must use 'google-genai'.
-def install_new_library():
+# --- STEP 0: INSTALL NEW GOOGLE SDK ---
+def install_sdk():
     try:
-        print("Installing NEW Google GenAI SDK...")
+        print("Installing Google GenAI SDK...")
         subprocess.check_call([sys.executable, "-m", "pip", "install", "google-genai"])
-        print("Installation complete.")
     except Exception as e:
-        print(f"Library install warning: {e}")
+        print(f"Install error: {e}")
 
-install_new_library()
+install_sdk()
 
 # --- IMPORTS ---
-import feedparser
-import datetime
 import os
+import random
 import re
 import json
-import random
-import xml.etree.ElementTree as ET
+import feedparser
+import datetime
 from email.utils import formatdate
 from pydub import AudioSegment
 from openai import OpenAI
 
-# --- IMPORT THE NEW GOOGLE CLIENT ---
+# Try importing the new library
 try:
     from google import genai
 except ImportError:
-    print("Failed to import google.genai even after install. Attempting fallback...")
+    print("Retrying import...")
     from google import genai
 
 # --- CONFIGURATION ---
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI Simplify Media"
+AUTHOR_NAME = "AI Smplify Media"
 
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
@@ -53,7 +50,7 @@ TODAY = datetime.date.today()
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
 SPONSORS_FILE = "sponsors.json"
 
-# --- STEP 1: GET SPONSOR ---
+# --- HELPER: GET SPONSOR ---
 def get_sponsor():
     if not os.path.exists(SPONSORS_FILE): return None
     try:
@@ -64,7 +61,7 @@ def get_sponsor():
     except: return None
     return None
 
-# --- STEP 2: GET NEWS ---
+# --- HELPER: GET NEWS ---
 def get_latest_news():
     print("Scanning the web for AI news...")
     news_items = []
@@ -82,29 +79,71 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:12]) 
 
-# --- STEP 3: WRITE THE SCRIPT (NEW SDK) ---
+# --- CRITICAL: DYNAMIC MODEL FINDER ---
+def find_best_model(client):
+    print("--- DIAGNOSTIC: LISTING AVAILABLE MODELS ---")
+    valid_model = None
+    try:
+        # We ask the API what models it has
+        all_models = list(client.models.list())
+        for m in all_models:
+            # The name usually comes back as 'models/gemini-1.5-flash-001'
+            name = m.name
+            print(f"Found: {name}") 
+            
+            # LOGIC: Prefer 1.5 Flash (Fast/Cheap), then 1.5 Pro, then 1.0 Pro
+            if "gemini-1.5-flash" in name and "latest" not in name:
+                valid_model = name
+                # Keep looking just in case we find a better match, but store this
+            
+        # If we didn't find Flash, look for Pro
+        if not valid_model:
+            for m in all_models:
+                if "gemini-1.5-pro" in m.name:
+                    valid_model = m.name
+                    break
+        
+        # If we still have nothing, take ANYTHING that says gemini
+        if not valid_model:
+            for m in all_models:
+                if "gemini" in m.name and "vision" not in m.name:
+                    valid_model = m.name
+                    break
+                    
+    except Exception as e:
+        print(f"Error listing models: {e}")
+    
+    # Clean the name (New SDK sometimes hates the 'models/' prefix)
+    if valid_model and valid_model.startswith("models/"):
+        valid_model = valid_model.replace("models/", "")
+        
+    print(f"--- SELECTED MODEL: {valid_model} ---")
+    return valid_model
+
+# --- MAIN SCRIPT GENERATOR ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
     
-    # --- NEW CLIENT INITIALIZATION ---
-    print("Initializing new Google GenAI Client...")
+    print("Initializing Client...")
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
     except Exception as e:
-        print(f"Client Init Failed: {e}")
+        print(f"Client Init Error: {e}")
         return None
 
-    # --- SPONSOR SETUP ---
-    sponsor_txt = ""
-    sponsor_name = "The AI Edge Supporters"
-    if sponsor:
-        sponsor_name = sponsor.get('name', 'Our Sponsor')
-        copy = sponsor.get('copy', 'Link in bio.')
-        sponsor_txt = f"SPONSOR DETAILS: Name: {sponsor_name}. Copy: {copy}."
+    # FIND THE MODEL DYNAMICALLY
+    target_model = find_best_model(client)
+    if not target_model:
+        print("CRITICAL: No valid Gemini models found for this API key.")
+        return None
 
-    # --- PROMPT ---
+    # SPONSOR
+    sponsor_txt = "our amazing sponsors"
+    if sponsor:
+        sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
+
     prompt = f"""
     You are the Showrunner for "The AI Edge".
     Target Length: 15 Minutes (Minimum 2800 Words).
@@ -126,38 +165,25 @@ def generate_script(raw_news, sponsor):
     4. MID-ROLL (45 sec): Jamie reads: "{sponsor_txt}". Natural flow.
     5. STORY 2 (3 min): Social impact debate.
     6. SPEED ROUND (2 min): Headlines.
-    7. OUTRO (1 min): Alex credits sponsor {sponsor_name}. Sign off.
+    7. OUTRO (1 min): Alex credits sponsor. Sign off.
 
     RAW NEWS:
     {raw_news}
     """
 
-    # --- ATTEMPT 1: TRY PRO (Smarter) ---
     try:
-        print("Attempting generation with gemini-1.5-pro...")
+        print(f"Generating content with {target_model}...")
         response = client.models.generate_content(
-            model='gemini-1.5-pro',
+            model=target_model,
             contents=prompt
         )
-        print("Success with PRO model.")
+        print("Script generated successfully.")
         return response.text
     except Exception as e:
-        print(f"PRO model failed: {e}")
-        
-    # --- ATTEMPT 2: FLASH BACKUP (Safer) ---
-    try:
-        print("Switching to gemini-1.5-flash backup...")
-        response = client.models.generate_content(
-            model='gemini-1.5-flash',
-            contents=prompt
-        )
-        print("Success with FLASH model.")
-        return response.text
-    except Exception as e:
-        print(f"CRITICAL: Both models failed. {e}")
+        print(f"Generation Failed: {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO ---
+# --- AUDIO GENERATION ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -170,13 +196,12 @@ def generate_audio_openai(script_text):
     print(f"Processing {len(lines)} lines...")
     
     current_voice = "onyx" 
-    
     count = 0
+    
     for line in lines:
         text = line.strip()
         if not text: continue 
         
-        # --- DETECT 3 VOICES ---
         if "ALEX" in text.upper()[:10]: 
             current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
@@ -188,7 +213,6 @@ def generate_audio_openai(script_text):
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
             
         text = text.replace("*", "").replace("#", "")
-        
         if not text or len(text) < 2: continue
             
         try:
@@ -197,34 +221,27 @@ def generate_audio_openai(script_text):
                 voice=current_voice,
                 input=text
             )
-            
             chunk_file = f"chunk_{count}.mp3"
             response.stream_to_file(chunk_file)
-            
             audio_chunk = AudioSegment.from_file(chunk_file)
             combined_audio += audio_chunk
             combined_audio += AudioSegment.silent(duration=150) 
-            
             os.remove(chunk_file)
             count += 1
             if count % 5 == 0: print(f"Generated {count} lines...")
-            
         except Exception as e:
             print(f"Error on line {count}: {e}")
 
     print("Mixing final track...")
     if os.path.exists("intro.mp3"):
-        intro = AudioSegment.from_file("intro.mp3")
-        combined_audio = intro + combined_audio
-        
+        combined_audio = AudioSegment.from_file("intro.mp3") + combined_audio
     if os.path.exists("outro.mp3"):
-        outro = AudioSegment.from_file("outro.mp3")
-        combined_audio += outro
+        combined_audio += AudioSegment.from_file("outro.mp3")
 
     combined_audio.export(OUTPUT_FILE, format="mp3")
     print(f"Success! Podcast saved to {OUTPUT_FILE}")
 
-# --- STEP 5: RSS FEED ---
+# --- RSS FEED ---
 def generate_rss_feed():
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
