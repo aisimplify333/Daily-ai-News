@@ -1,26 +1,22 @@
 import subprocess
 import sys
-import importlib
 
-# --- STEP 0: SELF-CORRECTION (CRITICAL FIX) ---
-# This forces the server to download the newest Google Brain before starting.
-# It solves the "404 Model Not Found" and "Deprecation" errors.
-def install_updates():
+# --- CRITICAL: INSTALL THE NEW V2 LIBRARY ---
+# The old 'google-generativeai' is dead. We must use 'google-genai'.
+def install_new_library():
     try:
-        print("FORCE UPDATING Google AI Library...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "-U", "google-generativeai"])
-        print("Update complete. Library is fresh.")
+        print("Installing NEW Google GenAI SDK...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", "google-genai"])
+        print("Installation complete.")
     except Exception as e:
-        print(f"Update warning: {e}")
+        print(f"Library install warning: {e}")
 
-install_updates()
+install_new_library()
 
-# --- IMPORTS (Must be after the update) ---
+# --- IMPORTS ---
 import feedparser
 import datetime
 import os
-import asyncio
-import google.generativeai as genai
 import re
 import json
 import random
@@ -29,18 +25,22 @@ from email.utils import formatdate
 from pydub import AudioSegment
 from openai import OpenAI
 
-# --- CONFIGURATION (FILL THESE IN!) ---
+# --- IMPORT THE NEW GOOGLE CLIENT ---
+try:
+    from google import genai
+except ImportError:
+    print("Failed to import google.genai even after install. Attempting fallback...")
+    from google import genai
+
+# --- CONFIGURATION ---
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media"
 
-# --- CONFIGURATION: BALANCED SOURCE LIST ---
 RSS_FEEDS = [
-    # OPTIMIST SOURCES (Tech & Business)
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://venturebeat.com/category/ai/feed/",
-    # SKEPTIC/LEGAL SOURCES (Fuel for Rufus & Jamie)
     "https://www.theregister.com/software/ai_ml/headlines.atom", 
     "https://futurism.com/feed",                                 
     "https://garymarcus.substack.com/feed",                      
@@ -82,32 +82,19 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:12]) 
 
-# --- STEP 3: WRITE THE SCRIPT (SMART MODEL SELECTOR) ---
+# --- STEP 3: WRITE THE SCRIPT (NEW SDK) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
     
-    # Configure using the newly updated library
-    genai.configure(api_key=GEMINI_API_KEY)
-    
-    # --- FIND THE BEST AVAILABLE BRAIN ---
-    target_model = "models/gemini-1.5-flash" # Default safe choice
-    
+    # --- NEW CLIENT INITIALIZATION ---
+    print("Initializing new Google GenAI Client...")
     try:
-        print("Scanning for available Gemini models...")
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                # Prefer Pro if available (smarter), otherwise Flash (safer)
-                if "gemini-1.5-pro" in m.name and "latest" not in m.name:
-                    target_model = m.name
-                elif "gemini-1.5-flash" in m.name and "latest" not in m.name and "gemini-1.5-pro" not in target_model:
-                    target_model = m.name
+        client = genai.Client(api_key=GEMINI_API_KEY)
     except Exception as e:
-        print(f"Model scan warning: {e}. using default.")
-
-    print(f"Using Script Writer: {target_model}")
-    model = genai.GenerativeModel(target_model)
+        print(f"Client Init Failed: {e}")
+        return None
 
     # --- SPONSOR SETUP ---
     sponsor_txt = ""
@@ -145,15 +132,32 @@ def generate_script(raw_news, sponsor):
     {raw_news}
     """
 
+    # --- ATTEMPT 1: TRY PRO (Smarter) ---
     try:
-        response = model.generate_content(prompt)
-        print("Script generated successfully.")
+        print("Attempting generation with gemini-1.5-pro...")
+        response = client.models.generate_content(
+            model='gemini-1.5-pro',
+            contents=prompt
+        )
+        print("Success with PRO model.")
         return response.text
     except Exception as e:
-        print(f"Script Generation Failed: {e}")
+        print(f"PRO model failed: {e}")
+        
+    # --- ATTEMPT 2: FLASH BACKUP (Safer) ---
+    try:
+        print("Switching to gemini-1.5-flash backup...")
+        response = client.models.generate_content(
+            model='gemini-1.5-flash',
+            contents=prompt
+        )
+        print("Success with FLASH model.")
+        return response.text
+    except Exception as e:
+        print(f"CRITICAL: Both models failed. {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO (3 VOICES) ---
+# --- STEP 4: GENERATE AUDIO ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
