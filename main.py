@@ -14,21 +14,15 @@ from openai import OpenAI
 # --- CONFIGURATION (FILL THESE IN!) ---
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplyfi333@GMAIL.COM"  
+YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media"
 
 # --- HOST PERSONAS ---
-# Host A (Alex): The News Anchor (Voice: Onyx) - Deep, authoritative, driving the show.
-# Host B (Jamie): The Color Commentator (Voice: Nova) - High energy, asks the "dumb" questions, interrupts.
-
-# --- EXPANDED SOURCES FOR LENGTH ---
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml",
     "https://venturebeat.com/category/ai/feed/",
-    "https://arstechnica.com/tag/ai/feed/",
-    "https://www.wired.com/feed/category/ai/latest/rss",      # Added for depth
-    "https://www.technologyreview.com/feed/topic/artificial-intelligence/" # Added for analysis
+    "https://arstechnica.com/tag/ai/feed/"
 ]
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -48,7 +42,7 @@ def get_sponsor():
     except: return None
     return None
 
-# --- STEP 2: GET NEWS (Expanded Collection) ---
+# --- STEP 2: GET NEWS ---
 def get_latest_news():
     print("Scanning the web for AI news...")
     news_items = []
@@ -57,7 +51,6 @@ def get_latest_news():
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
-            # Take top 4 stories from EACH feed to ensure massive content pool
             for entry in feed.entries[:4]: 
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
                 news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:500]}")
@@ -65,12 +58,13 @@ def get_latest_news():
     
     if not news_items: return None
     random.shuffle(news_items)
-    # Return a huge chunk of text (top 10 stories) so the AI has plenty to talk about
-    return "\n\n".join(news_items[:10])
+    return "\n\n".join(news_items[:8])
 
-# --- STEP 3: WRITE THE SCRIPT (EXTENDED CUT) ---
+# --- STEP 3: WRITE THE SCRIPT (TEXT MODE - ROBUST) ---
 def generate_script(raw_news, sponsor):
-    if not GEMINI_API_KEY: return None
+    if not GEMINI_API_KEY: 
+        print("Error: Gemini Key Missing")
+        return None
     genai.configure(api_key=GEMINI_API_KEY)
     
     model_name = 'gemini-1.5-flash' 
@@ -86,48 +80,49 @@ def generate_script(raw_news, sponsor):
 
     sponsor_txt = ""
     if sponsor:
-        sponsor_name = sponsor.get('name', 'Our Sponsors')
-        sponsor_copy = sponsor.get('copy', 'Check the link in the description.')
-        sponsor_txt = f"SPONSOR SEGMENT: At the 8-minute mark, Jamie interrupts: 'Wait, real quick—shoutout to {sponsor_name}. {sponsor_copy}'"
+        name = sponsor.get('name', 'Our Sponsor')
+        copy = sponsor.get('copy', 'Link in bio.')
+        sponsor_txt = f"NOTE: At minute 8, have JAMIE say: 'Big thanks to {name}. {copy}'"
 
-    # --- THE "EXTENDED CUT" PROMPT ---
+    # --- THE ROBUST PROMPT ---
     prompt = f"""
     You are the Showrunner for "The AI Edge".
-    Target Duration: 15 Minutes.
+    Target Length: 15 Minutes (approx 2000-2500 words).
     
     CHARACTERS:
-    - ALEX (Host A): Professional, hype, leads the conversation.
-    - JAMIE (Host B): Skeptical, funny, interrupts often, plays "Devil's Advocate".
+    - ALEX: Main host. Deep, professional, hype.
+    - JAMIE: Co-host. Skeptical, funny, high energy.
 
-    STRUCTURE (Do not rush!):
-    1. INTRO (1 min): High energy. "Welcome back to the Edge!" Jamie is hyped.
-    2. THE DEEP DIVE (6 mins): Pick ONE massive story. Alex explains it. Jamie CHALLENGES it. Debate the ethics/future. 
-    3. THE AD BREAK (30 sec): Jamie does the sponsor read.
-    4. THE SECOND ANGLE (4 mins): Pick a second story. Discuss why it matters for regular people.
-    5. SPEED ROUND (3 mins): Rapid fire headlines.
-    6. OUTRO (30 sec): "That's the Edge."
+    INSTRUCTIONS:
+    - Write a long, deep-dive podcast script.
+    - Format it EXACTLY like a play script:
+      ALEX: Text here.
+      JAMIE: Text here.
+    - Do NOT use asterisks ** or stage directions (like *laughs*).
+    - Just the names and the dialogue.
+    
+    STRUCTURE:
+    1. INTRO: High energy welcome.
+    2. DEEP DIVE: Debate the #1 story for 5 minutes.
+    3. AD BREAK: Jamie reads the sponsor.
+    4. SECOND STORY: Discuss the impact on jobs/society.
+    5. OUTRO: Quick sign off.
 
     RAW NEWS:
     {raw_news}
-
     {sponsor_txt}
-
-    FORMAT REQUIREMENTS:
-    - Output MUST be a valid JSON list of objects.
-    - Example: [{{"speaker": "Alex", "text": "Welcome back!"}}, {{"speaker": "Jamie", "text": "Let's go!"}}]
-    - TONE: High Energy! Fast banter!
-    - **CRITICAL: Generate at least 2500 words.** Do not summarize. Elaborate and speculate.
     """
 
     try:
-        response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
-        return json.loads(response.text)
+        # We ask for PLAIN TEXT now, not JSON. Much safer.
+        response = model.generate_content(prompt)
+        return response.text
     except Exception as e:
         print(f"Script Generation Failed: {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO (HIGH ENERGY MIX) ---
-def generate_audio_openai(script_json):
+# --- STEP 4: GENERATE AUDIO (TEXT PARSER) ---
+def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
         return
@@ -135,15 +130,30 @@ def generate_audio_openai(script_json):
     client = OpenAI(api_key=OPENAI_API_KEY)
     combined_audio = AudioSegment.empty()
     
-    print(f"Generating audio for {len(script_json)} lines...")
+    # Parse the script line by line
+    lines = script_text.split('\n')
+    print(f"Processing {len(lines)} lines of script...")
     
-    for i, line in enumerate(script_json):
-        speaker = line.get("speaker", "Alex")
-        text = line.get("text", "")
+    count = 0
+    for line in lines:
+        if ":" not in line: continue # Skip empty lines or stage directions
+        
+        parts = line.split(":", 1)
+        if len(parts) < 2: continue
+        
+        speaker_name = parts[0].strip().upper()
+        text = parts[1].strip()
+        
         if not text: continue
         
-        voice_id = "onyx" if "Alex" in speaker else "nova"
-        
+        # Decide Voice
+        if "ALEX" in speaker_name:
+            voice_id = "onyx"
+        elif "JAMIE" in speaker_name:
+            voice_id = "nova"
+        else:
+            continue # Skip unknown speakers
+            
         try:
             response = client.audio.speech.create(
                 model="tts-1",
@@ -151,19 +161,19 @@ def generate_audio_openai(script_json):
                 input=text
             )
             
-            chunk_file = f"chunk_{i}.mp3"
+            chunk_file = f"chunk_{count}.mp3"
             response.stream_to_file(chunk_file)
             
             audio_chunk = AudioSegment.from_file(chunk_file)
             combined_audio += audio_chunk
-            
-            # SNAPPIER TIMING (100ms)
-            combined_audio += AudioSegment.silent(duration=100)
+            combined_audio += AudioSegment.silent(duration=100) # Snappy pacing
             
             os.remove(chunk_file)
+            count += 1
+            if count % 10 == 0: print(f"Generated {count} lines...")
             
         except Exception as e:
-            print(f"Error generating line {i}: {e}")
+            print(f"Error on line {count}: {e}")
 
     print("Mixing final track...")
     if os.path.exists("intro.mp3"):
