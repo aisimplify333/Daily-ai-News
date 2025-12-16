@@ -15,7 +15,7 @@ from openai import OpenAI
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI SImplify Media"
+AUTHOR_NAME = "AI Simplify Media"
 
 # --- CONFIGURATION ---
 RSS_FEEDS = [
@@ -61,14 +61,33 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:10])
 
-# --- STEP 3: WRITE THE SCRIPT (TEXT MODE) ---
+# --- STEP 3: WRITE THE SCRIPT (AUTO-DETECT MODEL) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
     genai.configure(api_key=GEMINI_API_KEY)
     
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    # --- AUTO-DETECT LOGIC (Restored) ---
+    model_name = None
+    try:
+        print("Listing available Gemini models...")
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods:
+                if 'gemini' in m.name:
+                    model_name = m.name
+                    # Prefer flash if available, otherwise take the first gemini found
+                    if 'flash' in m.name:
+                        break
+    except Exception as e:
+        print(f"Error listing models: {e}")
+
+    # Fallback if list fails (try standard pro)
+    if not model_name: 
+        model_name = 'models/gemini-pro'
+    
+    print(f"Using Script Writer: {model_name}")
+    model = genai.GenerativeModel(model_name)
 
     sponsor_txt = ""
     if sponsor:
@@ -87,7 +106,9 @@ def generate_script(raw_news, sponsor):
 
     INSTRUCTIONS:
     - Write a long, deep-dive podcast script.
-    - Format it like a play: "ALEX: text" and "JAMIE: text".
+    - Use this EXACT format:
+      ALEX: (text here)
+      JAMIE: (text here)
     - Do NOT use Markdown bolding (**). 
     
     STRUCTURE:
@@ -106,7 +127,7 @@ def generate_script(raw_news, sponsor):
     try:
         response = model.generate_content(prompt)
         print("Script generated successfully.")
-        # --- DEBUGGING: PRINT THE SCRIPT TO LOGS ---
+        # DEBUG SCRIPT PREVIEW
         print("="*30)
         print(f"DEBUG SCRIPT PREVIEW:\n{response.text[:1000]}")
         print("="*30)
@@ -135,17 +156,14 @@ def generate_audio_openai(script_text):
         text = line.strip()
         if not text: continue # Skip empty lines
         
-        # --- THE FIX: DETECT VOICE CHANGE ---
+        # --- DETECT VOICE CHANGE ---
         # If we see a name, switch the voice. 
         # If NOT, keep using the current voice and read the text.
         
-        # Check for Alex
-        if "ALEX" in text.upper()[:10]: # Look for name in first 10 chars
+        if "ALEX" in text.upper()[:10]: 
             current_voice = "onyx"
-            # Remove the name tag so we don't speak it
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
             
-        # Check for Jamie
         elif "JAMIE" in text.upper()[:10]:
             current_voice = "nova"
             text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
@@ -153,7 +171,7 @@ def generate_audio_openai(script_text):
         # Clean up weird markdown if it exists
         text = text.replace("*", "").replace("#", "")
         
-        # If the line was JUST a name tag (e.g. "ALEX:"), skip it
+        # If the line was JUST a name tag, skip it
         if not text or len(text) < 2: continue
             
         try:
