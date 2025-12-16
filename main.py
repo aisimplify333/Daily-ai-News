@@ -14,16 +14,19 @@ from openai import OpenAI
 # --- CONFIGURATION (FILL THESE IN!) ---
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
+YOUR_EMAIL = "aisimplify3333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media"
 
-# --- CONFIGURATION ---
+# --- CONFIGURATION: BALANCED SOURCE LIST ---
 RSS_FEEDS = [
+    # OPTIMIST SOURCES (Tech & Business)
     "https://techcrunch.com/category/artificial-intelligence/feed/",
-    "https://www.theverge.com/rss/artificial-intelligence/index.xml",
     "https://venturebeat.com/category/ai/feed/",
-    "https://arstechnica.com/tag/ai/feed/",
-    "https://www.wired.com/feed/category/ai/latest/rss"
+    # SKEPTIC/LEGAL SOURCES (Fuel for Rufus & Jamie)
+    "https://www.theregister.com/software/ai_ml/headlines.atom", 
+    "https://futurism.com/feed",                                 
+    "https://garymarcus.substack.com/feed",                      
+    "https://www.wired.com/feed/category/ai/latest/rss"          
 ]
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -52,95 +55,118 @@ def get_latest_news():
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
-            for entry in feed.entries[:4]: 
+            for entry in feed.entries[:3]: 
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
                 news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:500]}")
         except: pass
     
     if not news_items: return None
     random.shuffle(news_items)
-    return "\n\n".join(news_items[:10])
+    return "\n\n".join(news_items[:12]) 
 
-# --- STEP 3: WRITE THE SCRIPT (THE "HEATED" PROMPT) ---
+# --- STEP 3: WRITE THE SCRIPT (SMART FAIL-OVER) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # --- SMART MODEL SELECTOR ---
-    model_name = None
-    available_models = []
+    # 1. IDENTIFY MODELS
+    pro_model = None
+    flash_model = None
+    
     try:
         print("Scanning available Gemini models...")
         for m in genai.list_models():
             if 'generateContent' in m.supported_generation_methods:
-                available_models.append(m.name)
-        
-        # 1. Look for reliable 1.5 Flash
-        for m in available_models:
-            if "gemini" in m and "1.5" in m and "flash" in m:
-                model_name = m
-                break
-        
-        # 2. Fallback to any Pro (excluding 2.5)
-        if not model_name:
-             for m in available_models:
-                if "gemini" in m and "pro" in m and "2.5" not in m:
-                    model_name = m
-                    break
+                name = m.name
+                # Avoid 'latest' or 'exp' to reduce 404/Quota risks
+                if "gemini-1.5-pro" in name and "latest" not in name and "exp" not in name:
+                    pro_model = name
+                if "gemini-1.5-flash" in name and "latest" not in name and "exp" not in name:
+                    flash_model = name
     except Exception as e:
         print(f"Error listing models: {e}")
 
-    if not model_name:
-        model_name = "models/gemini-pro"
-    
-    print(f"Using Script Writer: {model_name}")
-    model = genai.GenerativeModel(model_name)
+    # Fallbacks if scan fails
+    if not pro_model: pro_model = "models/gemini-1.5-pro"
+    if not flash_model: flash_model = "models/gemini-1.5-flash"
 
+    # --- PREPARE PROMPT ---
     sponsor_txt = ""
+    sponsor_name = "The AI Edge Supporters"
     if sponsor:
-        name = sponsor.get('name', 'Our Sponsor')
+        sponsor_name = sponsor.get('name', 'Our Sponsor')
         copy = sponsor.get('copy', 'Link in bio.')
-        sponsor_txt = f"NOTE: At minute 8, have JAMIE say: 'Big thanks to {name}. {copy}'"
+        sponsor_txt = f"SPONSOR DETAILS: Name: {sponsor_name}. Copy: {copy}."
 
-    # --- UPDATED PROMPT: INSTRUCTIONS FOR VOLUME/ANGER ---
     prompt = f"""
     You are the Showrunner for "The AI Edge".
-    Target Length: 15 Minutes.
+    Target Length: 15 Minutes (Minimum 2800 Words).
     
     CHARACTERS:
-    - ALEX: Main host. Optimistic, professional.
-    - JAMIE: Co-host. Skeptical, passionate, gets angry easily.
+    1. ALEX (Host): Optimistic, professional American anchor.
+    2. JAMIE (Co-host): Skeptical, passionate, critical American pundit. (USE CAPS FOR ANGER).
+    3. RUFUS (Correspondent): British/Formal accent. Reports "Law & Money".
 
     INSTRUCTIONS:
-    - Write a script formatted: ALEX: (text) / JAMIE: (text)
-    - **USE CAPS LOCK FOR EMPHASIS.** - If they are arguing, use UPPERCASE to signal loudness.
-      - Example: JAMIE: "Are you kidding? THAT IS DANGEROUS!"
-    - **Create Conflict:** Alex loves the tech. Jamie fears it. They must interrupt each other.
+    - **FORMAT:** ALEX: (text) / JAMIE: (text) / RUFUS: (text)
+    - **RUFUS:** Serious tone. Uses words like "Legislation" and "Antitrust."
     
-    STRUCTURE:
-    1. THE HOOK (1-2 mins): High energy welcome + Roadmap of topics + Catchphrase "Let's get to it."
-    2. THE HOT TAKE (6 mins): Debate the #1 story. Jamie interrupts frequently. 
-    3. AD BREAK (30 sec): Jamie reads the sponsor.
-    4. SECOND STORY (4 mins): Discuss impact on society.
-    5. SPEED ROUND (3 mins): Rapid fire headlines.
-    6. OUTRO: Quick sign off.
+    STRUCTURE & SPONSORS:
+    1. THE HOOK (2 mins): 
+       - ALEX: "Welcome back to The AI Edge!"
+       - JAMIE: Hypes the conflict.
+       - ROADMAP: Alex lists the 3 specific topics coming up.
+       - CATCHPHRASE: "Let's get to it."
+
+    2. THE HOT TAKE (5 mins): Alex & Jamie debate Story #1. Jamie interrupts frequently.
+
+    3. THE FIELD REPORT (3 mins): 
+       - Alex throws to Rufus in London.
+       - RUFUS reports on Regulation/Lawsuits.
+       - Rufus signs off "Back to you, Alex."
+
+    4. MID-ROLL AD (45 sec): 
+       - Jamie interrupts: "Hold on, quick shoutout."
+       - Jamie reads: "{sponsor_txt}"
+       - Make it sound natural.
+
+    5. SECOND STORY (3 mins): Social impact debate.
+
+    6. SPEED ROUND (2 mins): Headlines.
+
+    7. OUTRO & POST-ROLL (1 min): 
+       - Alex: "That's the Edge for today."
+       - **POST-ROLL:** Alex says: "Huge thank you to {sponsor_name} for making this show possible. Check the link in the description."
+       - JAMIE: "See ya!"
 
     RAW NEWS:
     {raw_news}
-    {sponsor_txt}
     """
 
+    # --- ATTEMPT 1: TRY PRO (High Intelligence) ---
     try:
+        print(f"Attempting generation with PRO model: {pro_model}")
+        model = genai.GenerativeModel(pro_model)
         response = model.generate_content(prompt)
-        print("Script generated successfully.")
+        print("Success with PRO model.")
         return response.text
     except Exception as e:
-        print(f"Script Generation Failed: {e}")
+        print(f"PRO model failed (likely Rate Limit): {e}")
+        print("Switching to FLASH backup...")
+    
+    # --- ATTEMPT 2: FLASH BACKUP (High Reliability) ---
+    try:
+        model = genai.GenerativeModel(flash_model)
+        response = model.generate_content(prompt)
+        print("Success with FLASH model.")
+        return response.text
+    except Exception as e:
+        print(f"CRITICAL: Both models failed. {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO (FAIL-SAFE MODE) ---
+# --- STEP 4: GENERATE AUDIO (3 VOICE SUPPORT) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -159,16 +185,19 @@ def generate_audio_openai(script_text):
         text = line.strip()
         if not text: continue 
         
-        # --- DETECT VOICE CHANGE ---
+        # --- DETECT 3 VOICES ---
         if "ALEX" in text.upper()[:10]: 
-            current_voice = "onyx"
+            current_voice = "onyx"  # Deep Male (Anchor)
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
             
         elif "JAMIE" in text.upper()[:10]:
-            current_voice = "nova"
+            current_voice = "nova"  # Energetic Female (Pundit)
             text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
             
-        # Remove asterisks but KEEP exclamation points and CAPS for emphasis
+        elif "RUFUS" in text.upper()[:10]:
+            current_voice = "fable" # British/Formal Male (Reporter)
+            text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
+            
         text = text.replace("*", "").replace("#", "")
         
         if not text or len(text) < 2: continue
