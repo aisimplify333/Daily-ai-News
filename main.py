@@ -2,7 +2,6 @@ import feedparser
 import datetime
 import os
 import asyncio
-import edge_tts
 import google.generativeai as genai
 import re
 import json
@@ -10,150 +9,188 @@ import random
 import xml.etree.ElementTree as ET
 from email.utils import formatdate
 from pydub import AudioSegment
+from openai import OpenAI
 
-# --- CONFIGURATION (FILL THESE IN!) ---
-GITHUB_USERNAME = "aisimplify333"  
+# --- CONFIGURATION (YOU MUST FILL THESE IN!) ---
+GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@gmail.COM" 
-AUTHOR_NAME = "AI_Simplify_Media"
+YOUR_EMAIL = "aisimplify333@GMAIL.COM"  # <--- Spotify NEEDS this to verify you
+AUTHOR_NAME = "AI Simplify Media"
 
-# --- EXPANDED NEWS SOURCES ---
+# --- HOST PERSONAS ---
+# Host A (Alex): The News Anchor (Voice: Onyx) - Deep, authoritative, professional.
+# Host B (Jamie): The Color Commentator (Voice: Nova) - High energy, skeptical, curious.
+
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml",
-    "https://venturebeat.com/category/ai/feed/",  # Added for Business AI
-    "https://arstechnica.com/tag/ai/feed/"        # Added for Deep Tech
+    "https://venturebeat.com/category/ai/feed/",
+    "https://arstechnica.com/tag/ai/feed/"
 ]
 
-GOOGLE_API_KEY = os.environ.get('GEMINI_API_KEY')
-VOICE = "en-US-ChristopherNeural"
+GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
+OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 TODAY = datetime.date.today()
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
-TEMP_VOICE_FILE = "temp_voice.mp3"
 SPONSORS_FILE = "sponsors.json"
 
 # --- STEP 1: GET SPONSOR ---
 def get_sponsor():
-    if not os.path.exists(SPONSORS_FILE):
-        return None
+    if not os.path.exists(SPONSORS_FILE): return None
     try:
         with open(SPONSORS_FILE, "r") as f:
             data = json.load(f)
             if data and isinstance(data, list):
-                sponsor = random.choice(data)
-                return f"Today's episode is brought to you by {sponsor.get('name')}. {sponsor.get('copy')}"
-    except Exception:
-        return None
+                return random.choice(data)
+    except: return None
     return None
 
 # --- STEP 2: GET NEWS ---
 def get_latest_news():
     print("Scanning the web for AI news...")
     news_items = []
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-    }
-
+    headers = {'User-Agent': 'Mozilla/5.0'}
     for url in RSS_FEEDS:
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
-            # Limit to 2 stories per feed to keep it focused but diverse
-            for entry in feed.entries[:2]:
-                summary = entry.summary if 'summary' in entry else entry.title
-                clean_summary = re.sub('<[^<]+?>', '', summary)
-                news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {clean_summary[:300]}")
-        except Exception as e:
-            print(f"Error reading feed {url}: {e}")
-
-    if not news_items:
-        return None
-    return "\n\n".join(news_items)
-
-# --- STEP 3: REWRITE WITH AI (STRICTER PROMPT) ---
-def rewrite_script(raw_news, sponsor_text=None):
-    if not GOOGLE_API_KEY:
-        print("Error: GEMINI_API_KEY not found.")
-        return None
-
-    genai.configure(api_key=GOOGLE_API_KEY)
+            # Grab 3 stories per feed to ensure we have enough material for 15 minutes
+            for entry in feed.entries[:3]: 
+                summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
+                news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:300]}")
+        except: pass
     
-    # Auto-detect logic
-    working_model = None
-    priority_models = ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash-lite', 'gemini-1.5-flash']
+    if not news_items: return None
+    # Shuffle and pick top 6 to ensure length and variety
+    random.shuffle(news_items)
+    return "\n\n".join(news_items[:6])
+
+# --- STEP 3: WRITE THE SCRIPT (LONG FORM 12-15 MINS) ---
+def generate_script(raw_news, sponsor):
+    if not GEMINI_API_KEY: return None
+    genai.configure(api_key=GEMINI_API_KEY)
+    
+    # Auto-detect best available Gemini model
+    model_name = 'gemini-1.5-flash' 
     try:
-        available_models = [m.name for m in genai.list_models() if 'generateContent' in m.supported_generation_methods]
-        for p_model in priority_models:
-            for av_model in available_models:
-                if p_model in av_model:
-                    working_model = av_model
-                    break
-            if working_model: break     
-        if not working_model:
-            for m in available_models:
-                if 'gemini' in m:
-                    working_model = m
-                    break
-    except Exception as e:
-        print(f"Error listing models: {e}")
-
-    if not working_model: working_model = 'gemini-1.5-flash'
+        for m in genai.list_models():
+            if 'generateContent' in m.supported_generation_methods and 'gemini' in m.name:
+                model_name = m.name
+                break
+    except: pass
     
-    print(f"Using Model: {working_model}")
-    model = genai.GenerativeModel(working_model)
+    print(f"Using Script Writer: {model_name}")
+    model = genai.GenerativeModel(model_name)
 
-    # --- UPDATED PROMPT ---
+    sponsor_txt = ""
+    if sponsor:
+        sponsor_txt = f"SPONSOR SEGMENT: Host B (Jamie) should casually mention: 'By the way, today is supported by {sponsor['name']}. {sponsor['copy']}'"
+
+    # --- THE PROMPT: DESIGNED FOR LENGTH & BANTER ---
     prompt = f"""
-    You are the host of "The AI Edge", a daily news podcast.
-    {f"MENTION SPONSOR: {sponsor_text}" if sponsor_text else ""}
+    You are the Showrunner for "The AI Edge", a daily deep-dive podcast (aiming for 12-15 minutes).
     
-    Here are today's top stories:
+    CHARACTERS:
+    - ALEX (Host A): The Insider. Professional, deep voice, explains the tech details.
+    - JAMIE (Host B): The Skeptic. High energy, asks "Why does this matter?", makes pop-culture references.
+
+    STRUCTURE:
+    1. THE HOOK: Start right in the middle of a debate about the top story.
+    2. DEEP DIVE (approx 800 words): Focus heavily on the first story. Alex explains, Jamie interrupts with questions.
+    3. AD BREAK: Jamie says: "Wait, hold on, we gotta pay the bills. Back in a sec." (This creates the ad slot).
+    4. SPEED ROUND (approx 600 words): Cover the other stories quickly.
+    5. THE TAKEAWAY: End with a practical tip for listeners.
+
+    RAW NEWS:
     {raw_news}
 
-    STRICT INSTRUCTIONS:
-    1. Write ONLY the spoken dialogue. 
-    2. DO NOT write stage directions like *intro music plays* or [End of episode].
-    3. DO NOT describe the audio. Just speak.
-    4. Start immediately with: "Welcome back to The AI Edge."
-    5. End immediately with: "That's your AI Edge for today. See you tomorrow."
-    6. Keep it professional but high energy.
+    {sponsor_txt}
+
+    FORMAT REQUIREMENTS:
+    - Output MUST be a valid JSON list of objects.
+    - Each object must have "speaker" ("Alex" or "Jamie") and "text".
+    - Example: [{{"speaker": "Alex", "text": "Welcome back."}}, {{"speaker": "Jamie", "text": "Let's dive in!"}}]
+    - Total word count aim: ~1500-1800 words.
+    - KEEP SENTENCES SHORT. No monologues. Fast banter.
     """
-    
+
     try:
-        response = model.generate_content(prompt)
-        clean_text = response.text.replace("*", "").replace("[", "").replace("]", "")
-        return clean_text
+        # Request JSON specifically to ensure the script doesn't break
+        response = model.generate_content(prompt, generation_config={"response_mime_type": "application/json"})
+        return json.loads(response.text)
     except Exception as e:
-        print(f"AI Generation Failed: {e}")
+        print(f"Script Generation Failed: {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO ---
-async def generate_audio(text):
-    print(f"Generating audio...")
-    communicate = edge_tts.Communicate(text, VOICE)
-    await communicate.save(TEMP_VOICE_FILE)
+# --- STEP 4: GENERATE AUDIO (OPENAI TTS) ---
+def generate_audio_openai(script_json):
+    if not OPENAI_API_KEY:
+        print("Error: OPENAI_API_KEY missing.")
+        return
+        
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    combined_audio = AudioSegment.empty()
     
-    print("Mixing audio...")
-    try:
-        voice = AudioSegment.from_file(TEMP_VOICE_FILE)
-        intro = AudioSegment.from_file("intro.mp3") if os.path.exists("intro.mp3") else AudioSegment.silent(1000)
-        outro = AudioSegment.from_file("outro.mp3") if os.path.exists("outro.mp3") else AudioSegment.silent(1000)
-        final = intro + voice + outro
-        final.export(OUTPUT_FILE, format="mp3")
-        print(f"DONE! Saved to {OUTPUT_FILE}")
-    except Exception as e:
-        print(f"Audio mixing error: {e}")
+    print(f"Generating audio for {len(script_json)} lines...")
+    
+    for i, line in enumerate(script_json):
+        speaker = line.get("speaker", "Alex")
+        text = line.get("text", "")
+        if not text: continue
+        
+        # Voice Selection
+        # Onyx = Deep, American Male (Alex)
+        # Nova = Energetic, American Female (Jamie)
+        voice_id = "onyx" if "Alex" in speaker else "nova"
+        
+        try:
+            # Generate speech
+            response = client.audio.speech.create(
+                model="tts-1",
+                voice=voice_id,
+                input=text
+            )
+            
+            # Save temp chunk
+            chunk_file = f"chunk_{i}.mp3"
+            response.stream_to_file(chunk_file)
+            
+            # Add to main track
+            audio_chunk = AudioSegment.from_file(chunk_file)
+            combined_audio += audio_chunk
+            
+            # Add small pause between speakers for realism (300ms)
+            # This eliminates "Robot Silence" but keeps them distinct
+            combined_audio += AudioSegment.silent(duration=300)
+            
+            # Clean up chunk
+            os.remove(chunk_file)
+            
+        except Exception as e:
+            print(f"Error generating line {i}: {e}")
 
-# --- STEP 5: GENERATE RSS FEED ---
+    # Mix with Intro/Outro
+    print("Mixing final track...")
+    if os.path.exists("intro.mp3"):
+        intro = AudioSegment.from_file("intro.mp3")
+        combined_audio = intro + combined_audio
+        
+    if os.path.exists("outro.mp3"):
+        outro = AudioSegment.from_file("outro.mp3")
+        combined_audio += outro
+
+    combined_audio.export(OUTPUT_FILE, format="mp3")
+    print(f"Success! Podcast saved to {OUTPUT_FILE}")
+
+# --- STEP 5: RSS FEED ---
 def generate_rss_feed():
-    print("Generating feed.xml...")
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
     
-    ET.SubElement(channel, "title").text = "The AI Edge: Daily News"
-    ET.SubElement(channel, "description").text = "Your daily dose of AI news, generated by AI."
+    ET.SubElement(channel, "title").text = "The AI Edge: Daily Deep Dive"
+    ET.SubElement(channel, "description").text = "Daily AI news, debated and decoded."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
     ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
@@ -168,34 +205,30 @@ def generate_rss_feed():
     category = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}category")
     category.set("text", "Technology")
 
-    for filename in sorted(os.listdir("."), reverse=True): # Reverse so newest is top
+    for filename in sorted(os.listdir("."), reverse=True):
         if filename.endswith(".mp3") and filename.startswith("podcast_"):
             item = ET.SubElement(channel, "item")
             ET.SubElement(item, "title").text = f"AI News: {filename.replace('podcast_', '').replace('.mp3', '')}"
-            ET.SubElement(item, "description").text = "Today's top AI stories."
+            ET.SubElement(item, "description").text = "Today's top stories, discussed."
             ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
             ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
             try:
-                date_str = filename.replace("podcast_", "").replace(".mp3", "")
-                pub_date = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-                ET.SubElement(item, "pubDate").text = formatdate(pub_date.timestamp())
-            except:
-                pass
+                dt = datetime.datetime.strptime(filename.replace("podcast_", "").replace(".mp3", ""), "%Y-%m-%d")
+                ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
+            except: pass
 
     tree = ET.ElementTree(rss)
     ET.indent(tree, space="  ", level=0)
     tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
-    print("feed.xml created successfully!")
 
 # --- MAIN ---
 if __name__ == "__main__":
     news = get_latest_news()
     sponsor = get_sponsor()
     if news:
-        script = rewrite_script(news, sponsor)
+        script = generate_script(news, sponsor)
         if script:
-            loop = asyncio.get_event_loop_policy().get_event_loop()
-            loop.run_until_complete(generate_audio(script))
-            generate_rss_feed() 
+            generate_audio_openai(script)
+            generate_rss_feed()
     else:
         print("No news found.")
