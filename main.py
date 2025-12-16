@@ -22,7 +22,8 @@ RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml",
     "https://venturebeat.com/category/ai/feed/",
-    "https://arstechnica.com/tag/ai/feed/"
+    "https://arstechnica.com/tag/ai/feed/",
+    "https://www.wired.com/feed/category/ai/latest/rss"
 ]
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -58,24 +59,17 @@ def get_latest_news():
     
     if not news_items: return None
     random.shuffle(news_items)
-    return "\n\n".join(news_items[:8])
+    return "\n\n".join(news_items[:10])
 
-# --- STEP 3: WRITE THE SCRIPT (TEXT MODE - ROBUST) ---
+# --- STEP 3: WRITE THE SCRIPT (TEXT MODE) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
     genai.configure(api_key=GEMINI_API_KEY)
     
+    # Use Flash for speed and context window
     model_name = 'gemini-1.5-flash' 
-    try:
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods and 'gemini' in m.name:
-                model_name = m.name
-                break
-    except: pass
-    
-    print(f"Using Script Writer: {model_name}")
     model = genai.GenerativeModel(model_name)
 
     sponsor_txt = ""
@@ -84,29 +78,27 @@ def generate_script(raw_news, sponsor):
         copy = sponsor.get('copy', 'Link in bio.')
         sponsor_txt = f"NOTE: At minute 8, have JAMIE say: 'Big thanks to {name}. {copy}'"
 
-    # --- THE ROBUST PROMPT ---
+    # --- PROMPT: FOCUS ON LENGTH AND FORMAT ---
     prompt = f"""
     You are the Showrunner for "The AI Edge".
-    Target Length: 15 Minutes (approx 2000-2500 words).
+    Target Length: 15 Minutes (approx 2000+ words).
     
     CHARACTERS:
-    - ALEX: Main host. Deep, professional, hype.
-    - JAMIE: Co-host. Skeptical, funny, high energy.
+    - ALEX: Main host. Deep voice.
+    - JAMIE: Co-host. High energy, interrupts.
 
     INSTRUCTIONS:
     - Write a long, deep-dive podcast script.
-    - Format it EXACTLY like a play script:
-      ALEX: Text here.
-      JAMIE: Text here.
-    - Do NOT use asterisks ** or stage directions (like *laughs*).
-    - Just the names and the dialogue.
+    - Format it like a play: "ALEX: text" and "JAMIE: text".
+    - You may use **bold** or (parentheses), the system handles it.
     
     STRUCTURE:
-    1. INTRO: High energy welcome.
-    2. DEEP DIVE: Debate the #1 story for 5 minutes.
-    3. AD BREAK: Jamie reads the sponsor.
-    4. SECOND STORY: Discuss the impact on jobs/society.
-    5. OUTRO: Quick sign off.
+    1. INTRO (1 min): High energy.
+    2. DEEP DIVE (6 mins): Debate the #1 story.
+    3. AD BREAK (30 sec): Jamie reads the sponsor.
+    4. SECOND STORY (4 mins): Discuss impact.
+    5. SPEED ROUND (3 mins): Headlines.
+    6. OUTRO: Sign off.
 
     RAW NEWS:
     {raw_news}
@@ -114,14 +106,14 @@ def generate_script(raw_news, sponsor):
     """
 
     try:
-        # We ask for PLAIN TEXT now, not JSON. Much safer.
         response = model.generate_content(prompt)
+        print(f"Script generated! Length: {len(response.text)} chars") # Debug print
         return response.text
     except Exception as e:
         print(f"Script Generation Failed: {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO (TEXT PARSER) ---
+# --- STEP 4: GENERATE AUDIO (UNIVERSAL PARSER) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -130,21 +122,25 @@ def generate_audio_openai(script_text):
     client = OpenAI(api_key=OPENAI_API_KEY)
     combined_audio = AudioSegment.empty()
     
-    # Parse the script line by line
-    lines = script_text.split('\n')
-    print(f"Processing {len(lines)} lines of script...")
+    # Clean the text to remove asterisks which confuse TTS
+    clean_text = script_text.replace("*", "")
+    lines = clean_text.split('\n')
+    print(f"Processing {len(lines)} lines...")
     
     count = 0
     for line in lines:
-        if ":" not in line: continue # Skip empty lines or stage directions
+        # Regex to find "Alex:" or "Jamie:" with any punctuation/spacing
+        # Matches: "Alex:", "ALEX:", "  Jamie says:", "Alex (Host):"
+        match = re.match(r'^\s*(Alex|Jamie).*?[:](.*)', line, re.IGNORECASE)
         
-        parts = line.split(":", 1)
-        if len(parts) < 2: continue
-        
-        speaker_name = parts[0].strip().upper()
-        text = parts[1].strip()
+        if not match:
+            continue # Skip stage directions or empty lines
+            
+        speaker_name = match.group(1).upper() # "ALEX" or "JAMIE"
+        text = match.group(2).strip() # The spoken text
         
         if not text: continue
+        if len(text) < 2: continue # Skip noise
         
         # Decide Voice
         if "ALEX" in speaker_name:
@@ -152,7 +148,7 @@ def generate_audio_openai(script_text):
         elif "JAMIE" in speaker_name:
             voice_id = "nova"
         else:
-            continue # Skip unknown speakers
+            continue 
             
         try:
             response = client.audio.speech.create(
@@ -170,10 +166,16 @@ def generate_audio_openai(script_text):
             
             os.remove(chunk_file)
             count += 1
-            if count % 10 == 0: print(f"Generated {count} lines...")
+            if count % 5 == 0: print(f"Generated {count} lines...")
             
         except Exception as e:
             print(f"Error on line {count}: {e}")
+
+    # If we processed 0 lines, something is wrong with the script format
+    if count == 0:
+        print("WARNING: 0 lines of audio generated. Check script formatting.")
+        print("Sample of script:", script_text[:500])
+        return
 
     print("Mixing final track...")
     if os.path.exists("intro.mp3"):
