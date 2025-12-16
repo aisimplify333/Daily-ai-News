@@ -61,31 +61,15 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:10])
 
-# --- STEP 3: WRITE THE SCRIPT (AUTO-DETECT MODEL) ---
+# --- STEP 3: WRITE THE SCRIPT (HARDCODED RELIABLE MODEL) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
         return None
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # --- AUTO-DETECT LOGIC (Restored) ---
-    model_name = None
-    try:
-        print("Listing available Gemini models...")
-        for m in genai.list_models():
-            if 'generateContent' in m.supported_generation_methods:
-                if 'gemini' in m.name:
-                    model_name = m.name
-                    # Prefer flash if available, otherwise take the first gemini found
-                    if 'flash' in m.name:
-                        break
-    except Exception as e:
-        print(f"Error listing models: {e}")
-
-    # Fallback if list fails (try standard pro)
-    if not model_name: 
-        model_name = 'models/gemini-pro'
-    
+    # --- THE FIX: USE THE STABLE MODEL (1500 req/day limit) ---
+    model_name = 'gemini-1.5-flash' 
     print(f"Using Script Writer: {model_name}")
     model = genai.GenerativeModel(model_name)
 
@@ -157,9 +141,6 @@ def generate_audio_openai(script_text):
         if not text: continue # Skip empty lines
         
         # --- DETECT VOICE CHANGE ---
-        # If we see a name, switch the voice. 
-        # If NOT, keep using the current voice and read the text.
-        
         if "ALEX" in text.upper()[:10]: 
             current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
