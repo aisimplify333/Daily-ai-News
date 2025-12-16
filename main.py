@@ -15,9 +15,9 @@ from openai import OpenAI
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI Simplify Media"
+AUTHOR_NAME = "AI SImplify Media"
 
-# --- HOST PERSONAS ---
+# --- CONFIGURATION ---
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml",
@@ -68,9 +68,7 @@ def generate_script(raw_news, sponsor):
         return None
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # Use Flash for speed and context window
-    model_name = 'gemini-1.5-flash' 
-    model = genai.GenerativeModel(model_name)
+    model = genai.GenerativeModel('gemini-1.5-flash')
 
     sponsor_txt = ""
     if sponsor:
@@ -78,7 +76,7 @@ def generate_script(raw_news, sponsor):
         copy = sponsor.get('copy', 'Link in bio.')
         sponsor_txt = f"NOTE: At minute 8, have JAMIE say: 'Big thanks to {name}. {copy}'"
 
-    # --- PROMPT: FOCUS ON LENGTH AND FORMAT ---
+    # --- PROMPT ---
     prompt = f"""
     You are the Showrunner for "The AI Edge".
     Target Length: 15 Minutes (approx 2000+ words).
@@ -90,7 +88,7 @@ def generate_script(raw_news, sponsor):
     INSTRUCTIONS:
     - Write a long, deep-dive podcast script.
     - Format it like a play: "ALEX: text" and "JAMIE: text".
-    - You may use **bold** or (parentheses), the system handles it.
+    - Do NOT use Markdown bolding (**). 
     
     STRUCTURE:
     1. INTRO (1 min): High energy.
@@ -107,13 +105,17 @@ def generate_script(raw_news, sponsor):
 
     try:
         response = model.generate_content(prompt)
-        print(f"Script generated! Length: {len(response.text)} chars") # Debug print
+        print("Script generated successfully.")
+        # --- DEBUGGING: PRINT THE SCRIPT TO LOGS ---
+        print("="*30)
+        print(f"DEBUG SCRIPT PREVIEW:\n{response.text[:1000]}")
+        print("="*30)
         return response.text
     except Exception as e:
         print(f"Script Generation Failed: {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO (UNIVERSAL PARSER) ---
+# --- STEP 4: GENERATE AUDIO (FAIL-SAFE MODE) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -122,38 +124,42 @@ def generate_audio_openai(script_text):
     client = OpenAI(api_key=OPENAI_API_KEY)
     combined_audio = AudioSegment.empty()
     
-    # Clean the text to remove asterisks which confuse TTS
-    clean_text = script_text.replace("*", "")
-    lines = clean_text.split('\n')
+    lines = script_text.split('\n')
     print(f"Processing {len(lines)} lines...")
+    
+    # DEFAULT VOICE (Start with Alex)
+    current_voice = "onyx" 
     
     count = 0
     for line in lines:
-        # Regex to find "Alex:" or "Jamie:" with any punctuation/spacing
-        # Matches: "Alex:", "ALEX:", "  Jamie says:", "Alex (Host):"
-        match = re.match(r'^\s*(Alex|Jamie).*?[:](.*)', line, re.IGNORECASE)
+        text = line.strip()
+        if not text: continue # Skip empty lines
         
-        if not match:
-            continue # Skip stage directions or empty lines
+        # --- THE FIX: DETECT VOICE CHANGE ---
+        # If we see a name, switch the voice. 
+        # If NOT, keep using the current voice and read the text.
+        
+        # Check for Alex
+        if "ALEX" in text.upper()[:10]: # Look for name in first 10 chars
+            current_voice = "onyx"
+            # Remove the name tag so we don't speak it
+            text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
             
-        speaker_name = match.group(1).upper() # "ALEX" or "JAMIE"
-        text = match.group(2).strip() # The spoken text
+        # Check for Jamie
+        elif "JAMIE" in text.upper()[:10]:
+            current_voice = "nova"
+            text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
+            
+        # Clean up weird markdown if it exists
+        text = text.replace("*", "").replace("#", "")
         
-        if not text: continue
-        if len(text) < 2: continue # Skip noise
-        
-        # Decide Voice
-        if "ALEX" in speaker_name:
-            voice_id = "onyx"
-        elif "JAMIE" in speaker_name:
-            voice_id = "nova"
-        else:
-            continue 
+        # If the line was JUST a name tag (e.g. "ALEX:"), skip it
+        if not text or len(text) < 2: continue
             
         try:
             response = client.audio.speech.create(
                 model="tts-1",
-                voice=voice_id,
+                voice=current_voice,
                 input=text
             )
             
@@ -162,7 +168,7 @@ def generate_audio_openai(script_text):
             
             audio_chunk = AudioSegment.from_file(chunk_file)
             combined_audio += audio_chunk
-            combined_audio += AudioSegment.silent(duration=100) # Snappy pacing
+            combined_audio += AudioSegment.silent(duration=150) 
             
             os.remove(chunk_file)
             count += 1
@@ -170,12 +176,6 @@ def generate_audio_openai(script_text):
             
         except Exception as e:
             print(f"Error on line {count}: {e}")
-
-    # If we processed 0 lines, something is wrong with the script format
-    if count == 0:
-        print("WARNING: 0 lines of audio generated. Check script formatting.")
-        print("Sample of script:", script_text[:500])
-        return
 
     print("Mixing final track...")
     if os.path.exists("intro.mp3"):
