@@ -18,6 +18,8 @@ import re
 import json
 import feedparser
 import datetime
+# CRITICAL: THIS WAS MISSING
+import xml.etree.ElementTree as ET 
 from email.utils import formatdate
 from pydub import AudioSegment
 from openai import OpenAI
@@ -33,7 +35,7 @@ except ImportError:
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI Smplify Media"
+AUTHOR_NAME = "AI Simplify Media"
 
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
@@ -79,48 +81,38 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:12]) 
 
-# --- CRITICAL: DYNAMIC MODEL FINDER ---
+# --- DYNAMIC MODEL FINDER ---
 def find_best_model(client):
     print("--- DIAGNOSTIC: LISTING AVAILABLE MODELS ---")
     valid_model = None
     try:
-        # We ask the API what models it has
         all_models = list(client.models.list())
         for m in all_models:
-            # The name usually comes back as 'models/gemini-1.5-flash-001'
             name = m.name
             print(f"Found: {name}") 
-            
-            # LOGIC: Prefer 1.5 Flash (Fast/Cheap), then 1.5 Pro, then 1.0 Pro
-            if "gemini-1.5-flash" in name and "latest" not in name:
+            # Logic: We prefer Flash 2.5 or 1.5 if available
+            if "gemini-2.5-flash" in name:
                 valid_model = name
-                # Keep looking just in case we find a better match, but store this
-            
-        # If we didn't find Flash, look for Pro
+            elif "gemini-1.5-flash" in name and not valid_model:
+                valid_model = name
+        
+        # Fallback to Pro if no Flash found
         if not valid_model:
             for m in all_models:
                 if "gemini-1.5-pro" in m.name:
-                    valid_model = m.name
-                    break
-        
-        # If we still have nothing, take ANYTHING that says gemini
-        if not valid_model:
-            for m in all_models:
-                if "gemini" in m.name and "vision" not in m.name:
                     valid_model = m.name
                     break
                     
     except Exception as e:
         print(f"Error listing models: {e}")
     
-    # Clean the name (New SDK sometimes hates the 'models/' prefix)
     if valid_model and valid_model.startswith("models/"):
         valid_model = valid_model.replace("models/", "")
         
     print(f"--- SELECTED MODEL: {valid_model} ---")
     return valid_model
 
-# --- MAIN SCRIPT GENERATOR ---
+# --- SCRIPT GENERATOR ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: 
         print("Error: Gemini Key Missing")
@@ -133,13 +125,11 @@ def generate_script(raw_news, sponsor):
         print(f"Client Init Error: {e}")
         return None
 
-    # FIND THE MODEL DYNAMICALLY
     target_model = find_best_model(client)
     if not target_model:
-        print("CRITICAL: No valid Gemini models found for this API key.")
+        print("CRITICAL: No valid Gemini models found.")
         return None
 
-    # SPONSOR
     sponsor_txt = "our amazing sponsors"
     if sponsor:
         sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
@@ -216,13 +206,15 @@ def generate_audio_openai(script_text):
         if not text or len(text) < 2: continue
             
         try:
-            response = client.audio.speech.create(
+            # FIXED: Updated syntax to remove deprecation warnings
+            with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice=current_voice,
                 input=text
-            )
-            chunk_file = f"chunk_{count}.mp3"
-            response.stream_to_file(chunk_file)
+            ) as response:
+                chunk_file = f"chunk_{count}.mp3"
+                response.stream_to_file(chunk_file)
+                
             audio_chunk = AudioSegment.from_file(chunk_file)
             combined_audio += audio_chunk
             combined_audio += AudioSegment.silent(duration=150) 
