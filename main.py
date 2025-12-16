@@ -18,8 +18,7 @@ import re
 import json
 import feedparser
 import datetime
-# CRITICAL: THIS WAS MISSING
-import xml.etree.ElementTree as ET 
+import xml.etree.ElementTree as ET  # <--- CRITICAL FIX FOR RSS CRASH
 from email.utils import formatdate
 from pydub import AudioSegment
 from openai import OpenAI
@@ -81,34 +80,38 @@ def get_latest_news():
     random.shuffle(news_items)
     return "\n\n".join(news_items[:12]) 
 
-# --- DYNAMIC MODEL FINDER ---
+# --- CRITICAL: PRECISE MODEL FINDER ---
 def find_best_model(client):
     print("--- DIAGNOSTIC: LISTING AVAILABLE MODELS ---")
     valid_model = None
     try:
         all_models = list(client.models.list())
-        for m in all_models:
-            name = m.name
-            print(f"Found: {name}") 
-            # Logic: We prefer Flash 2.5 or 1.5 if available
-            if "gemini-2.5-flash" in name:
-                valid_model = name
-            elif "gemini-1.5-flash" in name and not valid_model:
-                valid_model = name
+        # We define a strict priority list based on what we saw in your logs
+        priority_list = [
+            "gemini-2.5-flash",       # Top choice (Fast & New)
+            "gemini-2.0-flash",       # Backup
+            "gemini-1.5-flash",       # Reliable classic
+            "gemini-flash-latest"     # Generic fallback
+        ]
         
-        # Fallback to Pro if no Flash found
+        available_names = [m.name.replace("models/", "") for m in all_models]
+        
+        # Check priority list against available models
+        for target in priority_list:
+            if target in available_names:
+                valid_model = target
+                break
+        
+        # Fallback: If exact match fails, find ANY flash model that isn't audio/vision
         if not valid_model:
-            for m in all_models:
-                if "gemini-1.5-pro" in m.name:
-                    valid_model = m.name
+            for name in available_names:
+                if "flash" in name and "audio" not in name and "vision" not in name and "image" not in name:
+                    valid_model = name
                     break
                     
     except Exception as e:
         print(f"Error listing models: {e}")
     
-    if valid_model and valid_model.startswith("models/"):
-        valid_model = valid_model.replace("models/", "")
-        
     print(f"--- SELECTED MODEL: {valid_model} ---")
     return valid_model
 
@@ -206,7 +209,7 @@ def generate_audio_openai(script_text):
         if not text or len(text) < 2: continue
             
         try:
-            # FIXED: Updated syntax to remove deprecation warnings
+            # FIXED: Syntax update
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice=current_voice,
@@ -236,6 +239,7 @@ def generate_audio_openai(script_text):
 # --- RSS FEED ---
 def generate_rss_feed():
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
+    # This ET definition was missing in the 7-minute run, causing the final crash
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
