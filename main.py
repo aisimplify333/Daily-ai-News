@@ -11,21 +11,24 @@ from email.utils import formatdate
 from pydub import AudioSegment
 from openai import OpenAI
 
-# --- CONFIGURATION (YOU MUST FILL THESE IN!) ---
+# --- CONFIGURATION (FILL THESE IN!) ---
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
+YOUR_EMAIL = "aisimplyfi333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media"
 
 # --- HOST PERSONAS ---
-# Host A (Alex): The News Anchor (Voice: Onyx)
-# Host B (Jamie): The Color Commentator (Voice: Nova)
+# Host A (Alex): The News Anchor (Voice: Onyx) - Deep, authoritative, driving the show.
+# Host B (Jamie): The Color Commentator (Voice: Nova) - High energy, asks the "dumb" questions, interrupts.
 
+# --- EXPANDED SOURCES FOR LENGTH ---
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://www.theverge.com/rss/artificial-intelligence/index.xml",
     "https://venturebeat.com/category/ai/feed/",
-    "https://arstechnica.com/tag/ai/feed/"
+    "https://arstechnica.com/tag/ai/feed/",
+    "https://www.wired.com/feed/category/ai/latest/rss",      # Added for depth
+    "https://www.technologyreview.com/feed/topic/artificial-intelligence/" # Added for analysis
 ]
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -45,7 +48,7 @@ def get_sponsor():
     except: return None
     return None
 
-# --- STEP 2: GET NEWS ---
+# --- STEP 2: GET NEWS (Expanded Collection) ---
 def get_latest_news():
     print("Scanning the web for AI news...")
     news_items = []
@@ -54,16 +57,18 @@ def get_latest_news():
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
-            for entry in feed.entries[:3]: 
+            # Take top 4 stories from EACH feed to ensure massive content pool
+            for entry in feed.entries[:4]: 
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
-                news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:300]}")
+                news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:500]}")
         except: pass
     
     if not news_items: return None
     random.shuffle(news_items)
-    return "\n\n".join(news_items[:6])
+    # Return a huge chunk of text (top 10 stories) so the AI has plenty to talk about
+    return "\n\n".join(news_items[:10])
 
-# --- STEP 3: WRITE THE SCRIPT (CRASH PROOF UPDATE) ---
+# --- STEP 3: WRITE THE SCRIPT (EXTENDED CUT) ---
 def generate_script(raw_news, sponsor):
     if not GEMINI_API_KEY: return None
     genai.configure(api_key=GEMINI_API_KEY)
@@ -79,27 +84,28 @@ def generate_script(raw_news, sponsor):
     print(f"Using Script Writer: {model_name}")
     model = genai.GenerativeModel(model_name)
 
-    # --- THE FIX IS HERE ---
     sponsor_txt = ""
     if sponsor:
-        # We use .get() now. If 'copy' is missing, it defaults to a generic message.
         sponsor_name = sponsor.get('name', 'Our Sponsors')
-        sponsor_copy = sponsor.get('copy', 'Check out the link in the description.')
-        sponsor_txt = f"SPONSOR SEGMENT: Host B (Jamie) should casually mention: 'By the way, today is supported by {sponsor_name}. {sponsor_copy}'"
+        sponsor_copy = sponsor.get('copy', 'Check the link in the description.')
+        sponsor_txt = f"SPONSOR SEGMENT: At the 8-minute mark, Jamie interrupts: 'Wait, real quick—shoutout to {sponsor_name}. {sponsor_copy}'"
 
+    # --- THE "EXTENDED CUT" PROMPT ---
     prompt = f"""
-    You are the Showrunner for "The AI Edge", a daily deep-dive podcast (aiming for 12-15 minutes).
+    You are the Showrunner for "The AI Edge".
+    Target Duration: 15 Minutes.
     
     CHARACTERS:
-    - ALEX (Host A): The Insider. Professional, deep voice.
-    - JAMIE (Host B): The Skeptic. High energy, curious, asks questions.
+    - ALEX (Host A): Professional, hype, leads the conversation.
+    - JAMIE (Host B): Skeptical, funny, interrupts often, plays "Devil's Advocate".
 
-    STRUCTURE:
-    1. THE HOOK: Start right in the middle of a debate about the top story.
-    2. DEEP DIVE (approx 800 words): Focus heavily on the first story. Alex explains, Jamie interrupts.
-    3. AD BREAK: Jamie says: "Wait, hold on, we gotta pay the bills. Back in a sec."
-    4. SPEED ROUND (approx 600 words): Cover the other stories quickly.
-    5. THE TAKEAWAY: End with a practical tip.
+    STRUCTURE (Do not rush!):
+    1. INTRO (1 min): High energy. "Welcome back to the Edge!" Jamie is hyped.
+    2. THE DEEP DIVE (6 mins): Pick ONE massive story. Alex explains it. Jamie CHALLENGES it. Debate the ethics/future. 
+    3. THE AD BREAK (30 sec): Jamie does the sponsor read.
+    4. THE SECOND ANGLE (4 mins): Pick a second story. Discuss why it matters for regular people.
+    5. SPEED ROUND (3 mins): Rapid fire headlines.
+    6. OUTRO (30 sec): "That's the Edge."
 
     RAW NEWS:
     {raw_news}
@@ -108,10 +114,9 @@ def generate_script(raw_news, sponsor):
 
     FORMAT REQUIREMENTS:
     - Output MUST be a valid JSON list of objects.
-    - Each object must have "speaker" ("Alex" or "Jamie") and "text".
-    - Example: [{{"speaker": "Alex", "text": "Welcome back."}}, {{"speaker": "Jamie", "text": "Let's dive in!"}}]
-    - Total word count aim: ~1500-1800 words.
-    - KEEP SENTENCES SHORT. No monologues. Fast banter.
+    - Example: [{{"speaker": "Alex", "text": "Welcome back!"}}, {{"speaker": "Jamie", "text": "Let's go!"}}]
+    - TONE: High Energy! Fast banter!
+    - **CRITICAL: Generate at least 2500 words.** Do not summarize. Elaborate and speculate.
     """
 
     try:
@@ -121,7 +126,7 @@ def generate_script(raw_news, sponsor):
         print(f"Script Generation Failed: {e}")
         return None
 
-# --- STEP 4: GENERATE AUDIO (OPENAI TTS) ---
+# --- STEP 4: GENERATE AUDIO (HIGH ENERGY MIX) ---
 def generate_audio_openai(script_json):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -151,7 +156,9 @@ def generate_audio_openai(script_json):
             
             audio_chunk = AudioSegment.from_file(chunk_file)
             combined_audio += audio_chunk
-            combined_audio += AudioSegment.silent(duration=300)
+            
+            # SNAPPIER TIMING (100ms)
+            combined_audio += AudioSegment.silent(duration=100)
             
             os.remove(chunk_file)
             
