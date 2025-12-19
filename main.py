@@ -2,7 +2,6 @@ import subprocess
 import sys
 
 # --- STEP 0: INSTALL NEW GOOGLE SDK ---
-# Forces the runner to use the latest Google tools to avoid "Deprecation" errors
 def install_sdk():
     try:
         print("Installing Google GenAI SDK...")
@@ -19,7 +18,6 @@ import re
 import json
 import feedparser
 import datetime
-# CRITICAL FIX: Prevents the RSS generation crash
 import xml.etree.ElementTree as ET 
 from email.utils import formatdate
 from pydub import AudioSegment
@@ -84,9 +82,6 @@ def get_latest_news():
 
 # --- CRITICAL: ROBUST MODEL SELECTOR ---
 def generate_content_with_retry(client, prompt):
-    # We try these models in order. 
-    # Logic: Start with the most reliable "Workhorse" (1.5 Flash)
-    # Then try others if that fails.
     model_priority = [
         "gemini-1.5-flash", 
         "gemini-2.0-flash", 
@@ -159,7 +154,7 @@ def generate_script(raw_news, sponsor):
     """
     return generate_content_with_retry(client, prompt)
 
-# --- AUDIO GENERATION (WITH SMART FILTER & SPEED BOOST) ---
+# --- AUDIO GENERATION (AGGRESSIVE CLEANING) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -174,35 +169,46 @@ def generate_audio_openai(script_text):
     current_voice = "onyx" 
     count = 0
     
-    # --- LIST OF FORBIDDEN PHRASES (Expanded) ---
-    # We will skip any line that contains these keywords
-    forbidden_headers = [
-        "STRUCTURE:", "HOOK:", "DEEP DIVE:", "FIELD REPORT:", 
-        "MID-ROLL:", "STORY 2:", "SPEED ROUND:", "OUTRO:", "RAW NEWS:",
-        "WORD COUNT", "SHOW WORDS", "END OF SCRIPT"
+    # --- AGGRESSIVE KEYWORD LIST ---
+    # Any line containing these is instantly deleted
+    forbidden_keywords = [
+        "STRUCTURE", "HOOK", "DEEP DIVE", "FIELD REPORT", 
+        "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO", "RAW NEWS",
+        "WORD COUNT", "SHOW WORDS", "END OF SCRIPT", "SIGNOFF",
+        "STORY#2", "STORY #2", "SIGN OFF"
     ]
     
     for line in lines:
         text = line.strip()
         if not text: continue 
         
-        # --- FILTER 1: Skip Numbered Lists (e.g., "1. HOOK") ---
-        if re.match(r'^\d+\.', text): 
-            print(f"Skipping structural line: {text}")
-            continue
-            
-        # --- FILTER 2: Skip Structure Headers & Metadata ---
+        # --- PRE-SCRUB: REMOVE MARKDOWN ARTIFACTS ---
+        # This fixes lines like "**2. Deep Dive**" by turning them into "2. Deep Dive"
+        text = text.replace("*", "").replace("#", "").strip()
+        
         upper_text = text.upper()
-        if any(header in upper_text for header in forbidden_headers):
-            print(f"Skipping header/meta line: {text}")
+
+        # --- FILTER 1: Numbered Structure Lines (1. Hook, 2. Deep Dive) ---
+        # If it starts with a number AND has a structure keyword, kill it.
+        is_numbered = re.match(r'^\d+[\.\)]', text)
+        if is_numbered:
+            # Check if it contains any forbidden keyword or duration time like (5 min)
+            if any(k in upper_text for k in forbidden_keywords) or "MIN)" in upper_text:
+                print(f"Skipping numbered structure: {text}")
+                continue
+
+        # --- FILTER 2: General Keyword Check ---
+        # Even if not numbered, if it says "DEEP DIVE:", kill it.
+        if any(upper_text.startswith(k) for k in forbidden_keywords):
+            print(f"Skipping header line: {text}")
             continue
             
-        # --- FILTER 3: Skip Parentheticals like (laughs) ---
+        # --- FILTER 3: Parentheticals ---
         if text.startswith("(") and text.endswith(")"):
             print(f"Skipping action line: {text}")
             continue
 
-        # --- DETECT SPEAKER AND STRIP NAME ---
+        # --- DETECT SPEAKER ---
         if "ALEX" in upper_text[:10]: 
             current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
@@ -213,19 +219,18 @@ def generate_audio_openai(script_text):
             current_voice = "fable"
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
             
-        # Clean up remaining markdown
+        # Clean up remaining artifacts
         text = text.replace("*", "").replace("#", "")
         
-        # If nothing is left after cleaning, skip it
         if not text or len(text) < 2: continue
             
         try:
-            # Generate the audio with SPEED BOOST (1.1x)
+            # Generate with 1.1x Speed
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice=current_voice,
                 input=text,
-                speed=1.1  # <--- NEW: Makes it sound energetic/human
+                speed=1.1
             ) as response:
                 chunk_file = f"chunk_{count}.mp3"
                 response.stream_to_file(chunk_file)
