@@ -2,6 +2,7 @@ import subprocess
 import sys
 
 # --- STEP 0: INSTALL NEW GOOGLE SDK ---
+# Forces the runner to use the latest Google tools to avoid "Deprecation" errors
 def install_sdk():
     try:
         print("Installing Google GenAI SDK...")
@@ -18,7 +19,7 @@ import re
 import json
 import feedparser
 import datetime
-# CRITICAL FIX: This import prevents the RSS crash at the end
+# CRITICAL FIX: Prevents the RSS generation crash
 import xml.etree.ElementTree as ET 
 from email.utils import formatdate
 from pydub import AudioSegment
@@ -84,9 +85,8 @@ def get_latest_news():
 # --- CRITICAL: ROBUST MODEL SELECTOR ---
 def generate_content_with_retry(client, prompt):
     # We try these models in order. 
-    # 1. gemini-1.5-flash: Best balance of speed/quota (1500 req/day)
-    # 2. gemini-2.0-flash: Newer, good fallback
-    # 3. gemini-flash-latest: The "whatever works" option
+    # Logic: Start with the most reliable "Workhorse" (1.5 Flash)
+    # Then try others if that fails.
     model_priority = [
         "gemini-1.5-flash", 
         "gemini-2.0-flash", 
@@ -103,7 +103,6 @@ def generate_content_with_retry(client, prompt):
             print(f"SUCCESS with {model_name}!")
             return response.text
         except Exception as e:
-            # Check for Quota (429) or Not Found (404)
             error_str = str(e)
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
                 print(f"⚠️ Quota exceeded for {model_name}. Switching to backup...")
@@ -111,8 +110,6 @@ def generate_content_with_retry(client, prompt):
                 print(f"⚠️ Model {model_name} not found. Switching to backup...")
             else:
                 print(f"❌ Error with {model_name}: {e}")
-            
-            # Continue to the next model in the loop
             continue
             
     return None
@@ -130,7 +127,6 @@ def generate_script(raw_news, sponsor):
         print(f"Client Init Error: {e}")
         return None
 
-    # SPONSOR
     sponsor_txt = "our amazing sponsors"
     if sponsor:
         sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
@@ -161,11 +157,9 @@ def generate_script(raw_news, sponsor):
     RAW NEWS:
     {raw_news}
     """
-
-    # Use the new Robust Selector
     return generate_content_with_retry(client, prompt)
 
-# --- AUDIO GENERATION ---
+# --- AUDIO GENERATION (WITH SMART FILTER & SPEED BOOST) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -180,29 +174,58 @@ def generate_audio_openai(script_text):
     current_voice = "onyx" 
     count = 0
     
+    # --- LIST OF FORBIDDEN PHRASES (Expanded) ---
+    # We will skip any line that contains these keywords
+    forbidden_headers = [
+        "STRUCTURE:", "HOOK:", "DEEP DIVE:", "FIELD REPORT:", 
+        "MID-ROLL:", "STORY 2:", "SPEED ROUND:", "OUTRO:", "RAW NEWS:",
+        "WORD COUNT", "SHOW WORDS", "END OF SCRIPT"
+    ]
+    
     for line in lines:
         text = line.strip()
         if not text: continue 
         
-        if "ALEX" in text.upper()[:10]: 
+        # --- FILTER 1: Skip Numbered Lists (e.g., "1. HOOK") ---
+        if re.match(r'^\d+\.', text): 
+            print(f"Skipping structural line: {text}")
+            continue
+            
+        # --- FILTER 2: Skip Structure Headers & Metadata ---
+        upper_text = text.upper()
+        if any(header in upper_text for header in forbidden_headers):
+            print(f"Skipping header/meta line: {text}")
+            continue
+            
+        # --- FILTER 3: Skip Parentheticals like (laughs) ---
+        if text.startswith("(") and text.endswith(")"):
+            print(f"Skipping action line: {text}")
+            continue
+
+        # --- DETECT SPEAKER AND STRIP NAME ---
+        if "ALEX" in upper_text[:10]: 
             current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
-        elif "JAMIE" in text.upper()[:10]:
+        elif "JAMIE" in upper_text[:10]:
             current_voice = "nova"
             text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
-        elif "RUFUS" in text.upper()[:10]:
+        elif "RUFUS" in upper_text[:10]:
             current_voice = "fable"
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
             
+        # Clean up remaining markdown
         text = text.replace("*", "").replace("#", "")
+        
+        # If nothing is left after cleaning, skip it
         if not text or len(text) < 2: continue
             
         try:
-            # FIXED: New Syntax to avoid deprecation warnings
+            # Generate the audio with SPEED BOOST (1.1x)
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice=current_voice,
-                input=text
+                input=text,
+                speed=1.1  # <--- NEW: Makes it sound energetic/human
             ) as response:
                 chunk_file = f"chunk_{count}.mp3"
                 response.stream_to_file(chunk_file)
