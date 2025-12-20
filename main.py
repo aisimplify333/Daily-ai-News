@@ -34,15 +34,20 @@ except ImportError:
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI Simplify Media"
+AUTHOR_NAME = "AI SImplify Media"
 
+# --- TIER 1 UPGRADE: BETTER SOURCES ---
 RSS_FEEDS = [
-    "https://techcrunch.com/category/artificial-intelligence/feed/",
+    # Corporate/Official News
+"https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://venturebeat.com/category/ai/feed/",
     "https://www.theregister.com/software/ai_ml/headlines.atom", 
     "https://futurism.com/feed",                                 
     "https://garymarcus.substack.com/feed",                      
-    "https://www.wired.com/feed/category/ai/latest/rss"          
+    "https://www.wired.com/feed/category/ai/latest/rss"
+    # Community/Insider News (The "Street Cred" Sources)
+    "https://hnrss.org/newest?q=AI",  # Hacker News AI Threads
+    "https://www.reddit.com/r/ArtificialInteligence/top/.rss?t=day" # Reddit Top AI
 ]
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -126,19 +131,21 @@ def generate_script(raw_news, sponsor):
     if sponsor:
         sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
 
+    # --- TIER 1 UPGRADE: THE "MESSY HUMAN" PROMPT ---
     prompt = f"""
     You are the Showrunner for "The AI Edge".
     Target Length: 15 Minutes (Minimum 2800 Words).
     
     CHARACTERS:
-    1. ALEX (Host): Optimistic, professional American anchor.
-    2. JAMIE (Co-host): Skeptical, passionate, critical American pundit. (USE CAPS FOR ANGER).
-    3. RUFUS (Correspondent): British/Formal accent. Reports "Law & Money".
+    1. ALEX (Host): Optimistic, uses casual fillers ("Look," "I mean,").
+    2. JAMIE (Co-host): Skeptical, interrupts often. Uses short sentences.
+    3. RUFUS (Correspondent): Formal, dry wit.
 
     INSTRUCTIONS:
+    - **CRITICAL:** Write like REAL people talking, not a script.
+    - **USE FILLERS:** Include "Um," "Well," "Actually," and "Hang on" to sound natural.
+    - **NO ROBOTIC TRANSITIONS:** Do NOT say "Now let's move to." Just jump in.
     - **FORMAT:** ALEX: (text) / JAMIE: (text) / RUFUS: (text)
-    - **RUFUS:** Serious tone. Uses words like "Legislation" and "Antitrust."
-    - **CONFLICT:** Jamie must aggressively disagree with Alex.
     
     STRUCTURE:
     1. HOOK (2 min): High energy intro. Roadmap topics. Catchphrase: "Let's get to it."
@@ -154,7 +161,7 @@ def generate_script(raw_news, sponsor):
     """
     return generate_content_with_retry(client, prompt)
 
-# --- AUDIO GENERATION (AGGRESSIVE CLEANING) ---
+# --- AUDIO GENERATION (WITH SFX & FILTERS) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -163,14 +170,20 @@ def generate_audio_openai(script_text):
     client = OpenAI(api_key=OPENAI_API_KEY)
     combined_audio = AudioSegment.empty()
     
+    # --- TIER 1 UPGRADE: SOUND EFFECTS ---
+    transition_sfx = None
+    if os.path.exists("transition.mp3"):
+        print("Loading transition sound...")
+        transition_sfx = AudioSegment.from_file("transition.mp3")
+        transition_sfx = transition_sfx - 6 # Lower volume so it doesn't blast
+    
     lines = script_text.split('\n')
     print(f"Processing {len(lines)} lines...")
     
     current_voice = "onyx" 
     count = 0
     
-    # --- AGGRESSIVE KEYWORD LIST ---
-    # Any line containing these is instantly deleted
+    # --- AGGRESSIVE CLEANING LIST ---
     forbidden_keywords = [
         "STRUCTURE", "HOOK", "DEEP DIVE", "FIELD REPORT", 
         "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO", "RAW NEWS",
@@ -178,27 +191,31 @@ def generate_audio_openai(script_text):
         "STORY#2", "STORY #2", "SIGN OFF"
     ]
     
+    # --- SFX TRIGGERS ---
+    sfx_triggers = ["DEEP DIVE", "FIELD REPORT", "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO"]
+    
     for line in lines:
         text = line.strip()
         if not text: continue 
         
-        # --- PRE-SCRUB: REMOVE MARKDOWN ARTIFACTS ---
-        # This fixes lines like "**2. Deep Dive**" by turning them into "2. Deep Dive"
         text = text.replace("*", "").replace("#", "").strip()
-        
         upper_text = text.upper()
 
-        # --- FILTER 1: Numbered Structure Lines (1. Hook, 2. Deep Dive) ---
-        # If it starts with a number AND has a structure keyword, kill it.
+        # --- SFX LOGIC ---
+        if any(trigger in upper_text for trigger in sfx_triggers):
+             # Only play sfx if we aren't at the start and have the file
+             if len(combined_audio) > 5000 and transition_sfx:
+                 print(f"*** INSERTING SFX FOR: {text} ***")
+                 combined_audio += transition_sfx
+
+        # --- FILTER 1: Numbered Structure Lines ---
         is_numbered = re.match(r'^\d+[\.\)]', text)
         if is_numbered:
-            # Check if it contains any forbidden keyword or duration time like (5 min)
             if any(k in upper_text for k in forbidden_keywords) or "MIN)" in upper_text:
                 print(f"Skipping numbered structure: {text}")
                 continue
 
-        # --- FILTER 2: General Keyword Check ---
-        # Even if not numbered, if it says "DEEP DIVE:", kill it.
+        # --- FILTER 2: Keywords ---
         if any(upper_text.startswith(k) for k in forbidden_keywords):
             print(f"Skipping header line: {text}")
             continue
@@ -219,18 +236,16 @@ def generate_audio_openai(script_text):
             current_voice = "fable"
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
             
-        # Clean up remaining artifacts
         text = text.replace("*", "").replace("#", "")
         
         if not text or len(text) < 2: continue
             
         try:
-            # Generate with 1.1x Speed
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice=current_voice,
                 input=text,
-                speed=1.1
+                speed=1.1 # TIER 1 SPEED
             ) as response:
                 chunk_file = f"chunk_{count}.mp3"
                 response.stream_to_file(chunk_file)
