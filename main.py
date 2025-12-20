@@ -1,7 +1,9 @@
 import subprocess
 import sys
 
-# --- STEP 0: INSTALL NEW GOOGLE SDK ---
+# --- STEP 0: SELF-CORRECTION / AUTO-INSTALL ---
+# This forces the server to use the modern Google SDK (v2).
+# It prevents "Deprecation" and "404 Model Not Found" errors.
 def install_sdk():
     try:
         print("Installing Google GenAI SDK...")
@@ -18,6 +20,7 @@ import re
 import json
 import feedparser
 import datetime
+# CRITICAL FIX: Prevents the RSS generation crash at the very end
 import xml.etree.ElementTree as ET 
 from email.utils import formatdate
 from pydub import AudioSegment
@@ -34,20 +37,26 @@ except ImportError:
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI SImplify Media"
+AUTHOR_NAME = "AI Simplify Media"
 
-# --- TIER 1 UPGRADE: BETTER SOURCES ---
+# --- TIER 1: THE ULTIMATE SOURCE LIST ---
+# Balanced mix of Corporate News, Insider Threads, and Skeptical Takes
 RSS_FEEDS = [
-    # Corporate/Official News
-"https://techcrunch.com/category/artificial-intelligence/feed/",
+    # The "Big Tech" News (Official Announcements)
+    "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://venturebeat.com/category/ai/feed/",
+    
+    # The "Cynic" News (Fuel for Jamie's rants)
     "https://www.theregister.com/software/ai_ml/headlines.atom", 
-    "https://futurism.com/feed",                                 
-    "https://garymarcus.substack.com/feed",                      
-    "https://www.wired.com/feed/category/ai/latest/rss"
-    # Community/Insider News (The "Street Cred" Sources)
-    "https://hnrss.org/newest?q=AI",  # Hacker News AI Threads
-    "https://www.reddit.com/r/ArtificialInteligence/top/.rss?t=day" # Reddit Top AI
+    "https://garymarcus.substack.com/feed",  
+    
+    # The "Future/Culture" News (Quick Headlines)
+    "https://futurism.com/feed",
+    "https://www.wired.com/feed/category/ai/latest/rss",
+    
+    # The "Streets" (Insider info/Leaks)
+    "https://hnrss.org/newest?q=AI",  
+    "https://www.reddit.com/r/ArtificialInteligence/top/.rss?t=day" 
 ]
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
@@ -76,17 +85,22 @@ def get_latest_news():
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
+            # Grab top 3 from each feed to ensure variety
             for entry in feed.entries[:3]: 
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
                 news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:500]}")
         except: pass
     
     if not news_items: return None
+    # Shuffle and pick top 15 to ensure we don't overwhelm the script writer
     random.shuffle(news_items)
-    return "\n\n".join(news_items[:12]) 
+    return "\n\n".join(news_items[:15]) 
 
 # --- CRITICAL: ROBUST MODEL SELECTOR ---
 def generate_content_with_retry(client, prompt):
+    # We try these models in order. 
+    # Logic: Start with the most reliable "Workhorse" (1.5 Flash - 1500 req/day)
+    # Then try others if that fails.
     model_priority = [
         "gemini-1.5-flash", 
         "gemini-2.0-flash", 
@@ -132,14 +146,15 @@ def generate_script(raw_news, sponsor):
         sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
 
     # --- TIER 1 UPGRADE: THE "MESSY HUMAN" PROMPT ---
+    # This forces the AI to stutter, interrupt, and use slang.
     prompt = f"""
     You are the Showrunner for "The AI Edge".
-    Target Length: 15 Minutes (Minimum 2800 Words).
+    Target Length: 19 Minutes (Minimum 2900 Words).
     
     CHARACTERS:
     1. ALEX (Host): Optimistic, uses casual fillers ("Look," "I mean,").
     2. JAMIE (Co-host): Skeptical, interrupts often. Uses short sentences.
-    3. RUFUS (Correspondent): Formal, dry wit.
+    3. RUFUS (Correspondent): British/Formal accent. Reports "Law & Money".
 
     INSTRUCTIONS:
     - **CRITICAL:** Write like REAL people talking, not a script.
@@ -153,7 +168,7 @@ def generate_script(raw_news, sponsor):
     3. FIELD REPORT (3 min): Alex throws to Rufus. Rufus covers Law/Money.
     4. MID-ROLL (45 sec): Jamie reads: "{sponsor_txt}". Natural flow.
     5. STORY 2 (3 min): Social impact debate.
-    6. SPEED ROUND (2 min): Headlines.
+    6. SPEED ROUND (2 min): Headlines (Fast paced!).
     7. OUTRO (1 min): Alex credits sponsor. Sign off.
 
     RAW NEWS:
@@ -161,7 +176,7 @@ def generate_script(raw_news, sponsor):
     """
     return generate_content_with_retry(client, prompt)
 
-# --- AUDIO GENERATION (WITH SFX & FILTERS) ---
+# --- AUDIO GENERATION (WITH SFX & AGGRESSIVE FILTERS) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY:
         print("Error: OPENAI_API_KEY missing.")
@@ -171,6 +186,7 @@ def generate_audio_openai(script_text):
     combined_audio = AudioSegment.empty()
     
     # --- TIER 1 UPGRADE: SOUND EFFECTS ---
+    # Loads the "transition.mp3" file if you uploaded it
     transition_sfx = None
     if os.path.exists("transition.mp3"):
         print("Loading transition sound...")
@@ -184,6 +200,7 @@ def generate_audio_openai(script_text):
     count = 0
     
     # --- AGGRESSIVE CLEANING LIST ---
+    # Any line containing these is instantly deleted (The "Trash Filter")
     forbidden_keywords = [
         "STRUCTURE", "HOOK", "DEEP DIVE", "FIELD REPORT", 
         "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO", "RAW NEWS",
@@ -192,18 +209,20 @@ def generate_audio_openai(script_text):
     ]
     
     # --- SFX TRIGGERS ---
+    # If the text mentions these headers, we play the "Swoosh" sound
     sfx_triggers = ["DEEP DIVE", "FIELD REPORT", "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO"]
     
     for line in lines:
         text = line.strip()
         if not text: continue 
         
+        # Pre-Scrub: Remove markdown bolding/italics
         text = text.replace("*", "").replace("#", "").strip()
         upper_text = text.upper()
 
         # --- SFX LOGIC ---
         if any(trigger in upper_text for trigger in sfx_triggers):
-             # Only play sfx if we aren't at the start and have the file
+             # Only play sfx if we aren't at the very start
              if len(combined_audio) > 5000 and transition_sfx:
                  print(f"*** INSERTING SFX FOR: {text} ***")
                  combined_audio += transition_sfx
@@ -211,16 +230,17 @@ def generate_audio_openai(script_text):
         # --- FILTER 1: Numbered Structure Lines ---
         is_numbered = re.match(r'^\d+[\.\)]', text)
         if is_numbered:
+            # If it's a numbered line AND has a keyword, it's a robot instruction. Kill it.
             if any(k in upper_text for k in forbidden_keywords) or "MIN)" in upper_text:
                 print(f"Skipping numbered structure: {text}")
                 continue
 
-        # --- FILTER 2: Keywords ---
+        # --- FILTER 2: Pure Keywords ---
         if any(upper_text.startswith(k) for k in forbidden_keywords):
             print(f"Skipping header line: {text}")
             continue
             
-        # --- FILTER 3: Parentheticals ---
+        # --- FILTER 3: Stage Directions ---
         if text.startswith("(") and text.endswith(")"):
             print(f"Skipping action line: {text}")
             continue
@@ -236,16 +256,18 @@ def generate_audio_openai(script_text):
             current_voice = "fable"
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
             
+        # Clean up anything left over
         text = text.replace("*", "").replace("#", "")
         
         if not text or len(text) < 2: continue
             
         try:
+            # Generate Audio with 1.1x Speed Boost (Human Pace)
             with client.audio.speech.with_streaming_response.create(
                 model="tts-1",
                 voice=current_voice,
                 input=text,
-                speed=1.1 # TIER 1 SPEED
+                speed=1.1 
             ) as response:
                 chunk_file = f"chunk_{count}.mp3"
                 response.stream_to_file(chunk_file)
