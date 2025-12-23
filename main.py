@@ -66,7 +66,6 @@ def get_sponsor():
     return None
 
 # --- HELPER: GET NEWS (ELASTIC CAPACITY) ---
-# Now accepts a 'limit' to pull more data for longer episodes
 def get_latest_news(limit_per_feed=5, total_limit=25):
     print(f"Scanning web for AI news (Limit: {total_limit} items)...")
     news_items = []
@@ -75,7 +74,6 @@ def get_latest_news(limit_per_feed=5, total_limit=25):
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
-            # UPGRADE: Pull more depth from each feed
             for entry in feed.entries[:limit_per_feed]: 
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
                 news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:600]}")
@@ -95,29 +93,29 @@ def get_episode_config():
         "type": "DAILY_NEWS",
         "length_str": "20 Minutes",
         "min_words": "3500",
-        "fetch_limit": 5,   # Items per feed
-        "total_items": 25,  # Total items to send to AI
-        "focus": "Fast-paced, covering today's headlines."
+        "fetch_limit": 5,   
+        "total_items": 25,  
+        "focus": "Fast-paced, covering today's headlines. 'Man on the Street' reports from Rufus."
     }
     
-    # Holiday Logic (45 Mins) -> NEEDS MASSIVE DATA
+    # Holiday Logic (45 Mins)
     if (month == 12 and day >= 24) or (month == 1 and day == 1): 
         config["type"] = "HOLIDAY_SPECIAL"
         config["length_str"] = "45 Minutes"
         config["min_words"] = "8000"
-        config["fetch_limit"] = 10  # Pull DEEP from archives
-        config["total_items"] = 50  # Feed the AI 50 stories
-        config["focus"] = "END OF YEAR SPECTACULAR. Use your INTERNAL KNOWLEDGE of the year's history + these news items. Be nostalgic, dramatic, and comprehensive."
+        config["fetch_limit"] = 10  
+        config["total_items"] = 50  
+        config["focus"] = "END OF YEAR SPECTACULAR. Use your INTERNAL KNOWLEDGE + news. Nostalgic, dramatic, comprehensive."
         return config
 
-    # Weekend Logic (30 Mins) -> NEEDS MORE DATA
+    # Weekend Logic (30 Mins)
     if weekday == 5: # Saturday
         config["type"] = "WEEKLY_RECAP"
         config["length_str"] = "30 Minutes"
         config["min_words"] = "5000"
         config["fetch_limit"] = 7
         config["total_items"] = 35
-        config["focus"] = "SATURDAY EDITION. Synthesize these stories into 'The Week in Review'. Connect the dots between isolated events."
+        config["focus"] = "SATURDAY EDITION. Synthesize these stories. Rufus provides 'Weekend Market Analysis' from the street."
         return config
         
     if weekday == 6: # Sunday
@@ -126,7 +124,7 @@ def get_episode_config():
         config["min_words"] = "5000"
         config["fetch_limit"] = 7
         config["total_items"] = 35
-        config["focus"] = "SUNDAY DEEP DIVE. Pick ONLY ONE major theme from the news below and debate it for the entire episode. Use internal knowledge to expand."
+        config["focus"] = "SUNDAY DEEP DIVE. Pick ONLY ONE major theme. Debate it. Rufus provides the legal/money angle."
         return config
     
     return config
@@ -151,7 +149,6 @@ def generate_script(config, sponsor):
         client = genai.Client(api_key=GEMINI_API_KEY)
     except: return None
 
-    # --- GET NEWS BASED ON CONFIG LIMITS ---
     raw_news = get_latest_news(config["fetch_limit"], config["total_items"])
     if not raw_news: return None
 
@@ -171,13 +168,17 @@ def generate_script(config, sponsor):
     CHARACTERS:
     1. ALEX (Host): Optimistic, professional American. Uses fillers ("Look," "I mean,").
     2. JAMIE (Co-host): Skeptical, interrupts often. Uses short sentences.
-    3. RUFUS (Correspondent): BRITISH ACCENT. Uses British slang ("Rubbish," "Cheers," "Proper," "Bloody"). Cynical about money/law.
+    3. RUFUS (Correspondent): BRITISH ACCENT. Law & Money Expert. Dry wit.
+       - **STYLE:** Rufus is "Man on the Street". He reports from "outside the courthouse" or "Wall Street". 
+       - **SOUND:** Formal but cynical. Uses British terms ("Rubbish," "Scheme," "Proper").
 
     INSTRUCTIONS:
-    - **CRITICAL:** Write like REAL people talking. Use "Um," "Well," "Actually."
-    - **RUFUS DIALOGUE:** Ensure Rufus uses British vocabulary so the accent sounds authentic.
-    - **CONTENT EXPANSION:** For longer episodes (Weekend/Holiday), do not just read the news snippets. Use your INTERNAL KNOWLEDGE to explain the history, future implications, and technical details behind these stories to fill the time with QUALITY analysis.
-    - **OUTPUT FORMAT:** 1. First, write the SHOW NOTES (Title + Summary).
+    - **DYNAMISM:** Write messy! Real people interrupt. Use "Hang on," "Wait," "Exactly."
+    - **STRUCTURE:** Alex & Jamie debate in the studio. They MUST "throw it over" to Rufus in the field MULTIPLE TIMES (3-4 times).
+    - **RUFUS INTERACTION:** Don't just give Rufus one block. Go back and forth. 
+      (e.g., Alex: "Rufus, what's the legal take?" -> Rufus replies -> Jamie argues -> Rufus replies).
+    
+    - **OUTPUT FORMAT:** 1. First, write the SHOW NOTES (Clean format).
       2. Then write "|||SEPARATOR|||"
       3. Then write the SCRIPT.
     
@@ -197,8 +198,17 @@ def generate_script(config, sponsor):
     
     if "|||SEPARATOR|||" in full_response:
         parts = full_response.split("|||SEPARATOR|||")
+        
+        # --- CLEAN SHOW NOTES ---
+        # Removes "SHOW NOTES" headers to keep Spotify clean
+        raw_notes = parts[0].strip()
+        # regex to remove any line that looks like a header (e.g., "**SHOW NOTES**")
+        clean_notes = re.sub(r'^[\*#]*SHOW NOTES.*$', '', raw_notes, flags=re.MULTILINE | re.IGNORECASE)
+        clean_notes = re.sub(r'FORMAT:', '', clean_notes, flags=re.IGNORECASE).strip()
+        
         with open(NOTES_FILE, "w") as f:
-            f.write(parts[0].strip())
+            f.write(clean_notes)
+            
         return parts[1].strip()
     else:
         return full_response
@@ -284,7 +294,7 @@ def generate_rss_feed():
     channel = ET.SubElement(rss, "channel")
     
     ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered & Automated"
-    ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media. Alex (Optimist), Jamie (Skeptic) and Rufus (Insider) debate the biggest stories in Artificial Intelligence."
+    ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media. Alex (Optimist), Jamie (Skeptic) and Rufus (Law & Money Insider) debate the biggest stories in Artificial Intelligence."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
     ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
@@ -308,7 +318,8 @@ def generate_rss_feed():
             
             if os.path.exists(notes_file):
                 with open(notes_file, "r") as f:
-                    content = f.read()
+                    content = f.read().strip()
+                    # Final safety clean for display
                     if "Title:" in content:
                         parts = content.split("Summary:")
                         title_part = parts[0].replace("Title:", "").strip()
@@ -333,19 +344,11 @@ def generate_rss_feed():
 
 # --- MAIN ---
 if __name__ == "__main__":
-    # 1. Get Config (Day/Holiday Check)
     config = get_episode_config()
-    
-    # 2. Get Sponsor
     sponsor = get_sponsor()
-    
-    # 3. Generate Script (Pass Config to control length/depth)
     script = generate_script(config, sponsor)
-    
     if script:
-        # 4. Generate Audio
         generate_audio_openai(script)
-        # 5. Update RSS
         generate_rss_feed()
     else:
         print("Script generation failed.")
