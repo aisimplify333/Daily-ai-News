@@ -49,7 +49,12 @@ RSS_FEEDS = [
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+
+# --- DATE FIX: Explicitly calculate the Weekday String ---
 TODAY = datetime.date.today()
+# Formats as "Tuesday, December 23, 2025" so the AI never guesses wrong
+TODAY_STR = TODAY.strftime("%A, %B %d, %Y")
+
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
 NOTES_FILE = f"podcast_{TODAY}.txt" 
 SPONSORS_FILE = "sponsors.json"
@@ -160,7 +165,7 @@ def generate_script(config, sponsor):
 
     prompt = f"""
     You are the Showrunner for "The AI Edge" (AI Simplify Media).
-    Current Date: {TODAY}.
+    Current Date: {TODAY_STR}.
     Episode Type: {config['type']}.
     Target Length: {config['length_str']} (Minimum {config['min_words']} Words).
     Focus: {config['focus']}
@@ -177,6 +182,7 @@ def generate_script(config, sponsor):
     - **STRUCTURE:** Alex & Jamie debate in the studio. They MUST "throw it over" to Rufus in the field MULTIPLE TIMES (3-4 times).
     - **RUFUS INTERACTION:** Don't just give Rufus one block. Go back and forth. 
       (e.g., Alex: "Rufus, what's the legal take?" -> Rufus replies -> Jamie argues -> Rufus replies).
+    - **CLEAN DIALOGUE:** **DO NOT** write stage directions in the spoken text (e.g. do NOT write "(laughs)" or "in a dry tone"). Only write what they SAY.
     
     - **OUTPUT FORMAT:** 1. First, write the SHOW NOTES (Clean format).
       2. Then write "|||SEPARATOR|||"
@@ -200,9 +206,7 @@ def generate_script(config, sponsor):
         parts = full_response.split("|||SEPARATOR|||")
         
         # --- CLEAN SHOW NOTES ---
-        # Removes "SHOW NOTES" headers to keep Spotify clean
         raw_notes = parts[0].strip()
-        # regex to remove any line that looks like a header (e.g., "**SHOW NOTES**")
         clean_notes = re.sub(r'^[\*#]*SHOW NOTES.*$', '', raw_notes, flags=re.MULTILINE | re.IGNORECASE)
         clean_notes = re.sub(r'FORMAT:', '', clean_notes, flags=re.IGNORECASE).strip()
         
@@ -213,7 +217,7 @@ def generate_script(config, sponsor):
     else:
         return full_response
 
-# --- AUDIO GENERATION (HD + BOOSTED VOLUME) ---
+# --- AUDIO GENERATION (HD + BOOSTED VOLUME + SCRUBBER) ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY: return
     client = OpenAI(api_key=OPENAI_API_KEY)
@@ -250,17 +254,27 @@ def generate_audio_openai(script_text):
         if any(upper_text.startswith(k) for k in forbidden_keywords): continue
         if text.startswith("(") and text.endswith(")"): continue
 
+        # --- SPEAKER DETECTION & TEXT CLEANING ---
+        # 1. Detect who is speaking
         if "ALEX" in upper_text[:10]: 
             current_voice = "onyx"
-            text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
+            text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE)
         elif "JAMIE" in upper_text[:10]:
             current_voice = "nova"
-            text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
+            text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE)
         elif "RUFUS" in upper_text[:10]:
             current_voice = "fable" 
-            text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
+            text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE)
             
-        text = text.replace("*", "").replace("#", "")
+        # 2. THE SCRUBBER (The Fix for Stage Directions)
+        # Removes anything in parentheses like (laughs) or (dry tone)
+        text = re.sub(r'\(.*?\)', '', text) 
+        # Removes anything in brackets like [sighs]
+        text = re.sub(r'\[.*?\]', '', text)
+        # Removes lingering asterisks
+        text = text.replace("*", "").replace("#", "").strip()
+        
+        # 3. Final Check (If the line is now empty after scrubbing, skip it)
         if not text or len(text) < 2: continue
             
         try:
