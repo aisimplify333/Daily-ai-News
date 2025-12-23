@@ -1,9 +1,7 @@
 import subprocess
 import sys
 
-# --- STEP 0: SELF-CORRECTION / AUTO-INSTALL ---
-# This forces the server to use the modern Google SDK (v2).
-# It prevents "Deprecation" and "404 Model Not Found" errors.
+# --- STEP 0: INSTALL SDK ---
 def install_sdk():
     try:
         print("Installing Google GenAI SDK...")
@@ -20,7 +18,6 @@ import re
 import json
 import feedparser
 import datetime
-# CRITICAL FIX: Prevents the RSS generation crash at the very end
 import xml.etree.ElementTree as ET 
 from email.utils import formatdate
 from pydub import AudioSegment
@@ -37,32 +34,24 @@ except ImportError:
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI Simplify Media"
+AUTHOR_NAME = "AI Simplify Media (Alex, Jamie & Rufus)" 
 
-# --- TIER 1: THE ULTIMATE SOURCE LIST ---
-# Balanced mix of Corporate News, Insider Threads, and Skeptical Takes
 RSS_FEEDS = [
-    # The "Big Tech" News (Official Announcements)
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://venturebeat.com/category/ai/feed/",
-    
-    # The "Cynic" News (Fuel for Jamie's rants)
     "https://www.theregister.com/software/ai_ml/headlines.atom", 
-    "https://garymarcus.substack.com/feed",  
-    
-    # The "Future/Culture" News (Quick Headlines)
-    "https://futurism.com/feed",
-    "https://www.wired.com/feed/category/ai/latest/rss",
-    
-    # The "Streets" (Insider info/Leaks)
     "https://hnrss.org/newest?q=AI",  
-    "https://www.reddit.com/r/ArtificialInteligence/top/.rss?t=day" 
+    "https://www.reddit.com/r/ArtificialInteligence/top/.rss?t=day",
+    "https://futurism.com/feed",
+    "https://garymarcus.substack.com/feed",
+    "https://www.wired.com/feed/category/ai/latest/rss"
 ]
 
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 TODAY = datetime.date.today()
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
+NOTES_FILE = f"podcast_{TODAY}.txt" 
 SPONSORS_FILE = "sponsors.json"
 
 # --- HELPER: GET SPONSOR ---
@@ -76,176 +65,181 @@ def get_sponsor():
     except: return None
     return None
 
-# --- HELPER: GET NEWS ---
-def get_latest_news():
-    print("Scanning the web for AI news...")
+# --- HELPER: GET NEWS (ELASTIC CAPACITY) ---
+# Now accepts a 'limit' to pull more data for longer episodes
+def get_latest_news(limit_per_feed=5, total_limit=25):
+    print(f"Scanning web for AI news (Limit: {total_limit} items)...")
     news_items = []
     headers = {'User-Agent': 'Mozilla/5.0'}
     for url in RSS_FEEDS:
         try:
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
-            # Grab top 3 from each feed to ensure variety
-            for entry in feed.entries[:3]: 
+            # UPGRADE: Pull more depth from each feed
+            for entry in feed.entries[:limit_per_feed]: 
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
-                news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:500]}")
+                news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:600]}")
         except: pass
     
     if not news_items: return None
-    # Shuffle and pick top 15 to ensure we don't overwhelm the script writer
     random.shuffle(news_items)
-    return "\n\n".join(news_items[:15]) 
+    return "\n\n".join(news_items[:total_limit]) 
 
-# --- CRITICAL: ROBUST MODEL SELECTOR ---
-def generate_content_with_retry(client, prompt):
-    # We try these models in order. 
-    # Logic: Start with the most reliable "Workhorse" (1.5 Flash - 1500 req/day)
-    # Then try others if that fails.
-    model_priority = [
-        "gemini-1.5-flash", 
-        "gemini-2.0-flash", 
-        "gemini-flash-latest"
-    ]
+# --- SMART CALENDAR & LENGTH LOGIC ---
+def get_episode_config():
+    weekday = TODAY.weekday()
+    month = TODAY.month
+    day = TODAY.day
     
+    config = {
+        "type": "DAILY_NEWS",
+        "length_str": "20 Minutes",
+        "min_words": "3500",
+        "fetch_limit": 5,   # Items per feed
+        "total_items": 25,  # Total items to send to AI
+        "focus": "Fast-paced, covering today's headlines."
+    }
+    
+    # Holiday Logic (45 Mins) -> NEEDS MASSIVE DATA
+    if (month == 12 and day >= 24) or (month == 1 and day == 1): 
+        config["type"] = "HOLIDAY_SPECIAL"
+        config["length_str"] = "45 Minutes"
+        config["min_words"] = "8000"
+        config["fetch_limit"] = 10  # Pull DEEP from archives
+        config["total_items"] = 50  # Feed the AI 50 stories
+        config["focus"] = "END OF YEAR SPECTACULAR. Use your INTERNAL KNOWLEDGE of the year's history + these news items. Be nostalgic, dramatic, and comprehensive."
+        return config
+
+    # Weekend Logic (30 Mins) -> NEEDS MORE DATA
+    if weekday == 5: # Saturday
+        config["type"] = "WEEKLY_RECAP"
+        config["length_str"] = "30 Minutes"
+        config["min_words"] = "5000"
+        config["fetch_limit"] = 7
+        config["total_items"] = 35
+        config["focus"] = "SATURDAY EDITION. Synthesize these stories into 'The Week in Review'. Connect the dots between isolated events."
+        return config
+        
+    if weekday == 6: # Sunday
+        config["type"] = "DEEP_DIVE"
+        config["length_str"] = "30 Minutes"
+        config["min_words"] = "5000"
+        config["fetch_limit"] = 7
+        config["total_items"] = 35
+        config["focus"] = "SUNDAY DEEP DIVE. Pick ONLY ONE major theme from the news below and debate it for the entire episode. Use internal knowledge to expand."
+        return config
+    
+    return config
+
+# --- GENERATION WITH RETRY ---
+def generate_content_with_retry(client, prompt):
+    model_priority = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
     for model_name in model_priority:
         print(f"Attempting generation with model: {model_name}...")
         try:
-            response = client.models.generate_content(
-                model=model_name,
-                contents=prompt
-            )
-            print(f"SUCCESS with {model_name}!")
+            response = client.models.generate_content(model=model_name, contents=prompt)
             return response.text
         except Exception as e:
-            error_str = str(e)
-            if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
-                print(f"⚠️ Quota exceeded for {model_name}. Switching to backup...")
-            elif "404" in error_str or "NOT_FOUND" in error_str:
-                print(f"⚠️ Model {model_name} not found. Switching to backup...")
-            else:
-                print(f"❌ Error with {model_name}: {e}")
+            print(f"❌ Error with {model_name}: {e}")
             continue
-            
     return None
 
 # --- MAIN SCRIPT GENERATOR ---
-def generate_script(raw_news, sponsor):
-    if not GEMINI_API_KEY: 
-        print("Error: Gemini Key Missing")
-        return None
-    
-    print("Initializing Client...")
+def generate_script(config, sponsor):
+    if not GEMINI_API_KEY: return None
     try:
         client = genai.Client(api_key=GEMINI_API_KEY)
-    except Exception as e:
-        print(f"Client Init Error: {e}")
-        return None
+    except: return None
+
+    # --- GET NEWS BASED ON CONFIG LIMITS ---
+    raw_news = get_latest_news(config["fetch_limit"], config["total_items"])
+    if not raw_news: return None
 
     sponsor_txt = "our amazing sponsors"
     if sponsor:
         sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
 
-    # --- TIER 1 UPGRADE: THE "MESSY HUMAN" PROMPT ---
-    # This forces the AI to stutter, interrupt, and use slang.
+    print(f"--- EPISODE TYPE: {config['type']} | TARGET: {config['length_str']} ---")
+
     prompt = f"""
-    You are the Showrunner for "The AI Edge".
-    Target Length: 19 Minutes (Minimum 2900 Words).
+    You are the Showrunner for "The AI Edge" (AI Simplify Media).
+    Current Date: {TODAY}.
+    Episode Type: {config['type']}.
+    Target Length: {config['length_str']} (Minimum {config['min_words']} Words).
+    Focus: {config['focus']}
     
     CHARACTERS:
-    1. ALEX (Host): Optimistic, uses casual fillers ("Look," "I mean,").
+    1. ALEX (Host): Optimistic, professional American. Uses fillers ("Look," "I mean,").
     2. JAMIE (Co-host): Skeptical, interrupts often. Uses short sentences.
-    3. RUFUS (Correspondent): British/Formal accent. Reports "Law & Money".
+    3. RUFUS (Correspondent): BRITISH ACCENT. Uses British slang ("Rubbish," "Cheers," "Proper," "Bloody"). Cynical about money/law.
 
     INSTRUCTIONS:
-    - **CRITICAL:** Write like REAL people talking, not a script.
-    - **USE FILLERS:** Include "Um," "Well," "Actually," and "Hang on" to sound natural.
-    - **NO ROBOTIC TRANSITIONS:** Do NOT say "Now let's move to." Just jump in.
-    - **FORMAT:** ALEX: (text) / JAMIE: (text) / RUFUS: (text)
+    - **CRITICAL:** Write like REAL people talking. Use "Um," "Well," "Actually."
+    - **RUFUS DIALOGUE:** Ensure Rufus uses British vocabulary so the accent sounds authentic.
+    - **CONTENT EXPANSION:** For longer episodes (Weekend/Holiday), do not just read the news snippets. Use your INTERNAL KNOWLEDGE to explain the history, future implications, and technical details behind these stories to fill the time with QUALITY analysis.
+    - **OUTPUT FORMAT:** 1. First, write the SHOW NOTES (Title + Summary).
+      2. Then write "|||SEPARATOR|||"
+      3. Then write the SCRIPT.
     
-    STRUCTURE:
-    1. HOOK (2 min): High energy intro. Roadmap topics. Catchphrase: "Let's get to it."
-    2. DEEP DIVE (5 min): Debate Story #1. High conflict.
-    3. FIELD REPORT (3 min): Alex throws to Rufus. Rufus covers Law/Money.
-    4. MID-ROLL (45 sec): Jamie reads: "{sponsor_txt}". Natural flow.
-    5. STORY 2 (3 min): Social impact debate.
-    6. SPEED ROUND (2 min): Headlines (Fast paced!).
-    7. OUTRO (1 min): Alex credits sponsor. Sign off.
+    SHOW NOTES FORMAT:
+    Title: [Catchy Title]
+    Summary: [2-3 sentences hooking the listener]
+    
+    SCRIPT FORMAT:
+    ALEX: (text) / JAMIE: (text) / RUFUS: (text)
 
-    RAW NEWS:
+    RAW NEWS INPUT:
     {raw_news}
     """
-    return generate_content_with_retry(client, prompt)
+    
+    full_response = generate_content_with_retry(client, prompt)
+    if not full_response: return None
+    
+    if "|||SEPARATOR|||" in full_response:
+        parts = full_response.split("|||SEPARATOR|||")
+        with open(NOTES_FILE, "w") as f:
+            f.write(parts[0].strip())
+        return parts[1].strip()
+    else:
+        return full_response
 
-# --- AUDIO GENERATION (WITH SFX & AGGRESSIVE FILTERS) ---
+# --- AUDIO GENERATION (HD + BOOSTED VOLUME) ---
 def generate_audio_openai(script_text):
-    if not OPENAI_API_KEY:
-        print("Error: OPENAI_API_KEY missing.")
-        return
-        
+    if not OPENAI_API_KEY: return
     client = OpenAI(api_key=OPENAI_API_KEY)
     combined_audio = AudioSegment.empty()
     
-    # --- TIER 1 UPGRADE: SOUND EFFECTS ---
-    # Loads the "transition.mp3" file if you uploaded it
     transition_sfx = None
     if os.path.exists("transition.mp3"):
-        print("Loading transition sound...")
-        transition_sfx = AudioSegment.from_file("transition.mp3")
-        transition_sfx = transition_sfx - 6 # Lower volume so it doesn't blast
+        transition_sfx = AudioSegment.from_file("transition.mp3") - 4
     
     lines = script_text.split('\n')
-    print(f"Processing {len(lines)} lines...")
-    
     current_voice = "onyx" 
     count = 0
     
-    # --- AGGRESSIVE CLEANING LIST ---
-    # Any line containing these is instantly deleted (The "Trash Filter")
     forbidden_keywords = [
-        "STRUCTURE", "HOOK", "DEEP DIVE", "FIELD REPORT", 
-        "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO", "RAW NEWS",
-        "WORD COUNT", "SHOW WORDS", "END OF SCRIPT", "SIGNOFF",
-        "STORY#2", "STORY #2", "SIGN OFF"
+        "STRUCTURE", "HOOK", "DEEP DIVE", "FIELD REPORT", "MID-ROLL", 
+        "STORY 2", "SPEED ROUND", "OUTRO", "RAW NEWS", "WORD COUNT", 
+        "SHOW WORDS", "END OF SCRIPT", "SIGNOFF", "STORY#2", "SIGN OFF"
     ]
-    
-    # --- SFX TRIGGERS ---
-    # If the text mentions these headers, we play the "Swoosh" sound
     sfx_triggers = ["DEEP DIVE", "FIELD REPORT", "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO"]
     
     for line in lines:
         text = line.strip()
         if not text: continue 
-        
-        # Pre-Scrub: Remove markdown bolding/italics
         text = text.replace("*", "").replace("#", "").strip()
         upper_text = text.upper()
 
-        # --- SFX LOGIC ---
         if any(trigger in upper_text for trigger in sfx_triggers):
-             # Only play sfx if we aren't at the very start
              if len(combined_audio) > 5000 and transition_sfx:
-                 print(f"*** INSERTING SFX FOR: {text} ***")
                  combined_audio += transition_sfx
 
-        # --- FILTER 1: Numbered Structure Lines ---
         is_numbered = re.match(r'^\d+[\.\)]', text)
         if is_numbered:
-            # If it's a numbered line AND has a keyword, it's a robot instruction. Kill it.
-            if any(k in upper_text for k in forbidden_keywords) or "MIN)" in upper_text:
-                print(f"Skipping numbered structure: {text}")
-                continue
+            if any(k in upper_text for k in forbidden_keywords) or "MIN)" in upper_text: continue
+        if any(upper_text.startswith(k) for k in forbidden_keywords): continue
+        if text.startswith("(") and text.endswith(")"): continue
 
-        # --- FILTER 2: Pure Keywords ---
-        if any(upper_text.startswith(k) for k in forbidden_keywords):
-            print(f"Skipping header line: {text}")
-            continue
-            
-        # --- FILTER 3: Stage Directions ---
-        if text.startswith("(") and text.endswith(")"):
-            print(f"Skipping action line: {text}")
-            continue
-
-        # --- DETECT SPEAKER ---
         if "ALEX" in upper_text[:10]: 
             current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE).strip()
@@ -253,42 +247,34 @@ def generate_audio_openai(script_text):
             current_voice = "nova"
             text = re.sub(r'^.*?JAMIE.*?:', '', text, flags=re.IGNORECASE).strip()
         elif "RUFUS" in upper_text[:10]:
-            current_voice = "fable"
+            current_voice = "fable" 
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE).strip()
             
-        # Clean up anything left over
         text = text.replace("*", "").replace("#", "")
-        
         if not text or len(text) < 2: continue
             
         try:
-            # Generate Audio with 1.1x Speed Boost (Human Pace)
             with client.audio.speech.with_streaming_response.create(
-                model="tts-1",
+                model="tts-1-hd", 
                 voice=current_voice,
                 input=text,
-                speed=1.1 
+                speed=1.05 
             ) as response:
                 chunk_file = f"chunk_{count}.mp3"
                 response.stream_to_file(chunk_file)
-                
+            
             audio_chunk = AudioSegment.from_file(chunk_file)
+            audio_chunk = audio_chunk + 5 # Volume Boost
+            
             combined_audio += audio_chunk
             combined_audio += AudioSegment.silent(duration=150) 
             os.remove(chunk_file)
             count += 1
-            if count % 5 == 0: print(f"Generated {count} lines...")
-        except Exception as e:
-            print(f"Error on line {count}: {e}")
+        except: pass
 
-    print("Mixing final track...")
-    if os.path.exists("intro.mp3"):
-        combined_audio = AudioSegment.from_file("intro.mp3") + combined_audio
-    if os.path.exists("outro.mp3"):
-        combined_audio += AudioSegment.from_file("outro.mp3")
-
+    if os.path.exists("intro.mp3"): combined_audio = AudioSegment.from_file("intro.mp3") + combined_audio
+    if os.path.exists("outro.mp3"): combined_audio += AudioSegment.from_file("outro.mp3")
     combined_audio.export(OUTPUT_FILE, format="mp3")
-    print(f"Success! Podcast saved to {OUTPUT_FILE}")
 
 # --- RSS FEED ---
 def generate_rss_feed():
@@ -297,8 +283,8 @@ def generate_rss_feed():
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
     
-    ET.SubElement(channel, "title").text = "The AI Edge: Daily Deep Dive"
-    ET.SubElement(channel, "description").text = "Daily AI news, debated and decoded."
+    ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered & Automated"
+    ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media. Alex (Optimist), Jamie (Skeptic) and Rufus (Insider) debate the biggest stories in Artificial Intelligence."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
     ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
@@ -309,19 +295,35 @@ def generate_rss_feed():
     owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
     ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = YOUR_EMAIL
     ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}name").text = AUTHOR_NAME
-
     category = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}category")
     category.set("text", "Technology")
 
     for filename in sorted(os.listdir("."), reverse=True):
         if filename.endswith(".mp3") and filename.startswith("podcast_"):
+            date_str = filename.replace("podcast_", "").replace(".mp3", "")
+            notes_file = f"podcast_{date_str}.txt"
+            
+            description_text = "Today's top stories, discussed." 
+            episode_title = f"AI News: {date_str}" 
+            
+            if os.path.exists(notes_file):
+                with open(notes_file, "r") as f:
+                    content = f.read()
+                    if "Title:" in content:
+                        parts = content.split("Summary:")
+                        title_part = parts[0].replace("Title:", "").strip()
+                        if title_part: episode_title = title_part
+                        if len(parts) > 1: description_text = parts[1].strip()
+                    else:
+                        description_text = content
+
             item = ET.SubElement(channel, "item")
-            ET.SubElement(item, "title").text = f"AI News: {filename.replace('podcast_', '').replace('.mp3', '')}"
-            ET.SubElement(item, "description").text = "Today's top stories, discussed."
+            ET.SubElement(item, "title").text = episode_title
+            ET.SubElement(item, "description").text = description_text
             ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
             ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
             try:
-                dt = datetime.datetime.strptime(filename.replace("podcast_", "").replace(".mp3", ""), "%Y-%m-%d")
+                dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
                 ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
             except: pass
 
@@ -331,12 +333,19 @@ def generate_rss_feed():
 
 # --- MAIN ---
 if __name__ == "__main__":
-    news = get_latest_news()
+    # 1. Get Config (Day/Holiday Check)
+    config = get_episode_config()
+    
+    # 2. Get Sponsor
     sponsor = get_sponsor()
-    if news:
-        script = generate_script(news, sponsor)
-        if script:
-            generate_audio_openai(script)
-            generate_rss_feed()
+    
+    # 3. Generate Script (Pass Config to control length/depth)
+    script = generate_script(config, sponsor)
+    
+    if script:
+        # 4. Generate Audio
+        generate_audio_openai(script)
+        # 5. Update RSS
+        generate_rss_feed()
     else:
-        print("No news found.")
+        print("Script generation failed.")
