@@ -307,7 +307,7 @@ def generate_rss_feed():
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
     
-    ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered & Automated"
+    ET.SubElement(channel, "title").text = "The AI Edge: Daily News & Tools Unfiltered"
     ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media. Alex (Optimist), Jamie (Skeptic) and Rufus (Law & Money Insider) debate the biggest stories in Artificial Intelligence."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
