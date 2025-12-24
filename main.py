@@ -97,7 +97,7 @@ def get_episode_config():
     config = {
         "type": "DAILY_NEWS",
         "length_str": "20 Minutes",
-        "min_words": "3500",
+        "min_words": "4500",
         "fetch_limit": 5,   
         "total_items": 25,  
         "focus": "Fast-paced, covering today's headlines. 'Man on the Street' reports from Rufus."
@@ -107,7 +107,7 @@ def get_episode_config():
     if (month == 12 and day >= 24) or (month == 1 and day == 1): 
         config["type"] = "HOLIDAY_SPECIAL"
         config["length_str"] = "45 Minutes"
-        config["min_words"] = "8000"
+        config["min_words"] = "10000"
         config["fetch_limit"] = 10  
         config["total_items"] = 50  
         config["focus"] = "END OF YEAR SPECTACULAR. Use your INTERNAL KNOWLEDGE + news. Nostalgic, dramatic, comprehensive."
@@ -117,7 +117,7 @@ def get_episode_config():
     if weekday == 5: # Saturday
         config["type"] = "WEEKLY_RECAP"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "5000"
+        config["min_words"] = "7000"
         config["fetch_limit"] = 7
         config["total_items"] = 35
         config["focus"] = "SATURDAY EDITION. Synthesize these stories. Rufus provides 'Weekend Market Analysis' from the street."
@@ -126,7 +126,7 @@ def get_episode_config():
     if weekday == 6: # Sunday
         config["type"] = "DEEP_DIVE"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "5000"
+        config["min_words"] = "7000"
         config["fetch_limit"] = 7
         config["total_items"] = 35
         config["focus"] = "SUNDAY DEEP DIVE. Pick ONLY ONE major theme. Debate it. Rufus provides the legal/money angle."
