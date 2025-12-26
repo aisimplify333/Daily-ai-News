@@ -2,7 +2,7 @@ import subprocess
 import sys
 import time
 import logging
-import requests 
+import requests  
 
 # --- CONFIGURATION: LOGGING & SETUP ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -147,7 +147,7 @@ def call_gemini_api(model_name, prompt):
         elif response.status_code == 429:
             raise Exception("RATE_LIMIT")
         else:
-            logging.error(f"API Error {response.status_code}: {response.text}")
+            logging.error(f"API Error {response.status_code} on {model_name}: {response.text}")
             return None
     except Exception as e:
         if "RATE_LIMIT" in str(e): raise e
@@ -202,18 +202,25 @@ def generate_script(config, sponsor):
     ALEX: (Cold Open)...
     """
 
-    # UPDATED MODEL LIST: Uses Exact System IDs to prevent 404s
+    # FIXED MODEL LIST: Uses Exact Standard IDs
     models = [
-        "gemini-2.0-flash-exp",   # Top Tier (Might be rate limited)
-        "gemini-1.5-flash-latest", # Official Fallback
-        "gemini-1.5-flash-001",    # Legacy Stable
-        "gemini-1.5-pro-latest"    # Heavy Duty Backup
+        "gemini-2.0-flash-exp",   # Top Tier
+        "gemini-1.5-flash",       # Standard Stable (FIXED NAME)
+        "gemini-1.5-flash-8b",    # High Rate Limit Fallback
+        "gemini-1.5-pro"          # Heavy Duty Backup
     ]
     
     for model_name in models:
         logging.info(f"Attempting generation with {model_name}...")
         try:
-            return call_gemini_api(model_name, system_prompt)
+            result = call_gemini_api(model_name, system_prompt)
+            if result:
+                return result # Success! Return the text.
+            
+            # If result is None (404/Error), loop continues to next model...
+            logging.warning(f"Model {model_name} failed. Trying next...")
+            continue
+
         except Exception as e:
             if "RATE_LIMIT" in str(e):
                 logging.warning(f"⚠️ Rate Limit on {model_name}. Switching models in 5s...")
@@ -339,6 +346,7 @@ def update_rss_feed():
         date_str = filename.replace("podcast_", "").replace(".mp3", "")
         txt_path = filename.replace(".mp3", ".txt")
         
+        # SMART TITLE EXTRACTION
         title = f"AI News: {date_str}"
         desc = "Latest AI updates."
         rich_content = "Latest AI updates."
@@ -349,11 +357,13 @@ def update_rss_feed():
                 rich_content = content.replace("\n", "<br/>") 
                 
                 lines = content.split('\n')
+                # 1. Try to find an explicit "Title:" line
                 for line in lines:
                     if line.lower().startswith("title:"):
                         title = line.split(":", 1)[1].strip()
                         break
                 
+                # 2. Grab description (first non-title line)
                 for line in lines:
                     if "Title:" not in line and len(line) > 20:
                         desc = line
