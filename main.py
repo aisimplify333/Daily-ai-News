@@ -38,9 +38,6 @@ REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media (Alex, Jamie & Rufus)" 
 
-ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
-
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://venturebeat.com/category/ai/feed/",
@@ -52,6 +49,8 @@ RSS_FEEDS = [
     "https://www.wired.com/feed/category/ai/latest/rss"
 ]
 
+ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
@@ -74,7 +73,7 @@ def get_sponsor():
     except: return None
     return None
 
-def get_latest_news(limit_per_feed=5, total_limit=50): # Increased fetch limit for more content
+def get_latest_news(limit_per_feed=5, total_limit=50): 
     logging.info(f"Fetching up to {total_limit} news items...")
     news_items = []
     headers = {'User-Agent': 'Mozilla/5.0 (AI Simplify Media Bot)'}
@@ -101,8 +100,8 @@ def get_episode_config(force_downgrade=False):
     
     config = {
         "type": "DAILY_NEWS",
-        "length_str": "25 Minutes", # Increased target
-        "min_words": "4000",       # Forced high word count
+        "length_str": "25 Minutes", 
+        "min_words": "4000",       
         "fetch_limit": 6,   
         "total_items": 40,  
         "focus": "Deep analysis. Extensive banter. Rabbit holes."
@@ -130,10 +129,10 @@ def get_episode_config(force_downgrade=False):
     
     return config
 
-# --- ENGINE: DAISY-CHAIN GENERATION (The 20-Minute Enforcer) ---
+# --- ENGINE: GPT-4o (THE IMPERFECTION ENGINE) ---
 
-def call_openai_gpt4o(prompt, temperature=0.85): # High temp for more "Yapping/Banter"
-    """The Gold Standard Engine."""
+def call_openai_gpt4o(prompt, temperature=0.9): 
+    """Temperature 0.9 + Imperfection Prompt for Maximum Realism."""
     if not OPENAI_API_KEY:
         logging.error("❌ OpenAI Key missing. Cannot run Pro Engine.")
         return None
@@ -143,7 +142,17 @@ def call_openai_gpt4o(prompt, temperature=0.85): # High temp for more "Yapping/B
         response = client.chat.completions.create(
             model="gpt-4o", 
             messages=[
-                {"role": "system", "content": "You are an expert podcast showrunner. You write LONG, DETAILED, MESSY scripts. You never summarize. You always elaborate. You love tangents and debates."},
+                {"role": "system", "content": """
+                You are a screenplay writer for a high-paced drama (Sorkin style).
+                
+                CORE RULES FOR HUMAN REALISM:
+                1. **IMPERFECTION:** Real people stutter. Use phrases like "I mean...", "Look...", "Wait, no...", "Uhh...". Use these sparingly but effectively.
+                2. **INTERRUPTIONS:** Use '--' to cut people off mid-thought.
+                3. **SPEED:** Short sentences. Fragments.
+                4. **ROLES:** - ALEX/JAMIE: Fast, overlap, high energy.
+                   - RUFUS: The "Correspondent." He speaks with authority on MONEY/LAW. He is cynical.
+                5. **FORMAT:** Start EVERY line with the speaker's name (ALEX:, JAMIE:, RUFUS:).
+                """},
                 {"role": "user", "content": prompt}
             ],
             temperature=temperature
@@ -167,17 +176,16 @@ def generate_script(config, sponsor):
     sponsor_txt = ""
     if sponsor:
         sponsor_txt = f"""
-        **SPONSOR BLOCK (MUST BE LONG - 2 Minutes):**
+        **SPONSOR BLOCK (2 Minutes):**
         Sponsor: "{sponsor['name']}"
         Copy: "{sponsor['copy']}"
-        **DIRECTIVE:** JOINT READ. 
-        - Jamie introduces it from a "Tech/Efficiency" angle.
-        - Rufus interrupts with the "Smart Money/Savings" angle.
-        - They argue about whether it's worth it.
-        - Alex settles the debate.
+        **DIRECTIVE:** - Jamie starts excited.
+        - Rufus cuts in: "But what's the damage?" (Cost).
+        - Alex mediates.
+        - Make it sound unscripted.
         """
 
-    # 2. STEP 1: THE BLUEPRINT (Generate the Run of Show)
+    # 2. STEP 1: THE BLUEPRINT
     logging.info("🔹 STEP 1/4: Generating Blueprint...")
     blueprint_prompt = f"""
     Analyze these news stories and create a RUN OF SHOW for a 25-minute episode.
@@ -189,35 +197,33 @@ def generate_script(config, sponsor):
     OUTPUT FORMAT:
     - HOT TAKE (The Cold Open Story): [Story Name]
     - ACT 1 (Speed Round): [Story A], [Story B], [Story C]
-    - ACT 2 (Deep Dive): [The Biggest Story] - Connection to [Another Story]
+    - ACT 2 (Deep Dive): [The Biggest Story]
     - ACT 3 (Future/Money): [Market Impact / Prediction]
     
     Just return the bullet points.
     """
     blueprint = call_openai_gpt4o(blueprint_prompt, temperature=0.5)
     if not blueprint: return None
-    logging.info(f"Blueprint Generated:\n{blueprint}")
 
-    # 3. STEP 2: ACT 1 (Teaser + Speed Round) - FORCED LENGTH
+    # 3. STEP 2: ACT 1 (Teaser + Speed Round)
     logging.info("🔹 STEP 2/4: Writing Act 1 (Target: 1200 Words)...")
     act1_prompt = f"""
     Role: Podcast Writer.
     Blueprint: {blueprint}
     News Data: {news_data}
-    Characters: ALEX (Host), JAMIE (Skeptic), RUFUS (Cynic/British).
+    Characters: ALEX (Host), JAMIE (Skeptic), RUFUS (Legal/Money Correspondent).
     
     INSTRUCTIONS:
-    - **COLD OPEN (THE DATA HOOK):** Start with a SHOCKING STAT. High adrenaline.
-    - Insert `[INTRO MUSIC]` tag on a new line.
-    - **ACT 1 (The Speed Round):** - Do NOT rush. Spend 3-4 minutes on EACH of the 3 stories.
-        - Have Jamie and Rufus interrupt Alex constantly with questions.
-        - Go down "Rabbit Holes" about the implications.
-    - END with Alex saying "But the real story today is..." (Teasing Act 2).
-    - **LENGTH REQUIREMENT:** MINIMUM 1200 WORDS.
+    - **COLD OPEN:** SHOCKING STAT. 15s Argument. `[INTRO MUSIC]` tag.
+    - **ACT 1 (Speed Round):** - **PING PONG:** Alex and Jamie must switch turns constantly. 
+        - **RUFUS:** Only chimes in TWICE here. He's the "Man on the Street."
+        - **IMPERFECTION:** Add a few "Ums" or "I means" to make it sound real.
+    - END with Alex teasing Act 2.
+    - **LENGTH:** MIN 1200 WORDS.
     """
     act1 = call_openai_gpt4o(act1_prompt)
 
-    # 4. STEP 3: ACT 2 (The Deep Dive + Sponsor) - FORCED LENGTH
+    # 4. STEP 3: ACT 2 (The Deep Dive + Sponsor)
     logging.info("🔹 STEP 3/4: Writing Act 2 (Target: 1800 Words)...")
     act2_prompt = f"""
     Role: Podcast Writer.
@@ -228,15 +234,13 @@ def generate_script(config, sponsor):
     
     INSTRUCTIONS:
     - Write **ACT 2 (The Deep Dive)**.
-    - **THE SPONSOR READ:** This must be a full 2-minute conversation/debate in the middle.
-    - **THE DEEP DIVE:**
-        - Pick the MAIN story.
-        - Discuss the history.
-        - Discuss the technology.
-        - Discuss the politics.
-        - Debate the ethics.
+    - **SPONSOR READ:** High energy debate. Rufus is skeptical of the price.
+    - **DEEP DIVE:**
+        - Three-way conversation, but Rufus sticks to LAW/MONEY.
+        - Use '--' to show them talking over each other.
+        - Make them disagree passionately.
     - END with Alex saying "But what does this mean for our wallets? Rufus?"
-    - **LENGTH REQUIREMENT:** MINIMUM 1800 WORDS. DO NOT SUMMARIZE.
+    - **LENGTH:** MIN 1800 WORDS.
     """
     act2 = call_openai_gpt4o(act2_prompt)
 
@@ -249,11 +253,10 @@ def generate_script(config, sponsor):
     
     INSTRUCTIONS:
     - Write **ACT 3 (Future & Money)**. 
-    - Rufus gives a detailed market prediction.
-    - Jamie disagrees.
-    - Alex wraps up.
-    - **CALL TO ACTION:** "Share this with one friend."
-    - **LENGTH REQUIREMENT:** MINIMUM 1000 WORDS.
+    - **RUFUS LEADS:** He gives the market prediction. He sounds ominous/cynical.
+    - Jamie fights back.
+    - **CALL TO ACTION:** "Share with one friend."
+    - **LENGTH:** MIN 1000 WORDS.
     
     AFTER THE SCRIPT, Add `|||SEPARATOR|||` and then write:
     1. Viral Title
@@ -269,6 +272,7 @@ def generate_script(config, sponsor):
 # --- AUDIO ENGINE ---
 
 def clean_text_for_audio(text):
+    text = re.sub(r'\*\*', '', text)
     text = re.sub(r'[\(\[].*?[\)\]]', '', text)
     text = text.replace("*", "").replace("#", "")
     return text.strip()
@@ -294,7 +298,8 @@ def generate_audio(script_content):
     # REMOVE METADATA BEFORE AUDIO PROCESSING
     clean_script = script_content.split("|||SEPARATOR|||")[0]
     lines = clean_script.split('\n')
-    current_voice = "onyx" 
+    current_voice = "onyx"
+    current_speed = 1.15
     
     skip_phrases = ["PART 3", "THE SCRIPT", "SEPARATOR", "SHOW NOTES", "END OF SCRIPT", "SIGNOFF", "MARKETING ASSETS", "ACT 1", "ACT 2", "ACT 3", "TEASER"]
     sfx_triggers = ["DEEP DIVE", "MID-ROLL", "MARKET REPORT"]
@@ -316,26 +321,35 @@ def generate_audio(script_content):
         if any(x in text.upper() for x in sfx_triggers) and transition:
             if len(combined_audio) > 10000: combined_audio += transition
 
+        # SPEAKER DETECTION
         upper = text.upper()
-        if "ALEX:" in upper: current_voice = "onyx"
-        elif "JAMIE:" in upper: current_voice = "nova"
-        elif "RUFUS:" in upper: current_voice = "fable"
+        if "ALEX" in upper and (":" in upper[:10] or "HOST" in upper): 
+            current_voice = "onyx"
+            current_speed = 1.15 # Fast Host
+        elif "JAMIE" in upper and (":" in upper[:10] or "CO-HOST" in upper): 
+            current_voice = "nova"
+            current_speed = 1.12 # Fast Skeptic
+        elif "RUFUS" in upper and (":" in upper[:10] or "CORRESPONDENT" in upper): 
+            current_voice = "fable"
+            current_speed = 1.05 # Slower, heavy, authoritative (Correspondent feel)
         
-        clean_text = re.sub(r'^(ALEX|JAMIE|RUFUS):\s*', '', text, flags=re.IGNORECASE)
+        # CLEANUP
+        clean_text = re.sub(r'^[\*]*\s*(ALEX|JAMIE|RUFUS)[\*]*\s*:', '', text, flags=re.IGNORECASE)
         clean_text = clean_text_for_audio(clean_text)
         
         if len(clean_text) < 2: continue
 
         try:
             with client.audio.speech.with_streaming_response.create(
-                model="tts-1-hd", voice=current_voice, input=clean_text, speed=1.05
+                model="tts-1-hd", voice=current_voice, input=clean_text, speed=current_speed
             ) as response:
                 chunk_path = f"temp_{i}.mp3"
                 response.stream_to_file(chunk_path)
             
             segment = AudioSegment.from_file(chunk_path)
-            combined_audio += segment + 5 
-            combined_audio += AudioSegment.silent(duration=150) 
+            
+            # ZERO LATENCY GAP (10ms)
+            combined_audio += segment + 10 
             os.remove(chunk_path)
             
             if i % 10 == 0: print(f"   Compiled line {i}...")
@@ -406,53 +420,4 @@ def update_rss_feed():
         ET.SubElement(item, "description").text = desc
         ET.SubElement(item, f"{{{CONTENT_NS}}}encoded").text = rich_content
         ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
-        ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
-        
-        try:
-            dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-            ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
-        except: pass
-
-    tree = ET.ElementTree(rss)
-    ET.indent(tree, space="  ", level=0)
-    tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
-    logging.info("✅ RSS Feed Updated.")
-
-if __name__ == "__main__":
-    print("\n🚀 AI PODCAST AUTOMATION: STARTED\n")
-    sponsor = get_sponsor()
-    config = get_episode_config()
-    
-    logging.info("📝 Generating Script...")
-    full_text = generate_script(config, sponsor)
-    
-    if not full_text:
-        logging.warning("⚠️ High-Load Generation Failed. Retrying with Standard Config...")
-        config = get_episode_config(force_downgrade=True)
-        full_text = generate_script(config, sponsor)
-        
-    if full_text:
-        # PARSE AND SAVE
-        try:
-            parts = full_text.split("|||SEPARATOR|||")
-            script_body = parts[0]
-            marketing_assets = parts[1] if len(parts) > 1 else "No marketing assets."
-            
-            # Save Marketing
-            with open(MARKETING_FILE, "w", encoding="utf-8") as f:
-                f.write(marketing_assets.strip())
-            
-            # Save Script/Notes
-            with open(NOTES_FILE, "w", encoding="utf-8") as f:
-                f.write("See Marketing File for assets.\n" + script_body[:500])
-                
-            generate_audio(script_body)
-            update_rss_feed()
-            print("\n🎉 PRODUCTION COMPLETE. Ready for git push.")
-        except Exception as e:
-            logging.error(f"Parsing Error: {e}")
-            # Fallback save
-            with open("DEBUG_SCRIPT.txt", "w") as f: f.write(full_text)
-    else:
-        logging.critical("❌ ALL generation attempts failed. Check Quota/API Keys.")
-        sys.exit(1)
+        ET.
