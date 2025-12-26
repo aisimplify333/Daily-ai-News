@@ -50,9 +50,8 @@ RSS_FEEDS = [
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
-# --- DATE FIX: Explicitly calculate the Weekday String ---
+# --- DATE FIX ---
 TODAY = datetime.date.today()
-# Formats as "Tuesday, December 23, 2025" so the AI never guesses wrong
 TODAY_STR = TODAY.strftime("%A, %B %d, %Y")
 
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
@@ -97,19 +96,19 @@ def get_episode_config():
     config = {
         "type": "DAILY_NEWS",
         "length_str": "20 Minutes",
-        "min_words": "4500",
+        "min_words": "3800", # Bumped up to guarantee 20m
         "fetch_limit": 5,   
-        "total_items": 25,  
-        "focus": "Fast-paced, covering today's headlines. 'Man on the Street' reports from Rufus."
+        "total_items": 30,  # Increased density
+        "focus": "Fast-paced but deep. Cover the headlines, then debate the impact."
     }
     
     # Holiday Logic (45 Mins)
     if (month == 12 and day >= 24) or (month == 1 and day == 1): 
         config["type"] = "HOLIDAY_SPECIAL"
         config["length_str"] = "45 Minutes"
-        config["min_words"] = "10000"
-        config["fetch_limit"] = 10  
-        config["total_items"] = 50  
+        config["min_words"] = "8500" # Guarantee 45m
+        config["fetch_limit"] = 12  
+        config["total_items"] = 60  
         config["focus"] = "END OF YEAR SPECTACULAR. Use your INTERNAL KNOWLEDGE + news. Nostalgic, dramatic, comprehensive."
         return config
 
@@ -117,18 +116,18 @@ def get_episode_config():
     if weekday == 5: # Saturday
         config["type"] = "WEEKLY_RECAP"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "7000"
-        config["fetch_limit"] = 7
-        config["total_items"] = 35
+        config["min_words"] = "5500" # Guarantee 30m
+        config["fetch_limit"] = 8
+        config["total_items"] = 40
         config["focus"] = "SATURDAY EDITION. Synthesize these stories. Rufus provides 'Weekend Market Analysis' from the street."
         return config
         
     if weekday == 6: # Sunday
         config["type"] = "DEEP_DIVE"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "7000"
-        config["fetch_limit"] = 7
-        config["total_items"] = 35
+        config["min_words"] = "5500" # Guarantee 30m
+        config["fetch_limit"] = 8
+        config["total_items"] = 40
         config["focus"] = "SUNDAY DEEP DIVE. Pick ONLY ONE major theme. Debate it. Rufus provides the legal/money angle."
         return config
     
@@ -157,44 +156,40 @@ def generate_script(config, sponsor):
     raw_news = get_latest_news(config["fetch_limit"], config["total_items"])
     if not raw_news: return None
 
-    sponsor_txt = "our amazing sponsors"
-    if sponsor:
-        sponsor_txt = f"{sponsor.get('name')} - {sponsor.get('copy')}"
-
     print(f"--- EPISODE TYPE: {config['type']} | TARGET: {config['length_str']} ---")
 
     prompt = f"""
     You are the Showrunner for "The AI Edge" (AI Simplify Media).
-    Current Date: {TODAY_STR}.
-    Episode Type: {config['type']}.
-    Target Length: {config['length_str']} (Minimum {config['min_words']} Words).
+    Date: {TODAY_STR}.
+    Type: {config['type']}.
+    Target: {config['length_str']} (STRICT MINIMUM {config['min_words']} Words).
     Focus: {config['focus']}
     
     CHARACTERS:
-    1. ALEX (Host): Optimistic, professional American. Uses fillers ("Look," "I mean,").
-    2. JAMIE (Co-host): Skeptical, interrupts often. Uses short sentences.
-    3. RUFUS (Correspondent): BRITISH ACCENT. Law & Money Expert. Dry wit.
-       - **STYLE:** Rufus is "Man on the Street". He reports from "outside the courthouse" or "Wall Street". 
-       - **SOUND:** Formal but cynical. Uses British terms ("Rubbish," "Scheme," "Proper").
-
+    1. ALEX (Host): Optimistic, professional American.
+    2. JAMIE (Co-host): Skeptical, interrupts often. 
+    3. RUFUS (Correspondent): BRITISH ACCENT. Law & Money Expert. Dry wit. 
+       - Reports from "the street". Formal but cynical.
+    
     INSTRUCTIONS:
-    - **DYNAMISM:** Write messy! Real people interrupt. Use "Hang on," "Wait," "Exactly."
-    - **STRUCTURE:** Alex & Jamie debate in the studio. They MUST "throw it over" to Rufus in the field MULTIPLE TIMES (3-4 times).
-    - **RUFUS INTERACTION:** Don't just give Rufus one block. Go back and forth. 
-      (e.g., Alex: "Rufus, what's the legal take?" -> Rufus replies -> Jamie argues -> Rufus replies).
-    - **CLEAN DIALOGUE:** **DO NOT** write stage directions in the spoken text (e.g. do NOT write "(laughs)" or "in a dry tone"). Only write what they SAY.
+    - **LENGTH GUARANTEE:** You MUST meet the word count. If you run out of news, pivot to historical analysis or future predictions based on your internal knowledge. DO NOT finish early.
+    - **HEATED INTERRUPTIONS:** To sound realistic, have characters cut each other off. Use short, incomplete sentences during debates.
+      *Example:*
+      *Alex: "I think we need to consider--"*
+      *Jamie: "No, look, that's just PR fluff."*
+      *Alex: "Let me finish! The data says..."*
+    - **RUFUS:** Throw to Rufus 3-4 times. He speaks formally but cynically.
+    - **CLEAN DIALOGUE:** DO NOT write stage directions like (laughs). Only write spoken words.
     
-    - **OUTPUT FORMAT:** 1. First, write the SHOW NOTES (Clean format).
-      2. Then write "|||SEPARATOR|||"
-      3. Then write the SCRIPT.
+    **CRITICAL OUTPUT FORMAT:**
+    1. First, write the **PROFESSIONAL SHOW NOTES**. 
+       - Format: "Diary of a CEO" style.
+       - Title, Summary Hook, "What We Discuss" (Bullets), "Sponsors", Hashtags.
     
-    SHOW NOTES FORMAT:
-    Title: [Catchy Title]
-    Summary: [2-3 sentences hooking the listener]
+    2. Then write "|||SEPARATOR|||"
     
-    SCRIPT FORMAT:
-    ALEX: (text) / JAMIE: (text) / RUFUS: (text)
-
+    3. Then write the SCRIPT.
+    
     RAW NEWS INPUT:
     {raw_news}
     """
@@ -205,11 +200,8 @@ def generate_script(config, sponsor):
     if "|||SEPARATOR|||" in full_response:
         parts = full_response.split("|||SEPARATOR|||")
         
-        # --- CLEAN SHOW NOTES ---
-        raw_notes = parts[0].strip()
-        clean_notes = re.sub(r'^[\*#]*SHOW NOTES.*$', '', raw_notes, flags=re.MULTILINE | re.IGNORECASE)
-        clean_notes = re.sub(r'FORMAT:', '', clean_notes, flags=re.IGNORECASE).strip()
-        
+        # --- SAVE RICH SHOW NOTES ---
+        clean_notes = parts[0].strip()
         with open(NOTES_FILE, "w") as f:
             f.write(clean_notes)
             
@@ -217,7 +209,7 @@ def generate_script(config, sponsor):
     else:
         return full_response
 
-# --- AUDIO GENERATION (HD + BOOSTED VOLUME + SCRUBBER) ---
+# --- AUDIO GENERATION ---
 def generate_audio_openai(script_text):
     if not OPENAI_API_KEY: return
     client = OpenAI(api_key=OPENAI_API_KEY)
@@ -254,8 +246,6 @@ def generate_audio_openai(script_text):
         if any(upper_text.startswith(k) for k in forbidden_keywords): continue
         if text.startswith("(") and text.endswith(")"): continue
 
-        # --- SPEAKER DETECTION & TEXT CLEANING ---
-        # 1. Detect who is speaking
         if "ALEX" in upper_text[:10]: 
             current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE)
@@ -266,15 +256,11 @@ def generate_audio_openai(script_text):
             current_voice = "fable" 
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE)
             
-        # 2. THE SCRUBBER (The Fix for Stage Directions)
-        # Removes anything in parentheses like (laughs) or (dry tone)
+        # Scrub stage directions
         text = re.sub(r'\(.*?\)', '', text) 
-        # Removes anything in brackets like [sighs]
         text = re.sub(r'\[.*?\]', '', text)
-        # Removes lingering asterisks
         text = text.replace("*", "").replace("#", "").strip()
         
-        # 3. Final Check (If the line is now empty after scrubbing, skip it)
         if not text or len(text) < 2: continue
             
         try:
@@ -288,7 +274,7 @@ def generate_audio_openai(script_text):
                 response.stream_to_file(chunk_file)
             
             audio_chunk = AudioSegment.from_file(chunk_file)
-            audio_chunk = audio_chunk + 5 # Volume Boost
+            audio_chunk = audio_chunk + 5 
             
             combined_audio += audio_chunk
             combined_audio += AudioSegment.silent(duration=150) 
@@ -300,14 +286,18 @@ def generate_audio_openai(script_text):
     if os.path.exists("outro.mp3"): combined_audio += AudioSegment.from_file("outro.mp3")
     combined_audio.export(OUTPUT_FILE, format="mp3")
 
-# --- RSS FEED ---
+# --- PRO RSS FEED (WITH CONTENT NAMESPACE) ---
 def generate_rss_feed():
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
+    
+    # REGISTER NAMESPACES FOR RICH CONTENT
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
+    ET.register_namespace("content", "http://purl.org/rss/1.0/modules/content/")
+    
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
     
-    ET.SubElement(channel, "title").text = "The AI Edge: Daily News & Tools Unfiltered"
+    ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered & Automated"
     ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media. Alex (Optimist), Jamie (Skeptic) and Rufus (Law & Money Insider) debate the biggest stories in Artificial Intelligence."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
@@ -327,24 +317,34 @@ def generate_rss_feed():
             date_str = filename.replace("podcast_", "").replace(".mp3", "")
             notes_file = f"podcast_{date_str}.txt"
             
-            description_text = "Today's top stories, discussed." 
+            # Defaults
             episode_title = f"AI News: {date_str}" 
+            description_text = "Today's top stories, discussed."
+            content_encoded_text = "Today's top stories, discussed."
             
+            # --- PARSE RICH NOTES ---
             if os.path.exists(notes_file):
                 with open(notes_file, "r") as f:
-                    content = f.read().strip()
-                    # Final safety clean for display
-                    if "Title:" in content:
-                        parts = content.split("Summary:")
-                        title_part = parts[0].replace("Title:", "").strip()
-                        if title_part: episode_title = title_part
-                        if len(parts) > 1: description_text = parts[1].strip()
-                    else:
-                        description_text = content
+                    full_notes = f.read().strip()
+                    content_encoded_text = full_notes # Save full formatted text for content:encoded
+                    
+                    # Extract Title
+                    lines = full_notes.split('\n')
+                    for line in lines:
+                        if line.lower().startswith("title:"):
+                            episode_title = line.replace("Title:", "").replace("title:", "").strip()
+                            break
+                    
+                    # Create a short summary for the normal description tag
+                    description_text = full_notes[:250] + "..." if len(full_notes) > 250 else full_notes
 
             item = ET.SubElement(channel, "item")
             ET.SubElement(item, "title").text = episode_title
             ET.SubElement(item, "description").text = description_text
+            
+            # ADD RICH CONTENT TAG (The "Sticky" Note)
+            ET.SubElement(item, "{http://purl.org/rss/1.0/modules/content/}encoded").text = content_encoded_text
+            
             ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
             ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
             try:
