@@ -8,7 +8,7 @@ import requests
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def install_requirements():
-    """Auto-installs essentials."""
+    """Auto-installs essentials. Ensures 'openai' is present."""
     required = ["holidays", "feedparser", "pydub", "openai", "requests"]
     for package in required:
         try:
@@ -59,7 +59,7 @@ TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%A, %B %d, %Y")
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
 NOTES_FILE = f"podcast_{TODAY}.txt" 
-MARKETING_FILE = f"marketing_{TODAY}.txt"
+MARKETING_FILE = f"marketing_{TODAY}.txt" # NEW: For Audience Growth
 SPONSORS_FILE = "sponsors.json"
 
 # --- HELPER FUNCTIONS ---
@@ -151,7 +151,7 @@ def call_openai_gpt4o(prompt):
                 {"role": "system", "content": "You are an expert podcast showrunner. You write messy, realistic dialogue with interruptions. You prioritize 'Theatre of the Mind' audio storytelling."},
                 {"role": "user", "content": prompt}
             ],
-            temperature=0.75 
+            temperature=0.75 # Perfect balance of creativity and structure
         )
         return response.choices[0].message.content
     except Exception as e:
@@ -183,6 +183,7 @@ def generate_script(config, sponsor):
 
     sponsor_txt = ""
     if sponsor:
+        # UPDATED: Jamie AND Rufus Banter Logic (High Retention Ad Read)
         sponsor_txt = f"""
         **SPONSOR BLOCK:**
         Sponsor: "{sponsor['name']}"
@@ -211,7 +212,7 @@ def generate_script(config, sponsor):
     2. **NO STAGE DIRECTIONS:** Do not write (laughs). Only spoken words.
     3. **MUSIC TRIGGER:** Write exactly `[INTRO MUSIC]` on a new line after the Cold Open.
     
-    EPISODE STRUCTURE (3-ACT FLOW):
+    EPISODE STRUCTURE (THE RETENTION ARC):
     
     **TEASER:** (0:00-0:30)
     - 15-second high-drama argument about the biggest story. Hook the listener.
@@ -228,7 +229,7 @@ def generate_script(config, sponsor):
     **ACT 3: THE FUTURE & MONEY** (15:00-End)
     - Rufus enters here for the "Market Report."
     - What stocks are moving? Who gets sued?
-    - **CALL TO ACTION:** Alex asks listeners to "Share with one friend".
+    - **CALL TO ACTION:** Alex asks listeners to "Share with one friend" to help the show grow.
     
     OUTPUT STRUCTURE:
     PART 1: SHOW NOTES
@@ -237,7 +238,7 @@ def generate_script(config, sponsor):
     ...
     |||SEPARATOR|||
     PART 2: MARKETING ASSETS
-    [1 LinkedIn Post + 3 Tweets]
+    [1 LinkedIn Post + 3 Tweets based on the script]
     |||SEPARATOR|||
     PART 3: SCRIPT
     ALEX: (Cold Open)...
@@ -253,6 +254,7 @@ def generate_script(config, sponsor):
         return script
     else:
         logging.warning("⚠️ OpenAI Failed. Falling back to Gemini (Free Tier)...")
+        # Fallback uses the STABLE name to avoid 404s
         return call_gemini_fallback("gemini-1.5-flash", system_prompt)
 
 # --- AUDIO ENGINE ---
