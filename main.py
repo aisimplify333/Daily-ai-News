@@ -320,4 +320,58 @@ def generate_rss_feed():
     image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
     image.set("href", f"{base_url}/logo.png") 
     
-    owner = ET.SubElement(channel, "{
+    owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
+    ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = YOUR_EMAIL
+    ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}name").text = AUTHOR_NAME
+    category = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}category")
+    category.set("text", "Technology")
+
+    for filename in sorted(os.listdir("."), reverse=True):
+        if filename.endswith(".mp3") and filename.startswith("podcast_"):
+            date_str = filename.replace("podcast_", "").replace(".mp3", "")
+            notes_file = f"podcast_{date_str}.txt"
+            
+            episode_title = f"AI News: {date_str}" 
+            description_text = "Today's top stories, discussed."
+            content_encoded_text = "Today's top stories, discussed."
+            
+            if os.path.exists(notes_file):
+                with open(notes_file, "r") as f:
+                    full_notes = f.read().strip()
+                    content_encoded_text = full_notes.replace("\n", "<br/>") # HTML breaks for Spotify
+                    
+                    # Extract Title (Robust)
+                    lines = full_notes.split('\n')
+                    for line in lines:
+                        if line.lower().startswith("title:"):
+                            episode_title = line.split(":", 1)[1].strip()
+                            break
+                    
+                    # Short Summary (First paragraph after title)
+                    clean_desc = [l for l in lines if "Title:" not in l and l.strip()]
+                    if clean_desc: description_text = clean_desc[0]
+
+            item = ET.SubElement(channel, "item")
+            ET.SubElement(item, "title").text = episode_title
+            ET.SubElement(item, "description").text = description_text
+            ET.SubElement(item, "{http://purl.org/rss/1.0/modules/content/}encoded").text = content_encoded_text
+            ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
+            ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
+            try:
+                dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+                ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
+            except: pass
+
+    tree = ET.ElementTree(rss)
+    ET.indent(tree, space="  ", level=0)
+    tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
+
+if __name__ == "__main__":
+    config = get_episode_config()
+    sponsor = get_sponsor()
+    script = generate_script(config, sponsor)
+    if script:
+        generate_audio_openai(script)
+        generate_rss_feed()
+    else:
+        print("Script generation failed.")
