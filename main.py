@@ -2,7 +2,7 @@ import subprocess
 import sys
 import time
 import logging
-import requests  # NO GOOGLE SDK. Direct "Hardline" connection.
+import requests 
 
 # --- CONFIGURATION: LOGGING & SETUP ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -202,7 +202,13 @@ def generate_script(config, sponsor):
     ALEX: (Cold Open)...
     """
 
-    models = ["gemini-2.0-flash-exp", "gemini-1.5-flash", "gemini-1.5-flash-8b"]
+    # UPDATED MODEL LIST: Uses Exact System IDs to prevent 404s
+    models = [
+        "gemini-2.0-flash-exp",   # Top Tier (Might be rate limited)
+        "gemini-1.5-flash-latest", # Official Fallback
+        "gemini-1.5-flash-001",    # Legacy Stable
+        "gemini-1.5-pro-latest"    # Heavy Duty Backup
+    ]
     
     for model_name in models:
         logging.info(f"Attempting generation with {model_name}...")
@@ -251,7 +257,6 @@ def generate_audio(script_content):
 
     logging.info(f"Processing {len(lines)} lines of dialogue...")
     
-    # Track if we have played the intro music yet (Post-Cold Open)
     intro_played = False
 
     for i, line in enumerate(lines):
@@ -262,7 +267,6 @@ def generate_audio(script_content):
         if any(x in text.upper() for x in sfx_triggers) and transition:
             if len(combined_audio) > 10000: combined_audio += transition
 
-        # COLD OPEN LOGIC: If we are 4-5 lines in, play the intro music
         if not intro_played and i > 4 and intro_music:
              logging.info("   🎵 Playing Intro Music (Post Cold-Open)...")
              combined_audio += intro_music
@@ -335,7 +339,6 @@ def update_rss_feed():
         date_str = filename.replace("podcast_", "").replace(".mp3", "")
         txt_path = filename.replace(".mp3", ".txt")
         
-        # SMART TITLE EXTRACTION
         title = f"AI News: {date_str}"
         desc = "Latest AI updates."
         rich_content = "Latest AI updates."
@@ -346,13 +349,11 @@ def update_rss_feed():
                 rich_content = content.replace("\n", "<br/>") 
                 
                 lines = content.split('\n')
-                # 1. Try to find an explicit "Title:" line
                 for line in lines:
                     if line.lower().startswith("title:"):
                         title = line.split(":", 1)[1].strip()
                         break
                 
-                # 2. Grab description (first non-title line)
                 for line in lines:
                     if "Title:" not in line and len(line) > 20:
                         desc = line
