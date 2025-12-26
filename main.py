@@ -34,7 +34,7 @@ RSS_SETTINGS = {
     "link": "https://github.com/aisimplify333/Daily-ai-News",
     "description": "Daily News Unfiltered with Alex, Jamie, and Rufus.",
     "author": "AI Simplify Media",
-    "email": "aisimplifymedia@gmail.com", 
+    "email": "aisimplify333@gmail.com", 
     "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.jpg",
     "category": "Technology"
 }
