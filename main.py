@@ -14,7 +14,7 @@ AUDIO_DIR = BASE_DIR / "episode_audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 ASSETS_DIR = BASE_DIR / "assets"
 
-# *** SPOTIFY BRIDGE ***
+# *** SPOTIFY BRIDGE (The Money Link) ***
 SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
 
 VOICES = {"ALEX": "onyx", "JAMIE": "nova", "RUFUS": "fable"}
@@ -25,45 +25,29 @@ RSS_SETTINGS = {
     "description": "Deep dives into AI, Technology, and the Future.",
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com", 
-    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png", # Standardized
+    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png",
     "category": "Technology"
 }
 
-# --- FORMAT LOGIC (FULL LENGTH) ---
+# --- FORMAT LOGIC (FULL SHOW) ---
 def get_show_settings():
-    today = datetime.date.today()
-    if today.month == 12 and today.day >= 26:
-        return {"type": "Year End Special", "tone": "Epic, existential.", "segments": [
-            {"name": "HOOK", "words": 50, "cast": "ALEX_JAMIE", "transition": False},
-            {"name": "Q1_DEEP_ANALYSIS", "words": 1500, "cast": "ALEX_JAMIE", "transition": False},
-            {"name": "RUFUS_MACRO_ECONOMICS", "words": 1000, "cast": "RUFUS_FOCUS", "transition": True},
-            {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
-            {"name": "Q3_SOCIETAL_IMPACT", "words": 1500, "cast": "ALEX_JAMIE", "transition": True},
-            {"name": "FUTURE_PREDICTIONS", "words": 1500, "cast": "ALL_THREE", "transition": False},
-            {"name": "OUTRO_VIRAL", "words": 200, "cast": "ALEX_SOLO", "transition": False}
-        ]}
-    elif today.weekday() >= 5:
-        return {"type": "Weekend Deep Dive", "tone": "Debate-heavy.", "segments": [
-            {"name": "HOOK", "words": 50, "cast": "ALEX_JAMIE", "transition": False},
-            {"name": "MAIN_TOPIC_DEEP_DIVE", "words": 1800, "cast": "ALEX_JAMIE", "transition": False},
-            {"name": "RUFUS_LONDON_REPORT", "words": 1000, "cast": "RUFUS_FOCUS", "transition": True},
-            {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
-            {"name": "ETHICAL_DEBATE", "words": 1500, "cast": "ALL_THREE", "transition": True},
-            {"name": "OUTRO_VIRAL", "words": 200, "cast": "ALEX_SOLO", "transition": False}
-        ]}
-    else:
-        return {"type": "Daily News", "tone": "Hard-hitting.", "segments": [
+    return {
+        "type": "Daily News Unfiltered", 
+        "tone": "Investigative, Debate-Heavy. PURE DIALOGUE. NO NARRATION.", 
+        "segments": [
             {"name": "HOOK", "words": 50, "cast": "ALEX_JAMIE", "transition": False},
             {"name": "TOP_STORY_MECHANISMS", "words": 1200, "cast": "ALEX_JAMIE", "transition": False},
             {"name": "RUFUS_MARKETS_LAW", "words": 800, "cast": "RUFUS_FOCUS", "transition": True},
             {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
             {"name": "SECONDARY_STORY_IMPACT", "words": 1000, "cast": "ALEX_JAMIE", "transition": True},
-            {"name": "SPEED_ROUND_WRAP", "words": 600, "cast": "ALL_THREE", "transition": True},
+            {"name": "SPEED_ROUND_WRAP", "words": 600, "cast": "ALL_THREE", "transition": True}, # Rufus interjects here
             {"name": "OUTRO_VIRAL", "words": 200, "cast": "ALEX_SOLO", "transition": False}
-        ]}
+        ]
+    }
 
 def get_rufus_location():
-    locs = ["standing in the rain outside the LSE", "in a noisy coffee shop in Canary Wharf", "walking through a windy park in Zurich", "overlooking the port in Hong Kong"]
+    # Simple locations to anchor the scene (No flowery descriptions)
+    locs = ["London Stock Exchange", "Canary Wharf", "Zurich", "Hong Kong Port"]
     return random.choice(locs)
 
 def load_sponsor():
@@ -81,18 +65,88 @@ def get_asset(name):
     if (BASE_DIR / name).exists(): return BASE_DIR / name
     return None
 
-# --- WRITER ---
+# --- WRITER (CHEMISTRY & RETENTION ENGINE) ---
 def draft_segment(seg, context, settings, loc, sponsor):
-    if seg["name"] == "HOOK":
-        prompt = f"Write **HOT CLIP HOOK**. MAX 40 WORDS. Must include DATA POINT (e.g. '40% drop'). Start MID-ARGUMENT. NO INTRO. Context: {context[:500]}"
-    else:
-        prompt = f"Write **{seg['name']}**. Target {seg['words']} words. Cast: {seg['cast']}. Style: Huberman/Diary of CEO. Analyze MECHANISMS. Tone: {settings['tone']}. Rufus Loc: {loc}. Sponsor: {sponsor}. Context: {context[:3000]}"
+    seg_name = seg["name"]
     
-    response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": prompt}])
+    # 1. THE HOT CLIP (Mid-Argument Hook)
+    if seg_name == "HOOK":
+        system_prompt = f"""
+        You are the Producer. Write the **COLD OPEN HOOK**.
+        **STRICT RULES:**
+        1. START MID-ARGUMENT. (e.g. JAMIE: "--You're ignoring the data, Alex!")
+        2. MAX 40 WORDS.
+        3. HIGH TENSION.
+        4. NO INTROS.
+        **CONTEXT:** {context[:500]}
+        """
+        response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system_prompt}])
+        return response.choices[0].message.content
+
+    # 2. CHARACTER DYNAMICS (The "Chemistry" Prompt)
+    
+    # ALEX & JAMIE (Debate)
+    if seg["cast"] == "ALEX_JAMIE":
+        cast_instr = """
+        **CAST:** ALEX (Host) and JAMIE (Skeptic).
+        **DYNAMIC:** - ALEX tries to be professional and structured.
+        - JAMIE is cynical, interrupts often with "--", and doubts the "official narrative."
+        - **MANDATORY:** Jamie MUST interrupt Alex at least once (e.g. ALEX: "The report says--" JAMIE: "--The report is garbage, Alex.").
+        """
+    
+    # RUFUS (The Toss & The Money)
+    elif seg["cast"] == "RUFUS_FOCUS":
+        cast_instr = f"""
+        **CAST:** ALEX (Host) and RUFUS (Correspondent).
+        **SCENE:**
+        1. ALEX: MUST explicitly "throw" to Rufus (e.g. "Rufus, you're at the {loc}. What's the legal angle?").
+        2. RUFUS: Speaks in First Person ("I'm standing here...").
+        3. RUFUS FOCUS: **LAW AND MONEY ONLY.** Financial impact, regulations, lawsuits.
+        """
+
+    # WRAP UP (The Interjection)
+    elif seg["cast"] == "ALL_THREE":
+        cast_instr = """
+        **CAST:** ALEX, JAMIE, RUFUS.
+        **DYNAMIC:** Rapid fire summary.
+        - JAMIE: Final cynical take.
+        - RUFUS: Final warning about the **MONEY/LAW**.
+        - ALEX: Tries to wrap it up.
+        """
+        
+    elif seg["cast"] == "JAMIE_SOLO":
+        cast_instr = "**CAST:** JAMIE Only. Ranting to the audience."
+    elif seg["cast"] == "ALEX_SOLO":
+        cast_instr = "**CAST:** ALEX Only. Professional sign-off."
+
+    system_prompt = f"""
+    Write **{seg_name}**. Target {seg['words']} words.
+    **TONE:** {settings['tone']}
+    **CRITICAL RULES:**
+    1. **DIALOGUE ONLY.** NO stage directions. NO "Camera pans". NO "Sound effects".
+    2. **FORMAT:** ALEX: [Text] / JAMIE: [Text] / RUFUS: [Text]
+    {cast_instr}
+    SPONSOR: {sponsor}
+    """
+    
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Context: {context[:4000]}"}
+        ]
+    )
     return response.choices[0].message.content
 
 def punch_up(text):
-    response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": "Script Doctor. 1. Rufus: British. 2. Jamie: Interrupts. 3. Remove 'Welcome back'."}, {"role": "user", "content": text}])
+    # Script Doctor: Cleans non-dialogue lines
+    system = """
+    Script Doctor.
+    1. REMOVE any text in brackets [] or parenthesis ().
+    2. REMOVE any lines that do not start with a Name (ALEX, JAMIE, RUFUS).
+    3. Ensure strictly: SPEAKER: [Text] format.
+    """
+    response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system}, {"role": "user", "content": text}])
     return response.choices[0].message.content
 
 # --- PRODUCTION ---
@@ -103,7 +157,7 @@ def clean_text(text):
     return text.strip()
 
 def produce_episode(news):
-    print("--- HOLLYWOOD BUILD START ---")
+    print("--- HOLLYWOOD BUILD (FINAL MASTER) ---")
     settings = get_show_settings()
     loc = get_rufus_location()
     sponsor = load_sponsor()
@@ -130,16 +184,19 @@ def produce_episode(news):
         full_text += script + "\n"
         
         for line in script.split('\n'):
-            if ':' in line:
-                speaker, text = line.split(':', 1)
-                text = clean_text(text)
+            # *** STRICT DIALOGUE FILTER ***
+            match = re.match(r'^(ALEX|JAMIE|RUFUS):\s*(.*)', line, re.IGNORECASE)
+            if match:
+                speaker, text = match.group(1).upper(), clean_text(match.group(2))
                 if not text: continue
-                # Generate Audio
-                voice = VOICES.get(speaker.strip().upper(), "onyx")
+                
+                voice = VOICES.get(speaker, "onyx")
                 f = AUDIO_DIR / "temp.mp3"
                 client.audio.speech.create(model="tts-1-hd", voice=voice, input=text).stream_to_file(f)
                 audio_segs.append(AudioSegment.from_mp3(f))
                 audio_segs.append(AudioSegment.silent(250))
+            else:
+                pass # Filters out "The camera pans..."
         
         if seg["name"] == "HOOK":
             print(" >> ⚡ INJECTING THUNDERBOLT INTRO ⚡")
@@ -153,7 +210,7 @@ def produce_episode(news):
     fname = f"podcast_{datetime.date.today()}.mp3"
     final.export(AUDIO_DIR / fname, format="mp3")
     
-    # Metadata & Caption
+    # GENERATE SOCIAL ASSETS
     meta = generate_meta(full_text)
     save_caption(meta)
     print(f"DONE: {fname}")
