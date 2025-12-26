@@ -41,7 +41,15 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          rm temp_voice.mp3 || true
+          
+          # 1. MOVE the file from the folder to the main directory
+          mv episode_audio/podcast_*.mp3 .
+          
+          # 2. Cleanup temp files (Optional but good)
+          rm -rf episode_audio/
+          rm -f temp_voice.mp3
+          
+          # 3. Add and Commit
           git add podcast_*.mp3 feed.xml
           git commit -m "Automated: New Daily Podcast Episode" || echo "No changes to commit"
           git push
