@@ -2,15 +2,17 @@ import subprocess
 import sys
 import time
 
-# --- STEP 0: AUTO-INSTALL SDK ---
-def install_sdk():
-    try:
-        import google.genai
-    except ImportError:
-        print("Installing Google GenAI SDK...")
-        subprocess.check_call([sys.executable, "-m", "pip", "install", "google-genai"])
+# --- STEP 0: AUTO-INSTALL SDK & LIBRARIES ---
+def install_requirements():
+    required_packages = ["google-genai", "holidays"]
+    for package in required_packages:
+        try:
+            __import__(package.replace("-", "_").split(".")[0]) # Basic check
+        except ImportError:
+            print(f"Installing {package}...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-install_sdk()
+install_requirements()
 
 # --- IMPORTS ---
 import os
@@ -19,6 +21,7 @@ import re
 import json
 import feedparser
 import datetime
+import holidays  # NEW: Handles US Holiday Calendar
 import xml.etree.ElementTree as ET 
 from email.utils import formatdate
 from pydub import AudioSegment
@@ -27,7 +30,6 @@ from openai import OpenAI
 # Safe import for Gemini
 try:
     from google import genai
-    from google.genai import types
 except ImportError:
     from google import genai
 
@@ -92,46 +94,48 @@ def get_latest_news(limit_per_feed=5, total_limit=25):
     random.shuffle(news_items)
     return "\n\n".join(news_items[:total_limit]) 
 
-# --- EPISODE STRATEGY ENGINE ---
+# --- EPISODE STRATEGY ENGINE (NOW WITH US HOLIDAYS) ---
 def get_episode_config():
-    weekday = TODAY.weekday()
-    month = TODAY.month
-    day = TODAY.day
+    us_holidays = holidays.US()
+    
+    # Check if TODAY is a holiday (Returns the name of the holiday if True, else None)
+    is_holiday = us_holidays.get(TODAY)
     
     config = {
         "type": "DAILY_NEWS",
         "length_str": "20 Minutes",
-        "min_words": "4800", 
+        "min_words": "4500", 
         "fetch_limit": 5,   
         "total_items": 30,  
         "focus": "Fast-paced but deep. Cover the headlines, then debate the impact."
     }
     
-    # Holiday Logic
-    if (month == 12 and day >= 24) or (month == 1 and day == 1): 
+    # 1. HOLIDAY LOGIC (Highest Priority)
+    if is_holiday:
+        print(f"🎉 HOLIDAY DETECTED: {is_holiday}")
         config["type"] = "HOLIDAY_SPECIAL"
-        config["length_str"] = "45 Minutes"
-        config["min_words"] = "8500" 
-        config["fetch_limit"] = 12  
-        config["total_items"] = 60  
-        config["focus"] = "END OF YEAR SPECTACULAR. Use your INTERNAL KNOWLEDGE + news. Nostalgic, dramatic, comprehensive."
+        config["length_str"] = "40 Minutes" # Safe Mode Limit
+        config["min_words"] = "7500"        
+        config["fetch_limit"] = 8  
+        config["total_items"] = 35          
+        config["focus"] = f"SPECIAL EDITION for {is_holiday}. Focus on big themes, history of AI, and future predictions. Nostalgic tone."
         return config
 
-    # Saturday Logic
-    if weekday == 5: 
+    # 2. WEEKEND LOGIC
+    weekday = TODAY.weekday()
+    if weekday == 5: # Saturday
         config["type"] = "WEEKLY_RECAP"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "6500" 
+        config["min_words"] = "5500" 
         config["fetch_limit"] = 8
         config["total_items"] = 40
         config["focus"] = "SATURDAY EDITION. Synthesize these stories. Rufus provides 'Weekend Market Analysis' from the street."
         return config
-    
-    # Sunday Logic
-    if weekday == 6: 
+        
+    if weekday == 6: # Sunday
         config["type"] = "DEEP_DIVE"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "6500" 
+        config["min_words"] = "5500" 
         config["fetch_limit"] = 8
         config["total_items"] = 40
         config["focus"] = "SUNDAY DEEP DIVE. Pick ONLY ONE major theme. Debate it. Rufus provides the legal/money angle."
@@ -139,10 +143,9 @@ def get_episode_config():
     
     return config
 
-# --- AI GENERATION HANDLER (WITH WAIT TIMER) ---
+# --- AI GENERATION HANDLER (WITH EXTENDED WAIT) ---
 def generate_content_with_retry(client, prompt):
-    # Added 'gemini-2.0-flash-exp' which is often the safer name for the new model
-    model_priority = ["gemini-2.0-flash-exp", "gemini-2.0-flash", "gemini-1.5-flash"]
+    model_priority = ["gemini-2.0-flash-exp"] 
     
     for model_name in model_priority:
         print(f"Attempting generation with model: {model_name}...")
@@ -151,12 +154,11 @@ def generate_content_with_retry(client, prompt):
             return response.text
         except Exception as e:
             error_str = str(e)
-            # CHECK FOR RATE LIMIT (429)
             if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
-                print(f"⚠️ RATE LIMIT HIT on {model_name}. Waiting 35 seconds to cool down...")
-                time.sleep(35) # Wait for quota reset
+                print(f"⚠️ RATE LIMIT HIT. Waiting 70 seconds for full reset...")
+                time.sleep(70) 
                 try:
-                    print(f"🔄 Retrying {model_name} after wait...")
+                    print(f"🔄 Retrying {model_name}...")
                     response = client.models.generate_content(model=model_name, contents=prompt)
                     return response.text
                 except Exception as retry_e:
@@ -192,7 +194,7 @@ def generate_script(config, sponsor):
 
     prompt = f"""
     You are the Showrunner for "The AI Edge".
-    Today's Date: {TODAY_STR} (Use this exact date).
+    Today's Date: {TODAY_STR}.
     Episode Type: {config['type']}.
     Target Length: {config['length_str']} (MIN {config['min_words']} Words).
     Focus: {config['focus']}
@@ -205,14 +207,13 @@ def generate_script(config, sponsor):
     {sponsor_prompt}
 
     INSTRUCTIONS:
-    - **REALISM:** Characters interrupt each other. Use incomplete sentences to show this (e.g., "But I--").
+    - **REALISM:** Characters interrupt each other. Use incomplete sentences (e.g., "But I--").
     - **RUFUS:** Throw to Rufus 3-4 times.
-    - **CLEAN DIALOGUE:** DO NOT write stage directions like (laughs) or [sighs]. Only write spoken words.
+    - **CLEAN DIALOGUE:** DO NOT write stage directions like (laughs). Only write spoken words.
     
     **OUTPUT FORMAT (STRICT):**
     
     PART 1: THE SHOW NOTES
-    (Do not add meta-headers like "Here are the notes". Start directly with the content.)
     Title: [Catchy Title]
     
     [2-Sentence Summary Hook]
@@ -406,7 +407,6 @@ def generate_rss_feed():
     tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
     print("✅ RSS Feed Updated: feed.xml")
 
-# --- EXECUTION ---
 if __name__ == "__main__":
     config = get_episode_config()
     sponsor = get_sponsor()
