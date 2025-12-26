@@ -7,13 +7,14 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def install_requirements():
-    """Auto-installs missing production dependencies."""
-    required = ["google-genai", "holidays", "feedparser", "pydub", "openai"]
+    """Auto-installs dependencies. Switches to STABLE Google library."""
+    # We use 'google-generativeai' (Stable) instead of 'google-genai' (Beta) to fix import errors
+    required = ["google-generativeai", "holidays", "feedparser", "pydub", "openai"]
     for package in required:
         try:
-            # Handle package name differences (e.g. google-genai vs google.genai)
-            import_name = package.replace("-", "_").split(".")[0]
-            if package == "google-genai": import_name = "google"
+            import_name = package
+            if package == "google-generativeai": import_name = "google.generativeai"
+            if package == "python-dateutil": import_name = "dateutil"
             __import__(import_name)
         except ImportError:
             logging.info(f"Installing missing dependency: {package}...")
@@ -34,12 +35,8 @@ from email.utils import formatdate
 from pydub import AudioSegment
 from openai import OpenAI
 
-# Safe Gemini Import
-try:
-    from google import genai
-    from google.genai import types
-except ImportError:
-    from google import genai
+# STABLE GEMINI IMPORT (Fixes the "ImportError")
+import google.generativeai as genai
 
 # --- CONSTANTS & CONFIG ---
 GITHUB_USERNAME = "aisimplify333"
@@ -47,7 +44,6 @@ REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media (Alex, Jamie & Rufus)" 
 
-# XML Namespaces (Critical for Spotify Rich Notes)
 ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
 CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
 
@@ -62,11 +58,9 @@ RSS_FEEDS = [
     "https://www.wired.com/feed/category/ai/latest/rss"
 ]
 
-# API Keys
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
-# Files
 TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%A, %B %d, %Y")
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
@@ -76,20 +70,16 @@ SPONSORS_FILE = "sponsors.json"
 # --- HELPER FUNCTIONS ---
 
 def get_sponsor():
-    """Loads a random sponsor from JSON safely."""
     if not os.path.exists(SPONSORS_FILE): return None
     try:
         with open(SPONSORS_FILE, "r") as f:
             data = json.load(f)
             if data and isinstance(data, list):
                 return random.choice(data)
-    except Exception as e:
-        logging.warning(f"Sponsor file error: {e}")
-        return None
+    except: return None
     return None
 
 def get_latest_news(limit_per_feed=5, total_limit=30):
-    """Fetches and shuffles news to ensure fresh content."""
     logging.info(f"Fetching up to {total_limit} news items...")
     news_items = []
     headers = {'User-Agent': 'Mozilla/5.0 (AI Simplify Media Bot)'}
@@ -99,7 +89,6 @@ def get_latest_news(limit_per_feed=5, total_limit=30):
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
             for entry in feed.entries[:limit_per_feed]: 
-                # Strip HTML tags for clean reading
                 title = entry.title if 'title' in entry else 'Unknown Story'
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else title)
                 source = feed.feed.title if 'title' in feed.feed else 'Web'
@@ -112,11 +101,14 @@ def get_latest_news(limit_per_feed=5, total_limit=30):
     return "\n\n".join(news_items[:total_limit]) 
 
 def get_episode_config(force_downgrade=False):
-    """Determines episode structure based on Calendar and Fail-Safe status."""
+    """
+    This is the SMART CALENDAR Brain.
+    It automatically detects Holidays, Saturdays, and Sundays.
+    """
     us_holidays = holidays.US()
     is_holiday = us_holidays.get(TODAY)
     
-    # Base Configuration
+    # 0. Default: Daily News (Mon-Fri)
     config = {
         "type": "DAILY_NEWS",
         "length_str": "20 Minutes",
@@ -126,12 +118,12 @@ def get_episode_config(force_downgrade=False):
         "focus": "Fast-paced but deep. Headlines + Debate."
     }
 
-    # FAIL-SAFE: If we crashed previously, ignore holidays to save data
+    # FAIL-SAFE: If the generator crashed, force standard mode to ensure delivery.
     if force_downgrade:
-        logging.warning("⚠️ DOWNGRADE ACTIVE: Forcing standard format to ensure delivery.")
+        logging.warning("⚠️ DOWNGRADE ACTIVE: Forcing standard format.")
         return config 
 
-    # Holiday Logic
+    # 1. HOLIDAY CHECK (Highest Priority)
     if is_holiday:
         logging.info(f"🎉 Holiday Detected: {is_holiday}")
         config.update({
@@ -140,54 +132,58 @@ def get_episode_config(force_downgrade=False):
             "min_words": "6500",
             "fetch_limit": 8,
             "total_items": 40,
-            "focus": f"SPECIAL EDITION for {is_holiday}. Big themes, history, predictions."
+            "focus": f"SPECIAL EDITION for {is_holiday}. Big themes, history, predictions. Nostalgic tone."
         })
         return config
 
-    # Weekend Logic
-    if TODAY.weekday() == 5: # Saturday
+    # 2. SATURDAY CHECK (Weekly Recap)
+    if TODAY.weekday() == 5: 
+        logging.info("📅 Saturday Detected: Switching to Weekly Recap Mode.")
         config.update({
-            "type": "WEEKLY_RECAP",
+            "type": "WEEKLY_RECAP", 
             "length_str": "30 Minutes",
             "min_words": "6500",
-            "focus": "Saturday Edition. Synthesis & Market Analysis by Rufus."
+            "total_items": 40,
+            "focus": "SATURDAY EDITION. Synthesize the week's biggest stories. Rufus provides 'Weekend Market Analysis'."
         })
-    elif TODAY.weekday() == 6: # Sunday
+        return config
+
+    # 3. SUNDAY CHECK (Deep Dive Debate)
+    elif TODAY.weekday() == 6: 
+        logging.info("📅 Sunday Detected: Switching to Deep Dive Mode.")
         config.update({
-            "type": "DEEP_DIVE",
+            "type": "DEEP_DIVE", 
             "length_str": "30 Minutes",
             "min_words": "6500",
-            "focus": "Sunday Deep Dive. Single Theme Debate."
+            "total_items": 40,
+            "focus": "SUNDAY DEEP DIVE. Pick ONLY ONE major theme. Debate it intensely. Rufus provides the legal/money angle."
         })
+        return config
     
     return config
 
-# --- CORE AI GENERATION (THE FAIL-SAFE ENGINE) ---
+# --- CORE AI GENERATION (STABLE ENGINE) ---
 
 def generate_script(config, sponsor):
     if not GEMINI_API_KEY: 
         logging.error("GEMINI_API_KEY is missing.")
         return None
     
-    try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
-    except Exception as e:
-        logging.error(f"Client Init Error: {e}")
-        return None
+    # Configure the STABLE library
+    genai.configure(api_key=GEMINI_API_KEY)
 
     news_data = get_latest_news(config["fetch_limit"], config["total_items"])
     if not news_data: 
-        logging.error("No news found. Check internet connection.")
+        logging.error("No news found.")
         return None
 
-    # Sponsor Prompt Construction
     sponsor_txt = ""
     if sponsor:
         sponsor_txt = f"""
-        **SPONSOR BLOCK (MUST READ):**
+        **SPONSOR BLOCK:**
         Sponsor: "{sponsor['name']}"
         Copy: "{sponsor['copy']}"
-        **DIRECTIVE:** RUFUS reads this. He frames it as a "Smart Money" tip. Alex/Jamie agree.
+        **DIRECTIVE:** RUFUS reads this as a "Smart Money" tip.
         """
 
     system_prompt = f"""
@@ -205,7 +201,7 @@ def generate_script(config, sponsor):
 
     FORMATTING RULES:
     1. **INTERRUPTIONS:** Use dashes (e.g. "But I--") to show cut-offs.
-    2. **NO STAGE DIRECTIONS:** Do not write (laughs), [sighs], or *sound effects*. Write ONLY spoken words.
+    2. **NO STAGE DIRECTIONS:** Do not write (laughs), [sighs]. Only spoken words.
     3. **RUFUS:** Must speak at least 3 separate times.
     
     OUTPUT STRUCTURE:
@@ -217,25 +213,23 @@ def generate_script(config, sponsor):
     {news_data}
     """
 
-    # THE MODEL LADDER (Quality -> Stability -> Emergency)
-    # 1. Experimental (Best, Unstable)
-    # 2. Flash 1.5 (Standard, Stable)
-    # 3. Flash 8b (Fast, High Limits)
+    # Model Priority List (Using Stable API Names)
     models = ["gemini-2.0-flash-exp", "gemini-1.5-flash", "gemini-1.5-flash-8b"]
     
-    for model in models:
-        logging.info(f"Attempting generation with {model}...")
+    for model_name in models:
+        logging.info(f"Attempting generation with {model_name}...")
         try:
-            response = client.models.generate_content(model=model, contents=system_prompt)
+            model = genai.GenerativeModel(model_name)
+            response = model.generate_content(system_prompt)
             return response.text
         except Exception as e:
             err = str(e)
-            if "429" in err or "RESOURCE_EXHAUSTED" in err:
-                logging.warning(f"⚠️ Rate Limit on {model}. Switching models in 5s...")
+            if "429" in err or "quota" in err.lower():
+                logging.warning(f"⚠️ Rate Limit on {model_name}. Switching models in 5s...")
                 time.sleep(5)
                 continue
             else:
-                logging.error(f"Error on {model}: {e}")
+                logging.error(f"Error on {model_name}: {e}")
                 continue
     
     return None
@@ -243,10 +237,7 @@ def generate_script(config, sponsor):
 # --- AUDIO ENGINE ---
 
 def clean_text_for_audio(text):
-    """Removes stage directions and standardizes text."""
-    # Remove text between brackets/parentheses e.g. (laughs)
     text = re.sub(r'[\(\[].*?[\)\]]', '', text)
-    # Remove markdown bold/italics
     text = text.replace("*", "").replace("#", "")
     return text.strip()
 
@@ -258,16 +249,14 @@ def generate_audio(script_content):
     client = OpenAI(api_key=OPENAI_API_KEY)
     combined_audio = AudioSegment.empty()
     
-    # Load Assets
     try:
         if os.path.exists("intro.mp3"): combined_audio += AudioSegment.from_file("intro.mp3")
         transition = AudioSegment.from_file("transition.mp3") - 4 if os.path.exists("transition.mp3") else None
     except: transition = None
 
     lines = script_content.split('\n')
-    current_voice = "onyx" # Default Alex
+    current_voice = "onyx" 
     
-    # Words that shouldn't be spoken
     skip_phrases = ["PART 2", "THE SCRIPT", "SEPARATOR", "SHOW NOTES", "END OF SCRIPT", "SIGNOFF"]
     sfx_triggers = ["DEEP DIVE", "MID-ROLL", "MARKET REPORT"]
 
@@ -277,38 +266,30 @@ def generate_audio(script_content):
         text = line.strip()
         if not text: continue
         
-        # Check Triggers
         if any(x in text.upper() for x in skip_phrases): continue
         if any(x in text.upper() for x in sfx_triggers) and transition:
             if len(combined_audio) > 10000: combined_audio += transition
 
-        # Voice Switching Logic
         upper = text.upper()
         if "ALEX:" in upper: current_voice = "onyx"
         elif "JAMIE:" in upper: current_voice = "nova"
         elif "RUFUS:" in upper: current_voice = "fable"
         
-        # Remove Speaker Names for TTS
         clean_text = re.sub(r'^(ALEX|JAMIE|RUFUS):\s*', '', text, flags=re.IGNORECASE)
         clean_text = clean_text_for_audio(clean_text)
         
         if len(clean_text) < 2: continue
 
         try:
-            # Generate Audio Chunk
             with client.audio.speech.with_streaming_response.create(
-                model="tts-1-hd",
-                voice=current_voice,
-                input=clean_text,
-                speed=1.05
+                model="tts-1-hd", voice=current_voice, input=clean_text, speed=1.05
             ) as response:
                 chunk_path = f"temp_{i}.mp3"
                 response.stream_to_file(chunk_path)
             
-            # Append & Cleanup
             segment = AudioSegment.from_file(chunk_path)
-            combined_audio += segment + 5 # +5dB volume boost
-            combined_audio += AudioSegment.silent(duration=150) # Natural pause
+            combined_audio += segment + 5 
+            combined_audio += AudioSegment.silent(duration=150) 
             os.remove(chunk_path)
             
             if i % 10 == 0: print(f"   Compiled line {i}...")
@@ -317,7 +298,6 @@ def generate_audio(script_content):
             logging.warning(f"Audio chunk failed at line {i}: {e}")
             continue
 
-    # Outro
     if os.path.exists("outro.mp3"): combined_audio += AudioSegment.from_file("outro.mp3")
 
     combined_audio.export(OUTPUT_FILE, format="mp3")
@@ -335,8 +315,7 @@ def update_rss_feed():
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
     
-    # Channel Metadata
-    ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered & Automated"
+    ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered Daily News"
     ET.SubElement(channel, "description").text = "Daily AI news, debates, and market analysis."
     ET.SubElement(channel, "link").text = base_url
     ET.SubElement(channel, "language").text = "en-us"
@@ -352,36 +331,31 @@ def update_rss_feed():
     cat = ET.SubElement(channel, f"{{{ITUNES_NS}}}category")
     cat.set("text", "Technology")
 
-    # Episode Scanning
     episodes = []
     for f in os.listdir("."):
         if f.startswith("podcast_") and f.endswith(".mp3"):
             episodes.append(f)
-    episodes.sort(reverse=True) # Newest first
+    episodes.sort(reverse=True) 
 
     for filename in episodes:
         date_str = filename.replace("podcast_", "").replace(".mp3", "")
         txt_path = filename.replace(".mp3", ".txt")
         
-        # Default Metadata
         title = f"AI News: {date_str}"
         desc = "Latest AI updates."
         rich_content = "Latest AI updates."
         
-        # Read Rich Notes
         if os.path.exists(txt_path):
             with open(txt_path, "r", encoding="utf-8") as f:
                 content = f.read().strip()
-                rich_content = content.replace("\n", "<br/>") # HTML for Spotify
+                rich_content = content.replace("\n", "<br/>") 
                 
-                # Parse Title/Desc
                 lines = content.split('\n')
                 for line in lines:
                     if line.lower().startswith("title:"):
                         title = line.split(":", 1)[1].strip()
                         break
                 
-                # Use first non-title paragraph as summary
                 for line in lines:
                     if "Title:" not in line and len(line) > 20:
                         desc = line
@@ -409,34 +383,28 @@ def update_rss_feed():
 if __name__ == "__main__":
     print("\n🚀 AI PODCAST AUTOMATION: STARTED\n")
     
-    # 1. Config
     sponsor = get_sponsor()
     config = get_episode_config()
     
-    # 2. Script Generation (With Downgrade Logic)
     logging.info("📝 Generating Script...")
     full_text = generate_script(config, sponsor)
     
-    # EMERGENCY DOWNGRADE CHECK
     if not full_text:
         logging.warning("⚠️ High-Load Generation Failed. Retrying with Standard Config...")
         config = get_episode_config(force_downgrade=True)
         full_text = generate_script(config, sponsor)
         
     if full_text:
-        # Split Notes vs Script
         if "|||SEPARATOR|||" in full_text:
             notes, script = full_text.split("|||SEPARATOR|||")
         else:
             notes = "Show notes unavailable."
             script = full_text
             
-        # Clean Notes
         notes = "\n".join([line for line in notes.split('\n') if "PART 1" not in line])
         with open(NOTES_FILE, "w", encoding="utf-8") as f:
             f.write(notes.strip())
             
-        # 3. Audio & Feed
         generate_audio(script)
         update_rss_feed()
         print("\n🎉 PRODUCTION COMPLETE. Ready for git push.")
