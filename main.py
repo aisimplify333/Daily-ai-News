@@ -4,8 +4,6 @@ import random
 import re
 import datetime
 from pathlib import Path
-import xml.etree.ElementTree as ET
-from email.utils import formatdate
 from openai import OpenAI
 from pydub import AudioSegment
 
@@ -20,13 +18,15 @@ ASSETS_DIR = BASE_DIR / "assets"
 SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
 
 VOICES = {"ALEX": "onyx", "JAMIE": "nova", "RUFUS": "fable"}
+
+# BRANDING (UPDATED FOR PNG)
 RSS_SETTINGS = {
     "title": "The AI Edge",
     "link": "https://github.com/aisimplify333/Daily-ai-News",
     "description": "Daily News Unfiltered with Alex, Jamie, and Rufus.",
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com", 
-    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.jpg",
+    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png", # <--- FIXED
     "category": "Technology"
 }
 
@@ -116,7 +116,7 @@ def produce_episode(news):
     p_intro = get_asset("intro.mp3")
     p_outro = get_asset("outro.mp3")
     p_trans = get_asset("transition.mp3")
-    p_voice = get_asset("fixed_intro.mp3") # Pre-generated voice saying "Welcome to AI Edge"
+    p_voice = get_asset("fixed_intro.mp3") 
     
     m_intro = AudioSegment.from_mp3(p_intro) if p_intro else AudioSegment.silent(1000)
     m_outro = AudioSegment.from_mp3(p_outro) if p_outro else AudioSegment.silent(1000)
