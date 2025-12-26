@@ -6,7 +6,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 # --- CONFIGURATION ---
 BASE_DIR = Path(__file__).parent
 ASSETS_DIR = BASE_DIR / "assets"
-COVER_PATH = BASE_DIR / "cover.jpg" # Your uploaded logo
+COVER_PATH = BASE_DIR / "cover.png" # <--- FIXED: Look for PNG
 META_PATH = BASE_DIR / "episode_metadata.json"
 OUTPUT_GIF = BASE_DIR / "social_surge.gif"
 
@@ -18,13 +18,21 @@ def create_energy_gif():
     else:
         with open(META_PATH) as f: headline = json.load(f).get("title", "DAILY AI NEWS").upper()
 
-    # 2. Load Image
+    # 2. Load Image (Smart Find)
     try:
-        if COVER_PATH.exists(): img_path = COVER_PATH
-        elif (ASSETS_DIR / "cover.jpg").exists(): img_path = ASSETS_DIR / "cover.jpg"
-        else: return
+        # Check Root first, then Assets
+        if COVER_PATH.exists(): 
+            img_path = COVER_PATH
+        elif (ASSETS_DIR / "cover.png").exists(): 
+            img_path = ASSETS_DIR / "cover.png"
+        else: 
+            print(" >> [ERROR] cover.png NOT FOUND")
+            return
+
         base = Image.open(img_path).convert("RGBA").resize((1080, 1080))
-    except: return
+    except Exception as e: 
+        print(f" >> [ERROR] {e}")
+        return
 
     # 3. Setup Text
     try: font = ImageFont.truetype("arial.ttf", 80)
