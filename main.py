@@ -59,6 +59,7 @@ TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%A, %B %d, %Y")
 OUTPUT_FILE = f"podcast_{TODAY}.mp3"
 NOTES_FILE = f"podcast_{TODAY}.txt" 
+MARKETING_FILE = f"marketing_{TODAY}.txt"
 SPONSORS_FILE = "sponsors.json"
 
 # --- HELPER FUNCTIONS ---
@@ -108,7 +109,7 @@ def get_episode_config(force_downgrade=False):
     }
 
     if force_downgrade:
-        logging.warning("⚠️ DOWNGRADE ACTIVE: Forcing standard format.")
+        logging.warning("⚠️ DOWNGRADE ACTIVE: Still keeping High Quality, just standard length.")
         return config 
 
     if is_holiday:
@@ -132,31 +133,47 @@ def get_episode_config(force_downgrade=False):
     
     return config
 
-# --- CORE AI GENERATION (THE "SMART WAITER" ENGINE) ---
+# --- ENGINE: GPT-4o PRIMARY (Professional Grade) ---
 
-def call_gemini_api(model_name, prompt):
-    """Direct REST API call."""
+def call_openai_gpt4o(prompt):
+    """The Gold Standard Engine. Reliable, Smart, Stable."""
+    if not OPENAI_API_KEY:
+        logging.error("❌ OpenAI Key missing. Cannot run Pro Engine.")
+        return None
+        
+    logging.info("🏎️ ENGINE START: OpenAI GPT-4o (High Fidelity Mode)...")
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    
+    try:
+        response = client.chat.completions.create(
+            model="gpt-4o", 
+            messages=[
+                {"role": "system", "content": "You are an expert podcast showrunner. You write messy, realistic dialogue with interruptions. You prioritize 'Theatre of the Mind' audio storytelling."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.75 
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        logging.error(f"OpenAI Error: {e}")
+        return None
+
+def call_gemini_fallback(model_name, prompt):
+    """Backup Engine (Free Tier) - Used only if OpenAI fails."""
+    if not GEMINI_API_KEY: return None
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={GEMINI_API_KEY}"
     headers = {"Content-Type": "application/json"}
     data = {"contents": [{"parts": [{"text": prompt}]}]}
-    
     try:
         response = requests.post(url, headers=headers, json=data)
         if response.status_code == 200:
             return response.json()['candidates'][0]['content']['parts'][0]['text']
-        elif response.status_code == 429:
-            raise Exception("RATE_LIMIT")
-        else:
-            logging.error(f"API Error {response.status_code} on {model_name}: {response.text}")
-            return None
-    except Exception as e:
-        if "RATE_LIMIT" in str(e): raise e
-        logging.error(f"Network/Parse Error: {e}")
         return None
+    except: return None
 
 def generate_script(config, sponsor):
-    if not GEMINI_API_KEY: 
-        logging.error("GEMINI_API_KEY is missing.")
+    if not OPENAI_API_KEY: 
+        logging.error("CRITICAL: OPENAI_API_KEY is missing. Cannot run Top 1% Show.")
         return None
 
     news_data = get_latest_news(config["fetch_limit"], config["total_items"])
@@ -170,7 +187,10 @@ def generate_script(config, sponsor):
         **SPONSOR BLOCK:**
         Sponsor: "{sponsor['name']}"
         Copy: "{sponsor['copy']}"
-        **DIRECTIVE:** RUFUS reads this as a "Smart Money" tip.
+        **DIRECTIVE:** This is a JOINT read. 
+        1. JAMIE introduces it from a "Tech/Efficiency" angle. 
+        2. RUFUS interrupts with the "Smart Money/Savings" angle. 
+        3. They banter briefly about whether it's worth it (It is).
         """
 
     system_prompt = f"""
@@ -180,17 +200,35 @@ def generate_script(config, sponsor):
     Target: {config['length_str']} (Min {config['min_words']} words).
     
     CHARACTERS:
-    - ALEX (Host): Optimistic, high energy.
-    - JAMIE (Co-host): Skeptical, interrupts Alex.
-    - RUFUS (Field Reporter): British, dry wit, financial/legal expert.
+    1. **ALEX** (Host): Optimistic, high energy. The Anchor.
+    2. **JAMIE** (Co-host): Skeptical, interrupts Alex. The Tech Insider.
+    3. **RUFUS** (Correspondent): **LAW & MONEY EXPERT.** British accent. Dry wit. Cynical.
     
     {sponsor_txt}
 
     FORMATTING RULES:
-    1. **COLD OPEN:** Start with a 15-second "Teaser" debate (High drama) BEFORE the intro music.
-    2. **INTERRUPTIONS:** Use dashes (e.g. "But I--") to show cut-offs.
-    3. **NO STAGE DIRECTIONS:** Do not write (laughs). Only spoken words.
-    4. **CALL TO ACTION:** End with Alex asking listeners to "Share with one friend".
+    1. **INTERRUPTIONS:** Use dashes (e.g. "But I--") to show cut-offs.
+    2. **NO STAGE DIRECTIONS:** Do not write (laughs). Only spoken words.
+    3. **MUSIC TRIGGER:** Write exactly `[INTRO MUSIC]` on a new line after the Cold Open.
+    
+    EPISODE STRUCTURE (3-ACT FLOW):
+    
+    **TEASER:** (0:00-0:30)
+    - 15-second high-drama argument about the biggest story. Hook the listener.
+    - [INTRO MUSIC]
+    
+    **ACT 1: THE SPEED ROUND** (0:30-5:00)
+    - Alex runs through 3 headlines. Jamie critiques them. Fast pace.
+    
+    **ACT 2: THE DEEP DIVE** (5:00-15:00)
+    - Pick the SINGLE most important story.
+    - Analyze "The Hidden Connection" (How does this relate to other stories?)
+    - This is where the debate gets heated.
+    
+    **ACT 3: THE FUTURE & MONEY** (15:00-End)
+    - Rufus enters here for the "Market Report."
+    - What stocks are moving? Who gets sued?
+    - **CALL TO ACTION:** Alex asks listeners to "Share with one friend".
     
     OUTPUT STRUCTURE:
     PART 1: SHOW NOTES
@@ -198,45 +236,24 @@ def generate_script(config, sponsor):
     Summary: [Hook]
     ...
     |||SEPARATOR|||
-    PART 2: SCRIPT
+    PART 2: MARKETING ASSETS
+    [1 LinkedIn Post + 3 Tweets]
+    |||SEPARATOR|||
+    PART 3: SCRIPT
     ALEX: (Cold Open)...
+    ...
+    [INTRO MUSIC]
+    ALEX: Welcome to The AI Edge...
     """
 
-    # STRATEGY: 
-    # 1. Try the best model (gemini-2.0-flash-exp).
-    # 2. If it hits rate limit, WAIT 60 SECONDS and retry IT. 
-    # 3. Only then try backups.
+    # STRATEGY: GPT-4o IS NOW PRIMARY.
+    script = call_openai_gpt4o(system_prompt)
     
-    primary_model = "gemini-2.0-flash-exp"
-    backup_models = ["gemini-1.5-flash-latest", "gemini-pro"]
-    
-    # ATTEMPT 1: Primary Model
-    logging.info(f"Attempting Primary Model: {primary_model}...")
-    try:
-        return call_gemini_api(primary_model, system_prompt)
-    except Exception as e:
-        if "RATE_LIMIT" in str(e):
-            logging.warning(f"⚠️ Rate Limit on {primary_model}. Waiting 60 seconds to cool down...")
-            time.sleep(60) # <--- THE FIX. WAIT FOR QUOTA RESET.
-            
-            # ATTEMPT 2: Primary Model (Retry)
-            logging.info(f"🔄 Retrying Primary Model: {primary_model}...")
-            try:
-                return call_gemini_api(primary_model, system_prompt)
-            except Exception as e:
-                logging.error(f"Primary model failed twice. Trying backups...")
-        else:
-            logging.error(f"Primary model error: {e}")
-
-    # ATTEMPT 3: Backups (If Primary really dead)
-    for model in backup_models:
-        logging.info(f"Attempting Backup Model: {model}...")
-        try:
-            return call_gemini_api(model, system_prompt)
-        except:
-            continue
-            
-    return None
+    if script:
+        return script
+    else:
+        logging.warning("⚠️ OpenAI Failed. Falling back to Gemini (Free Tier)...")
+        return call_gemini_fallback("gemini-1.5-flash", system_prompt)
 
 # --- AUDIO ENGINE ---
 
@@ -266,25 +283,25 @@ def generate_audio(script_content):
     lines = script_content.split('\n')
     current_voice = "onyx" 
     
-    skip_phrases = ["PART 2", "THE SCRIPT", "SEPARATOR", "SHOW NOTES", "END OF SCRIPT", "SIGNOFF"]
+    skip_phrases = ["PART 3", "THE SCRIPT", "SEPARATOR", "SHOW NOTES", "END OF SCRIPT", "SIGNOFF", "MARKETING ASSETS", "ACT 1", "ACT 2", "ACT 3", "TEASER"]
     sfx_triggers = ["DEEP DIVE", "MID-ROLL", "MARKET REPORT"]
 
     logging.info(f"Processing {len(lines)} lines of dialogue...")
     
-    intro_played = False
-
     for i, line in enumerate(lines):
         text = line.strip()
         if not text: continue
         
+        # MUSIC TRIGGER LOGIC (The "Hollywood" Cut)
+        if "[INTRO MUSIC]" in text.upper():
+            if intro_music:
+                logging.info("   🎵 [TRIGGER] Playing Intro Music...")
+                combined_audio += intro_music
+            continue # Skip reading the tag
+
         if any(x in text.upper() for x in skip_phrases): continue
         if any(x in text.upper() for x in sfx_triggers) and transition:
             if len(combined_audio) > 10000: combined_audio += transition
-
-        if not intro_played and i > 4 and intro_music:
-             logging.info("   🎵 Playing Intro Music (Post Cold-Open)...")
-             combined_audio += intro_music
-             intro_played = True
 
         upper = text.upper()
         if "ALEX:" in upper: current_voice = "onyx"
@@ -405,16 +422,32 @@ if __name__ == "__main__":
         full_text = generate_script(config, sponsor)
         
     if full_text:
-        if "|||SEPARATOR|||" in full_text:
-            notes, script = full_text.split("|||SEPARATOR|||")
-        else:
-            notes = "Show notes unavailable."
-            script = full_text
-            
+        # PARSING THE 3 PARTS (Notes, Marketing, Script)
+        notes = "Notes unavailable"
+        marketing = "Marketing unavailable"
+        script = full_text
+        
+        parts = full_text.split("|||SEPARATOR|||")
+        if len(parts) >= 3:
+            notes = parts[0].strip()
+            marketing = parts[1].strip()
+            script = parts[2].strip()
+        elif len(parts) == 2:
+            notes = parts[0].strip()
+            script = parts[1].strip()
+
+        # Save Notes
         notes = "\n".join([line for line in notes.split('\n') if "PART 1" not in line])
         with open(NOTES_FILE, "w", encoding="utf-8") as f:
             f.write(notes.strip())
-            
+
+        # Save Marketing Assets
+        with open(MARKETING_FILE, "w", encoding="utf-8") as f:
+            f.write(marketing.strip())
+        
+        logging.info(f"✅ Marketing Assets saved to {MARKETING_FILE}")
+
+        # Audio & RSS
         generate_audio(script)
         update_rss_feed()
         print("\n🎉 PRODUCTION COMPLETE. Ready for git push.")
