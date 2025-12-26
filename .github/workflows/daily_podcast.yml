@@ -1,9 +1,9 @@
-name: Daily AI Podcast Generator
+name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 9 * * *' # Runs at 1:00 AM PST
-  workflow_dispatch:    # Allows manual testing
+    - cron: '0 9 * * *' # Runs at 9:00 AM UTC (1:00 AM PST)
+  workflow_dispatch:    # Allows manual testing button
 
 permissions:
   contents: write
@@ -26,30 +26,36 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
-      - name: Install dependencies
+      - name: Install Dependencies
+        # We explicitly install the tools needed for Audio AND Visuals
         run: |
-          pip install -r requirements.txt
+          pip install openai pydub pillow tweepy
 
-      - name: Run the Podcast Script
+      - name: Run Audio Engine (Producer)
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}  # <--- THIS WAS MISSING!
-        run: |
-          python main.py
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python main.py
 
-      - name: Commit and Push New Episode
+      - name: Run Visual Engine (VFX)
+        # This creates the Cyber Pulse GIF
+        run: python animate_social.py
+
+      - name: Commit and Push Everything
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git config --global user.name 'AI Producer'
+          git config --global user.email 'bot@aisimplifymedia.com'
           
-          # 1. MOVE the file from the folder to the main directory
-          mv episode_audio/podcast_*.mp3 .
+          # 1. Add The Audio (From the subfolder)
+          git add episode_audio/*.mp3
           
-          # 2. Cleanup temp files (Optional but good)
-          rm -rf episode_audio/
-          rm -f temp_voice.mp3
+          # 2. Add The Feed & Data
+          git add feed.xml
+          git add episode_metadata.json
           
-          # 3. Add and Commit
-          git add podcast_*.mp3 feed.xml
-          git commit -m "Automated: New Daily Podcast Episode" || echo "No changes to commit"
+          # 3. ADD THE SOCIAL ASSETS (Crucial for Monetization)
+          git add viral_caption.txt
+          git add social_surge.gif
+          
+          # 4. Commit and Push
+          git commit -m "Automated: New Daily Episode & Social Assets" || echo "No changes to commit"
           git push
