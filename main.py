@@ -96,7 +96,7 @@ def get_episode_config():
     config = {
         "type": "DAILY_NEWS",
         "length_str": "20 Minutes",
-        "min_words": "3800", # Bumped up to guarantee 20m
+        "min_words": "4500", # Bumped up to guarantee 20m
         "fetch_limit": 5,   
         "total_items": 30,  # Increased density
         "focus": "Fast-paced but deep. Cover the headlines, then debate the impact."
