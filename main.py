@@ -1,5 +1,6 @@
 import subprocess
 import sys
+import time
 
 # --- STEP 0: AUTO-INSTALL SDK ---
 def install_sdk():
@@ -26,6 +27,7 @@ from openai import OpenAI
 # Safe import for Gemini
 try:
     from google import genai
+    from google.genai import types
 except ImportError:
     from google import genai
 
@@ -35,7 +37,7 @@ REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media (Alex, Jamie & Rufus)" 
 
-# Namespace Variables (Moved here to prevent line-break errors)
+# Namespace Variables
 ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
 CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
 
@@ -137,17 +139,32 @@ def get_episode_config():
     
     return config
 
-# --- AI GENERATION HANDLER ---
+# --- AI GENERATION HANDLER (WITH WAIT TIMER) ---
 def generate_content_with_retry(client, prompt):
-    model_priority = ["gemini-2.0-flash", "gemini-1.5-flash"]
+    # Added 'gemini-2.0-flash-exp' which is often the safer name for the new model
+    model_priority = ["gemini-2.0-flash-exp", "gemini-2.0-flash", "gemini-1.5-flash"]
+    
     for model_name in model_priority:
         print(f"Attempting generation with model: {model_name}...")
         try:
             response = client.models.generate_content(model=model_name, contents=prompt)
             return response.text
         except Exception as e:
-            print(f"❌ Error with {model_name}: {e}")
-            continue
+            error_str = str(e)
+            # CHECK FOR RATE LIMIT (429)
+            if "429" in error_str or "RESOURCE_EXHAUSTED" in error_str:
+                print(f"⚠️ RATE LIMIT HIT on {model_name}. Waiting 35 seconds to cool down...")
+                time.sleep(35) # Wait for quota reset
+                try:
+                    print(f"🔄 Retrying {model_name} after wait...")
+                    response = client.models.generate_content(model=model_name, contents=prompt)
+                    return response.text
+                except Exception as retry_e:
+                    print(f"❌ Retry failed: {retry_e}")
+                    continue
+            else:
+                print(f"❌ Error with {model_name}: {e}")
+                continue
     return None
 
 def generate_script(config, sponsor):
@@ -352,4 +369,54 @@ def generate_rss_feed():
 
     for filename in sorted(os.listdir("."), reverse=True):
         if filename.endswith(".mp3") and filename.startswith("podcast_"):
-            date_str = filename.replace
+            date_str = filename.replace("podcast_", "").replace(".mp3", "")
+            notes_file = f"podcast_{date_str}.txt"
+            
+            episode_title = f"AI News: {date_str}" 
+            description_text = "Today's top stories, discussed."
+            content_encoded_text = "Today's top stories, discussed."
+            
+            if os.path.exists(notes_file):
+                with open(notes_file, "r") as f:
+                    full_notes = f.read().strip()
+                    content_encoded_text = full_notes.replace("\n", "<br/>") 
+                    
+                    lines = full_notes.split('\n')
+                    for line in lines:
+                        if line.lower().startswith("title:"):
+                            episode_title = line.split(":", 1)[1].strip()
+                            break
+                    
+                    clean_desc = [l for l in lines if "Title:" not in l and l.strip()]
+                    if clean_desc: description_text = clean_desc[0]
+
+            item = ET.SubElement(channel, "item")
+            ET.SubElement(item, "title").text = episode_title
+            ET.SubElement(item, "description").text = description_text
+            ET.SubElement(item, f"{{{CONTENT_NS}}}encoded").text = content_encoded_text
+            ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
+            ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
+            try:
+                dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
+                ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
+            except: pass
+
+    tree = ET.ElementTree(rss)
+    ET.indent(tree, space="  ", level=0)
+    tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
+    print("✅ RSS Feed Updated: feed.xml")
+
+# --- EXECUTION ---
+if __name__ == "__main__":
+    config = get_episode_config()
+    sponsor = get_sponsor()
+    
+    print("🎬 Starting Production...")
+    script = generate_script(config, sponsor)
+    
+    if script:
+        generate_audio_openai(script)
+        generate_rss_feed()
+        print("🎉 Episode Production Complete!")
+    else:
+        print("❌ Script generation failed. Check API keys or Quota.")
