@@ -69,7 +69,7 @@ def get_sponsor():
     except: return None
     return None
 
-# --- HELPER: GET NEWS (ELASTIC CAPACITY) ---
+# --- HELPER: GET NEWS ---
 def get_latest_news(limit_per_feed=5, total_limit=25):
     print(f"Scanning web for AI news (Limit: {total_limit} items)...")
     news_items = []
@@ -87,7 +87,7 @@ def get_latest_news(limit_per_feed=5, total_limit=25):
     random.shuffle(news_items)
     return "\n\n".join(news_items[:total_limit]) 
 
-# --- SMART CALENDAR & LENGTH LOGIC ---
+# --- SMART CONFIG ---
 def get_episode_config():
     weekday = TODAY.weekday()
     month = TODAY.month
@@ -96,44 +96,42 @@ def get_episode_config():
     config = {
         "type": "DAILY_NEWS",
         "length_str": "20 Minutes",
-        "min_words": "4500", # Bumped up to guarantee 20m
+        "min_words": "4800", 
         "fetch_limit": 5,   
-        "total_items": 30,  # Increased density
+        "total_items": 30,  
         "focus": "Fast-paced but deep. Cover the headlines, then debate the impact."
     }
     
-    # Holiday Logic (45 Mins)
     if (month == 12 and day >= 24) or (month == 1 and day == 1): 
         config["type"] = "HOLIDAY_SPECIAL"
         config["length_str"] = "45 Minutes"
-        config["min_words"] = "8500" # Guarantee 45m
+        config["min_words"] = "8500" 
         config["fetch_limit"] = 12  
         config["total_items"] = 60  
-        config["focus"] = "END OF YEAR SPECTACULAR. Use your INTERNAL KNOWLEDGE + news. Nostalgic, dramatic, comprehensive."
+        config["focus"] = "END OF YEAR SPECTACULAR. Internal Knowledge + News. Nostalgic."
         return config
 
-    # Weekend Logic (30 Mins)
     if weekday == 5: # Saturday
         config["type"] = "WEEKLY_RECAP"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "5500" # Guarantee 30m
+        config["min_words"] = "6500" 
         config["fetch_limit"] = 8
         config["total_items"] = 40
-        config["focus"] = "SATURDAY EDITION. Synthesize these stories. Rufus provides 'Weekend Market Analysis' from the street."
+        config["focus"] = "SATURDAY EDITION. Rufus Market Analysis."
         return config
         
     if weekday == 6: # Sunday
         config["type"] = "DEEP_DIVE"
         config["length_str"] = "30 Minutes"
-        config["min_words"] = "5500" # Guarantee 30m
+        config["min_words"] = "6500" 
         config["fetch_limit"] = 8
         config["total_items"] = 40
-        config["focus"] = "SUNDAY DEEP DIVE. Pick ONLY ONE major theme. Debate it. Rufus provides the legal/money angle."
+        config["focus"] = "SUNDAY DEEP DIVE. Pick ONE theme. Debate it."
         return config
     
     return config
 
-# --- GENERATION WITH RETRY ---
+# --- GENERATION ---
 def generate_content_with_retry(client, prompt):
     model_priority = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-flash-latest"]
     for model_name in model_priority:
@@ -146,7 +144,6 @@ def generate_content_with_retry(client, prompt):
             continue
     return None
 
-# --- MAIN SCRIPT GENERATOR ---
 def generate_script(config, sponsor):
     if not GEMINI_API_KEY: return None
     try:
@@ -156,42 +153,56 @@ def generate_script(config, sponsor):
     raw_news = get_latest_news(config["fetch_limit"], config["total_items"])
     if not raw_news: return None
 
-    print(f"--- EPISODE TYPE: {config['type']} | TARGET: {config['length_str']} ---")
+    sponsor_prompt = ""
+    if sponsor:
+        print(f"💰 SPONSOR: {sponsor['name']}")
+        sponsor_prompt = f"""
+        **SPONSOR INSTRUCTION:**
+        Sponsored by "{sponsor['name']}".
+        Copy: "{sponsor['copy']}"
+        **RULE:** RUFUS (and ONLY RUFUS) reads this. Frame it as a "Smart Money Move".
+        """
+
+    print(f"--- TYPE: {config['type']} | TARGET: {config['length_str']} ---")
 
     prompt = f"""
-    You are the Showrunner for "The AI Edge" (AI Simplify Media).
-    Date: {TODAY_STR}.
-    Type: {config['type']}.
-    Target: {config['length_str']} (STRICT MINIMUM {config['min_words']} Words).
-    Focus: {config['focus']}
+    You are Showrunner for "The AI Edge". Date: {TODAY_STR}.
+    Type: {config['type']}. Target: {config['length_str']} (MIN {config['min_words']} Words).
     
     CHARACTERS:
-    1. ALEX (Host): Optimistic, professional American.
-    2. JAMIE (Co-host): Skeptical, interrupts often. 
-    3. RUFUS (Correspondent): BRITISH ACCENT. Law & Money Expert. Dry wit. 
-       - Reports from "the street". Formal but cynical.
+    1. ALEX (Host): Optimistic American.
+    2. JAMIE (Co-host): Skeptical, interrupts.
+    3. RUFUS (Correspondent): BRITISH ACCENT. Dry wit.
     
+    {sponsor_prompt}
+
     INSTRUCTIONS:
-    - **LENGTH GUARANTEE:** You MUST meet the word count. If you run out of news, pivot to historical analysis or future predictions based on your internal knowledge. DO NOT finish early.
-    - **HEATED INTERRUPTIONS:** To sound realistic, have characters cut each other off. Use short, incomplete sentences during debates.
-      *Example:*
-      *Alex: "I think we need to consider--"*
-      *Jamie: "No, look, that's just PR fluff."*
-      *Alex: "Let me finish! The data says..."*
-    - **RUFUS:** Throw to Rufus 3-4 times. He speaks formally but cynically.
-    - **CLEAN DIALOGUE:** DO NOT write stage directions like (laughs). Only write spoken words.
+    - **REALISM:** Characters interrupt each other. Use incomplete sentences ("But I--").
+    - **RUFUS:** Throw to Rufus 3-4 times.
+    - **CLEAN DIALOGUE:** NO stage directions like (laughs).
     
-    **CRITICAL OUTPUT FORMAT:**
-    1. First, write the **PROFESSIONAL SHOW NOTES**. 
-       - Format: "Diary of a CEO" style.
-       - Title, Summary Hook, "What We Discuss" (Bullets), "Sponsors", Hashtags.
+    **OUTPUT FORMAT (STRICT):**
     
-    2. Then write "|||SEPARATOR|||"
+    PART 1: THE SHOW NOTES
+    (Do not write "Here are the notes" or use Markdown headers like ## or ** for the section title. Just start with the content.)
+    Title: [Catchy Title]
     
-    3. Then write the SCRIPT.
+    [2 Sentence Summary Hook]
     
-    RAW NEWS INPUT:
-    {raw_news}
+    Top Stories:
+    - [Bullet]
+    - [Bullet]
+    
+    Sponsor:
+    [Sponsor Name/Link]
+    
+    Keywords:
+    #AI #Tech #[Tag3] #[Tag4] ...
+    
+    |||SEPARATOR|||
+    
+    PART 2: THE SCRIPT
+    ALEX: Welcome...
     """
     
     full_response = generate_content_with_retry(client, prompt)
@@ -200,10 +211,19 @@ def generate_script(config, sponsor):
     if "|||SEPARATOR|||" in full_response:
         parts = full_response.split("|||SEPARATOR|||")
         
-        # --- SAVE RICH SHOW NOTES ---
-        clean_notes = parts[0].strip()
+        # --- CLEAN SHOW NOTES (The Scrubber) ---
+        raw_notes = parts[0].strip()
+        cleaned_lines = []
+        for line in raw_notes.split('\n'):
+            # Remove AI "Meta Talk"
+            if "PART 1" in line or "SHOW NOTES" in line.upper() or "Here are" in line:
+                continue
+            cleaned_lines.append(line)
+        
+        final_notes = "\n".join(cleaned_lines).strip()
+        
         with open(NOTES_FILE, "w") as f:
-            f.write(clean_notes)
+            f.write(final_notes)
             
         return parts[1].strip()
     else:
@@ -226,7 +246,7 @@ def generate_audio_openai(script_text):
     forbidden_keywords = [
         "STRUCTURE", "HOOK", "DEEP DIVE", "FIELD REPORT", "MID-ROLL", 
         "STORY 2", "SPEED ROUND", "OUTRO", "RAW NEWS", "WORD COUNT", 
-        "SHOW WORDS", "END OF SCRIPT", "SIGNOFF", "STORY#2", "SIGN OFF"
+        "SHOW WORDS", "END OF SCRIPT", "SIGNOFF", "STORY#2", "SIGN OFF", "PART 2", "THE SCRIPT"
     ]
     sfx_triggers = ["DEEP DIVE", "FIELD REPORT", "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO"]
     
@@ -240,9 +260,6 @@ def generate_audio_openai(script_text):
              if len(combined_audio) > 5000 and transition_sfx:
                  combined_audio += transition_sfx
 
-        is_numbered = re.match(r'^\d+[\.\)]', text)
-        if is_numbered:
-            if any(k in upper_text for k in forbidden_keywords) or "MIN)" in upper_text: continue
         if any(upper_text.startswith(k) for k in forbidden_keywords): continue
         if text.startswith("(") and text.endswith(")"): continue
 
@@ -256,7 +273,6 @@ def generate_audio_openai(script_text):
             current_voice = "fable" 
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE)
             
-        # Scrub stage directions
         text = re.sub(r'\(.*?\)', '', text) 
         text = re.sub(r'\[.*?\]', '', text)
         text = text.replace("*", "").replace("#", "").strip()
@@ -289,8 +305,6 @@ def generate_audio_openai(script_text):
 # --- PRO RSS FEED (WITH CONTENT NAMESPACE) ---
 def generate_rss_feed():
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
-    
-    # REGISTER NAMESPACES FOR RICH CONTENT
     ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
     ET.register_namespace("content", "http://purl.org/rss/1.0/modules/content/")
     
@@ -298,7 +312,7 @@ def generate_rss_feed():
     channel = ET.SubElement(rss, "channel")
     
     ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered & Automated"
-    ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media. Alex (Optimist), Jamie (Skeptic) and Rufus (Law & Money Insider) debate the biggest stories in Artificial Intelligence."
+    ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
     ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
@@ -306,63 +320,4 @@ def generate_rss_feed():
     image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
     image.set("href", f"{base_url}/logo.png") 
     
-    owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
-    ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = YOUR_EMAIL
-    ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}name").text = AUTHOR_NAME
-    category = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}category")
-    category.set("text", "Technology")
-
-    for filename in sorted(os.listdir("."), reverse=True):
-        if filename.endswith(".mp3") and filename.startswith("podcast_"):
-            date_str = filename.replace("podcast_", "").replace(".mp3", "")
-            notes_file = f"podcast_{date_str}.txt"
-            
-            # Defaults
-            episode_title = f"AI News: {date_str}" 
-            description_text = "Today's top stories, discussed."
-            content_encoded_text = "Today's top stories, discussed."
-            
-            # --- PARSE RICH NOTES ---
-            if os.path.exists(notes_file):
-                with open(notes_file, "r") as f:
-                    full_notes = f.read().strip()
-                    content_encoded_text = full_notes # Save full formatted text for content:encoded
-                    
-                    # Extract Title
-                    lines = full_notes.split('\n')
-                    for line in lines:
-                        if line.lower().startswith("title:"):
-                            episode_title = line.replace("Title:", "").replace("title:", "").strip()
-                            break
-                    
-                    # Create a short summary for the normal description tag
-                    description_text = full_notes[:250] + "..." if len(full_notes) > 250 else full_notes
-
-            item = ET.SubElement(channel, "item")
-            ET.SubElement(item, "title").text = episode_title
-            ET.SubElement(item, "description").text = description_text
-            
-            # ADD RICH CONTENT TAG (The "Sticky" Note)
-            ET.SubElement(item, "{http://purl.org/rss/1.0/modules/content/}encoded").text = content_encoded_text
-            
-            ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
-            ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
-            try:
-                dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-                ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
-            except: pass
-
-    tree = ET.ElementTree(rss)
-    ET.indent(tree, space="  ", level=0)
-    tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
-
-# --- MAIN ---
-if __name__ == "__main__":
-    config = get_episode_config()
-    sponsor = get_sponsor()
-    script = generate_script(config, sponsor)
-    if script:
-        generate_audio_openai(script)
-        generate_rss_feed()
-    else:
-        print("Script generation failed.")
+    owner = ET.SubElement(channel, "{
