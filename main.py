@@ -4,7 +4,6 @@ import sys
 # --- STEP 0: AUTO-INSTALL SDK ---
 def install_sdk():
     try:
-        # Checks if google-genai is installed; installs if missing
         import google.genai
     except ImportError:
         print("Installing Google GenAI SDK...")
@@ -36,6 +35,10 @@ REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
 AUTHOR_NAME = "AI Simplify Media (Alex, Jamie & Rufus)" 
 
+# Namespace Variables (Moved here to prevent line-break errors)
+ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
+
 RSS_FEEDS = [
     "https://techcrunch.com/category/artificial-intelligence/feed/",
     "https://venturebeat.com/category/ai/feed/",
@@ -51,7 +54,6 @@ GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
 
 # --- DATE SYSTEM ---
-# Uses system time to prevent AI hallucinations
 TODAY = datetime.date.today()
 TODAY_STR = TODAY.strftime("%A, %B %d, %Y")
 
@@ -80,7 +82,6 @@ def get_latest_news(limit_per_feed=5, total_limit=25):
             feed = feedparser.parse(url, agent=headers['User-Agent'])
             if not feed.entries: continue
             for entry in feed.entries[:limit_per_feed]: 
-                # Basic HTML cleaning
                 summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else entry.title)
                 news_items.append(f"Source: {feed.feed.title}. Headline: {entry.title}. Details: {summary[:600]}")
         except: pass
@@ -138,7 +139,6 @@ def get_episode_config():
 
 # --- AI GENERATION HANDLER ---
 def generate_content_with_retry(client, prompt):
-    # Tries the newest models first
     model_priority = ["gemini-2.0-flash", "gemini-1.5-flash"]
     for model_name in model_priority:
         print(f"Attempting generation with model: {model_name}...")
@@ -161,7 +161,6 @@ def generate_script(config, sponsor):
     raw_news = get_latest_news(config["fetch_limit"], config["total_items"])
     if not raw_news: return None
 
-    # Sponsor Injection
     sponsor_prompt = ""
     if sponsor:
         print(f"💰 SPONSOR ACTIVE: {sponsor['name']}")
@@ -227,7 +226,6 @@ def generate_script(config, sponsor):
         raw_notes = parts[0].strip()
         cleaned_lines = []
         for line in raw_notes.split('\n'):
-            # Filters out AI "chat" fillers
             if "PART 1" in line or "SHOW NOTES" in line.upper() or "Here are" in line:
                 continue
             cleaned_lines.append(line)
@@ -239,7 +237,6 @@ def generate_script(config, sponsor):
             
         return parts[1].strip()
     else:
-        # Fallback if separator missing
         return full_response
 
 # --- AUDIO PRODUCTION ENGINE ---
@@ -252,17 +249,14 @@ def generate_audio_openai(script_text):
     
     transition_sfx = None
     if os.path.exists("transition.mp3"):
-        # Lower transition volume slightly (-4dB)
         transition_sfx = AudioSegment.from_file("transition.mp3") - 4
     
     lines = script_text.split('\n')
     current_voice = "onyx" 
     count = 0
     
-    # Triggers for sound effects
     sfx_triggers = ["DEEP DIVE", "FIELD REPORT", "MID-ROLL", "STORY 2", "SPEED ROUND", "OUTRO"]
     
-    # Lines to skip (AI structural text)
     forbidden_keywords = [
         "STRUCTURE", "HOOK", "DEEP DIVE", "FIELD REPORT", "MID-ROLL", 
         "STORY 2", "SPEED ROUND", "OUTRO", "RAW NEWS", "WORD COUNT", 
@@ -277,16 +271,13 @@ def generate_audio_openai(script_text):
         text = text.replace("*", "").replace("#", "").strip()
         upper_text = text.upper()
 
-        # SFX Logic
         if any(trigger in upper_text for trigger in sfx_triggers):
              if len(combined_audio) > 5000 and transition_sfx:
                  combined_audio += transition_sfx
 
-        # Skip logic
         if any(upper_text.startswith(k) for k in forbidden_keywords): continue
         if text.startswith("(") and text.endswith(")"): continue
 
-        # Voice Assignment
         if "ALEX" in upper_text[:10]: 
             current_voice = "onyx"
             text = re.sub(r'^.*?ALEX.*?:', '', text, flags=re.IGNORECASE)
@@ -297,8 +288,6 @@ def generate_audio_openai(script_text):
             current_voice = "fable" 
             text = re.sub(r'^.*?RUFUS.*?:', '', text, flags=re.IGNORECASE)
             
-        # --- THE CLEANER (Regex Scrubber) ---
-        # Removes (laughs), [sighs], etc.
         text = re.sub(r'\(.*?\)', '', text) 
         text = re.sub(r'\[.*?\]', '', text)
         text = text.replace("*", "").replace("#", "").strip()
@@ -315,12 +304,10 @@ def generate_audio_openai(script_text):
                 chunk_file = f"chunk_{count}.mp3"
                 response.stream_to_file(chunk_file)
             
-            # Boost volume +5dB for broadcast quality
             audio_chunk = AudioSegment.from_file(chunk_file)
             audio_chunk = audio_chunk + 5 
             
             combined_audio += audio_chunk
-            # Add micro-pause between lines (150ms)
             combined_audio += AudioSegment.silent(duration=150) 
             os.remove(chunk_file)
             count += 1
@@ -328,7 +315,6 @@ def generate_audio_openai(script_text):
         except Exception as e: 
             print(f"Skipped line error: {e}")
 
-    # Mix Intro/Outro
     if os.path.exists("intro.mp3"): 
         print("Mixing Intro...")
         combined_audio = AudioSegment.from_file("intro.mp3") + combined_audio
@@ -343,8 +329,8 @@ def generate_audio_openai(script_text):
 def generate_rss_feed():
     print("Generating RSS Feed...")
     base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
-    ET.register_namespace("itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
-    ET.register_namespace("content", "http://purl.org/rss/1.0/modules/content/")
+    ET.register_namespace("itunes", ITUNES_NS)
+    ET.register_namespace("content", CONTENT_NS)
     
     rss = ET.Element("rss", version="2.0") 
     channel = ET.SubElement(rss, "channel")
@@ -353,70 +339,17 @@ def generate_rss_feed():
     ET.SubElement(channel, "description").text = "Daily AI news from AI Simplify Media."
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "link").text = base_url
-    ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = AUTHOR_NAME
+    ET.SubElement(channel, f"{{{ITUNES_NS}}}author").text = AUTHOR_NAME
     
-    image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
+    image = ET.SubElement(channel, f"{{{ITUNES_NS}}}image")
     image.set("href", f"{base_url}/logo.png") 
     
-    owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
-    ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = YOUR_EMAIL
-    ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}name").text = AUTHOR_NAME
-    category = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}category")
+    owner = ET.SubElement(channel, f"{{{ITUNES_NS}}}owner")
+    ET.SubElement(owner, f"{{{ITUNES_NS}}}email").text = YOUR_EMAIL
+    ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = AUTHOR_NAME
+    category = ET.SubElement(channel, f"{{{ITUNES_NS}}}category")
     category.set("text", "Technology")
 
     for filename in sorted(os.listdir("."), reverse=True):
         if filename.endswith(".mp3") and filename.startswith("podcast_"):
-            date_str = filename.replace("podcast_", "").replace(".mp3", "")
-            notes_file = f"podcast_{date_str}.txt"
-            
-            episode_title = f"AI News: {date_str}" 
-            description_text = "Today's top stories, discussed."
-            content_encoded_text = "Today's top stories, discussed."
-            
-            if os.path.exists(notes_file):
-                with open(notes_file, "r") as f:
-                    full_notes = f.read().strip()
-                    # HTML formatting for Spotify
-                    content_encoded_text = full_notes.replace("\n", "<br/>") 
-                    
-                    lines = full_notes.split('\n')
-                    for line in lines:
-                        if line.lower().startswith("title:"):
-                            episode_title = line.split(":", 1)[1].strip()
-                            break
-                    
-                    # Safe description extraction
-                    clean_desc = [l for l in lines if "Title:" not in l and l.strip()]
-                    if clean_desc: description_text = clean_desc[0]
-
-            item = ET.SubElement(channel, "item")
-            ET.SubElement(item, "title").text = episode_title
-            ET.SubElement(item, "description").text = description_text
-            # The "Sticky" Rich Note Tag
-            ET.SubElement(item, "{http://purl.org/rss/1.0/modules/content/}encoded").text = content_encoded_text
-            ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
-            ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
-            try:
-                dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-                ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
-            except: pass
-
-    tree = ET.ElementTree(rss)
-    ET.indent(tree, space="  ", level=0)
-    tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
-    print("✅ RSS Feed Updated: feed.xml")
-
-# --- EXECUTION ---
-if __name__ == "__main__":
-    config = get_episode_config()
-    sponsor = get_sponsor()
-    
-    print("🎬 Starting Production...")
-    script = generate_script(config, sponsor)
-    
-    if script:
-        generate_audio_openai(script)
-        generate_rss_feed()
-        print("🎉 Episode Production Complete!")
-    else:
-        print("❌ Script generation failed. Check API keys or Quota.")
+            date_str = filename.replace
