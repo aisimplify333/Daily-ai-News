@@ -2,13 +2,13 @@ import subprocess
 import sys
 import time
 import logging
-import requests  
+import requests 
 
 # --- CONFIGURATION: LOGGING & SETUP ---
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def install_requirements():
-    """Auto-installs essentials. No complex SDKs."""
+    """Auto-installs essentials."""
     required = ["holidays", "feedparser", "pydub", "openai", "requests"]
     for package in required:
         try:
@@ -132,10 +132,10 @@ def get_episode_config(force_downgrade=False):
     
     return config
 
-# --- CORE AI GENERATION (REST API ENGINE) ---
+# --- CORE AI GENERATION (THE "SMART WAITER" ENGINE) ---
 
 def call_gemini_api(model_name, prompt):
-    """Direct REST API call. Bypasses Python SDK issues."""
+    """Direct REST API call."""
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={GEMINI_API_KEY}"
     headers = {"Content-Type": "application/json"}
     data = {"contents": [{"parts": [{"text": prompt}]}]}
@@ -190,45 +190,52 @@ def generate_script(config, sponsor):
     1. **COLD OPEN:** Start with a 15-second "Teaser" debate (High drama) BEFORE the intro music.
     2. **INTERRUPTIONS:** Use dashes (e.g. "But I--") to show cut-offs.
     3. **NO STAGE DIRECTIONS:** Do not write (laughs). Only spoken words.
-    4. **CALL TO ACTION:** End with Alex asking listeners to "Share with one friend" to help the show grow.
+    4. **CALL TO ACTION:** End with Alex asking listeners to "Share with one friend".
     
     OUTPUT STRUCTURE:
     PART 1: SHOW NOTES
-    Title: [Write a Viral, Clickable Title (Not just the date)]
-    Summary: [2 Sentence Hook]
+    Title: [Viral Title]
+    Summary: [Hook]
     ...
     |||SEPARATOR|||
     PART 2: SCRIPT
     ALEX: (Cold Open)...
     """
 
-    # FIXED MODEL LIST: Uses Exact Standard IDs
-    models = [
-        "gemini-2.0-flash-exp",   # Top Tier
-        "gemini-1.5-flash",       # Standard Stable (FIXED NAME)
-        "gemini-1.5-flash-8b",    # High Rate Limit Fallback
-        "gemini-1.5-pro"          # Heavy Duty Backup
-    ]
+    # STRATEGY: 
+    # 1. Try the best model (gemini-2.0-flash-exp).
+    # 2. If it hits rate limit, WAIT 60 SECONDS and retry IT. 
+    # 3. Only then try backups.
     
-    for model_name in models:
-        logging.info(f"Attempting generation with {model_name}...")
-        try:
-            result = call_gemini_api(model_name, system_prompt)
-            if result:
-                return result # Success! Return the text.
+    primary_model = "gemini-2.0-flash-exp"
+    backup_models = ["gemini-1.5-flash-latest", "gemini-pro"]
+    
+    # ATTEMPT 1: Primary Model
+    logging.info(f"Attempting Primary Model: {primary_model}...")
+    try:
+        return call_gemini_api(primary_model, system_prompt)
+    except Exception as e:
+        if "RATE_LIMIT" in str(e):
+            logging.warning(f"⚠️ Rate Limit on {primary_model}. Waiting 60 seconds to cool down...")
+            time.sleep(60) # <--- THE FIX. WAIT FOR QUOTA RESET.
             
-            # If result is None (404/Error), loop continues to next model...
-            logging.warning(f"Model {model_name} failed. Trying next...")
-            continue
+            # ATTEMPT 2: Primary Model (Retry)
+            logging.info(f"🔄 Retrying Primary Model: {primary_model}...")
+            try:
+                return call_gemini_api(primary_model, system_prompt)
+            except Exception as e:
+                logging.error(f"Primary model failed twice. Trying backups...")
+        else:
+            logging.error(f"Primary model error: {e}")
 
-        except Exception as e:
-            if "RATE_LIMIT" in str(e):
-                logging.warning(f"⚠️ Rate Limit on {model_name}. Switching models in 5s...")
-                time.sleep(5)
-                continue
-            else:
-                logging.error(f"Unexpected error on {model_name}: {e}")
-                continue
+    # ATTEMPT 3: Backups (If Primary really dead)
+    for model in backup_models:
+        logging.info(f"Attempting Backup Model: {model}...")
+        try:
+            return call_gemini_api(model, system_prompt)
+        except:
+            continue
+            
     return None
 
 # --- AUDIO ENGINE ---
@@ -357,13 +364,11 @@ def update_rss_feed():
                 rich_content = content.replace("\n", "<br/>") 
                 
                 lines = content.split('\n')
-                # 1. Try to find an explicit "Title:" line
                 for line in lines:
                     if line.lower().startswith("title:"):
                         title = line.split(":", 1)[1].strip()
                         break
                 
-                # 2. Grab description (first non-title line)
                 for line in lines:
                     if "Title:" not in line and len(line) > 20:
                         desc = line
