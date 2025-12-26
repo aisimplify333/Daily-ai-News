@@ -9,25 +9,32 @@ from email.utils import formatdate
 from openai import OpenAI
 from pydub import AudioSegment
 
-# --- 1. CONFIGURATION ---
+# --- 1. CONFIGURATION & SETUP ---
 
+# API CLIENT
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
+# DIRECTORIES
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 ASSETS_DIR = BASE_DIR / "assets"
+ASSETS_DIR.mkdir(exist_ok=True) # Ensure assets folder exists
 
-# VOICES (Platinum Cast)
+# THE PLATINUM CAST
+# Alex: Onyx (Deep, Professional Anchor)
+# Jamie: Nova (High Energy, Prompted to be Cynical/Disruptive)
+# Rufus: Fable (Prompted to use British Syntax/Dry Wit)
 VOICES = {
-    "ALEX": "onyx",   # Anchor
-    "JAMIE": "nova",  # Disruptor
-    "RUFUS": "fable"  # British Banker (Simulated)
+    "ALEX": "onyx",
+    "JAMIE": "nova",
+    "RUFUS": "fable"
 }
 
-# BRANDING
+# HARDCODED BRANDING (The anchor point of the show)
 INTRO_TEXT = "Welcome to the AI Edge, your source for Daily News Unfiltered. Introducing Alex, Jamie, and Rufus."
 
+# RSS / SPOTIFY SETTINGS
 RSS_SETTINGS = {
     "title": "The AI Edge",
     "link": "https://github.com/aisimplify333/Daily-ai-News",
@@ -38,22 +45,22 @@ RSS_SETTINGS = {
     "category": "Technology"
 }
 
-# --- 2. FORMAT LOGIC ---
+# --- 2. LOGIC: CALENDAR & FORMAT ---
 
 def get_show_settings():
+    """Determines show structure based on date."""
     today = datetime.date.today()
     
-    # YEAR END SPECIAL
+    # A. YEAR END SPECIAL (45 Mins) - Dec 26-31
     if today.month == 12 and today.day >= 26:
         return {
             "type": "Year End Special",
             "tone": "Epic, reflective, cynical yet hopeful.",
             "duration": "45 min",
-            # Note: HOOK must be first for the Cold Open logic to work
             "segments": ["HOOK", "Q1_REVIEW", "Q2_REVIEW", "MID_ROLL", "Q3_REVIEW", "Q4_REVIEW", "PREDICTIONS", "OUTRO"]
         }
     
-    # WEEKEND DEEP DIVE
+    # B. WEEKEND DEEP DIVE (30 Mins) - Sat/Sun
     elif today.weekday() >= 5:
         return {
             "type": "Weekend Deep Dive",
@@ -62,7 +69,7 @@ def get_show_settings():
             "segments": ["HOOK", "DEEP_DIVE_1", "RUFUS_MONEY", "MID_ROLL", "ROUND_TABLE_DEBATE", "OUTRO"]
         }
     
-    # DAILY NEWS
+    # C. DAILY NEWS (20 Mins) - Mon-Fri
     else:
         return {
             "type": "Daily News Unfiltered",
@@ -72,50 +79,54 @@ def get_show_settings():
         }
 
 def get_rufus_location():
-    return random.choice(["London", "The City of London", "Canary Wharf", "Zurich", "Hong Kong"])
+    """Rufus is a global correspondent."""
+    return random.choice(["London", "The City of London", "Canary Wharf", "Zurich", "Hong Kong", "Singapore"])
 
-# --- 3. THE WRITER (Enhanced Realism) ---
+# --- 3. THE WRITER (DRAFT + PUNCH-UP) ---
 
 def draft_segment(segment_name, news_context, settings, rufus_loc, sponsor_txt):
+    """Step 1: Get the facts right."""
     system_prompt = f"""
     You are the Writer for 'The AI Edge'. Write the **{segment_name}** segment.
     
-    **CAST:**
-    - ALEX (Host): Professional, sets the table. Catchphrase: "Let's get to it."
-    - JAMIE (Co-Host): The Disruptor. She hates corporate speak. She interrupts.
-    - RUFUS (Analyst): A weary British Banker in {rufus_loc}. He hates hype. Focuses on Profit/Law.
+    **ROLES:**
+    - ALEX (Host): Professional, driving the roadmap. Catchphrase: "Let's get to it."
+    - JAMIE (Co-Host): The Cynic (Female). She questions hype.
+    - RUFUS (Analyst): Reporting from {rufus_loc}. Focus on Money/Law.
     
     **CONTEXT:**
+    - Format: {settings['type']}
     - Tone: {settings['tone']}
-    - Sponsor (Mid-Roll only): "{sponsor_txt}"
+    - Sponsor Read (if Mid-Roll): "{sponsor_txt}"
     
     **GOAL:**
-    - Accurate news coverage.
-    - STRICT FORMAT: ALEX: [Text] / JAMIE: [Text] / RUFUS: [Text]
+    - Cover the news accurately.
+    - Use format: ALEX: [Text] / JAMIE: [Text] / RUFUS: [Text]
     """
     
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"Write segment: {segment_name}. Content: {news_context[:2500]}"}
+            {"role": "user", "content": f"Write the script for: {segment_name}. News Context: {news_context[:2500]}"}
         ]
     )
     return response.choices[0].message.content
 
 def punch_up_script(draft_script):
-    """The 95% Realism Booster."""
+    """Step 2: The 'Humanizer'. Adds interruptions and British syntax."""
     system_prompt = """
-    You are a Hollywood Script Doctor. Make this sound like REAL humans arguing.
+    You are a Hollywood Script Doctor. Rewrite this to sound like real humans arguing.
     
-    **INSTRUCTIONS:**
+    **CRITICAL INSTRUCTIONS:**
     1. **REMOVE INTROS:** If the script says "Welcome to the show" anywhere, DELETE IT. The code handles that.
-    2. **ADD INTERRUPTIONS:** Use double dashes (--) to show cutting off.
-       (e.g. ALEX: "The data suggests--" JAMIE: "--Oh, spare me the data!")
-    3. **RUFUS (BRITISH):** Rewrite RUFUS to sound like a posh Londoner.
-       - Use: "Rubbish", "Quite right", "Indeed", "The Exchequer", "Bollocks", "Spot on".
-    4. **JAMIE (CYNIC):** Make her sharper. Less polite.
-    5. **PRESERVE TAGS:** Keep ALEX:/JAMIE:/RUFUS: format.
+    2. **INTERRUPTIONS:** Use double dashes (--) to cut people off. 
+       (e.g., ALEX: "The data shows--" JAMIE: "--Forget the data, look at the reality!")
+    3. **JAMIE (The Cynic):** Make her ruder. She should mock corporate speak.
+    4. **RUFUS (The Brit):** Rewrite RUFUS's lines using **BRITISH SYNTAX** to simulate an accent.
+       - Use: "Rubbish", "Quite right", "Indeed", "The Exchequer", "Cheers", "Mate", "Bollocks", "Spot on".
+       - He is DRY and FORMAL.
+    5. **PRESERVE FORMAT:** Keep ALEX:/JAMIE:/RUFUS: tags exactly.
     """
     
     response = client.chat.completions.create(
@@ -124,11 +135,11 @@ def punch_up_script(draft_script):
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": draft_script}
         ],
-        temperature=0.9
+        temperature=0.9 # High creativity
     )
     return response.choices[0].message.content
 
-# --- 4. PRODUCTION ENGINE ---
+# --- 4. PRODUCTION ENGINE (AUDIO & METADATA) ---
 
 def clean_text(text):
     """Scrub stage directions and accidental intros."""
@@ -136,11 +147,11 @@ def clean_text(text):
     text = re.sub(r'\[.*?\]', '', text)
     text = re.sub(r'\(.*?\)', '', text)
     
-    # SAFETY NET: Remove any hallucinated intros from the text
+    # SAFETY NET: Remove any hallucinated intros from the text so we don't get double intros
     bad_phrases = ["Welcome to the AI Edge", "Welcome back", "Hello everyone"]
     for phrase in bad_phrases:
         if phrase.lower() in text.lower() and len(text) < 100:
-            return "" # Kill the line if it's just a duplicate intro
+            return "" 
             
     return text.strip()
 
@@ -148,23 +159,98 @@ def generate_silence(duration_ms):
     """Generates a silent audio segment."""
     return AudioSegment.silent(duration=duration_ms)
 
-def produce_episode(news_content, sponsor_msg="Sponsored by AI Simplify Media"):
-    print("--- STARTING PLATINUM BUILD ---")
+def generate_metadata(full_script_text):
+    """Generates Title, Summary, Tags for Spotify."""
+    prompt = """
+    Generate JSON metadata for this podcast episode.
+    - "title": Clickbait style, max 60 chars. (e.g., "Nvidia Crashes? + OpenAI's Secret")
+    - "summary": 3 sentences, punchy.
+    - "hashtags": #Tag1 #Tag2
+    """
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": full_script_text[:4000]}
+        ],
+        response_format={"type": "json_object"}
+    )
+    return json.loads(response.choices[0].message.content)
+
+def update_rss_feed(metadata, filename, file_size):
+    """Updates feed.xml with Spotify Keys."""
+    rss_path = Path("feed.xml")
     
+    # Namespaces
+    ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+    ET.register_namespace("itunes", ITUNES_NS)
+    
+    if not rss_path.exists():
+        root = ET.Element("rss", version="2.0")
+        channel = ET.SubElement(root, "channel")
+        ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
+        ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
+        ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
+        ET.SubElement(channel, "language").text = "en-us"
+        
+        # Spotify/iTunes Owner Tags
+        owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
+        ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}name").text = RSS_SETTINGS["author"]
+        ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = RSS_SETTINGS["email"]
+        
+        image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
+        image.set("href", RSS_SETTINGS["image"])
+        
+        ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}category", text=RSS_SETTINGS["category"])
+        ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}explicit").text = "no"
+    else:
+        tree = ET.parse(rss_path)
+        root = tree.getroot()
+        channel = root.find("channel")
+
+    # Create New Item
+    item = ET.Element("item")
+    ET.SubElement(item, "title").text = metadata["title"]
+    ET.SubElement(item, "description").text = metadata["summary"]
+    ET.SubElement(item, "pubDate").text = formatdate(localtime=False, usegmt=True)
+    ET.SubElement(item, "guid").text = f"{RSS_SETTINGS['link']}/{filename}"
+    
+    enclosure = ET.SubElement(item, "enclosure")
+    enclosure.set("url", f"{RSS_SETTINGS['link']}/{filename}")
+    enclosure.set("length", str(file_size))
+    enclosure.set("type", "audio/mpeg")
+    
+    ET.SubElement(item, "{http://www.itunes.com/dtds/podcast-1.0.dtd}duration").text = "20:00" # Approximate placeholder
+
+    # Append to channel
+    channel.append(item) 
+    
+    tree = ET.ElementTree(root)
+    ET.indent(tree, space="  ", level=0)
+    tree.write(rss_path, encoding="UTF-8", xml_declaration=True)
+    print(" >> RSS Feed Updated.")
+
+# --- 5. MAIN EXECUTION ---
+
+def produce_episode(news_content, sponsor_msg="Sponsored by AI Simplify Media"):
+    print("--- STARTING PLATINUM PRODUCTION ---")
+    
+    # 1. SETUP
     settings = get_show_settings()
     rufus_loc = get_rufus_location()
+    print(f"Format: {settings['type']} ({settings['duration']}) | Loc: {rufus_loc}")
     
-    audio_segments = []     # List of Pydub AudioSegments (not just files)
+    audio_segments = []     
     full_script_text = ""
     
-    # STATE FLAGS (The 95% Correctness Fix)
+    # STATE FLAGS (Prevents Double Intro)
     has_played_intro = False 
     
-    # 1. LOAD ASSETS (Fail gracefully if missing)
+    # LOAD ASSETS (Graceful Fallback)
     try:
         music_intro = AudioSegment.from_mp3(ASSETS_DIR / "intro.mp3")
     except:
-        music_intro = AudioSegment.silent(duration=1000) # Fallback
+        music_intro = AudioSegment.silent(duration=1000) 
         
     try:
         music_outro = AudioSegment.from_mp3(ASSETS_DIR / "outro.mp3")
@@ -173,14 +259,14 @@ def produce_episode(news_content, sponsor_msg="Sponsored by AI Simplify Media"):
 
     # 2. GENERATE SEGMENTS
     for segment in settings['segments']:
-        print(f" >> Processing: {segment}")
+        print(f" >> Processing Segment: {segment}")
         
         # A. Draft & Punch-Up
         draft = draft_segment(segment, news_content, settings, rufus_loc, sponsor_msg)
         final_script = punch_up_script(draft)
         full_script_text += f"\n{final_script}"
         
-        # B. Voice Generation Loop
+        # B. Voice Gen Loop
         lines = final_script.split('\n')
         for line in lines:
             match = re.match(r'^(ALEX|JAMIE|RUFUS):\s*(.*)', line, re.IGNORECASE)
@@ -189,18 +275,18 @@ def produce_episode(news_content, sponsor_msg="Sponsored by AI Simplify Media"):
                 text = clean_text(match.group(2))
                 if not text: continue
                 
-                # --- AUDIO GENERATION ---
+                # Generate Audio File
                 temp_file = AUDIO_DIR / "temp_speech.mp3"
                 client.audio.speech.create(
                     model="tts-1-hd", voice=VOICES[speaker], input=text
                 ).stream_to_file(temp_file)
                 
-                # Convert to Pydub Segment
+                # Convert to AudioSegment
                 speech_segment = AudioSegment.from_mp3(temp_file)
                 
-                # ADD BREATH (Realism): Add 200ms silence between speakers
+                # ADD REALISM: 200ms silence between speakers
                 audio_segments.append(speech_segment)
-                audio_segments.append(generate_silence(200)) 
+                audio_segments.append(generate_silence(200))
 
         # C. LOGIC: INSERT INTRO (Once Only, After Hook)
         if segment == "HOOK" and not has_played_intro:
@@ -228,7 +314,13 @@ def produce_episode(news_content, sponsor_msg="Sponsored by AI Simplify Media"):
     print(" >> Adding Outro...")
     audio_segments.append(music_outro)
 
-    # 4. STITCH & EXPORT
+    # 4. METADATA
+    print(" >> Generating Metadata...")
+    meta = generate_metadata(full_script_text)
+    with open("episode_metadata.json", "w") as f:
+        json.dump(meta, f, indent=4)
+
+    # 5. STITCH & EXPORT
     print(" >> Stitching Master File...")
     final_mix = AudioSegment.empty()
     for seg in audio_segments:
@@ -238,43 +330,26 @@ def produce_episode(news_content, sponsor_msg="Sponsored by AI Simplify Media"):
     final_path = AUDIO_DIR / final_filename
     final_mix.export(final_path, format="mp3")
     
-    # 5. METADATA & RSS
-    print(" >> Updating RSS...")
-    meta = generate_metadata(full_script_text) # Uses function defined below
-    update_rss_feed(meta, final_filename, os.path.getsize(final_path)) # Uses function defined below
-    
-    # Save Metadata for debug
-    with open("episode_metadata.json", "w") as f:
-        json.dump(meta, f, indent=4)
+    # 6. RSS UPDATE
+    print(" >> Updating RSS Feed...")
+    file_size = os.path.getsize(final_path)
+    update_rss_feed(meta, final_filename, file_size)
 
-    print(f"DONE. Saved to: {final_path}")
+    print(f"\nDONE! Episode Ready: {final_path}")
+    print(f"Title: {meta['title']}")
 
-# --- HELPER FUNCTIONS (Metadata & RSS) ---
-def generate_metadata(text):
-    prompt = 'Generate JSON: {"title": "Clickbait Title", "summary": "2 sentences", "hashtags": "#tag"}'
-    response = client.chat.completions.create(
-        model="gpt-4o", messages=[{"role":"user","content": f"{prompt}\n{text[:3000]}"}],
-        response_format={"type": "json_object"}
-    )
-    return json.loads(response.choices[0].message.content)
-
-def update_rss_feed(meta, fname, fsize):
-    rss_path = Path("feed.xml")
-    # ... (Standard RSS update logic, same as previous, omitted for brevity but assumed present) ...
-    # RE-INSERT THE RSS LOGIC FROM PREVIOUS MESSAGE HERE IF YOU NEED THE FULL FILE BLOCK
-    # For now, assuming you kept the RSS function from the previous turn. 
-    # If not, let me know and I will paste the FULL 200 lines again.
-    
-    # Simple placeholder to ensure code runs if you paste over old function:
-    # (Paste the update_rss_feed function from the previous confirmed code here)
-    pass 
-
+# --- RUN ---
 if __name__ == "__main__":
-    # Load news
+    # Reads 'marketing.txt' as the news source.
     news_file = Path("marketing.txt")
     if news_file.exists():
-        with open(news_file, "r") as f: news = f.read()
+        with open(news_file, "r") as f:
+            news = f.read()
     else:
-        news = "AI News: Tech stocks volatile. Robots advancing. Regulation pending."
+        news = "Discuss the latest trends in Artificial Intelligence and Robotics."
     
+    # Fail-safe if file is empty
+    if len(news) < 10:
+         news = "Discuss the latest trends in Artificial Intelligence and Robotics."
+
     produce_episode(news)
