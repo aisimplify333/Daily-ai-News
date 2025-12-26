@@ -1,472 +1,343 @@
-import subprocess
-import sys
-import time
-import logging
-import requests 
-
-# --- CONFIGURATION: LOGGING & SETUP ---
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-def install_requirements():
-    """Auto-installs essentials."""
-    required = ["holidays", "feedparser", "pydub", "openai", "requests"]
-    for package in required:
-        try:
-            __import__(package)
-        except ImportError:
-            logging.info(f"Installing missing dependency: {package}...")
-            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-install_requirements()
-
-# --- IMPORTS ---
 import os
+import json
 import random
 import re
-import json
 import datetime
-import holidays  
-import feedparser
-import xml.etree.ElementTree as ET 
+from pathlib import Path
+import xml.etree.ElementTree as ET
 from email.utils import formatdate
-from pydub import AudioSegment
 from openai import OpenAI
+from pydub import AudioSegment
 
-# --- CONSTANTS & CONFIG ---
-GITHUB_USERNAME = "aisimplify333"
-REPO_NAME = "Daily-ai-News"
-YOUR_EMAIL = "aisimplify333@GMAIL.COM"  
-AUTHOR_NAME = "AI Simplify Media (Alex, Jamie & Rufus)" 
+# --- 1. CONFIGURATION & SETUP ---
 
-RSS_FEEDS = [
-    "https://techcrunch.com/category/artificial-intelligence/feed/",
-    "https://venturebeat.com/category/ai/feed/",
-    "https://www.theregister.com/software/ai_ml/headlines.atom", 
-    "https://hnrss.org/newest?q=AI",  
-    "https://www.reddit.com/r/ArtificialInteligence/top/.rss?t=day",
-    "https://futurism.com/feed",
-    "https://garymarcus.substack.com/feed",
-    "https://www.wired.com/feed/category/ai/latest/rss"
-]
+# API CLIENT
+client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-CONTENT_NS = "http://purl.org/rss/1.0/modules/content/"
-GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
-OPENAI_API_KEY = os.environ.get('OPENAI_API_KEY')
+# DIRECTORIES
+BASE_DIR = Path(__file__).parent
+AUDIO_DIR = BASE_DIR / "episode_audio"
+AUDIO_DIR.mkdir(exist_ok=True)
+ASSETS_DIR = BASE_DIR / "assets"  # Ensure intro.mp3 / outro.mp3 are here
 
-TODAY = datetime.date.today()
-TODAY_STR = TODAY.strftime("%A, %B %d, %Y")
-OUTPUT_FILE = f"podcast_{TODAY}.mp3"
-NOTES_FILE = f"podcast_{TODAY}.txt" 
-MARKETING_FILE = f"marketing_{TODAY}.txt" 
-SPONSORS_FILE = "sponsors.json"
+# THE PLATINUM CAST
+# Alex: Onyx (Deep, Professional Anchor)
+# Jamie: Nova (High Energy, prompted to be cynical/interruptive)
+# Rufus: Fable (Prompted to use British Syntax/Dry Wit)
+VOICES = {
+    "ALEX": "onyx",
+    "JAMIE": "nova",
+    "RUFUS": "fable"
+}
 
-# --- HELPER FUNCTIONS ---
+# HARDCODED BRANDING (The anchor point of the show)
+INTRO_TEXT = "Welcome to the AI Edge, your source for Daily News Unfiltered. Introducing Alex, Jamie, and Rufus."
 
-def get_sponsor():
-    if not os.path.exists(SPONSORS_FILE): return None
-    try:
-        with open(SPONSORS_FILE, "r") as f:
-            data = json.load(f)
-            if data and isinstance(data, list):
-                return random.choice(data)
-    except: return None
-    return None
+# RSS / SPOTIFY SETTINGS (CRITICAL FOR VERIFICATION)
+# Update 'email' to your actual email for Spotify ownership verification
+RSS_SETTINGS = {
+    "title": "The AI Edge",
+    "link": "https://github.com/aisimplify333/Daily-ai-News",
+    "description": "Daily News Unfiltered with Alex, Jamie, and Rufus.",
+    "author": "AI Simplify Media",
+    "email": "aisimplify333@gmail.com", 
+    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.jpg",
+    "category": "Technology"
+}
 
-def get_latest_news(limit_per_feed=5, total_limit=50): 
-    logging.info(f"Fetching up to {total_limit} news items...")
-    news_items = []
-    headers = {'User-Agent': 'Mozilla/5.0 (AI Simplify Media Bot)'}
+# --- 2. LOGIC: CALENDAR & FORMAT ---
+
+def get_show_settings():
+    """Determines show structure based on date."""
+    today = datetime.date.today()
     
-    for url in RSS_FEEDS:
-        try:
-            feed = feedparser.parse(url, agent=headers['User-Agent'])
-            if not feed.entries: continue
-            for entry in feed.entries[:limit_per_feed]: 
-                title = entry.title if 'title' in entry else 'Unknown Story'
-                summary = re.sub('<[^<]+?>', '', entry.summary if 'summary' in entry else title)
-                source = feed.feed.title if 'title' in feed.feed else 'Web'
-                news_items.append(f"Source: {source} | Headline: {title} | Brief: {summary[:400]}")
-        except Exception:
-            continue
+    # A. YEAR END SPECIAL (45 Mins) - Dec 26-31
+    if today.month == 12 and today.day >= 26:
+        return {
+            "type": "Year End Special",
+            "tone": "Epic, reflective, historical.",
+            "duration": "45 min",
+            "segments": ["HOOK", "Q1_REVIEW", "Q2_REVIEW", "MID_ROLL", "Q3_REVIEW", "Q4_REVIEW", "PREDICTIONS", "OUTRO"]
+        }
     
-    if not news_items: return None
-    random.shuffle(news_items)
-    return "\n\n".join(news_items[:total_limit]) 
-
-def get_episode_config(force_downgrade=False):
-    us_holidays = holidays.US()
-    is_holiday = us_holidays.get(TODAY)
+    # B. WEEKEND DEEP DIVE (30 Mins) - Sat/Sun
+    elif today.weekday() >= 5:
+        return {
+            "type": "Weekend Deep Dive",
+            "tone": "Debate-heavy, analytical, slower pace.",
+            "duration": "30 min",
+            "segments": ["HOOK", "DEEP_DIVE_1", "RUFUS_MONEY", "MID_ROLL", "ROUND_TABLE_DEBATE", "OUTRO"]
+        }
     
-    config = {
-        "type": "DAILY_NEWS",
-        "length_str": "25 Minutes", 
-        "min_words": "4000",       
-        "fetch_limit": 6,   
-        "total_items": 40,  
-        "focus": "Deep analysis. Extensive banter. Rabbit holes."
-    }
+    # C. DAILY NEWS (20 Mins) - Mon-Fri
+    else:
+        return {
+            "type": "Daily News Unfiltered",
+            "tone": "Fast, aggressive, interruption-heavy.",
+            "duration": "20 min",
+            "segments": ["HOOK", "TOP_STORY", "RUFUS_FIELD_REPORT", "MID_ROLL", "SECONDARY_STORY", "SPEED_ROUND", "OUTRO"]
+        }
 
-    if force_downgrade:
-        return config 
+def get_rufus_location():
+    """Rufus is a global correspondent."""
+    return random.choice(["London", "Wall Street", "Hong Kong", "Zurich", "Frankfurt", "Canary Wharf"])
 
-    if is_holiday:
-        logging.info(f"🎉 Holiday Detected: {is_holiday}")
-        config.update({
-            "type": "HOLIDAY_SPECIAL",
-            "length_str": "35 Minutes",
-            "min_words": "6000",
-            "focus": f"SPECIAL EDITION for {is_holiday}. Big themes, history, predictions."
-        })
-        return config
+# --- 3. THE WRITER (DRAFT + PUNCH-UP) ---
 
-    if TODAY.weekday() == 5: 
-        logging.info("📅 Saturday Detected: Weekly Recap Mode.")
-        config.update({"type": "WEEKLY_RECAP", "length_str": "35 Minutes", "min_words": "6000", "focus": "Saturday Edition. Market Analysis."})
-    elif TODAY.weekday() == 6: 
-        logging.info("📅 Sunday Detected: Deep Dive Mode.")
-        config.update({"type": "DEEP_DIVE", "length_str": "35 Minutes", "min_words": "6000", "focus": "Sunday Deep Dive. Single Theme Debate."})
+def draft_segment(segment_name, news_context, settings, rufus_loc, sponsor_txt):
+    """Step 1: Get the facts right."""
+    system_prompt = f"""
+    You are the Writer for 'The AI Edge'. Write the **{segment_name}** segment.
     
-    return config
-
-# --- ENGINE: GPT-4o (THE REALISM ENGINE) ---
-
-def call_openai_gpt4o(prompt, temperature=0.9): 
-    """Temperature 0.9 + Imperfection Prompt for Maximum Realism."""
-    if not OPENAI_API_KEY:
-        logging.error("❌ OpenAI Key missing. Cannot run Pro Engine.")
-        return None
+    **ROLES:**
+    - ALEX (Host): Professional, driving the roadmap. Catchphrase: "Let's get to it."
+    - JAMIE (Co-Host): The Cynic (Female). She questions hype.
+    - RUFUS (Analyst): Reporting from {rufus_loc}. Focus on Money/Law.
     
-    client = OpenAI(api_key=OPENAI_API_KEY)
-    try:
-        response = client.chat.completions.create(
-            model="gpt-4o", 
-            messages=[
-                {"role": "system", "content": """
-                You are a screenplay writer for a high-paced drama (Sorkin style).
-                
-                CORE RULES FOR HUMAN REALISM:
-                1. **IMPERFECTION:** Real people stutter. Use phrases like "I mean...", "Look...", "Wait, no...", "Uhh...". Use these sparingly but effectively.
-                2. **INTERRUPTIONS:** Use '--' to cut people off mid-thought.
-                3. **SPEED:** Short sentences. Fragments.
-                4. **ROLES:** - ALEX/JAMIE: Fast, overlap, high energy hosts.
-                   - RUFUS: The "Correspondent." He speaks with authority on MONEY/LAW. He is cynical.
-                5. **FORMAT:** Start EVERY line with the speaker's name (ALEX:, JAMIE:, RUFUS:). This is mandatory.
-                """},
-                {"role": "user", "content": prompt}
-            ],
-            temperature=temperature
-        )
-        return response.choices[0].message.content
-    except Exception as e:
-        logging.error(f"OpenAI Error: {e}")
-        return None
-
-def generate_script(config, sponsor):
-    if not OPENAI_API_KEY: 
-        logging.error("CRITICAL: OPENAI_API_KEY is missing.")
-        return None
-
-    # 1. FETCH NEWS
-    news_data = get_latest_news(config["fetch_limit"], config["total_items"])
-    if not news_data: 
-        logging.error("No news found.")
-        return None
-
-    sponsor_txt = ""
-    if sponsor:
-        sponsor_txt = f"""
-        **SPONSOR BLOCK (2 Minutes):**
-        Sponsor: "{sponsor['name']}"
-        Copy: "{sponsor['copy']}"
-        **DIRECTIVE:** - Jamie starts excited.
-        - Rufus cuts in: "But what's the damage?" (Cost).
-        - Alex mediates.
-        - Make it sound unscripted.
-        """
-
-    # 2. STEP 1: THE BLUEPRINT
-    logging.info("🔹 STEP 1/4: Generating Blueprint...")
-    blueprint_prompt = f"""
-    Analyze these news stories and create a RUN OF SHOW for a 25-minute episode.
-    Date: {TODAY_STR}
+    **CONTEXT:**
+    - Format: {settings['type']}
+    - Tone: {settings['tone']}
+    - Sponsor Read (if Mid-Roll): "{sponsor_txt}"
     
-    NEWS DATA:
-    {news_data}
-    
-    OUTPUT FORMAT:
-    - HOT TAKE (The Cold Open Story): [Story Name]
-    - ACT 1 (Speed Round): [Story A], [Story B], [Story C]
-    - ACT 2 (Deep Dive): [The Biggest Story]
-    - ACT 3 (Future/Money): [Market Impact / Prediction]
-    
-    Just return the bullet points.
+    **GOAL:**
+    - Cover the news accurately.
+    - Use format: ALEX: [Text] / JAMIE: [Text] / RUFUS: [Text]
     """
-    blueprint = call_openai_gpt4o(blueprint_prompt, temperature=0.5)
-    if not blueprint: return None
-
-    # 3. STEP 2: ACT 1 (Teaser + Speed Round)
-    logging.info("🔹 STEP 2/4: Writing Act 1 (Target: 1200 Words)...")
-    act1_prompt = f"""
-    Role: Podcast Writer.
-    Blueprint: {blueprint}
-    News Data: {news_data}
-    Characters: ALEX (Host), JAMIE (Skeptic), RUFUS (Legal/Money Correspondent).
     
-    INSTRUCTIONS:
-    - **COLD OPEN:** SHOCKING STAT. 15s Argument. `[INTRO MUSIC]` tag.
-    - **ACT 1 (Speed Round):** - **PING PONG:** Alex and Jamie must switch turns constantly. 
-        - **RUFUS:** He is the "Man on the Street." He only chimes in when the hosts ask for a fact check.
-        - **IMPERFECTION:** Add a few "Ums" or "I means" to make it sound real.
-    - END with Alex teasing Act 2.
-    - **LENGTH:** MIN 1200 WORDS.
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": f"Write the script for: {segment_name}. News Context: {news_context[:2000]}"}
+        ]
+    )
+    return response.choices[0].message.content
+
+def punch_up_script(draft_script):
+    """Step 2: The 'Humanizer'. Adds interruptions and British syntax."""
+    system_prompt = """
+    You are a Script Doctor. Rewrite this to sound like real humans interrupting each other.
+    
+    **CRITICAL INSTRUCTIONS:**
+    1. **INTERRUPTIONS:** Use double dashes (--) to cut people off. 
+       (e.g., ALEX: "The data shows--" JAMIE: "--Forget the data, look at the reality!")
+    2. **JAMIE (The Cynic):** Make her ruder. She should mock corporate speak.
+    3. **RUFUS (The Brit):** Rewrite RUFUS's lines using **BRITISH SYNTAX** to simulate an accent.
+       - Use: "Rubbish", "Quite right", "Indeed", "The Exchequer", "Cheers", "Mate", "Bollocks".
+       - He is DRY and FORMAL.
+    4. **PRESERVE FORMAT:** Keep ALEX:/JAMIE:/RUFUS: tags exactly.
     """
-    act1 = call_openai_gpt4o(act1_prompt)
-
-    # 4. STEP 3: ACT 2 (The Deep Dive + Sponsor)
-    logging.info("🔹 STEP 3/4: Writing Act 2 (Target: 1800 Words)...")
-    act2_prompt = f"""
-    Role: Podcast Writer.
-    Previous Context: {act1[-500:]} (End of Act 1)
-    Blueprint: {blueprint}
-    News Data: {news_data}
-    Sponsor Info: {sponsor_txt}
     
-    INSTRUCTIONS:
-    - Write **ACT 2 (The Deep Dive)**.
-    - **SPONSOR READ:** High energy debate. Rufus is skeptical of the price.
-    - **DEEP DIVE:**
-        - Three-way conversation, but Rufus sticks to LAW/MONEY.
-        - Use '--' for interruptions.
-        - Make them disagree passionately.
-    - END with Alex saying "But what does this mean for our wallets? Rufus?"
-    - **LENGTH:** MIN 1800 WORDS.
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": draft_script}
+        ],
+        temperature=0.9 # High creativity
+    )
+    return response.choices[0].message.content
+
+# --- 4. THE METADATA ENGINE (SPOTIFY) ---
+
+def generate_metadata(full_script_text):
+    """Generates Title, Summary, Tags for Spotify."""
+    prompt = """
+    Generate JSON metadata for this podcast episode.
+    - "title": Clickbait style, max 60 chars. (e.g., "Nvidia Crashes? + OpenAI's Secret")
+    - "summary": 3 sentences, punchy.
+    - "hashtags": #Tag1 #Tag2
     """
-    act2 = call_openai_gpt4o(act2_prompt)
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": prompt},
+            {"role": "user", "content": full_script_text[:4000]}
+        ],
+        response_format={"type": "json_object"}
+    )
+    return json.loads(response.choices[0].message.content)
 
-    # 5. STEP 4: ACT 3 (The Close) & ASSETS
-    logging.info("🔹 STEP 4/4: Writing Act 3 & Assets (Target: 1000 Words)...")
-    act3_prompt = f"""
-    Role: Podcast Writer.
-    Previous Context: {act2[-500:]} (End of Act 2)
-    Blueprint: {blueprint}
-    
-    INSTRUCTIONS:
-    - Write **ACT 3 (Future & Money)**. 
-    - **RUFUS LEADS:** He gives the market prediction. He sounds ominous/cynical.
-    - Jamie fights back.
-    - **CALL TO ACTION:** "Share with one friend."
-    - **LENGTH:** MIN 1000 WORDS.
-    
-    AFTER THE SCRIPT, Add `|||SEPARATOR|||` and then write:
-    1. Viral Title
-    2. Show Notes Summary
-    3. 1 LinkedIn Post & 3 Tweets.
-    """
-    act3_and_assets = call_openai_gpt4o(act3_prompt)
+# --- 5. AUDIO PRODUCTION ---
 
-    # 6. STITCH IT TOGETHER
-    full_script = f"{act1}\n\n{act2}\n\n{act3_and_assets}"
-    return full_script
-
-# --- AUDIO ENGINE (THE ZERO-LATENCY UPDATE) ---
-
-def clean_text_for_audio(text):
-    text = re.sub(r'\*\*', '', text)
-    text = re.sub(r'[\(\[].*?[\)\]]', '', text)
-    text = text.replace("*", "").replace("#", "")
+def clean_text(text):
+    """Removes stage directions."""
+    text = text.replace('**', '').replace('*', '')
+    text = re.sub(r'\[.*?\]', '', text)
+    text = re.sub(r'\(.*?\)', '', text)
     return text.strip()
 
-def generate_audio(script_content):
-    if not OPENAI_API_KEY:
-        logging.error("OPENAI_API_KEY missing.")
-        return
-
-    client = OpenAI(api_key=OPENAI_API_KEY)
-    combined_audio = AudioSegment.empty()
+def stitch_audio(file_list, output_filename):
+    """Combines all segments + Music into one MP3."""
+    combined = AudioSegment.empty()
     
-    try:
-        if os.path.exists("intro.mp3"): intro_music = AudioSegment.from_file("intro.mp3")
-        else: intro_music = None
-        
-        if os.path.exists("transition.mp3"): transition = AudioSegment.from_file("transition.mp3") - 4 
-        else: transition = None
-    except: 
-        intro_music = None
-        transition = None
-
-    # REMOVE METADATA BEFORE AUDIO PROCESSING
-    clean_script = script_content.split("|||SEPARATOR|||")[0]
-    lines = clean_script.split('\n')
-    current_voice = "onyx"
-    current_speed = 1.15
+    # 1. Add Intro Music (if exists)
+    intro_music = ASSETS_DIR / "intro.mp3"
+    if intro_music.exists():
+        combined += AudioSegment.from_mp3(intro_music)
     
-    skip_phrases = ["PART 3", "THE SCRIPT", "SEPARATOR", "SHOW NOTES", "END OF SCRIPT", "SIGNOFF", "MARKETING ASSETS", "ACT 1", "ACT 2", "ACT 3", "TEASER"]
-    sfx_triggers = ["DEEP DIVE", "MID-ROLL", "MARKET REPORT"]
-
-    logging.info(f"Processing {len(lines)} lines of dialogue...")
-    
-    for i, line in enumerate(lines):
-        text = line.strip()
-        if not text: continue
-        
-        # MUSIC TRIGGER LOGIC
-        if "[INTRO MUSIC]" in text.upper():
-            if intro_music:
-                logging.info("   🎵 [TRIGGER] Playing Intro Music...")
-                combined_audio += intro_music
-            continue 
-
-        if any(x in text.upper() for x in skip_phrases): continue
-        if any(x in text.upper() for x in sfx_triggers) and transition:
-            if len(combined_audio) > 10000: combined_audio += transition
-
-        # SPEAKER DETECTION (STRICT)
-        upper = text.upper()
-        if "ALEX" in upper and (":" in upper[:10] or "HOST" in upper): 
-            current_voice = "onyx"
-            current_speed = 1.15 # Fast Host
-        elif "JAMIE" in upper and (":" in upper[:10] or "CO-HOST" in upper): 
-            current_voice = "nova"
-            current_speed = 1.12 # Fast Skeptic
-        elif "RUFUS" in upper and (":" in upper[:10] or "CORRESPONDENT" in upper): 
-            current_voice = "fable"
-            current_speed = 1.05 # Slower, heavy, authoritative (Correspondent feel)
-        
-        # CLEANUP
-        clean_text = re.sub(r'^[\*]*\s*(ALEX|JAMIE|RUFUS)[\*]*\s*:', '', text, flags=re.IGNORECASE)
-        clean_text = clean_text_for_audio(clean_text)
-        
-        if len(clean_text) < 2: continue
-
+    # 2. Add Speech Segments
+    for file in file_list:
         try:
-            with client.audio.speech.with_streaming_response.create(
-                model="tts-1-hd", voice=current_voice, input=clean_text, speed=current_speed
-            ) as response:
-                chunk_path = f"temp_{i}.mp3"
-                response.stream_to_file(chunk_path)
-            
-            segment = AudioSegment.from_file(chunk_path)
-            
-            # ZERO LATENCY GAP (10ms) - Creates the "Heat"
-            combined_audio += segment + 10 
-            os.remove(chunk_path)
-            
-            if i % 10 == 0: print(f"   Compiled line {i}...")
-
+            segment = AudioSegment.from_mp3(file)
+            combined += segment
         except Exception as e:
-            logging.warning(f"Audio chunk failed at line {i}: {e}")
-            continue
+            print(f"Skipping corrupt file {file}: {e}")
 
-    if os.path.exists("outro.mp3"): combined_audio += AudioSegment.from_file("outro.mp3")
+    # 3. Add Outro Music (if exists)
+    outro_music = ASSETS_DIR / "outro.mp3"
+    if outro_music.exists():
+        combined += AudioSegment.from_mp3(outro_music)
 
-    combined_audio.export(OUTPUT_FILE, format="mp3")
-    logging.info(f"✅ SUCCESS: Audio saved to {OUTPUT_FILE}")
+    # Export
+    output_path = AUDIO_DIR / output_filename
+    combined.export(output_path, format="mp3")
+    return output_path, os.path.getsize(output_path)
 
-# --- RSS GENERATOR ---
+# --- 6. RSS UPDATER ---
 
-def update_rss_feed():
-    logging.info("Updating RSS Feed...")
-    base_url = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}"
+def update_rss_feed(metadata, filename, file_size):
+    """Updates feed.xml with Spotify Keys."""
+    rss_path = Path("feed.xml")
+    
+    # Namespaces
+    ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
     ET.register_namespace("itunes", ITUNES_NS)
-    ET.register_namespace("content", CONTENT_NS)
-    rss = ET.Element("rss", version="2.0") 
-    channel = ET.SubElement(rss, "channel")
     
-    ET.SubElement(channel, "title").text = "The AI Edge: Unfiltered & Automated"
-    ET.SubElement(channel, "description").text = "Daily AI news, debates, and market analysis."
-    ET.SubElement(channel, "link").text = base_url
-    ET.SubElement(channel, "language").text = "en-us"
-    ET.SubElement(channel, f"{{{ITUNES_NS}}}author").text = AUTHOR_NAME
-    
-    img = ET.SubElement(channel, f"{{{ITUNES_NS}}}image")
-    img.set("href", f"{base_url}/logo.png")
-    
-    owner = ET.SubElement(channel, f"{{{ITUNES_NS}}}owner")
-    ET.SubElement(owner, f"{{{ITUNES_NS}}}email").text = YOUR_EMAIL
-    ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = AUTHOR_NAME
-    ET.SubElement(channel, f"{{{ITUNES_NS}}}category").set("text", "Technology")
-
-    episodes = []
-    for f in os.listdir("."):
-        if f.startswith("podcast_") and f.endswith(".mp3"):
-            episodes.append(f)
-    episodes.sort(reverse=True) 
-
-    for filename in episodes:
-        date_str = filename.replace("podcast_", "").replace(".mp3", "")
-        txt_path = filename.replace(".mp3", ".txt")
+    if not rss_path.exists():
+        root = ET.Element("rss", version="2.0")
+        channel = ET.SubElement(root, "channel")
+        ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
+        ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
+        ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
+        ET.SubElement(channel, "language").text = "en-us"
         
-        title = f"AI News: {date_str}"
-        desc = "Latest AI updates."
-        rich_content = "Latest AI updates."
+        # Spotify/iTunes Owner Tags
+        owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
+        ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}name").text = RSS_SETTINGS["author"]
+        ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = RSS_SETTINGS["email"]
         
-        if os.path.exists(txt_path):
-            with open(txt_path, "r", encoding="utf-8") as f:
-                content = f.read().strip()
-                rich_content = content.replace("\n", "<br/>") 
-                lines = content.split('\n')
-                for line in lines:
-                    if line.lower().startswith("title:"):
-                        title = line.split(":", 1)[1].strip()
-                        break
-                for line in lines:
-                    if "Title:" not in line and len(line) > 20:
-                        desc = line
-                        break
-
-        item = ET.SubElement(channel, "item")
-        ET.SubElement(item, "title").text = title 
-        ET.SubElement(item, "description").text = desc
-        ET.SubElement(item, f"{{{CONTENT_NS}}}encoded").text = rich_content
-        ET.SubElement(item, "guid").text = f"{base_url}/{filename}"
-        ET.SubElement(item, "enclosure", url=f"{base_url}/{filename}", length="0", type="audio/mpeg")
-        
-        try:
-            dt = datetime.datetime.strptime(date_str, "%Y-%m-%d")
-            ET.SubElement(item, "pubDate").text = formatdate(dt.timestamp())
-        except: pass
-
-    tree = ET.ElementTree(rss)
-    ET.indent(tree, space="  ", level=0)
-    tree.write("feed.xml", encoding="utf-8", xml_declaration=True)
-    logging.info("✅ RSS Feed Updated.")
-
-if __name__ == "__main__":
-    print("\n🚀 AI PODCAST AUTOMATION: STARTED\n")
-    sponsor = get_sponsor()
-    config = get_episode_config()
-    
-    logging.info("📝 Generating Script...")
-    full_text = generate_script(config, sponsor)
-    
-    if not full_text:
-        logging.warning("⚠️ High-Load Generation Failed. Retrying with Standard Config...")
-        config = get_episode_config(force_downgrade=True)
-        full_text = generate_script(config, sponsor)
-        
-    if full_text:
-        # PARSE AND SAVE
-        try:
-            parts = full_text.split("|||SEPARATOR|||")
-            script_body = parts[0]
-            marketing_assets = parts[1] if len(parts) > 1 else "No marketing assets."
-            
-            # Save Marketing
-            with open(MARKETING_FILE, "w", encoding="utf-8") as f:
-                f.write(marketing_assets.strip())
-            
-            # Save Script/Notes
-            with open(NOTES_FILE, "w", encoding="utf-8") as f:
-                f.write("See Marketing File for assets.\n" + script_body[:500])
-                
-            generate_audio(script_body)
-            update_rss_feed()
-            print("\n🎉 PRODUCTION COMPLETE. Ready for git push.")
-        except Exception as e:
-            logging.error(f"Parsing Error: {e}")
-            # Fallback save
-            with open("DEBUG_SCRIPT.txt", "w") as f: f.write(full_text)
+        image = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
+        image.set("href", RSS_SETTINGS["image"])
     else:
-        logging.critical("❌ ALL generation attempts failed. Check Quota/API Keys.")
-        sys.exit(1)
+        tree = ET.parse(rss_path)
+        root = tree.getroot()
+        channel = root.find("channel")
+
+    # Create New Item
+    item = ET.Element("item")
+    ET.SubElement(item, "title").text = metadata["title"]
+    ET.SubElement(item, "description").text = metadata["summary"]
+    ET.SubElement(item, "pubDate").text = formatdate(localtime=False, usegmt=True)
+    ET.SubElement(item, "guid").text = f"{RSS_SETTINGS['link']}/{filename}"
+    
+    enclosure = ET.SubElement(item, "enclosure")
+    enclosure.set("url", f"{RSS_SETTINGS['link']}/{filename}")
+    enclosure.set("length", str(file_size))
+    enclosure.set("type", "audio/mpeg")
+
+    # Insert at top (Position 0 in items list)
+    # We find where items start and insert there
+    items = channel.findall("item")
+    if items:
+         # Rough insertion at top of item list
+         # Note: ET.insert index depends on structure, usually channel[last_meta_index + 1]
+         # For safety, we append, but ideal is top. 
+         # We will stick to append for stability unless you need strict top ordering.
+         pass 
+    channel.append(item) 
+    
+    tree = ET.ElementTree(root)
+    ET.indent(tree, space="  ", level=0)
+    tree.write(rss_path, encoding="UTF-8", xml_declaration=True)
+
+# --- 7. MAIN EXECUTION ---
+
+def produce_episode(news_content, sponsor_msg="Sponsored by AI Simplify Media"):
+    print("--- STARTING PRODUCTION ---")
+    
+    # 1. SETUP
+    settings = get_show_settings()
+    rufus_loc = get_rufus_location()
+    print(f"Format: {settings['type']} ({settings['duration']}) | Loc: {rufus_loc}")
+    
+    segment_files = []
+    full_script = ""
+    
+    # 2. GENERATE SEGMENTS
+    for segment in settings['segments']:
+        print(f" >> Processing Segment: {segment}...")
+        
+        # A. Write & Punch-Up
+        draft = draft_segment(segment, news_content, settings, rufus_loc, sponsor_msg)
+        final_script = punch_up_script(draft)
+        full_script += f"\n{final_script}"
+        
+        # B. Parse & Voice Gen
+        lines = final_script.split('\n')
+        for line in lines:
+            match = re.match(r'^(ALEX|JAMIE|RUFUS):\s*(.*)', line, re.IGNORECASE)
+            if match:
+                speaker = match.group(1).upper()
+                text = clean_text(match.group(2))
+                if not text: continue
+                
+                # Generate Audio
+                temp_filename = f"temp_{len(segment_files):04d}.mp3"
+                temp_path = AUDIO_DIR / temp_filename
+                
+                client.audio.speech.create(
+                    model="tts-1-hd",
+                    voice=VOICES[speaker],
+                    input=text
+                ).stream_to_file(temp_path)
+                
+                segment_files.append(temp_path)
+
+        # C. INJECT HARDCODED INTRO (After Hook)
+        if segment == "HOOK":
+            print(" >> Injecting Branding...")
+            intro_path = AUDIO_DIR / "fixed_intro.mp3"
+            if not intro_path.exists():
+                client.audio.speech.create(
+                    model="tts-1-hd", voice=VOICES["ALEX"], input=INTRO_TEXT
+                ).stream_to_file(intro_path)
+            segment_files.append(intro_path)
+
+    # 3. METADATA
+    print(" >> Generating Metadata...")
+    meta = generate_metadata(full_script)
+    with open("episode_metadata.json", "w") as f:
+        json.dump(meta, f, indent=4)
+
+    # 4. STITCHING
+    print(" >> Stitching Master File...")
+    final_filename = f"podcast_{datetime.date.today()}.mp3"
+    final_path, file_size = stitch_audio(segment_files, final_filename)
+    
+    # 5. RSS UPDATE
+    print(" >> Updating RSS Feed...")
+    update_rss_feed(meta, final_filename, file_size)
+
+    # 6. CLEANUP (Optional)
+    # for f in segment_files:
+    #     if "temp_" in str(f): os.remove(f)
+
+    print(f"\nDONE! Episode Ready: {final_path}")
+    print(f"Title: {meta['title']}")
+
+# --- RUN ---
+if __name__ == "__main__":
+    # Reads 'marketing.txt' as the news source.
+    # If file is empty or missing, uses a default placeholder to prevent crash.
+    news_file = Path("marketing.txt")
+    if news_file.exists():
+        with open(news_file, "r") as f:
+            news = f.read()
+    else:
+        news = "No news file found. Discuss the general state of AI today."
+    
+    if len(news) < 10:
+         news = "Discuss the latest trends in Artificial Intelligence and Robotics."
+
+    produce_episode(news)
