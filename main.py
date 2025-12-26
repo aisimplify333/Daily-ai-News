@@ -52,7 +52,7 @@ def get_show_settings():
             "tone": "Epic, existential, historical analysis.",
             "duration": "45 min",
             "segments": [
-                {"name": "HOOK", "words": 200, "cast": "ALEX_JAMIE", "transition": False},
+                {"name": "HOOK", "words": 50, "cast": "ALEX_JAMIE", "transition": False}, # < 20s Data Point
                 {"name": "Q1_DEEP_ANALYSIS", "words": 1500, "cast": "ALEX_JAMIE", "transition": False},
                 {"name": "RUFUS_MACRO_ECONOMICS", "words": 1000, "cast": "RUFUS_FOCUS", "transition": True},
                 {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
@@ -69,7 +69,7 @@ def get_show_settings():
             "tone": "Philosophical, debate-heavy.",
             "duration": "30 min",
             "segments": [
-                {"name": "HOOK", "words": 200, "cast": "ALEX_JAMIE", "transition": False},
+                {"name": "HOOK", "words": 50, "cast": "ALEX_JAMIE", "transition": False},
                 {"name": "MAIN_TOPIC_DEEP_DIVE", "words": 1800, "cast": "ALEX_JAMIE", "transition": False},
                 {"name": "RUFUS_LONDON_REPORT", "words": 1000, "cast": "RUFUS_FOCUS", "transition": True},
                 {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
@@ -85,7 +85,7 @@ def get_show_settings():
             "tone": "Hard-hitting, analytical, fast-paced but deep.",
             "duration": "20 min",
             "segments": [
-                {"name": "HOOK", "words": 200, "cast": "ALEX_JAMIE", "transition": False},
+                {"name": "HOOK", "words": 50, "cast": "ALEX_JAMIE", "transition": False}, # < 20s
                 {"name": "TOP_STORY_MECHANISMS", "words": 1200, "cast": "ALEX_JAMIE", "transition": False},
                 {"name": "RUFUS_MARKETS_LAW", "words": 800, "cast": "RUFUS_FOCUS", "transition": True},
                 {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
@@ -128,51 +128,54 @@ def load_sponsor():
 # --- SMART ASSET FINDER ---
 def get_asset_path(filename):
     """Searches both ASSETS folder and ROOT folder."""
-    # 1. Check Assets Folder
     if ASSETS_DIR.exists():
         path = ASSETS_DIR / filename
         if path.exists(): return path
-        # Case Insensitive Check
         for f in ASSETS_DIR.iterdir():
             if f.name.lower() == filename.lower(): return f
 
-    # 2. Check Root Folder
     path_root = BASE_DIR / filename
     if path_root.exists(): return path_root
-    # Case Insensitive Check
     for f in BASE_DIR.iterdir():
         if f.name.lower() == filename.lower(): return f
         
     return None
 
-# --- 3. THE WRITER (ATMOSPHERIC) ---
+# --- 3. THE WRITER (SEO & MONETIZATION OPTIMIZED) ---
 
 def draft_segment(segment_data, news_context, settings, rufus_loc, sponsor_txt):
     seg_name = segment_data["name"]
     cast_mode = segment_data["cast"]
     min_words = segment_data["words"]
     
-    # HOT CLIP HOOK
+    # 1. THE HOT CLIP HOOK (Strict Constraints)
     if seg_name == "HOOK":
         system_prompt = f"""
-        You are the Producer. Write the **COLD OPEN HOOK**.
-        **CRITICAL:** Start MID-ARGUMENT. Shocking statement. NO INTRO.
-        Example: ALEX: "...but the data proves it!" JAMIE: "--The data is faked, Alex!"
+        You are the Producer. Write the **HOT CLIP HOOK**.
+        
+        **MANDATORY CONSTRAINTS:**
+        1. **LENGTH:** MAX 40 WORDS (approx 20 seconds).
+        2. **DATA POINT:** You MUST include a specific number/stat (e.g., "40% drop," "$2 Billion loss").
+        3. **CONVICTION:** High energy, mid-argument.
+        4. **NO INTRO:** Do not say "Hello."
+        
+        Example: 
+        ALEX: "...look at the charts, 40% of the workforce is gone by 2030!" 
+        JAMIE: "--That's not a prediction, Alex, that's a death sentence!"
+        
         **CONTEXT:** {news_context[:500]}
         """
         response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system_prompt}])
         return response.choices[0].message.content
 
-    # CAST PROMPTS
+    # 2. CAST PROMPTS
     if cast_mode == "ALEX_JAMIE":
         cast_prompt = "**CAST:** ALEX and JAMIE. (NO RUFUS). Focus on dialogue and debate."
     elif cast_mode == "RUFUS_FOCUS":
-        # ENHANCED RUFUS PROMPT
         cast_prompt = f"""
         **CAST:** ALEX (Toss) and RUFUS (Main). 
         **SCENE:** Alex throws to Rufus who is **{rufus_loc}**.
-        **INSTRUCTION:** Rufus MUST mention his surroundings (e.g., "It's pouring down here," or "It's loud").
-        Rufus covers MONEY/LAW.
+        **INSTRUCTION:** Rufus covers **LAW AND MONEY**.
         """
     elif cast_mode == "ALL_THREE":
         cast_prompt = f"**CAST:** ALEX, JAMIE, RUFUS. Group discussion."
@@ -181,10 +184,12 @@ def draft_segment(segment_data, news_context, settings, rufus_loc, sponsor_txt):
     elif cast_mode == "JAMIE_SOLO":
         cast_prompt = "**CAST:** JAMIE Only."
 
+    # 3. SEO & CONTENT STYLE
     style_prompt = """
-    **STYLE:** Be like **Andrew Huberman** or **Diary of a CEO**. 
-    Analyze MECHANISMS, PSYCHOLOGY, and the HUMAN CONDITION. 
-    Use First Principles thinking. Avoid generic news reading.
+    **STYLE GUIDE (SEO OPTIMIZED):**
+    - Balance **HARD NEWS FACTS** (Names, Dates, Companies, Laws) with **OPINIONATED DEBATE**.
+    - We need specific entities for SEO Hashtags.
+    - Be like **Andrew Huberman** or **Diary of a CEO**: Analyze MECHANISMS and PSYCHOLOGY.
     """
     
     outro_instr = ""
@@ -193,7 +198,7 @@ def draft_segment(segment_data, news_context, settings, rufus_loc, sponsor_txt):
 
     system_prompt = f"""
     Write **{seg_name}**.
-    **LENGTH:** Target {min_words} words. GO DEEP.
+    **LENGTH:** Target {min_words} words.
     {cast_prompt}
     {style_prompt}
     **TONE:** {settings['tone']}
@@ -344,7 +349,7 @@ def produce_episode(news_content):
 # --- HELPERS ---
 
 def generate_metadata(text):
-    prompt = 'Generate JSON: {"title": "Clickbait Title", "summary": "Deep, 3-sentence summary", "hashtags": "#tag"}'
+    prompt = 'Generate JSON: {"title": "Clickbait Title", "summary": "Deep, 3-sentence summary", "hashtags": ["#tag1", "#tag2", "#tag3"]}'
     response = client.chat.completions.create(model="gpt-4o", messages=[{"role":"user","content": f"{prompt}\n{text[:3000]}"}], response_format={"type": "json_object"})
     return json.loads(response.choices[0].message.content)
 
