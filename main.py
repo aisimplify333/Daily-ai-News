@@ -14,23 +14,22 @@ AUDIO_DIR = BASE_DIR / "episode_audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 ASSETS_DIR = BASE_DIR / "assets"
 
-# *** YOUR SPOTIFY LINK (The Bridge) ***
+# *** SPOTIFY BRIDGE ***
 SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
 
 VOICES = {"ALEX": "onyx", "JAMIE": "nova", "RUFUS": "fable"}
 
-# BRANDING (UPDATED FOR PNG)
 RSS_SETTINGS = {
     "title": "The AI Edge",
     "link": "https://github.com/aisimplify333/Daily-ai-News",
-    "description": "Daily News Unfiltered with Alex, Jamie, and Rufus.",
+    "description": "Deep dives into AI, Technology, and the Future.",
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com", 
-    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png", # <--- FIXED
+    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png", # Standardized
     "category": "Technology"
 }
 
-# --- FORMAT LOGIC ---
+# --- FORMAT LOGIC (FULL LENGTH) ---
 def get_show_settings():
     today = datetime.date.today()
     if today.month == 12 and today.day >= 26:
