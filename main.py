@@ -14,9 +14,7 @@ AUDIO_DIR = BASE_DIR / "episode_audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 ASSETS_DIR = BASE_DIR / "assets"
 
-# *** SPOTIFY BRIDGE ***
 SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
-
 VOICES = {"ALEX": "onyx", "JAMIE": "nova", "RUFUS": "fable"}
 
 RSS_SETTINGS = {
@@ -33,14 +31,16 @@ RSS_SETTINGS = {
 def get_show_settings():
     return {
         "type": "Daily News Unfiltered", 
-        "tone": "Investigative, Debate-Heavy. PURE DIALOGUE. NO NARRATION.", 
+        "tone": "High Energy, Aggressive, Tool-Obsessed. INTERRUPT OFTEN.", 
         "segments": [
-            {"name": "HOOK", "words": 50, "cast": "ALEX_JAMIE", "transition": False},
+            {"name": "HOOK", "words": 40, "cast": "ALEX_JAMIE", "transition": False}, 
+            {"name": "INTRO_BRANDING", "words": 20, "cast": "ALEX_SOLO", "transition": False},
             {"name": "TOP_STORY_MECHANISMS", "words": 1200, "cast": "ALEX_JAMIE", "transition": False},
             {"name": "RUFUS_MARKETS_LAW", "words": 800, "cast": "RUFUS_FOCUS", "transition": True},
-            {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
+            # MID ROLL IS NOW DEDICATED SPONSOR TIME
+            {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SPONSOR", "transition": True},
             {"name": "SECONDARY_STORY_IMPACT", "words": 1000, "cast": "ALEX_JAMIE", "transition": True},
-            {"name": "SPEED_ROUND_WRAP", "words": 600, "cast": "ALL_THREE", "transition": True},
+            {"name": "SPEED_ROUND_WRAP", "words": 600, "cast": "ALL_THREE", "transition": True}, 
             {"name": "OUTRO_VIRAL", "words": 200, "cast": "ALEX_SOLO", "transition": False}
         ]
     }
@@ -50,6 +50,8 @@ def get_rufus_location():
     return random.choice(locs)
 
 def load_sponsor():
+    # Hard-coded fail-safe if file missing
+    default_ad = "This episode is sponsored by Cursor. Stop coding like it's 2010. Get Cursor dot com."
     paths = [BASE_DIR / "sponsors.json", ASSETS_DIR / "sponsors.json"]
     for p in paths:
         try:
@@ -57,51 +59,56 @@ def load_sponsor():
                 data = json.load(f)
                 return random.choice(data["sponsors"])["read_copy"]
         except: pass
-    return "This episode is brought to you by AI Simplify Media."
+    return default_ad
 
 def get_asset(name):
     if (ASSETS_DIR / name).exists(): return ASSETS_DIR / name
     if (BASE_DIR / name).exists(): return BASE_DIR / name
     return None
 
-# --- WRITER ---
+# --- WRITER (CONTINUOUS FLOW MODE) ---
 def draft_segment(seg, context, settings, loc, sponsor):
     seg_name = seg["name"]
     
-    # 1. THE HOT CLIP
+    # 1. THE HOOK (Tools & Data)
     if seg_name == "HOOK":
         system_prompt = f"""
         You are the Producer. Write the **COLD OPEN HOOK**.
-        **STRICT RULES:**
-        1. START MID-ARGUMENT. (e.g. JAMIE: "--You're ignoring the data, Alex!")
-        2. MAX 40 WORDS.
-        3. HIGH TENSION.
-        4. NO INTROS.
+        **CRITICAL:**
+        1. MENTION A SPECIFIC TOOL or STAT immediately.
+        2. JAMIE INTERRUPTS ALEX.
+        3. MAX 40 WORDS.
+        4. NO GREETINGS. NO "Welcome".
         **CONTEXT:** {context[:500]}
         """
         response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system_prompt}])
         return response.choices[0].message.content
 
-    # 2. CHARACTER DYNAMICS
+    # 2. BRANDING (The ONLY place Alex introduces the show)
+    if seg_name == "INTRO_BRANDING":
+        return "ALEX: Welcome to The AI Edge. I'm Alex."
+
+    # 3. SPONSOR READ (Force Jamie to read it)
+    if seg["cast"] == "JAMIE_SPONSOR":
+        return f"JAMIE: Quick break to thank our partner. {sponsor}"
+
+    # 4. CONTINUOUS DYNAMICS (The "No Intro" Rule)
+    # This rule is injected into ALL other segments
+    anti_intro_rule = "CRITICAL: You are MID-CONVERSATION. DO NOT say 'I'm Alex' or 'I'm Jamie'. DO NOT greet the audience. JUST ARGUE."
+
     if seg["cast"] == "ALEX_JAMIE":
-        cast_instr = """
-        **CAST:** ALEX (Host) and JAMIE (Skeptic).
-        **DYNAMIC:** - ALEX is structured.
-        - JAMIE is cynical, interrupts with "--".
-        - **MANDATORY:** Jamie MUST interrupt Alex at least once.
+        cast_instr = f"""
+        **CAST:** ALEX and JAMIE.
+        **PACING:** FAST. Overlapping.
+        **CONTENT:** {anti_intro_rule}
         """
     elif seg["cast"] == "RUFUS_FOCUS":
         cast_instr = f"""
-        **CAST:** ALEX and RUFUS.
-        **SCENE:**
-        1. ALEX: Explicitly throws to Rufus ("Rufus, you're at {loc}...").
-        2. RUFUS: Speaks in First Person ("I'm standing here...").
-        3. RUFUS FOCUS: **LAW AND MONEY ONLY.**
+        **CAST:** ALEX throws to RUFUS at {loc}.
+        **RUFUS:** {anti_intro_rule} Focus on MONEY/LAW.
         """
     elif seg["cast"] == "ALL_THREE":
-        cast_instr = "**CAST:** ALL. Rapid fire summary. Jamie is cynical. Rufus warns about money. Alex wraps."
-    elif seg["cast"] == "JAMIE_SOLO":
-        cast_instr = "**CAST:** JAMIE Only. Ranting."
+        cast_instr = f"**CAST:** ALL. {anti_intro_rule} Rapid fire."
     elif seg["cast"] == "ALEX_SOLO":
         cast_instr = "**CAST:** ALEX Only. Sign-off."
 
@@ -110,9 +117,8 @@ def draft_segment(seg, context, settings, loc, sponsor):
     **TONE:** {settings['tone']}
     **CRITICAL RULES:**
     1. **DIALOGUE ONLY.** NO stage directions.
-    2. **FORMAT:** ALEX: [Text] / JAMIE: [Text] / RUFUS: [Text]
+    2. **NO RE-INTRODUCTIONS.** 3. **FORMAT:** ALEX: [Text] / JAMIE: [Text] / RUFUS: [Text]
     {cast_instr}
-    SPONSOR: {sponsor}
     """
     
     response = client.chat.completions.create(
@@ -127,9 +133,11 @@ def draft_segment(seg, context, settings, loc, sponsor):
 def punch_up(text):
     system = """
     Script Doctor.
-    1. REMOVE any text in brackets [] or parenthesis ().
-    2. REMOVE any lines that do not start with a Name (ALEX, JAMIE, RUFUS).
-    3. Ensure strictly: SPEAKER: [Text] format.
+    1. REMOVE any text in brackets [].
+    2. REMOVE non-dialogue lines.
+    3. MAKE IT FASTER. Break long sentences.
+    4. ADD "--" to indicate interruptions.
+    5. DELETE ANY LINE where Alex says "I'm Alex" (Unless it's the very start).
     """
     response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system}, {"role": "user", "content": text}])
     return response.choices[0].message.content
@@ -137,12 +145,12 @@ def punch_up(text):
 # --- PRODUCTION ---
 def clean_text(text):
     text = re.sub(r'\[.*?\]|\(.*?\)', '', text).replace('**', '')
-    for bad in ["Welcome to the AI Edge", "Welcome back", "Hello listeners"]:
-        if bad.lower() in text.lower() and len(text) < 100: return ""
+    for bad in ["Welcome to Top Story", "Welcome back", "Hello listeners"]:
+        if bad.lower() in text.lower(): return ""
     return text.strip()
 
 def produce_episode(news):
-    print("--- HOLLYWOOD BUILD (PATCHED) ---")
+    print("--- HOLLYWOOD BUILD (CONTINUOUS FLOW) ---")
     settings = get_show_settings()
     loc = get_rufus_location()
     sponsor = load_sponsor()
@@ -154,7 +162,6 @@ def produce_episode(news):
     p_intro = get_asset("intro.mp3")
     p_outro = get_asset("outro.mp3")
     p_trans = get_asset("transition.mp3")
-    p_voice = get_asset("fixed_intro.mp3") 
     
     m_intro = AudioSegment.from_mp3(p_intro) if p_intro else AudioSegment.silent(1000)
     m_outro = AudioSegment.from_mp3(p_outro) if p_outro else AudioSegment.silent(1000)
@@ -162,10 +169,16 @@ def produce_episode(news):
 
     for seg in settings['segments']:
         print(f" >> Seg: {seg['name']}")
-        if seg.get("transition"): audio_segs += [s_trans, AudioSegment.silent(500)]
+        if seg.get("transition"): audio_segs += [s_trans, AudioSegment.silent(200)] # Short transition
         
         draft = draft_segment(seg, news, settings, loc, sponsor)
-        script = punch_up(draft)
+        
+        # Don't punch up the Sponsor or Branding lines, they need to be clear
+        if seg["name"] not in ["INTRO_BRANDING", "MID_ROLL"]: 
+            script = punch_up(draft)
+        else:
+            script = draft
+            
         full_text += script + "\n"
         
         for line in script.split('\n'):
@@ -177,31 +190,27 @@ def produce_episode(news):
                 voice = VOICES.get(speaker, "onyx")
                 f = AUDIO_DIR / "temp.mp3"
                 client.audio.speech.create(model="tts-1-hd", voice=voice, input=text).stream_to_file(f)
-                audio_segs.append(AudioSegment.from_mp3(f))
-                audio_segs.append(AudioSegment.silent(250))
+                
+                # --- THE OVERLAP HACK ---
+                # We strip silence and don't add any back.
+                # Ideally we would crossfade, but 0 padding creates a 'breathless' pace.
+                seg_audio = AudioSegment.from_mp3(f)
+                audio_segs.append(seg_audio)
         
         if seg["name"] == "HOOK":
             print(" >> ⚡ INJECTING THUNDERBOLT INTRO ⚡")
-            audio_segs.append(AudioSegment.silent(500))
+            audio_segs.append(AudioSegment.silent(300))
             audio_segs.append(m_intro)
-            if p_voice: audio_segs.append(AudioSegment.from_mp3(p_voice))
-            audio_segs.append(AudioSegment.silent(1000))
+            audio_segs.append(AudioSegment.silent(300))
 
     audio_segs.append(m_outro)
     final = sum(audio_segs)
     fname = f"podcast_{datetime.date.today()}.mp3"
     final.export(AUDIO_DIR / fname, format="mp3")
     
-    # --- SOCIAL ASSETS (THE FIX) ---
     meta = generate_meta(full_text)
-    
-    # 1. SAVE THE JSON (This was missing!)
-    with open("episode_metadata.json", "w") as f:
-        json.dump(meta, f)
-        
-    # 2. SAVE THE CAPTION
+    with open("episode_metadata.json", "w") as f: json.dump(meta, f)
     save_caption(meta)
-    
     print(f"DONE: {fname}")
 
 def generate_meta(text):
