@@ -27,9 +27,9 @@ jobs:
           sudo apt-get install -y ffmpeg
 
       - name: Install Dependencies
-        # THIS IS THE CRITICAL LINE: Installs requests, feedparser, and social tools
+        # <--- CRITICAL FIX: Added 'duckduckgo-search' here
         run: |
-          pip install openai pydub pillow tweepy feedparser requests
+          pip install openai pydub pillow tweepy feedparser requests duckduckgo-search
 
       - name: Run Audio Engine (Producer)
         env:
