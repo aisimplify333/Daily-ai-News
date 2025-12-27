@@ -27,9 +27,9 @@ jobs:
           sudo apt-get install -y ffmpeg
 
       - name: Install Dependencies
-        # <--- THIS IS THE FIX: Added 'feedparser' to the list
+        # THIS IS THE CRITICAL LINE: Installs requests, feedparser, and social tools
         run: |
-          pip install openai pydub pillow tweepy feedparser
+          pip install openai pydub pillow tweepy feedparser requests
 
       - name: Run Audio Engine (Producer)
         env:
