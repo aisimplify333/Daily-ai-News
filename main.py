@@ -20,23 +20,32 @@ ASSETS_DIR = BASE_DIR / "assets"
 SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
 VOICES = {"ALEX": "onyx", "JAMIE": "nova", "RUFUS": "fable"}
 
-# --- THE "HIGH-VOLTAGE" BRAIN ---
-PERSONA_FEEDS = {
-    "ALEX": [ # HARD TECH & SECURITY
+# --- HOLIDAY CALENDAR (US) ---
+US_HOLIDAYS = [
+    (1, 1),   # New Year's
+    (7, 4),   # Independence Day
+    (12, 25), # Christmas
+    (11, 27), # Thanksgiving (Approx)
+    (10, 31)  # Halloween (Special)
+]
+
+# --- THE DATA ENGINE (ALL FEEDS) ---
+# We fetch EVERYTHING for context, then filter by show type.
+ALL_FEEDS = {
+    "TECH": [
         "https://venturebeat.com/category/ai/feed/",
-        "https://www.securityweek.com/rss",                     # <--- Cyber Threats (High Stakes)
-        "https://techcrunch.com/category/artificial-intelligence/feed/"
+        "https://techcrunch.com/category/artificial-intelligence/feed/",
+        "https://feeds.arstechnica.com/arstechnica/index"
     ],
-    "JAMIE": [ # THE SKEPTIC & DEV TOOLS
-        "https://dev.to/feed/tag/ai",                           
-        "https://garymarcus.substack.com/feed",                 
-        "https://futurism.com/feed",                            
-        "https://hnrss.org/newest?q=AI"                         
+    "SKEPTIC": [
+        "https://garymarcus.substack.com/feed",
+        "https://futurism.com/feed",
+        "https://dev.to/feed/tag/ai"
     ],
-    "RUFUS": [ # MONEY, LAW, & GEOPOLITICS
-        "https://www.lawfaremedia.org/feeds/rss",               # <--- National Security Law (The "Bite")
-        "https://www.politico.eu/section/technology/feed/",     # <--- EU Regulation/Conflict
-        "https://news.crunchbase.com/feed/",                    
+    "POLITICS_MONEY": [
+        "https://www.lawfaremedia.org/feeds/rss",
+        "https://www.politico.eu/section/technology/feed/",
+        "https://news.crunchbase.com/feed/",
         "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664"
     ]
 }
@@ -51,79 +60,118 @@ RSS_SETTINGS = {
     "category": "Technology"
 }
 
+# --- LOGIC: DETERMINE SHOW TYPE ---
+def get_show_type():
+    today = datetime.date.today()
+    
+    # 1. CHECK HOLIDAY
+    if (today.month, today.day) in US_HOLIDAYS:
+        return "HOLIDAY_SPECIAL"
+    
+    # 2. CHECK WEEKEND
+    if today.weekday() == 5: # Saturday
+        return "WEEKLY_WRAP"
+    if today.weekday() == 6: # Sunday
+        return "SUNDAY_DEBATE"
+        
+    # 3. DEFAULT
+    return "DAILY_NEWS"
+
+# --- LOGIC: GET STRUCTURE BASED ON TYPE ---
+def get_show_settings(show_type):
+    print(f" >> 🗓️ DETECTED SHOW TYPE: {show_type}")
+    
+    if show_type == "HOLIDAY_SPECIAL":
+        # 45 MINUTES (Massive Deep Dive)
+        return {
+            "tone": "Philosophical, Future-Looking, Epic.",
+            "segments": [
+                {"name": "HOOK", "words": 100, "cast": "ALEX_JAMIE", "transition": False},
+                {"name": "INTRO_SPECIAL", "words": 100, "cast": "ALEX_SOLO", "transition": False},
+                {"name": "DEEP_DIVE_PART_1", "words": 2000, "cast": "ALL_THREE", "transition": True},
+                {"name": "SPONSOR_1", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
+                {"name": "DEEP_DIVE_PART_2", "words": 2000, "cast": "ALL_THREE", "transition": True},
+                {"name": "SPONSOR_2", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
+                {"name": "DEEP_DIVE_PART_3", "words": 2000, "cast": "ALL_THREE", "transition": True},
+                {"name": "OUTRO_EPIC", "words": 500, "cast": "ALEX_CTA", "transition": False}
+            ]
+        }
+        
+    elif show_type == "SUNDAY_DEBATE":
+        # 30 MINUTES (Alex vs Jamie)
+        return {
+            "tone": "Argumentative, Heated, No Script.",
+            "segments": [
+                {"name": "HOOK_FIGHT", "words": 100, "cast": "ALEX_JAMIE", "transition": False},
+                {"name": "INTRO_DEBATE", "words": 100, "cast": "ALEX_SOLO", "transition": False},
+                {"name": "ROUND_1_THESIS", "words": 1500, "cast": "ALEX_JAMIE", "transition": True},
+                {"name": "SPONSOR_1", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
+                {"name": "ROUND_2_ANTITHESIS", "words": 1500, "cast": "ALEX_JAMIE", "transition": True},
+                {"name": "ROUND_3_SYNTHESIS", "words": 1500, "cast": "ALEX_JAMIE", "transition": True},
+                {"name": "OUTRO_VOTE", "words": 300, "cast": "ALEX_CTA", "transition": False}
+            ]
+        }
+        
+    elif show_type == "WEEKLY_WRAP":
+        # 30 MINUTES (Review of the Week)
+        return {
+            "tone": "Reflective, Analytical, Summary.",
+            "segments": [
+                {"name": "HOOK", "words": 100, "cast": "ALEX_JAMIE", "transition": False},
+                {"name": "INTRO_WRAP", "words": 100, "cast": "ALEX_SOLO", "transition": False},
+                {"name": "BEST_STORY_1", "words": 1500, "cast": "ALEX_JAMIE", "transition": True},
+                {"name": "SPONSOR_1", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
+                {"name": "BEST_STORY_2", "words": 1500, "cast": "ALEX_JAMIE", "transition": True},
+                {"name": "RUFUS_WEEKLY_MARKET", "words": 1500, "cast": "RUFUS_MONEY", "transition": True},
+                {"name": "OUTRO_CTA", "words": 300, "cast": "ALEX_CTA", "transition": False}
+            ]
+        }
+
+    else: 
+        # DAILY NEWS (20 MINUTES)
+        return {
+            "tone": "High Energy, Fast, Data-Heavy.",
+            "segments": [
+                {"name": "HOOK", "words": 80, "cast": "ALEX_JAMIE", "transition": False},
+                {"name": "INTRO_DAILY", "words": 80, "cast": "ALEX_SOLO", "transition": False},
+                {"name": "BLOCK_A_TECH", "words": 1500, "cast": "ALEX_JAMIE", "transition": True},
+                {"name": "SPONSOR_1", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
+                {"name": "BLOCK_B_POLITICS", "words": 1500, "cast": "RUFUS_POLITICS", "transition": True},
+                {"name": "SPONSOR_2", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
+                {"name": "BLOCK_C_MONEY", "words": 1200, "cast": "RUFUS_MONEY", "transition": True},
+                {"name": "OUTRO_CTA", "words": 300, "cast": "ALEX_CTA", "transition": False}
+            ]
+        }
+
 # --- NEWS GATHERING (STEALTH MODE) ---
 def fetch_news():
-    print(" >> 📡 INGESTING GLOBAL CONFLICT DATA...")
-    data_brains = {"ALEX": "", "JAMIE": "", "RUFUS": ""}
-    # Fake User-Agent to bypass firewalls
+    print(" >> 📡 INGESTING GLOBAL DATA...")
+    data_text = ""
     headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
     
-    for persona, urls in PERSONA_FEEDS.items():
-        collected_text = ""
+    for category, urls in ALL_FEEDS.items():
         for url in urls:
             try:
                 response = requests.get(url, headers=headers, timeout=10)
                 if response.status_code == 200:
                     feed = feedparser.parse(io.BytesIO(response.content))
-                    for entry in feed.entries[:2]: 
+                    for entry in feed.entries[:3]: # Grab Top 3 from EVERY feed
                         title = entry.title
-                        # Aggressive summary cleaning
-                        summary = re.sub('<[^<]+?>', '', entry.summary)[:350]
-                        collected_text += f"SOURCE: {title} | INTEL: {summary}\n"
-            except Exception: pass
-        
-        if not collected_text: collected_text = "No intel found. Rely on general training data."
-        data_brains[persona] = collected_text
-        
-    return data_brains
-
-# --- 20-MINUTE SHOW STRUCTURE ---
-def get_show_settings():
-    return {
-        "type": "Daily News Unfiltered", 
-        "tone": "High Energy, Aggressive, CONFLICT-HEAVY. INTERRUPT OFTEN.", 
-        "segments": [
-            # BLOCK A: THE HOOK (Must Bite)
-            {"name": "HOOK", "words": 75, "cast": "ALEX_JAMIE", "transition": False}, 
-            {"name": "INTRO_FORMAT", "words": 60, "cast": "ALEX_SOLO", "transition": False},
+                        summary = re.sub('<[^<]+?>', '', entry.summary)[:400]
+                        data_text += f"[{category}] {title} | {summary}\n"
+            except: pass
             
-            # BLOCK B: DEEP DIVE (The Tech)
-            {"name": "TOP_STORY_DEEP_DIVE", "words": 1600, "cast": "ALEX_JAMIE", "transition": True},
-            
-            # SPONSOR 1
-            {"name": "SPONSOR_BREAK_1", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
+    if not data_text: return "System Error: No News Data Found. Use general AI knowledge."
+    return data_text
 
-            # BLOCK C: GEOPOLITICS & LAW (The "Bite" Segment)
-            {"name": "RUFUS_GLOBAL_CONFLICT", "words": 1400, "cast": "RUFUS_POLITICS", "transition": True},
-            
-            # BLOCK D: TOOLS (The Dev Angle)
-            {"name": "JAMIE_TOOL_REVIEWS", "words": 1200, "cast": "JAMIE_TOOLS", "transition": True},
-
-            # SPONSOR 2
-            {"name": "SPONSOR_BREAK_2", "words": 200, "cast": "JAMIE_SPONSOR", "transition": True},
-
-            # BLOCK E: MONEY (The Markets)
-            {"name": "RUFUS_MARKETS_VC", "words": 1000, "cast": "RUFUS_MONEY", "transition": True},
-            
-            # BLOCK F: OUTRO
-            {"name": "SPEED_ROUND", "words": 600, "cast": "ALL_THREE", "transition": True}, 
-            {"name": "OUTRO_CTA", "words": 300, "cast": "ALEX_CTA", "transition": False} 
-        ]
-    }
-
-def get_rufus_location():
-    locs = ["The Hague International Court", "The Pentagon Briefing Room", "Shenzhen Manufacturing Hub", "The London Stock Exchange"]
-    return random.choice(locs)
-
-# --- SPONSOR ROTATION ---
+# --- SPONSOR SYSTEM ---
 used_sponsors = []
 def load_sponsor():
     global used_sponsors
     default_ads = [
         "ElevenLabs. The most realistic AI audio platform. Go to elevenlabs dot io.",
-        "Notion AI. Your connected workspace. Write, plan, and think with AI at notion dot so."
+        "Notion AI. Your connected workspace. notion dot so."
     ]
-    
     ads = []
     paths = [BASE_DIR / "sponsors.json", ASSETS_DIR / "sponsors.json"]
     for p in paths:
@@ -133,15 +181,12 @@ def load_sponsor():
                 ads = [s["read_copy"] for s in data["sponsors"]]
                 break
         except: pass
-    
     if not ads: ads = default_ads
     
-    # Rotation Logic
     available = [ad for ad in ads if ad not in used_sponsors]
     if not available: 
         used_sponsors = [] 
         available = ads
-        
     choice = random.choice(available)
     used_sponsors.append(choice)
     return choice
@@ -151,85 +196,51 @@ def get_asset(name):
     if (BASE_DIR / name).exists(): return BASE_DIR / name
     return None
 
-# --- INTELLIGENT WRITER ---
-def draft_segment(seg, brains, settings, loc, sponsor):
+# --- WRITER ---
+def draft_segment(seg, data_context, settings, show_type, sponsor):
     seg_name = seg["name"]
     
-    # CONTEXT ROUTING
-    if "RUFUS" in seg["cast"]:
-        active_context = f"GEOPOLITICS/LAW/MONEY (RUFUS):\n{brains['RUFUS']}"
-    elif "TOOLS" in seg["cast"]:
-         active_context = f"DEV TOOLS & SKEPTICISM (JAMIE):\n{brains['JAMIE']}"
-    else:
-        active_context = f"HARD TECH (ALEX):\n{brains['ALEX']}\n\nSKEPTIC (JAMIE):\n{brains['JAMIE']}"
+    # 1. COLD OPEN (HARD CODED RULES)
+    if "HOOK" in seg_name:
+        return client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": f"Write a 80-word COLD OPEN. JAMIE INTERRUPTS ALEX. Start with a shocking number/stat from:\n{data_context[:2000]}\nRULES: NO 'Hello'. NO 'Welcome'. Start in the middle of the fight."}]).choices[0].message.content
 
-    # 1. THE PERFECT COLD OPEN ALGORITHM
-    if seg_name == "HOOK":
-        system_prompt = f"""
-        **ROLE:** Executive Producer.
-        **TASK:** Write a 75-word Cold Open Hook.
-        **SOURCE:** Use the most shocking stat in: \n{active_context[:2000]}
-        **RULES:**
-        1. **FORBIDDEN:** Do NOT say "Hello", "Welcome", "Hi".
-        2. **START:** Start immediately with the problem. (e.g., "Nvidia just lost 40 billion...")
-        3. **CONFLICT:** Jamie MUST interrupt Alex with a cynical counter-point within the first 10 seconds.
-        4. **END:** End on a cliffhanger.
-        """
-        return client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system_prompt}]).choices[0].message.content
-
-    # 2. INTRO
-    if seg_name == "INTRO_FORMAT":
-        return f"ALEX: Welcome to The AI Edge. I'm Alex. We are going deep today. Jamie is tearing apart the latest tools, and Rufus is live at {loc} covering the regulatory war brewing in Europe. Let's get into it."
+    # 2. INTROS
+    if seg_name == "INTRO_DAILY": return "ALEX: Welcome to The AI Edge. I'm Alex. We're tracking the collision of Code, Capital, and Conflict. Let's get to work."
+    if seg_name == "INTRO_WRAP": return "ALEX: It's Saturday. The markets are closed, but the code never sleeps. This is The AI Edge Weekly Wrap."
+    if seg_name == "INTRO_DEBATE": return "ALEX: It's Sunday. No news reading today. Just the fight. Jamie, you think the industry is lying to us?"
+    if seg_name == "INTRO_SPECIAL": return "ALEX: Happy Holidays. The screens are off, but the future is still being written. Welcome to a Special Edition."
 
     # 3. SPONSORS
-    if seg["cast"] == "JAMIE_SPONSOR":
-        return f"JAMIE: Quick pause. We gotta keep the lights on. {sponsor}"
+    if seg["cast"] == "JAMIE_SPONSOR": return f"JAMIE: Quick break. {sponsor}"
 
-    # 4. SEGMENT PROMPTS
+    # 4. CONTENT BLOCKS
     if seg["cast"] == "RUFUS_POLITICS":
-        cast_instr = f"""
-        **CAST:** ALEX throws to RUFUS at {loc}.
-        **TOPIC:** WAR, LAW, & GEOPOLITICS.
-        **SOURCE:** Use the 'GEOPOLITICS/LAW' context (Lawfare, Politico).
-        **RUFUS:** Cynical. Focus on how Governments are fighting back against AI. Mention specific laws or lawsuits.
-        """
+        cast_instr = "**CAST:** ALEX & RUFUS. **TOPIC:** Law, War, Regulations. **DATA:** Use [POLITICS_MONEY] tags."
     elif seg["cast"] == "RUFUS_MONEY":
-        cast_instr = """
-        **CAST:** RUFUS (Solo).
-        **TOPIC:** FOLLOW THE MONEY. VC Funding, IPOs.
-        **RUFUS:** "It's all about the liquidity."
-        """
-    elif seg["cast"] == "JAMIE_TOOLS":
-        cast_instr = """
-        **CAST:** JAMIE (Solo).
-        **TOPIC:** TOOL REVIEW. Pick a specific tool from the context.
-        **JAMIE:** Brutally honest. "Is this trash or treasure?"
-        """
+        cast_instr = "**CAST:** RUFUS (Solo). **TOPIC:** Markets, VC, IPOs. **DATA:** Use [POLITICS_MONEY] tags."
     elif seg["cast"] == "ALEX_CTA":
-        cast_instr = """
-        **CAST:** ALEX (Solo).
-        **TOPIC:** THE HARD CLOSE.
-        **SCRIPT:** "If this episode gave you an edge, do me a favor. Send it to one friend who needs to wake up. Just one. We'll see you tomorrow."
-        """
-    else: # ALEX_JAMIE
-        cast_instr = "**CAST:** ALEX & JAMIE. **TOPIC:** Main Tech Headlines. Debate the impact."
+        cast_instr = "**CAST:** ALEX. **SCRIPT:** 'Share this link with one friend. Just one. That is how we win.'"
+    else:
+        cast_instr = "**CAST:** ALEX & JAMIE. **TOPIC:** Tech & Skepticism. **DATA:** Use [TECH] & [SKEPTIC] tags."
 
     system_prompt = f"""
     Write **{seg_name}**. Target {seg['words']} words.
     **TONE:** {settings['tone']}
-    **CONTEXT:** {active_context}
+    **SHOW TYPE:** {show_type}
+    **DATA SOURCE:** Use the provided context. Quote specific headlines.
+    **CONTEXT:** {data_context[:10000]} 
     **RULES:**
-    1. **NO HALLUCINATIONS.** Use the context.
+    1. **LONG FORM.** This is a {seg['words']} word segment. Go deep.
     2. **DIALOGUE ONLY.**
-    3. **MAKE IT LONG.** Dive deep.
+    3. **NO REPETITION.** Don't re-introduce people.
     {cast_instr}
     """
     
     return client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system_prompt}]).choices[0].message.content
 
 def punch_up(text):
-    if "send it to one friend" in text.lower(): return text 
-    system = "Script Doctor. Remove 'In conclusion'. Remove stage directions. Add interruptions ('--')."
+    if "share this" in text.lower(): return text 
+    system = "Script Doctor. Remove 'In conclusion'. Add interruptions ('--'). Ensure flow."
     return client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system}, {"role": "user", "content": text}]).choices[0].message.content
 
 def clean_text(text):
@@ -238,9 +249,10 @@ def clean_text(text):
     return text.strip()
 
 def produce_episode():
-    brains = fetch_news()
-    settings = get_show_settings()
-    loc = get_rufus_location()
+    # 1. SETUP
+    show_type = get_show_type()
+    settings = get_show_settings(show_type)
+    data_context = fetch_news()
     
     audio_segs = []
     full_script = ""
@@ -258,7 +270,7 @@ def produce_episode():
         if seg.get("transition"): audio_segs += [s_trans, AudioSegment.silent(200)] 
         
         sponsor = load_sponsor() 
-        draft = draft_segment(seg, brains, settings, loc, sponsor)
+        draft = draft_segment(seg, data_context, settings, show_type, sponsor)
         script = punch_up(draft)
         full_script += script + "\n"
         
@@ -273,7 +285,7 @@ def produce_episode():
                 client.audio.speech.create(model="tts-1-hd", voice=voice, input=text).stream_to_file(f)
                 audio_segs.append(AudioSegment.from_mp3(f))
         
-        if seg["name"] == "HOOK":
+        if "HOOK" in seg["name"]:
             audio_segs.append(AudioSegment.silent(300))
             audio_segs.append(m_intro)
             audio_segs.append(AudioSegment.silent(300))
@@ -283,7 +295,7 @@ def produce_episode():
     fname = f"podcast_{datetime.date.today()}.mp3"
     final.export(AUDIO_DIR / fname, format="mp3")
     
-    # Metadata & Socials
+    # Metadata
     meta = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": "Gen JSON {title, hook, hashtags}"}, {"role": "user", "content": full_script[:2000]}], response_format={"type": "json_object"}).choices[0].message.content
     meta = json.loads(meta)
     with open("episode_metadata.json", "w") as f: json.dump(meta, f)
