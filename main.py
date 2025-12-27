@@ -14,7 +14,7 @@ AUDIO_DIR = BASE_DIR / "episode_audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 ASSETS_DIR = BASE_DIR / "assets"
 
-# *** SPOTIFY BRIDGE (The Money Link) ***
+# *** SPOTIFY BRIDGE ***
 SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
 
 VOICES = {"ALEX": "onyx", "JAMIE": "nova", "RUFUS": "fable"}
@@ -29,7 +29,7 @@ RSS_SETTINGS = {
     "category": "Technology"
 }
 
-# --- FORMAT LOGIC (FULL SHOW) ---
+# --- FORMAT LOGIC ---
 def get_show_settings():
     return {
         "type": "Daily News Unfiltered", 
@@ -40,13 +40,12 @@ def get_show_settings():
             {"name": "RUFUS_MARKETS_LAW", "words": 800, "cast": "RUFUS_FOCUS", "transition": True},
             {"name": "MID_ROLL", "words": 250, "cast": "JAMIE_SOLO", "transition": True},
             {"name": "SECONDARY_STORY_IMPACT", "words": 1000, "cast": "ALEX_JAMIE", "transition": True},
-            {"name": "SPEED_ROUND_WRAP", "words": 600, "cast": "ALL_THREE", "transition": True}, # Rufus interjects here
+            {"name": "SPEED_ROUND_WRAP", "words": 600, "cast": "ALL_THREE", "transition": True},
             {"name": "OUTRO_VIRAL", "words": 200, "cast": "ALEX_SOLO", "transition": False}
         ]
     }
 
 def get_rufus_location():
-    # Simple locations to anchor the scene (No flowery descriptions)
     locs = ["London Stock Exchange", "Canary Wharf", "Zurich", "Hong Kong Port"]
     return random.choice(locs)
 
@@ -65,11 +64,11 @@ def get_asset(name):
     if (BASE_DIR / name).exists(): return BASE_DIR / name
     return None
 
-# --- WRITER (CHEMISTRY & RETENTION ENGINE) ---
+# --- WRITER ---
 def draft_segment(seg, context, settings, loc, sponsor):
     seg_name = seg["name"]
     
-    # 1. THE HOT CLIP (Mid-Argument Hook)
+    # 1. THE HOT CLIP
     if seg_name == "HOOK":
         system_prompt = f"""
         You are the Producer. Write the **COLD OPEN HOOK**.
@@ -83,47 +82,34 @@ def draft_segment(seg, context, settings, loc, sponsor):
         response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": system_prompt}])
         return response.choices[0].message.content
 
-    # 2. CHARACTER DYNAMICS (The "Chemistry" Prompt)
-    
-    # ALEX & JAMIE (Debate)
+    # 2. CHARACTER DYNAMICS
     if seg["cast"] == "ALEX_JAMIE":
         cast_instr = """
         **CAST:** ALEX (Host) and JAMIE (Skeptic).
-        **DYNAMIC:** - ALEX tries to be professional and structured.
-        - JAMIE is cynical, interrupts often with "--", and doubts the "official narrative."
-        - **MANDATORY:** Jamie MUST interrupt Alex at least once (e.g. ALEX: "The report says--" JAMIE: "--The report is garbage, Alex.").
+        **DYNAMIC:** - ALEX is structured.
+        - JAMIE is cynical, interrupts with "--".
+        - **MANDATORY:** Jamie MUST interrupt Alex at least once.
         """
-    
-    # RUFUS (The Toss & The Money)
     elif seg["cast"] == "RUFUS_FOCUS":
         cast_instr = f"""
-        **CAST:** ALEX (Host) and RUFUS (Correspondent).
+        **CAST:** ALEX and RUFUS.
         **SCENE:**
-        1. ALEX: MUST explicitly "throw" to Rufus (e.g. "Rufus, you're at the {loc}. What's the legal angle?").
+        1. ALEX: Explicitly throws to Rufus ("Rufus, you're at {loc}...").
         2. RUFUS: Speaks in First Person ("I'm standing here...").
-        3. RUFUS FOCUS: **LAW AND MONEY ONLY.** Financial impact, regulations, lawsuits.
+        3. RUFUS FOCUS: **LAW AND MONEY ONLY.**
         """
-
-    # WRAP UP (The Interjection)
     elif seg["cast"] == "ALL_THREE":
-        cast_instr = """
-        **CAST:** ALEX, JAMIE, RUFUS.
-        **DYNAMIC:** Rapid fire summary.
-        - JAMIE: Final cynical take.
-        - RUFUS: Final warning about the **MONEY/LAW**.
-        - ALEX: Tries to wrap it up.
-        """
-        
+        cast_instr = "**CAST:** ALL. Rapid fire summary. Jamie is cynical. Rufus warns about money. Alex wraps."
     elif seg["cast"] == "JAMIE_SOLO":
-        cast_instr = "**CAST:** JAMIE Only. Ranting to the audience."
+        cast_instr = "**CAST:** JAMIE Only. Ranting."
     elif seg["cast"] == "ALEX_SOLO":
-        cast_instr = "**CAST:** ALEX Only. Professional sign-off."
+        cast_instr = "**CAST:** ALEX Only. Sign-off."
 
     system_prompt = f"""
     Write **{seg_name}**. Target {seg['words']} words.
     **TONE:** {settings['tone']}
     **CRITICAL RULES:**
-    1. **DIALOGUE ONLY.** NO stage directions. NO "Camera pans". NO "Sound effects".
+    1. **DIALOGUE ONLY.** NO stage directions.
     2. **FORMAT:** ALEX: [Text] / JAMIE: [Text] / RUFUS: [Text]
     {cast_instr}
     SPONSOR: {sponsor}
@@ -139,7 +125,6 @@ def draft_segment(seg, context, settings, loc, sponsor):
     return response.choices[0].message.content
 
 def punch_up(text):
-    # Script Doctor: Cleans non-dialogue lines
     system = """
     Script Doctor.
     1. REMOVE any text in brackets [] or parenthesis ().
@@ -157,7 +142,7 @@ def clean_text(text):
     return text.strip()
 
 def produce_episode(news):
-    print("--- HOLLYWOOD BUILD (FINAL MASTER) ---")
+    print("--- HOLLYWOOD BUILD (PATCHED) ---")
     settings = get_show_settings()
     loc = get_rufus_location()
     sponsor = load_sponsor()
@@ -184,7 +169,6 @@ def produce_episode(news):
         full_text += script + "\n"
         
         for line in script.split('\n'):
-            # *** STRICT DIALOGUE FILTER ***
             match = re.match(r'^(ALEX|JAMIE|RUFUS):\s*(.*)', line, re.IGNORECASE)
             if match:
                 speaker, text = match.group(1).upper(), clean_text(match.group(2))
@@ -195,8 +179,6 @@ def produce_episode(news):
                 client.audio.speech.create(model="tts-1-hd", voice=voice, input=text).stream_to_file(f)
                 audio_segs.append(AudioSegment.from_mp3(f))
                 audio_segs.append(AudioSegment.silent(250))
-            else:
-                pass # Filters out "The camera pans..."
         
         if seg["name"] == "HOOK":
             print(" >> ⚡ INJECTING THUNDERBOLT INTRO ⚡")
@@ -210,9 +192,16 @@ def produce_episode(news):
     fname = f"podcast_{datetime.date.today()}.mp3"
     final.export(AUDIO_DIR / fname, format="mp3")
     
-    # GENERATE SOCIAL ASSETS
+    # --- SOCIAL ASSETS (THE FIX) ---
     meta = generate_meta(full_text)
+    
+    # 1. SAVE THE JSON (This was missing!)
+    with open("episode_metadata.json", "w") as f:
+        json.dump(meta, f)
+        
+    # 2. SAVE THE CAPTION
     save_caption(meta)
+    
     print(f"DONE: {fname}")
 
 def generate_meta(text):
