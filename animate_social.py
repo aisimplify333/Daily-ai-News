@@ -1,97 +1,140 @@
 import os
 import json
-import random
-from pathlib import Path
-from PIL import Image, ImageDraw, ImageFont, ImageEnhance, ImageChops
+import math
+from PIL import Image, ImageDraw, ImageFont
 
 # --- CONFIGURATION ---
-BASE_DIR = Path(__file__).parent
-ASSETS_DIR = BASE_DIR / "assets"
-META_PATH = BASE_DIR / "episode_metadata.json"
-OUTPUT_GIF = BASE_DIR / "social_surge.gif"
+OUTPUT_FILE = "social_surge.gif"
+META_FILE = "episode_metadata.json"
+WIDTH, HEIGHT = 1080, 1080
 
-def create_energy_gif():
-    print("--- STARTING VFX ENGINE (HIGH VOLTAGE MODE) ---")
+# --- COLORS ---
+BG_COLOR = (10, 10, 15)       # Deep Circuit Blue/Black
+CIRCUIT_DIM = (50, 50, 80)    # Unlit Path
+CIRCUIT_LIT = (0, 255, 200)   # Cyan Electric Light
+TEXT_COLOR = (255, 255, 255)
+
+# --- THE "A" LOGO PATH (Normalized 0.0 to 1.0) ---
+# We define the A as points. The Spark will travel strictly along these lines.
+# 1. Left Leg up to Top. 2. Top to Right Leg. 3. Crossbar.
+A_POINTS = [
+    (0.2, 0.8),  # Start: Bottom Left
+    (0.5, 0.2),  # Top Point
+    (0.8, 0.8),  # End: Bottom Right
+    (0.35, 0.5), # Crossbar Start (Teleport for effect)
+    (0.65, 0.5)  # Crossbar End
+]
+
+def interpolate(p1, p2, t):
+    """Linearly interpolate between p1 and p2 by factor t (0.0 to 1.0)"""
+    x = p1[0] + (p2[0] - p1[0]) * t
+    y = p1[1] + (p2[1] - p1[1]) * t
+    return (x, y)
+
+def draw_circuit_a(draw, width, height):
+    """Draws the dark, unlit circuit tracks"""
+    # Scale points to canvas
+    pixels = [(p[0] * width, p[1] * height) for p in A_POINTS]
     
-    # 1. Load Data
-    if not META_PATH.exists(): headline = "DAILY AI NEWS"
+    # Draw Main Legs
+    draw.line([pixels[0], pixels[1], pixels[2]], fill=CIRCUIT_DIM, width=15)
+    # Draw Crossbar
+    draw.line([pixels[3], pixels[4]], fill=CIRCUIT_DIM, width=15)
+
+def draw_electricity(draw, frame_idx, total_frames, width, height):
+    """Draws the moving light pulse along the path"""
+    # Calculate progress (0.0 to 1.0)
+    progress = frame_idx / total_frames
+    
+    # Scale points
+    pixels = [(p[0] * width, p[1] * height) for p in A_POINTS]
+    
+    # PATH LOGIC: We map progress to the segments
+    # 0.0-0.4: Left Leg (P0 -> P1)
+    # 0.4-0.8: Right Leg (P1 -> P2)
+    # 0.8-1.0: Crossbar (P3 -> P4)
+    
+    current_pos = None
+    
+    if progress < 0.4:
+        # Segment 1
+        t = progress / 0.4
+        current_pos = interpolate(pixels[0], pixels[1], t)
+    elif progress < 0.8:
+        # Segment 2
+        t = (progress - 0.4) / 0.4
+        current_pos = interpolate(pixels[1], pixels[2], t)
     else:
-        with open(META_PATH) as f: headline = json.load(f).get("title", "DAILY AI NEWS").upper()
-
-    # 2. Load Image (Robust Finder)
-    possible_covers = [
-        BASE_DIR / "cover.png", BASE_DIR / "logo.png",
-        ASSETS_DIR / "cover.png", ASSETS_DIR / "logo.png"
-    ]
-    img_path = None
-    for p in possible_covers:
-        if p.exists():
-            img_path = p
-            break
-            
-    if not img_path: 
-        print(" >> [ERROR] No cover.png or logo.png found!")
-        return
-
-    base = Image.open(img_path).convert("RGBA").resize((1080, 1080))
-
-    # 3. Setup Text
-    try: font = ImageFont.truetype("arial.ttf", 80)
-    except: font = ImageFont.load_default()
+        # Segment 3 (Crossbar)
+        t = (progress - 0.8) / 0.2
+        current_pos = interpolate(pixels[3], pixels[4], t)
+        
+    # Draw the Spark (Bright Ball)
+    r = 20 # Spark radius
+    x, y = current_pos
     
+    # Glow effect (layered circles)
+    draw.ellipse([x-r*2, y-r*2, x+r*2, y+r*2], fill=(0, 100, 100)) # Faint glow
+    draw.ellipse([x-r, y-r, x+r, y+r], fill=CIRCUIT_LIT) # Hot core
+
+def generate_visuals():
+    print(" >> ⚡ GENERATING CIRCUIT ANIMATION...")
+    
+    # Load Episode Data
+    try:
+        with open(META_FILE) as f:
+            data = json.load(f)
+            title = data.get("title", "AI NEWS DAILY")
+            hook = data.get("hook", "Listen Now")
+    except:
+        title = "AI SYSTEM ONLINE"
+        hook = "Initializing..."
+
+    # Font Setup
+    try:
+        font_large = ImageFont.truetype("arial.ttf", 90)
+        font_small = ImageFont.truetype("arial.ttf", 50)
+    except:
+        font_large = ImageFont.load_default()
+        font_small = ImageFont.load_default()
+
     frames = []
-    # Create 10 frames for the loop (Fast, twitchy loop)
-    for i in range(10):
-        frame = base.copy()
+    total_frames = 30 # 30 Frames for a smooth flow loop
+    
+    for i in range(total_frames):
+        # 1. Background
+        img = Image.new('RGB', (WIDTH, HEIGHT), color=BG_COLOR)
+        draw = ImageDraw.Draw(img)
         
-        # A. ELECTRIC JITTER EFFECT
-        # We split channels and offset them slightly to create "chromatic aberration" (glitch look)
-        if i % 2 == 0: # Twitch every other frame
-            r, g, b, a = frame.split()
-            # Jitter the Red channel
-            r = ImageChops.offset(r, random.randint(-5, 5), 0)
-            # Jitter the Blue channel
-            b = ImageChops.offset(b, random.randint(-5, 5), 0)
-            frame = Image.merge("RGBA", (r, g, b, a))
+        # 2. Draw Static Circuit
+        draw_circuit_a(draw, WIDTH, HEIGHT)
+        
+        # 3. Draw Moving Electricity
+        draw_electricity(draw, i, total_frames, WIDTH, HEIGHT)
+        
+        # 4. Text Overlay (Centered)
+        # Title Breakdown
+        lines = title.split()
+        y_text = 200
+        for line in lines: # Simple wrap
+            draw.text((100, y_text), line.upper(), font=font_large, fill=TEXT_COLOR)
+            y_text += 100
             
-            # Brightness Spike (The Spark)
-            enhancer = ImageEnhance.Brightness(frame)
-            frame = enhancer.enhance(1.4) # Flash bright
-        
-        draw = ImageDraw.Draw(frame)
-        
-        # B. Darken bottom for text
-        draw.rectangle([(0, 800), (1080, 1080)], fill=(0,0,0, 220))
-        
-        # C. Draw Headline (White with slight shake)
-        text_x = 50 + random.randint(-2, 2)
-        draw.text((text_x, 850), headline, font=font, fill="white")
-        
-        # D. Draw "Listen Now" (Electric Cyan)
-        # Randomly switch colors to look like a flickering neon sign
-        cyan_electric = (0, 255, 255) if random.random() > 0.3 else (255, 255, 255)
-        draw.text((50, 950), "▶ LISTEN ON SPOTIFY", font=font, fill=cyan_electric)
-        
-        # E. Draw "Sparks" (Random lines)
-        if i % 3 == 0:
-            # Draw a random jagged line near the 'A' (approx center)
-            x1 = random.randint(400, 600)
-            y1 = random.randint(300, 500)
-            x2 = x1 + random.randint(-50, 50)
-            y2 = y1 + random.randint(-50, 50)
-            draw.line([(x1, y1), (x2, y2)], fill=(0, 255, 255), width=3)
+        # Hook Text at Bottom
+        draw.text((100, 900), "LIVE NOW: " + hook[:30] + "...", font=font_small, fill=(200, 200, 200))
 
-        frames.append(frame)
-
-    # 4. Save GIF
+        frames.append(img)
+        
+    # Save GIF
     frames[0].save(
-        OUTPUT_GIF,
+        OUTPUT_FILE,
         save_all=True,
         append_images=frames[1:],
-        duration=80, # 80ms = Fast, twitchy speed
+        optimize=False,
+        duration=50, # 50ms = Fast electricity
         loop=0
     )
-    print(f" >> [VFX SUCCESS] Electric GIF Saved: {OUTPUT_GIF}")
+    print(f"DONE: {OUTPUT_FILE}")
 
 if __name__ == "__main__":
-    create_energy_gif()
+    generate_visuals()
