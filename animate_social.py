@@ -6,7 +6,7 @@ import textwrap
 import librosa
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import AudioFileClip, VideoClip, CompositeVideoClip, ImageClip, VideoFileClip
+from moviepy.editor import AudioFileClip, VideoClip, CompositeVideoClip, ImageClip, VideoFileClip, concatenate_videoclips
 
 # --- CONFIGURATION ---
 BASE_DIR = Path(__file__).parent
@@ -15,170 +15,121 @@ OUTPUT_DIR = BASE_DIR / "social_clips"
 ASSETS_DIR = BASE_DIR / "assets"
 OUTPUT_DIR.mkdir(exist_ok=True)
 
-# "Agency" Styles - Fallbacks if no video background is found
-STYLES = {
-    "TECH":   {"bg": (10, 15, 20),   "accent": (0, 255, 100),   "text": (255, 255, 255)}, 
-    "SKEPTIC": {"bg": (20, 0, 0),     "accent": (255, 50, 50),   "text": (255, 255, 255)}, 
-    "MONEY":  {"bg": (0, 20, 0),     "accent": (50, 200, 50),   "text": (255, 255, 255)}, 
-    "DEFAULT": {"bg": (15, 15, 15),   "accent": (255, 200, 0),   "text": (255, 255, 255)}  
-}
+# THE 30-SECOND FORMULA
+TOTAL_DURATION = 30
+VIDEO_HOOK_DURATION = 8  # Length of your Veo clip
+CTA_DURATION = 5         # Length of the "End Card"
 
-# --- 1. REAL AUDIO PHYSICS ENGINE ---
-def analyze_audio(audio_path, fps=24):
-    """Uses Librosa to extract real volume data for the waveform."""
-    print(" 📊 ANALYZING AUDIO PHYSICS...")
-    y, sr = librosa.load(audio_path, sr=None)
-    
-    # Get the volume envelope (Root Mean Square)
-    hop_length = int(sr / fps)
-    rms = librosa.feature.rms(y=y, hop_length=hop_length)[0]
-    
-    # Normalize data to be between 0 and 1
-    rms = (rms - np.min(rms)) / (np.max(rms) - np.min(rms))
-    return rms
+# Styles for the Waveform Section
+STYLE = {"bg": (15, 15, 20), "accent": (0, 255, 100), "text": (255, 255, 255)}
 
-# --- 2. THE RENDERER ---
-def make_frame(t, duration, headline, style, audio_data, fps):
-    W, H = 1080, 1920
-    
-    # A. Draw Background (Transparent if using video bg, Solid if not)
-    # We return an RGBA image so we can overlay it on video
-    img = Image.new('RGBA', (W, H), (0, 0, 0, 0)) 
-    draw = ImageDraw.Draw(img)
-    
-    # If no video background, fill with solid color
-    if style.get("is_solid"):
-        draw.rectangle([0, 0, W, H], fill=style["bg"])
-
-    # B. REAL Waveform Animation
-    # Get the current frame index
-    frame_idx = int(t * fps)
-    # Safety check for index
-    current_vol = audio_data[frame_idx] if frame_idx < len(audio_data) else 0
-    
-    num_bars = 25
-    bar_width = 30
-    gap = 15
-    total_width = (num_bars * bar_width) + ((num_bars - 1) * gap)
-    start_x = (W - total_width) / 2
-    
-    # Draw bars that react to volume
-    for i in range(num_bars):
-        # Create a "wave" effect across the bars using sin, scaled by REAL volume
-        wave_mod = np.sin(i * 0.5 + t * 5) * 0.5 + 0.5 
-        bar_height = (current_vol * 600) * wave_mod + 20 # 20px min height
-        
-        x = start_x + i * (bar_width + gap)
-        y_start = H - 350
-        
-        # Draw with Rounded look (simulated by drawing slightly larger circles at ends)
-        draw.rectangle([x, y_start - bar_height, x + bar_width, y_start], fill=style["accent"])
-
-    # C. Progress Bar (Top - High End Thin Line)
-    prog_w = (t / duration) * W
-    draw.rectangle([0, 0, prog_w, 15], fill=style["accent"])
-
-    # D. "Agency" Typography
-    # Headline
-    font_head = get_font(95, bold=True)
-    lines = textwrap.wrap(headline.upper(), width=14)
-    y_text = 300 # Lowered slightly
-    
-    # Draw a dark "Scrim" (Gradient shadow) behind text for readability
-    draw.rectangle([0, 0, W, 800], fill=(0,0,0, 100)) # Semi-transparent black
-
-    for line in lines:
-        bbox = draw.textbbox((0, 0), line, font=font_head)
-        w_line = bbox[2] - bbox[0]
-        x_text = (W - w_line) / 2
-        
-        # Hard Drop Shadow for "Pop"
-        draw.text((x_text+6, y_text+6), line, font=font_head, fill=(0,0,0, 255))
-        draw.text((x_text, y_text), line, font=font_head, fill=style["text"])
-        y_text += 115
-
-    # CTA Pill
-    draw.rounded_rectangle([340, 1600, 740, 1720], radius=40, outline=style["text"], width=4)
-    font_cta = get_font(50, bold=True)
-    draw.text((435, 1635), "🔊 SOUND ON", font=font_cta, fill=style["text"])
-
-    return np.array(img)
-
+# --- 1. UTILS & PHYSICS ---
 def get_font(size, bold=True):
-    # Try to find a "Pro" font on the system
     options = ["Arialbd.ttf", "Impact.ttf", "VerdanaBold.ttf"] if bold else ["Arial.ttf"]
     for name in options:
         try: return ImageFont.truetype(name, size)
         except: continue
     return ImageFont.load_default()
 
-def create_social_clip():
-    print(" >> 🎬 STARTING AGENCY-GRADE RENDER...")
-    
-    # 1. Find Audio
-    try:
-        latest_audio = sorted(AUDIO_DIR.glob("*.mp3"), key=os.path.getmtime)[-1]
-    except IndexError: return
+def analyze_audio(audio_path, fps=24):
+    y, sr = librosa.load(audio_path, sr=None)
+    hop_length = int(sr / fps)
+    rms = librosa.feature.rms(y=y, hop_length=hop_length)[0]
+    return (rms - np.min(rms)) / (np.max(rms) - np.min(rms))
 
-    # 2. Get Metadata
+# --- 2. WAVEFORM RENDERER (For the Middle Section) ---
+def make_waveform_frame(t, duration, headline, audio_data, fps, offset_t):
+    W, H = 1080, 1920
+    img = Image.new('RGB', (W, H), color=STYLE["bg"])
+    draw = ImageDraw.Draw(img)
+    
+    # Sync physics: We must look up the correct audio frame based on GLOBAL time
+    frame_idx = int((t + offset_t) * fps)
+    current_vol = audio_data[frame_idx] if frame_idx < len(audio_data) else 0.1
+
+    # Draw Bars
+    num_bars, bar_width, gap = 20, 35, 20
+    start_x = (W - ((num_bars * bar_width) + ((num_bars - 1) * gap))) / 2
+    for i in range(num_bars):
+        wave_mod = np.sin(i * 0.5 + t * 5) * 0.5 + 0.5
+        h_bar = (current_vol * 500) * wave_mod + 20
+        x = start_x + i * (bar_width + gap)
+        draw.rectangle([x, 1400 - h_bar, x + bar_width, 1400 + h_bar], fill=STYLE["accent"])
+
+    # Draw Headline
+    font = get_font(90)
+    lines = textwrap.wrap(headline.upper(), width=14)
+    y_text = 400
+    for line in lines:
+        bbox = draw.textbbox((0, 0), line, font=font)
+        x_text = (W - (bbox[2] - bbox[0])) / 2
+        draw.text((x_text, y_text), line, font=font, fill=STYLE["text"])
+        y_text += 110
+
+    return np.array(img)
+
+# --- 3. MAIN ASSEMBLY ENGINE ---
+def create_hybrid_clip():
+    print(" >> 🎬 ASSEMBLING 30s HYBRID TRAILER...")
+    
+    # A. Load Audio (The Master Track)
+    try: latest_audio = sorted(AUDIO_DIR.glob("*.mp3"), key=os.path.getmtime)[-1]
+    except: return print("No Audio Found.")
+    
+    audio_full = AudioFileClip(str(latest_audio))
+    # Cut to exactly 30s (Trailer length)
+    audio_30s = audio_full.subclip(0, TOTAL_DURATION)
+    audio_data = analyze_audio(str(latest_audio)) # Physics data
+
+    # B. Get Metadata
     headline = "DAILY AI NEWS"
     try:
-        with open("viral_caption.txt", "r") as f:
+        with open("viral_caption.txt") as f:
             for line in f.read().split("\n"):
-                if "🎙️" in line or "🚀" in line:
-                    headline = line.replace("🎙️", "").replace("🚀", "").replace("NEW EPISODE:", "").strip()
-                    break
+                if "🎙️" in line: headline = line.replace("🎙️", "").replace("NEW EPISODE:", "").strip()
     except: pass
 
-    # 3. Setup Layout & Physics
-    audio_clip = AudioFileClip(str(latest_audio))
-    duration = min(audio_clip.duration, 59)
-    audio_clip = audio_clip.subclip(0, duration)
-    
-    # Run the Physics Engine
-    audio_data = analyze_audio(str(latest_audio))
-
-    # 4. Background Logic (Video vs Color)
-    bg_video_path = ASSETS_DIR / "background.mp4"
-    style = STYLES["DEFAULT"] # Default Color fallback
-    
-    if bg_video_path.exists():
-        print("    🎥 USING MOTION BACKGROUND VIDEO")
-        # Load video, loop it, resize to 9:16
-        bg_clip = VideoFileClip(str(bg_video_path), audio=False)
-        # Loop video if shorter than audio
-        if bg_clip.duration < duration:
-            bg_clip = bg_clip.loop(duration=duration)
-        bg_clip = bg_clip.subclip(0, duration)
-        # Resize to cover (Center Crop logic)
-        bg_clip = bg_clip.resize(height=1920) 
-        bg_clip = bg_clip.crop(x1=bg_clip.w/2 - 540, width=1080)
-        style["is_solid"] = False # Tell renderer NOT to draw solid color
+    # --- PART 1: THE VEO HOOK (0s - 8s) ---
+    veo_path = ASSETS_DIR / "hook_video.mp4"
+    if veo_path.exists():
+        print("    Found Veo Video Hook...")
+        clip_1 = VideoFileClip(str(veo_path)).resize(height=1920)
+        # Center Crop to 1080x1920
+        clip_1 = clip_1.crop(x1=clip_1.w/2 - 540, width=1080).subclip(0, VIDEO_HOOK_DURATION)
     else:
-        print("    🎨 USING SOLID COLOR (Add 'background.mp4' to assets for Motion!)")
-        # Create a dummy background clip of solid color
-        bg_clip = VideoClip(lambda t: np.zeros((1920, 1080, 3), dtype='uint8'), duration=duration)
-        style["is_solid"] = True
+        print("    No Veo Video found. Generating fallback waveform...")
+        # Fallback: Just use waveform if you didn't make a video today
+        clip_1 = VideoClip(lambda t: make_waveform_frame(t, VIDEO_HOOK_DURATION, headline, audio_data, 24, 0), duration=VIDEO_HOOK_DURATION)
 
-    # 5. Composite
-    # Generate the Overlay (Text + Waveform)
-    overlay_clip = VideoClip(lambda t: make_frame(t, duration, headline, style, audio_data, 24), duration=duration, ismask=False)
+    # --- PART 2: THE WAVEFORM (8s - 25s) ---
+    mid_duration = TOTAL_DURATION - VIDEO_HOOK_DURATION - CTA_DURATION
+    clip_2 = VideoClip(lambda t: make_waveform_frame(t, mid_duration, headline, audio_data, 24, VIDEO_HOOK_DURATION), duration=mid_duration)
+
+    # --- PART 3: THE CTA CARD (25s - 30s) ---
+    # Uses your cover.png + "Link in Bio" text
+    img = Image.new('RGB', (1080, 1920), color=(10, 10, 10))
+    draw = ImageDraw.Draw(img)
     
-    # Layer: Background Video -> Cover Art (Optional) -> Overlay
-    clips_to_stack = [bg_clip]
-    
+    # Load Cover
     if (ASSETS_DIR / "cover.png").exists():
-        cover = ImageClip(str(ASSETS_DIR / "cover.png")).set_duration(duration)
-        cover = cover.resize(width=600).set_position(("center", 750))
-        clips_to_stack.append(cover)
-        
-    clips_to_stack.append(overlay_clip)
+        cover = Image.open(ASSETS_DIR / "cover.png").resize((800, 800))
+        img.paste(cover, (140, 400))
     
-    final = CompositeVideoClip(clips_to_stack).set_audio(audio_clip)
+    # Draw CTA Text
+    font_cta = get_font(100)
+    draw.text((180, 1300), "FULL EPISODE", font=font_cta, fill="white")
+    draw.rectangle([200, 1450, 880, 1600], fill=STYLE["accent"])
+    draw.text((290, 1480), "LINK IN BIO", font=font_cta, fill="black")
+    
+    clip_3 = ImageClip(np.array(img)).set_duration(CTA_DURATION)
 
-    output_filename = OUTPUT_DIR / f"viral_{latest_audio.stem}.mp4"
-    final.write_videofile(str(output_filename), fps=24, codec="libx264", audio_codec="aac")
-    print(f"✅ AGENCY CLIP READY: {output_filename}")
+    # --- C. STITCH & EXPORT ---
+    final_video = concatenate_videoclips([clip_1, clip_2, clip_3])
+    final_video = final_video.set_audio(audio_30s)
+
+    out_file = OUTPUT_DIR / f"hybrid_trailer_{latest_audio.stem}.mp4"
+    final_video.write_videofile(str(out_file), fps=24, codec="libx264", audio_codec="aac")
+    print(f"✅ TRAILER READY: {out_file}")
 
 if __name__ == "__main__":
-    create_social_clip()
+    create_hybrid_clip()
