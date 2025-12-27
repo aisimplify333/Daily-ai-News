@@ -15,7 +15,20 @@ AUDIO_DIR = BASE_DIR / "episode_audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 ASSETS_DIR = BASE_DIR / "assets"
 
-SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
+# Your Spotify/iTunes RSS Settings
+RSS_SETTINGS = {
+    "title": "The AI Edge",
+    "link": "https://github.com/aisimplify333/Daily-ai-News",
+    "description": "Deep dives into AI, Technology, and the Future.",
+    "author": "AI Simplify Media",
+    "email": "aisimplify333@gmail.com", 
+    "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png",
+    "category": "Technology"
+}
+
+# Hosting logic for GitHub Pages
+RAW_AUDIO_BASE = "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/episode_audio"
+VOICES = {"ALEX": "onyx", "JAMIE": "shimmer", "RUFUS": "fable"}SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
 
 # --- THE REVENUE ENGINE (AFFILIATE DATABASE) ---
 # Replace these placeholder links with your real affiliate IDs once you sign up
