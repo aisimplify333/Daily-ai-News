@@ -27,9 +27,9 @@ jobs:
           sudo apt-get install -y ffmpeg
 
       - name: Install Dependencies
-        # We explicitly install the tools needed for Audio AND Visuals
+        # <--- THIS IS THE FIX: Added 'feedparser' to the list
         run: |
-          pip install openai pydub pillow tweepy
+          pip install openai pydub pillow tweepy feedparser
 
       - name: Run Audio Engine (Producer)
         env:
@@ -37,7 +37,6 @@ jobs:
         run: python main.py
 
       - name: Run Visual Engine (VFX)
-        # This creates the Cyber Pulse GIF
         run: python animate_social.py
 
       - name: Commit and Push Everything
@@ -45,14 +44,14 @@ jobs:
           git config --global user.name 'AI Producer'
           git config --global user.email 'bot@aisimplifymedia.com'
           
-          # 1. Add The Audio (From the subfolder)
+          # 1. Add The Audio
           git add episode_audio/*.mp3
           
           # 2. Add The Feed & Data
           git add feed.xml
           git add episode_metadata.json
           
-          # 3. ADD THE SOCIAL ASSETS (Crucial for Monetization)
+          # 3. Add The Social Assets
           git add viral_caption.txt
           git add social_surge.gif
           
