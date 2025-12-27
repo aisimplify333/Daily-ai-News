@@ -13,6 +13,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1. SETUP
       - name: Check out repository
         uses: actions/checkout@v4
 
@@ -21,42 +22,55 @@ jobs:
         with:
           python-version: '3.11'
 
+      # 2. INSTALL SYSTEM LIBRARIES (Heavy Lifting)
       - name: Install FFmpeg
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
 
+      # 3. INSTALL PYTHON DEPENDENCIES (The "Everything" List)
       - name: Install Dependencies
-        # <--- COMBINED FIX: Has both 'duckduckgo-search' AND 'ffmpeg-normalize'
         run: |
-          pip install openai pydub pillow tweepy feedparser requests duckduckgo-search ffmpeg-normalize
+          pip install openai pydub pillow tweepy feedparser requests duckduckgo-search ffmpeg-normalize moviepy numpy
 
+      # 4. PHASE 1: AUDIO PRODUCTION (Search, Script, TTS, Mastering)
       - name: Run Audio Engine (Producer)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python main.py
 
+      # 5. PHASE 2: VISUAL PRODUCTION (Vertical Video Generation)
       - name: Run Visual Engine (VFX)
-        # Note: This runs the GIF generator (Phase 1). 
-        # When you switch to Video (Phase 2), remember to add 'moviepy' to dependencies above!
         run: python animate_social.py
 
+      # 6. PHASE 3: SOCIAL DISTRIBUTION (The Megaphone)
+      # Note: This requires TWITTER secrets in your Repo Settings.
+      # If you haven't set them yet, this step will skip or fail safely.
+      - name: Run Social Publisher
+        env:
+          TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        run: python social_publisher.py
+
+      # 7. SAVE ARTIFACTS (Commit back to Repo)
       - name: Commit and Push Everything
         run: |
           git config --global user.name 'AI Producer'
           git config --global user.email 'bot@aisimplifymedia.com'
           
-          # 1. Add The Audio
+          # Add Audio
           git add episode_audio/*.mp3
           
-          # 2. Add The Feed & Data
+          # Add Metadata & Feeds
           git add feed.xml
           git add episode_metadata.json
           
-          # 3. Add The Social Assets
+          # Add Social Assets (Video & Caption)
           git add viral_caption.txt
-          git add social_surge.gif
+          git add social_clip.mp4
           
-          # 4. Commit and Push
-          git commit -m "Automated: New Daily Episode & Social Assets" || echo "No changes to commit"
+          # Commit
+          git commit -m "Automated: New Daily Episode & Social Video" || echo "No changes to commit"
           git push
