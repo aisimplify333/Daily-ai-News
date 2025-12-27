@@ -4,6 +4,8 @@ import random
 import re
 import datetime
 import feedparser
+import requests  # <--- THE KEY TO UNLOCKING DATA
+import io
 from pathlib import Path
 from openai import OpenAI
 from pydub import AudioSegment
@@ -18,7 +20,7 @@ ASSETS_DIR = BASE_DIR / "assets"
 SPOTIFY_URL = "https://open.spotify.com/show/YOUR_SHOW_ID_HERE" 
 VOICES = {"ALEX": "onyx", "JAMIE": "nova", "RUFUS": "fable"}
 
-# --- THE TRUTH ENGINE (LEGAL & MONEY UPGRADE) ---
+# --- THE TRUTH ENGINE (SPECIFIC FEEDS) ---
 PERSONA_FEEDS = {
     "ALEX": [ # HARD TECH & ENTERPRISE NEWS
         "https://venturebeat.com/category/ai/feed/",
@@ -32,11 +34,11 @@ PERSONA_FEEDS = {
         "https://www.reddit.com/r/ArtificialInteligence/top/.rss?t=day", 
         "https://hnrss.org/newest?q=AI"          
     ],
-    "RUFUS": [ # MONEY, LAW & POLICY (UPDATED)
-        "https://news.crunchbase.com/feed/",                                # <--- VC Money Flow
-        "https://www.technologyreview.com/feed/topic/tech-policy/",         # <--- AI Law & Regulation
-        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664", # <--- Public Markets
-        "https://hai.stanford.edu/news/rss"                                 # <--- Ethics/Policy
+    "RUFUS": [ # MONEY, LAW & POLICY
+        "https://news.crunchbase.com/feed/",                                
+        "https://www.technologyreview.com/feed/topic/tech-policy/",         
+        "https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=10000664", 
+        "https://hai.stanford.edu/news/rss"                                 
     ]
 }
 
@@ -50,26 +52,39 @@ RSS_SETTINGS = {
     "category": "Technology"
 }
 
-# --- NEWS GATHERING ---
+# --- NEWS GATHERING (STEALTH MODE) ---
 def fetch_news():
-    print(" >> 📡 INGESTING DATA FROM VENDOR FEEDS...")
+    print(" >> 📡 INGESTING DATA FROM VENDOR FEEDS (STEALTH MODE)...")
     data_brains = {"ALEX": "", "JAMIE": "", "RUFUS": ""}
+    
+    # Fake ID to bypass RSS blockers
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+    }
     
     for persona, urls in PERSONA_FEEDS.items():
         collected_text = ""
         for url in urls:
             try:
-                feed = feedparser.parse(url)
-                # We take the top 2 stories from each feed
-                for entry in feed.entries[:2]: 
-                    title = entry.title
-                    summary = re.sub('<[^<]+?>', '', entry.summary)[:300]
-                    collected_text += f"SOURCE: {title} | KEY FACT: {summary}\n"
+                # We use requests to get the XML first, passing our Fake ID
+                response = requests.get(url, headers=headers, timeout=10)
+                
+                if response.status_code == 200:
+                    # Feed the raw XML text to feedparser
+                    feed = feedparser.parse(io.BytesIO(response.content))
+                    
+                    for entry in feed.entries[:2]: 
+                        title = entry.title
+                        summary = re.sub('<[^<]+?>', '', entry.summary)[:300]
+                        collected_text += f"SOURCE: {title} | KEY FACT: {summary}\n"
+                else:
+                    print(f"    ! Blocked by {url} (Status: {response.status_code})")
+                    
             except Exception as e:
                 print(f"    ! Feed Error {url}: {e}")
         
         if not collected_text:
-            collected_text = "No RSS data available. State that 'We are waiting on the morning numbers'."
+            collected_text = f"No specific data for {persona}. Search for general AI news."
         
         data_brains[persona] = collected_text
         
@@ -135,7 +150,7 @@ def draft_segment(seg, brains, settings, loc, sponsor):
 
     # 3. INTRO
     if seg_name == "INTRO_FORMAT":
-        return "ALEX: Welcome to The AI Edge. I'm Alex, Jamie is digging through the Reddit threads to fight the hype, and we'll hit Rufus for the legal and money beat shortly. Let's go."
+        return "ALEX: Welcome to The AI Edge. I'm Alex, Jamie is digging through the Reddit threads to fight the hype, and we'll hit Rufus for the legal and money beat shortly. Let's get into it."
 
     # 4. SPONSOR
     if seg["cast"] == "JAMIE_SPONSOR":
@@ -199,10 +214,7 @@ def clean_text(text):
     return text.strip()
 
 def produce_episode():
-    # 1. FETCH REAL DATA
     brains = fetch_news()
-    
-    # 2. COMBINE TEXT FOR METADATA
     full_data_text = brains["ALEX"] + brains["JAMIE"] + brains["RUFUS"]
     print(f"--- HOLLYWOOD BUILD (FACTUAL MODE: {len(full_data_text)} chars) ---")
     
@@ -226,7 +238,6 @@ def produce_episode():
         print(f" >> Seg: {seg['name']}")
         if seg.get("transition"): audio_segs += [s_trans, AudioSegment.silent(200)] 
         
-        # Pass the 'brains' dictionary instead of raw news
         draft = draft_segment(seg, brains, settings, loc, sponsor)
         
         if seg["name"] not in ["INTRO_FORMAT", "MID_ROLL"]: 
@@ -245,7 +256,6 @@ def produce_episode():
                 voice = VOICES.get(speaker, "onyx")
                 f = AUDIO_DIR / "temp.mp3"
                 client.audio.speech.create(model="tts-1-hd", voice=voice, input=text).stream_to_file(f)
-                
                 seg_audio = AudioSegment.from_mp3(f)
                 audio_segs.append(seg_audio)
         
