@@ -54,11 +54,11 @@ jobs:
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
         run: python social_publisher.py
 
-      - name: Run YouTube Uploader (Shorts)
-        env:
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python youtube_uploader.py
+#      - name: Run YouTube Uploader (Shorts)
+#        env:
+#         YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+#         YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+#        run: python youtube_uploader.py
 
       # 7. SAVE ARTIFACTS (Commit back to Repo)
       - name: Commit and Push Everything
