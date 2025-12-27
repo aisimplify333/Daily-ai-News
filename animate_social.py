@@ -3,7 +3,8 @@ import json
 import math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-from moviepy.editor import AudioFileClip, VideoClip
+# UPDATED: New import style for v2.0+
+from moviepy import AudioFileClip, VideoClip
 
 # --- CONFIGURATION ---
 AUDIO_DIR = "episode_audio"
@@ -54,7 +55,6 @@ def make_frame(t, duration, title, hook):
     draw.line([pixels[3], pixels[4]], fill=CIRCUIT_DIM, width=25)
     
     # 3. DRAW MOVING ENERGY PULSE
-    # It loops twice as fast as the clip duration for energy
     loop_duration = 2.5 
     loop_t = (t % loop_duration) / loop_duration
     
@@ -67,43 +67,36 @@ def make_frame(t, duration, title, hook):
         current_pos = interpolate(pixels[3], pixels[4], (loop_t-0.8)/0.2)
         
     x, y = current_pos
-    # Layered Glow for "High Voltage" look
     draw.ellipse([x-60, y-60, x+60, y+60], fill=(0, 50, 50))
     draw.ellipse([x-30, y-30, x+30, y+30], fill=CIRCUIT_LIT)
     
     # 4. TYPOGRAPHY (The "Pro" Layout)
     font_header = get_best_font(60)
-    font_headline = get_best_font(110) # Big Impact
+    font_headline = get_best_font(110) 
     font_sub = get_best_font(50)
 
-    # Header: "NEW EPISODE" Badge
     draw.rectangle([80, 150, 500, 230], fill=(20, 20, 30), outline=TEXT_GRAY, width=2)
     draw.text((100, 160), "🎙️ AI EDGE DAILY", font=font_header, fill=TEXT_WHITE)
     
-    # Hero Title (Word Wrapped & Centered)
     words = title.upper().split()
     y_text = 400
     line = ""
     for word in words:
-        # Test width
         test_line = line + word + " "
         w = draw.textlength(test_line, font=font_headline)
-        if w < WIDTH - 160: # Padding
+        if w < WIDTH - 160: 
             line = test_line
         else:
-            # Draw current line
             w_final = draw.textlength(line, font=font_headline)
             x_centered = (WIDTH - w_final) / 2
             draw.text((x_centered, y_text), line, font=font_headline, fill=TEXT_WHITE)
             y_text += 130
             line = word + " "
-    # Draw last line
     w_final = draw.textlength(line, font=font_headline)
     x_centered = (WIDTH - w_final) / 2
     draw.text((x_centered, y_text), line, font=font_headline, fill=TEXT_WHITE)
 
     # 5. RETENTION FEATURES
-    # "Sound On" Badge (Blinks)
     if (t * 2) % 2 > 1:
         draw.rectangle([WIDTH/2 - 150, 1600, WIDTH/2 + 150, 1680], fill=ACCENT_RED)
         draw.text((WIDTH/2 - 110, 1615), "🔊 SOUND ON", font=font_sub, fill=TEXT_WHITE)
@@ -111,7 +104,6 @@ def make_frame(t, duration, title, hook):
          draw.rectangle([WIDTH/2 - 150, 1600, WIDTH/2 + 150, 1680], outline=ACCENT_RED, width=3)
          draw.text((WIDTH/2 - 110, 1615), "🔊 SOUND ON", font=font_sub, fill=ACCENT_RED)
 
-    # Progress Bar (Bottom)
     bar_width = (t / duration) * WIDTH
     draw.rectangle([0, HEIGHT-30, bar_width, HEIGHT], fill=PROGRESS_BAR)
     
@@ -120,7 +112,6 @@ def make_frame(t, duration, title, hook):
 def generate_video():
     print(" >> 🎬 GENERATING PRO SOCIAL CLIP...")
     
-    # 1. Find Audio
     today = os.popen('date +%Y-%m-%d').read().strip()
     audio_path = f"{AUDIO_DIR}/podcast_{today}.mp3"
     
@@ -131,28 +122,24 @@ def generate_video():
             print(" !! AUDIO MISSING.")
             return
 
-    # 2. Load Metadata
     try:
         with open(META_FILE) as f:
             data = json.load(f)
-            # Fallback to defaults if keys missing
             title = data.get("title", "BREAKING AI NEWS")
             hook = data.get("hook", "Listen to the full episode now.")
     except:
         title = "AI NEWS DAILY"
         hook = "Listen Now"
 
-    # 3. Setup Audio Clip (Max 25s)
+    # UPDATED: API changes for MoviePy 2.0
     audio_clip = AudioFileClip(audio_path)
     duration = min(audio_clip.duration, 25) 
-    audio_clip = audio_clip.subclip(0, duration)
+    audio_clip = audio_clip.subclipped(0, duration) # renamed from subclip()
     
-    # 4. Render Video
-    # We pass 'duration' to make_frame so it can draw the progress bar accurately
     video = VideoClip(lambda t: make_frame(t, duration, title, hook), duration=duration)
-    video = video.set_audio(audio_clip)
+    video = video.with_audio(audio_clip) # renamed from set_audio()
     
-    # 5. Export
+    # Export remains mostly the same
     video.write_videofile(OUTPUT_FILE, fps=24, codec="libx264", audio_codec="aac")
     print(f"DONE: {OUTPUT_FILE}")
 
