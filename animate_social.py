@@ -20,7 +20,7 @@ TOTAL_DURATION = 35 # Total clip is 35 seconds (leaves 20s for CTA)
 ALEX_FILE  = "alex_master.png"
 JAMIE_FILE = "jamie_master.png"
 RUFUS_FILE = "rufus_master.png"
-COVER_FILE = "Cover.jpg"
+COVER_FILE = "cover.png"
 
 # --- SYSTEM SETUP ---
 BASE_DIR = Path(__file__).parent
