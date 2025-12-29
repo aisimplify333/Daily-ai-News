@@ -46,7 +46,7 @@ def generate_talking_head(audio_path, character="ALEX"):
     # Replicate SadTalker Model
     try:
         output_url = replicate.run(
-            "cjwbw/sadtalker:a519a502c816f7344755a5c276f753232c44414f6b28394a5c9f535359b34360",
+            "cjwbw/sadtalker:3aa3dac937e567d196aa3e50402f8539da647250646c0780287a419830c2c10b",
             input={
                 "source_image": open(AVATARS.get(character, AVATARS["ALEX"]), "rb"),
                 "driven_audio": open(audio_path, "rb"),
