@@ -41,14 +41,14 @@ jobs:
           ffmpeg-normalize "moviepy==1.0.3" numpy replicate librosa \
           google-api-python-client google-auth-oauthlib google-auth-httplib2
           
-      # 4. GENERATE CONTENT
+     # 4. GENERATE CONTENT
       - name: Run AI Producer
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
         run: |
           python main.py
-          python update_feed.py  <-- ADD THIS LINE
+          python update_feed.py
           python animate_social.py
 
       # 5. PHASE 2: VISUAL PRODUCTION
