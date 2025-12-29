@@ -35,9 +35,8 @@ SPONSORS_FILE = BASE_DIR / "sponsors.json"
 # THE CAST
 CAST = {
     "ALEX": "onyx",
-    "JAMIE": "nova",   # Warm, energetic, fast
-    "RUFUS": "fable",  # British, cynical, slow
-    # MAPPING SPONSORS
+    "JAMIE": "nova",   # Warm, energetic
+    "RUFUS": "fable",  # British, cynical
     "SPONSOR 1": "onyx",
     "SPONSOR 2": "nova",
     "SPONSOR 3": "onyx",
@@ -54,27 +53,27 @@ RUFUS_LOCATIONS = [
     "tracking capital flows in Hong Kong"
 ]
 
-# FEEDS (UPDATED WITH BIG NAMES)
+# FEEDS (High Quality)
 FEED_SOURCES = {
     "ALEX_TECH": [
         "https://www.theverge.com/rss/index.xml",
-        "https://www.cnbc.com/id/19854910/device/rss/rss.html", # CNBC Tech
+        "https://www.cnbc.com/id/19854910/device/rss/rss.html",
         "https://feeds.wired.com/wired/index",
         "https://arstechnica.com/feed/"
     ],
     "JAMIE_ETHICS": [
         "https://www.humanetech.com/feed",
-        "https://www.404media.co/rss/", # Gritty, real investigations
-        "https://www.reddit.com/r/OpenAI/top/.rss" # Real user sentiment
+        "https://www.404media.co/rss/", 
+        "https://www.reddit.com/r/OpenAI/top/.rss" 
     ],
     "RUFUS_INTEL": [
         "https://techcrunch.com/category/venture/feed/",
-        "https://www.bloomberg.com/feeds/sitemap_news.xml", # Bloomberg
+        "https://www.bloomberg.com/feeds/sitemap_news.xml",
         "http://feeds.feedburner.com/avc"
     ]
 }
 
-# --- 2. INTELLIGENCE GATHERING ---
+# --- 2. INTELLIGENCE GATHERING (SMART FILTERING) ---
 def deep_search_fallback(persona, query):
     print(f"   ⚠️ FEED LOW. SCOURING WEB FOR {persona} ({query})...")
     results = []
@@ -85,23 +84,37 @@ def deep_search_fallback(persona, query):
     except: pass
     return results
 
+def is_news_worthy(title):
+    """Filters out reviews, deals, and irrelevant junk."""
+    junk_words = ["review", "deal", "sale", "best", "monitor", "tv", "headphones", "game", "controller"]
+    title_lower = title.lower()
+    for word in junk_words:
+        if word in title_lower:
+            return False
+    return True
+
 def gather_intel():
-    print(" >> 📡 GATHERING GLOBAL INTELLIGENCE...")
+    print(" >> 📡 GATHERING GLOBAL INTELLIGENCE (Filtering Junk)...")
     intel = {"tech": [], "ethics": [], "ledger": []}
     
-    # Alex (Tech Giants)
+    # Alex (Tech Giants - Filtered)
     for url in FEED_SOURCES["ALEX_TECH"]:
         try:
             feed = feedparser.parse(url)
-            for entry in feed.entries[:2]: intel["tech"].append(entry.title)
+            for entry in feed.entries:
+                if is_news_worthy(entry.title):
+                    intel["tech"].append(entry.title)
+                    if len(intel["tech"]) >= 2: break
+            if len(intel["tech"]) >= 2: break
         except: pass
     if len(intel["tech"]) < 2: intel["tech"] += deep_search_fallback("ALEX", "OpenAI Google Apple leaks")
 
-    # Jamie (Ethics & Drama)
+    # Jamie (Ethics)
     for url in FEED_SOURCES["JAMIE_ETHICS"]:
         try:
             feed = feedparser.parse(url)
-            for entry in feed.entries[:2]: intel["ethics"].append(entry.title)
+            for entry in feed.entries[:3]: 
+                if is_news_worthy(entry.title): intel["ethics"].append(entry.title)
         except: pass
     if len(intel["ethics"]) < 2: intel["ethics"] += deep_search_fallback("JAMIE", "AI lawsuits data privacy scandal")
 
@@ -109,7 +122,8 @@ def gather_intel():
     for url in FEED_SOURCES["RUFUS_INTEL"]:
         try:
             feed = feedparser.parse(url)
-            for entry in feed.entries[:2]: intel["ledger"].append(entry.title)
+            for entry in feed.entries[:3]: 
+                if is_news_worthy(entry.title): intel["ledger"].append(entry.title)
         except: pass
     if len(intel["ledger"]) < 2: intel["ledger"] += deep_search_fallback("RUFUS", "VC funding IPO market crash")
     
@@ -127,9 +141,8 @@ def get_sponsors():
         except: pass
     return defaults
 
-# --- 3. THE WRITER (ASSEMBLY LINE) ---
+# --- 3. THE WRITER (CONTEXT AWARE ASSEMBLY LINE) ---
 def generate_segment(system_prompt):
-    """Generates a single segment of the script."""
     response = client.chat.completions.create(
         model="gpt-4o",
         messages=[{"role": "system", "content": system_prompt}]
@@ -137,19 +150,21 @@ def generate_segment(system_prompt):
     return response.choices[0].message.content
 
 def write_script(intel, sponsors):
-    print(" >> ✍️  WRITING SCRIPT IN CHUNKS (To Ensure Length)...")
+    print(" >> ✍️  WRITING SCRIPT (Context-Aware)...")
     today = datetime.date.today()
     readable_date = today.strftime("%A the %dth of %B")
     
     rufus_loc = random.choice(RUFUS_LOCATIONS)
-    # Pick the juiciest stories
     tech = intel['tech'] if intel['tech'] else ["AI Breakthroughs"]
     ledger = intel['ledger'] if intel['ledger'] else ["Global Regulation"]
     
+    # Identify the MAIN STORY for consistency
+    main_story = tech[0]
+
     base_instructions = """
     You are writing a segment for a PROFESSIONAL RADIO SHOW.
     RULES:
-    1. NO CORPORATE JARGON (No 'synergy', 'paradigm', 'ecosystem').
+    1. NO CORPORATE JARGON.
     2. USE CONCRETE EXAMPLES.
     3. FORMAT STRICTLY: "SPEAKER: Dialogue"
     """
@@ -157,16 +172,20 @@ def write_script(intel, sponsors):
     full_script = ""
 
     # --- PART 1: INTRO & HEADLINES ---
-    print("    ...Generating Part 1 (Intro & Headlines)")
+    print(f"    ...Generating Part 1 (Main Story: {main_story})")
     prompt_1 = f"""
     {base_instructions}
-    Write PART 1 of the show (Approx 1200 words).
+    Write PART 1 (5 Minutes of dialogue).
     
     STRUCTURE:
-    [COLD OPEN] ALEX: Shocking stat or quote about {tech[0]}.
-    [INTRO] ALEX: "Welcome to the AI Edge, your home for unfiltered news. I'm Alex, with Jamie." JAMIE: "Hello." ALEX: "It's {readable_date}. Plan: Headlines, Toolbox, then Rufus." 
+    [COLD OPEN] ALEX: A shocking fact about {main_story}.
+    [INTRO] ALEX: "Welcome to the AI Edge. I'm Alex, with Jamie." JAMIE: Greetings. ALEX: "It's {readable_date}. Plan: Headlines, Deep Dive on {main_story}, then Rufus." 
     [AD 1] ALEX: "First, a word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
-    [HEADLINES] ALEX & JAMIE: Banter on {tech[:2]}. Go deep. Discuss implications.
+    [HEADLINES] ALEX & JAMIE: 
+    - Discuss {main_story} in depth.
+    - Jamie asks 3 specific questions about the ethics/danger.
+    - Alex defends the tech.
+    - Discuss {tech[1]} briefly.
     """
     full_script += generate_segment(prompt_1) + "\n"
 
@@ -174,14 +193,16 @@ def write_script(intel, sponsors):
     print("    ...Generating Part 2 (The Deep Dive)")
     prompt_2 = f"""
     {base_instructions}
-    Write PART 2 of the show (Approx 1500 words).
-    CONTEXT: Coming out of headlines.
+    Write PART 2 (8 Minutes of dialogue).
+    CONTEXT: Continuing the discussion on {main_story}.
     
     STRUCTURE:
-    [TOOLBOX SEGMENT] ALEX: "Now, let's open the Toolbox." Deep dive on {tech[0]}.
-    - Explain features, pricing, pros/cons.
-    - Jamie is skeptical, Alex is optimistic.
-    [AD 2] JAMIE: "Supported by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
+    [TOOLBOX SEGMENT] ALEX: "Now, let's open the Toolbox." 
+    - Detailed breakdown of a tool related to {main_story}.
+    - Discuss pricing, features, and specific use cases (e.g. "It saves coders 5 hours").
+    - Jamie pushes back on the cost or complexity.
+    - Alex gives a rebuttal.
+    - JAMIE: "Supported by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
     """
     full_script += generate_segment(prompt_2) + "\n"
 
@@ -189,12 +210,13 @@ def write_script(intel, sponsors):
     print("    ...Generating Part 3 (Rufus & Outro)")
     prompt_3 = f"""
     {base_instructions}
-    Write PART 3 of the show (Approx 1200 words).
-    CONTEXT: Coming out of Toolbox.
+    Write PART 3 (5 Minutes of dialogue).
+    CONTEXT: Moving from Tech to Money.
     
     STRUCTURE:
-    [LEDGER SEGMENT] ALEX: "Now, let's go live to Rufus who is standing by {rufus_loc}. Rufus, what is the money saying?"
-    - RUFUS (British, Cynical): Analyze {ledger[:2]}. Explain the money trail.
+    [LEDGER SEGMENT] ALEX: "Now, let's go live to Rufus who is standing by {rufus_loc}. Rufus, what is the money saying about {main_story} and {ledger[0]}?"
+    - RUFUS (British, Cynical): Analyze the financial impact of {main_story}. Then discuss {ledger[0]}.
+    - Rufus insults the naivety of Silicon Valley.
     [FORUM] Short debate between all three.
     [OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
     """
