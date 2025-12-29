@@ -18,9 +18,10 @@ AUDIO_DIR = BASE_DIR / "episode_audio"
 
 # SAFETY CHECK: If 'episode_audio' exists as a FILE, delete it so we can make the FOLDER.
 if AUDIO_DIR.exists() and not AUDIO_DIR.is_dir():
-    print(" ⚠️ Found 'episode_audio' as a file. Deleting to create directory...")
-    os.remove(AUDIO_DIR)
-
+    try:
+        os.remove(AUDIO_DIR)
+    except:
+        pass
 AUDIO_DIR.mkdir(exist_ok=True)
 
 # Assets
@@ -29,7 +30,7 @@ OUTRO_MUSIC = BASE_DIR / "outro.mp3"
 TRANSITION_SFX = BASE_DIR / "transition.mp3"
 SPONSORS_FILE = BASE_DIR / "sponsors.json"
 
-# THE CAST (Human Realism)
+# THE CAST (Production Quality)
 CAST = {
     "ALEX": "onyx",    # The Anchor (Deep, Authoritative)
     "JAMIE": "coral",  # The Co-Host (Bright, Natural)
@@ -123,9 +124,9 @@ def get_sponsors():
         except: pass
     return defaults
 
-# --- 3. THE WRITER (LONG FORM EDITION) ---
+# --- 3. THE WRITER (EXTENDED EDITION) ---
 def write_script(intel, sponsors):
-    print(" >> ✍️  WRITING SCRIPT (Aiming for 2500+ Words)...")
+    print(" >> ✍️  WRITING SCRIPT (Aiming for 3500+ Words for 20 mins)...")
     today = datetime.date.today()
     day_name = today.strftime("%A")
     readable_date = today.strftime("%A the %dth of %B")
@@ -143,19 +144,21 @@ def write_script(intel, sponsors):
     base_instructions = f"""
     You are a HUMAN radio host. NEVER mention you are an AI.
     
-    CRITICAL LENGTH INSTRUCTION:
-    Your goal is a 20-MINUTE EPISODE. You must write SUBSTANTIAL, DETAILED DIALOGUE.
-    DO NOT SUMMARIZE. Write out the full debate, word-for-word.
-    Explain concepts in depth. Use examples. Use analogies.
+    *** LENGTH REQUIREMENT: EXTREME VERBOSITY ***
+    We need a 25-MINUTE EPISODE. 
+    Do NOT act like a short news briefing. Act like a "Deep Dive" podcast (like Lex Fridman or The Daily).
+    - When discussing a topic, go back and forth at least 6-8 times.
+    - Use analogies, examples, and detailed analysis.
+    - NEVER summarize. Script every word.
     """
 
     # --- FORMAT SELECTION ---
     if weekday_idx == 6:
-        # C. SUNDAY SHOWDOWN (FORMAT C)
+        # C. SUNDAY SHOWDOWN
         print(f"    Mode: SUNDAY SHOWDOWN ({day_name})")
         prompt = f"""
         {base_instructions}
-        FORMAT: THE SUNDAY SHOWDOWN (Pure Debate).
+        FORMAT: THE SUNDAY SHOWDOWN.
         
         STRUCTURE:
         [SEGMENT 1: COLD OPEN] (15s)
@@ -167,17 +170,17 @@ def write_script(intel, sponsors):
         - Content: "Welcome to the AI Edge, it's {readable_date}. Today on the Showdown: First, the Main Motion on {tech[0]}. Then, we go live to {rufus_loc} for Rufus's financial take. And finally, the ultimate debate on {ethics[0]}."
         - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
         
-        [SEGMENT 3: THE MOTION (LONG FORM)] (800 words minimum)
+        [SEGMENT 3: THE MOTION (1000 words)]
         - Topic: {tech[0]} vs {ethics[0]}.
         - Alex argues for Progress/Acceleration. Jamie argues for Safety/Pause.
-        - Go DEEP. Do not be brief. Argue back and forth multiple times.
+        - Go DEEP. Argue back and forth multiple times.
         - SPONSOR 2 READ: {sponsors[1]['name']}: "{sponsors[1]['copy']}"
         
-        [SEGMENT 4: THE CROSS-EXAMINATION (LONG FORM)] (800 words minimum)
+        [SEGMENT 4: THE CROSS-EXAMINATION (1000 words)]
         - Alex throws it to Rufus: "Rufus, you're {rufus_loc}, who is winning this war?"
         - Rufus dissects the argument purely on financial/legal grounds.
         
-        [SEGMENT 5: CLOSING STATEMENTS] (300 words)
+        [SEGMENT 5: CLOSING STATEMENTS] (400 words)
         - Each gives a final take.
         
         [SEGMENT 6: OUTRO & CTA]
@@ -190,7 +193,7 @@ def write_script(intel, sponsors):
         """
 
     elif weekday_idx == 5:
-        # B. THE WEEKEND WRAP (FORMAT B)
+        # B. THE WEEKEND WRAP
         print(f"    Mode: WEEKEND WRAP ({day_name})")
         prompt = f"""
         {base_instructions}
@@ -206,12 +209,12 @@ def write_script(intel, sponsors):
         - Content: "Welcome to the Weekend Wrap. Coming up: The Rapid Fire headlines, then a Deep Dive on {ethics[0]}, and we finish with Rufus live from {rufus_loc}."
         - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
         
-        [SEGMENT 3: RAPID FIRE WEEK (LONG FORM)] (800 words)
+        [SEGMENT 3: RAPID FIRE WEEK (1000 words)]
         - Speakers: ALL
         - Discuss 5-7 headlines in detail: {tech[:3]} and {ledger[:3]}.
         - SPONSOR 2 READ: {sponsors[1]['name']}: "{sponsors[1]['copy']}"
         
-        [SEGMENT 4: THE DEEP DIVE (LONG FORM)] (800 words)
+        [SEGMENT 4: THE DEEP DIVE (1000 words)]
         - Topic: {ethics[0]}.
         - Alex throws to Rufus: "Rufus, standing by {rufus_loc}, what's the money saying?"
         - Extensive analysis.
@@ -226,7 +229,7 @@ def write_script(intel, sponsors):
         """
         
     else:
-        # A. THE DAILY EDGE (FORMAT A - MONDAY)
+        # A. THE DAILY EDGE (MONDAY-FRIDAY)
         print(f"    Mode: DAILY EDGE ({day_name})")
         prompt = f"""
         {base_instructions}
@@ -241,29 +244,29 @@ def write_script(intel, sponsors):
         - Speaker: ALEX
         - Content: "Welcome to the AI Edge, your home for the latest news in AI unfiltered. I'm your Host Alex and along side me as always is Jamie."
         - Speaker: JAMIE
-        - Content: "Hello nice to be here again Alex." (Or similar warm greeting).
+        - Content: "Hello nice to be here again Alex."
         - Speaker: ALEX
         - Content: "It's {readable_date}. Here's the plan: First, we break down the Hard Hitting News of the day: {tech[0]} and {tech[1]}. Then, we open the Toolbox to look at new {tech[0]}. After that, we head to {rufus_loc} for the Ledger, covering VC trends, following the money and the legal aspects globally."
         - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
         
-        [SEGMENT 3: THE HEADLINES (LONG FORM)] (700 words)
+        [SEGMENT 3: THE HEADLINES (1000 words minimum)]
         - Speakers: ALEX & JAMIE
         - Topic: Banter on the biggest stories: {tech[:2]}.
-        - Dynamic: Energetic, conversational, reacting to the news.
+        - INSTRUCTION: Spend at least 5 minutes discussing the implications. Do not rush.
         
-        [SEGMENT 4: ALEX'S TOOLBOX (LONG FORM)] (700 words)
+        [SEGMENT 4: ALEX'S TOOLBOX (1000 words minimum)]
         - Speakers: ALEX & JAMIE
         - Topic: Deep dive into a specific tool or model: {tech[0]}. 
         - Go deep on features, pricing, and utility.
         - SPONSOR 2 READ: JAMIE reads for {sponsors[1]['name']}: "{sponsors[1]['copy']}"
         
-        [SEGMENT 5: RUFUS'S LEDGER (LONG FORM)] (700 words)
+        [SEGMENT 5: RUFUS'S LEDGER (800 words minimum)]
         - Alex Handoff: "Let's go to Rufus, live {rufus_loc}."
         - Speaker: RUFUS (Solo)
         - Topic: VC Money, Lawsuits: {ledger[:2]}.
         - Detailed financial and global legal analysis.
         
-        [SEGMENT 6: THE FORUM] (400 words)
+        [SEGMENT 6: THE FORUM] (500 words)
         - Speakers: ALL
         - Brief debate on the Ledger topics.
         
@@ -330,11 +333,11 @@ def produce_episode():
             if speaker in CAST:
                 voice = CAST.get(speaker, "alloy")
                 
-                # --- SPEED ADJUSTMENT (THE FINAL TWEAK) ---
+                # --- SPEED ADJUSTMENT (98% Quality Tune) ---
                 if speaker == "JAMIE":
-                    speed = 1.15
+                    speed = 1.12 # Slowed down from 1.15 for clarity
                 elif speaker == "ALEX":
-                    speed = 1.05
+                    speed = 1.05 # Stays authoritative
                 else: # RUFUS
                     speed = 1.0
                 
@@ -352,7 +355,7 @@ def produce_episode():
                 except Exception as e:
                     print(f"Skipped line {i}: {e}")
 
-    # D. MIXING (The Polish)
+    # D. MIXING (Broadcast Quality)
     print(" >> 🎚️  MIXING EPISODE...")
     full_audio = AudioSegment.empty()
     intro = AudioSegment.from_mp3(INTRO_MUSIC) if INTRO_MUSIC.exists() else AudioSegment.silent(1000)
@@ -364,8 +367,12 @@ def produce_episode():
         full_audio += segments[0][1]
         segments.pop(0)
 
-    # 2. Intro Music (10 SECONDS then fade)
-    full_audio += intro[:10000] 
+    # 2. Intro Music (FADE LOGIC FIX)
+    # Play 10 seconds total. Fade out the last 3 seconds smoothly.
+    # Then add 1 second of silence before Alex speaks.
+    intro_segment = intro[:10000].fade_out(3000)
+    full_audio += intro_segment
+    full_audio += AudioSegment.silent(duration=1000) # The "Breath" before Alex starts
     
     # 3. Body
     body_audio = AudioSegment.empty()
