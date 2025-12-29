@@ -30,12 +30,12 @@ else:
 INTRO_MUSIC = BASE_DIR / "intro.mp3"
 OUTRO_MUSIC = BASE_DIR / "outro.mp3"
 TRANSITION_SFX = BASE_DIR / "transition.mp3"
-SPONSORS_FILE = BASE_DIR / "sponsors.json"
+# NOTE: We are IGNORING sponsors.json to prevent "Meta" jokes.
 
 # THE CAST
 CAST = {
-    "ALEX": "onyx",    # The Brain: Huberman-style depth, Authoritative.
-    "JAMIE": "nova",   # The Heart: Bartlett-style vulnerability, Humanist.
+    "ALEX": "onyx",    # The Brain: Huberman-style depth.
+    "JAMIE": "nova",   # The Heart: Bartlett-style vulnerability.
     "RUFUS": "fable",  # The Wallet: Succession-style cynicism.
     "SPONSOR 1": "onyx",
     "SPONSOR 2": "nova",
@@ -51,219 +51,240 @@ RUFUS_LOCATIONS = [
     "monitoring sovereign wealth funds in Dubai"
 ]
 
-# --- 2. THE "TITAN" FEEDS (US & Global) ---
+# --- 2. HARD NEWS FEEDS (TITANS ONLY) ---
 FEED_SOURCES = {
     "TITANS": [
-        "https://openai.com/blog/rss.xml",                # OpenAI
-        "https://ai.googleblog.com/feeds/posts/default", # Google
-        "https://blogs.microsoft.com/ai/feed/",        # Microsoft
-        "https://groq.com/feed/",                      # Groq
-        # RSS Bridges for Hard-to-Find Feeds
-        "https://news.google.com/rss/search?q=Anthropic+Claude+AI&hl=en-US&gl=US&ceid=US:en", 
-        "https://news.google.com/rss/search?q=Zhipu+AI+GLM+Model&hl=en-US&gl=US&ceid=US:en"   
+        "https://openai.com/blog/rss.xml",
+        "https://ai.googleblog.com/feeds/posts/default",
+        "https://blogs.microsoft.com/ai/feed/",
+        # Google News Bridges for Hard News
+        "https://news.google.com/rss/search?q=Nvidia+Stock+AI&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=OpenAI+Release+Date&hl=en-US&gl=US&ceid=US:en"
     ],
     "INFRASTRUCTURE": [
-        "https://www.datacenterdynamics.com/rss/",     
-        "https://www.semianalysis.com/feed",           
-        "https://www.anandtech.com/rss/"               
+        "https://www.datacenterdynamics.com/rss/",
+        "https://www.semianalysis.com/feed",
+        "https://www.anandtech.com/rss/"
     ],
-    "ENTERPRISE_FINANCE": [
-        "https://finance.yahoo.com/news/rssindex",     
-        "https://techcrunch.com/category/enterprise/feed/", 
-        "https://blog.palantir.com/feed"               
-    ],
-    "TRENDS_TOOLS": [
-        "https://www.unite.ai/feed/",                  
-        "https://medium.com/feed/tag/artificial-intelligence" 
+    "FINANCE": [
+        "https://finance.yahoo.com/news/rssindex",
+        "https://techcrunch.com/category/enterprise/feed/",
+        "https://blog.palantir.com/feed"
     ]
 }
 
-# --- 3. INTELLIGENCE GATHERING ---
+# --- 3. INTELLIGENCE GATHERING (STRICT FILTER) ---
 def deep_search_fallback(query):
-    print(f"   ⚠️ FEED LOW. SCOURING WEB FOR: {query}...")
+    print(f"   ⚠️ FEED LOW. SCOURING WEB FOR DATA: {query}...")
     results = []
     try:
         ddgs = DDGS()
-        search_results = ddgs.text(f"{query} news {datetime.date.today()}", max_results=3)
-        for r in search_results: results.append(f"WEB SEARCH: {r['title']} - {r['body']}")
+        # "News" implies recency. "Data" implies numbers.
+        search_results = ddgs.text(f"{query} statistics data {datetime.date.today()}", max_results=3)
+        for r in search_results: results.append(f"DATA POINT: {r['title']} - {r['body']}")
     except: pass
     return results
 
-def is_industry_relevant(title):
-    """Filters out consumer fluff."""
+def is_hard_news(title):
+    """
+    STRICT FILTER: Rejects startups, reviews, and fluff.
+    Must sound like it belongs on Bloomberg.
+    """
     title_lower = title.lower()
-    banned = ["game", "console", "deal", "sale", "tv", "monitor", "headphone", "gift", "best of", "laptop"]
-    for word in banned:
+    # The "Trash" List
+    fluff = ["how to", "guide", "best of", "gift", "deal", "sale", "review", "monitor", "game", "sauron", "startup"]
+    for word in fluff:
         if word in title_lower: return False
+    
+    # The "Must Have" (Optional but good heuristic)
+    # We let the feed source quality do most of the work, but filter obvious junk.
     return True
 
 def gather_intel():
-    print(" >> 📡 GATHERING TITAN INTEL (Groq, Claude, GLM, & The Bigs)...")
-    intel = {"titans": [], "infra": [], "money": [], "trends": []}
+    print(" >> 📡 GATHERING HARD DATA (Filtering out Fluff)...")
+    intel = {"titans": [], "infra": [], "money": []}
     
-    # 1. Titans
+    # 1. Titans (The Big 4)
     for url in FEED_SOURCES["TITANS"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries:
-                if is_industry_relevant(entry.title):
+                if is_hard_news(entry.title):
                     intel["titans"].append(entry.title)
                     if len(intel["titans"]) >= 3: break
         except: pass
-    if len(intel["titans"]) < 1: intel["titans"] += deep_search_fallback("Anthropic Claude 3.5 Groq LPU Zhipu GLM-4")
+    if len(intel["titans"]) < 1: intel["titans"] += deep_search_fallback("Nvidia OpenAI Microsoft stock news")
 
-    # 2. Infrastructure
+    # 2. Infrastructure (Chips/Energy)
     for url in FEED_SOURCES["INFRASTRUCTURE"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries:
-                if is_industry_relevant(entry.title):
+                if is_hard_news(entry.title):
                     intel["infra"].append(entry.title)
                     if len(intel["infra"]) >= 2: break
         except: pass
 
-    # 3. Enterprise & Finance
-    for url in FEED_SOURCES["ENTERPRISE_FINANCE"]:
+    # 3. Finance
+    for url in FEED_SOURCES["FINANCE"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries:
-                if is_industry_relevant(entry.title) and "AI" in entry.title:
+                if "AI" in entry.title and is_hard_news(entry.title):
                     intel["money"].append(entry.title)
-                    if len(intel["money"]) >= 2: break
-        except: pass
-
-    # 4. Trends/Tools
-    for url in FEED_SOURCES["TRENDS_TOOLS"]:
-        try:
-            feed = feedparser.parse(url)
-            for entry in feed.entries:
-                if is_industry_relevant(entry.title):
-                    intel["trends"].append(entry.title)
-                    if len(intel["trends"]) >= 2: break
+                    if len(intel["money"]) >= 3: break
         except: pass
     
     return intel
 
 def get_sponsors():
-    defaults = [
-        {"name": "The AI Edge", "copy": "Join the newsletter.", "url": "#"}, 
-        {"name": "TechStart", "copy": "Learn code.", "url": "#"}, 
-        {"name": "CloudScale", "copy": "Deploy AI.", "url": "#"}
+    # HARDCODED: The ONLY way to guarantee no "I am an AI" jokes.
+    return [
+        {"name": "ElevenLabs", "copy": "The standard for AI voice. If you need to scale your content globally, you need ElevenLabs. Visit ElevenLabs.io."},
+        {"name": "Notion AI", "copy": "Stop drowning in tabs. Notion AI organizes your business, writes your docs, and cleans your workflow. Notion.so."},
+        {"name": "Morning Brew", "copy": "Get smarter in 5 minutes. The daily newsletter that breaks down Wall Street without the jargon. Sign up at MorningBrew.com."}
     ]
-    if SPONSORS_FILE.exists():
-        try:
-            with open(SPONSORS_FILE, "r") as f: return (json.load(f) * 3)[:3]
-        except: pass
-    return defaults
 
-# --- 4. THE WRITER (22-MINUTE ENGINE) ---
-def generate_segment(system_prompt):
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        temperature=0.75, # Tuned for "Smart Banter"
-        messages=[{"role": "system", "content": system_prompt}]
-    )
-    return response.choices[0].message.content
+# --- 4. THE WRITER (SAFE MODE) ---
+def generate_segment_with_retry(system_prompt, retries=2):
+    """Generates text and CHECKS for cut-offs."""
+    for attempt in range(retries):
+        response = client.chat.completions.create(
+            model="gpt-4o",
+            temperature=0.7,
+            messages=[{"role": "system", "content": system_prompt}]
+        )
+        content = response.choices[0].message.content.strip()
+        
+        # Check if it ends with punctuation
+        if content[-1] in ['.', '!', '?', '"']:
+            return content
+        else:
+            print("    ⚠️ Detected cut-off sentence. Retrying generation...")
+    
+    # If it fails twice, add a period to save it (Better than silence).
+    return content + "."
 
 def clean_text_for_audio(text):
-    """Scrub text to prevent TTS stutters."""
+    """Aggressive cleaning to stop stutters."""
     text = re.sub(r'\*.*?\*', '', text) 
     text = re.sub(r'\[.*?\]', '', text) 
     text = re.sub(r'\(.*?\)', '', text) 
     text = text.replace('"', '').replace("'", "")
-    text = text.replace("...", ".") # Fix long pauses
+    text = text.replace("...", ".") 
     text = text.replace("AI", "A.I.")
+    # SAFETY NET: Remove meta-commentary if it slips in
+    text = text.replace("listening to AI", "listening to the future")
+    text = text.replace("I am an AI", "I am your host")
     return text.strip()
 
 def write_script(intel, sponsors):
-    print(" >> ✍️  WRITING SCRIPT (Target: 22 Minutes / 3000 Words)...")
+    print(" >> ✍️  WRITING SCRIPT (4 Parts = ~20 Minutes)...")
     today = datetime.date.today()
     readable_date = today.strftime("%A the %dth of %B")
-    
     rufus_loc = random.choice(RUFUS_LOCATIONS)
     
     # Story Selection
-    titan_story = intel['titans'][0] if intel['titans'] else "The Model Wars: Claude vs GPT"
-    infra_story = intel['infra'][0] if intel['infra'] else "Groq's Speed Record"
-    money_story = intel['money'][0] if intel['money'] else "The Capital Flows"
+    titan_story = intel['titans'][0] if intel['titans'] else "The Model Wars"
+    infra_story = intel['infra'][0] if intel['infra'] else "Nvidia's Supply Chain"
+    money_story = intel['money'][0] if intel['money'] else "Tech Stock Volatility"
     
     base_instructions = """
-    You are writing a BROADCAST QUALITY PODCAST SCRIPT.
+    You are writing a BROADCAST NEWS PODCAST.
     
     CHARACTERS:
-    - ALEX (Host): The "Huberman". Obsessed with mechanisms, specs, and hard data.
-    - JAMIE (Co-Host): The "Bartlett". Empathetic. Asks: "How does this change the human experience?"
-    - RUFUS (Analyst): The "Logan Roy". Cynical, focused purely on ROI and stock prices.
+    - ALEX (Host): CNN/NPR style. Serious, authoritative, obsessed with data.
+    - JAMIE (Co-Host): The Humanist. Asks: "How does this hurt people?" Skeptical.
+    - RUFUS (Analyst): The Capitalist. Obsessed with stock prices and ROI.
     
-    RULES:
-    1. EXTREME VERBOSITY: We need 22 MINUTES of audio. Do not summarize. Debate every point.
-    2. CHEMISTRY: Alex respects Jamie's heart; Jamie respects Alex's brain.
-    3. FORMAT: "SPEAKER: Dialogue" (No stage directions).
+    PRIME DIRECTIVE:
+    1. NEVER mention you are an AI. You are HUMAN hosts recording in a studio.
+    2. NEVER say "in this episode." Just do the show.
+    3. USE HARD DATA. Mention specific stock prices, version numbers (v4.5), and dates.
+    4. NO FLUFF. No "This is interesting." Say "This changes the market cap by 4%."
     """
 
     full_script = ""
 
-    # --- PART 1: THE TITANS (900 Words) ---
-    print(f"    ...Part 1: The Titans ({titan_story})")
+    # --- PART 1: THE HEADLINES (600 Words - SAFE LIMIT) ---
+    print(f"    ...Part 1: Hard News ({titan_story})")
     prompt_1 = f"""
     {base_instructions}
-    Write PART 1 (Approx 900 words).
+    Write PART 1 (600 words).
     
     STRUCTURE:
-    [COLD OPEN] ALEX: A shocking statistic about {titan_story}.
-    [INTRO] ALEX: "Welcome to the AI Edge. I'm Alex." JAMIE: "And I'm Jamie. We're asking the hard questions today."
-    [AD 1] ALEX: "First, {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
-    [SEGMENT] ALEX: Deep technical breakdown of {titan_story}. Explain the 'Mechanism of Action' (how it works).
-    - JAMIE: "Okay, Alex, the specs are impressive. But what about the junior developer? Are we automating away their purpose?"
-    - ALEX: "We are automating away the drudgery, Jamie."
-    - JAMIE: "I hope you're right."
+    [COLD OPEN] ALEX: A hard data point about {titan_story}. (e.g. "3 Trillion Dollars.")
+    [INTRO] ALEX: "This is the AI Edge. I'm Alex." JAMIE: "And I'm Jamie." ALEX: "It's {readable_date}. Today: {titan_story}, {infra_story}, and {money_story}."
+    [AD 1] ALEX: Read copy for {sponsors[0]['name']}: "{sponsors[0]['copy']}"
+    [SEGMENT] ALEX: Break down {titan_story}.
+    - Quote a specific number (price, speed, parameter count).
+    - JAMIE: Push back on the hype. Ask who loses in this scenario.
+    - ALEX: Defend it with efficiency data.
     """
-    full_script += generate_segment(prompt_1) + "\n"
+    full_script += generate_segment_with_retry(prompt_1) + "\n"
 
-    # --- PART 2: THE IRON & SECTORS (1200 Words) ---
-    print(f"    ...Part 2: Infrastructure ({infra_story})")
+    # --- PART 2: INFRASTRUCTURE (600 Words - SAFE LIMIT) ---
+    print(f"    ...Part 2: The Iron ({infra_story})")
     prompt_2 = f"""
     {base_instructions}
-    Write PART 2 (Approx 1200 words).
+    Write PART 2 (600 words).
     
     STRUCTURE:
-    [SEGMENT] ALEX: "Software is nothing without the Iron. Let's look at the metal."
-    - Discuss {infra_story}. (Nvidia, Vertiv, ASML).
-    - ALEX: Explain the energy physics. Why do we need this much power?
-    - JAMIE: "This sounds like we're building a new sun on earth. What is the environmental cost?"
-    - ALEX: "Progress requires energy, Jamie."
-    - JAMIE: "But at what price?"
-    [AD 2] JAMIE: "Supported by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
+    [SEGMENT] ALEX: "Let's talk Iron. The chips and the power."
+    - Discuss {infra_story}. 
+    - Mention Nvidia (NVDA), ASML, or Vertiv.
+    - Jamie asks about the energy cost (Megawatts).
+    - Alex compares it to historical industrial revolutions.
+    [AD 2] JAMIE: Read copy for {sponsors[1]['name']}: "{sponsors[1]['copy']}"
     """
-    full_script += generate_segment(prompt_2) + "\n"
+    full_script += generate_segment_with_retry(prompt_2) + "\n"
 
-    # --- PART 3: THE MONEY (900 Words) ---
-    print(f"    ...Part 3: The Money ({money_story})")
+    # --- PART 3: HUMAN IMPACT (600 Words - SAFE LIMIT) ---
+    print("    ...Part 3: Society (General Impact)")
     prompt_3 = f"""
     {base_instructions}
-    Write PART 3 (Approx 900 words).
+    Write PART 3 (600 words).
     
     STRUCTURE:
-    [SEGMENT] ALEX: "Let's check the ledger. Rufus, are you there {rufus_loc}?"
-    - RUFUS: "I am. And the numbers are fascinating." Analyze {money_story}.
-    - RUFUS: "Alex talks about physics, Jamie talks about feelings. I talk about profit."
-    - Discuss Palantir, Salesforce, or VC funding.
-    [OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
+    [SEGMENT] JAMIE: "We talk about chips, but what about the people?"
+    - Discuss a current event regarding AI Safety, Jobs, or Deepfakes.
+    - ALEX: Plays Devil's Advocate (Technology creates new jobs).
+    - JAMIE: Disagrees. Cites a specific example of displacement.
     """
-    full_script += generate_segment(prompt_3)
+    full_script += generate_segment_with_retry(prompt_3) + "\n"
+
+    # --- PART 4: THE LEDGER (600 Words - SAFE LIMIT) ---
+    print(f"    ...Part 4: The Money ({money_story})")
+    prompt_4 = f"""
+    {base_instructions}
+    Write PART 4 (600 words).
+    
+    STRUCTURE:
+    [SEGMENT] ALEX: "Let's go to Rufus, live {rufus_loc}."
+    - RUFUS: "Cheers Alex." Analyze {money_story}.
+    - Mention specific tickers (PLTR, MSFT, GOOG).
+    - Discuss "CapEx" (Capital Expenditure) and "ROI".
+    - RUFUS: Give a cynical prediction for next week's market.
+    [OUTRO] ALEX: "Subscribe for the Edge." SPONSOR 3: "{sponsors[2]['copy']}"
+    """
+    full_script += generate_segment_with_retry(prompt_4)
 
     return full_script
 
 # --- 5. PRODUCTION ---
 def generate_seo_package(script, sponsors):
     print(" >> 🚀 GENERATING SEO METADATA...")
-    prompt = f"""Generate JSON: {{ "title": "Viral Title", "show_notes": "Notes", "hashtags": "#Tags" }} for script: {script[:2000]}"""
+    prompt = f"""
+    Generate JSON:
+    {{ "title": "Viral Title", "show_notes": "Bulleted list of stories", "hashtags": "#Tags" }}
+    SCRIPT START: {script[:2000]}...
+    """
     response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": prompt}], response_format={"type": "json_object"})
     return json.loads(response.choices[0].message.content)
 
 def produce_episode():
     intel = gather_intel()
-    sponsors = get_sponsors()
+    sponsors = get_sponsors() 
     script = write_script(intel, sponsors)
     
     with open(BASE_DIR / "debug_script.txt", "w") as f: f.write(script)
@@ -282,20 +303,16 @@ def produce_episode():
             raw_speaker = parts[0].strip().upper()
             speaker = re.sub(r'[^A-Z0-9 ]', '', raw_speaker).strip() 
             text = parts[1].strip()
-            
-            # CRITICAL FIX: CLEAN TEXT
             text = clean_text_for_audio(text)
             
             if speaker in CAST and text:
                 voice = CAST[speaker]
-                speed = 1.0 # STABILITY LOCK
-                
                 try:
-                    resp = client.audio.speech.create(model="tts-1-hd", voice=voice, input=text, speed=speed)
+                    resp = client.audio.speech.create(model="tts-1-hd", voice=voice, input=text, speed=1.0)
                     path = AUDIO_DIR / f"line_{i:03d}_{speaker}.mp3"
                     resp.stream_to_file(path)
                     seg = AudioSegment.from_mp3(path)
-                    seg = effects.strip_silence(seg, silence_thresh=-45, padding=10)
+                    seg = effects.strip_silence(seg, silence_thresh=-50, padding=50) 
                     segments.append((speaker, seg))
                     print(f"    ✔ Recorded: {speaker} ({len(text)} chars)")
                 except Exception as e:
@@ -309,16 +326,18 @@ def produce_episode():
     outro = AudioSegment.from_mp3(OUTRO_MUSIC) if OUTRO_MUSIC.exists() else AudioSegment.silent(1000)
     sfx = AudioSegment.from_mp3(TRANSITION_SFX) - 6 if TRANSITION_SFX.exists() else AudioSegment.silent(500)
 
+    # Fade in Intro
     if segments:
+        intro_dur = 8000 
+        full_audio += intro[:intro_dur].fade_out(2000)
         full_audio += segments[0][1]
         segments.pop(0)
 
-    full_audio += intro[:10000].fade_out(3000)
-    full_audio += AudioSegment.silent(duration=1000)
-
     last_speaker = "UNKNOWN"
     for speaker, clip in segments:
-        if speaker == "RUFUS" and last_speaker != "RUFUS": full_audio += sfx
+        if speaker == "RUFUS" and last_speaker != "RUFUS": 
+            full_audio += sfx
+        
         if body_audio := full_audio: body_audio += AudioSegment.silent(duration=400)
         full_audio += clip
         last_speaker = speaker
