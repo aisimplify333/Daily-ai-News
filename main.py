@@ -20,8 +20,9 @@ AUDIO_DIR = BASE_DIR / "episode_audio"
 # SAFETY CHECK: Handle the folder/file conflict cleanly
 if AUDIO_DIR.exists():
     if not AUDIO_DIR.is_dir():
-        print(" ⚠️ Found 'episode_audio' as a file. Deleting...")
-        os.remove(AUDIO_DIR)
+        try:
+            os.remove(AUDIO_DIR)
+        except: pass
         AUDIO_DIR.mkdir(exist_ok=True)
 else:
     AUDIO_DIR.mkdir(exist_ok=True)
@@ -32,11 +33,16 @@ OUTRO_MUSIC = BASE_DIR / "outro.mp3"
 TRANSITION_SFX = BASE_DIR / "transition.mp3"
 SPONSORS_FILE = BASE_DIR / "sponsors.json"
 
-# THE CAST
+# THE CAST (Updated to catch Sponsors)
 CAST = {
     "ALEX": "onyx",
-    "JAMIE": "coral",
-    "RUFUS": "fable"
+    "JAMIE": "nova",
+    "RUFUS": "fable",
+    # MAPPING SPONSORS TO VOICES SO THEY DON'T GET SKIPPED
+    "SPONSOR 1": "onyx",   # Alex reads Ad 1
+    "SPONSOR 2": "nova",  # Jamie reads Ad 2
+    "SPONSOR 3": "onyx",   # Alex reads Ad 3
+    "SPONSOR": "onyx"      # Catch-all
 }
 
 # RUFUS LOCATIONS
@@ -70,7 +76,7 @@ def deep_search_fallback(persona, query):
 def gather_intel():
     print(" >> 📡 GATHERING GLOBAL INTELLIGENCE...")
     intel = {"tech": [], "ethics": [], "ledger": []}
-    # (Simplified feed logic for brevity - assume working)
+    # (Simplified feed logic)
     for url in FEED_SOURCES["ALEX_TECH"]:
         try:
             feed = feedparser.parse(url)
@@ -94,14 +100,18 @@ def gather_intel():
     return intel
 
 def get_sponsors():
-    defaults = [{"name": "The AI Edge", "copy": "Join the newsletter.", "url": "#"}, {"name": "TechStart", "copy": "Learn code.", "url": "#"}, {"name": "CloudScale", "copy": "Deploy AI.", "url": "#"}]
+    defaults = [
+        {"name": "The AI Edge", "copy": "If you want to stay ahead of the curve, join 50,000 others reading The AI Edge newsletter. It's free, it's smart, and it's essential.", "url": "#"}, 
+        {"name": "TechStart", "copy": "Stop watching from the sidelines. TechStart Academy can teach you Python in 30 days. Code your future today.", "url": "#"}, 
+        {"name": "CloudScale", "copy": "Need to deploy agents fast? CloudScale is the only infrastructure built for the next generation of AI.", "url": "#"}
+    ]
     if SPONSORS_FILE.exists():
         try:
             with open(SPONSORS_FILE, "r") as f: return (json.load(f) * 3)[:3]
         except: pass
     return defaults
 
-# --- 3. THE WRITER ---
+# --- 3. THE WRITER (ANTI-FLUFF EDITION) ---
 def write_script(intel, sponsors):
     print(" >> ✍️  WRITING SCRIPT (Aiming for 3500+ Words for 20 mins)...")
     today = datetime.date.today()
@@ -117,10 +127,16 @@ def write_script(intel, sponsors):
     ledger = intel['ledger'] if intel['ledger'] else ["Global Regulation"]
     shock_story = random.choice(tech + ledger)
 
+    # *** THE ANTI-FLUFF INSTRUCTION BLOCK ***
     base_instructions = f"""
     You are a HUMAN radio host. NEVER mention you are an AI.
-    *** LENGTH REQUIREMENT: EXTREME VERBOSITY ***
-    We need a 25-MINUTE EPISODE. Script every word. No summaries.
+    
+    CRITICAL QUALITY RULES:
+    1. NO CORPORATE JARGON. Banned words: "ecosystem", "paradigm", "holistic", "leverage", "synergy", "landscape", "robust", "transformative".
+    2. USE CONCRETE EXAMPLES. Instead of "This tool improves efficiency," say "This tool saves a coder 4 hours a day by writing the boilerplate."
+    3. TELL STORIES. Use "For example...", "Picture this...", "Just yesterday I saw..."
+    4. EXTREME VERBOSITY: We need a 25-MINUTE EPISODE. Go deep, but keep it grounded in reality.
+    
     FORMAT STRICTLY: "SPEAKER: Dialogue" (No asterisks, no bolding).
     """
 
@@ -129,33 +145,39 @@ def write_script(intel, sponsors):
         prompt = f"""{base_instructions}
         FORMAT: SUNDAY DEBATE.
         [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
-        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, it's {readable_date}. Today: The Showdown." SPONSOR 1: {sponsors[0]['name']}
-        [SEGMENT 3: MOTION] (1000 words) {tech[0]} vs {ethics[0]}. Debate deep. SPONSOR 2: {sponsors[1]['name']}
-        [SEGMENT 4: CROSS-EXAM] (1000 words) Rufus live from {rufus_loc}.
+        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, it's {readable_date}. Today: The Showdown." 
+        ALEX: "But first, a word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
+        [SEGMENT 3: MOTION] (1000 words) {tech[0]} vs {ethics[0]}. Debate deep. 
+        JAMIE: "Support for this segment comes from {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
+        [SEGMENT 4: CROSS-EXAM] (1000 words) ALEX: "Now, let's go live to Rufus who is standing by {rufus_loc}. Rufus, what is the money saying?" Rufus dissects the argument.
         [SEGMENT 5: CLOSING] (500 words) Final takes.
-        [SEGMENT 6: OUTRO] ALEX: "Subscribe." SPONSOR 3: {sponsors[2]['name']}
+        [SEGMENT 6: OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
         """
     elif weekday_idx == 5: # Saturday
         print(f"    Mode: WEEKEND WRAP ({day_name})")
         prompt = f"""{base_instructions}
         FORMAT: WEEKEND WRAP.
         [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
-        [SEGMENT 2: INTRO] ALEX: "Welcome to the Weekend Wrap." SPONSOR 1: {sponsors[0]['name']}
-        [SEGMENT 3: RAPID FIRE] (1000 words) {tech[:3]}. SPONSOR 2: {sponsors[1]['name']}
-        [SEGMENT 4: DEEP DIVE] (1000 words) {ethics[0]}. Rufus from {rufus_loc}.
-        [SEGMENT 5: OUTRO] ALEX: "Subscribe." SPONSOR 3: {sponsors[2]['name']}
+        [SEGMENT 2: INTRO] ALEX: "Welcome to the Weekend Wrap." 
+        ALEX: "A quick word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
+        [SEGMENT 3: RAPID FIRE] (1000 words) {tech[:3]}. 
+        JAMIE: "Supported by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
+        [SEGMENT 4: DEEP DIVE] (1000 words) {ethics[0]}. ALEX: "Let's check the markets. We go now to Rufus, live {rufus_loc}." Rufus analyzes.
+        [SEGMENT 5: OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
         """
     else: # Mon-Fri
         print(f"    Mode: DAILY EDGE ({day_name})")
         prompt = f"""{base_instructions}
         FORMAT: DAILY EDGE.
         [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
-        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, your home for unfiltered news. I'm Alex, with Jamie." JAMIE: "Hello." ALEX: "It's {readable_date}. Plan: Headlines, Toolbox on {tech[0]}, then Ledger from {rufus_loc}." SPONSOR 1: {sponsors[0]['name']}
+        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, your daily home for AI unfiltered news. I'm Alex, with Jamie." JAMIE: "Hello, thank you for having me Alex." ALEX: "It's {readable_date}. Plan: Headlines, Toolbox on {tech[0]}, then Ledger from {rufus_loc}." 
+        ALEX: "But first, a word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
         [SEGMENT 3: HEADLINES] (1000 words) Banter on {tech[:2]}. Go deep.
-        [SEGMENT 4: TOOLBOX] (1000 words) Deep dive {tech[0]}. SPONSOR 2: {sponsors[1]['name']}
-        [SEGMENT 5: LEDGER] (800 words) Rufus solo {ledger[:2]}.
+        [SEGMENT 4: TOOLBOX] (1000 words) ALEX: "Now, let's open the Toolbox." Deep dive {tech[0]}. 
+        JAMIE: "This deep dive is brought to you by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
+        [SEGMENT 5: LEDGER] (800 words) ALEX: "Now, let's go live to Rufus who is standing by {rufus_loc}. Rufus, what is the money saying?" Rufus solo {ledger[:2]}.
         [SEGMENT 6: FORUM] (500 words) Debate.
-        [SEGMENT 7: OUTRO] ALEX: "Subscribe." SPONSOR 3: {sponsors[2]['name']}
+        [SEGMENT 7: OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
         """
 
     response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": prompt}])
@@ -187,17 +209,17 @@ def produce_episode():
     lines = script.split('\n')
     
     for i, line in enumerate(lines):
-        # ROBUST PARSING: Catches "ALEX:", "**ALEX**:", "Alex:"
         if ":" in line:
             parts = line.split(":", 1)
-            # Clean up the speaker name (remove * [ ] and whitespace)
             raw_speaker = parts[0].strip().upper()
-            speaker = re.sub(r'[^A-Z]', '', raw_speaker) 
+            # Parse speaker, allowing spaces/numbers for SPONSOR 1
+            speaker = re.sub(r'[^A-Z0-9 ]', '', raw_speaker).strip() 
             text = parts[1].strip()
             
             if speaker in CAST and text:
                 voice = CAST[speaker]
-                speed = 1.12 if speaker == "JAMIE" else (1.05 if speaker == "ALEX" else 1.0)
+                # SPEED TUNING
+                speed = 1.1 if (speaker == "JAMIE" or speaker == "SPONSOR 2") else (1.05 if "ALEX" in speaker or "SPONSOR" in speaker else 1.0)
                 
                 try:
                     resp = client.audio.speech.create(model="tts-1-hd", voice=voice, input=text, speed=speed)
@@ -210,7 +232,6 @@ def produce_episode():
                 except Exception as e:
                     print(f"    ❌ FAILED line {i}: {e}")
             else:
-                # Debugging info if line is skipped
                 if len(text) > 5: print(f"    ⚠️ Skipped (Unknown Speaker '{speaker}'): {line[:30]}...")
 
     print(" >> 🎚️  MIXING EPISODE...")
