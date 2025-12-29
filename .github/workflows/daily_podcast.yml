@@ -32,12 +32,12 @@ jobs:
           # Fix for ImageMagick policy (often needed for MoviePy TextClips)
           sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
 
-    # 3. INSTALL PYTHON DEPENDENCIES
+   # 3. INSTALL PYTHON DEPENDENCIES
       - name: Install Python Libs
         run: |
           pip install --upgrade pip
-          # We force moviepy 1.0.3 to fix the "No module named moviepy.editor" error
-          pip install openai pydub pillow tweepy feedparser requests duckduckgo-search \
+          # We pin Pillow to 9.5.0 because MoviePy 1.0.3 needs 'ANTIALIAS'
+          pip install openai pydub "pillow==9.5.0" tweepy feedparser requests duckduckgo-search \
           ffmpeg-normalize "moviepy==1.0.3" numpy replicate librosa \
           google-api-python-client google-auth-oauthlib google-auth-httplib2
           
