@@ -23,14 +23,14 @@ OUTRO_MUSIC = BASE_DIR / "outro.mp3"
 TRANSITION_SFX = BASE_DIR / "transition.mp3"
 SPONSORS_FILE = BASE_DIR / "sponsors.json"
 
-# THE CAST (HD Voices)
+# THE CAST (Human Realism)
 CAST = {
-    "ALEX": "ash",     # The Pilot (Energetic/Fast)
-    "JAMIE": "coral",  # The Skeptic (Deep/Concerned)
-    "RUFUS": "fable"   # The Ledger (British/Slow/Cold)
+    "ALEX": "onyx",    # The Anchor (Deep, Authoritative)
+    "JAMIE": "coral",  # The Co-Host (Bright, Natural)
+    "RUFUS": "fable"   # The Ledger (British, Dry)
 }
 
-# RUFUS LOCATIONS (For that Global Feel)
+# RUFUS LOCATIONS
 RUFUS_LOCATIONS = [
     "on the trading floor in London",
     "live from Wall Street",
@@ -59,7 +59,7 @@ FEED_SOURCES = {
     ]
 }
 
-# --- 2. INTELLIGENCE GATHERING (With Safety Net) ---
+# --- 2. INTELLIGENCE GATHERING ---
 def deep_search_fallback(persona, query):
     """Scours the web if feeds are dry."""
     print(f"   ⚠️ FEED LOW. SCOURING WEB FOR {persona} ({query})...")
@@ -117,59 +117,66 @@ def get_sponsors():
         except: pass
     return defaults
 
-# --- 3. THE WRITER (Dynamic Formats) ---
+# --- 3. THE WRITER (LONG FORM EDITION) ---
 def write_script(intel, sponsors):
-    print(" >> ✍️  WRITING SCRIPT...")
+    print(" >> ✍️  WRITING SCRIPT (Aiming for 2500+ Words)...")
     today = datetime.date.today()
     day_name = today.strftime("%A")
-    weekday_idx = today.weekday() # 0=Mon, 6=Sun
+    readable_date = today.strftime("%A the %dth of %B")
+    weekday_idx = today.weekday() 
     
-    # Random Cast Member for Cold Open
     cold_open_speaker = random.choice(["ALEX", "JAMIE", "RUFUS"])
-    
-    # Flavor for Rufus
     rufus_loc = random.choice(RUFUS_LOCATIONS)
     
-    tech = intel['tech'] if intel['tech'] else ["AI Breakthroughs"]
+    tech = intel['tech'] if intel['tech'] else ["AI Breakthroughs", "AGI Rumors"]
     ethics = intel['ethics'] if intel['ethics'] else ["Privacy Concerns"]
     ledger = intel['ledger'] if intel['ledger'] else ["Global Regulation"]
     shock_story = random.choice(tech + ledger)
 
+    # SHARED INSTRUCTIONS
+    base_instructions = f"""
+    You are a HUMAN radio host. NEVER mention you are an AI.
+    
+    CRITICAL LENGTH INSTRUCTION:
+    Your goal is a 20-MINUTE EPISODE. You must write SUBSTANTIAL, DETAILED DIALOGUE.
+    DO NOT SUMMARIZE. Write out the full debate, word-for-word.
+    Explain concepts in depth. Use examples. Use analogies.
+    """
+
     # --- FORMAT SELECTION ---
     if weekday_idx == 6:
-        # C. SUNDAY SHOWDOWN (The Debate)
+        # C. SUNDAY SHOWDOWN (FORMAT C)
         print(f"    Mode: SUNDAY SHOWDOWN ({day_name})")
         prompt = f"""
-        You are the Executive Producer of 'The AI Edge'. Write the script for {day_name}.
+        {base_instructions}
         FORMAT: THE SUNDAY SHOWDOWN (Pure Debate).
-        
-        TONE: Intense, Argumentative, High IQ. "McLaughlin Group" style.
         
         STRUCTURE:
         [SEGMENT 1: COLD OPEN] (15s)
         - Speaker: {cold_open_speaker}
         - Content: A controversial opinion on: "{shock_story}"
         
-        [SEGMENT 2: THE HOOK]
+        [SEGMENT 2: THE HOOK & ROADMAP]
         - Speaker: ALEX
-        - Content: "Welcome to the Sunday Showdown. The gloves are off."
+        - Content: "Welcome to the AI Edge, it's {readable_date}. Today on the Showdown: First, the Main Motion on {tech[0]}. Then, we go live to {rufus_loc} for Rufus's financial take. And finally, the ultimate debate on {ethics[0]}."
         - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
         
-        [SEGMENT 3: THE MOTION] (10 mins)
-        - Topic: {ethics[0]} vs {tech[0]}.
+        [SEGMENT 3: THE MOTION (LONG FORM)] (800 words minimum)
+        - Topic: {tech[0]} vs {ethics[0]}.
         - Alex argues for Progress/Acceleration. Jamie argues for Safety/Pause.
-        - They go back and forth aggressively.
+        - Go DEEP. Do not be brief. Argue back and forth multiple times.
         - SPONSOR 2 READ: {sponsors[1]['name']}: "{sponsors[1]['copy']}"
         
-        [SEGMENT 4: THE CROSS-EXAMINATION] (10 mins)
+        [SEGMENT 4: THE CROSS-EXAMINATION (LONG FORM)] (800 words minimum)
         - Alex throws it to Rufus: "Rufus, you're {rufus_loc}, who is winning this war?"
-        - Rufus dissects the argument purely on financial/legal grounds. He insults both sides.
+        - Rufus dissects the argument purely on financial/legal grounds.
         
-        [SEGMENT 5: CLOSING STATEMENTS] (5 mins)
-        - Each gives a 30s final take.
+        [SEGMENT 5: CLOSING STATEMENTS] (300 words)
+        - Each gives a final take.
         
-        [SEGMENT 6: OUTRO]
+        [SEGMENT 6: OUTRO & CTA]
         - Speaker: ALEX
+        - Content: "Thanks for listening. If you want the edge, hit that Subscribe button now. Leave us a review, it helps the algorithm."
         - SPONSOR 3 READ: {sponsors[2]['name']}: "{sponsors[2]['copy']}"
         - CTA: "See you Monday."
         
@@ -177,37 +184,35 @@ def write_script(intel, sponsors):
         """
 
     elif weekday_idx == 5:
-        # B. THE WEEKEND WRAP (Saturday)
+        # B. THE WEEKEND WRAP (FORMAT B)
         print(f"    Mode: WEEKEND WRAP ({day_name})")
         prompt = f"""
-        You are the Executive Producer of 'The AI Edge'. Write the script for {day_name}.
-        FORMAT: THE WEEKEND WRAP (Long Form).
-        
-        TONE: Sorkin-style. Fast, overlapping, "Walk and Talk".
+        {base_instructions}
+        FORMAT: THE WEEKEND WRAP.
         
         STRUCTURE:
         [SEGMENT 1: COLD OPEN] (15s)
         - Speaker: {cold_open_speaker}
         - Content: Shocking stat: "{shock_story}"
         
-        [SEGMENT 2: THE HOOK]
+        [SEGMENT 2: THE HOOK & ROADMAP]
         - Speaker: ALEX
-        - Content: "Welcome to the Weekend Wrap."
+        - Content: "Welcome to the Weekend Wrap. Coming up: The Rapid Fire headlines, then a Deep Dive on {ethics[0]}, and we finish with Rufus live from {rufus_loc}."
         - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
         
-        [SEGMENT 3: RAPID FIRE WEEK] (10 mins)
+        [SEGMENT 3: RAPID FIRE WEEK (LONG FORM)] (800 words)
         - Speakers: ALL
-        - Run through 5-7 headlines: {tech[:3]} and {ledger[:3]}.
-        - Fast banter. Overlapping.
+        - Discuss 5-7 headlines in detail: {tech[:3]} and {ledger[:3]}.
         - SPONSOR 2 READ: {sponsors[1]['name']}: "{sponsors[1]['copy']}"
         
-        [SEGMENT 4: THE DEEP DIVE] (15 mins)
-        - Topic: Pick ONE theme from {ethics[:1]} and go deep.
+        [SEGMENT 4: THE DEEP DIVE (LONG FORM)] (800 words)
+        - Topic: {ethics[0]}.
         - Alex throws to Rufus: "Rufus, standing by {rufus_loc}, what's the money saying?"
-        - Rufus gives the global perspective.
+        - Extensive analysis.
         
-        [SEGMENT 5: OUTRO]
+        [SEGMENT 5: OUTRO & CTA]
         - Speaker: ALEX
+        - Content: "Don't forget to Subscribe and rate the show."
         - SPONSOR 3 READ: {sponsors[2]['name']}: "{sponsors[2]['copy']}"
         - CTA: "Sign off."
         
@@ -215,41 +220,50 @@ def write_script(intel, sponsors):
         """
         
     else:
-        # A. THE DAILY EDGE (Mon-Fri)
+        # A. THE DAILY EDGE (FORMAT A - MONDAY)
         print(f"    Mode: DAILY EDGE ({day_name})")
         prompt = f"""
-        You are the Executive Producer of 'The AI Edge'. Write the script for {day_name}.
-        FORMAT: THE DAILY EDGE (News & Analysis).
-        
-        TONE: Heated, Short Sentences, Interruptions.
+        {base_instructions}
+        FORMAT: THE DAILY EDGE.
         
         STRUCTURE:
         [SEGMENT 1: COLD OPEN] (15s)
         - Speaker: {cold_open_speaker}
         - Content: Shocking data: "{shock_story}"
         
-        [SEGMENT 2: THE HOOK]
+        [SEGMENT 2: THE HOOK & ROADMAP]
         - Speaker: ALEX
-        - Content: "Unfiltered updates."
+        - Content: "Welcome to the AI Edge, your home for the latest news in AI unfiltered. I'm your Host Alex and along side me as always is Jamie."
+        - Speaker: JAMIE
+        - Content: "Hello nice to be here again Alex." (Or similar warm greeting).
+        - Speaker: ALEX
+        - Content: "It's {readable_date}. Here's the plan: First, we break down the Hard Hitting News of the day: {tech[0]} and {tech[1]}. Then, we open the Toolbox to look at new {tech[0]}. After that, we head to {rufus_loc} for the Ledger, covering VC trends, following the money and the legal aspects globally."
         - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
         
-        [SEGMENT 3: ALEX'S TOOLBOX] (8 mins)
+        [SEGMENT 3: THE HEADLINES (LONG FORM)] (700 words)
         - Speakers: ALEX & JAMIE
-        - Topic: {tech[:2]}. Alex hypes, Jamie critiques.
+        - Topic: Banter on the biggest stories: {tech[:2]}.
+        - Dynamic: Energetic, conversational, reacting to the news.
+        
+        [SEGMENT 4: ALEX'S TOOLBOX (LONG FORM)] (700 words)
+        - Speakers: ALEX & JAMIE
+        - Topic: Deep dive into a specific tool or model: {tech[0]}. 
+        - Go deep on features, pricing, and utility.
         - SPONSOR 2 READ: JAMIE reads for {sponsors[1]['name']}: "{sponsors[1]['copy']}"
         
-        [SEGMENT 4: RUFUS'S LEDGER] (8 mins)
+        [SEGMENT 5: RUFUS'S LEDGER (LONG FORM)] (700 words)
         - Alex Handoff: "Let's go to Rufus, live {rufus_loc}."
         - Speaker: RUFUS (Solo)
         - Topic: VC Money, Lawsuits: {ledger[:2]}.
-        - Tone: Cold, British, Analytical.
+        - Detailed financial and global legal analysis.
         
-        [SEGMENT 5: THE FORUM] (3 mins)
+        [SEGMENT 6: THE FORUM] (400 words)
         - Speakers: ALL
-        - Debate the Ledger topics.
+        - Brief debate on the Ledger topics.
         
-        [SEGMENT 6: OUTRO]
+        [SEGMENT 7: OUTRO & CTA]
         - Speaker: ALEX
+        - Content: "Smash that Subscribe button. We need you to keep this show alive."
         - SPONSOR 3 READ: {sponsors[2]['name']}: "{sponsors[2]['copy']}"
         - CTA: Sign off.
         
@@ -309,8 +323,14 @@ def produce_episode():
             
             if speaker in CAST:
                 voice = CAST.get(speaker, "alloy")
-                # Speed: Alex/Jamie fast (1.15), Rufus slow (1.0)
-                speed = 1.15 if speaker in ["ALEX", "JAMIE"] else 1.0
+                
+                # --- SPEED ADJUSTMENT (THE FINAL TWEAK) ---
+                if speaker == "JAMIE":
+                    speed = 1.15
+                elif speaker == "ALEX":
+                    speed = 1.05
+                else: # RUFUS
+                    speed = 1.0
                 
                 try:
                     resp = client.audio.speech.create(
@@ -320,7 +340,7 @@ def produce_episode():
                     resp.stream_to_file(path)
                     
                     seg = AudioSegment.from_mp3(path)
-                    # Strip silence for realism
+                    # Strip silence
                     seg = effects.strip_silence(seg, silence_thresh=-45, padding=10)
                     segments.append((speaker, seg))
                 except Exception as e:
@@ -338,21 +358,22 @@ def produce_episode():
         full_audio += segments[0][1]
         segments.pop(0)
 
-    # 2. Intro Music
-    full_audio += intro[:4000] # Full volume intro
+    # 2. Intro Music (10 SECONDS then fade)
+    full_audio += intro[:10000] 
     
     # 3. Body
     body_audio = AudioSegment.empty()
     last_speaker = "UNKNOWN"
     
     for speaker, clip in segments:
-        # SFX for Rufus entrance (Audio branding)
+        # SFX for Rufus
         if speaker == "RUFUS" and last_speaker != "RUFUS":
             body_audio += sfx
         
-        # 250ms Overlap for "Sorkin" feel
+        # THE HUMAN BREATH (400ms Pause)
         if body_audio.duration_seconds > 0:
-            body_audio = body_audio.append(clip, crossfade=250)
+            body_audio += AudioSegment.silent(duration=400) 
+            body_audio += clip
         else:
             body_audio += clip
         
