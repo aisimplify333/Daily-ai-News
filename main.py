@@ -17,11 +17,10 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
 
-# SAFETY CHECK: Handle the folder/file conflict cleanly
+# SAFETY CHECK: Clean start
 if AUDIO_DIR.exists():
     if not AUDIO_DIR.is_dir():
-        try:
-            os.remove(AUDIO_DIR)
+        try: os.remove(AUDIO_DIR)
         except: pass
         AUDIO_DIR.mkdir(exist_ok=True)
 else:
@@ -33,16 +32,16 @@ OUTRO_MUSIC = BASE_DIR / "outro.mp3"
 TRANSITION_SFX = BASE_DIR / "transition.mp3"
 SPONSORS_FILE = BASE_DIR / "sponsors.json"
 
-# THE CAST (Updated to catch Sponsors)
+# THE CAST
 CAST = {
     "ALEX": "onyx",
-    "JAMIE": "nova",
-    "RUFUS": "fable",
-    # MAPPING SPONSORS TO VOICES SO THEY DON'T GET SKIPPED
-    "SPONSOR 1": "onyx",   # Alex reads Ad 1
-    "SPONSOR 2": "nova",  # Jamie reads Ad 2
-    "SPONSOR 3": "onyx",   # Alex reads Ad 3
-    "SPONSOR": "onyx"      # Catch-all
+    "JAMIE": "nova",   # Warm, energetic, fast
+    "RUFUS": "fable",  # British, cynical, slow
+    # MAPPING SPONSORS
+    "SPONSOR 1": "onyx",
+    "SPONSOR 2": "nova",
+    "SPONSOR 3": "onyx",
+    "SPONSOR": "onyx"
 }
 
 # RUFUS LOCATIONS
@@ -55,11 +54,24 @@ RUFUS_LOCATIONS = [
     "tracking capital flows in Hong Kong"
 ]
 
-# FEEDS
+# FEEDS (UPDATED WITH BIG NAMES)
 FEED_SOURCES = {
-    "ALEX_TECH": ["https://techcrunch.com/feed/", "https://www.theverge.com/rss/index.xml", "https://arstechnica.com/feed/"],
-    "JAMIE_ETHICS": ["https://www.humanetech.com/feed", "https://www.eff.org/rss/updates.xml", "https://www.reddit.com/r/ArtificialInteligence/top/.rss"],
-    "RUFUS_INTEL": ["http://feeds.feedburner.com/avc", "https://saastr.com/feed/", "https://techcrunch.com/tag/policy/feed/"]
+    "ALEX_TECH": [
+        "https://www.theverge.com/rss/index.xml",
+        "https://www.cnbc.com/id/19854910/device/rss/rss.html", # CNBC Tech
+        "https://feeds.wired.com/wired/index",
+        "https://arstechnica.com/feed/"
+    ],
+    "JAMIE_ETHICS": [
+        "https://www.humanetech.com/feed",
+        "https://www.404media.co/rss/", # Gritty, real investigations
+        "https://www.reddit.com/r/OpenAI/top/.rss" # Real user sentiment
+    ],
+    "RUFUS_INTEL": [
+        "https://techcrunch.com/category/venture/feed/",
+        "https://www.bloomberg.com/feeds/sitemap_news.xml", # Bloomberg
+        "http://feeds.feedburner.com/avc"
+    ]
 }
 
 # --- 2. INTELLIGENCE GATHERING ---
@@ -76,34 +88,38 @@ def deep_search_fallback(persona, query):
 def gather_intel():
     print(" >> 📡 GATHERING GLOBAL INTELLIGENCE...")
     intel = {"tech": [], "ethics": [], "ledger": []}
-    # (Simplified feed logic)
+    
+    # Alex (Tech Giants)
     for url in FEED_SOURCES["ALEX_TECH"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries[:2]: intel["tech"].append(entry.title)
         except: pass
-    if len(intel["tech"]) < 2: intel["tech"] += deep_search_fallback("ALEX", "latest AI tools news")
+    if len(intel["tech"]) < 2: intel["tech"] += deep_search_fallback("ALEX", "OpenAI Google Apple leaks")
 
+    # Jamie (Ethics & Drama)
     for url in FEED_SOURCES["JAMIE_ETHICS"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries[:2]: intel["ethics"].append(entry.title)
         except: pass
-    if len(intel["ethics"]) < 2: intel["ethics"] += deep_search_fallback("JAMIE", "AI ethics labor lawsuits")
+    if len(intel["ethics"]) < 2: intel["ethics"] += deep_search_fallback("JAMIE", "AI lawsuits data privacy scandal")
 
+    # Rufus (Money)
     for url in FEED_SOURCES["RUFUS_INTEL"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries[:2]: intel["ledger"].append(entry.title)
         except: pass
-    if len(intel["ledger"]) < 2: intel["ledger"] += deep_search_fallback("RUFUS", "VC funding AI regulation antitrust")
+    if len(intel["ledger"]) < 2: intel["ledger"] += deep_search_fallback("RUFUS", "VC funding IPO market crash")
+    
     return intel
 
 def get_sponsors():
     defaults = [
-        {"name": "The AI Edge", "copy": "If you want to stay ahead of the curve, join 50,000 others reading The AI Edge newsletter. It's free, it's smart, and it's essential.", "url": "#"}, 
-        {"name": "TechStart", "copy": "Stop watching from the sidelines. TechStart Academy can teach you Python in 30 days. Code your future today.", "url": "#"}, 
-        {"name": "CloudScale", "copy": "Need to deploy agents fast? CloudScale is the only infrastructure built for the next generation of AI.", "url": "#"}
+        {"name": "The AI Edge", "copy": "Join the newsletter.", "url": "#"}, 
+        {"name": "TechStart", "copy": "Learn code.", "url": "#"}, 
+        {"name": "CloudScale", "copy": "Deploy AI.", "url": "#"}
     ]
     if SPONSORS_FILE.exists():
         try:
@@ -111,77 +127,80 @@ def get_sponsors():
         except: pass
     return defaults
 
-# --- 3. THE WRITER (ANTI-FLUFF EDITION) ---
-def write_script(intel, sponsors):
-    print(" >> ✍️  WRITING SCRIPT (Aiming for 3500+ Words for 20 mins)...")
-    today = datetime.date.today()
-    day_name = today.strftime("%A")
-    readable_date = today.strftime("%A the %dth of %B")
-    weekday_idx = today.weekday()
-    
-    cold_open_speaker = random.choice(["ALEX", "JAMIE", "RUFUS"])
-    rufus_loc = random.choice(RUFUS_LOCATIONS)
-    
-    tech = intel['tech'] if intel['tech'] else ["AI Breakthroughs"]
-    ethics = intel['ethics'] if intel['ethics'] else ["Privacy Concerns"]
-    ledger = intel['ledger'] if intel['ledger'] else ["Global Regulation"]
-    shock_story = random.choice(tech + ledger)
+# --- 3. THE WRITER (ASSEMBLY LINE) ---
+def generate_segment(system_prompt):
+    """Generates a single segment of the script."""
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "system", "content": system_prompt}]
+    )
+    return response.choices[0].message.content
 
-    # *** THE ANTI-FLUFF INSTRUCTION BLOCK ***
-    base_instructions = f"""
-    You are a HUMAN radio host. NEVER mention you are an AI.
+def write_script(intel, sponsors):
+    print(" >> ✍️  WRITING SCRIPT IN CHUNKS (To Ensure Length)...")
+    today = datetime.date.today()
+    readable_date = today.strftime("%A the %dth of %B")
     
-    CRITICAL QUALITY RULES:
-    1. NO CORPORATE JARGON. Banned words: "ecosystem", "paradigm", "holistic", "leverage", "synergy", "landscape", "robust", "transformative".
-    2. USE CONCRETE EXAMPLES. Instead of "This tool improves efficiency," say "This tool saves a coder 4 hours a day by writing the boilerplate."
-    3. TELL STORIES. Use "For example...", "Picture this...", "Just yesterday I saw..."
-    4. EXTREME VERBOSITY: We need a 25-MINUTE EPISODE. Go deep, but keep it grounded in reality.
+    rufus_loc = random.choice(RUFUS_LOCATIONS)
+    # Pick the juiciest stories
+    tech = intel['tech'] if intel['tech'] else ["AI Breakthroughs"]
+    ledger = intel['ledger'] if intel['ledger'] else ["Global Regulation"]
     
-    FORMAT STRICTLY: "SPEAKER: Dialogue" (No asterisks, no bolding).
+    base_instructions = """
+    You are writing a segment for a PROFESSIONAL RADIO SHOW.
+    RULES:
+    1. NO CORPORATE JARGON (No 'synergy', 'paradigm', 'ecosystem').
+    2. USE CONCRETE EXAMPLES.
+    3. FORMAT STRICTLY: "SPEAKER: Dialogue"
     """
 
-    if weekday_idx == 6: # Sunday
-        print(f"    Mode: SUNDAY SHOWDOWN ({day_name})")
-        prompt = f"""{base_instructions}
-        FORMAT: SUNDAY DEBATE.
-        [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
-        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, it's {readable_date}. Today: The Showdown." 
-        ALEX: "But first, a word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
-        [SEGMENT 3: MOTION] (1000 words) {tech[0]} vs {ethics[0]}. Debate deep. 
-        JAMIE: "Support for this segment comes from {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
-        [SEGMENT 4: CROSS-EXAM] (1000 words) ALEX: "Now, let's go live to Rufus who is standing by {rufus_loc}. Rufus, what is the money saying?" Rufus dissects the argument.
-        [SEGMENT 5: CLOSING] (500 words) Final takes.
-        [SEGMENT 6: OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
-        """
-    elif weekday_idx == 5: # Saturday
-        print(f"    Mode: WEEKEND WRAP ({day_name})")
-        prompt = f"""{base_instructions}
-        FORMAT: WEEKEND WRAP.
-        [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
-        [SEGMENT 2: INTRO] ALEX: "Welcome to the Weekend Wrap." 
-        ALEX: "A quick word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
-        [SEGMENT 3: RAPID FIRE] (1000 words) {tech[:3]}. 
-        JAMIE: "Supported by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
-        [SEGMENT 4: DEEP DIVE] (1000 words) {ethics[0]}. ALEX: "Let's check the markets. We go now to Rufus, live {rufus_loc}." Rufus analyzes.
-        [SEGMENT 5: OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
-        """
-    else: # Mon-Fri
-        print(f"    Mode: DAILY EDGE ({day_name})")
-        prompt = f"""{base_instructions}
-        FORMAT: DAILY EDGE.
-        [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
-        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, your daily home for AI unfiltered news. I'm Alex, with Jamie." JAMIE: "Hello, thank you for having me Alex." ALEX: "It's {readable_date}. Plan: Headlines, Toolbox on {tech[0]}, then Ledger from {rufus_loc}." 
-        ALEX: "But first, a word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
-        [SEGMENT 3: HEADLINES] (1000 words) Banter on {tech[:2]}. Go deep.
-        [SEGMENT 4: TOOLBOX] (1000 words) ALEX: "Now, let's open the Toolbox." Deep dive {tech[0]}. 
-        JAMIE: "This deep dive is brought to you by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
-        [SEGMENT 5: LEDGER] (800 words) ALEX: "Now, let's go live to Rufus who is standing by {rufus_loc}. Rufus, what is the money saying?" Rufus solo {ledger[:2]}.
-        [SEGMENT 6: FORUM] (500 words) Debate.
-        [SEGMENT 7: OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
-        """
+    full_script = ""
 
-    response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": prompt}])
-    return response.choices[0].message.content
+    # --- PART 1: INTRO & HEADLINES ---
+    print("    ...Generating Part 1 (Intro & Headlines)")
+    prompt_1 = f"""
+    {base_instructions}
+    Write PART 1 of the show (Approx 1200 words).
+    
+    STRUCTURE:
+    [COLD OPEN] ALEX: Shocking stat or quote about {tech[0]}.
+    [INTRO] ALEX: "Welcome to the AI Edge, your home for unfiltered news. I'm Alex, with Jamie." JAMIE: "Hello." ALEX: "It's {readable_date}. Plan: Headlines, Toolbox, then Rufus." 
+    [AD 1] ALEX: "First, a word from {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
+    [HEADLINES] ALEX & JAMIE: Banter on {tech[:2]}. Go deep. Discuss implications.
+    """
+    full_script += generate_segment(prompt_1) + "\n"
+
+    # --- PART 2: THE DEEP DIVE ---
+    print("    ...Generating Part 2 (The Deep Dive)")
+    prompt_2 = f"""
+    {base_instructions}
+    Write PART 2 of the show (Approx 1500 words).
+    CONTEXT: Coming out of headlines.
+    
+    STRUCTURE:
+    [TOOLBOX SEGMENT] ALEX: "Now, let's open the Toolbox." Deep dive on {tech[0]}.
+    - Explain features, pricing, pros/cons.
+    - Jamie is skeptical, Alex is optimistic.
+    [AD 2] JAMIE: "Supported by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
+    """
+    full_script += generate_segment(prompt_2) + "\n"
+
+    # --- PART 3: RUFUS & OUTRO ---
+    print("    ...Generating Part 3 (Rufus & Outro)")
+    prompt_3 = f"""
+    {base_instructions}
+    Write PART 3 of the show (Approx 1200 words).
+    CONTEXT: Coming out of Toolbox.
+    
+    STRUCTURE:
+    [LEDGER SEGMENT] ALEX: "Now, let's go live to Rufus who is standing by {rufus_loc}. Rufus, what is the money saying?"
+    - RUFUS (British, Cynical): Analyze {ledger[:2]}. Explain the money trail.
+    [FORUM] Short debate between all three.
+    [OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
+    """
+    full_script += generate_segment(prompt_3)
+
+    return full_script
 
 # --- 4. SEO ---
 def generate_seo_package(script, sponsors):
@@ -196,7 +215,7 @@ def produce_episode():
     sponsors = get_sponsors()
     script = write_script(intel, sponsors)
     
-    # DEBUG: Save script to check format
+    # DEBUG: Save script
     with open(BASE_DIR / "debug_script.txt", "w") as f: f.write(script)
     print(f"    ℹ️ Script generated ({len(script)} chars). Saved to debug_script.txt")
 
@@ -212,14 +231,13 @@ def produce_episode():
         if ":" in line:
             parts = line.split(":", 1)
             raw_speaker = parts[0].strip().upper()
-            # Parse speaker, allowing spaces/numbers for SPONSOR 1
             speaker = re.sub(r'[^A-Z0-9 ]', '', raw_speaker).strip() 
             text = parts[1].strip()
             
             if speaker in CAST and text:
                 voice = CAST[speaker]
                 # SPEED TUNING
-                speed = 1.1 if (speaker == "JAMIE" or speaker == "SPONSOR 2") else (1.05 if "ALEX" in speaker or "SPONSOR" in speaker else 1.0)
+                speed = 1.0 if (speaker == "JAMIE" or speaker == "SPONSOR 2") else (1.05 if "ALEX" in speaker or "SPONSOR" in speaker else 1.0)
                 
                 try:
                     resp = client.audio.speech.create(model="tts-1-hd", voice=voice, input=text, speed=speed)
