@@ -2,8 +2,8 @@ name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 9 * * *' # Runs at 9:00 AM UTC (1:00 AM PST)
-  workflow_dispatch:    # Allows manual testing button
+    - cron: '0 9 * * *' # 9:00 AM UTC (1:00 AM PST)
+  workflow_dispatch:    # Manual trigger
 
 permissions:
   contents: write
@@ -16,37 +16,42 @@ jobs:
       # 1. SETUP
       - name: Check out repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetches full history, helpful to avoid sync conflicts
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # 2. INSTALL SYSTEM LIBRARIES (Heavy Lifting)
-      - name: Install FFmpeg
+      # 2. INSTALL SYSTEM LIBRARIES
+      - name: Install System Dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg
+          sudo apt-get install -y ffmpeg imagemagick ghostscript
+          # Fix for ImageMagick policy (often needed for MoviePy TextClips)
+          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
 
-   # 3. INSTALL PYTHON DEPENDENCIES
-      - name: Install Dependencies
+      # 3. INSTALL PYTHON DEPENDENCIES
+      - name: Install Python Libs
         run: |
+          pip install --upgrade pip
           pip install openai pydub pillow tweepy feedparser requests duckduckgo-search \
           ffmpeg-normalize moviepy numpy \
           google-api-python-client google-auth-oauthlib google-auth-httplib2
 
-      # 4. PHASE 1: AUDIO PRODUCTION (Search, Script, TTS, Mastering)
-      - name: Run Audio Engine (Producer)
+      # 4. PHASE 1: AUDIO
+      - name: Run Audio Engine
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python main.py
 
-      # 5. PHASE 2: VISUAL PRODUCTION (Vertical Video Generation)
-      - name: Run Visual Engine (VFX)
+      # 5. PHASE 2: VIDEO
+      - name: Run Visual Engine
         run: python animate_social.py
 
-     # 6. PHASE 3: SOCIAL DISTRIBUTION
-      - name: Run Social Publisher (X/Twitter)
+      # 6. PHASE 3: SOCIALS
+      - name: Run Social Publisher
         env:
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
@@ -54,29 +59,22 @@ jobs:
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
         run: python social_publisher.py
 
-#      - name: Run YouTube Uploader (Shorts)
-#        env:
-#         YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-#         YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-#        run: python youtube_uploader.py
-
-      # 7. SAVE ARTIFACTS (Commit back to Repo)
-      - name: Commit and Push Everything
+      # 7. COMMIT ARTIFACTS
+      - name: Commit and Push
         run: |
           git config --global user.name 'AI Producer'
           git config --global user.email 'bot@aisimplifymedia.com'
           
-          # Add Audio
+          # Staging files
           git add episode_audio/*.mp3
-          
-          # Add Metadata & Feeds
           git add feed.xml
           git add episode_metadata.json
-          
-          # Add Social Assets (Video & Caption)
           git add viral_caption.txt
           git add social_clip.mp4
           
-          # Commit
-          git commit -m "Automated: New Daily Episode & Social Video" || echo "No changes to commit"
+          # Safety check: Pull changes if repo updated during the build
+          git pull --rebase origin main || echo "No remote changes to merge"
+          
+          # Commit and Push
+          git commit -m "Automated: New Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
