@@ -15,6 +15,12 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 # Paths
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
+
+# SAFETY CHECK: If 'episode_audio' exists as a FILE, delete it so we can make the FOLDER.
+if AUDIO_DIR.exists() and not AUDIO_DIR.is_dir():
+    print(" ⚠️ Found 'episode_audio' as a file. Deleting to create directory...")
+    os.remove(AUDIO_DIR)
+
 AUDIO_DIR.mkdir(exist_ok=True)
 
 # Assets
