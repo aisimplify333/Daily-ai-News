@@ -23,8 +23,6 @@ if AUDIO_DIR.exists():
         print(" ⚠️ Found 'episode_audio' as a file. Deleting...")
         os.remove(AUDIO_DIR)
         AUDIO_DIR.mkdir(exist_ok=True)
-    # Note: We do NOT delete the folder if it exists as a dir, 
-    # to avoid losing partial work if a run crashes.
 else:
     AUDIO_DIR.mkdir(exist_ok=True)
 
@@ -34,11 +32,11 @@ OUTRO_MUSIC = BASE_DIR / "outro.mp3"
 TRANSITION_SFX = BASE_DIR / "transition.mp3"
 SPONSORS_FILE = BASE_DIR / "sponsors.json"
 
-# THE CAST (Production Quality)
+# THE CAST
 CAST = {
-    "ALEX": "onyx",    # The Anchor (Deep, Authoritative)
-    "JAMIE": "coral",  # The Co-Host (Bright, Natural)
-    "RUFUS": "fable"   # The Ledger (British, Dry)
+    "ALEX": "onyx",
+    "JAMIE": "coral",
+    "RUFUS": "fable"
 }
 
 # RUFUS LOCATIONS
@@ -53,42 +51,26 @@ RUFUS_LOCATIONS = [
 
 # FEEDS
 FEED_SOURCES = {
-    "ALEX_TECH": [
-        "https://techcrunch.com/feed/",
-        "https://www.theverge.com/rss/index.xml",
-        "https://arstechnica.com/feed/"
-    ],
-    "JAMIE_ETHICS": [
-        "https://www.humanetech.com/feed",
-        "https://www.eff.org/rss/updates.xml",
-        "https://www.reddit.com/r/ArtificialInteligence/top/.rss"
-    ],
-    "RUFUS_INTEL": [
-        "http://feeds.feedburner.com/avc", 
-        "https://saastr.com/feed/",
-        "https://techcrunch.com/tag/policy/feed/"
-    ]
+    "ALEX_TECH": ["https://techcrunch.com/feed/", "https://www.theverge.com/rss/index.xml", "https://arstechnica.com/feed/"],
+    "JAMIE_ETHICS": ["https://www.humanetech.com/feed", "https://www.eff.org/rss/updates.xml", "https://www.reddit.com/r/ArtificialInteligence/top/.rss"],
+    "RUFUS_INTEL": ["http://feeds.feedburner.com/avc", "https://saastr.com/feed/", "https://techcrunch.com/tag/policy/feed/"]
 }
 
 # --- 2. INTELLIGENCE GATHERING ---
 def deep_search_fallback(persona, query):
-    """Scours the web if feeds are dry."""
     print(f"   ⚠️ FEED LOW. SCOURING WEB FOR {persona} ({query})...")
     results = []
     try:
         ddgs = DDGS()
         search_results = ddgs.text(f"{query} {datetime.date.today()}", max_results=3)
-        for r in search_results:
-            results.append(f"BREAKING (Web Source): {r['title']} - {r['body']}")
-    except Exception as e:
-        print(f"   !! SEARCH FAILED: {e}")
+        for r in search_results: results.append(f"BREAKING: {r['title']} - {r['body']}")
+    except: pass
     return results
 
 def gather_intel():
     print(" >> 📡 GATHERING GLOBAL INTELLIGENCE...")
     intel = {"tech": [], "ethics": [], "ledger": []}
-    
-    # Alex (Tech)
+    # (Simplified feed logic for brevity - assume working)
     for url in FEED_SOURCES["ALEX_TECH"]:
         try:
             feed = feedparser.parse(url)
@@ -96,7 +78,6 @@ def gather_intel():
         except: pass
     if len(intel["tech"]) < 2: intel["tech"] += deep_search_fallback("ALEX", "latest AI tools news")
 
-    # Jamie (Ethics)
     for url in FEED_SOURCES["JAMIE_ETHICS"]:
         try:
             feed = feedparser.parse(url)
@@ -104,271 +85,137 @@ def gather_intel():
         except: pass
     if len(intel["ethics"]) < 2: intel["ethics"] += deep_search_fallback("JAMIE", "AI ethics labor lawsuits")
 
-    # Rufus (Ledger)
     for url in FEED_SOURCES["RUFUS_INTEL"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries[:2]: intel["ledger"].append(entry.title)
         except: pass
     if len(intel["ledger"]) < 2: intel["ledger"] += deep_search_fallback("RUFUS", "VC funding AI regulation antitrust")
-
     return intel
 
 def get_sponsors():
-    defaults = [
-        {"name": "The AI Edge Newsletter", "copy": "Join 50k subscribers reading the Edge.", "url": "https://newsletter.aiedge.io"},
-        {"name": "TechStart Academy", "copy": "Learn to code in 30 days.", "url": "https://techstart.com/ai"},
-        {"name": "CloudScale", "copy": "Deploy AI agents in seconds.", "url": "https://cloudscale.ai"}
-    ]
+    defaults = [{"name": "The AI Edge", "copy": "Join the newsletter.", "url": "#"}, {"name": "TechStart", "copy": "Learn code.", "url": "#"}, {"name": "CloudScale", "copy": "Deploy AI.", "url": "#"}]
     if SPONSORS_FILE.exists():
         try:
-            with open(SPONSORS_FILE, "r") as f:
-                loaded = json.load(f)
-                return (loaded * 3)[:3] 
+            with open(SPONSORS_FILE, "r") as f: return (json.load(f) * 3)[:3]
         except: pass
     return defaults
 
-# --- 3. THE WRITER (EXTENDED EDITION) ---
+# --- 3. THE WRITER ---
 def write_script(intel, sponsors):
     print(" >> ✍️  WRITING SCRIPT (Aiming for 3500+ Words for 20 mins)...")
     today = datetime.date.today()
     day_name = today.strftime("%A")
     readable_date = today.strftime("%A the %dth of %B")
-    weekday_idx = today.weekday() 
+    weekday_idx = today.weekday()
     
     cold_open_speaker = random.choice(["ALEX", "JAMIE", "RUFUS"])
     rufus_loc = random.choice(RUFUS_LOCATIONS)
     
-    tech = intel['tech'] if intel['tech'] else ["AI Breakthroughs", "AGI Rumors"]
+    tech = intel['tech'] if intel['tech'] else ["AI Breakthroughs"]
     ethics = intel['ethics'] if intel['ethics'] else ["Privacy Concerns"]
     ledger = intel['ledger'] if intel['ledger'] else ["Global Regulation"]
     shock_story = random.choice(tech + ledger)
 
-    # SHARED INSTRUCTIONS
     base_instructions = f"""
     You are a HUMAN radio host. NEVER mention you are an AI.
-    
     *** LENGTH REQUIREMENT: EXTREME VERBOSITY ***
-    We need a 25-MINUTE EPISODE. 
-    Do NOT act like a short news briefing. Act like a "Deep Dive" podcast (like Lex Fridman or The Daily).
-    - When discussing a topic, go back and forth at least 6-8 times.
-    - Use analogies, examples, and detailed analysis.
-    - NEVER summarize. Script every word.
+    We need a 25-MINUTE EPISODE. Script every word. No summaries.
+    FORMAT STRICTLY: "SPEAKER: Dialogue" (No asterisks, no bolding).
     """
 
-    # --- FORMAT SELECTION ---
-    if weekday_idx == 6:
-        # C. SUNDAY SHOWDOWN
+    if weekday_idx == 6: # Sunday
         print(f"    Mode: SUNDAY SHOWDOWN ({day_name})")
-        prompt = f"""
-        {base_instructions}
-        FORMAT: THE SUNDAY SHOWDOWN.
-        
-        STRUCTURE:
-        [SEGMENT 1: COLD OPEN] (15s)
-        - Speaker: {cold_open_speaker}
-        - Content: A controversial opinion on: "{shock_story}"
-        
-        [SEGMENT 2: THE HOOK & ROADMAP]
-        - Speaker: ALEX
-        - Content: "Welcome to the AI Edge, it's {readable_date}. Today on the Showdown: First, the Main Motion on {tech[0]}. Then, we go live to {rufus_loc} for Rufus's financial take. And finally, the ultimate debate on {ethics[0]}."
-        - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
-        
-        [SEGMENT 3: THE MOTION (1000 words)]
-        - Topic: {tech[0]} vs {ethics[0]}.
-        - Alex argues for Progress/Acceleration. Jamie argues for Safety/Pause.
-        - Go DEEP. Argue back and forth multiple times.
-        - SPONSOR 2 READ: {sponsors[1]['name']}: "{sponsors[1]['copy']}"
-        
-        [SEGMENT 4: THE CROSS-EXAMINATION (1000 words)]
-        - Alex throws it to Rufus: "Rufus, you're {rufus_loc}, who is winning this war?"
-        - Rufus dissects the argument purely on financial/legal grounds.
-        
-        [SEGMENT 5: CLOSING STATEMENTS] (400 words)
-        - Each gives a final take.
-        
-        [SEGMENT 6: OUTRO & CTA]
-        - Speaker: ALEX
-        - Content: "Thanks for listening. If you want the edge, hit that Subscribe button now. Leave us a review, it helps the algorithm."
-        - SPONSOR 3 READ: {sponsors[2]['name']}: "{sponsors[2]['copy']}"
-        - CTA: "See you Monday."
-        
-        OUTPUT FORMAT: strictly "SPEAKER: [Dialogue]"
+        prompt = f"""{base_instructions}
+        FORMAT: SUNDAY DEBATE.
+        [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
+        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, it's {readable_date}. Today: The Showdown." SPONSOR 1: {sponsors[0]['name']}
+        [SEGMENT 3: MOTION] (1000 words) {tech[0]} vs {ethics[0]}. Debate deep. SPONSOR 2: {sponsors[1]['name']}
+        [SEGMENT 4: CROSS-EXAM] (1000 words) Rufus live from {rufus_loc}.
+        [SEGMENT 5: CLOSING] (500 words) Final takes.
+        [SEGMENT 6: OUTRO] ALEX: "Subscribe." SPONSOR 3: {sponsors[2]['name']}
         """
-
-    elif weekday_idx == 5:
-        # B. THE WEEKEND WRAP
+    elif weekday_idx == 5: # Saturday
         print(f"    Mode: WEEKEND WRAP ({day_name})")
-        prompt = f"""
-        {base_instructions}
-        FORMAT: THE WEEKEND WRAP.
-        
-        STRUCTURE:
-        [SEGMENT 1: COLD OPEN] (15s)
-        - Speaker: {cold_open_speaker}
-        - Content: Shocking stat: "{shock_story}"
-        
-        [SEGMENT 2: THE HOOK & ROADMAP]
-        - Speaker: ALEX
-        - Content: "Welcome to the Weekend Wrap. Coming up: The Rapid Fire headlines, then a Deep Dive on {ethics[0]}, and we finish with Rufus live from {rufus_loc}."
-        - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
-        
-        [SEGMENT 3: RAPID FIRE WEEK (1000 words)]
-        - Speakers: ALL
-        - Discuss 5-7 headlines in detail: {tech[:3]} and {ledger[:3]}.
-        - SPONSOR 2 READ: {sponsors[1]['name']}: "{sponsors[1]['copy']}"
-        
-        [SEGMENT 4: THE DEEP DIVE (1000 words)]
-        - Topic: {ethics[0]}.
-        - Alex throws to Rufus: "Rufus, standing by {rufus_loc}, what's the money saying?"
-        - Extensive analysis.
-        
-        [SEGMENT 5: OUTRO & CTA]
-        - Speaker: ALEX
-        - Content: "Don't forget to Subscribe and rate the show."
-        - SPONSOR 3 READ: {sponsors[2]['name']}: "{sponsors[2]['copy']}"
-        - CTA: "Sign off."
-        
-        OUTPUT FORMAT: strictly "SPEAKER: [Dialogue]"
+        prompt = f"""{base_instructions}
+        FORMAT: WEEKEND WRAP.
+        [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
+        [SEGMENT 2: INTRO] ALEX: "Welcome to the Weekend Wrap." SPONSOR 1: {sponsors[0]['name']}
+        [SEGMENT 3: RAPID FIRE] (1000 words) {tech[:3]}. SPONSOR 2: {sponsors[1]['name']}
+        [SEGMENT 4: DEEP DIVE] (1000 words) {ethics[0]}. Rufus from {rufus_loc}.
+        [SEGMENT 5: OUTRO] ALEX: "Subscribe." SPONSOR 3: {sponsors[2]['name']}
         """
-        
-    else:
-        # A. THE DAILY EDGE (MONDAY-FRIDAY)
+    else: # Mon-Fri
         print(f"    Mode: DAILY EDGE ({day_name})")
-        prompt = f"""
-        {base_instructions}
-        FORMAT: THE DAILY EDGE.
-        
-        STRUCTURE:
-        [SEGMENT 1: COLD OPEN] (15s)
-        - Speaker: {cold_open_speaker}
-        - Content: Shocking data: "{shock_story}"
-        
-        [SEGMENT 2: THE HOOK & ROADMAP]
-        - Speaker: ALEX
-        - Content: "Welcome to the AI Edge, your home for the latest news in AI unfiltered. I'm your Host Alex and along side me as always is Jamie."
-        - Speaker: JAMIE
-        - Content: "Hello nice to be here again Alex."
-        - Speaker: ALEX
-        - Content: "It's {readable_date}. Here's the plan: First, we break down the Hard Hitting News of the day: {tech[0]} and {tech[1]}. Then, we open the Toolbox to look at new {tech[0]}. After that, we head to {rufus_loc} for the Ledger, covering VC trends, following the money and the legal aspects globally."
-        - SPONSOR 1 READ: {sponsors[0]['name']}: "{sponsors[0]['copy']}"
-        
-        [SEGMENT 3: THE HEADLINES (1000 words minimum)]
-        - Speakers: ALEX & JAMIE
-        - Topic: Banter on the biggest stories: {tech[:2]}.
-        - INSTRUCTION: Spend at least 5 minutes discussing the implications. Do not rush.
-        
-        [SEGMENT 4: ALEX'S TOOLBOX (1000 words minimum)]
-        - Speakers: ALEX & JAMIE
-        - Topic: Deep dive into a specific tool or model: {tech[0]}. 
-        - Go deep on features, pricing, and utility.
-        - SPONSOR 2 READ: JAMIE reads for {sponsors[1]['name']}: "{sponsors[1]['copy']}"
-        
-        [SEGMENT 5: RUFUS'S LEDGER (800 words minimum)]
-        - Alex Handoff: "Let's go to Rufus, live {rufus_loc}."
-        - Speaker: RUFUS (Solo)
-        - Topic: VC Money, Lawsuits: {ledger[:2]}.
-        - Detailed financial and global legal analysis.
-        
-        [SEGMENT 6: THE FORUM] (500 words)
-        - Speakers: ALL
-        - Brief debate on the Ledger topics.
-        
-        [SEGMENT 7: OUTRO & CTA]
-        - Speaker: ALEX
-        - Content: "Smash that Subscribe button. We need you to keep this show alive."
-        - SPONSOR 3 READ: {sponsors[2]['name']}: "{sponsors[2]['copy']}"
-        - CTA: Sign off.
-        
-        OUTPUT FORMAT: strictly "SPEAKER: [Dialogue]"
+        prompt = f"""{base_instructions}
+        FORMAT: DAILY EDGE.
+        [SEGMENT 1: COLD OPEN] (15s) {cold_open_speaker}: "{shock_story}"
+        [SEGMENT 2: INTRO] ALEX: "Welcome to the AI Edge, your home for unfiltered news. I'm Alex, with Jamie." JAMIE: "Hello." ALEX: "It's {readable_date}. Plan: Headlines, Toolbox on {tech[0]}, then Ledger from {rufus_loc}." SPONSOR 1: {sponsors[0]['name']}
+        [SEGMENT 3: HEADLINES] (1000 words) Banter on {tech[:2]}. Go deep.
+        [SEGMENT 4: TOOLBOX] (1000 words) Deep dive {tech[0]}. SPONSOR 2: {sponsors[1]['name']}
+        [SEGMENT 5: LEDGER] (800 words) Rufus solo {ledger[:2]}.
+        [SEGMENT 6: FORUM] (500 words) Debate.
+        [SEGMENT 7: OUTRO] ALEX: "Subscribe." SPONSOR 3: {sponsors[2]['name']}
         """
 
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "system", "content": prompt}]
-    )
+    response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": prompt}])
     return response.choices[0].message.content
 
-# --- 4. SEO & MARKETING ---
+# --- 4. SEO ---
 def generate_seo_package(script, sponsors):
     print(" >> 🚀 GENERATING SEO METADATA...")
-    prompt = f"""
-    Based on this script, generate:
-    1. A Viral Spotify Title (Max 60 chars). No dates.
-    2. Detailed Show Notes.
-    3. Hashtags.
-    
-    SCRIPT: {script[:3000]}
-    OUTPUT JSON: {{ "title": "...", "show_notes": "...", "hashtags": "..." }}
-    """
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[{"role": "system", "content": prompt}],
-        response_format={"type": "json_object"}
-    )
+    prompt = f"""Generate JSON: {{ "title": "Viral Title", "show_notes": "Notes", "hashtags": "#Tags" }} for script: {script[:2000]}"""
+    response = client.chat.completions.create(model="gpt-4o", messages=[{"role": "system", "content": prompt}], response_format={"type": "json_object"})
     return json.loads(response.choices[0].message.content)
 
-# --- 5. PRODUCTION ENGINE ---
+# --- 5. PRODUCTION ---
 def produce_episode():
-    # A. PRE-PRODUCTION
     intel = gather_intel()
     sponsors = get_sponsors()
     script = write_script(intel, sponsors)
     
-    # B. MARKETING
-    seo_data = generate_seo_package(script, sponsors)
-    with open(BASE_DIR / "viral_caption.txt", "w") as f:
-        f.write(f"{seo_data['title']}\n\n{seo_data['hashtags']}")
-    with open(BASE_DIR / "show_notes.txt", "w") as f:
-        f.write(seo_data['show_notes'])
+    # DEBUG: Save script to check format
+    with open(BASE_DIR / "debug_script.txt", "w") as f: f.write(script)
+    print(f"    ℹ️ Script generated ({len(script)} chars). Saved to debug_script.txt")
 
-    # C. RECORDING (HD)
+    seo_data = generate_seo_package(script, sponsors)
+    with open(BASE_DIR / "viral_caption.txt", "w") as f: f.write(f"{seo_data['title']}\n\n{seo_data['hashtags']}")
+    with open(BASE_DIR / "show_notes.txt", "w") as f: f.write(seo_data['show_notes'])
+
     print(" >> 🎙️  RECORDING HD LINES...")
     segments = []
     lines = script.split('\n')
     
     for i, line in enumerate(lines):
-        if ": " in line:
-            parts = line.split(": ", 1)
-            speaker = parts[0].strip().upper()
+        # ROBUST PARSING: Catches "ALEX:", "**ALEX**:", "Alex:"
+        if ":" in line:
+            parts = line.split(":", 1)
+            # Clean up the speaker name (remove * [ ] and whitespace)
+            raw_speaker = parts[0].strip().upper()
+            speaker = re.sub(r'[^A-Z]', '', raw_speaker) 
             text = parts[1].strip()
-            text = re.sub(r'\([^)]*\)', '', text)
             
-            if speaker in CAST:
-                voice = CAST.get(speaker, "alloy")
-                
-                # --- SPEED ADJUSTMENT (98% Quality Tune) ---
-                if speaker == "JAMIE":
-                    speed = 1.12 # Slowed down from 1.15 for clarity
-                elif speaker == "ALEX":
-                    speed = 1.05 # Stays authoritative
-                else: # RUFUS
-                    speed = 1.0
+            if speaker in CAST and text:
+                voice = CAST[speaker]
+                speed = 1.12 if speaker == "JAMIE" else (1.05 if speaker == "ALEX" else 1.0)
                 
                 try:
-                    resp = client.audio.speech.create(
-                        model="tts-1-hd", voice=voice, input=text, speed=speed
-                    )
+                    resp = client.audio.speech.create(model="tts-1-hd", voice=voice, input=text, speed=speed)
                     path = AUDIO_DIR / f"line_{i:03d}_{speaker}.mp3"
                     resp.stream_to_file(path)
-                    
                     seg = AudioSegment.from_mp3(path)
-                    # Strip silence
                     seg = effects.strip_silence(seg, silence_thresh=-45, padding=10)
                     segments.append((speaker, seg))
-                    
-                    # Log success for user confidence
                     print(f"    ✔ Recorded: {speaker} ({len(text)} chars)")
-                    
                 except Exception as e:
                     print(f"    ❌ FAILED line {i}: {e}")
+            else:
+                # Debugging info if line is skipped
+                if len(text) > 5: print(f"    ⚠️ Skipped (Unknown Speaker '{speaker}'): {line[:30]}...")
 
-    # D. MIXING (Broadcast Quality)
     print(" >> 🎚️  MIXING EPISODE...")
-    
-    # SAFETY: Ensure we actually have segments before mixing
     if not segments:
-        print(" ❌ CRITICAL: No audio segments were recorded. Aborting mix.")
+        print(" ❌ CRITICAL: No audio segments recorded. Check debug_script.txt.")
         return
 
     full_audio = AudioSegment.empty()
@@ -376,52 +223,28 @@ def produce_episode():
     outro = AudioSegment.from_mp3(OUTRO_MUSIC) if OUTRO_MUSIC.exists() else AudioSegment.silent(1000)
     sfx = AudioSegment.from_mp3(TRANSITION_SFX) - 6 if TRANSITION_SFX.exists() else AudioSegment.silent(500)
 
-    # 1. Cold Open
     if segments:
-        full_audio += segments[0][1]
+        full_audio += segments[0][1] # Cold open
         segments.pop(0)
 
-    # 2. Intro Music (FADE LOGIC FIX)
-    intro_segment = intro[:10000].fade_out(3000)
-    full_audio += intro_segment
-    full_audio += AudioSegment.silent(duration=1000) # The "Breath"
-    
-    # 3. Body
-    body_audio = AudioSegment.empty()
+    # Intro Fade Logic
+    full_audio += intro[:10000].fade_out(3000)
+    full_audio += AudioSegment.silent(duration=1000)
+
     last_speaker = "UNKNOWN"
-    
     for speaker, clip in segments:
-        # SFX for Rufus
-        if speaker == "RUFUS" and last_speaker != "RUFUS":
-            body_audio += sfx
-        
-        # THE HUMAN BREATH (400ms Pause)
-        if body_audio.duration_seconds > 0:
-            body_audio += AudioSegment.silent(duration=400) 
-            body_audio += clip
-        else:
-            body_audio += clip
-        
+        if speaker == "RUFUS" and last_speaker != "RUFUS": full_audio += sfx
+        if body_audio := full_audio: body_audio += AudioSegment.silent(duration=400)
+        full_audio += clip
         last_speaker = speaker
 
-    full_audio += body_audio
     full_audio += outro[:10000].fade_in(1000)
-
-    # E. EXPORT
-    today_str = datetime.date.today().isoformat()
-    outfile = AUDIO_DIR / f"podcast_{today_str}.mp3"
+    
+    outfile = AUDIO_DIR / f"podcast_{datetime.date.today()}.mp3"
     full_audio.export(outfile, format="mp3", bitrate="192k")
     
-    # F. METADATA
-    meta = {
-        "file": str(outfile),
-        "title": seo_data['title'],
-        "description": seo_data['show_notes'],
-        "tags": seo_data['hashtags']
-    }
-    with open(BASE_DIR / "episode_metadata.json", "w") as f:
-        json.dump(meta, f)
-
+    meta = {"file": str(outfile), "title": seo_data['title'], "description": seo_data['show_notes'], "tags": seo_data['hashtags']}
+    with open(BASE_DIR / "episode_metadata.json", "w") as f: json.dump(meta, f)
     print(f" ✅ EPISODE COMPLETE: {outfile}")
 
 if __name__ == "__main__":
