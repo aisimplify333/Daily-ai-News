@@ -46,8 +46,10 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: python main.py
 
-      # 5. PHASE 2: VIDEO
+      # 5. PHASE 2: VISUAL PRODUCTION
       - name: Run Visual Engine
+        env:
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
         run: python animate_social.py
 
       # 6. PHASE 3: SOCIALS
