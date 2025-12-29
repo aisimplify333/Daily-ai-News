@@ -4,6 +4,7 @@ import random
 import datetime
 import feedparser
 import re
+import shutil
 from pathlib import Path
 from openai import OpenAI
 from pydub import AudioSegment, effects
@@ -16,13 +17,16 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
 
-# SAFETY CHECK: If 'episode_audio' exists as a FILE, delete it so we can make the FOLDER.
-if AUDIO_DIR.exists() and not AUDIO_DIR.is_dir():
-    try:
+# SAFETY CHECK: Handle the folder/file conflict cleanly
+if AUDIO_DIR.exists():
+    if not AUDIO_DIR.is_dir():
+        print(" ⚠️ Found 'episode_audio' as a file. Deleting...")
         os.remove(AUDIO_DIR)
-    except:
-        pass
-AUDIO_DIR.mkdir(exist_ok=True)
+        AUDIO_DIR.mkdir(exist_ok=True)
+    # Note: We do NOT delete the folder if it exists as a dir, 
+    # to avoid losing partial work if a run crashes.
+else:
+    AUDIO_DIR.mkdir(exist_ok=True)
 
 # Assets
 INTRO_MUSIC = BASE_DIR / "intro.mp3"
@@ -352,11 +356,21 @@ def produce_episode():
                     # Strip silence
                     seg = effects.strip_silence(seg, silence_thresh=-45, padding=10)
                     segments.append((speaker, seg))
+                    
+                    # Log success for user confidence
+                    print(f"    ✔ Recorded: {speaker} ({len(text)} chars)")
+                    
                 except Exception as e:
-                    print(f"Skipped line {i}: {e}")
+                    print(f"    ❌ FAILED line {i}: {e}")
 
     # D. MIXING (Broadcast Quality)
     print(" >> 🎚️  MIXING EPISODE...")
+    
+    # SAFETY: Ensure we actually have segments before mixing
+    if not segments:
+        print(" ❌ CRITICAL: No audio segments were recorded. Aborting mix.")
+        return
+
     full_audio = AudioSegment.empty()
     intro = AudioSegment.from_mp3(INTRO_MUSIC) if INTRO_MUSIC.exists() else AudioSegment.silent(1000)
     outro = AudioSegment.from_mp3(OUTRO_MUSIC) if OUTRO_MUSIC.exists() else AudioSegment.silent(1000)
@@ -368,11 +382,9 @@ def produce_episode():
         segments.pop(0)
 
     # 2. Intro Music (FADE LOGIC FIX)
-    # Play 10 seconds total. Fade out the last 3 seconds smoothly.
-    # Then add 1 second of silence before Alex speaks.
     intro_segment = intro[:10000].fade_out(3000)
     full_audio += intro_segment
-    full_audio += AudioSegment.silent(duration=1000) # The "Breath" before Alex starts
+    full_audio += AudioSegment.silent(duration=1000) # The "Breath"
     
     # 3. Body
     body_audio = AudioSegment.empty()
