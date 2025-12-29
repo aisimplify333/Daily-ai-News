@@ -34,9 +34,9 @@ SPONSORS_FILE = BASE_DIR / "sponsors.json"
 
 # THE CAST
 CAST = {
-    "ALEX": "onyx",    # Anchor: Deep, Authoritative, Tech-Optimist.
-    "JAMIE": "nova",   # Co-Host: Empathetic, Human-First, Skeptic but Warm.
-    "RUFUS": "fable",  # Analyst: British, Financial Realist, Dry.
+    "ALEX": "onyx",    # The Brain: Huberman-style depth, Authoritative.
+    "JAMIE": "nova",   # The Heart: Bartlett-style vulnerability, Humanist.
+    "RUFUS": "fable",  # The Wallet: Succession-style cynicism.
     "SPONSOR 1": "onyx",
     "SPONSOR 2": "nova",
     "SPONSOR 3": "onyx",
@@ -51,34 +51,30 @@ RUFUS_LOCATIONS = [
     "monitoring sovereign wealth funds in Dubai"
 ]
 
-# --- 2. THE "TITAN" FEEDS (Expanded with Groq, Claude, GLM) ---
+# --- 2. THE "TITAN" FEEDS (US & Global) ---
 FEED_SOURCES = {
-    # 1. The Titans (US & Global) -> Added Anthropic, Groq, Zhipu
     "TITANS": [
         "https://openai.com/blog/rss.xml",                # OpenAI
         "https://ai.googleblog.com/feeds/posts/default", # Google
         "https://blogs.microsoft.com/ai/feed/",        # Microsoft
-        "https://groq.com/feed/",                      # Groq (Inference Speed)
-        # USING GOOGLE NEWS RSS BRIDGES FOR HARD-TO-FIND FEEDS:
-        "https://news.google.com/rss/search?q=Anthropic+Claude+AI&hl=en-US&gl=US&ceid=US:en", # Anthropic/Claude
-        "https://news.google.com/rss/search?q=Zhipu+AI+GLM+Model&hl=en-US&gl=US&ceid=US:en"   # Zhipu/GLM
+        "https://groq.com/feed/",                      # Groq
+        # RSS Bridges for Hard-to-Find Feeds
+        "https://news.google.com/rss/search?q=Anthropic+Claude+AI&hl=en-US&gl=US&ceid=US:en", 
+        "https://news.google.com/rss/search?q=Zhipu+AI+GLM+Model&hl=en-US&gl=US&ceid=US:en"   
     ],
-    # 2. The Iron (Chips & Infrastructure)
     "INFRASTRUCTURE": [
-        "https://www.datacenterdynamics.com/rss/",     # Vertiv/Energy context
-        "https://www.semianalysis.com/feed",           # ASML/Broadcom/Nvidia deep dive
-        "https://www.anandtech.com/rss/"               # Hardware specifics
+        "https://www.datacenterdynamics.com/rss/",     
+        "https://www.semianalysis.com/feed",           
+        "https://www.anandtech.com/rss/"               
     ],
-    # 3. The Enterprise & Money
     "ENTERPRISE_FINANCE": [
-        "https://finance.yahoo.com/news/rssindex",     # Yahoo Finance
-        "https://techcrunch.com/category/enterprise/feed/", # Enterprise AI
-        "https://blog.palantir.com/feed"               # Palantir specific
+        "https://finance.yahoo.com/news/rssindex",     
+        "https://techcrunch.com/category/enterprise/feed/", 
+        "https://blog.palantir.com/feed"               
     ],
-    # 4. The Trends (Healthcare, Mfg, Emerging Tools)
     "TRENDS_TOOLS": [
-        "https://www.unite.ai/feed/",                  # General Trends
-        "https://medium.com/feed/tag/artificial-intelligence" # Emerging Tools
+        "https://www.unite.ai/feed/",                  
+        "https://medium.com/feed/tag/artificial-intelligence" 
     ]
 }
 
@@ -96,7 +92,7 @@ def deep_search_fallback(query):
 def is_industry_relevant(title):
     """Filters out consumer fluff."""
     title_lower = title.lower()
-    banned = ["game", "console", "deal", "sale", "tv", "monitor", "headphone", "gift", "best of"]
+    banned = ["game", "console", "deal", "sale", "tv", "monitor", "headphone", "gift", "best of", "laptop"]
     for word in banned:
         if word in title_lower: return False
     return True
@@ -105,7 +101,7 @@ def gather_intel():
     print(" >> 📡 GATHERING TITAN INTEL (Groq, Claude, GLM, & The Bigs)...")
     intel = {"titans": [], "infra": [], "money": [], "trends": []}
     
-    # 1. Titans (Prioritize Claude/Groq/GLM if found)
+    # 1. Titans
     for url in FEED_SOURCES["TITANS"]:
         try:
             feed = feedparser.parse(url)
@@ -160,11 +156,11 @@ def get_sponsors():
         except: pass
     return defaults
 
-# --- 4. THE WRITER (EMPATHETIC JAMIE ENGINE) ---
+# --- 4. THE WRITER (22-MINUTE ENGINE) ---
 def generate_segment(system_prompt):
     response = client.chat.completions.create(
         model="gpt-4o",
-        temperature=0.75, # Slight bump for "Chemistry" banter
+        temperature=0.75, # Tuned for "Smart Banter"
         messages=[{"role": "system", "content": system_prompt}]
     )
     return response.choices[0].message.content
@@ -175,11 +171,12 @@ def clean_text_for_audio(text):
     text = re.sub(r'\[.*?\]', '', text) 
     text = re.sub(r'\(.*?\)', '', text) 
     text = text.replace('"', '').replace("'", "")
+    text = text.replace("...", ".") # Fix long pauses
     text = text.replace("AI", "A.I.")
     return text.strip()
 
 def write_script(intel, sponsors):
-    print(" >> ✍️  WRITING SCRIPT (Chemistry Mode: Alex & Empathetic Jamie)...")
+    print(" >> ✍️  WRITING SCRIPT (Target: 22 Minutes / 3000 Words)...")
     today = datetime.date.today()
     readable_date = today.strftime("%A the %dth of %B")
     
@@ -194,69 +191,63 @@ def write_script(intel, sponsors):
     You are writing a BROADCAST QUALITY PODCAST SCRIPT.
     
     CHARACTERS:
-    - ALEX (Host): The "Brain". Tech-optimist, obsessed with specs, speed, and business. Voices the "Hard Reality".
-    - JAMIE (Co-Host): The "Heart". Empathetic Skeptic. She worries about the *human cost*. She champions artists, workers, and ethics. She isn't mean; she's thoughtful.
-    - RUFUS (Analyst): The "Wallet". British, cynical, follows the cash.
+    - ALEX (Host): The "Huberman". Obsessed with mechanisms, specs, and hard data.
+    - JAMIE (Co-Host): The "Bartlett". Empathetic. Asks: "How does this change the human experience?"
+    - RUFUS (Analyst): The "Logan Roy". Cynical, focused purely on ROI and stock prices.
     
-    CHEMISTRY RULES:
-    1. THEY ARE FRIENDS. They banter. Alex respects Jamie's caution; Jamie respects Alex's vision.
-    2. JAMIE'S CATCHPHRASE: "But what about the people, Alex?"
-    3. ALEX'S DEFENSE: "The progress is inevitable, Jamie."
-    
-    FORMAT RULES:
-    1. NO STAGE DIRECTIONS (No *laughs*, No [intro]).
-    2. SPEAK IN FULL, NATURAL SENTENCES.
-    3. MENTION: Groq, Anthropic (Claude), Zhipu (GLM), or Nvidia.
+    RULES:
+    1. EXTREME VERBOSITY: We need 22 MINUTES of audio. Do not summarize. Debate every point.
+    2. CHEMISTRY: Alex respects Jamie's heart; Jamie respects Alex's brain.
+    3. FORMAT: "SPEAKER: Dialogue" (No stage directions).
     """
 
     full_script = ""
 
-    # --- PART 1: THE TITANS (Alex & Jamie) ---
+    # --- PART 1: THE TITANS (900 Words) ---
     print(f"    ...Part 1: The Titans ({titan_story})")
     prompt_1 = f"""
     {base_instructions}
-    Write PART 1 (Approx 800 words).
+    Write PART 1 (Approx 900 words).
     
     STRUCTURE:
-    [COLD OPEN] ALEX: A shocking stat about {titan_story}.
-    [INTRO] ALEX: "Welcome to the AI Edge. I'm Alex." JAMIE: "And I'm Jamie, trying to find the humanity in the machine."
+    [COLD OPEN] ALEX: A shocking statistic about {titan_story}.
+    [INTRO] ALEX: "Welcome to the AI Edge. I'm Alex." JAMIE: "And I'm Jamie. We're asking the hard questions today."
     [AD 1] ALEX: "First, {sponsors[0]['name']}." SPONSOR 1: "{sponsors[0]['copy']}"
-    [SEGMENT] ALEX: Discuss {titan_story}. 
-    - Mention Anthropic's Claude, Zhipu's GLM, or Groq's speed.
-    - JAMIE: "It's fast, Alex, but is it good? And what happens to the writers/coders who can't compete with this speed?"
-    - ALEX: "It frees them to do higher level work."
-    - JAMIE: "Or it frees them from a paycheck. Let's be real."
+    [SEGMENT] ALEX: Deep technical breakdown of {titan_story}. Explain the 'Mechanism of Action' (how it works).
+    - JAMIE: "Okay, Alex, the specs are impressive. But what about the junior developer? Are we automating away their purpose?"
+    - ALEX: "We are automating away the drudgery, Jamie."
+    - JAMIE: "I hope you're right."
     """
     full_script += generate_segment(prompt_1) + "\n"
 
-    # --- PART 2: THE IRON & SECTORS (Alex & Jamie) ---
+    # --- PART 2: THE IRON & SECTORS (1200 Words) ---
     print(f"    ...Part 2: Infrastructure ({infra_story})")
     prompt_2 = f"""
     {base_instructions}
-    Write PART 2 (Approx 1000 words).
+    Write PART 2 (Approx 1200 words).
     
     STRUCTURE:
-    [SEGMENT] ALEX: "Software is nothing without the Iron."
+    [SEGMENT] ALEX: "Software is nothing without the Iron. Let's look at the metal."
     - Discuss {infra_story}. (Nvidia, Vertiv, ASML).
-    - ALEX: "The energy demand is massive. Data centers are the new oil fields."
-    - JAMIE: "And the environment? We're burning forests to build chatbots? That keeps me up at night."
-    - ALEX: "Nuclear is coming, Jamie."
-    - JAMIE: "That's a whole other podcast, Alex."
+    - ALEX: Explain the energy physics. Why do we need this much power?
+    - JAMIE: "This sounds like we're building a new sun on earth. What is the environmental cost?"
+    - ALEX: "Progress requires energy, Jamie."
+    - JAMIE: "But at what price?"
     [AD 2] JAMIE: "Supported by {sponsors[1]['name']}." SPONSOR 2: "{sponsors[1]['copy']}"
     """
     full_script += generate_segment(prompt_2) + "\n"
 
-    # --- PART 3: THE MONEY (Rufus) ---
+    # --- PART 3: THE MONEY (900 Words) ---
     print(f"    ...Part 3: The Money ({money_story})")
     prompt_3 = f"""
     {base_instructions}
-    Write PART 3 (Approx 800 words).
+    Write PART 3 (Approx 900 words).
     
     STRUCTURE:
     [SEGMENT] ALEX: "Let's check the ledger. Rufus, are you there {rufus_loc}?"
-    - RUFUS: "I am indeed." Analyze {money_story}.
-    - Focus on Palantir, Salesforce, or VC funding.
-    - RUFUS: "While you two argue about feelings, I'm watching the profit margins."
+    - RUFUS: "I am. And the numbers are fascinating." Analyze {money_story}.
+    - RUFUS: "Alex talks about physics, Jamie talks about feelings. I talk about profit."
+    - Discuss Palantir, Salesforce, or VC funding.
     [OUTRO] ALEX: "Subscribe." SPONSOR 3: "{sponsors[2]['copy']}"
     """
     full_script += generate_segment(prompt_3)
