@@ -4,10 +4,9 @@ import random
 import datetime
 import feedparser
 import re
-import glob
 from pathlib import Path
 from openai import OpenAI
-from pydub import AudioSegment, effects
+from pydub import AudioSegment
 from duckduckgo_search import DDGS
 from email.utils import formatdate
 
@@ -16,14 +15,15 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
 
-# YOUR CREDENTIALS (SPOTIFY AUTHENTICATION)
+# YOUR CREDENTIALS
 GITHUB_USERNAME = "aisimplify333"
 REPO_NAME = "Daily-ai-News"
 YOUR_EMAIL = "aisimplify333@GMAIL.COM"
 AUTHOR_NAME = "AI Simplify Media"
 
-# AUTO-GENERATED HOSTING URL (Spotify looks here)
+# HOSTING URLS (Auto-Generated)
 HOSTING_URL = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}/episode_audio/"
+COVER_ART_URL = f"https://{GITHUB_USERNAME}.github.io/{REPO_NAME}/cover.png"
 
 # Ensure Directory Exists
 if AUDIO_DIR.exists():
@@ -41,108 +41,107 @@ TRANSITION_SFX = BASE_DIR / "transition.mp3"
 
 # CAST
 CAST = {
-    "ALEX": "onyx",    # Host: The anchor. Fast, serious, data-driven.
-    "JAMIE": "nova",   # Humanist: The conscience. Interrupts. Worried about people.
-    "RUFUS": "fable",  # Cynic: The shark. British. Hates hype. Loves profit.
+    "ALEX": "onyx",    # Host: Urgent, Breaking News Voice.
+    "JAMIE": "nova",   # Humanist: Alarmed, Worried about the future.
+    "RUFUS": "fable",  # Cynic: Ruthless, Hates Hype, Loves Money.
     "SPONSOR": "onyx"
 }
 
 RUFUS_LOCATIONS = [
-    "shorting tech stocks in London",
-    "analyzing burn rates in Hong Kong",
-    "inspecting supply chains in Taiwan",
-    "watching the energy crisis in Texas",
-    "fighting regulators in Brussels"
+    "watching the final trading bell in London",
+    "tracking 2026 futures in Hong Kong",
+    "monitoring capital flight in Taiwan",
+    "calculating year-end burn rates in Texas",
+    "toasting to the collapse of regulation in Brussels"
 ]
 
-# --- 2. FEEDS (Data Heavy) ---
+# --- 2. THE "PREDATOR" SEARCH ENGINE (Big Money / Big Crisis) ---
+# We hunt for "Acquisitions," "China," "Lawsuits," and "Crashes"
 FEED_SOURCES = {
-    "TITANS": [
-        "https://openai.com/blog/rss.xml",
-        "https://blogs.microsoft.com/ai/feed/",
-        "https://news.google.com/rss/search?q=Nvidia+Stock+Price+News&hl=en-US&gl=US&ceid=US:en",
-        "https://news.google.com/rss/search?q=OpenAI+Revenue+Data&hl=en-US&gl=US&ceid=US:en"
+    "WAR_ROOM": [
+        "https://news.google.com/rss/search?q=AI+Acquisition+China+US+Tech+War&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=Nvidia+Stock+Crash+Shortage&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=OpenAI+Lawsuit+Copyright+NYT&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=Deepfake+Fraud+Scam+Millions&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=VC+AI+Funding+Billions&hl=en-US&gl=US&ceid=US:en"
     ],
-    "INFRA": ["https://www.datacenterdynamics.com/rss/", "https://www.semianalysis.com/feed"],
-    "MONEY": ["https://finance.yahoo.com/news/rssindex", "https://techcrunch.com/category/venture/feed/"],
-    "LEGAL": ["https://news.google.com/rss/search?q=AI+Lawsuit+Regulation&hl=en-US&gl=US&ceid=US:en"]
+    "MONEY": [
+        "https://finance.yahoo.com/news/rssindex",
+        "https://www.cnbc.com/id/100003114/device/rss/rss.html" 
+    ]
 }
 
-# --- 3. INTEL ENGINE ---
+# --- 3. INTEL ENGINE (WITH CRISIS FILTER) ---
 def deep_search_fallback(query):
-    print(f"   ⚠️ DEEP SEARCH: {query}...")
+    print(f"   ⚠️ DEEP SEARCH (Hunting for Conflict): {query}...")
     results = []
     try:
         ddgs = DDGS()
-        # Search for HARD NUMBERS
-        search_results = ddgs.text(f"{query} market cap price revenue {datetime.date.today().year}", max_results=3)
+        # Search for HIGH STAKES keywords
+        search_results = ddgs.text(f"{query} billion lawsuit crash china ban {datetime.date.today().year}", max_results=5)
         for r in search_results: results.append(r['title'])
     except: pass
     return results
 
-def is_hard_news(title):
-    fluff = ["how to", "guide", "best of", "gift", "deal", "game", "review", "monitor"]
-    return not any(x in title.lower() for x in fluff)
+def filter_for_crisis(stories):
+    # The "Bouncer": Prioritizes High Stakes Headlines
+    high_stakes_keywords = ["billion", "trillion", "lawsuit", "sue", "china", "fraud", "crash", "ban", "scam", "war", "acquisition", "drop", "risk", "bankruptcy", "ethics"]
+    
+    gold_stories = []
+    regular_stories = []
+    
+    for s in stories:
+        clean_s = s.lower()
+        if any(x in clean_s for x in high_stakes_keywords):
+            gold_stories.append(s)
+        else:
+            regular_stories.append(s)
+            
+    # Return Gold first, then regular
+    final_list = gold_stories + regular_stories
+    return final_list[:5] 
 
 def gather_intel():
-    print(" >> 📡 GATHERING HEADLINES...")
-    intel = {"headlines": [], "money": [], "legal": []}
-    stories = []
-    for url in FEED_SOURCES["TITANS"] + FEED_SOURCES["INFRA"]:
+    print(" >> 📡 GATHERING 'WAR ROOM' INTEL...")
+    raw_stories = []
+    
+    for url in FEED_SOURCES["WAR_ROOM"] + FEED_SOURCES["MONEY"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries:
-                if is_hard_news(entry.title): stories.append(entry.title)
+                if "how to" not in entry.title.lower():
+                    raw_stories.append(entry.title)
         except: pass
     
-    if len(stories) < 5: stories += deep_search_fallback("Top AI Business News Financials")
-    intel["headlines"] = list(set(stories))[:5]
+    if len(raw_stories) < 5: 
+        raw_stories += deep_search_fallback("Top AI Business Crisis News")
     
-    # Money
-    money_stories = []
-    for url in FEED_SOURCES["MONEY"]:
-        try:
-            feed = feedparser.parse(url)
-            for entry in feed.entries:
-                if "AI" in entry.title: money_stories.append(entry.title)
-        except: pass
-    if not money_stories: money_stories = ["Global Tech Market Cap Crash"]
-    intel["money"] = money_stories[:1]
-
-    # Legal
-    legal_stories = []
-    for url in FEED_SOURCES["LEGAL"]:
-        try:
-            feed = feedparser.parse(url)
-            for entry in feed.entries:
-                legal_stories.append(entry.title)
-        except: pass
-    if not legal_stories: legal_stories = ["Global AI Safety Regulation Bills"]
-    intel["legal"] = legal_stories[:1]
-    
-    return intel
+    # APPLY THE GATEKEEPER
+    final_headlines = filter_for_crisis(list(set(raw_stories)))
+    return {"headlines": final_headlines}
 
 def get_sponsors():
+    # UPDATED: Enterprise Grade Sponsors for Higher CPM feel
     return [
-        {"name": "ElevenLabs", "copy": "Scale your content globally. Visit ElevenLabs.io."},
-        {"name": "Notion AI", "copy": "Organize your business. Notion.so."},
-        {"name": "Morning Brew", "copy": "Get smarter in 5 minutes. MorningBrew.com."}
+        {"name": "Oracle Cloud", "copy": "Train models faster. Cut your cloud bill in half. Oracle.com."},
+        {"name": "NetSuite", "copy": "Stop the cash burn. Get visibility. NetSuite.com."},
+        {"name": "ElevenLabs", "copy": "The voice of the future. Scale globally. ElevenLabs.io."}
     ]
 
-# --- 4. THE WRITER (CHARACTER ENGINES) ---
+# --- 4. THE WRITER (NYE / SORKIN EDITION) ---
 def generate_text(system_prompt):
     response = client.chat.completions.create(
         model="gpt-4o",
-        temperature=0.9, # High creativity for banter
+        temperature=0.95, # Max Creativity
         messages=[{"role": "system", "content": system_prompt}]
     )
     return response.choices[0].message.content.strip()
 
 def clean_text_for_audio(text):
+    # THE FIREWALL: Removes stage directions
     text = re.sub(r'\*.*?\*', '', text) 
     text = re.sub(r'\[.*?\]', '', text) 
     text = re.sub(r'\(.*?\)', '', text)
-    # The Firewall against reading instructions
     forbidden = ["Structure:", "Length:", "Note:", "Tone:", "Alex:", "Jamie:", "Rufus:"]
     for word in forbidden:
         if text.startswith(word): text = text.replace(word, "").strip()
@@ -150,76 +149,79 @@ def clean_text_for_audio(text):
     return text.strip()
 
 def write_script_objects(intel, sponsors, rufus_loc):
-    print(" >> ✍️  WRITING SHOW...")
-    today = datetime.date.today().strftime("%A, %B %d")
+    print(" >> ✍️  WRITING NYE SPECIAL...")
+    # HARDCODED NYE DATE FOR THE SPECIAL
+    today_display = "Wednesday, December 31st" 
+    
     segments = []
     headlines = intel['headlines']
-    while len(headlines) < 5: headlines.append("Global Market Update")
+    while len(headlines) < 5: headlines.append("Global Market Year-End Review")
     
-    # 1. COLD OPEN (Hardcoded)
-    segments.append({"speaker": "ALEX", "text": f"Breaking news: {headlines[0]}. This changes the timeline."})
-    segments.append({"speaker": "ALEX", "text": f"Good morning. It is {today}. I'm Alex, and this is the AI Edge. Here is the rundown of the top 5 stories."})
+    # 1. COLD OPEN (Urgent)
+    segments.append({"speaker": "ALEX", "text": f"Breaking news: {headlines[0]}. The year is ending with a bang."})
+    segments.append({"speaker": "ALEX", "text": f"Good morning. It is {today_display}. I'm Alex. This is the AI Edge. It is the final trading day of 2025."})
     
     for i, h in enumerate(headlines):
-        segments.append({"speaker": "ALEX", "text": f"Story Number {i+1}: {h}."})
+        segments.append({"speaker": "ALEX", "text": f"Story {i+1}: {h}."})
     segments.append({"speaker": "ALEX", "text": f"But first, a word from {sponsors[0]['name']}."})
 
-    # 2. THE LEAD (Heated Debate)
+    # 2. THE LEAD (The "War" Story)
     print(f"    ...Story 1: {headlines[0]}")
-    segments.append({"speaker": "ALEX", "text": f"Let's dive into Story Number One: {headlines[0]}. Jamie, walk us through the numbers."})
+    segments.append({"speaker": "ALEX", "text": f"Let's end the year with the big one: {headlines[0]}. Jamie, hit us with the numbers. Do not hold back."})
+    
     prompt_s1 = f"""
-    Write a HEATED DEBATE (ALEX & JAMIE) about: {headlines[0]}.
-    - ALEX: Stick to HARD DATA. Mention Billions, Dates, Specs.
-    - JAMIE: Be ALARMED. Interrupt Alex. Ask "Who pays for this?" or "What about the jobs?"
-    - CHEMISTRY: Alex is annoyed by the interruption but answers with facts.
+    Write a HEATED NYE DEBATE (ALEX & JAMIE) about: {headlines[0]}.
+    - CONTEXT: It is Dec 31st.
+    - ALEX: Focus on the MONEY/POWER. Mention Billions.
+    - JAMIE: First line MUST BE: "The numbers are terrifying, Alex." Then she mentions the New Year's anxiety.
+    - TONE: High stakes. End of the world vibes.
     - LENGTH: 14 PARAGRAPHS.
     """
     segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_s1})
 
-    # 3. THE MONEY (The "Attack")
+    # 3. THE MONEY (The "Grinch")
     print(f"    ...Story 2: {headlines[1]}")
-    segments.append({"speaker": "ALEX", "text": f"I hear you, Jamie. It's risky. Now, let's pivot to Story Number Two: {headlines[1]}. For the financial reality check, we go live to Rufus {rufus_loc}."})
+    segments.append({"speaker": "ALEX", "text": f"Terrifying. Now, for the final reality check of 2025, we go live to Rufus {rufus_loc}."})
     segments.append({"type": "sfx"})
     prompt_s2 = f"""
-    Write a HOSTILE MONOLOGUE for RUFUS about {headlines[1]}.
-    - TONE: British, Arrogant, Cynical.
-    - INSTRUCTION: Do NOT be positive. Find the flaw. Mention "Cash Burn," "Dilution," or "Vaporware."
-    - METAPHOR: Use a sharp metaphor (e.g. "Putting lipstick on a pig").
+    Write a SCATHING NYE MONOLOGUE for RUFUS about {headlines[1]}.
+    - TONE: Cynical. He hates "New Year's Hope."
+    - CONTENT: Explain why this news {headlines[1]} proves 2026 will be a financial bloodbath.
+    - METAPHOR: "Champagne on the Titanic."
     - LENGTH: 12 PARAGRAPHS.
     """
     segments.append({"type": "monologue", "speaker": "RUFUS", "prompt": prompt_s2})
     
-    segments.append({"speaker": "ALEX", "text": f"Brutal, Rufus. Back to you in a moment. Supported by {sponsors[1]['name']}."})
+    segments.append({"speaker": "ALEX", "text": f"Always a ray of sunshine, Rufus. Supported by {sponsors[1]['name']}."})
 
-    # 4. THE WATCHDOG (Legal)
+    # 4. THE WATCHDOG (The Legal Threat)
     print(f"    ...Story 3: {headlines[2]}")
-    segments.append({"speaker": "ALEX", "text": f"Moving on to Story Number Three: {headlines[2]}. This is our Watchdog segment. Rufus, are the regulators asleep?"})
+    segments.append({"speaker": "ALEX", "text": f"Story Three: {headlines[2]}. Rufus, is the law finally catching up?"})
     prompt_s3 = f"""
     Write a DIALOGUE (RUFUS & ALEX) about {headlines[2]}.
-    - RUFUS: "Comatose, Alex." Mock the regulators for being slow.
-    - ALEX: Defend the tech companies slightly.
-    - RUFUS: Shut Alex down with a legal fact.
+    - RUFUS: "The lawyers are the only ones making money, Alex."
+    - CONTENT: Focus on the LAWSUIT/REGULATION aspect.
     - LENGTH: 10 PARAGRAPHS.
     """
     segments.append({"type": "dialogue", "default": "RUFUS", "prompt": prompt_s3})
 
-    # 5. RAPID FIRE (All 3)
-    print(f"    ...Rapid Fire")
-    segments.append({"speaker": "ALEX", "text": f"Well, we find ourselves in the Rapid Fire segment. Jamie, Rufus, let's debate {headlines[3]} and {headlines[4]}."})
+    # 5. RAPID FIRE (Predictions)
+    print(f"    ...Rapid Fire Predictions")
+    segments.append({"speaker": "ALEX", "text": f"Final segment of the year. Jamie, Rufus. Give me your 2026 Prediction based on {headlines[3]}."})
     prompt_rapid = f"""
-    Write a 3-WAY ARGUMENT (ALEX, JAMIE, RUFUS) on {headlines[3]} and {headlines[4]}.
-    - Fast paced. Interruptions allowed.
-    - JAMIE: "That sounds dangerous."
-    - RUFUS: "It sounds profitable."
-    - ALEX: "It sounds inevitable."
+    Write a 3-WAY NYE PREDICTION BATTLE (ALEX, JAMIE, RUFUS) on {headlines[3]} and {headlines[4]}.
+    - JAMIE: Predicts a social crisis.
+    - RUFUS: Predicts a market crash.
+    - ALEX: Predicts a tech breakthrough.
+    - FAST PACED. INTERRUPTIONS.
     - LENGTH: 12 PARAGRAPHS.
     """
     segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_rapid})
 
-    segments.append({"speaker": "ALEX", "text": f"That is the Edge for today. We'll be back tomorrow. {sponsors[2]['copy']}"})
+    segments.append({"speaker": "ALEX", "text": f"That is the Edge for 2025. We'll see you on the other side. Happy New Year. {sponsors[2]['copy']}"})
     return segments
 
-# --- 6. RSS GENERATOR (SPOTIFY AUTHENTICATED) ---
+# --- 6. RSS GENERATOR (SPOTIFY VERIFIED) ---
 def update_rss_feed():
     print(" >> 📡 UPDATING SPOTIFY RSS FEED...")
     
@@ -228,10 +230,12 @@ def update_rss_feed():
   <channel>
     <title>The AI Edge</title>
     <description>Daily AI News, Finance, and Regulation.</description>
+    <link>{HOSTING_URL}</link>
     <language>en-us</language>
     <itunes:category text="Technology"/>
     <itunes:explicit>no</itunes:explicit>
     <itunes:author>{AUTHOR_NAME}</itunes:author>
+    <itunes:image href="{COVER_ART_URL}"/>
     <itunes:owner>
         <itunes:name>{AUTHOR_NAME}</itunes:name>
         <itunes:email>{YOUR_EMAIL}</itunes:email>
@@ -262,6 +266,8 @@ def update_rss_feed():
       <enclosure url="{file_url}" length="{file_size}" type="audio/mpeg"/>
       <guid>{file_url}</guid>
       <pubDate>{pubDate}</pubDate>
+      <itunes:duration>1320</itunes:duration>
+      <itunes:image href="{COVER_ART_URL}"/>
     </item>"""
 
     rss += "\n  </channel>\n</rss>"
@@ -278,30 +284,28 @@ def produce_episode():
     
     today_str = datetime.date.today().isoformat()
     
-    # --- SEO & SHOW NOTES GENERATOR ---
-    headlines_list = "\n".join([f"• {h}" for h in intel['headlines']])
-    
+    # SEO SHOCK HEADLINES for TWITTER/SPOTIFY
     show_notes = f"""
-    {today_str} | The AI Edge Daily Briefing
+    {today_str} | NYE SPECIAL: The {intel['headlines'][0]} Crisis
     
-    TODAY'S RUNDOWN:
-    {headlines_list}
+    THE WAR ROOM RUNDOWN:
+    • {intel['headlines'][0]}
+    • {intel['headlines'][1]}
+    • {intel['headlines'][2]}
     
     IN THIS EPISODE:
-    Alex and Jamie break down the lead story while Rufus delivers the cynical market reality check.
+    It's the final broadcast of 2025. Alex, Jamie, and Rufus break down the year's biggest financial risks and predict the 2026 crash.
     
-    SPONSORS:
-    {sponsors[0]['name']} | {sponsors[1]['name']} | {sponsors[2]['name']}
-    
-    #AI #TechNews #ArtificialIntelligence #Business #Investing #{intel['headlines'][0].split()[0]}
+    #AI #MarketCrash #China #TechWar #Investing #2026Predictions #{intel['headlines'][0].split()[0]}
     """
     
     meta = {
-        "title": f"The AI Edge: {intel['headlines'][0]}",
+        "title": f"NYE SPECIAL: {intel['headlines'][0]} & 2026 Predictions",
         "description": show_notes,
         "date": today_str
     }
     
+    # Save Viral Caption for Twitter Bot
     with open(BASE_DIR / "viral_caption.txt", "w") as f: f.write(show_notes)
     
     print(" >> 🎙️  RECORDING...")
@@ -352,8 +356,8 @@ def produce_episode():
     full_audio.export(outfile, format="mp3", bitrate="192k")
     
     with open(outfile.with_suffix(".json"), "w") as f: json.dump(meta, f)
-    
     print(f" ✅ EPISODE COMPLETE: {outfile}")
+    
     update_rss_feed()
 
 if __name__ == "__main__":
