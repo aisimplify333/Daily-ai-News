@@ -39,10 +39,11 @@ RUFUS_LOCATIONS = [
     "on the trading floor in London",
     "monitoring the pre-market in New York",
     "tracking chip shipments in Taiwan",
-    "analyzing energy grids in Texas"
+    "analyzing energy grids in Texas",
+    "at the regulator's office in Brussels"
 ]
 
-# --- 2. FEEDS (The "News Desk") ---
+# --- 2. FEEDS (Hard News) ---
 FEED_SOURCES = {
     "TITANS": [
         "https://openai.com/blog/rss.xml",
@@ -57,47 +58,45 @@ FEED_SOURCES = {
     "MONEY": [
         "https://finance.yahoo.com/news/rssindex",
         "https://techcrunch.com/category/venture/feed/"
+    ],
+    "LEGAL_GLOBAL": [
+        "https://news.google.com/rss/search?q=AI+Regulation+EU+US+China&hl=en-US&gl=US&ceid=US:en",
+        "https://restofworld.org/feed/"
     ]
 }
 
-# --- 3. INTEL (The "Top 5" Engine) ---
-def deep_search_fallback(query, count=3):
-    print(f"   ⚠️ SEARCHING WEB FOR: {query}...")
+# --- 3. INTEL ---
+def deep_search_fallback(query):
+    print(f"   ⚠️ SEARCHING: {query}...")
     results = []
     try:
         ddgs = DDGS()
-        # Search for hard news
-        search_results = ddgs.text(f"{query} {datetime.date.today()}", max_results=count)
+        search_results = ddgs.text(f"{query} 2025 data", max_results=3)
         for r in search_results: results.append(r['title'])
     except: pass
     return results
 
 def is_hard_news(title):
-    fluff = ["how to", "guide", "best of", "gift", "deal", "game", "review", "monitor"]
+    fluff = ["how to", "guide", "best of", "gift", "deal", "game", "review"]
     return not any(x in title.lower() for x in fluff)
 
 def gather_intel():
-    print(" >> 📡 GATHERING THE TOP 5 STORIES...")
-    intel = {"headlines": [], "deep_dive": [], "money": []}
+    print(" >> 📡 GATHERING THE BIG 5...")
+    intel = {"headlines": [], "money": [], "legal": []}
     
-    # 1. HEADLINES (The Top 5)
-    all_stories = []
-    # Feed Collection
+    # Headlines (Titans + Infra)
+    stories = []
     for url in FEED_SOURCES["TITANS"] + FEED_SOURCES["INFRA"]:
         try:
             feed = feedparser.parse(url)
             for entry in feed.entries:
-                if is_hard_news(entry.title): all_stories.append(entry.title)
+                if is_hard_news(entry.title): stories.append(entry.title)
         except: pass
     
-    # Fallback if feeds are thin
-    if len(all_stories) < 5:
-        all_stories += deep_search_fallback("Top Artificial Intelligence News Stories Today", 5)
+    if len(stories) < 5: stories += deep_search_fallback("Top AI News Stories Today")
+    intel["headlines"] = list(set(stories))[:5]
     
-    # Select Top 5 Unique Stories
-    intel["headlines"] = list(set(all_stories))[:5]
-
-    # 2. MONEY STORY (For Rufus)
+    # Money Specific
     money_stories = []
     for url in FEED_SOURCES["MONEY"]:
         try:
@@ -105,8 +104,19 @@ def gather_intel():
             for entry in feed.entries:
                 if "AI" in entry.title: money_stories.append(entry.title)
         except: pass
-    if not money_stories: money_stories = deep_search_fallback("AI Tech Stock Market News", 1)
-    intel["money"] = money_stories[:1] if money_stories else ["Global Tech Market Update"]
+    if not money_stories: money_stories = ["Tech Market Volatility"]
+    intel["money"] = money_stories[:1]
+
+    # Legal/Global Specific
+    legal_stories = []
+    for url in FEED_SOURCES["LEGAL_GLOBAL"]:
+        try:
+            feed = feedparser.parse(url)
+            for entry in feed.entries:
+                legal_stories.append(entry.title)
+        except: pass
+    if not legal_stories: legal_stories = ["Global AI Safety Summit"]
+    intel["legal"] = legal_stories[:1]
     
     return intel
 
@@ -117,11 +127,11 @@ def get_sponsors():
         {"name": "Morning Brew", "copy": "Get smarter in 5 minutes. Daily business news without the jargon. MorningBrew.com."}
     ]
 
-# --- 4. THE WRITER (STRUCTURED ENGINE) ---
+# --- 4. THE WRITER ---
 def generate_text(system_prompt):
     response = client.chat.completions.create(
         model="gpt-4o",
-        temperature=0.75, 
+        temperature=0.75,
         messages=[{"role": "system", "content": system_prompt}]
     )
     return response.choices[0].message.content.strip()
@@ -133,76 +143,91 @@ def clean_text(text):
     return text.strip()
 
 def generate_script_objects(intel, sponsors, rufus_loc):
-    print(" >> ✍️  WRITING SHOW (Locked Structure)...")
+    print(" >> ✍️  WRITING SHOW (22 Minute Broadcast Mode)...")
     today = datetime.date.today().strftime("%A, %B %d")
     segments = []
     
-    # Data Setup
     headlines = intel['headlines']
-    # If we somehow have fewer than 5, fill placeholders (Safety Net)
-    while len(headlines) < 5: headlines.append("Global AI Market Updates")
+    while len(headlines) < 5: headlines.append("Global Tech Update")
     
-    top_story = headlines[0]
-    money_story = intel['money'][0]
-    
-    # Formatted List for Prompt
-    rundown_list = "\n".join([f"{i+1}. {h}" for i, h in enumerate(headlines)])
+    rundown_text = "\n".join([f"{i+1}. {h}" for i, h in enumerate(headlines)])
 
-    # --- SEGMENT 1: COLD OPEN (Alex) ---
-    segments.append({"speaker": "ALEX", "text": f"Breaking news: {top_story}. It’s starting."})
+    # --- SEGMENT 1: RUNDOWN (Alex) ---
+    segments.append({"speaker": "ALEX", "text": f"Breaking news: {headlines[0]}. This is the AI Edge."})
     
-    # --- SEGMENT 2: THE RUNDOWN (Alex) ---
-    # Python Hard-Codes the Intro so it never fails
-    segments.append({"speaker": "ALEX", "text": f"I'm Alex. This is the AI Edge for {today}. Here are the top 5 stories you need to know."})
-    
-    # Alex reads the list one by one
-    for i, h in enumerate(headlines):
-        segments.append({"speaker": "ALEX", "text": f"Number {i+1}: {h}."})
-    
-    segments.append({"speaker": "ALEX", "text": f"But first, a word from {sponsors[0]['name']}."})
-    segments.append({"speaker": "ALEX", "text": sponsors[0]['copy']})
-
-    # --- SEGMENT 3: DEEP DIVE (Alex & Jamie) ---
-    prompt_deep = f"""
-    Write a DEEP DIVE dialogue between ALEX and JAMIE.
-    TOPIC: {top_story} (The #1 Story).
-    ALEX: Provide the HARD SPECS (Numbers, Dates, Costs).
-    JAMIE: React with SKEPTICISM regarding the Human Impact.
-    CHEMISTRY: They respect each other but disagree.
-    LENGTH: 1000 words (approx 8 mins).
+    prompt_intro = f"""
+    Write a dialogue for ALEX.
+    CONTEXT: {today}.
+    ALEX: "I'm Alex. Here are the Top 5 Stories you need to know."
+    ALEX: Read the list clearly: {rundown_text}.
+    ALEX: "We have a packed show. We are going deep on every single one of these. But first, {sponsors[0]['copy']}"
     """
-    segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_deep})
+    segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_intro})
 
-    # --- SEGMENT 4: SPONSOR 2 (Jamie) ---
-    segments.append({"speaker": "JAMIE", "text": f"This deep dive is supported by {sponsors[1]['name']}. {sponsors[1]['copy']}"})
+    # --- SEGMENT 2: STORY #1 - THE LEAD (Alex & Jamie) ---
+    print(f"    ...Writing Story 1: {headlines[0]}")
+    # SIGNPOST:
+    segments.append({"speaker": "ALEX", "text": f"Let's begin with Story Number One. The headline is: {headlines[0]}. Jamie, walk us through the numbers."})
+    
+    prompt_s1 = f"""
+    Write a DEEP DIVE on Story #1: {headlines[0]}.
+    ALEX: Give the hard specs/news.
+    JAMIE: "Alex, looking at this..." Give the human/industry perspective.
+    CHEMISTRY: Professional banter.
+    LENGTH: 14 PARAGRAPHS (approx 1000 words).
+    """
+    segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_s1})
 
-    # --- SEGMENT 5: RUFUS TRANSITION (Hardcoded) ---
-    segments.append({"speaker": "ALEX", "text": f"Now, let's follow the money. We go live to Rufus {rufus_loc}. Rufus, what are the charts saying?"})
+    # --- SEGMENT 3: STORY #2 - THE MONEY (Rufus) ---
+    print(f"    ...Writing Story 2: {headlines[1]}")
+    # BRIDGE: Agree -> Prep Headline -> Handoff
+    segments.append({"speaker": "ALEX", "text": f"I totally agree with you, Jamie. Now, let's shift gears to Story Number Two. The headline is: {headlines[1]}. For the financial breakdown, we go live to Rufus {rufus_loc}."})
     segments.append({"type": "sfx"})
-
-    # --- SEGMENT 6: THE MONEY (Rufus) ---
-    prompt_rufus = f"""
+    
+    prompt_s2 = f"""
     Write a MONOLOGUE for RUFUS.
-    TOPIC: {money_story}.
-    TONE: Cynical, British, Profit-Obsessed.
-    CONTENT: "Thanks Alex." Analyze the stock impact. Mention tickers (NVDA, MSFT).
-    LENGTH: 800 words (approx 5 mins).
+    TOPIC: Story #2: {headlines[1]}.
+    TONE: Cynical, British.
+    CONTENT: "Thanks Alex." Analyze the stock/money angle. Use tickers.
+    LENGTH: 12 PARAGRAPHS (approx 800 words).
     """
-    segments.append({"type": "monologue", "speaker": "RUFUS", "prompt": prompt_rufus})
+    segments.append({"type": "monologue", "speaker": "RUFUS", "prompt": prompt_s2})
+    
+    # Sponsor Break
+    segments.append({"speaker": "ALEX", "text": f"Back to you in a second, Rufus. This market update is supported by {sponsors[1]['name']}. {sponsors[1]['copy']}"})
 
-    # --- SEGMENT 7: ROUNDTABLE (All 3) ---
-    prompt_round = f"""
-    Write a 3-WAY DEBATE.
-    ALEX: "Rufus, is this sustainable?"
-    RUFUS: "Only if the ROI hits."
-    JAMIE: "And if it breaks society?"
-    DEBATE: The ethics vs profit of {top_story}.
-    LENGTH: 600 words.
+    # --- SEGMENT 4: STORY #3 - LEGAL/GLOBAL (Rufus) ---
+    print(f"    ...Writing Story 3: {headlines[2]}")
+    # BRIDGE: Agree -> Prep Headline -> Handoff
+    segments.append({"speaker": "ALEX", "text": f"You nailed it, Rufus. Moving on to Story Number Three. The headline is: {headlines[2]}. This is our Watchdog segment. Rufus, what are the regulators saying?"})
+    
+    prompt_s3 = f"""
+    Write a DIALOGUE for RUFUS and ALEX.
+    TOPIC: Story #3: {headlines[2]}.
+    RUFUS: "The regulators are waking up, Alex." Discuss Legal/Global impact.
+    ALEX: Ask a clarifying question about the law or China/EU impact.
+    RUFUS: Give a sharp prediction.
+    LENGTH: 10 PARAGRAPHS (approx 700 words).
     """
-    segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_round})
+    segments.append({"type": "dialogue", "default": "RUFUS", "prompt": prompt_s3})
 
-    # --- SEGMENT 8: OUTRO (Alex) ---
-    segments.append({"speaker": "ALEX", "text": f"That's the Edge. Subscribe to stay ahead. {sponsors[2]['copy']}"})
+    # --- SEGMENT 5: STORIES #4 & #5 - RAPID FIRE (All 3) ---
+    print(f"    ...Writing Stories 4 & 5")
+    # BRIDGE: Agree -> Prep Headlines -> Handoff
+    segments.append({"speaker": "ALEX", "text": f"That is a scary thought. Now, we find ourselves in the Rapid Fire segment where me, Jamie, and Rufus will discuss the final two topics: {headlines[3]} and {headlines[4]}. Let's debate."})
+    
+    prompt_rapid = f"""
+    Write a 3-WAY ROUNDTABLE.
+    TOPICS: {headlines[3]} AND {headlines[4]}.
+    JAMIE: Give a quick take on Story 4.
+    RUFUS: Give a cynical take on Story 4 or 5.
+    ALEX: Wrap it up.
+    LENGTH: 12 PARAGRAPHS (approx 800 words).
+    """
+    segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_rapid})
+
+    # --- OUTRO ---
+    segments.append({"speaker": "ALEX", "text": f"That is your briefing for today. Subscribe so you don't get left behind. {sponsors[2]['copy']}"})
 
     return segments
 
@@ -213,19 +238,12 @@ def produce_episode():
     sponsors = get_sponsors()
     script_objects = generate_script_objects(intel, sponsors, rufus_loc)
     
-    # --- GENERATE SEO METADATA ---
-    # This creates the file you need for Spotify/YouTube
-    headlines_text = "\n".join([f"- {h}" for h in intel['headlines']])
-    seo_content = f"TITLE: The AI Edge: {intel['headlines'][0]}\n\nSHOW NOTES:\nToday's Top 5 Stories:\n{headlines_text}\n\n#AI #TechNews #{intel['headlines'][0][:10].replace(' ','')}"
-    
-    with open(BASE_DIR / "viral_caption.txt", "w") as f: f.write(seo_content)
-    with open(BASE_DIR / "show_notes.txt", "w") as f: f.write(headlines_text)
+    with open(BASE_DIR / "viral_caption.txt", "w") as f: f.write(f"Top 5: {intel['headlines'][0]} #AI")
 
     print(" >> 🎙️  RECORDING...")
     audio_clips = []
     
     for item in script_objects:
-        # 1. Simple Hardcoded Lines
         if "text" in item:
             text = clean_text(item["text"])
             voice = CAST[item["speaker"]]
@@ -236,11 +254,9 @@ def produce_episode():
                 print(f"    ✔ Recorded {item['speaker']}")
             except: pass
             
-        # 2. SFX
         elif item.get("type") == "sfx":
             if TRANSITION_SFX.exists(): audio_clips.append(AudioSegment.from_mp3(TRANSITION_SFX))
 
-        # 3. Monologue (Guaranteed Speaker)
         elif item.get("type") == "monologue":
             text = generate_text(item["prompt"])
             voice = CAST[item["speaker"]]
@@ -251,22 +267,18 @@ def produce_episode():
                 print(f"    ✔ Recorded {item['speaker']} (Monologue)")
             except: pass
 
-        # 4. Dialogue (Chemistry Parser)
         elif item.get("type") == "dialogue":
             raw_text = generate_text(item["prompt"])
             lines = raw_text.split('\n')
             current_speaker = item["default"]
-            
             for line in lines:
                 if not line.strip(): continue
-                # Check for Speaker Tag
                 if ":" in line[:10]:
                     parts = line.split(":", 1)
                     possible_speaker = parts[0].strip().upper()
                     if possible_speaker in CAST:
                         current_speaker = possible_speaker
                         line = parts[1]
-                
                 text = clean_text(line)
                 if text:
                     voice = CAST[current_speaker]
@@ -275,37 +287,24 @@ def produce_episode():
                         client.audio.speech.create(model="tts-1-hd", voice=voice, input=text).stream_to_file(path)
                         audio_clips.append(AudioSegment.from_mp3(path))
                     except: pass
-            print(f"    ✔ Recorded Dialogue Block")
+            print(f"    ✔ Recorded Dialogue")
 
     print(" >> 🎚️  MIXING...")
     full_audio = AudioSegment.empty()
     intro = AudioSegment.from_mp3(INTRO_MUSIC) if INTRO_MUSIC.exists() else AudioSegment.silent(5000)
     outro = AudioSegment.from_mp3(OUTRO_MUSIC) if OUTRO_MUSIC.exists() else AudioSegment.silent(5000)
 
-    # 1. Cold Open (First clip)
     if audio_clips: full_audio += audio_clips.pop(0)
-
-    # 2. Intro Music (Fade In/Out)
     full_audio += intro[:8000].fade_out(2000)
-
-    # 3. Rest of Show
     for clip in audio_clips:
         full_audio += clip
         full_audio += AudioSegment.silent(duration=350)
-
-    # 4. Outro
     full_audio += outro[:10000].fade_in(2000)
     
     outfile = AUDIO_DIR / f"podcast_{datetime.date.today()}.mp3"
     full_audio.export(outfile, format="mp3", bitrate="192k")
     
-    # Metadata for Spotify JSON
-    meta = {
-        "file": str(outfile), 
-        "title": f"The AI Edge: {intel['headlines'][0]}", 
-        "description": f"Today's Top 5 Stories:\n{headlines_text}", 
-        "tags": "#AI #News #Tech"
-    }
+    meta = {"file": str(outfile), "title": f"AI Edge: {intel['headlines'][0]}", "description": "Daily AI News.", "tags": "#AI"}
     with open(BASE_DIR / "episode_metadata.json", "w") as f: json.dump(meta, f)
     print(f" ✅ EPISODE COMPLETE: {outfile}")
 
