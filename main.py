@@ -15,7 +15,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 # CONFIGURING THE BRAIN (GEMINI 1.5 PRO-002 FOR MAX CREATIVITY)
 genai.configure(api_key=os.environ.get("GEMINI_API_KEY")) 
-model = genai.GenerativeModel('gemini-1.5-pro')
+model = genai.GenerativeModel('gemini-1.5-flash')
 
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
