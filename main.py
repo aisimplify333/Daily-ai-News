@@ -9,6 +9,7 @@ from openai import OpenAI
 from pydub import AudioSegment
 from duckduckgo_search import DDGS
 from email.utils import formatdate
+import html  # <--- NEW: Prevents the XML Crash
 
 # --- 1. STUDIO CONFIGURATION ---
 client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
@@ -41,9 +42,9 @@ TRANSITION_SFX = BASE_DIR / "transition.mp3"
 
 # CAST
 CAST = {
-    "ALEX": "onyx",    # Host: Urgent, Breaking News Voice.
-    "JAMIE": "nova",   # Humanist: Alarmed, Worried about the future.
-    "RUFUS": "fable",  # Cynic: Ruthless, Hates Hype, Loves Money.
+    "ALEX": "onyx",    # Host
+    "JAMIE": "nova",   # Humanist
+    "RUFUS": "fable",  # Cynic
     "SPONSOR": "onyx"
 }
 
@@ -55,8 +56,7 @@ RUFUS_LOCATIONS = [
     "toasting to the collapse of regulation in Brussels"
 ]
 
-# --- 2. THE "PREDATOR" SEARCH ENGINE (Big Money / Big Crisis) ---
-# We hunt for "Acquisitions," "China," "Lawsuits," and "Crashes"
+# --- 2. THE "PREDATOR" SEARCH ENGINE ---
 FEED_SOURCES = {
     "WAR_ROOM": [
         "https://news.google.com/rss/search?q=AI+Acquisition+China+US+Tech+War&hl=en-US&gl=US&ceid=US:en",
@@ -77,34 +77,27 @@ def deep_search_fallback(query):
     results = []
     try:
         ddgs = DDGS()
-        # Search for HIGH STAKES keywords
         search_results = ddgs.text(f"{query} billion lawsuit crash china ban {datetime.date.today().year}", max_results=5)
         for r in search_results: results.append(r['title'])
     except: pass
     return results
 
 def filter_for_crisis(stories):
-    # The "Bouncer": Prioritizes High Stakes Headlines
     high_stakes_keywords = ["billion", "trillion", "lawsuit", "sue", "china", "fraud", "crash", "ban", "scam", "war", "acquisition", "drop", "risk", "bankruptcy", "ethics"]
-    
     gold_stories = []
     regular_stories = []
-    
     for s in stories:
         clean_s = s.lower()
         if any(x in clean_s for x in high_stakes_keywords):
             gold_stories.append(s)
         else:
             regular_stories.append(s)
-            
-    # Return Gold first, then regular
     final_list = gold_stories + regular_stories
     return final_list[:5] 
 
 def gather_intel():
     print(" >> 📡 GATHERING 'WAR ROOM' INTEL...")
     raw_stories = []
-    
     for url in FEED_SOURCES["WAR_ROOM"] + FEED_SOURCES["MONEY"]:
         try:
             feed = feedparser.parse(url)
@@ -112,33 +105,27 @@ def gather_intel():
                 if "how to" not in entry.title.lower():
                     raw_stories.append(entry.title)
         except: pass
-    
     if len(raw_stories) < 5: 
         raw_stories += deep_search_fallback("Top AI Business Crisis News")
-    
-    # APPLY THE GATEKEEPER
-    final_headlines = filter_for_crisis(list(set(raw_stories)))
-    return {"headlines": final_headlines}
+    return {"headlines": filter_for_crisis(list(set(raw_stories)))}
 
 def get_sponsors():
-    # UPDATED: Enterprise Grade Sponsors for Higher CPM feel
     return [
-        {"name": "Oracle Cloud", "copy": "Train models faster. Cut your cloud bill in half. Oracle.com."},
-        {"name": "NetSuite", "copy": "Stop the cash burn. Get visibility. NetSuite.com."},
-        {"name": "ElevenLabs", "copy": "The voice of the future. Scale globally. ElevenLabs.io."}
+        {"name": "Oracle Cloud", "copy": "Training AI models burns cash like a bonfire. Stop overpaying the legacy clouds. Oracle Cloud Infrastructure is faster, cheaper, and built for the GPU wars. Scale your intelligence without bankrupting your runway. Visit Oracle.com."},
+        {"name": "NetSuite", "copy": "In a market crash, visibility is survival. If you are running a business on spreadsheets, you are flying blind. NetSuite gives you the financials, the inventory, and the hard truth. Stop guessing. Start leading. NetSuite.com."},
+        {"name": "ElevenLabs", "copy": "The voice you are hearing right now? It isn't human. It is ElevenLabs. We are powering the next generation of global media. If you want to reach the world in any language, with perfect emotion, you need the best. Visit ElevenLabs.io."}
     ]
 
 # --- 4. THE WRITER (NYE / SORKIN EDITION) ---
 def generate_text(system_prompt):
     response = client.chat.completions.create(
         model="gpt-4o",
-        temperature=0.95, # Max Creativity
+        temperature=0.95, 
         messages=[{"role": "system", "content": system_prompt}]
     )
     return response.choices[0].message.content.strip()
 
 def clean_text_for_audio(text):
-    # THE FIREWALL: Removes stage directions
     text = re.sub(r'\*.*?\*', '', text) 
     text = re.sub(r'\[.*?\]', '', text) 
     text = re.sub(r'\(.*?\)', '', text)
@@ -150,14 +137,13 @@ def clean_text_for_audio(text):
 
 def write_script_objects(intel, sponsors, rufus_loc):
     print(" >> ✍️  WRITING NYE SPECIAL (EXTENDED CUT)...")
-    # HARDCODED NYE DATE FOR THE SPECIAL
     today_display = "Wednesday, December 31st" 
     
     segments = []
     headlines = intel['headlines']
     while len(headlines) < 5: headlines.append("Global Market Year-End Review")
     
-    # 1. COLD OPEN (Urgent)
+    # 1. COLD OPEN
     segments.append({"speaker": "ALEX", "text": f"Breaking news: {headlines[0]}. The year is ending with a bang."})
     segments.append({"speaker": "ALEX", "text": f"Good morning. It is {today_display}. I'm Alex. This is the AI Edge. It is the final trading day of 2025."})
     
@@ -165,7 +151,7 @@ def write_script_objects(intel, sponsors, rufus_loc):
         segments.append({"speaker": "ALEX", "text": f"Story {i+1}: {h}."})
     segments.append({"speaker": "ALEX", "text": f"But first, a word from {sponsors[0]['name']}."})
 
-    # 2. THE LEAD (The "War" Story)
+    # 2. THE LEAD
     print(f"    ...Story 1: {headlines[0]}")
     segments.append({"speaker": "ALEX", "text": f"Let's end the year with the big one: {headlines[0]}. Jamie, hit us with the numbers. Do not hold back."})
     
@@ -179,7 +165,7 @@ def write_script_objects(intel, sponsors, rufus_loc):
     """
     segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_s1})
 
-    # 3. THE MONEY (The "Grinch")
+    # 3. THE MONEY
     print(f"    ...Story 2: {headlines[1]}")
     segments.append({"speaker": "ALEX", "text": f"Terrifying. Now, for the final reality check of 2025, we go live to Rufus {rufus_loc}."})
     segments.append({"type": "sfx"})
@@ -194,7 +180,7 @@ def write_script_objects(intel, sponsors, rufus_loc):
     
     segments.append({"speaker": "ALEX", "text": f"Always a ray of sunshine, Rufus. Supported by {sponsors[1]['name']}."})
 
-    # 4. THE WATCHDOG (The Legal Threat)
+    # 4. THE WATCHDOG
     print(f"    ...Story 3: {headlines[2]}")
     segments.append({"speaker": "ALEX", "text": f"Story Three: {headlines[2]}. Rufus, is the law finally catching up?"})
     prompt_s3 = f"""
@@ -205,7 +191,7 @@ def write_script_objects(intel, sponsors, rufus_loc):
     """
     segments.append({"type": "dialogue", "default": "RUFUS", "prompt": prompt_s3})
 
-    # 5. RAPID FIRE (Predictions)
+    # 5. RAPID FIRE
     print(f"    ...Rapid Fire Predictions")
     segments.append({"speaker": "ALEX", "text": f"Final segment of the year. Jamie, Rufus. Give me your 2026 Prediction based on {headlines[3]}."})
     prompt_rapid = f"""
@@ -220,25 +206,29 @@ def write_script_objects(intel, sponsors, rufus_loc):
 
     segments.append({"speaker": "ALEX", "text": f"That is the Edge for 2025. We'll see you on the other side. Happy New Year. {sponsors[2]['copy']}"})
     return segments
-    
-# --- 6. RSS GENERATOR (SPOTIFY VERIFIED) ---
+
+# --- 6. RSS GENERATOR (XML SAFE) ---
 def update_rss_feed():
     print(" >> 📡 UPDATING SPOTIFY RSS FEED...")
     
+    # NEW: Safety function to prevent "ElementTree" Crashes
+    def xml_safe(text):
+        return html.escape(str(text))
+
     rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
   <channel>
     <title>The AI Edge</title>
     <description>Daily AI News, Finance, and Regulation.</description>
-    <link>{HOSTING_URL}</link>
+    <link>{xml_safe(HOSTING_URL)}</link>
     <language>en-us</language>
     <itunes:category text="Technology"/>
     <itunes:explicit>no</itunes:explicit>
-    <itunes:author>{AUTHOR_NAME}</itunes:author>
-    <itunes:image href="{COVER_ART_URL}"/>
+    <itunes:author>{xml_safe(AUTHOR_NAME)}</itunes:author>
+    <itunes:image href="{xml_safe(COVER_ART_URL)}"/>
     <itunes:owner>
-        <itunes:name>{AUTHOR_NAME}</itunes:name>
-        <itunes:email>{YOUR_EMAIL}</itunes:email>
+        <itunes:name>{xml_safe(AUTHOR_NAME)}</itunes:name>
+        <itunes:email>{xml_safe(YOUR_EMAIL)}</itunes:email>
     </itunes:owner>
     """
     
@@ -259,15 +249,16 @@ def update_rss_feed():
         pubDate = formatdate(os.path.getmtime(file_path))
         file_url = f"{HOSTING_URL}{filename}"
 
+        # WRAPPED IN XML_SAFE TO PREVENT CRASH
         rss += f"""
     <item>
-      <title>{title}</title>
-      <description>{desc}</description>
-      <enclosure url="{file_url}" length="{file_size}" type="audio/mpeg"/>
-      <guid>{file_url}</guid>
+      <title>{xml_safe(title)}</title>
+      <description>{xml_safe(desc)}</description>
+      <enclosure url="{xml_safe(file_url)}" length="{file_size}" type="audio/mpeg"/>
+      <guid>{xml_safe(file_url)}</guid>
       <pubDate>{pubDate}</pubDate>
       <itunes:duration>1320</itunes:duration>
-      <itunes:image href="{COVER_ART_URL}"/>
+      <itunes:image href="{xml_safe(COVER_ART_URL)}"/>
     </item>"""
 
     rss += "\n  </channel>\n</rss>"
@@ -284,7 +275,6 @@ def produce_episode():
     
     today_str = datetime.date.today().isoformat()
     
-    # SEO SHOCK HEADLINES for TWITTER/SPOTIFY
     show_notes = f"""
     {today_str} | NYE SPECIAL: The {intel['headlines'][0]} Crisis
     
@@ -296,7 +286,7 @@ def produce_episode():
     IN THIS EPISODE:
     It's the final broadcast of 2025. Alex, Jamie, and Rufus break down the year's biggest financial risks and predict the 2026 crash.
     
-    #AI #MarketCrash #China #TechWar #Investing #2026Predictions #{intel['headlines'][0].split()[0]}
+    #AI #MarketCrash #China #TechWar #Investing #2026Predictions
     """
     
     meta = {
@@ -305,7 +295,6 @@ def produce_episode():
         "date": today_str
     }
     
-    # Save Viral Caption for Twitter Bot
     with open(BASE_DIR / "viral_caption.txt", "w") as f: f.write(show_notes)
     
     print(" >> 🎙️  RECORDING...")
@@ -316,7 +305,11 @@ def produce_episode():
             voice = CAST[item["speaker"]]
             try:
                 path = AUDIO_DIR / f"seg_{len(audio_clips)}.mp3"
-                client.audio.speech.create(model="tts-1-hd", voice=voice, input=text).stream_to_file(path)
+                # FIXED: This block fixes the "DeprecationWarning" Red Text
+                with client.audio.speech.with_streaming_response.create(
+                    model="tts-1-hd", voice=voice, input=text
+                ) as response:
+                    response.stream_to_file(path)
                 audio_clips.append(AudioSegment.from_mp3(path))
             except: pass
         elif item.get("type") == "sfx":
@@ -335,7 +328,11 @@ def produce_episode():
                 if len(clean) > 2:
                     try:
                         path = AUDIO_DIR / f"seg_{len(audio_clips)}.mp3"
-                        client.audio.speech.create(model="tts-1-hd", voice=CAST[current], input=clean).stream_to_file(path)
+                        # FIXED: This block fixes the "DeprecationWarning" Red Text
+                        with client.audio.speech.with_streaming_response.create(
+                            model="tts-1-hd", voice=CAST[current], input=clean
+                        ) as response:
+                            response.stream_to_file(path)
                         audio_clips.append(AudioSegment.from_mp3(path))
                     except: pass
 
