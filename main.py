@@ -90,4 +90,145 @@ def write_full_script(intel, sponsors):
     - RUFUS (Analyst): The "Huberman/Matt Levine" proxy. Cynical. He cares about MONEY. He explains *how* the scam works.
     
     TASK: Write ACT 1 (Intro + Story 1).
-    1. COLD OPEN (0:00-0:30): Start MID-ARGUMENT about Story
+    1. COLD OPEN (0:00-0:30): Start MID-ARGUMENT about Story 1 (Claude 4.5). Jamie is panicked about "Agents that never sleep", Rufus sees "Infinite Labor." High tension.
+    2. MUSIC INTRO: Write [MUSIC].
+    3. THE WELCOME: Alex says "Good morning." States the Date. 
+       - ALEX MUST SAY: "With me is the conscience of the show, Jamie. Say hello Jamie." (Jamie responds with a mood check).
+       - ALEX MUST SAY: "And checking in from the field... Rufus." (Rufus responds with a cynical location/trade).
+    4. STORY 1 DEEP DIVE: Claude Sonnet 4.5. Alex asks what "Multi-hour tasks" means. Jamie fears autonomous agents. Rufus explains the cost savings of firing humans.
+    
+    LENGTH: 1500 words (approx 8-10 mins). 
+    FORMAT: Standard Dialogue (ALEX: ... JAMIE: ...).
+    """
+    script_act1 = generate_segment(prompt_act1, intel)
+
+    print(" >> ✍️  WRITING ACT II (THE MECHANICS & MONEY)...")
+    prompt_act2 = f"""
+    Write ACT 2 of 'The AI Edge'.
+    
+    TASK: Cover Story 2 ($500B Valuation) and the Native Ad.
+    1. TRANSITION: Alex moves to Story 2 (OpenAI's Money).
+    2. THE DEBATE: $500 Billion. Is it a bubble? Rufus breaks down the valuation metrics. Jamie asks if one company should own the future.
+    3. NATIVE AD (THE RUFUS MOMENT): Rufus interrupts to read this ad IN CHARACTER: {sponsors[0]['name']} - {sponsors[0]['copy']}. 
+       *CRITICAL:* He must weave it into his analysis as advice. "Look, if you want to survive this valuation war..."
+       
+    LENGTH: 1500 words (approx 8-10 mins).
+    """
+    script_act2 = generate_segment(prompt_act2, intel)
+
+    print(" >> ✍️  WRITING ACT III (THE FUTURE & OUTRO)...")
+    prompt_act3 = f"""
+    Write ACT 3 of 'The AI Edge'.
+    
+    TASK: Cover Story 3 (Meta Privacy) and the Sign-Off.
+    1. STORY 3: Meta reading chatbot logs for ads.
+    2. JAMIE'S MOMENT: Jamie gets vulnerable. "Our thoughts are now billboards."
+    3. THE CTA: Alex asks listeners to "Subscribe and Share if you want to survive the AI wave."
+    4. SIGN OFF: Alex says "See you tomorrow."
+    
+    LENGTH: 1500 words (approx 8-10 mins).
+    """
+    script_act3 = generate_segment(prompt_act3, intel)
+    
+    return f"{script_act1}\n{script_act2}\n{script_act3}"
+
+# --- 4. PRODUCTION ENGINE ---
+def clean_text(text):
+    # Remove stage directions like (laughs) or [Intro]
+    text = re.sub(r'[\(\[].*?[\)\]]', '', text) 
+    # Clean up standard text artifacts
+    return text.replace('"', '').replace('*', '').strip()
+
+def update_rss_feed(audio_path, show_notes):
+    def xml_safe(text): return html.escape(str(text))
+    
+    rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+  <channel>
+    <title>The AI Edge</title>
+    <link>https://aisimplify333.github.io/Daily-ai-News/episode_audio/</link>
+    <description>Daily AI News, Finance, and Regulation.</description>
+    <item>
+      <title>{audio_path.stem.replace('_', ' ')}</title>
+      <description>{xml_safe(show_notes)}</description>
+      <enclosure url="https://aisimplify333.github.io/Daily-ai-News/episode_audio/{audio_path.name}" length="{os.path.getsize(audio_path)}" type="audio/mpeg"/>
+      <guid>https://aisimplify333.github.io/Daily-ai-News/episode_audio/{audio_path.name}</guid>
+      <pubDate>{formatdate(os.path.getmtime(audio_path))}</pubDate>
+    </item>
+  </channel>
+</rss>"""
+    with open(BASE_DIR / "feed.xml", "w") as f: f.write(rss)
+
+def produce_episode():
+    # 1. Gather Content
+    intel = gather_intel()
+    sponsors = get_sponsors()
+    
+    # 2. Write Script (3 Acts x 1500 words = ~30 mins)
+    full_script = write_full_script(intel, sponsors)
+    
+    today_str = datetime.date.today().isoformat()
+    episode_title = f"Daily AI Edge: {today_str}"
+    
+    # 3. Marketing Handshake (Critical for Video/Socials)
+    show_notes = f"{today_str} | {episode_title}\n\nTOPICS:\n{intel[:500]}...\n\n#AI #TechNews"
+    
+    # Save Caption for Twitter Publisher
+    with open("viral_caption.txt", "w") as f: f.write(show_notes)
+    
+    # Save JSON for Thumbnail Generator
+    meta = {"title": episode_title, "date": today_str, "headlines": [intel[:100]]}
+    with open(BASE_DIR / "episode_metadata.json", "w") as f: json.dump(meta, f)
+
+    # 4. Audio Recording
+    print(" >> 🎙️  RECORDING (EMPIRE QUALITY)...")
+    audio_clips = []
+    
+    # Add Intro Music Bed
+    if INTRO_MUSIC.exists(): 
+        audio_clips.append(AudioSegment.from_mp3(INTRO_MUSIC)[:15000].fade_out(2000))
+
+    # Regex to find speakers reliably (ALEX:, JAMIE:, etc.)
+    pattern = re.compile(r'^(ALEX|JAMIE|RUFUS|SPONSOR)\s*:?\s*(.*)', re.IGNORECASE)
+    
+    for line in full_script.split('\n'):
+        match = pattern.match(line.strip())
+        if match:
+            speaker = match.group(1).upper()
+            text = match.group(2)
+            
+            # Map "Sponsor" to Rufus
+            if speaker == "SPONSOR": speaker = "RUFUS"
+            
+            if speaker in CAST and len(text) > 2:
+                try:
+                    clean_line = clean_text(text)
+                    if clean_line:
+                        path = AUDIO_DIR / f"seg_{len(audio_clips)}.mp3"
+                        # OpenAI HD Voice Generation
+                        with client_openai.audio.speech.with_streaming_response.create(
+                            model="tts-1-hd", voice=CAST[speaker], input=clean_line
+                        ) as response:
+                            response.stream_to_file(path)
+                        audio_clips.append(AudioSegment.from_mp3(path))
+                except Exception as e:
+                    print(f"    ⚠️ TTS ERROR: {e}")
+
+    # 5. Mixing
+    print(" >> 🎚️  MIXING...")
+    full_audio = AudioSegment.empty()
+    for clip in audio_clips:
+        # Tight Overlap for "Sorkin" feel (no gaps)
+        full_audio += clip + AudioSegment.silent(duration=150) 
+        
+    if OUTRO_MUSIC.exists(): 
+        full_audio += AudioSegment.from_mp3(OUTRO_MUSIC)[:10000].fade_in(2000)
+    
+    outfile = AUDIO_DIR / f"podcast_{today_str}.mp3"
+    full_audio.export(outfile, format="mp3", bitrate="192k")
+    print(f" ✅ EPISODE COMPLETE: {outfile}")
+    
+    update_rss_feed(outfile, show_notes)
+
+if __name__ == "__main__":
+    produce_episode()
