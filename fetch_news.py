@@ -7,7 +7,7 @@ import os
 
 # --- CONFIGURATION ---
 EMAIL_USER = "aisimplifynewsfeed@gmail.com" 
-EMAIL_PASS = os.environ.get("Mail33lemon!") # <--- PASTE APP PASSWORD HERE
+EMAIL_PASS = os.environ.get("EMAIL_APP_PASSWORD") 
 IMAP_SERVER = "imap.gmail.com"
 
 def clean_subject(subject):
@@ -72,14 +72,14 @@ def get_todays_newsletters():
                     body = extract_body(msg)
                     
                     # Clean up the body text (remove huge whitespace)
-                    clean_body = " ".join(body.split())[:3000] # Limit to 3000 chars per email
+                    clean_body = " ".join(body.split())[:3000] 
                     intel_digest += f"\nSOURCE: {subject}\nCONTENT: {clean_body}\n{'-'*20}\n"
         
         mail.close()
         mail.logout()
         
         if not intel_digest:
-            print("    ⚠️ NO EMAILS FOUND. CHECKING SIMULATION MODE.")
+            print("    ⚠️ NO EMAILS FOUND. USING SIMULATION DATA.")
             return None
             
         return intel_digest
