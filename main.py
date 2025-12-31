@@ -35,9 +35,17 @@ CAST = {
 def gather_intel():
     print(" >> 📡 GATHERING INTEL FROM EMAILS...")
     newsletter_data = fetch_news.get_todays_newsletters()
-    if newsletter_data: return newsletter_data
-    print("    ⚠️ INBOX EMPTY. USING SIMULATION.")
-    return "Simulated Tech News: 1. AGI achieved internally at OpenAI. 2. NVIDIA stock crashes 5% on export bans. 3. New humanoid robots deployed in Tesla factories."
+    
+    # IF EMAILS EXIST, USE THEM. IF NOT, USE YOUR "EMPIRE" TEST DATA.
+    if newsletter_data: 
+        return newsletter_data
+    else:
+        print("    ⚠️ INBOX EMPTY. USING EMPIRE TEST DATA.")
+        return """
+        STORY 1: Anthropic's Claude Sonnet 4.5 released. This model upgrade introduces smarter reasoning, stronger memory tools, and the ability to run multi-hour tasks without constant resets. It is a significant step forward for agentic AI.
+        STORY 2: OpenAI hits $500 Billion valuation. After a secondary share sale to investors, OpenAI reached this staggering number, showcasing the company's absolute dominance in the AI market.
+        STORY 3: Meta's AI-driven advertising sparks privacy debates. Meta is using AI-generated chatbot conversations to fuel ads, highlighting specific ethical implications of AI in advertising.
+        """
 
 def get_sponsors():
     return [
@@ -80,12 +88,12 @@ def write_full_script(intel, sponsors):
     - RUFUS (Analyst): The "Huberman/Matt Levine" proxy. Cynical. He cares about MONEY. He explains *how* the scam works.
     
     TASK: Write ACT 1 (Intro + Story 1).
-    1. COLD OPEN (0:00-0:30): Start MID-ARGUMENT. Jamie is panicked, Rufus is mocking her. High tension.
+    1. COLD OPEN (0:00-0:30): Start MID-ARGUMENT about Story 1 (Claude 4.5). Jamie is panicked about "Agents that never sleep", Rufus sees "Infinite Labor." High tension.
     2. MUSIC INTRO: Write [MUSIC].
     3. THE WELCOME: Alex says "Good morning." States the Date. 
        - ALEX MUST SAY: "With me is the conscience of the show, Jamie. Say hello Jamie." (Jamie responds with a mood check).
        - ALEX MUST SAY: "And checking in from the field... Rufus." (Rufus responds with a cynical location/trade).
-    4. STORY 1 DEEP DIVE: The biggest story. Alex sets it up, Jamie fears it, Rufus analyzes the profit angle.
+    4. STORY 1 DEEP DIVE: Claude Sonnet 4.5. Alex asks what "Multi-hour tasks" means. Jamie fears autonomous agents. Rufus explains the cost savings of firing humans.
     
     LENGTH: 1500 words (approx 8-10 mins). 
     FORMAT: Standard Dialogue (ALEX: ... JAMIE: ...).
@@ -96,11 +104,11 @@ def write_full_script(intel, sponsors):
     prompt_act2 = f"""
     Write ACT 2 of 'The AI Edge'.
     
-    TASK: Cover Story 2 and the Native Ad.
-    1. TRANSITION: Alex moves the conversation to Story 2 (Financial/Business focus).
-    2. THE DEBATE: Jamie thinks it's unethical. Rufus thinks it's profitable.
+    TASK: Cover Story 2 ($500B Valuation) and the Native Ad.
+    1. TRANSITION: Alex moves to Story 2 (OpenAI's Money).
+    2. THE DEBATE: $500 Billion. Is it a bubble? Rufus breaks down the valuation metrics. Jamie asks if one company should own the future.
     3. NATIVE AD (THE RUFUS MOMENT): Rufus interrupts to read this ad IN CHARACTER: {sponsors[0]['name']} - {sponsors[0]['copy']}. 
-       *CRITICAL:* He must weave it into his analysis as advice. "Look, if you want to survive this..."
+       *CRITICAL:* He must weave it into his analysis as advice. "Look, if you want to survive this valuation war..."
        
     LENGTH: 1500 words (approx 8-10 mins).
     """
@@ -110,9 +118,9 @@ def write_full_script(intel, sponsors):
     prompt_act3 = f"""
     Write ACT 3 of 'The AI Edge'.
     
-    TASK: Cover Story 3 and the Sign-Off.
-    1. STORY 3: The "Weird" or "Futuristic" story (Robots, AGI, Space).
-    2. JAMIE'S MOMENT: Jamie gets vulnerable/philosophical about the future.
+    TASK: Cover Story 3 (Meta Privacy) and the Sign-Off.
+    1. STORY 3: Meta reading chatbot logs for ads.
+    2. JAMIE'S MOMENT: Jamie gets vulnerable. "Our thoughts are now billboards."
     3. THE CTA: Alex asks listeners to "Subscribe and Share if you want to survive the AI wave."
     4. SIGN OFF: Alex says "See you tomorrow."
     
@@ -132,8 +140,6 @@ def clean_text(text):
 def update_rss_feed(audio_path, show_notes):
     def xml_safe(text): return html.escape(str(text))
     
-    # Overwrites feed.xml with the latest episode as the single entry (Empire Reset)
-    # In a full DB system, this would append.
     rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
