@@ -4,7 +4,7 @@ import re
 import datetime
 from pathlib import Path
 from openai import OpenAI
-from google import genai # NEW LIBRARY
+import google.generativeai as genai
 from pydub import AudioSegment
 from email.utils import formatdate
 import html
@@ -13,10 +13,8 @@ import fetch_news
 # --- 1. STUDIO CONFIGURATION ---
 client_openai = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
-# CONFIGURING THE NEW BRAIN (Google GenAI SDK)
-# This connects to the modern API, giving us access to Flash/Pro 1.5
-client_gemini = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-MODEL_ID = "gemini-1.5-flash" 
+# CONFIGURING THE BRAIN
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
 
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
@@ -27,9 +25,9 @@ if not AUDIO_DIR.exists(): AUDIO_DIR.mkdir(exist_ok=True)
 
 # CAST (The Voices)
 CAST = { 
-    "ALEX": "onyx",    # The Host (Curious, High Energy)
-    "JAMIE": "nova",   # The Heart (Vulnerable, Slow, Empathic)
-    "RUFUS": "fable"   # The Brain (Fast, Cynical, Authoritative)
+    "ALEX": "onyx",    # The Host
+    "JAMIE": "nova",   # The Heart
+    "RUFUS": "fable"   # The Brain
 }
 
 # --- 2. INTEL ENGINE ---
@@ -55,27 +53,45 @@ def get_sponsors():
         {"name": "ElevenLabs", "copy": "This show is 100% AI. Scale your content with ElevenLabs.io."}
     ]
 
-# --- 3. THE SHOWRUNNER (SOUL ENGINE) ---
+# --- 3. THE SHOWRUNNER (HYBRID SOUL ENGINE) ---
 def generate_segment(system_prompt, content_context):
     full_prompt = f"{system_prompt}\n\nCONTEXT:\n{content_context}"
     
-    # NEW SYNTAX: Direct call to the new Client
+    # SAFETY: Allow cynicism/banter
+    safety = [
+        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
+        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
+    ]
+
+    # STRATEGY: TRY 1.5 (SOUL) -> FAILOVER TO 1.0 (RELIABLE)
     try:
-        response = client_gemini.models.generate_content(
-            model=MODEL_ID,
-            contents=full_prompt,
-            config={
-                "temperature": 0.9, # High creativity for banter
-            }
+        # ATTEMPT 1: The High-Quality "Soul" Model
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        response = model.generate_content(
+            full_prompt,
+            generation_config=genai.types.GenerationConfig(temperature=0.9),
+            safety_settings=safety
         )
         return response.text.strip()
+    
     except Exception as e:
-        print(f"    ❌ GENERATION ERROR: {e}")
-        return "ALEX: We are having technical difficulties. See you tomorrow."
+        print(f"    ⚠️ 1.5 FLASH FAILED ({e}). SWITCHING TO BACKUP...")
+        try:
+            # ATTEMPT 2: The Old Reliable Model
+            model = genai.GenerativeModel('gemini-pro')
+            response = model.generate_content(
+                full_prompt,
+                generation_config=genai.types.GenerationConfig(temperature=0.8),
+                safety_settings=safety
+            )
+            return response.text.strip()
+        except Exception as e2:
+            print(f"    ❌ ALL MODELS FAILED: {e2}")
+            return "ALEX: We are having severe technical difficulties today. We will be back tomorrow."
 
 def write_full_script(intel, sponsors):
     print(" >> ✍️  WRITING ACT I (THE HOOK & CHEMISTRY)...")
-    prompt_act1 = f"""
+    prompt_act1 = """
     You are the Showrunner for 'The AI Edge' Daily Podcast.
     
     THE VIBE: 
@@ -117,7 +133,7 @@ def write_full_script(intel, sponsors):
     script_act2 = generate_segment(prompt_act2, intel)
 
     print(" >> ✍️  WRITING ACT III (THE FUTURE & OUTRO)...")
-    prompt_act3 = f"""
+    prompt_act3 = """
     Write ACT 3 of 'The AI Edge'.
     
     TASK: Cover Story 3 (Meta Privacy) and the Sign-Off.
@@ -134,9 +150,7 @@ def write_full_script(intel, sponsors):
 
 # --- 4. PRODUCTION ENGINE ---
 def clean_text(text):
-    # Remove stage directions like (laughs) or [Intro]
     text = re.sub(r'[\(\[].*?[\)\]]', '', text) 
-    # Clean up standard text artifacts
     return text.replace('"', '').replace('*', '').strip()
 
 def update_rss_feed(audio_path, show_notes):
@@ -164,19 +178,16 @@ def produce_episode():
     intel = gather_intel()
     sponsors = get_sponsors()
     
-    # 2. Write Script (3 Acts x 1500 words = ~30 mins)
+    # 2. Write Script
     full_script = write_full_script(intel, sponsors)
     
     today_str = datetime.date.today().isoformat()
     episode_title = f"Daily AI Edge: {today_str}"
     
-    # 3. Marketing Handshake (Critical for Video/Socials)
+    # 3. Marketing Handshake
     show_notes = f"{today_str} | {episode_title}\n\nTOPICS:\n{intel[:500]}...\n\n#AI #TechNews"
-    
-    # Save Caption for Twitter Publisher
     with open("viral_caption.txt", "w") as f: f.write(show_notes)
     
-    # Save JSON for Thumbnail Generator
     meta = {"title": episode_title, "date": today_str, "headlines": [intel[:100]]}
     with open(BASE_DIR / "episode_metadata.json", "w") as f: json.dump(meta, f)
 
@@ -184,11 +195,9 @@ def produce_episode():
     print(" >> 🎙️  RECORDING (EMPIRE QUALITY)...")
     audio_clips = []
     
-    # Add Intro Music Bed
     if INTRO_MUSIC.exists(): 
         audio_clips.append(AudioSegment.from_mp3(INTRO_MUSIC)[:15000].fade_out(2000))
 
-    # Regex to find speakers reliably (ALEX:, JAMIE:, etc.)
     pattern = re.compile(r'^(ALEX|JAMIE|RUFUS|SPONSOR)\s*:?\s*(.*)', re.IGNORECASE)
     
     for line in full_script.split('\n'):
@@ -196,8 +205,6 @@ def produce_episode():
         if match:
             speaker = match.group(1).upper()
             text = match.group(2)
-            
-            # Map "Sponsor" to Rufus
             if speaker == "SPONSOR": speaker = "RUFUS"
             
             if speaker in CAST and len(text) > 2:
@@ -205,7 +212,6 @@ def produce_episode():
                     clean_line = clean_text(text)
                     if clean_line:
                         path = AUDIO_DIR / f"seg_{len(audio_clips)}.mp3"
-                        # OpenAI HD Voice Generation
                         with client_openai.audio.speech.with_streaming_response.create(
                             model="tts-1-hd", voice=CAST[speaker], input=clean_line
                         ) as response:
@@ -218,7 +224,6 @@ def produce_episode():
     print(" >> 🎚️  MIXING...")
     full_audio = AudioSegment.empty()
     for clip in audio_clips:
-        # Tight Overlap for "Sorkin" feel (no gaps)
         full_audio += clip + AudioSegment.silent(duration=150) 
         
     if OUTRO_MUSIC.exists(): 
