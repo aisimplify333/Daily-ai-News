@@ -2,19 +2,28 @@ import os
 import json
 import re
 import datetime
-from pathlib import Path
-from openai import OpenAI
-import google.generativeai as genai
-from pydub import AudioSegment
-from email.utils import formatdate
 import html
+from pathlib import Path
+from email.utils import formatdate
+import xml.etree.ElementTree as ET
+
+# LIBRARIES
+from openai import OpenAI
+from google import genai
+from google.genai import types
+from pydub import AudioSegment
 import fetch_news 
 
-# --- 1. STUDIO CONFIGURATION ---
-client_openai = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
+# --- 1. ENVIRONMENT & SETUP ---
+def require_env(name):
+    val = os.environ.get(name)
+    if not val:
+        print(f" ❌ MISSING ENV VAR: {name}")
+        # We don't crash, we just warn, to allow testing
+    return val
 
-# CONFIGURING THE BRAIN
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+client_openai = OpenAI(api_key=require_env("OPENAI_API_KEY"))
+client_gemini = genai.Client(api_key=require_env("GEMINI_API_KEY"))
 
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
@@ -34,8 +43,12 @@ CAST = {
 def gather_intel():
     print(" >> 📡 GATHERING INTEL FROM EMAILS...")
     try:
-        newsletter_data = fetch_news.get_todays_newsletters()
-        if newsletter_data: return newsletter_data
+        data = fetch_news.get_todays_newsletters()
+        # Safety: Ensure we return a string, even if fetch returns a dict/list
+        if isinstance(data, (dict, list)):
+            return json.dumps(data, indent=2)
+        if data: 
+            return str(data)
     except Exception as e:
         print(f"    ⚠️ EMAIL ERROR: {e}")
 
@@ -53,41 +66,37 @@ def get_sponsors():
         {"name": "ElevenLabs", "copy": "This show is 100% AI. Scale your content with ElevenLabs.io."}
     ]
 
-# --- 3. THE SHOWRUNNER (HYBRID SOUL ENGINE) ---
+# --- 3. THE SHOWRUNNER (ROBUST HYBRID ENGINE) ---
 def generate_segment(system_prompt, content_context):
     full_prompt = f"{system_prompt}\n\nCONTEXT:\n{content_context}"
     
-    # SAFETY: Allow cynicism/banter
-    safety = [
-        {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_ONLY_HIGH"},
-        {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_ONLY_HIGH"},
-    ]
+    # Config for Long Output (Prevents cutoff)
+    conf = types.GenerateContentConfig(
+        temperature=0.9,
+        max_output_tokens=5000 
+    )
 
-    # STRATEGY: TRY 1.5 (SOUL) -> FAILOVER TO 1.0 (RELIABLE)
     try:
-        # ATTEMPT 1: The High-Quality "Soul" Model
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        response = model.generate_content(
-            full_prompt,
-            generation_config=genai.types.GenerationConfig(temperature=0.9),
-            safety_settings=safety
+        # ATTEMPT 1: 1.5 Flash (The Soul)
+        response = client_gemini.models.generate_content(
+            model="gemini-1.5-flash",
+            contents=full_prompt,
+            config=conf
         )
         return response.text.strip()
-    
     except Exception as e:
         print(f"    ⚠️ 1.5 FLASH FAILED ({e}). SWITCHING TO BACKUP...")
         try:
-            # ATTEMPT 2: The Old Reliable Model
-            model = genai.GenerativeModel('gemini-pro')
-            response = model.generate_content(
-                full_prompt,
-                generation_config=genai.types.GenerationConfig(temperature=0.8),
-                safety_settings=safety
+            # ATTEMPT 2: 1.0 Pro (The Backup)
+            response = client_gemini.models.generate_content(
+                model="gemini-pro",
+                contents=full_prompt,
+                config=conf
             )
             return response.text.strip()
         except Exception as e2:
             print(f"    ❌ ALL MODELS FAILED: {e2}")
-            return "ALEX: We are having severe technical difficulties today. We will be back tomorrow."
+            return "ALEX: We are offline. See you tomorrow."
 
 def write_full_script(intel, sponsors):
     print(" >> ✍️  WRITING ACT I (THE HOOK & CHEMISTRY)...")
@@ -148,30 +157,100 @@ def write_full_script(intel, sponsors):
     
     return f"{script_act1}\n{script_act2}\n{script_act3}"
 
-# --- 4. PRODUCTION ENGINE ---
-def clean_text(text):
-    text = re.sub(r'[\(\[].*?[\)\]]', '', text) 
-    return text.replace('"', '').replace('*', '').strip()
+# --- 4. PRODUCTION ENGINE (ROBUST PARSING) ---
 
-def update_rss_feed(audio_path, show_notes):
-    def xml_safe(text): return html.escape(str(text))
+# A. SMART PARSER (Catches multi-line rants)
+def iter_utterances(script):
+    pattern = re.compile(r'^\s*(ALEX|JAMIE|RUFUS|SPONSOR)\s*:?\s*(.*)', re.IGNORECASE)
+    current_speaker = None
+    buffer = []
     
-    rss = f"""<?xml version="1.0" encoding="UTF-8"?>
+    for line in script.splitlines():
+        line = line.strip()
+        if not line: continue
+        
+        match = pattern.match(line)
+        if match:
+            # Flush previous
+            if current_speaker and buffer:
+                yield current_speaker, " ".join(buffer)
+            
+            # Start new
+            current_speaker = match.group(1).upper()
+            if current_speaker == "SPONSOR": current_speaker = "RUFUS"
+            buffer = [match.group(2)]
+        else:
+            # Append to current (This fixes the "Dropped Lines" bug)
+            if current_speaker:
+                buffer.append(line)
+                
+    if current_speaker and buffer:
+        yield current_speaker, " ".join(buffer)
+
+# B. TEXT CHUNKER (Prevents OpenAI Crashes on long input)
+def chunk_text(text, limit=4000):
+    text = re.sub(r'[\(\[].*?[\)\]]', '', text).replace('"', '').replace('*', '').strip()
+    if len(text) <= limit: return [text]
+    
+    chunks = []
+    while len(text) > limit:
+        # Find nearest sentence end
+        split_idx = text.rfind('.', 0, limit)
+        if split_idx == -1: split_idx = limit
+        chunks.append(text[:split_idx+1])
+        text = text[split_idx+1:].strip()
+    chunks.append(text)
+    return chunks
+
+# C. SMART RSS (Appends instead of Overwrites)
+def update_rss_feed(audio_path, show_notes):
+    rss_file = BASE_DIR / "feed.xml"
+    today_str = datetime.date.today().isoformat()
+    
+    # Template if file is missing
+    if not rss_file.exists():
+        rss = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
     <title>The AI Edge</title>
     <link>https://aisimplify333.github.io/Daily-ai-News/episode_audio/</link>
     <description>Daily AI News, Finance, and Regulation.</description>
-    <item>
-      <title>{audio_path.stem.replace('_', ' ')}</title>
-      <description>{xml_safe(show_notes)}</description>
-      <enclosure url="https://aisimplify333.github.io/Daily-ai-News/episode_audio/{audio_path.name}" length="{os.path.getsize(audio_path)}" type="audio/mpeg"/>
-      <guid>https://aisimplify333.github.io/Daily-ai-News/episode_audio/{audio_path.name}</guid>
-      <pubDate>{formatdate(os.path.getmtime(audio_path))}</pubDate>
-    </item>
+    <language>en-us</language>
   </channel>
 </rss>"""
-    with open(BASE_DIR / "feed.xml", "w") as f: f.write(rss)
+        with open(rss_file, "w") as f: f.write(rss)
+
+    # Parse and Append
+    try:
+        tree = ET.parse(rss_file)
+        root = tree.getroot()
+        channel = root.find("channel")
+        
+        item = ET.Element("item")
+        
+        title = ET.SubElement(item, "title")
+        title.text = f"Daily AI Edge: {today_str}"
+        
+        desc = ET.SubElement(item, "description")
+        desc.text = show_notes
+        
+        enclosure = ET.SubElement(item, "enclosure")
+        enclosure.set("url", f"https://aisimplify333.github.io/Daily-ai-News/episode_audio/{audio_path.name}")
+        enclosure.set("length", str(os.path.getsize(audio_path)))
+        enclosure.set("type", "audio/mpeg")
+        
+        guid = ET.SubElement(item, "guid")
+        guid.text = f"https://aisimplify333.github.io/Daily-ai-News/episode_audio/{audio_path.name}"
+        
+        pubDate = ET.SubElement(item, "pubDate")
+        pubDate.text = formatdate(os.path.getmtime(audio_path))
+        
+        # Add to top
+        channel.insert(0, item) 
+        tree.write(rss_file, encoding="UTF-8", xml_declaration=True)
+        
+    except Exception as e:
+        print(f"⚠️ RSS UPDATE FAILED: {e}")
 
 def produce_episode():
     # 1. Gather Content
@@ -186,7 +265,7 @@ def produce_episode():
     
     # 3. Marketing Handshake
     show_notes = f"{today_str} | {episode_title}\n\nTOPICS:\n{intel[:500]}...\n\n#AI #TechNews"
-    with open("viral_caption.txt", "w") as f: f.write(show_notes)
+    with open(BASE_DIR / "viral_caption.txt", "w") as f: f.write(show_notes)
     
     meta = {"title": episode_title, "date": today_str, "headlines": [intel[:100]]}
     with open(BASE_DIR / "episode_metadata.json", "w") as f: json.dump(meta, f)
@@ -198,25 +277,21 @@ def produce_episode():
     if INTRO_MUSIC.exists(): 
         audio_clips.append(AudioSegment.from_mp3(INTRO_MUSIC)[:15000].fade_out(2000))
 
-    pattern = re.compile(r'^(ALEX|JAMIE|RUFUS|SPONSOR)\s*:?\s*(.*)', re.IGNORECASE)
-    
-    for line in full_script.split('\n'):
-        match = pattern.match(line.strip())
-        if match:
-            speaker = match.group(1).upper()
-            text = match.group(2)
-            if speaker == "SPONSOR": speaker = "RUFUS"
-            
-            if speaker in CAST and len(text) > 2:
+    # USE SMART PARSER & CHUNKER
+    seg_idx = 0
+    for speaker, text in iter_utterances(full_script):
+        if speaker in CAST:
+            chunks = chunk_text(text)
+            for chunk in chunks:
+                if len(chunk) < 2: continue
                 try:
-                    clean_line = clean_text(text)
-                    if clean_line:
-                        path = AUDIO_DIR / f"seg_{len(audio_clips)}.mp3"
-                        with client_openai.audio.speech.with_streaming_response.create(
-                            model="tts-1-hd", voice=CAST[speaker], input=clean_line
-                        ) as response:
-                            response.stream_to_file(path)
-                        audio_clips.append(AudioSegment.from_mp3(path))
+                    path = AUDIO_DIR / f"seg_{seg_idx}.mp3"
+                    with client_openai.audio.speech.with_streaming_response.create(
+                        model="tts-1-hd", voice=CAST[speaker], input=chunk
+                    ) as response:
+                        response.stream_to_file(path)
+                    audio_clips.append(AudioSegment.from_mp3(path))
+                    seg_idx += 1
                 except Exception as e:
                     print(f"    ⚠️ TTS ERROR: {e}")
 
