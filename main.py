@@ -149,7 +149,7 @@ def clean_text_for_audio(text):
     return text.strip()
 
 def write_script_objects(intel, sponsors, rufus_loc):
-    print(" >> ✍️  WRITING NYE SPECIAL...")
+    print(" >> ✍️  WRITING NYE SPECIAL (EXTENDED CUT)...")
     # HARDCODED NYE DATE FOR THE SPECIAL
     today_display = "Wednesday, December 31st" 
     
@@ -175,7 +175,7 @@ def write_script_objects(intel, sponsors, rufus_loc):
     - ALEX: Focus on the MONEY/POWER. Mention Billions.
     - JAMIE: First line MUST BE: "The numbers are terrifying, Alex." Then she mentions the New Year's anxiety.
     - TONE: High stakes. End of the world vibes.
-    - LENGTH: 14 PARAGRAPHS.
+    - LENGTH: 20 PARAGRAPHS.
     """
     segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_s1})
 
@@ -188,7 +188,7 @@ def write_script_objects(intel, sponsors, rufus_loc):
     - TONE: Cynical. He hates "New Year's Hope."
     - CONTENT: Explain why this news {headlines[1]} proves 2026 will be a financial bloodbath.
     - METAPHOR: "Champagne on the Titanic."
-    - LENGTH: 12 PARAGRAPHS.
+    - LENGTH: 18 PARAGRAPHS.
     """
     segments.append({"type": "monologue", "speaker": "RUFUS", "prompt": prompt_s2})
     
@@ -201,7 +201,7 @@ def write_script_objects(intel, sponsors, rufus_loc):
     Write a DIALOGUE (RUFUS & ALEX) about {headlines[2]}.
     - RUFUS: "The lawyers are the only ones making money, Alex."
     - CONTENT: Focus on the LAWSUIT/REGULATION aspect.
-    - LENGTH: 10 PARAGRAPHS.
+    - LENGTH: 16 PARAGRAPHS.
     """
     segments.append({"type": "dialogue", "default": "RUFUS", "prompt": prompt_s3})
 
@@ -214,13 +214,13 @@ def write_script_objects(intel, sponsors, rufus_loc):
     - RUFUS: Predicts a market crash.
     - ALEX: Predicts a tech breakthrough.
     - FAST PACED. INTERRUPTIONS.
-    - LENGTH: 12 PARAGRAPHS.
+    - LENGTH: 20 PARAGRAPHS.
     """
     segments.append({"type": "dialogue", "default": "ALEX", "prompt": prompt_rapid})
 
     segments.append({"speaker": "ALEX", "text": f"That is the Edge for 2025. We'll see you on the other side. Happy New Year. {sponsors[2]['copy']}"})
     return segments
-
+    
 # --- 6. RSS GENERATOR (SPOTIFY VERIFIED) ---
 def update_rss_feed():
     print(" >> 📡 UPDATING SPOTIFY RSS FEED...")
