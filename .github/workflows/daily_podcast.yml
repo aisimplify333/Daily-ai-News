@@ -2,8 +2,8 @@ name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 9 * * *' # 9:00 AM UTC (1:00 AM PST)
-  workflow_dispatch:    # Manual trigger
+    - cron: '0 13 * * *' # 6:00 AM PST (13:00 UTC)
+  workflow_dispatch:      # Manual Trigger Button
 
 permissions:
   contents: write
@@ -17,71 +17,61 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Fetches full history, helpful to avoid sync conflicts
+          fetch-depth: 0 
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.10'
 
-      # 2. INSTALL SYSTEM LIBRARIES
+      # 2. INSTALL SYSTEM LIBRARIES (From your old file - Good for Safety)
       - name: Install System Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg imagemagick ghostscript
-          # Fix for ImageMagick policy (often needed for MoviePy TextClips)
+          # Fix for ImageMagick policy (Crucial for Video Text)
           sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
 
-   # 3. INSTALL PYTHON DEPENDENCIES
-      - name: Install Python Libs
+      # 3. INSTALL PYTHON LIBRARIES (Updated for Empire Stack)
+      - name: Install Dependencies
         run: |
-          pip install --upgrade pip
-          # We pin Pillow to 9.5.0 because MoviePy 1.0.3 needs 'ANTIALIAS'
-          pip install openai pydub "pillow==9.5.0" tweepy feedparser requests duckduckgo-search \
-          ffmpeg-normalize "moviepy==1.0.3" numpy replicate librosa \
-          google-api-python-client google-auth-oauthlib google-auth-httplib2
-          
-     # 4. GENERATE CONTENT
-      - name: Run AI Producer
+          python -m pip install --upgrade pip
+          # We install from requirements.txt to ensure google-generativeai is there
+          pip install -r requirements.txt
+
+      # 4. RUN THE EMPIRE BROADCAST (The Manager Script)
+      - name: Run Empire Broadcast
         env:
+          # THE BRAIN & SOUL
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
-        run: |
-          python main.py
-          python update_feed.py
-          python animate_social.py
-
-      # 5. PHASE 2: VISUAL PRODUCTION
-      - name: Run Visual Engine
-        env:
-          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
-        run: python animate_social.py
-
-      # 6. PHASE 3: SOCIALS
-      - name: Run Social Publisher
-        env:
+          # THE INTEL
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          # THE MEGAPHONE
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
-        run: python social_publisher.py
+        run: |
+          # We use the manager script to ensure Audio -> Video -> Social order
+          python run_broadcast.py
 
-      # 7. COMMIT ARTIFACTS
+      # 5. COMMIT ARTIFACTS (Robust Git Logic)
       - name: Commit and Push
         run: |
-          git config --global user.name 'AI Producer'
-          git config --global user.email 'bot@aisimplifymedia.com'
+          git config --global user.name "AI Producer"
+          git config --global user.email "bot@aisimplifymedia.com"
           
-          # Staging files
+          # Stage specific assets to avoid junk
           git add episode_audio/podcast_*.mp3
           git add feed.xml
           git add episode_metadata.json
           git add viral_caption.txt
           git add social_clip.mp4
           
-          # Safety check: Pull changes if repo updated during the build
-          git pull --rebase origin main || echo "No remote changes to merge"
+          # Safety: Pull any remote changes to avoid merge conflicts
+          git pull --rebase origin main || echo "No remote changes"
           
-          # Commit and Push
+          # Commit & Push
           git commit -m "Automated: New Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
