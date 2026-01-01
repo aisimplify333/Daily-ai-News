@@ -1,85 +1,155 @@
 import os
-import json
 import datetime
-import xml.etree.ElementTree as ET
 from pathlib import Path
-from email.utils import formatdate
+import xml.etree.ElementTree as ET
 
-# --- CONFIGURATION ---
-BASE_DIR = Path(__file__).parent
-AUDIO_DIR = BASE_DIR / "episode_audio"
-METADATA_FILE = BASE_DIR / "episode_metadata.json"
-FEED_FILE = BASE_DIR / "feed.xml"
+# ---------- CONFIG ----------
+FEED_XML_PATH = Path("feed.xml")
+EPISODE_DIR = Path("episode_audio")
 
-# REPLACE THIS with your actual GitHub username/repo if known, 
-# otherwise we default to the raw GitHub URL structure.
-# Example: "https://github.com/YourName/Daily-ai-News/raw/main"
-GITHUB_BASE_URL = "https://github.com/Daily-ai-News/Daily-ai-News/raw/main" 
+# IMPORTANT: must match your GitHub Pages base
+AUDIO_BASE_URL = "https://aisimplify333.github.io/Daily-ai-News/episode_audio/"
+COVER_URL = "https://aisimplify333.github.io/Daily-ai-News/cover.png"
 
-def update_rss_feed():
-    print(" >> 📡 UPDATING RSS FEED...")
+RSS_SETTINGS = {
+    "title": "The AI Edge",
+    "link": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/",
+    "description": "Daily AI News, Finance, and Regulation.",
+    "author": "AI Simplify Media",
+    "email": "aisimplify333@gmail.com",
+    "category": "Technology",
+    "explicit": "no",
+    "image": COVER_URL,
+}
 
-    # 1. Load the Fresh Metadata
-    if not METADATA_FILE.exists():
-        print(" ❌ No metadata found. Skipping feed update.")
-        return
+ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+ET.register_namespace("ns0", ITUNES_NS)
 
-    with open(METADATA_FILE, "r") as f:
-        meta = json.load(f)
+def q(tag: str) -> str:
+    return f"{{{ITUNES_NS}}}{tag}"
 
-    # 2. Parse the Existing Feed
-    if not FEED_FILE.exists():
-        print(" ❌ No feed.xml found to update.")
-        return
+def is_real_episode_file(p: Path) -> bool:
+    # Only publish full episodes, never segments
+    name = p.name.lower()
+    return (
+        name.startswith("podcast_")
+        and name.endswith(".mp3")
+        and "_seg_" not in name
+        and not name.startswith("seg_")
+    )
 
-    ET.register_namespace('itunes', 'http://www.itunes.com/dtds/podcast-1.0.dtd')
-    tree = ET.parse(FEED_FILE)
-    root = tree.getroot()
-    channel = root.find("channel")
+def read_existing_real_items():
+    """Read existing feed items, excluding any seg items."""
+    items = []
+    if not FEED_XML_PATH.exists():
+        return items
+    try:
+        tree = ET.parse(FEED_XML_PATH)
+        root = tree.getroot()
+        channel = root.find("channel")
+        if channel is None:
+            return items
+        for it in channel.findall("item"):
+            title = (it.findtext("title") or "").lower()
+            enc = it.find("enclosure")
+            url = (enc.get("url") or "").lower() if enc is not None else ""
+            if title.startswith("seg_") or "/seg_" in url or "_seg_" in url:
+                continue
+            items.append(it)
+    except Exception:
+        return []
+    return items
 
-    # 3. Check if episode already exists (prevent duplicates)
-    episode_title = meta['title']
-    for item in channel.findall("item"):
-        if item.find("title").text == episode_title:
-            print(f" ⚠️ Episode '{episode_title}' already in feed. Skipping.")
-            return
+def dedupe_items(items):
+    seen = set()
+    out = []
+    for it in items:
+        guid = (it.findtext("guid") or "").strip().lower()
+        enc = it.find("enclosure")
+        url = (enc.get("url") or "").strip().lower() if enc is not None else ""
+        key = guid or url or (it.findtext("title") or "").strip().lower()
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(it)
+    return out
 
-    # 4. Create New Item
-    new_item = ET.Element("item")
+def build_channel(channel: ET.Element):
+    ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
+    ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
+    ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
+    ET.SubElement(channel, "language").text = "en-us"
 
-    # Title
-    title = ET.SubElement(new_item, "title")
-    title.text = meta['title']
+    cat = ET.SubElement(channel, q("category"))
+    cat.set("text", RSS_SETTINGS["category"])
 
-    # Description (Show Notes)
-    desc = ET.SubElement(new_item, "description")
-    desc.text = meta['description']
+    ET.SubElement(channel, q("explicit")).text = RSS_SETTINGS["explicit"]
+    ET.SubElement(channel, q("author")).text = RSS_SETTINGS["author"]
 
-    # Enclosure (The MP3 Link)
-    # We construct the URL to point to the 'episode_audio' folder
-    filename = Path(meta['file']).name
-    mp3_url = f"{GITHUB_BASE_URL}/episode_audio/{filename}"
-    
-    enclosure = ET.SubElement(new_item, "enclosure")
-    enclosure.set("url", mp3_url)
-    enclosure.set("type", "audio/mpeg")
-    enclosure.set("length", "30000000") # Approx length in bytes (optional but good)
+    img = ET.SubElement(channel, q("image"))
+    img.set("href", RSS_SETTINGS["image"])
 
-    # GUID (Unique ID)
-    guid = ET.SubElement(new_item, "guid")
-    guid.text = mp3_url # Using URL as GUID is standard simple practice
-    guid.set("isPermaLink", "true")
+    owner = ET.SubElement(channel, q("owner"))
+    ET.SubElement(owner, q("name")).text = RSS_SETTINGS["author"]
+    ET.SubElement(owner, q("email")).text = RSS_SETTINGS["email"]
 
-    # PubDate (RFC 822 format for Spotify)
-    pub_date = ET.SubElement(new_item, "pubDate")
-    pub_date.text = formatdate(usegmt=True)
+def make_item(title: str, description: str, mp3_filename: str, length_bytes: int, pubdate: str, duration_seconds: int):
+    item = ET.Element("item")
+    ET.SubElement(item, "title").text = title
 
-    # Add to Feed (Insert at top)
-    channel.insert(0, new_item) # Index 0 puts it at the top of the list (newest)
+    # Keep description under control; Spotify can be sensitive to huge HTML blobs
+    ET.SubElement(item, "description").text = (description or "")[:6000]
 
-    # 5. Save
-    tree.write(FEED_FILE, encoding="UTF-8", xml_declaration=True)
-    print(f" ✅ FEED UPDATED: Added '{episode_title}'")
+    enc = ET.SubElement(item, "enclosure")
+    enc.set("url", AUDIO_BASE_URL + mp3_filename)
+    enc.set("length", str(int(length_bytes)))
+    enc.set("type", "audio/mpeg")
+
+    guid = ET.SubElement(item, "guid")
+    guid.text = AUDIO_BASE_URL + mp3_filename
+
+    ET.SubElement(item, "pubDate").text = pubdate
+
+    dur = ET.SubElement(item, q("duration"))
+    dur.text = str(int(duration_seconds)) if duration_seconds else ""
+
+    ep_img = ET.SubElement(item, q("image"))
+    ep_img.set("href", RSS_SETTINGS["image"])
+
+    return item
+
+def rebuild_feed(new_episode_meta: dict | None = None):
+    """
+    If new_episode_meta provided, inserts it as the newest item.
+    Otherwise, just cleans the existing feed (removes seg items and fixes ordering).
+    """
+    existing_items = dedupe_items(read_existing_real_items())
+
+    rss = ET.Element("rss", {"version": "2.0"})
+    rss.set("xmlns:ns0", ITUNES_NS)
+    channel = ET.SubElement(rss, "channel")
+    build_channel(channel)
+
+    # Add newest item first (if provided)
+    if new_episode_meta:
+        channel.append(
+            make_item(
+                title=new_episode_meta["title"],
+                description=new_episode_meta["description"],
+                mp3_filename=new_episode_meta["mp3_filename"],
+                length_bytes=new_episode_meta["length_bytes"],
+                pubdate=new_episode_meta["pubdate"],
+                duration_seconds=new_episode_meta.get("duration_seconds", 0),
+            )
+        )
+
+    # Then add prior items
+    for it in existing_items:
+        channel.append(it)
+
+    ET.ElementTree(rss).write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
+    print("✅ feed.xml rebuilt cleanly (segments removed).")
 
 if __name__ == "__main__":
-    update_rss_feed()
+    # Running update_feed.py alone will clean the feed even without a new episode
+    rebuild_feed()
