@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.10'
 
-      # 2. INSTALL SYSTEM LIBRARIES (From your old file - Good for Safety)
+      # 2. INSTALL SYSTEM LIBRARIES (Crucial for Video)
       - name: Install System Dependencies
         run: |
           sudo apt-get update
@@ -32,37 +32,34 @@ jobs:
           # Fix for ImageMagick policy (Crucial for Video Text)
           sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
 
-      # 3. INSTALL PYTHON LIBRARIES (Updated for Empire Stack)
+      # 3. INSTALL PYTHON LIBRARIES
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          # We install from requirements.txt to ensure google-generativeai is there
           pip install -r requirements.txt
 
-      # 4. RUN THE EMPIRE BROADCAST (The Manager Script)
+      # 4. RUN THE EMPIRE BROADCAST (The Soul & Video)
       - name: Run Empire Broadcast
         env:
-          # THE BRAIN & SOUL
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          # THE INTEL
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
-          # THE MEGAPHONE
           TWITTER_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           TWITTER_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           TWITTER_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
         run: |
-          # We use the manager script to ensure Audio -> Video -> Social order
           python run_broadcast.py
 
-      # 5. COMMIT ARTIFACTS (Robust Git Logic)
+      # 5. COMMIT ARTIFACTS (THE FIX IS HERE)
       - name: Commit and Push
         run: |
+          # --- IDENTITY FIX ---
           git config --global user.name "AI Producer"
           git config --global user.email "bot@aisimplifymedia.com"
+          # --------------------
           
-          # Stage specific assets to avoid junk
+          # Stage specific assets
           git add episode_audio/podcast_*.mp3
           git add feed.xml
           git add episode_metadata.json
