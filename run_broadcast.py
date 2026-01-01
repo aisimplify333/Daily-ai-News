@@ -5,68 +5,99 @@ import os
 from pathlib import Path
 from pydub import AudioSegment
 
-def run_command(command, description):
+MIN_MINUTES = float(os.getenv("MIN_EPISODE_MINUTES", "22"))
+BRANCH = os.getenv("GIT_BRANCH", "main")
+
+def run_command(command, description, allow_fail=False):
     print(f"\n >> 🚀 STARTING: {description}...")
     try:
-        # Run the command and wait for it to finish
-        result = subprocess.run(command, shell=True, check=True, text=True)
+        subprocess.run(command, shell=True, check=True, text=True)
         print(f" >> ✅ COMPLETE: {description}")
+        return True
     except subprocess.CalledProcessError as e:
         print(f" >> ❌ ERROR in {description}: {e}")
-        # Continue despite marketing errors to ensure audio publishes
-        if "social" in description.lower() or "generate" in description.lower():
-            print("    ⚠️ CONTINUING despite marketing error...")
-        else:
-            sys.exit(1)
+        if allow_fail:
+            print("    ⚠️ CONTINUING despite error...")
+            return False
+        sys.exit(1)
 
-def check_episode_length():
-    print("\n >> 📏 CHECKING SHOW RUNNER...")
-    audio_dir = Path("episode_audio")
+def configure_git_identity():
+    """
+    GitHub Actions runners do not have an author identity by default.
+    This prevents: 'fatal: empty ident name ... not allowed'
+    """
+    run_command('git config user.name "github-actions[bot]"', "Configuring git user.name", allow_fail=False)
+    run_command('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"', "Configuring git user.email", allow_fail=False)
+
+def get_latest_mp3(audio_dir="episode_audio"):
+    audio_dir = Path(audio_dir)
     files = sorted(list(audio_dir.glob("*.mp3")), key=os.path.getmtime, reverse=True)
-    
-    if not files:
-        print("    ⚠️ WARNING: No audio files found.")
-        return
+    return files[0] if files else None
 
-    latest_file = files[0]
-    try:
-        audio = AudioSegment.from_mp3(latest_file)
-        duration_min = len(audio) / 1000 / 60
-        print(f"    📄 File: {latest_file.name}")
-        print(f"    ⏱️  Duration: {duration_min:.2f} minutes")
-        
-        if duration_min < 22.0:
-            print("    ⚠️ WARNING: Episode is UNDER 22 MINUTES.")
-        else:
-            print("    ✅ GREEN LIGHT: Episode meets 22+ min standard.")
-    except: pass
+def get_mp3_duration_minutes(mp3_path: Path) -> float:
+    audio = AudioSegment.from_mp3(mp3_path)
+    return len(audio) / 1000.0 / 60.0
+
+def check_episode_length_or_fail():
+    print("\n >> 📏 CHECKING SHOW RUNNER...")
+    latest = get_latest_mp3()
+    if not latest:
+        raise RuntimeError("No audio files found in episode_audio/.")
+
+    duration_min = get_mp3_duration_minutes(latest)
+    print(f"    📄 File: {latest.name}")
+    print(f"    ⏱️  Duration: {duration_min:.2f} minutes")
+
+    if duration_min < MIN_MINUTES:
+        raise RuntimeError(f"Episode is too short ({duration_min:.2f} min < {MIN_MINUTES:.0f} min). Refusing to publish.")
+    print(f"    ✅ GREEN LIGHT: Episode meets {MIN_MINUTES:.0f}+ min standard.")
+    return latest, duration_min
+
+def has_git_changes():
+    # returns exit code 0 if changes exist, 1 if clean
+    result = subprocess.run("git diff --cached --quiet", shell=True)
+    return result.returncode != 0
 
 def main():
     print("===================================================")
     print("      🎙️  DAILY AI NEWS: EMPIRE BROADCAST        ")
     print("===================================================")
 
-    # 1. STUDIO (Audio & Script)
-    run_command("python main.py", "1. Studio Recording")
-    check_episode_length()
+    # 0) Configure git identity BEFORE any commits
+    configure_git_identity()
 
-    # 2. AGENCY (Visual Assets)
-    run_command("python generate_social.py", "2. Generating Visuals")
-    run_command("python animate_social.py", "3. Rendering Video Clips")
+    # 1) STUDIO (Audio & Script)
+    run_command("python main.py", "1. Studio Recording", allow_fail=False)
 
-    # 3. TOWER (Distribution)
+    # Enforce quality gate: do not publish short episodes
+    try:
+        check_episode_length_or_fail()
+    except Exception as e:
+        print(f" >> ❌ QUALITY GATE FAILED: {e}")
+        sys.exit(1)
+
+    # 2) AGENCY (Visual Assets) - allow fail (marketing should not block audio publishing)
+    run_command("python generate_social.py", "2. Generating Visuals", allow_fail=True)
+    run_command("python animate_social.py", "3. Rendering Video Clips", allow_fail=True)
+
+    # 3) TOWER (Distribution)
     print("\n >> 📡 UPLOADING TO GITHUB...")
-    run_command("git add .", "Staging Files")
-    run_command('git commit -m "Empire Broadcast: New Episode"', "Committing")
-    run_command("git push origin main", "Pushing to Live")
+    run_command("git add .", "Staging Files", allow_fail=False)
 
-    # 4. BUFFER
-    wait_time = 120 
-    print(f"\n >> ⏳ BUFFERING {wait_time}s for RSS propogation...")
+    # If nothing changed, skip commit/push
+    if not has_git_changes():
+        print(" >> ℹ️  No changes staged. Skipping commit and push.")
+    else:
+        run_command('git commit -m "Empire Broadcast: New Episode"', "Committing", allow_fail=False)
+        run_command(f"git push origin {BRANCH}", "Pushing to Live", allow_fail=False)
+
+    # 4) BUFFER
+    wait_time = int(os.getenv("RSS_BUFFER_SECONDS", "120"))
+    print(f"\n >> ⏳ BUFFERING {wait_time}s for RSS propagation...")
     time.sleep(wait_time)
 
-    # 5. LAUNCH (Marketing)
-    run_command("python social_publisher.py", "5. Firing Marketing Automation")
+    # 5) LAUNCH (Marketing) - allow fail
+    run_command("python social_publisher.py", "5. Firing Marketing Automation", allow_fail=True)
 
     print("\n===================================================")
     print("      🎉 EMPIRE BROADCAST COMPLETE. LIVE.         ")
