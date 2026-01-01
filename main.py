@@ -1,13 +1,12 @@
 import os
 import re
 import json
-import time
 import uuid
 import shutil
 import subprocess
 import datetime
 from pathlib import Path
-from typing import List, Dict, Tuple, Optional
+from typing import List, Dict, Tuple
 
 from pydub import AudioSegment
 from openai import OpenAI
@@ -18,6 +17,12 @@ try:
 except Exception:
     genai = None
 
+# Optional external feed rebuilder (preferred if present)
+try:
+    from update_feed import rebuild_feed as external_rebuild_feed
+except Exception:
+    external_rebuild_feed = None
+
 # ----------------------------
 # CONFIG (Spotify/RSS identity)
 # ----------------------------
@@ -26,7 +31,7 @@ RSS_SETTINGS = {
     "link": "https://github.com/aisimplify333/Daily-ai-News",
     "description": "Daily AI News Drama: raw, human, high-stakes conversations about the future.",
     "author": "AI Simplify Media",
-    "email": "aisimplifynewsfeed@gmail.com",
+    "email": "aisimplify333@gmail.com",
     "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png",
     "category": "Technology",
 }
@@ -45,7 +50,6 @@ FEED_XML_PATH = BASE_DIR / "feed.xml"
 SPONSORS_PATH = BASE_DIR / "sponsors.json"
 
 # Where Spotify reads the audio from (GitHub Pages)
-# Must match your Pages structure: https://<user>.github.io/<repo>/episode_audio/<file>
 AUDIO_BASE_URL = os.getenv(
     "AUDIO_BASE_URL",
     "https://aisimplify333.github.io/Daily-ai-News/episode_audio/"
@@ -101,7 +105,6 @@ def generate_text(prompt: str, temperature: float = 0.9, max_tokens: int = 5000)
     """
     # 1) Gemini attempt
     if PRIMARY_LLM == "gemini" and genai and gemini_key:
-        # Try a short list of common models; if your SDK supports list_models you can expand.
         candidate_models = [
             os.getenv("GEMINI_MODEL", "").strip(),
             "gemini-2.0-flash",
@@ -137,9 +140,7 @@ def generate_text(prompt: str, temperature: float = 0.9, max_tokens: int = 5000)
         messages=[
             {
                 "role": "system",
-                "content": (
-                    "You are a top-tier podcast writer. Output must follow the requested format exactly."
-                )
+                "content": "You are a top-tier podcast writer. Output must follow the requested format exactly.",
             },
             {"role": "user", "content": prompt},
         ],
@@ -147,11 +148,10 @@ def generate_text(prompt: str, temperature: float = 0.9, max_tokens: int = 5000)
     return resp.choices[0].message.content.strip()
 
 # ----------------------------
-# NEWS INTEL (RSS primary, email optional backup)
+# NEWS INTEL (RSS primary; email backup can remain separate)
 # ----------------------------
 GOOGLE_NEWS_RSS = [
-    # Big, high-signal queries to feed the archetypes
-    ("Frontier Models", "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)&hl=en-US&gl=US&ceid=US:en"),
+    ("Frontier Models", "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
     ("AI Money", "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
     ("AI Regulation", "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
     ("AI Security", "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
@@ -182,7 +182,7 @@ def fetch_rss_items(max_per_feed: int = 8) -> List[Dict[str, str]]:
                         "bucket": label,
                         "title": title,
                         "link": link,
-                        "summary": desc[:400],
+                        "summary": desc[:500],
                     })
         except Exception as e:
             _safe_print(f"    ⚠️ RSS fetch failed ({label}): {e}")
@@ -210,6 +210,7 @@ def load_sponsors() -> List[Dict[str, str]]:
                 return data["sponsors"]
         except Exception:
             pass
+
     # placeholders (your file should replace these)
     return [
         {"name": "Sponsor One", "tagline": "Run faster. Think clearer.", "cta": "Link in show notes."},
@@ -219,11 +220,12 @@ def load_sponsors() -> List[Dict[str, str]]:
 
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
     intel_compact = "\n".join(
-        [f"- [{x['bucket']}] {x['title']} | {x['summary']} | {x['link']}" for x in intel_items[:40]]
+        [f"- [{x['bucket']}] {x['title']} | {x['summary']} | {x['link']}" for x in intel_items[:60]]
     )
 
     prompt = f"""
 Select the TOP {n} stories for a daily AI show that must feel urgent, emotional, and high-stakes.
+We want stories that can drive *click-to-play*.
 
 Return ONLY valid JSON (no markdown), schema:
 {{
@@ -244,13 +246,22 @@ Return ONLY valid JSON (no markdown), schema:
 Candidate items:
 {intel_compact}
 """
-    raw = generate_text(prompt, temperature=0.4, max_tokens=1200)
+    raw = generate_text(prompt, temperature=0.35, max_tokens=1400)
 
     try:
         j = json.loads(raw)
         stories = j.get("stories", [])
         stories = [s for s in stories if isinstance(s, dict)]
-        return stories[:n]
+        # hard-enforce n and minimal fields
+        clean = []
+        for s in stories[:n]:
+            clean.append({
+                "headline": str(s.get("headline", "")).strip() or "Untitled story",
+                "why_shocking": str(s.get("why_shocking", "")).strip(),
+                "angles": s.get("angles", {}) if isinstance(s.get("angles", {}), dict) else {},
+                "source_url": str(s.get("source_url", "")).strip(),
+            })
+        return clean[:n]
     except Exception:
         # fallback: just take first N
         return [
@@ -269,7 +280,6 @@ Candidate items:
 def build_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], target_minutes: float) -> str:
     date_str = datetime.date.today().isoformat()
 
-    # Sponsor slots
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_2 = sponsors[1] if len(sponsors) > 1 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_3 = sponsors[2] if len(sponsors) > 2 else {"name": "Sponsor", "tagline": "", "cta": ""}
@@ -326,8 +336,7 @@ Write the full episode now.
 
 def estimate_minutes_from_text(script: str) -> float:
     words = len(re.findall(r"\b\w+\b", script))
-    # conversational wpm: 150–175; choose 165 as middle
-    return words / 165.0
+    return words / 165.0  # conversational WPM
 
 # ----------------------------
 # TTS + STITCHING
@@ -345,10 +354,8 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
         if line.strip().upper() == "[MUSIC]":
             out.append(("MUSIC", "[MUSIC]"))
             continue
-
         m = SPEAKER_RE.match(line)
         if not m:
-            # ignore stage directions
             continue
         speaker = m.group(1).upper()
         text = m.group(2).strip()
@@ -397,18 +404,191 @@ def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
         str(out_path),
     ]
     _run(cmd)
+
     try:
         concat_txt.unlink()
     except Exception:
         pass
 
+def _delete_stray_segments_in_episode_audio(today: str):
+    """
+    Guardrail: if anything ever writes *segments* into episode_audio again,
+    we remove them (final podcasts remain untouched).
+    """
+    patterns = [
+        f"{today}_seg_*.mp3",
+        f"{today}_seg_*.wav",
+        f"seg_*.mp3",       # legacy
+        f"*_{today}_seg_*.mp3",
+    ]
+    for pat in patterns:
+        for p in AUDIO_DIR.glob(pat):
+            # never delete final podcast files
+            if p.name.startswith("podcast_"):
+                continue
+            try:
+                p.unlink()
+            except Exception:
+                pass
+
+# ----------------------------
+# SHOW NOTES (SEO)
+# ----------------------------
+def build_show_notes(today: str, stories: List[Dict[str, str]]) -> str:
+    # concise, SEO-friendly, includes links
+    lines = []
+    lines.append(f"{today} | The AI Edge: {today}")
+    lines.append("")
+    lines.append("TOPICS:")
+    for i, s in enumerate(stories, start=1):
+        headline = s.get("headline", "").strip()
+        why = (s.get("why_shocking", "") or "").strip()
+        src = (s.get("source_url", "") or "").strip()
+        why_short = re.sub(r"\s+", " ", why)[:240]
+        if why_short and not why_short.endswith((".", "!", "?")):
+            why_short += "..."
+        lines.append(f"STORY {i}: {headline}. {why_short} {src}".strip())
+
+    lines.append("")
+    lines.append("#AI #TechNews #OpenAI #Anthropic #DeepMind #Nvidia #AISafety #AIRegulation")
+    return "\n".join(lines).strip()
+
+# ----------------------------
+# FEED UPDATE (preferred external rebuild_feed; fallback internal)
+# ----------------------------
+def _update_feed_after_episode(
+    *,
+    today: str,
+    final_mp3: Path,
+    show_notes_text: str,
+    duration_seconds: int,
+):
+    if not final_mp3.exists():
+        raise RuntimeError(f"Final MP3 missing: {final_mp3}")
+
+    length_bytes = final_mp3.stat().st_size
+    pubdate = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S -0000")
+
+    payload = {
+        "title": f"The AI Edge: {today}",
+        "description": show_notes_text,
+        "mp3_filename": final_mp3.name,
+        "length_bytes": int(length_bytes),
+        "pubdate": pubdate,
+        "duration_seconds": int(duration_seconds),
+        # optional, but helpful
+        "audio_base_url": AUDIO_BASE_URL,
+        "rss_settings": RSS_SETTINGS,
+    }
+
+    # Preferred: use your update_feed.py if present
+    if external_rebuild_feed:
+        external_rebuild_feed(payload)
+        return
+
+    # Fallback: internal feed.xml updater
+    update_feed_xml_fallback(payload)
+
+def update_feed_xml_fallback(payload: Dict):
+    """
+    Minimal, robust feed updater that:
+    - Prepends the newest episode
+    - Preserves existing episodes
+    - Removes any accidental seg_* items
+    """
+    import xml.etree.ElementTree as ET
+
+    mp3_filename = payload["mp3_filename"]
+    audio_url = AUDIO_BASE_URL + mp3_filename
+    title = payload["title"]
+    desc = (payload["description"] or "").strip()
+    length_bytes = str(payload.get("length_bytes", 0))
+    pubdate = payload.get("pubdate") or datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S -0000")
+    duration_seconds = str(payload.get("duration_seconds", 0))
+
+    ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+    ET.register_namespace("itunes", ITUNES_NS)
+
+    # Load or create base RSS
+    if FEED_XML_PATH.exists():
+        tree = ET.parse(FEED_XML_PATH)
+        rss = tree.getroot()
+    else:
+        rss = ET.Element("rss", version="2.0", attrib={"xmlns:itunes": ITUNES_NS})
+        tree = ET.ElementTree(rss)
+        channel = ET.SubElement(rss, "channel")
+        ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
+        ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
+        ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
+        ET.SubElement(channel, "language").text = "en-us"
+        ET.SubElement(channel, f"{{{ITUNES_NS}}}category", attrib={"text": RSS_SETTINGS["category"]})
+        ET.SubElement(channel, f"{{{ITUNES_NS}}}explicit").text = "no"
+        ET.SubElement(channel, f"{{{ITUNES_NS}}}author").text = RSS_SETTINGS["author"]
+        img = ET.SubElement(channel, f"{{{ITUNES_NS}}}image")
+        img.set("href", RSS_SETTINGS["image"])
+        owner = ET.SubElement(channel, f"{{{ITUNES_NS}}}owner")
+        ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = RSS_SETTINGS["author"]
+        ET.SubElement(owner, f"{{{ITUNES_NS}}}email").text = RSS_SETTINGS["email"]
+
+    channel = rss.find("channel")
+    if channel is None:
+        raise RuntimeError("feed.xml missing <channel>.")
+
+    # Build new item
+    item = ET.Element("item")
+    ET.SubElement(item, "title").text = title
+    ET.SubElement(item, "description").text = desc[:6000]
+    enclosure = ET.SubElement(item, "enclosure")
+    enclosure.set("url", audio_url)
+    enclosure.set("length", length_bytes)
+    enclosure.set("type", "audio/mpeg")
+    ET.SubElement(item, "guid").text = audio_url
+    ET.SubElement(item, "pubDate").text = pubdate
+    ET.SubElement(item, f"{{{ITUNES_NS}}}duration").text = duration_seconds
+    img2 = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
+    img2.set("href", RSS_SETTINGS["image"])
+
+    # Pull existing items, strip any seg_* garbage, and prevent duplicates
+    existing_items = list(channel.findall("item"))
+    cleaned_existing = []
+    seen_urls = set([audio_url])
+
+    def _is_segment_item(it: ET.Element) -> bool:
+        t = (it.findtext("title") or "").strip().lower()
+        enc = it.find("enclosure")
+        u = (enc.get("url") if enc is not None else "") or ""
+        return t.startswith("seg_") or ("_seg_" in t) or ("/seg_" in u) or ("_seg_" in u)
+
+    for it in existing_items:
+        if _is_segment_item(it):
+            continue
+        enc = it.find("enclosure")
+        u = (enc.get("url") if enc is not None else "") or ""
+        if u and u in seen_urls:
+            continue
+        if u:
+            seen_urls.add(u)
+        cleaned_existing.append(it)
+
+    # Replace items with [new] + cleaned old
+    for it in existing_items:
+        channel.remove(it)
+    channel.append(item)
+    for it in cleaned_existing:
+        channel.append(it)
+
+    tree.write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
+
+# ----------------------------
+# EPISODE PIPELINE
+# ----------------------------
 def produce_episode():
     today = datetime.date.today().isoformat()
     _safe_print(" >> 📰 GATHERING INTEL (RSS PRIMARY)...")
     intel = fetch_rss_items(max_per_feed=10)
 
     if not intel:
-        _safe_print("    ⚠️ RSS empty. Optional email backup can be wired here (fetch_news.py). Using test items.")
+        _safe_print("    ⚠️ RSS empty. Using test items.")
         intel = [
             {"bucket": "Test", "title": "Test: AI model sparks market panic", "link": "https://example.com", "summary": "Simulation."}
         ]
@@ -446,13 +626,12 @@ Stories:
     script_path = BASE_DIR / f"script_{today}.txt"
     script_path.write_text(script, encoding="utf-8")
 
-    # Build temp segment folder
+    # Build temp segment folder (NOT episode_audio)
     run_tmp = TMP_AUDIO_DIR / today
     if run_tmp.exists():
         shutil.rmtree(run_tmp, ignore_errors=True)
     run_tmp.mkdir(parents=True, exist_ok=True)
 
-    # Prepare intro/outro trimmed (optional)
     concat_files: List[Path] = []
     silence_path = run_tmp / "silence_150ms.mp3"
     AudioSegment.silent(duration=150).export(silence_path, format="mp3")
@@ -471,7 +650,6 @@ Stories:
 
     for speaker, text in dialogue:
         if speaker == "MUSIC":
-            # just a beat (silence) unless you add a sting file
             concat_files.append(silence_path)
             continue
 
@@ -490,99 +668,58 @@ Stories:
         outro.export(outro_path, format="mp3", bitrate="192k")
         concat_files.append(outro_path)
 
-    # Stitch
+    # Stitch final podcast into episode_audio (Spotify expects this)
     _safe_print(" >> 🎚️ STITCHING (ffmpeg concat)...")
     final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
+
     if not _has_ffmpeg():
-        raise RuntimeError("ffmpeg not found. MoviePy usually installs it; ensure ffmpeg is available in your runner.")
+        raise RuntimeError("ffmpeg not found. Ensure ffmpeg is available in your runner/codespace.")
+
     stitch_with_ffmpeg(concat_files, final_mp3)
 
     # Verify duration
     final_audio = AudioSegment.from_mp3(final_mp3)
     minutes = len(final_audio) / 1000 / 60
+    duration_seconds = int(final_audio.duration_seconds)
     _safe_print(f" ✅ EPISODE COMPLETE: {final_mp3} ({minutes:.2f} minutes)")
 
     if minutes < MIN_MINUTES or minutes > MAX_MINUTES:
         raise RuntimeError(f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}.")
 
-    # Create SEO/title/hashtags/show notes (kept simple, you can expand)
-    top_headline = stories[0]["headline"] if stories else f"AI Edge — {today}"
-    hashtags = "#AI #OpenAI #Anthropic #DeepMind #Nvidia #ARegulation #AISafety #TechNews"
-    show_notes = "Top stories:\n" + "\n".join([f"- {s['headline']} ({s.get('source_url','')})" for s in stories]) + "\n\n" + hashtags
+    # Build SEO/title/hashtags/show notes
+    top_headline = stories[0]["headline"] if stories else f"The AI Edge: {today}"
+    show_notes_text = build_show_notes(today, stories)
 
     (BASE_DIR / "viral_caption.txt").write_text(top_headline, encoding="utf-8")
-    (BASE_DIR / "marketing.txt").write_text(show_notes, encoding="utf-8")
+    (BASE_DIR / "marketing.txt").write_text(show_notes_text, encoding="utf-8")
 
     meta = {
         "date": today,
-        "title": top_headline,
+        "title": f"The AI Edge: {today}",
         "minutes": round(minutes, 2),
+        "duration_seconds": duration_seconds,
         "audio_file": final_mp3.name,
         "audio_url": AUDIO_BASE_URL + final_mp3.name,
         "stories": stories,
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
-    # Update feed.xml (preserve history)
-    update_feed_xml(meta)
+    # Guardrail: remove any stray seg_* in episode_audio (never remove podcast_*.mp3)
+    _delete_stray_segments_in_episode_audio(today)
 
-    # Cleanup temp artifacts so you never get 300+ segments in episode_audio again
+    # Update feed.xml (preserve history, remove seg_* items, include length/duration)
+    _safe_print(" >> 📡 UPDATING RSS FEED (feed.xml)...")
+    _update_feed_after_episode(
+        today=today,
+        final_mp3=final_mp3,
+        show_notes_text=show_notes_text,
+        duration_seconds=duration_seconds,
+    )
+    _safe_print(" >> ✅ FEED UPDATED")
+
+    # Cleanup temp artifacts (so you do NOT accumulate hundreds of segments)
     if CLEANUP_TEMP:
         shutil.rmtree(run_tmp, ignore_errors=True)
-
-def update_feed_xml(meta: Dict):
-    import xml.etree.ElementTree as ET
-
-    audio_url = meta["audio_url"]
-    audio_file = meta["audio_file"]
-    title = meta["title"]
-    guid = f"{audio_file}-{meta['date']}"
-
-    # Load existing feed or create new
-    if FEED_XML_PATH.exists():
-        tree = ET.parse(FEED_XML_PATH)
-        rss = tree.getroot()
-    else:
-        rss = ET.Element("rss", version="2.0")
-        rss.set("xmlns:itunes", "http://www.itunes.com/dtds/podcast-1.0.dtd")
-        tree = ET.ElementTree(rss)
-        channel = ET.SubElement(rss, "channel")
-        ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
-        ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
-        ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
-        ET.SubElement(channel, "language").text = "en-us"
-        ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}author").text = RSS_SETTINGS["author"]
-        owner = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}owner")
-        ET.SubElement(owner, "{http://www.itunes.com/dtds/podcast-1.0.dtd}email").text = RSS_SETTINGS["email"]
-        img = ET.SubElement(channel, "{http://www.itunes.com/dtds/podcast-1.0.dtd}image")
-        img.set("href", RSS_SETTINGS["image"])
-
-    channel = rss.find("channel")
-    if channel is None:
-        raise RuntimeError("feed.xml missing <channel>.")
-
-    # New item
-    item = ET.Element("item")
-    ET.SubElement(item, "title").text = title
-    ET.SubElement(item, "guid").text = guid
-    ET.SubElement(item, "pubDate").text = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S GMT")
-    ET.SubElement(item, "description").text = (BASE_DIR / "marketing.txt").read_text(encoding="utf-8")[:5000]
-
-    enclosure = ET.SubElement(item, "enclosure")
-    enclosure.set("url", audio_url)
-    enclosure.set("type", "audio/mpeg")
-    # length is optional; leaving blank is acceptable for many podcast clients
-    enclosure.set("length", "0")
-
-    # Prepend item to keep newest first
-    existing_items = list(channel.findall("item"))
-    for old in existing_items:
-        channel.remove(old)
-    channel.insert(0, item)
-    for old in existing_items:
-        channel.append(old)
-
-    tree.write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
 
 if __name__ == "__main__":
     produce_episode()
