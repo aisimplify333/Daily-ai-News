@@ -2,84 +2,130 @@ import os
 import json
 import re
 import shutil
+import time
 import datetime
 from pathlib import Path
 from email.utils import formatdate
 import xml.etree.ElementTree as ET
 
 from openai import OpenAI
-from pydub import AudioSegment
+from google import genai
+from google.genai import types
+from pydub import AudioSegment, effects
 
-import fetch_news  # your existing intel source
+import fetch_news  # must exist in your repo
 
 
 # =========================
-# 0) SETTINGS / CONSTANTS
+# CONFIG
 # =========================
 
 BASE_DIR = Path(__file__).parent
-AUDIO_DIR = BASE_DIR / "episode_audio"
+EPISODE_DIR = BASE_DIR / "episode_audio"
 TMP_DIR = BASE_DIR / "_tmp_audio"
 
 INTRO_MUSIC = BASE_DIR / "intro.mp3"
 OUTRO_MUSIC = BASE_DIR / "outro.mp3"
 
-AUDIO_DIR.mkdir(exist_ok=True)
+EPISODE_DIR.mkdir(exist_ok=True)
 TMP_DIR.mkdir(exist_ok=True)
 
-# Spotify/iTunes RSS metadata (keep these stable)
+# Spotify / RSS (keep these stable)
 RSS_SETTINGS = {
     "title": "The AI Edge",
-    "link": "https://aisimplify333.github.io/Daily-ai-News/",
-    "description": "Daily AI news as a high-stakes conversation: tech, money, policy, and the human fallout.",
-    "language": "en-us",
+    "link": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/",
+    "description": "Daily AI News, Finance, and Regulation.",
     "author": "AI Simplify Media",
-    "email": os.environ.get("PODCAST_EMAIL", "aisimplify333@gmail.com"),
+    "email": "aisimplify333@gmail.com",
     "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png",
     "category": "Technology",
-    "site_audio_base": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/",
+    "language": "en-us",
 }
 
-# Voices (OpenAI TTS)
+RAW_AUDIO_BASE = "https://aisimplify333.github.io/Daily-ai-News/episode_audio"
+
+# Voice cast (OpenAI TTS voices)
 CAST = {
     "ALEX": "onyx",
     "JAMIE": "nova",
     "RUFUS": "fable",
 }
 
-# Runtime control
-TARGET_MINUTES_MIN = float(os.environ.get("TARGET_MINUTES_MIN", "25"))
-TARGET_MINUTES_MAX = float(os.environ.get("TARGET_MINUTES_MAX", "30"))
-# Script sizing heuristic: ~150 wpm conversational; 27 min ~ 4050 words.
-TARGET_WORDS_MIN = int(os.environ.get("TARGET_WORDS_MIN", "4100"))
-TARGET_WORDS_MAX = int(os.environ.get("TARGET_WORDS_MAX", "5200"))
+# Length guardrails
+MIN_MINUTES = float(os.environ.get("MIN_MINUTES", "25"))
+MAX_MINUTES = float(os.environ.get("MAX_MINUTES", "30"))
+TARGET_MINUTES = float(os.environ.get("TARGET_MINUTES", "28.5"))
 
-KEEP_SEGMENTS = os.environ.get("KEEP_SEGMENTS", "0") == "1"
+# Controls
+KEEP_TMP = os.environ.get("KEEP_TMP_AUDIO", "0") == "1"
+STRICT_LENGTH = os.environ.get("STRICT_LENGTH", "1") == "1"
 
-# Story volume
-CORE_STORIES = int(os.environ.get("CORE_STORIES", "5"))
-QUICK_HITS = int(os.environ.get("QUICK_HITS", "3"))  # optional; can be 0
+# LLM models
+# You can override in Actions secrets/vars if needed
+GEMINI_PRIMARY_MODEL = os.environ.get("GEMINI_PRIMARY_MODEL", "gemini-2.0-flash")
+GEMINI_FALLBACK_MODEL = os.environ.get("GEMINI_FALLBACK_MODEL", "gemini-2.0-flash-lite")
+OPENAI_SCRIPT_MODEL = os.environ.get("OPENAI_SCRIPT_MODEL", "gpt-4o-mini")
 
+# TTS
+OPENAI_TTS_MODEL = os.environ.get("OPENAI_TTS_MODEL", "tts-1-hd")
+TTS_CHAR_LIMIT = int(os.environ.get("TTS_CHAR_LIMIT", "3500"))
 
-def require_env(name: str) -> str:
-    v = os.environ.get(name)
-    if not v:
-        raise RuntimeError(f"Missing required env var: {name}")
-    return v
-
-
-client_openai = OpenAI(api_key=require_env("OPENAI_API_KEY"))
+SILENCE_BETWEEN_MS = int(os.environ.get("SILENCE_BETWEEN_MS", "150"))
 
 
 # =========================
-# 1) INTEL INGESTION
+# UTIL
+# =========================
+
+def require_env(name: str) -> str:
+    val = os.environ.get(name)
+    if not val:
+        raise RuntimeError(f"Missing required env var: {name}")
+    return val
+
+def minutes_of(audio: AudioSegment) -> float:
+    return len(audio) / 1000.0 / 60.0
+
+def normalize_text(s: str) -> str:
+    # remove bracketed stage directions for TTS cleanliness
+    s = re.sub(r"[\(\[].*?[\)\]]", "", s)
+    s = s.replace('"', "").replace("*", "")
+    s = re.sub(r"\s+", " ", s).strip()
+    return s
+
+def chunk_for_tts(text: str, limit: int = TTS_CHAR_LIMIT):
+    text = normalize_text(text)
+    if len(text) <= limit:
+        return [text]
+
+    chunks = []
+    while len(text) > limit:
+        # try to split on sentence boundary
+        split_idx = text.rfind(".", 0, limit)
+        if split_idx < 200:
+            split_idx = limit
+        chunk = text[: split_idx + 1].strip()
+        chunks.append(chunk)
+        text = text[split_idx + 1 :].strip()
+
+    if text:
+        chunks.append(text)
+    return chunks
+
+
+# =========================
+# CLIENTS
+# =========================
+
+client_openai = OpenAI(api_key=require_env("OPENAI_API_KEY"))
+client_gemini = genai.Client(api_key=require_env("GEMINI_API_KEY"))
+
+
+# =========================
+# CONTENT INTAKE
 # =========================
 
 def gather_intel_raw() -> str:
-    """
-    Pulls today’s newsletter intake. If your IMAP creds fail, fetch_news should raise.
-    We fall back to test data to keep the pipeline alive.
-    """
     print(" >> 📡 GATHERING INTEL FROM EMAILS...")
     try:
         data = fetch_news.get_todays_newsletters()
@@ -88,463 +134,493 @@ def gather_intel_raw() -> str:
         if data:
             return str(data)
     except Exception as e:
-        print(f"    ⚠️ EMAIL ERROR: {e}")
+        print(f"    ❌ EMAIL ERROR: {e}")
 
     print("    ⚠️ INBOX EMPTY/ERROR. USING EMPIRE TEST DATA.")
     return """
-    - Anthropic ships a major model upgrade enabling longer autonomous task runs; teams start replacing human ops with always-on agents.
-    - OpenAI’s secondary sale resets private-market price expectations and reignites “winner-take-most” platform arguments.
-    - Regulators in the EU escalate enforcement around training-data provenance while creators mobilize for stronger licensing.
-    - NVIDIA supply constraints shift as new data-center demand spikes, raising energy and cooling costs globally.
-    - A viral deepfake incident triggers a corporate crisis and raises fresh questions about verification and liability.
-    """
+STORY: Anthropic upgrades Claude with stronger agentic workflows.
+STORY: OpenAI raises at a massive valuation; capital is flooding into model builders.
+STORY: Meta expands AI ad targeting; privacy backlash intensifies.
+STORY: Regulators signal stricter enforcement around AI disclosures and consumer harms.
+STORY: A major enterprise rolls out AI copilots—layoffs + productivity shock ripple through teams.
+"""
+
+def load_sponsors():
+    sponsors_file = BASE_DIR / "sponsors.json"
+    if sponsors_file.exists():
+        try:
+            data = json.loads(sponsors_file.read_text(encoding="utf-8"))
+            if isinstance(data, dict) and "sponsors" in data:
+                return data["sponsors"]
+            if isinstance(data, list):
+                return data
+        except Exception:
+            pass
+
+    # safe fallback placeholders
+    return [
+        {"name": "SPONSOR_1", "copy": "Sponsor slot available."},
+        {"name": "SPONSOR_2", "copy": "Sponsor slot available."},
+        {"name": "SPONSOR_3", "copy": "Sponsor slot available."},
+    ]
 
 
-def llm_json(messages, model="gpt-4o-mini", temperature=0.3):
-    resp = client_openai.chat.completions.create(
-        model=model,
-        messages=messages,
+# =========================
+# LLM (Gemini primary, OpenAI backup)
+# =========================
+
+def gemini_generate(prompt: str, temperature: float = 0.9, max_tokens: int = 6000) -> str:
+    conf = types.GenerateContentConfig(
         temperature=temperature,
-    )
-    return resp.choices[0].message.content
-
-
-def select_and_structure_stories(raw_text: str, core_n: int, quick_n: int):
-    """
-    Converts unstructured newsletter blobs into:
-      - core_stories: 5 items with title/angle/why_it_matters/keywords
-      - quick_hits: short additional headlines
-    This is where consistency comes from.
-    """
-    schema_prompt = f"""
-Return STRICT JSON with keys: core_stories, quick_hits.
-
-core_stories: array length {core_n}. Each item:
-- title (max 90 chars)
-- hook_angle (1 sentence, provocative)
-- summary (2-3 sentences, concrete facts)
-- why_it_matters (1-2 sentences)
-- vertical (one of: Global, Money, Infra, Policy, Human)
-- keywords (array of 6-12 SEO keywords)
-
-quick_hits: array length {quick_n}. Each item:
-- title (max 90 chars)
-- one_liner (max 180 chars)
-- keywords (array of 4-8)
-
-Rules:
-- No corporate filler. No “landscape”, “synergy”, “let’s dive in”.
-- Prefer specific entities: company names, products, regulators, chips, lawsuits.
-- If raw_text lacks enough items, synthesize missing ones as plausible composites (clearly written as news-style statements).
-"""
-    out = llm_json(
-        [
-            {"role": "system", "content": "You are an executive producer extracting high-signal AI stories for a daily show."},
-            {"role": "user", "content": schema_prompt + "\n\nRAW:\n" + raw_text},
-        ],
-        model=os.environ.get("STORY_MODEL", "gpt-4o-mini"),
-        temperature=0.2,
+        max_output_tokens=max_tokens
     )
 
-    # Defensive parse
-    try:
-        data = json.loads(out)
-        core = data.get("core_stories", [])[:core_n]
-        quick = data.get("quick_hits", [])[:quick_n]
-        return core, quick
-    except Exception:
-        # Fallback: treat raw as single story block
-        core = [{
-            "title": "AI moves fast. Humans move slow.",
-            "hook_angle": "If the agents don’t sleep, neither does the market.",
-            "summary": raw_text.strip()[:800],
-            "why_it_matters": "The gap between capability and governance is widening daily.",
-            "vertical": "Human",
-            "keywords": ["AI", "agents", "LLMs", "regulation", "jobs", "chips"]
-        }]
-        return core, []
+    # Try primary then fallback
+    for model in [GEMINI_PRIMARY_MODEL, GEMINI_FALLBACK_MODEL]:
+        try:
+            resp = client_gemini.models.generate_content(
+                model=model,
+                contents=prompt,
+                config=conf
+            )
+            txt = (resp.text or "").strip()
+            if txt:
+                return txt
+        except Exception as e:
+            msg = str(e)
+            # Respect retry delay hints if present
+            m = re.search(r"retryDelay.*?(\d+)s", msg)
+            if m:
+                time.sleep(int(m.group(1)) + 1)
+            print(f"    ⚠️ GEMINI FAILED on {model}: {e}")
 
+    raise RuntimeError("Gemini generation failed on both primary and fallback models.")
 
-# =========================
-# 2) SCRIPTING (5 SEGMENTS)
-# =========================
-
-def build_show_prompt(date_str: str, core_stories, quick_hits):
-    """
-    IMPORTANT: We keep your 5-segment Empire framework.
-    We do NOT imitate any specific living person; we preserve archetypes.
-    """
-    stories_block = json.dumps({"core_stories": core_stories, "quick_hits": quick_hits}, indent=2)
-
-    return f"""
-You are writing a DAILY 5-SEGMENT episode of "The AI Edge" (high-stakes conversational drama disguised as news).
-
-NON-NEGOTIABLES:
-- Must sound like messy, overheated conversation. Interruptions. Pushback. No corporate speak.
-- Ban phrases: "let's dive in", "in today's landscape", "synergy", "game-changer" unless used sarcastically.
-- Keep it human: short sentences, reactions, disbelief, frustration, dark humor.
-- FORMAT: dialogue lines only using exactly ALEX:, JAMIE:, RUFUS:
-- Include stage cues on their own lines in square brackets: [COLD OPEN], [MUSIC IN], [MUSIC OUT], [SEGMENT 2], etc.
-- Do NOT add narration paragraphs.
-
-CAST ARCHETYPES:
-- ALEX = high-energy everyman host. Curious, relentless, keeps momentum. Opens/closes each segment.
-- JAMIE = empathetic conscience. Uses “I feel…” and “I don’t know, man…”; spirals into human impact.
-- RUFUS = cynical analyst. Clinical. Money, incentives, regulation, moats. Darkly funny.
-
-EPISODE DATE: {date_str}
-
-STORY INPUT (use these facts; don’t invent new unrelated stories):
-{stories_block}
-
-STRUCTURE (EXACTLY THIS):
-[SEGMENT 1: COLD OPEN]
-- Start mid-argument about the SINGLE biggest core story (choose the most shocking).
-- All three present. No hello. No intro. Tension instantly.
-
-[MUSIC IN]
-- 6–10 seconds worth of words indicating music sting.
-[MUSIC OUT]
-
-[SEGMENT 2: THE TECH (STUDIO)]
-- ONLY ALEX and JAMIE speaking in this segment.
-- Alex does: welcome, date, and a fast rundown of TODAY'S 5 core stories in 20–30 seconds.
-- Then they deeply cover 2 tech-forward stories (specs, capabilities, what changed) + 2 quick hits.
-- Keep it concrete, no fluff.
-
-[SEGMENT 3: THE MONEY (RUFUS ON LOCATION)]
-- Alex throws to Rufus “on location” (invent a different plausible place daily).
-- Rufus leads the analysis: valuations, funding, regulation, incentives, second-order effects.
-- Native sponsor ad must appear here AS PART OF THE ANALYSIS (not a commercial break).
-- Alex can interject briefly 2–3 times, but Rufus dominates.
-
-[SEGMENT 4: THE FALLOUT (ETHICS & LAW)]
-- All three back.
-- Jamie drives the moral conflict; Rufus pushes back; Alex keeps it moving.
-- Cover at least 1 Policy/Human story. Include one vivid metaphor.
-
-[SEGMENT 5: THE VERDICT]
-- Alex demands predictions: each gives 1 sentence.
-- Alex closes with CTA to subscribe/share.
-- Keep it intense and memorable.
-
-RUNTIME TARGET:
-- 25–30 minutes of spoken audio.
-- That means: approx {TARGET_WORDS_MIN}–{TARGET_WORDS_MAX} words total.
-- Do not end early.
-"""
-
-
-def generate_script(date_str: str, core_stories, quick_hits) -> str:
-    prompt = build_show_prompt(date_str, core_stories, quick_hits)
-    model = os.environ.get("SCRIPT_MODEL", "gpt-4o")
-
+def openai_generate(prompt: str, temperature: float = 0.9, max_tokens: int = 2500) -> str:
     resp = client_openai.chat.completions.create(
-        model=model,
+        model=OPENAI_SCRIPT_MODEL,
+        temperature=temperature,
+        max_tokens=max_tokens,
         messages=[
-            {"role": "system", "content": "You are the showrunner of a hit daily tech podcast. Write only the episode script."},
+            {"role": "system", "content": "You are a premium showrunner and dialogue writer."},
             {"role": "user", "content": prompt},
         ],
-        temperature=0.9,
     )
-    script = resp.choices[0].message.content.strip()
+    return (resp.choices[0].message.content or "").strip()
 
-    # Expand if too short, without changing structure
-    words = len(re.findall(r"\b\w+\b", script))
-    if words < TARGET_WORDS_MIN:
-        script = expand_script_to_target(script, TARGET_WORDS_MIN)
-
-    return script
-
-
-def expand_script_to_target(script: str, target_words: int) -> str:
-    """
-    Expands within each segment, preserving the 5-segment structure and dynamics.
-    """
-    expand_prompt = f"""
-Expand the following script to AT LEAST {target_words} words.
-
-Rules:
-- Preserve the 5 segments and their constraints (Segment 2 only Alex+Jamie, Segment 3 mostly Rufus, etc.).
-- Do not change the overall arc or remove anything; only add.
-- Add interruptions, vivid metaphors, concrete details, but no corporate speak.
-
-Return the FULL expanded script, same format.
-"""
-    resp = client_openai.chat.completions.create(
-        model=os.environ.get("SCRIPT_MODEL", "gpt-4o"),
-        messages=[
-            {"role": "system", "content": "You expand scripts while preserving structure and voice constraints."},
-            {"role": "user", "content": expand_prompt + "\n\nSCRIPT:\n" + script},
-        ],
-        temperature=0.9,
-    )
-    return resp.choices[0].message.content.strip()
+def llm_generate(prompt: str, temperature: float = 0.9, max_tokens: int = 6000) -> str:
+    try:
+        return gemini_generate(prompt, temperature=temperature, max_tokens=max_tokens)
+    except Exception as e:
+        print(f"    ⚠️ GEMINI PRIMARY PATH FAILED. FALLING BACK TO OPENAI: {e}")
+        # OpenAI fallback (smaller max_tokens to control cost)
+        return openai_generate(prompt, temperature=temperature, max_tokens=2500)
 
 
 # =========================
-# 3) TTS + STITCHING
+# STORY SELECTION
+# =========================
+
+def extract_top_stories(intel_raw: str, n_deep: int = 5, n_rapid: int = 5):
+    """
+    Convert messy newsletter dump into:
+      - deep stories (n_deep)
+      - rapid-fire mentions (n_rapid)
+    """
+    prompt = f"""
+You are the Executive Producer for "The AI Edge".
+From the CONTEXT below, extract the most IMPORTANT, high-impact AI stories of the last 24 hours.
+
+Return JSON only with this schema:
+{{
+  "deep": [
+    {{"title": "...", "what_happened": "...", "why_it_matters": "...", "angle": "power|money|human"}},
+    ...
+  ],
+  "rapid": [
+    {{"title": "...", "one_liner": "..."}},
+    ...
+  ]
+}}
+
+Rules:
+- Make it punchy and specific (no vague corporate language).
+- Prioritize stories that trigger DREAD, GREED, or EXCITEMENT.
+- Choose {n_deep} deep stories and {n_rapid} rapid stories.
+- Ensure at least:
+  - 1 money/markets story
+  - 1 regulation/policy story
+  - 1 human impact story
+  - 1 model/product release story
+
+CONTEXT:
+{intel_raw}
+"""
+    raw = llm_generate(prompt, temperature=0.6, max_tokens=2500)
+
+    # defensive JSON parse
+    try:
+        data = json.loads(raw)
+        deep = data.get("deep", [])[:n_deep]
+        rapid = data.get("rapid", [])[:n_rapid]
+        return deep, rapid
+    except Exception:
+        # fallback: just treat intel as a single blob
+        deep = [{
+            "title": "Today in AI: the power shift continues",
+            "what_happened": intel_raw[:500],
+            "why_it_matters": "The acceleration is destabilizing jobs, markets, and regulation at the same time.",
+            "angle": "power"
+        }]
+        return deep, []
+
+
+# =========================
+# SCRIPT ENGINE (5 segments, your confirmed structure)
+# =========================
+
+def build_script(date_str: str, deep_stories, rapid_stories, sponsors):
+    # sponsor slots
+    s1 = sponsors[0] if len(sponsors) > 0 else {"name": "SPONSOR_1", "copy": "Sponsor slot available."}
+    s2 = sponsors[1] if len(sponsors) > 1 else {"name": "SPONSOR_2", "copy": "Sponsor slot available."}
+    s3 = sponsors[2] if len(sponsors) > 2 else {"name": "SPONSOR_3", "copy": "Sponsor slot available."}
+
+    stories_compact = json.dumps({"deep": deep_stories, "rapid": rapid_stories}, indent=2)
+
+    prompt = f"""
+You are the Showrunner for "The AI Edge" Daily Podcast.
+
+NON-NEGOTIABLE VIBE:
+- This is NOT a news read. It must feel overheated, messy, real.
+- Interruptions. Tension. Ego. Vulnerability.
+- ZERO corporate speak. If anyone says "let's dive in" or "in today's dynamic landscape" you failed.
+
+PERSONAS:
+- ALEX (Host): Rogan energy. Fast, curious, blunt. He sets up the show and keeps momentum.
+- JAMIE (Co-host): Bartlett empathy. Vulnerable. "I feel..." Human cost, ethics, dread.
+- RUFUS (Analyst): Huberman/Levine cynical. Money, incentives, regulation, power. Slightly predatory clarity.
+
+STRUCTURE (5 Segments) — DO NOT CHANGE:
+SEGMENT 1 (Cold open chaos + intro + rundown):
+- Cold open starts MID-ARGUMENT about Story 1.
+- [MUSIC]
+- Alex says "Good morning" and states date: {date_str}.
+- Alex quickly lists today's TOP 5 stories in a rundown (tight, 30–60 seconds).
+
+SEGMENT 2 (Alex + Jamie studio only):
+- Deep dive Story 1 and Story 2.
+- Heavy chemistry. Jamie pushes human consequence. Alex pushes clarity and stakes.
+- No Rufus in this segment.
+
+SEGMENT 3 (Rufus on location):
+- Rufus gives money + regulatory lens on Story 3 + Story 4.
+- Alex throws to Rufus "checking in from the field..."
+- Jamie can tag ONE empathetic interjection at the end.
+- Native sponsor read woven as insider advice (NOT a commercial):
+  Sponsor: {s1["name"]} — {s1["copy"]}
+
+SEGMENT 4 (Trio war-room):
+- All three together.
+- Deep dive Story 5 + "rapid fire" mentions (at least 5).
+- Add sponsor #2 seamlessly (Rufus slips it in like advice):
+  Sponsor: {s2["name"]} — {s2["copy"]}
+
+SEGMENT 5 (Verdict + close):
+- Each gives ONE sharp takeaway ("what to do next").
+- Alex CTA: subscribe/share.
+- Final sponsor sting by Alex (short, tasteful):
+  Sponsor: {s3["name"]} — {s3["copy"]}
+- Alex closes: "See you tomorrow."
+
+LENGTH REQUIREMENT:
+- Aim for a finished audio runtime of 28–29 minutes.
+- Output must be long enough (approximately 4,200–4,800 words).
+- Dialogue only (ALEX:, JAMIE:, RUFUS:). Include [MUSIC] marker.
+
+STORIES (do not invent new ones beyond these):
+{stories_compact}
+"""
+    script = llm_generate(prompt, temperature=0.9, max_tokens=7000)
+    return script.strip()
+
+
+# =========================
+# PARSE UTTERANCES
 # =========================
 
 def iter_utterances(script: str):
-    pattern = re.compile(r'^\s*(ALEX|JAMIE|RUFUS)\s*:\s*(.+)\s*$')
-    for line in script.splitlines():
-        line = line.strip()
+    """
+    Yields (SPEAKER, TEXT).
+    Only ALEX/JAMIE/RUFUS lines become TTS.
+    """
+    pattern = re.compile(r"^\s*(ALEX|JAMIE|RUFUS)\s*:?\s*(.*)$", re.IGNORECASE)
+
+    current = None
+    buf = []
+
+    for raw_line in script.splitlines():
+        line = raw_line.strip()
         if not line:
             continue
-        if line.startswith("[") and line.endswith("]"):
-            yield ("STAGE", line)
+
+        if line.upper() == "[MUSIC]":
+            # treat as a stage direction block — caller handles music beds
+            if current and buf:
+                yield current, " ".join(buf).strip()
+            yield "MUSIC", "[MUSIC]"
+            current = None
+            buf = []
             continue
+
         m = pattern.match(line)
         if m:
-            yield (m.group(1), m.group(2))
+            if current and buf:
+                yield current, " ".join(buf).strip()
+            current = m.group(1).upper()
+            buf = [m.group(2).strip()]
         else:
-            # Ignore malformed lines (keeps pipeline stable)
-            continue
+            if current:
+                buf.append(line)
+
+    if current and buf:
+        yield current, " ".join(buf).strip()
 
 
-def chunk_text(text: str, limit: int = 3200):
-    # Keep TTS stable: remove bracketed asides; keep punctuation
-    cleaned = re.sub(r'[\(\[].*?[\)\]]', '', text).replace('*', '').strip()
-    cleaned = re.sub(r'\s+', ' ', cleaned)
-    if len(cleaned) <= limit:
-        return [cleaned] if cleaned else []
-    chunks = []
-    t = cleaned
-    while len(t) > limit:
-        split_idx = t.rfind('.', 0, limit)
-        if split_idx < 200:
-            split_idx = limit
-        chunks.append(t[:split_idx + 1].strip())
-        t = t[split_idx + 1:].strip()
-    if t:
-        chunks.append(t)
-    return chunks
+# =========================
+# TTS + MIXING
+# =========================
 
+def tts_to_file(text: str, voice: str, out_path: Path):
+    # Try streaming API first, fall back if needed
+    try:
+        with client_openai.audio.speech.with_streaming_response.create(
+            model=OPENAI_TTS_MODEL,
+            voice=voice,
+            input=text
+        ) as resp:
+            resp.stream_to_file(out_path)
+        return
+    except Exception:
+        # fallback to non-streaming
+        resp = client_openai.audio.speech.create(
+            model=OPENAI_TTS_MODEL,
+            voice=voice,
+            input=text
+        )
+        out_path.write_bytes(resp.read() if hasattr(resp, "read") else resp)
 
-def tts_to_file(text: str, voice: str, outpath: Path):
-    with client_openai.audio.speech.with_streaming_response.create(
-        model=os.environ.get("TTS_MODEL", "tts-1-hd"),
-        voice=voice,
-        input=text
-    ) as response:
-        response.stream_to_file(outpath)
-
-
-def produce_audio(date_str: str, script: str) -> Path:
-    print(" >> 🎙️  RECORDING (EMPIRE QUALITY)...")
-
+def build_audio_from_script(script: str, date_str: str) -> AudioSegment:
     day_tmp = TMP_DIR / date_str
+    if day_tmp.exists():
+        shutil.rmtree(day_tmp)
     day_tmp.mkdir(parents=True, exist_ok=True)
 
-    clips = []
+    audio = AudioSegment.empty()
 
-    # Intro
+    # Optional intro bed at top
     if INTRO_MUSIC.exists():
-        clips.append(AudioSegment.from_mp3(INTRO_MUSIC)[:15000].fade_out(1500))
+        audio += AudioSegment.from_mp3(INTRO_MUSIC)[:15000].fade_out(2000)
+        audio += AudioSegment.silent(duration=250)
 
-    seg_index = 0
+    seg_idx = 0
     for speaker, text in iter_utterances(script):
-        if speaker == "STAGE":
-            # Optional: add tiny spacing for stage transitions
-            if text in ("[MUSIC IN]", "[MUSIC OUT]"):
-                clips.append(AudioSegment.silent(duration=250))
-            else:
-                clips.append(AudioSegment.silent(duration=150))
+        if speaker == "MUSIC":
+            # lightweight stinger between acts
+            if INTRO_MUSIC.exists():
+                audio += AudioSegment.from_mp3(INTRO_MUSIC)[:6000].fade_out(1200)
+                audio += AudioSegment.silent(duration=250)
             continue
 
-        voice = CAST.get(speaker)
-        if not voice:
+        if speaker not in CAST:
             continue
 
-        for chunk in chunk_text(text):
-            if len(chunk) < 2:
+        for chunk in chunk_for_tts(text):
+            if len(chunk) < 3:
                 continue
-            outpath = day_tmp / f"{date_str}_seg_{seg_index:04d}.mp3"
+            out_path = day_tmp / f"seg_{seg_idx:04d}.mp3"
             try:
-                tts_to_file(chunk, voice, outpath)
-                clips.append(AudioSegment.from_mp3(outpath))
-                # tighter gap for “interruptions” feel
-                clips.append(AudioSegment.silent(duration=90))
-                seg_index += 1
+                tts_to_file(chunk, CAST[speaker], out_path)
+                clip = AudioSegment.from_mp3(out_path)
+                audio += clip + AudioSegment.silent(duration=SILENCE_BETWEEN_MS)
+                seg_idx += 1
             except Exception as e:
                 print(f"    ⚠️ TTS ERROR ({speaker}): {e}")
 
-    # Outro
+    # Optional outro bed
     if OUTRO_MUSIC.exists():
-        clips.append(AudioSegment.from_mp3(OUTRO_MUSIC)[:12000].fade_in(1200))
+        audio += AudioSegment.from_mp3(OUTRO_MUSIC)[:10000].fade_in(1500)
 
-    # Stitch
-    print(" >> 🎚️  MIXING...")
-    full_audio = AudioSegment.empty()
-    for c in clips:
-        full_audio += c
-
-    outfile = AUDIO_DIR / f"podcast_{date_str}.mp3"
-    full_audio.export(outfile, format="mp3", bitrate="192k")
-
-    minutes = len(full_audio) / 1000 / 60
-    print(f" ✅ EPISODE COMPLETE: {outfile} ({minutes:.2f} minutes)")
-
-    # Cleanup tmp segments unless debugging
-    if not KEEP_SEGMENTS:
+    if not KEEP_TMP:
         shutil.rmtree(day_tmp, ignore_errors=True)
 
-    return outfile
+    return audio
+
+
+def speed_fit(audio: AudioSegment, target_minutes: float) -> AudioSegment:
+    cur = minutes_of(audio)
+    if cur <= 0:
+        return audio
+    ratio = cur / target_minutes
+    # Only apply gentle speedup if needed
+    if ratio <= 1.02:
+        return audio
+    # cap at 1.12 to avoid obvious artifacts
+    playback = min(ratio, 1.12)
+    return effects.speedup(audio, playback_speed=playback, chunk_size=150, crossfade=25)
+
+
+def top_up_script(date_str: str, deep_stories, rapid_stories, sponsors, missing_minutes: float) -> str:
+    stories_compact = json.dumps({"deep": deep_stories, "rapid": rapid_stories}, indent=2)
+    prompt = f"""
+You are continuing an episode of "The AI Edge" that is running short.
+
+Write additional dialogue ONLY to extend runtime by ~{missing_minutes:.1f} minutes.
+Rules:
+- DO NOT repeat intro, date, or rundown.
+- Maintain the same vibe and personas (ALEX/JAMIE/RUFUS).
+- Add more interruption, conflict, and vivid analogies.
+- Stay grounded in THESE stories only:
+{stories_compact}
+
+Output dialogue only with speaker tags.
+"""
+    return llm_generate(prompt, temperature=0.9, max_tokens=2500).strip()
 
 
 # =========================
-# 4) RSS UPDATE (Spotify)
+# RSS UPDATE (Spotify)
 # =========================
 
-def ensure_base_rss(rss_file: Path):
-    if rss_file.exists():
+def ensure_feed_exists(feed_path: Path):
+    if feed_path.exists():
         return
 
     rss = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0"
-  xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
   <channel>
-    <title>{RSS_SETTINGS['title']}</title>
-    <link>{RSS_SETTINGS['link']}</link>
-    <language>{RSS_SETTINGS['language']}</language>
-    <description>{RSS_SETTINGS['description']}</description>
-    <itunes:author>{RSS_SETTINGS['author']}</itunes:author>
-    <itunes:owner>
-      <itunes:name>{RSS_SETTINGS['author']}</itunes:name>
-      <itunes:email>{RSS_SETTINGS['email']}</itunes:email>
-    </itunes:owner>
-    <itunes:image href="{RSS_SETTINGS['image']}" />
-    <itunes:category text="{RSS_SETTINGS['category']}" />
+    <title>{RSS_SETTINGS["title"]}</title>
+    <link>{RSS_SETTINGS["link"]}</link>
+    <description>{RSS_SETTINGS["description"]}</description>
+    <language>{RSS_SETTINGS["language"]}</language>
+    <itunes:author>{RSS_SETTINGS["author"]}</itunes:author>
+    <itunes:summary>{RSS_SETTINGS["description"]}</itunes:summary>
+    <itunes:category text="{RSS_SETTINGS["category"]}"/>
   </channel>
-</rss>"""
-    rss_file.write_text(rss, encoding="utf-8")
+</rss>
+"""
+    feed_path.write_text(rss, encoding="utf-8")
 
 
-def update_rss_feed(audio_path: Path, title: str, show_notes: str):
-    rss_file = BASE_DIR / "feed.xml"
-    ensure_base_rss(rss_file)
+def update_rss_feed(audio_path: Path, show_notes: str):
+    feed_path = BASE_DIR / "feed.xml"
+    ensure_feed_exists(feed_path)
 
-    tree = ET.parse(rss_file)
+    tree = ET.parse(feed_path)
     root = tree.getroot()
     channel = root.find("channel")
     if channel is None:
         raise RuntimeError("feed.xml missing <channel>")
 
+    today_str = audio_path.stem.replace("podcast_", "")
     item = ET.Element("item")
-    ET.SubElement(item, "title").text = title
+
+    ET.SubElement(item, "title").text = f"The AI Edge — {today_str}"
     ET.SubElement(item, "description").text = show_notes
 
     enclosure = ET.SubElement(item, "enclosure")
-    enclosure.set("url", f"{RSS_SETTINGS['site_audio_base']}{audio_path.name}")
-    enclosure.set("length", str(audio_path.stat().st_size))
+    enclosure.set("url", f"{RAW_AUDIO_BASE}/{audio_path.name}")
+    enclosure.set("length", str(os.path.getsize(audio_path)))
     enclosure.set("type", "audio/mpeg")
 
-    ET.SubElement(item, "guid").text = f"{RSS_SETTINGS['site_audio_base']}{audio_path.name}"
-    ET.SubElement(item, "pubDate").text = formatdate(audio_path.stat().st_mtime)
+    ET.SubElement(item, "guid").text = f"{RAW_AUDIO_BASE}/{audio_path.name}"
+    ET.SubElement(item, "pubDate").text = formatdate(os.path.getmtime(audio_path))
 
-    # Insert newest first
+    # Insert newest at top
     channel.insert(0, item)
 
-    tree.write(rss_file, encoding="UTF-8", xml_declaration=True)
+    tree.write(feed_path, encoding="UTF-8", xml_declaration=True)
 
 
 # =========================
-# 5) SHOW NOTES / SEO
+# SAFE CLEANUP FOR LEGACY SEGMENT ARTIFACTS
 # =========================
 
-def build_show_notes(date_str: str, core_stories, quick_hits):
-    titles = [s["title"] for s in core_stories]
-    kw = []
-    for s in core_stories:
-        kw.extend(s.get("keywords", []))
-    for q in quick_hits:
-        kw.extend(q.get("keywords", []))
-
-    # De-dupe keywords for hashtags/SEO line
-    seen = set()
-    kws = []
-    for k in kw:
-        k2 = re.sub(r'[^A-Za-z0-9_]+', '', k.strip().replace(" ", ""))
-        if not k2:
-            continue
-        k2 = k2[:28]
-        if k2.lower() in seen:
-            continue
-        seen.add(k2.lower())
-        kws.append(k2)
-        if len(kws) >= 18:
-            break
-
-    notes = []
-    notes.append(f"{date_str} | The AI Edge")
-    notes.append("")
-    notes.append("TOP STORIES:")
-    for i, t in enumerate(titles, 1):
-        notes.append(f"{i}. {t}")
-
-    if quick_hits:
-        notes.append("")
-        notes.append("QUICK HITS:")
-        for q in quick_hits:
-            notes.append(f"- {q['title']}")
-
-    notes.append("")
-    notes.append("TAGS:")
-    notes.append(" ".join([f"#{k}" for k in kws]))
-
-    notes.append("")
-    notes.append("Note: This episode is produced using synthetic voices and automated scripting.")
-    return "\n".join(notes)
-
-
-def build_episode_title(date_str: str, core_stories):
-    # SEO-friendly: date + top story
-    top = core_stories[0]["title"] if core_stories else "AI moves fast"
-    top = top[:80]
-    return f"The AI Edge — {date_str} — {top}"
+def cleanup_legacy_segments(episode_dir: Path):
+    """
+    Deletes ONLY files that look like legacy segment artifacts:
+      - *_seg_*.mp3
+    Keeps podcast_*.mp3 intact for Spotify.
+    """
+    for p in episode_dir.glob("*_seg_*.mp3"):
+        try:
+            p.unlink()
+        except Exception:
+            pass
 
 
 # =========================
-# 6) MAIN
+# MAIN ORCHESTRATION
 # =========================
 
 def produce_episode():
     date_str = datetime.date.today().isoformat()
 
-    raw = gather_intel_raw()
-    core_stories, quick_hits = select_and_structure_stories(raw, CORE_STORIES, QUICK_HITS)
+    # Optional cleanup of legacy artifacts
+    if os.environ.get("CLEANUP_LEGACY_SEGMENTS", "1") == "1":
+        cleanup_legacy_segments(EPISODE_DIR)
 
-    # Script
-    print(" >> ✍️  WRITING (5-SEGMENT EMPIRE)...")
-    script = generate_script(date_str, core_stories, quick_hits)
+    intel_raw = gather_intel_raw()
+    sponsors = load_sponsors()
 
-    # Save script + metadata
+    deep, rapid = extract_top_stories(intel_raw, n_deep=5, n_rapid=5)
+    script = build_script(date_str, deep, rapid, sponsors)
+
+    # Save script for auditing
     (BASE_DIR / f"script_{date_str}.txt").write_text(script, encoding="utf-8")
 
-    episode_title = build_episode_title(date_str, core_stories)
-    show_notes = build_show_notes(date_str, core_stories, quick_hits)
+    print(" >> 🎙️  RECORDING (EMPIRE QUALITY)...")
+    audio = build_audio_from_script(script, date_str)
+
+    # Enforce length via top-up loops before final export
+    attempts = 0
+    while minutes_of(audio) < MIN_MINUTES and attempts < 2:
+        missing = MIN_MINUTES - minutes_of(audio) + 1.0  # add buffer
+        print(f"    ⚠️ Episode short ({minutes_of(audio):.2f} min). Topping up ~{missing:.1f} min...")
+        extra_dialogue = top_up_script(date_str, deep, rapid, sponsors, missing_minutes=missing)
+        script += "\n" + extra_dialogue
+        audio = build_audio_from_script(script, date_str)
+        attempts += 1
+
+    # If too long, gently speed-fit (less damaging than hard cuts)
+    if minutes_of(audio) > MAX_MINUTES:
+        print(f"    ⚠️ Episode long ({minutes_of(audio):.2f} min). Speed-fitting toward {TARGET_MINUTES:.1f}...")
+        audio = speed_fit(audio, TARGET_MINUTES)
+
+    final_minutes = minutes_of(audio)
+    print(f" ✅ MIX COMPLETE ({final_minutes:.2f} minutes)")
+
+    if STRICT_LENGTH and not (MIN_MINUTES <= final_minutes <= MAX_MINUTES):
+        raise RuntimeError(f"Episode length out of bounds ({final_minutes:.2f} min). Refusing to publish.")
+
+    outfile = EPISODE_DIR / f"podcast_{date_str}.mp3"
+    audio.export(outfile, format="mp3", bitrate="192k")
+    print(f" ✅ EPISODE EXPORTED: {outfile}")
+
+    # Show notes (SEO-heavy)
+    titles = [s.get("title", "") for s in deep][:5]
+    rapid_titles = [s.get("title", "") for s in rapid][:5]
+    show_notes = (
+        f"{date_str} | The AI Edge\n\n"
+        f"TOP STORIES:\n- " + "\n- ".join([t for t in titles if t]) + "\n\n"
+        f"RAPID FIRE:\n- " + "\n- ".join([t for t in rapid_titles if t]) + "\n\n"
+        "#AI #ArtificialIntelligence #Tech #Startups #Regulation #Markets"
+    )
 
     (BASE_DIR / "viral_caption.txt").write_text(show_notes, encoding="utf-8")
-    meta = {
-        "title": episode_title,
-        "date": date_str,
-        "core_stories": core_stories,
-        "quick_hits": quick_hits,
-    }
+    meta = {"title": f"The AI Edge — {date_str}", "date": date_str, "stories": titles, "rapid": rapid_titles}
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
-    # Audio
-    audio_path = produce_audio(date_str, script)
-
-    # Runtime guardrail: warn (don’t crash the whole run unless you want it)
-    audio = AudioSegment.from_mp3(audio_path)
-    minutes = len(audio) / 1000 / 60
-    if minutes < TARGET_MINUTES_MIN or minutes > TARGET_MINUTES_MAX:
-        print(f"    ⚠️ WARNING: Runtime {minutes:.2f} min (target {TARGET_MINUTES_MIN}-{TARGET_MINUTES_MAX}).")
-
-    # RSS
-    update_rss_feed(audio_path, episode_title, show_notes)
+    update_rss_feed(outfile, show_notes)
 
 
 if __name__ == "__main__":
