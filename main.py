@@ -6,17 +6,19 @@ import shutil
 import subprocess
 import datetime
 import sys
+import time
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 
 from pydub import AudioSegment
 from openai import OpenAI
 
-# Optional Gemini (safe import)
+# Optional Gemini (safe import; deprecated package but kept for backward compatibility)
 try:
-    import google.generativeai as genai  # older gemini sdk
+    import google.generativeai as genai  # deprecated SDK; optional
 except Exception:
     genai = None
+
 
 # ----------------------------
 # CONFIG (Spotify/RSS identity)
@@ -55,7 +57,8 @@ LISTEN_URL = os.getenv(
     "https://aisimplify333.github.io/Daily-ai-News/listen/"
 ).rstrip("/") + "/"
 
-PRIMARY_LLM = os.getenv("PRIMARY_LLM", "gemini").strip().lower()  # gemini | openai
+# Default to OpenAI to avoid Gemini quota surprises
+PRIMARY_LLM = os.getenv("PRIMARY_LLM", "openai").strip().lower()  # gemini | openai
 OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o")
 OPENAI_TTS_MODEL = os.getenv("OPENAI_TTS_MODEL", "tts-1-hd")
 
@@ -63,8 +66,20 @@ MIN_MINUTES = float(os.getenv("MIN_MINUTES", "25"))
 MAX_MINUTES = float(os.getenv("MAX_MINUTES", "30"))
 TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
 
+# Word rate: TTS often lands faster than human read; be conservative to ensure minimum duration.
+WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "150"))
+
+# Output length controls (OpenAI)
+SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "9000"))
+SCRIPT_RETRIES = int(os.getenv("SCRIPT_RETRIES", "4"))
+FORMAT_REPAIR_RETRIES = int(os.getenv("FORMAT_REPAIR_RETRIES", "2"))
+
 CLEANUP_TEMP = os.getenv("CLEANUP_TEMP", "true").strip().lower() in ("1", "true", "yes")
 KEEP_LAST_EPISODES = int(os.getenv("KEEP_LAST_EPISODES", "60"))
+
+# If audio lands slightly outside bounds, allow micro-trim/pad instead of failing the whole run.
+AUDIO_PAD_MAX_SECONDS = int(os.getenv("AUDIO_PAD_MAX_SECONDS", "120"))     # allow up to +2:00 silence pad
+AUDIO_TRIM_MAX_SECONDS = int(os.getenv("AUDIO_TRIM_MAX_SECONDS", "60"))    # allow up to -1:00 trim
 
 # Posting toggles (so testing doesn’t accidentally publish)
 RUN_MARKETING_ASSETS = os.getenv("RUN_MARKETING_ASSETS", "true").strip().lower() in ("1", "true", "yes")
@@ -107,8 +122,16 @@ def _run(cmd: List[str], fail_ok: bool = False) -> int:
         raise
 
 
-def generate_text(prompt: str, temperature: float = 0.9, max_tokens: int = 5000) -> str:
-    """Gemini primary, OpenAI backup."""
+def generate_text(
+    prompt: str,
+    temperature: float = 0.9,
+    max_tokens: int = 5000,
+    system: str = "You are a top-tier writer. Follow the requested format exactly.",
+) -> str:
+    """
+    Gemini primary (optional), OpenAI backup.
+    Includes lightweight retry logic for transient OpenAI failures.
+    """
     if PRIMARY_LLM == "gemini" and genai and gemini_key:
         candidate_models = [
             os.getenv("GEMINI_MODEL", "").strip(),
@@ -134,17 +157,26 @@ def generate_text(prompt: str, temperature: float = 0.9, max_tokens: int = 5000)
                 _safe_print(f"    ⚠️ Gemini failed on {model_name}: {e}. Trying next...")
         _safe_print("    ⚠️ Gemini unavailable/quota/model failure. Falling back to OpenAI...")
 
-    resp = openai_client.chat.completions.create(
-        model=OPENAI_CHAT_MODEL,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        messages=[
-            {"role": "system",
-             "content": "You are a top-tier podcast writer. Output must follow the requested format exactly."},
-            {"role": "user", "content": prompt},
-        ],
-    )
-    return resp.choices[0].message.content.strip()
+    last_err: Optional[Exception] = None
+    for attempt in range(1, 4):
+        try:
+            resp = openai_client.chat.completions.create(
+                model=OPENAI_CHAT_MODEL,
+                temperature=temperature,
+                max_tokens=max_tokens,
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": prompt},
+                ],
+            )
+            return resp.choices[0].message.content.strip()
+        except Exception as e:
+            last_err = e
+            backoff = min(8, 2 * attempt)
+            _safe_print(f"    ⚠️ OpenAI call failed (attempt {attempt}/3): {e} — retrying in {backoff}s")
+            time.sleep(backoff)
+
+    raise RuntimeError(f"OpenAI generate_text failed after retries: {last_err}")
 
 
 # ----------------------------
@@ -177,7 +209,7 @@ def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
     items: List[Dict[str, str]] = []
     for label, url in GOOGLE_NEWS_RSS:
         try:
-            with urllib.request.urlopen(url, timeout=20) as r:
+            with urllib.request.urlopen(url, timeout=25) as r:
                 xml_data = r.read()
             root = ET.fromstring(xml_data)
             for it in root.findall("./channel/item")[:max_per_feed]:
@@ -244,14 +276,19 @@ Return ONLY valid JSON (no markdown), schema:
 
 Candidate items:
 {intel_compact}
-"""
-    raw = generate_text(prompt, temperature=0.35, max_tokens=1400)
+""".strip()
+
+    raw = generate_text(
+        prompt,
+        temperature=0.35,
+        max_tokens=1400,
+        system="You are an editor for a high-stakes daily show. Return only valid JSON.",
+    )
 
     try:
         j = json.loads(raw)
         stories = j.get("stories", [])
         stories = [s for s in stories if isinstance(s, dict)]
-        # Normalize required keys
         norm = []
         for s in stories[:n]:
             norm.append({
@@ -260,27 +297,192 @@ Candidate items:
                 "angles": s.get("angles") if isinstance(s.get("angles"), dict) else {"alex": "", "jamie": "", "rufus": ""},
                 "source_url": (s.get("source_url") or "").strip(),
             })
-        # If model returned blanks, fall back to raw intel quickly
         if any(not x["headline"] for x in norm):
             raise ValueError("Model returned empty headlines.")
         return norm
     except Exception:
         return [
-            {"headline": x["title"], "why_shocking": x["summary"],
-             "angles": {"alex": "", "jamie": "", "rufus": ""}, "source_url": x["link"]}
+            {"headline": x["title"], "why_shocking": x["summary"], "angles": {"alex": "", "jamie": "", "rufus": ""}, "source_url": x["link"]}
             for x in intel_items[:n]
         ]
 
 
 # ----------------------------
-# SCRIPT WRITING (5 segments)
+# SCRIPT WRITING (soul + length control)
 # ----------------------------
+def _count_words(text: str) -> int:
+    return len(re.findall(r"\b\w+\b", text or ""))
+
+
+def estimate_minutes_from_text(script: str) -> float:
+    return _count_words(script) / max(1.0, WORDS_PER_MINUTE)
+
+
+def _validate_script_structure(script: str) -> Tuple[bool, str]:
+    """
+    Guardrails so the show keeps its structure + voice.
+    """
+    if not script or len(script.strip()) < 2000:
+        return False, "Script too short / empty."
+
+    required_segments = [
+        "### SEGMENT 1",
+        "### SEGMENT 2",
+        "### SEGMENT 3",
+        "### SEGMENT 4",
+        "### SEGMENT 5",
+    ]
+    for seg in required_segments:
+        if seg not in script:
+            return False, f"Missing segment marker: {seg}"
+
+    # Must include a [MUSIC] beat somewhere
+    if "[MUSIC]" not in script.upper():
+        return False, "Missing [MUSIC] line."
+
+    # Must include all three speakers at least once (even though Segment 2 is Alex/Jamie only)
+    if not re.search(r"^ALEX\s*:", script, re.MULTILINE):
+        return False, "Missing ALEX lines."
+    if not re.search(r"^JAMIE\s*:", script, re.MULTILINE):
+        return False, "Missing JAMIE lines."
+    if not re.search(r"^RUFUS\s*:", script, re.MULTILINE):
+        return False, "Missing RUFUS lines."
+
+    # Basic length sanity
+    est = estimate_minutes_from_text(script)
+    if est < (MIN_MINUTES * 0.70):
+        return False, f"Script estimate too short (~{est:.1f} min)."
+
+    return True, "OK"
+
+
+def _repair_script_format(script: str) -> str:
+    """
+    If the model drifts (wrong labels, missing segments), repair without losing tone.
+    """
+    prompt = f"""
+Repair the script to comply with format rules WITHOUT watering down the tone.
+
+Hard requirements:
+- Output ONLY dialogue lines using EXACT labels: ALEX:, JAMIE:, RUFUS:
+- Include the segment marker lines exactly:
+  ### SEGMENT 1
+  ### SEGMENT 2
+  ### SEGMENT 3
+  ### SEGMENT 4
+  ### SEGMENT 5
+- Include a standalone line: [MUSIC]
+- Keep it raw, emotional, high-stakes, interrupting. No corporate voice.
+
+Fix issues like:
+- Missing segment markers
+- Wrong speaker labels
+- Missing [MUSIC]
+- Non-dialogue paragraphs
+
+SCRIPT TO REPAIR:
+{script}
+""".strip()
+
+    return generate_text(
+        prompt,
+        temperature=0.4,
+        max_tokens=SCRIPT_MAX_TOKENS,
+        system="You are a meticulous script doctor. Output must be compliant and still intense.",
+    )
+
+
+def ensure_script_length(script: str, target_minutes: float) -> str:
+    """
+    Forces script into MIN..MAX minutes by expanding/condensing before TTS.
+    This prevents wasting compute on a 3-minute episode.
+    """
+    target_words = int(target_minutes * WORDS_PER_MINUTE)
+    min_words = int(MIN_MINUTES * WORDS_PER_MINUTE)
+    max_words = int(MAX_MINUTES * WORDS_PER_MINUTE)
+
+    for attempt in range(1, SCRIPT_RETRIES + 1):
+        est = estimate_minutes_from_text(script)
+        words = _count_words(script)
+        _safe_print(f"    Script length pass #{attempt}: ~{est:.1f} min ({words} words)")
+
+        ok, reason = _validate_script_structure(script)
+        if not ok:
+            _safe_print(f"    ⚠️ Script structure issue: {reason} — repairing format")
+            script = _repair_script_format(script)
+            continue
+
+        if MIN_MINUTES <= est <= MAX_MINUTES:
+            return script
+
+        if est < MIN_MINUTES:
+            prompt = f"""
+Expand the podcast script below to reach {target_minutes} minutes WITHOUT losing the soul.
+
+Hard requirements:
+- Keep EXACT speaker labels: ALEX:, JAMIE:, RUFUS:
+- Keep the 5 segments and the [MUSIC] line.
+- Keep the same tone: raw, heated, emotional, messy, interruptions.
+- Do NOT summarize. Do NOT add corporate framing. No "today we’ll discuss".
+- Add vivid examples, consequences, arguments, and concrete stakes.
+- Add more back-and-forth inside segments (especially segments 2 and 4).
+- Keep continuity: do not delete existing content; insert/extend around it.
+
+Word targets:
+- Minimum: {min_words}
+- Ideal: {target_words}
+- Maximum: {max_words}
+
+SCRIPT TO EXPAND:
+{script}
+""".strip()
+            script = generate_text(
+                prompt,
+                temperature=0.7,
+                max_tokens=SCRIPT_MAX_TOKENS,
+                system="You are writing a gripping audio drama style news show. Keep it intense and long enough.",
+            )
+            continue
+
+        # Too long
+        prompt = f"""
+Tighten the podcast script below so it fits {target_minutes} minutes.
+
+Hard requirements:
+- Keep EXACT speaker labels: ALEX:, JAMIE:, RUFUS:
+- Preserve all 5 segments and [MUSIC].
+- Keep the best punchlines and sharpest stakes.
+- Remove repetition, dead air, and redundant re-explanations.
+- Do NOT sterilize the tone.
+
+Word targets:
+- Minimum: {min_words}
+- Ideal: {target_words}
+- Maximum: {max_words}
+
+SCRIPT TO TIGHTEN:
+{script}
+""".strip()
+        script = generate_text(
+            prompt,
+            temperature=0.3,
+            max_tokens=SCRIPT_MAX_TOKENS,
+            system="You are an editor for a high-energy show. Preserve edge; cut repetition.",
+        )
+
+    return script
+
+
 def build_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], target_minutes: float) -> str:
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_2 = sponsors[1] if len(sponsors) > 1 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_3 = sponsors[2] if len(sponsors) > 2 else {"name": "Sponsor", "tagline": "", "cta": ""}
 
-    story_block = "\n".join([f"{i+1}. {s['headline']} ({s.get('source_url','')})" for i, s in enumerate(stories)])
+    story_block = "\n".join([f"{i + 1}. {s['headline']} ({s.get('source_url', '')})" for i, s in enumerate(stories)])
+
+    target_words = int(target_minutes * WORDS_PER_MINUTE)
+    min_words = int(MIN_MINUTES * WORDS_PER_MINUTE)
+    max_words = int(MAX_MINUTES * WORDS_PER_MINUTE)
 
     prompt = f"""
 You are writing a DAILY podcast episode called "The AI Edge".
@@ -294,9 +496,8 @@ Personas:
 
 FORMAT REQUIREMENTS (non-negotiable):
 - Output MUST be dialogue lines only using EXACT labels: "ALEX:", "JAMIE:", "RUFUS:"
-- You may include segment markers as lines starting with "###" (those will NOT be spoken).
-- You may include "[MUSIC]" as a standalone line.
-- Target total length: {target_minutes} minutes (aim 25–30).
+- You MUST include segment markers as lines starting with "###" exactly as specified below.
+- You MUST include "[MUSIC]" as a standalone line.
 - Must cover FIVE stories.
 - Must follow this 5-segment structure:
 
@@ -310,28 +511,41 @@ High chemistry, fast pacing, human stakes. No Rufus.
 Alex throws to Rufus. Rufus delivers the "native ad" seamlessly as insider advice.
 Native Ad details:
 Sponsor: {sponsor_1['name']}
-Tagline: {sponsor_1.get('tagline','')}
-CTA: {sponsor_1.get('cta','')}
+Tagline: {sponsor_1.get('tagline', '')}
+CTA: {sponsor_1.get('cta', '')}
 
 ### SEGMENT 4 (All three: dread/greed forecast + lightning round)
 Cover remaining stories, sharp analogies, messy banter, interruptions.
 Include a woven-in host-read sponsor:
-Sponsor: {sponsor_2['name']} | {sponsor_2.get('tagline','')} | {sponsor_2.get('cta','')}
+Sponsor: {sponsor_2['name']} | {sponsor_2.get('tagline', '')} | {sponsor_2.get('cta', '')}
 
 ### SEGMENT 5 (Closing)
 Alex closes. Jamie lands one empathetic hit. Rufus gives one cynical prophecy.
 Final micro sponsor tag as a joke/aside:
-Sponsor: {sponsor_3['name']} | {sponsor_3.get('tagline','')} | {sponsor_3.get('cta','')}
+Sponsor: {sponsor_3['name']} | {sponsor_3.get('tagline', '')} | {sponsor_3.get('cta', '')}
+
+HARD LENGTH REQUIREMENT:
+- Total word count MUST be at least {min_words} words.
+- Aim for ~{target_words} words.
+- Do NOT exceed {max_words} words.
+- If you feel done early, keep writing more dialogue until you hit the word target.
+
+QUALITY (this is the soul):
+- Make it feel overheard and real: interruptions, callbacks, anger, laughter, dread, disbelief.
+- Jamie must land at least 3 human-impact moments (jobs, families, schools, scams, mental health, etc.).
+- Rufus must land at least 3 money/regulatory punches (market structure, filings, enforcement, incentives).
+- Alex must keep urgency and pace; he recaps and reframes like a live host.
 
 TODAY'S STORIES:
 {story_block}
-"""
-    return generate_text(prompt, temperature=0.85, max_tokens=6500)
+""".strip()
 
-
-def estimate_minutes_from_text(script: str) -> float:
-    words = len(re.findall(r"\b\w+\b", script))
-    return words / 165.0
+    return generate_text(
+        prompt,
+        temperature=0.85,
+        max_tokens=SCRIPT_MAX_TOKENS,
+        system="You are a top-tier podcast writer for a high-stakes daily show. Follow format exactly.",
+    )
 
 
 # ----------------------------
@@ -384,24 +598,69 @@ def tts_to_file(text: str, voice: str, out_path: Path):
 
 
 def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
+    """
+    Concatenates MP3 segments reliably by re-encoding and normalizing timestamps.
+    This avoids common non-monotonic DTS warnings when stitching many small mp3s.
+    """
     concat_txt = out_path.parent / f"concat_{uuid.uuid4().hex}.txt"
     concat_txt.write_text("\n".join([f"file '{p.as_posix()}'" for p in file_list]), encoding="utf-8")
 
     cmd = [
         "ffmpeg", "-y",
+        "-fflags", "+genpts",
+        "-avoid_negative_ts", "make_zero",
         "-f", "concat", "-safe", "0",
         "-i", str(concat_txt),
+        "-af", "aresample=async=1:first_pts=0",
         "-c:a", "libmp3lame",
         "-b:a", "192k",
         str(out_path),
     ]
     _run(cmd)
+
     try:
         concat_txt.unlink()
     except Exception:
         pass
 
 
+def _pad_or_trim_audio_to_bounds(mp3_path: Path) -> Tuple[int, float]:
+    """
+    Returns (duration_seconds, minutes). May modify the mp3 in-place if within pad/trim tolerances.
+    """
+    audio = AudioSegment.from_mp3(mp3_path)
+    duration_seconds = int(len(audio) / 1000)
+    minutes = duration_seconds / 60.0
+
+    # Pad with silence if just slightly under minimum
+    if minutes < MIN_MINUTES:
+        need_seconds = int((MIN_MINUTES * 60) - duration_seconds)
+        if 0 < need_seconds <= AUDIO_PAD_MAX_SECONDS:
+            _safe_print(f"    ⚠️ Audio under min by {need_seconds}s — padding with silence")
+            audio = audio + AudioSegment.silent(duration=need_seconds * 1000)
+            audio.export(mp3_path, format="mp3", bitrate="192k")
+            audio = AudioSegment.from_mp3(mp3_path)
+            duration_seconds = int(len(audio) / 1000)
+            minutes = duration_seconds / 60.0
+
+    # Trim tail if just slightly over maximum (usually extra silence/outro)
+    if minutes > MAX_MINUTES:
+        over_seconds = int(duration_seconds - (MAX_MINUTES * 60))
+        if 0 < over_seconds <= AUDIO_TRIM_MAX_SECONDS:
+            _safe_print(f"    ⚠️ Audio over max by {over_seconds}s — trimming tail")
+            keep_ms = int(MAX_MINUTES * 60 * 1000)
+            audio = audio[:keep_ms].fade_out(800)
+            audio.export(mp3_path, format="mp3", bitrate="192k")
+            audio = AudioSegment.from_mp3(mp3_path)
+            duration_seconds = int(len(audio) / 1000)
+            minutes = duration_seconds / 60.0
+
+    return duration_seconds, minutes
+
+
+# ----------------------------
+# MARKETING
+# ----------------------------
 def run_marketing_pipeline():
     if not RUN_MARKETING_ASSETS:
         _safe_print(" >> 📣 MARKETING: disabled (RUN_MARKETING_ASSETS=false)")
@@ -452,9 +711,14 @@ Rules:
 - No corporate speak.
 - Hook must be specific and urgent.
 - Avoid repeating the date in hook/title.
-"""
+""".strip()
 
-    raw = generate_text(prompt, temperature=0.6, max_tokens=900)
+    raw = generate_text(
+        prompt,
+        temperature=0.6,
+        max_tokens=900,
+        system="You are an elite direct-response copywriter. Return only valid JSON.",
+    )
 
     fallback_hook = (stories[0].get("headline") if stories else "AI JUST MOVED — HERE’S WHAT CHANGED")[:64]
     out = {
@@ -678,8 +942,12 @@ def produce_episode():
 
     if not intel:
         _safe_print("    ⚠️ RSS empty. Using test item.")
-        intel = [{"bucket": "Test", "title": "Test: AI model sparks market panic", "link": "https://example.com",
-                  "summary": "Simulation."}]
+        intel = [{
+            "bucket": "Test",
+            "title": "Test: AI model sparks market panic",
+            "link": "https://example.com",
+            "summary": "Simulation."
+        }]
 
     sponsors = load_sponsors()
     stories = pick_top_stories(intel, n=5)
@@ -687,8 +955,19 @@ def produce_episode():
     _safe_print(" >> ✍️ WRITING FULL EPISODE (5 segments)...")
     script = build_script(stories, sponsors, target_minutes=TARGET_MINUTES)
 
+    # Enforce length + structure BEFORE burning time on TTS
+    script = ensure_script_length(script, TARGET_MINUTES)
+
+    # Final format repair pass (if needed)
+    for k in range(FORMAT_REPAIR_RETRIES):
+        ok, reason = _validate_script_structure(script)
+        if ok:
+            break
+        _safe_print(f"    ⚠️ Final script validation failed: {reason} — repairing ({k+1}/{FORMAT_REPAIR_RETRIES})")
+        script = _repair_script_format(script)
+
     est = estimate_minutes_from_text(script)
-    _safe_print(f"    Estimated minutes (text): ~{est:.1f}")
+    _safe_print(f"    Estimated minutes (text after enforce): ~{est:.1f}")
 
     script_path = BASE_DIR / f"script_{today}.txt"
     script_path.write_text(script, encoding="utf-8")
@@ -710,8 +989,10 @@ def produce_episode():
 
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     dialogue = iter_dialogue(script)
-    seg_idx = 0
+    if len(dialogue) < 50:
+        raise RuntimeError("Dialogue parsing produced too few lines. Script format likely broken.")
 
+    seg_idx = 0
     for speaker, text in dialogue:
         if speaker == "MUSIC":
             concat_files.append(silence_path)
@@ -737,9 +1018,7 @@ def produce_episode():
         raise RuntimeError("ffmpeg not found in runner.")
     stitch_with_ffmpeg(concat_files, final_mp3)
 
-    final_audio = AudioSegment.from_mp3(final_mp3)
-    duration_seconds = int(len(final_audio) / 1000)
-    minutes = duration_seconds / 60.0
+    duration_seconds, minutes = _pad_or_trim_audio_to_bounds(final_mp3)
     _safe_print(f" ✅ EPISODE COMPLETE: {final_mp3.name} ({minutes:.2f} minutes)")
 
     if minutes < MIN_MINUTES or minutes > MAX_MINUTES:
@@ -757,7 +1036,7 @@ def produce_episode():
     # Show notes (Spotify description / RSS item description)
     show_notes = (
         "Top stories:\n"
-        + "\n".join([f"- {s['headline']} ({s.get('source_url','')})" for s in stories])
+        + "\n".join([f"- {s['headline']} ({s.get('source_url', '')})" for s in stories])
         + f"\n\nListen: {LISTEN_URL}\n\n"
         + pack["hashtags"]
     )
@@ -776,8 +1055,8 @@ def produce_episode():
 
     meta = {
         "date": today,
-        "title": feed_title,            # RSS/Spotify title
-        "card_headline": card_headline, # Social card title
+        "title": feed_title,             # RSS/Spotify title
+        "card_headline": card_headline,  # Social card title
         "listen_url": LISTEN_URL,
         "minutes": round(minutes, 2),
         "audio_file": final_mp3.name,
