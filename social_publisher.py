@@ -1,108 +1,79 @@
+# social_publisher.py
 import os
-import time
-import tweepy
+import sys
 from pathlib import Path
 
-# --- SETUP PATHS (Cloud Safety) ---
 BASE_DIR = Path(__file__).parent
-VIDEO_PATH = BASE_DIR / "social_clip.mp4"
-CAPTION_PATH = BASE_DIR / "viral_caption.txt"
 
-def get_twitter_conn():
-    """Connect to both v1.1 (Media) and v2 (Posting) APIs"""
-    consumer_key = os.getenv("TWITTER_API_KEY")
-    consumer_secret = os.getenv("TWITTER_API_SECRET")
-    access_token = os.getenv("TWITTER_ACCESS_TOKEN")
-    access_token_secret = os.getenv("TWITTER_ACCESS_SECRET")
+def _safe_print(msg: str):
+    print(msg, flush=True)
 
-    if not all([consumer_key, consumer_secret, access_token, access_token_secret]):
-        print("❌ ERROR: Missing Twitter API Keys in Environment Variables.")
-        return None, None
-        
-    # v1.1 Auth (For Media Uploads)
-    auth = tweepy.OAuth1UserHandler(consumer_key, consumer_secret, access_token, access_token_secret)
-    api_v1 = tweepy.API(auth)
-    
-    # v2 Client (For Tweeting)
-    client_v2 = tweepy.Client(
-        consumer_key=consumer_key,
-        consumer_secret=consumer_secret,
-        access_token=access_token,
-        access_token_secret=access_token_secret
-    )
-    return api_v1, client_v2
+def main():
+    # If you want a hard gate, set REQUIRE_SOCIAL_PUBLISH=true
+    require = os.getenv("REQUIRE_SOCIAL_PUBLISH", "false").strip().lower() in ("1", "true", "yes")
 
-def post_thread():
-    print(" >> 🐦 INITIALIZING BROADCAST ENGINE...")
-    api_v1, client_v2 = get_twitter_conn()
-    if not api_v1: return
-
-    # 1. LOAD CONTENT
-    if not CAPTION_PATH.exists():
-        print("⚠️ CAPTION FILE MISSING. Using fallback.")
-        full_text = "Here is today's AI Update! 🤖\n\nListen to the full episode."
-    else:
-        with open(CAPTION_PATH, "r", encoding="utf-8") as f:
-            full_text = f.read()
-        
-    # 2. PARSE THE THREAD
-    # Split text into Hook (Tweet 1) and Link/Tags (Tweet 2)
-    lines = full_text.split('\n')
-    
-    # Safety: If caption is short, put everything in Tweet 1
-    if len(lines) > 4:
-        hook_text = "\n".join(lines[:4]) 
-        link_text = "\n".join(lines[4:])
-    else:
-        hook_text = full_text
-        link_text = ""
-
-    # 3. UPLOAD VIDEO
-    media_id = None
-    if VIDEO_PATH.exists():
-        print(f"    Uploading Video ({VIDEO_PATH.name})...")
-        try:
-            # chunked=True AND media_category="tweet_video" are required for MP4s
-            media = api_v1.media_upload(
-                filename=str(VIDEO_PATH), 
-                chunked=True, 
-                media_category="tweet_video"
-            )
-            
-            # Simple wait for processing
-            print("    ⏳ Twitter processing video...")
-            time.sleep(8) 
-            
-            media_id = media.media_id
-            print(f"    ✅ Video Uploaded. Media ID: {media_id}")
-        except Exception as e:
-            print(f" !! VIDEO UPLOAD FAILED: {e}")
-    else:
-        print(" !! VIDEO FILE MISSING. Posting Text Only.")
-
-    # 4. POST TWEET 1 (THE HOOK + VIDEO)
-    print("    Posting Hook...")
     try:
-        if media_id:
-            t1 = client_v2.create_tweet(text=hook_text[:280], media_ids=[media_id])
-        else:
-            t1 = client_v2.create_tweet(text=hook_text[:280])
-            
-        tweet_id = t1.data['id']
-        print(f"    ✅ TWEET 1 SENT (ID: {tweet_id})")
-        
-        # 5. POST TWEET 2 (THE LINK - REPLY)
-        # Only post if there is actually text left
-        if link_text.strip():
-            print("    Posting Link Reply...")
-            time.sleep(2) 
-            client_v2.create_tweet(text=link_text[:280], in_reply_to_tweet_id=tweet_id)
-            print("    ✅ TWEET 2 SENT (THREAD COMPLETE).")
-        else:
-            print("    ℹ️ No link text found. Thread complete.")
-        
+        import tweepy  # noqa: F401
     except Exception as e:
-        print(f" !! BROADCAST FAILED: {e}")
+        _safe_print(f"⚠️ social_publisher: tweepy not installed ({e}). Skipping publish.")
+        _safe_print("   Fix: add tweepy to requirements and install it in GitHub Actions.")
+        return 1 if require else 0
+
+    api_key = os.getenv("X_API_KEY", "").strip()
+    api_secret = os.getenv("X_API_SECRET", "").strip()
+    access_token = os.getenv("X_ACCESS_TOKEN", "").strip()
+    access_secret = os.getenv("X_ACCESS_SECRET", "").strip()
+
+    if not all([api_key, api_secret, access_token, access_secret]):
+        _safe_print("⚠️ social_publisher: X credentials missing. Skipping publish.")
+        _safe_print("   Expected env vars: X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET")
+        return 1 if require else 0
+
+    import tweepy
+
+    # Read caption text if present
+    caption_path = BASE_DIR / "viral_caption.txt"
+    text = caption_path.read_text(encoding="utf-8").strip() if caption_path.exists() else "New episode is live."
+
+    # Optional media: prefer mp4 then jpg
+    mp4 = BASE_DIR / "social_clip.mp4"
+    jpg = BASE_DIR / "social_card.jpg"
+
+    # OAuth1 is required for media upload in most setups
+    auth = tweepy.OAuth1UserHandler(api_key, api_secret, access_token, access_secret)
+    api_v1 = tweepy.API(auth)
+
+    media_id = None
+    try:
+        if mp4.exists() and mp4.stat().st_size > 100_000:
+            _safe_print(">> 📡 Uploading video to X...")
+            media = api_v1.media_upload(filename=str(mp4))
+            media_id = media.media_id
+        elif jpg.exists() and jpg.stat().st_size > 20_000:
+            _safe_print(">> 📡 Uploading image to X...")
+            media = api_v1.media_upload(filename=str(jpg))
+            media_id = media.media_id
+    except Exception as e:
+        _safe_print(f"⚠️ social_publisher: media upload failed ({e}). Will attempt text-only tweet.")
+        media_id = None
+
+    # Post tweet
+    try:
+        client = tweepy.Client(
+            consumer_key=api_key,
+            consumer_secret=api_secret,
+            access_token=access_token,
+            access_token_secret=access_secret,
+        )
+        if media_id is not None:
+            client.create_tweet(text=text, media_ids=[media_id])
+        else:
+            client.create_tweet(text=text)
+        _safe_print("✅ social_publisher: posted to X")
+        return 0
+    except Exception as e:
+        _safe_print(f"❌ social_publisher: tweet failed ({e})")
+        return 1 if require else 0
 
 if __name__ == "__main__":
-    post_thread()
+    sys.exit(main())
