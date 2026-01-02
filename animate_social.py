@@ -1,120 +1,93 @@
+# animate_social.py
 import os
-import json
+import re
+import subprocess
 from pathlib import Path
-
-# MoviePy v2 imports (with a compatibility fallback)
-try:
-    from moviepy import AudioFileClip, ImageClip
-except Exception:
-    from moviepy.editor import AudioFileClip, ImageClip  # older moviepy
 
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
-META_PATH = BASE_DIR / "episode_metadata.json"
 
-CARD_PATH = BASE_DIR / "social_card.jpg"
-OUT_MAIN = BASE_DIR / "social_clip.mp4"
+SOCIAL_CARD = BASE_DIR / "social_card.jpg"
+OUT_MP4 = BASE_DIR / "social_clip.mp4"
 
-CLIPS_DIR = BASE_DIR / "social_clips"
-CLIPS_DIR.mkdir(exist_ok=True)
+CLIP_SECONDS = int(os.getenv("SOCIAL_CLIP_SECONDS", "30"))
+FPS = int(os.getenv("SOCIAL_CLIP_FPS", "30"))
 
-W, H = 1080, 1920
-CLIP_SECONDS = int(os.getenv("SOCIAL_CLIP_SECONDS", "58"))
-FPS = int(os.getenv("SOCIAL_FPS", "30"))
+def _safe_print(msg: str):
+    print(msg, flush=True)
 
-def _latest_audio_path() -> Path:
-    if META_PATH.exists():
-        try:
-            meta = json.loads(META_PATH.read_text(encoding="utf-8"))
-            fn = meta.get("audio_file")
-            if fn:
-                p = AUDIO_DIR / fn
-                if p.exists():
-                    return p
-        except Exception:
-            pass
-
-    # Fallback: latest by filename
-    candidates = sorted(AUDIO_DIR.glob("podcast_*.mp3"), reverse=True)
-    if candidates:
-        return candidates[0]
-    raise FileNotFoundError("No podcast_*.mp3 found in episode_audio/")
-
-def _next_clip_name() -> Path:
-    existing = sorted(CLIPS_DIR.glob("clip_*.mp4"))
-    if not existing:
-        return CLIPS_DIR / "clip_01.mp4"
-    last = existing[-1].stem  # clip_05
+def _run(cmd, fail_ok: bool = False) -> int:
     try:
-        n = int(last.split("_")[1])
-    except Exception:
-        n = len(existing)
-    return CLIPS_DIR / f"clip_{n+1:02d}.mp4"
+        subprocess.run(cmd, check=True)
+        return 0
+    except subprocess.CalledProcessError as e:
+        if fail_ok:
+            return e.returncode
+        raise
 
-def _subclip(audio, start, end):
-    if hasattr(audio, "subclipped"):
-        return audio.subclipped(start, end)
-    return audio.subclip(start, end)
-
-def _with_duration(clip, d):
-    if hasattr(clip, "with_duration"):
-        return clip.with_duration(d)
-    return clip.set_duration(d)
-
-def _with_audio(clip, audio):
-    if hasattr(clip, "with_audio"):
-        return clip.with_audio(audio)
-    return clip.set_audio(audio)
-
-def _resized(clip, **kwargs):
-    if hasattr(clip, "resized"):
-        return clip.resized(**kwargs)
-    return clip.resize(**kwargs)
+def _latest_podcast_mp3() -> Path | None:
+    files = sorted(AUDIO_DIR.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
+    return files[0] if files else None
 
 def create_clip():
-    audio_path = _latest_audio_path()
-    print(">> 🎬 STARTING VIDEO RENDER...")
-    print(f"   Using audio: {audio_path.name}")
+    _safe_print(">> 🎬 STARTING VIDEO RENDER...")
 
-    audio = AudioFileClip(str(audio_path))
-    safe_duration = min(float(CLIP_SECONDS), float(getattr(audio, "duration", CLIP_SECONDS) or CLIP_SECONDS))
-    audio_clip = _subclip(audio, 0, safe_duration)
+    if not SOCIAL_CARD.exists():
+        raise FileNotFoundError(f"Missing social card image: {SOCIAL_CARD}")
 
-    if not CARD_PATH.exists():
-        raise FileNotFoundError("social_card.jpg not found. Run generate_social.py first.")
+    audio_path = os.getenv("SOCIAL_AUDIO_FILE", "").strip()
+    if audio_path:
+        audio = Path(audio_path)
+        if not audio.is_absolute():
+            audio = (BASE_DIR / audio).resolve()
+    else:
+        audio = _latest_podcast_mp3()
 
-    base = ImageClip(str(CARD_PATH))
-    base = _with_duration(base, safe_duration)
+    if audio and audio.exists():
+        _safe_print(f"   Using audio: {audio.name}")
+        audio_input = ["-i", str(audio)]
+        audio_filter = f"afade=t=in:st=0:d=0.35,afade=t=out:st={max(0, CLIP_SECONDS-0.55)}:d=0.55"
+        audio_codec = ["-c:a", "aac", "-b:a", "192k"]
+    else:
+        _safe_print("   No audio found. Rendering silent clip.")
+        # Generate silent audio
+        audio_input = ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
+        audio_filter = "anull"
+        audio_codec = ["-c:a", "aac", "-b:a", "192k"]
 
-    # Ensure correct size (your card is already 1080x1920, but keep this safe)
-    base = _resized(base, height=H)
-
-    final = _with_audio(base, audio_clip)
-
-    # Write outputs
-    clip_out = _next_clip_name()
-
-    final.write_videofile(
-        str(OUT_MAIN),
-        fps=FPS,
-        codec="libx264",
-        audio_codec="aac",
-        threads=4,
-        preset="medium",
-        ffmpeg_params=["-movflags", "+faststart"],
-        verbose=False,
-        logger=None,
+    # Fit/pad to vertical 1080x1920 without distortion
+    # Add simple fade in/out to the video
+    vf = (
+        "scale=1080:1920:force_original_aspect_ratio=decrease,"
+        "pad=1080:1920:(ow-iw)/2:(oh-ih)/2,"
+        "format=yuv420p,"
+        "fade=t=in:st=0:d=0.35,"
+        f"fade=t=out:st={max(0, CLIP_SECONDS-0.55)}:d=0.55"
     )
 
-    # Also keep an archive copy
-    try:
-        import shutil
-        shutil.copyfile(OUT_MAIN, clip_out)
-    except Exception:
-        pass
+    cmd = [
+        "ffmpeg", "-y",
+        "-loop", "1",
+        "-i", str(SOCIAL_CARD),
+        *audio_input,
+        "-t", str(CLIP_SECONDS),
+        "-r", str(FPS),
+        "-vf", vf,
+        "-af", audio_filter,
+        "-c:v", "libx264",
+        "-preset", "veryfast",
+        "-pix_fmt", "yuv420p",
+        *audio_codec,
+        "-movflags", "+faststart",
+        str(OUT_MP4),
+    ]
 
-    print(f"✅ social clip generated: {OUT_MAIN}")
-    print(f"✅ archived clip: {clip_out.name}")
+    _run(cmd)
+
+    if not OUT_MP4.exists() or OUT_MP4.stat().st_size < 50_000:
+        raise RuntimeError(f"Video render did not produce a valid mp4: {OUT_MP4}")
+
+    _safe_print(f"✅ social clip generated: {OUT_MP4}")
 
 if __name__ == "__main__":
     create_clip()
