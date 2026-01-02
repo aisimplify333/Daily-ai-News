@@ -51,24 +51,30 @@ jobs:
         run: |
           python run_broadcast.py
 
-      # 5. COMMIT ARTIFACTS (THE FIX IS HERE)
+           # 5. COMMIT ARTIFACTS (HARDENED)
       - name: Commit and Push
         run: |
-          # --- IDENTITY FIX ---
-          git config --global user.name "AI Producer"
-          git config --global user.email "bot@aisimplifymedia.com"
-          # --------------------
-          
-          # Stage specific assets
-          git add episode_audio/podcast_*.mp3
-          git add feed.xml
-          git add episode_metadata.json
-          git add viral_caption.txt
-          git add social_clip.mp4
-          
-          # Safety: Pull any remote changes to avoid merge conflicts
+          git config user.name "AI Producer"
+          git config user.email "bot@aisimplifymedia.com"
+
+          # Always sync first (avoid rebase with staged changes)
           git pull --rebase origin main || echo "No remote changes"
-          
-          # Commit & Push
+
+          # Stage core assets (guard each add)
+          git add feed.xml || true
+          git add episode_metadata.json || true
+          git add viral_caption.txt || true
+          git add episode_audio/podcast_*.mp3 || true
+          git add script_*.txt || true
+
+          # Stage social clip ONLY if it exists; force-add because .gitignore ignores it
+          if [ -f social_clip.mp4 ]; then
+            git add -f social_clip.mp4
+          else
+            echo "No social_clip.mp4 found (skipping)"
+          fi
+
+          # Commit & push if anything changed
+          git status --porcelain
           git commit -m "Automated: New Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
