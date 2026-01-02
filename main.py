@@ -49,6 +49,10 @@ AUDIO_BASE_URL = os.getenv(
     "AUDIO_BASE_URL",
     "https://aisimplify333.github.io/Daily-ai-News/episode_audio/"
 )
+LISTEN_URL = os.getenv(
+    "LISTEN_URL",
+    "https://aisimplify333.github.io/Daily-ai-News/listen/"
+)
 
 PRIMARY_LLM = os.getenv("PRIMARY_LLM", "gemini").strip().lower()  # gemini | openai
 OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o")
@@ -379,6 +383,68 @@ def run_marketing_pipeline():
             _safe_print("    → publishing social (PUBLISH_SOCIAL=true)")
             _run([sys.executable, str(pub)], fail_ok=True)
 
+def generate_marketing_pack(stories: List[Dict[str, str]], date_str: str, listen_url: str) -> Dict[str, str]:
+    """
+    Creates conversion-grade hook + tweet copy + youtube title/description.
+    Returns dict with safe fallbacks if JSON parsing fails.
+    """
+    story_lines = "\n".join([f"- {s.get('headline','')} | {s.get('source_url','')}" for s in stories[:5]])
+
+    prompt = f"""
+You are a direct-response growth writer for a DAILY AI show called "The AI Edge".
+
+Goal: drive a click TODAY.
+
+Return ONLY valid JSON (no markdown). Schema:
+{{
+  "hook": "6-10 words, STOP-SCROLL, no date, no quotes, <= 64 chars",
+  "card_subhook": "one short teaser line (<= 52 chars)",
+  "tweet1": "Tweet 1 text (<= 260 chars). Must work with a video attached. Include a question.",
+  "tweet2": "Tweet 2 text (<= 260 chars). Must include this exact link: {listen_url}",
+  "yt_title": "YouTube title (<= 90 chars)",
+  "yt_description": "YouTube description (<= 1200 chars) including {listen_url}",
+  "hashtags": "#AI #TechNews #OpenAI #Nvidia (keep <= 6 tags)"
+}}
+
+Today: {date_str}
+Top stories:
+{story_lines}
+
+Rules:
+- No corporate speak.
+- Hook must be specific and urgent.
+- Avoid repeating the date in hook/title.
+"""
+
+    raw = generate_text(prompt, temperature=0.6, max_tokens=900)
+
+    fallback_hook = (stories[0].get("headline") if stories else "AI JUST MOVED — HERE’S WHAT CHANGED")[:64]
+    out = {
+        "hook": fallback_hook.upper(),
+        "card_subhook": "WHAT BREAKS NEXT?",
+        "tweet1": f"{fallback_hook}\n\nWhat’s the real consequence here?",
+        "tweet2": f"Full episode: {listen_url}\n\n#AI #TechNews",
+        "yt_title": f"{fallback_hook} | The AI Edge",
+        "yt_description": f"Listen on Spotify: {listen_url}\n\nTop stories:\n" + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
+        "hashtags": "#AI #TechNews #OpenAI #Nvidia",
+    }
+
+    try:
+        j = json.loads(raw)
+        # shallow merge onto fallbacks (so missing keys don’t break you)
+        for k in out.keys():
+            if isinstance(j.get(k), str) and j[k].strip():
+                out[k] = j[k].strip()
+        out["hook"] = out["hook"][:64].upper()
+        out["card_subhook"] = out["card_subhook"][:52]
+        out["tweet1"] = out["tweet1"][:260]
+        out["tweet2"] = out["tweet2"][:260]
+        out["yt_title"] = out["yt_title"][:90]
+        out["yt_description"] = out["yt_description"][:1200]
+        return out
+    except Exception:
+        return out
+
 def produce_episode():
     today = datetime.date.today().isoformat()
     _safe_print(" >> 📰 GATHERING INTEL (RSS PRIMARY)...")
@@ -452,22 +518,43 @@ def produce_episode():
     if minutes < MIN_MINUTES or minutes > MAX_MINUTES:
         raise RuntimeError(f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}.")
 
-    top_headline = stories[0]["headline"] if stories else f"The AI Edge: {today}"
-    hashtags = "#AI #OpenAI #Anthropic #DeepMind #Nvidia #ARegulation #AISafety #TechNews"
-    show_notes = "Top stories:\n" + "\n".join([f"- {s['headline']} ({s.get('source_url','')})" for s in stories]) + "\n\n" + hashtags
+     # --- Marketing Pack (Hook + Copy) ---
+    pack = generate_marketing_pack(stories, today, LISTEN_URL)
 
-    (BASE_DIR / "viral_caption.txt").write_text(top_headline, encoding="utf-8")
+    # Card headline should be pure hook (no date)
+    card_headline = pack["hook"]
+    feed_title = f"{pack['hook']} — {today}"  # Spotify episode title can include date
+
+    # Show notes (Spotify description / RSS item description)
+    show_notes = (
+        "Top stories:\n"
+        + "\n".join([f"- {s['headline']} ({s.get('source_url','')})" for s in stories])
+        + f"\n\nListen: {LISTEN_URL}\n\n"
+        + pack["hashtags"]
+    )
+
+    # Twitter thread source file (your social_publisher.py splits lines)
+    viral_caption = "\n".join([
+        pack["tweet1"],
+        "",
+        pack["tweet2"],
+        "",
+        pack["hashtags"],
+    ]).strip()
+
+    (BASE_DIR / "viral_caption.txt").write_text(viral_caption, encoding="utf-8")
     (BASE_DIR / "marketing.txt").write_text(show_notes, encoding="utf-8")
 
     meta = {
         "date": today,
-        "title": f"The AI Edge: {today} — {top_headline}",
+        "title": feed_title,            # RSS/Spotify title
+        "card_headline": card_headline, # Social card title
+        "listen_url": LISTEN_URL,
         "minutes": round(minutes, 2),
-        "duration_seconds": duration_seconds,
         "audio_file": final_mp3.name,
         "audio_url": AUDIO_BASE_URL + final_mp3.name,
         "stories": stories,
-        "show_notes": show_notes,
+        "marketing_pack": pack,
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
