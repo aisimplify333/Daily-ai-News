@@ -71,7 +71,7 @@ WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "150"))
 SCRIPT_ATTEMPTS = int(os.getenv("SCRIPT_ATTEMPTS", "6"))
 
 # Token ceilings
-SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "7000"))  # safe default for gpt-4o output
+SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "7000"))  # kept; segmented generation uses smaller caps per segment
 JSON_MAX_TOKENS = int(os.getenv("JSON_MAX_TOKENS", "1800"))
 
 CLEANUP_TEMP = os.getenv("CLEANUP_TEMP", "true").strip().lower() in ("1", "true", "yes")
@@ -139,20 +139,17 @@ if gemini_key:
 
 def _gemini_candidate_models() -> List[str]:
     """
-    Prefer stable, currently-available models (based on your rate-limit screenshot).
-    You can override with GEMINI_MODEL env var.
+    Prefer stable models. You can override with GEMINI_MODEL env var.
     """
     env_model = os.getenv("GEMINI_MODEL", "").strip()
     models = []
     if env_model:
         models.append(env_model)
-    # Good defaults per your screenshot
     models += [
         "gemini-2.5-flash",
         "gemini-2.5-flash-lite",
         "gemini-3-flash",
     ]
-    # Dedup preserve order
     seen = set()
     out = []
     for m in models:
@@ -169,7 +166,6 @@ def _extract_json_object(raw: str) -> Optional[dict]:
         return None
     raw = raw.strip()
 
-    # direct parse
     try:
         obj = json.loads(raw)
         if isinstance(obj, dict):
@@ -177,11 +173,9 @@ def _extract_json_object(raw: str) -> Optional[dict]:
     except Exception:
         pass
 
-    # strip code fences
     raw2 = re.sub(r"^```(?:json)?\s*", "", raw, flags=re.IGNORECASE).strip()
     raw2 = re.sub(r"\s*```$", "", raw2).strip()
 
-    # try again
     try:
         obj = json.loads(raw2)
         if isinstance(obj, dict):
@@ -189,7 +183,6 @@ def _extract_json_object(raw: str) -> Optional[dict]:
     except Exception:
         pass
 
-    # find first JSON object
     m = re.search(r"(\{.*\})", raw2, flags=re.DOTALL)
     if not m:
         return None
@@ -292,7 +285,6 @@ def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
         except Exception as e:
             _safe_print(f"    ⚠️ RSS fetch failed ({label}): {e}")
 
-    # Dedup by normalized title
     seen = set()
     deduped = []
     for x in items:
@@ -388,7 +380,7 @@ Candidate items:
         ]
 
 # ----------------------------
-# SCRIPTING (SOUL + GUARANTEED LENGTH)
+# SCRIPTING (SOUL + GUARANTEED LENGTH)  ✅ UPDATED: segmented generation + smarter validation
 # ----------------------------
 SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
 
@@ -398,106 +390,249 @@ def _word_count(s: str) -> int:
 def estimate_minutes_from_text(script: str) -> float:
     return _word_count(script) / max(1.0, WORDS_PER_MINUTE)
 
-def _script_targets() -> Tuple[int, int]:
-    # Buffers so real TTS timing lands inside MIN/MAX
+def _script_targets() -> Tuple[int, int, int]:
+    """
+    Returns (min_words, target_words, max_words)
+    Buffers help real TTS land inside MIN/MAX.
+    """
     min_words = int(MIN_MINUTES * WORDS_PER_MINUTE * 1.02)
+    target_words = int(TARGET_MINUTES * WORDS_PER_MINUTE * 1.00)
     max_words = int(MAX_MINUTES * WORDS_PER_MINUTE * 1.10)
-    return min_words, max_words
+    return min_words, target_words, max_words
 
-def build_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
+def _segment_word_targets() -> List[int]:
+    """
+    Allocate total across 5 segments while preserving your show structure and pacing.
+    Uses a proven distribution and scales down if needed to respect max_words.
+    """
+    min_words, target_words, max_words = _script_targets()
+
+    # Proven pacing distribution (keeps chemistry, banter, and room for interruptions)
+    seg = [650, 1200, 900, 1400, 650]  # total 4800
+
+    total = sum(seg)
+    if total > max_words:
+        scale = max_words / float(total)
+        seg = [max(450, int(x * scale)) for x in seg]
+
+    # Ensure we never undershoot the episode minimum when scaled down
+    if sum(seg) < min_words:
+        deficit = min_words - sum(seg)
+        seg[3] += deficit  # add into Segment 4 (best place to expand banter/lightning round)
+
+    return seg
+
+def _segment_header(i: int) -> str:
+    return f"### SEGMENT {i}"
+
+def _story_block(stories: List[Dict[str, str]]) -> str:
+    return "\n".join([f"{i+1}. {s['headline']} — {s.get('why_shocking','')} ({s.get('source_url','')})"
+                      for i, s in enumerate(stories)])
+
+def _strict_dialogue_rules() -> str:
+    return (
+        'HARD FORMAT RULES (non-negotiable):\n'
+        '- Output MUST be dialogue lines only using EXACT labels: "ALEX:", "JAMIE:", "RUFUS:"\n'
+        '- Every spoken line MUST start with one of those labels. No unlabeled narration.\n'
+        '- Keep lines SHORT: 1–2 sentences per line. Prefer one thought per line.\n'
+        '- Segment markers are allowed as lines starting with "###" and will NOT be spoken.\n'
+        '- "[MUSIC]" may appear as a standalone line.\n'
+        '- Do not add any other headings, bullets, or markdown.\n'
+    )
+
+def _segment_assignment(seg_num: int, stories: List[Dict[str, str]]) -> str:
+    """
+    Locks in the show structure so segmentation does not dilute chemistry or persona arcs.
+    """
+    if len(stories) < 5:
+        return "Use the available stories. Keep it urgent, emotional, and high-stakes."
+
+    s1, s2, s3, s4, s5 = stories[0], stories[1], stories[2], stories[3], stories[4]
+
+    if seg_num == 1:
+        return (
+            "Cold open hook: start mid-argument (overheated). Then [MUSIC]. "
+            "Then Alex welcomes and fires off today's 5-story lineup in rapid summary. "
+            "Make it feel raw and messy, with interruptions."
+        )
+    if seg_num == 2:
+        return (
+            f"Studio segment: ONLY Alex + Jamie (no Rufus at all). High chemistry, fast pacing. "
+            f"Deep dive Story 1 + Story 2 with human stakes and emotional pushback.\n"
+            f"(1) {s1['headline']}\n"
+            f"(2) {s2['headline']}"
+        )
+    if seg_num == 3:
+        return (
+            f"On-location: Alex throws to Rufus, then Rufus dominates with money/reg angle. "
+            f"Primary focus Story 3 with filings/trading/regulatory edge.\n"
+            f"(3) {s3['headline']}"
+        )
+    if seg_num == 4:
+        return (
+            f"All three together: dread/greed forecast + lightning round. "
+            f"Cover Story 4 + Story 5, and callback earlier claims. Interruptions and analogies.\n"
+            f"(4) {s4['headline']}\n"
+            f"(5) {s5['headline']}"
+        )
+    return (
+        "Closing: Alex closes hard, Jamie lands one empathetic gut-punch, "
+        "Rufus delivers one cynical prophecy. Keep it tight and memorable."
+    )
+
+def _segment_prompt(
+    seg_num: int,
+    seg_words_min: int,
+    seg_words_target: int,
+    date_str: str,
+    stories: List[Dict[str, str]],
+    sponsors: List[Dict[str, str]],
+) -> str:
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_2 = sponsors[1] if len(sponsors) > 1 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_3 = sponsors[2] if len(sponsors) > 2 else {"name": "Sponsor", "tagline": "", "cta": ""}
 
-    min_words, max_words = _script_targets()
+    extra = ""
+    if seg_num == 1:
+        extra = 'Start mid-argument (hook). Then a standalone line: [MUSIC]. Then welcome + lineup.'
+    elif seg_num == 2:
+        extra = "IMPORTANT: This segment must contain ONLY ALEX and JAMIE lines. Do NOT output any RUFUS lines."
+    elif seg_num == 3:
+        extra = (
+            "Rufus must seamlessly embed a 'native ad' as insider advice:\n"
+            f"Sponsor: {sponsor_1['name']}\n"
+            f"Tagline: {sponsor_1.get('tagline','')}\n"
+            f"CTA: {sponsor_1.get('cta','')}\n"
+            "Do it in-character—no 'this episode is sponsored by' stiffness."
+        )
+    elif seg_num == 4:
+        extra = (
+            "Include ONE woven-in host-read sponsor naturally during the chaos:\n"
+            f"Sponsor: {sponsor_2['name']} | {sponsor_2.get('tagline','')} | {sponsor_2.get('cta','')}"
+        )
+    elif seg_num == 5:
+        extra = (
+            "End with a final micro sponsor tag as a joke/aside (in-character):\n"
+            f"Sponsor: {sponsor_3['name']} | {sponsor_3.get('tagline','')} | {sponsor_3.get('cta','')}"
+        )
 
-    story_block = "\n".join(
-        [
-            f"{i+1}. {s['headline']} — {s.get('why_shocking','')} ({s.get('source_url','')})"
-            for i, s in enumerate(stories)
-        ]
-    )
+    story_block = _story_block(stories)
+    assignment = _segment_assignment(seg_num, stories)
 
-    prompt = f"""
+    return f"""
 You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
+This is ONLY {_segment_header(seg_num)} of the episode.
+
 It must feel like a raw, overheated conversation between THREE distinct personalities.
 NO corporate speak. They interrupt, argue, laugh, get angry, get quiet, then spike again.
 
 PERSONAS (distinct voice is mandatory):
-- ALEX (Host): Rogan energy + frantic curiosity. Drives pace. Calls out BS. Summarizes the lineup fast.
+- ALEX (Host): Rogan energy + frantic curiosity. Drives pace. Calls out BS. Summarizes fast.
 - JAMIE (Co-host): Bartlett vibe. Vulnerable, empathetic, human stakes. Pushes back emotionally.
-- RUFUS (Analyst): cynical, money/regulatory edge. Cold, sharp. Sounds like he trades and reads filings.
+- RUFUS (Analyst): cynical, money/regulatory edge. Cold, sharp. Sounds like filings + trades.
 
-HARD FORMAT RULES (non-negotiable):
-- Output MUST be dialogue lines only using EXACT labels: "ALEX:", "JAMIE:", "RUFUS:"
-- Every spoken line MUST start with one of those labels. No multi-paragraph blocks.
-- Segment markers are allowed as lines starting with "###" and will NOT be spoken.
-- "[MUSIC]" may appear as a standalone line.
-- ABSOLUTE LENGTH: {min_words} to {max_words} words total. Do NOT go under {min_words}.
-- Aim for {TARGET_MINUTES} minutes in real listening.
-- Must cover FIVE stories.
-- Must follow this 5-segment structure:
+{_strict_dialogue_rules()}
 
-### SEGMENT 1 (Cold open + Welcome + Alex lineup summary)
-Start mid-argument (hook). Then [MUSIC]. Then Alex welcomes, states today's 5 stories in rapid-fire summary.
-
-### SEGMENT 2 (Studio: Alex + Jamie only)
-High chemistry, fast pacing, human stakes. No Rufus. Make it feel personal and messy.
-
-### SEGMENT 3 (On-location: Rufus money/reg angle)
-Alex throws to Rufus. Rufus delivers a "native ad" seamlessly as insider advice.
-Native Ad details:
-Sponsor: {sponsor_1['name']}
-Tagline: {sponsor_1.get('tagline','')}
-CTA: {sponsor_1.get('cta','')}
-
-### SEGMENT 4 (All three: dread/greed forecast + lightning round)
-Cover remaining stories. Sharp analogies, messy banter, interruptions.
-Include woven-in host-read sponsor:
-Sponsor: {sponsor_2['name']} | {sponsor_2.get('tagline','')} | {sponsor_2.get('cta','')}
-
-### SEGMENT 5 (Closing)
-Alex closes. Jamie lands one empathetic hit. Rufus gives one cynical prophecy.
-Final micro sponsor tag as a joke/aside:
-Sponsor: {sponsor_3['name']} | {sponsor_3.get('tagline','')} | {sponsor_3.get('cta','')}
-
-TODAY'S STORIES (must be clearly discussed):
-{story_block}
-
-STYLE REQUIREMENTS:
+SEGMENT REQUIREMENTS:
+- The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
+- Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target} words).
 - Make the “soul” real: fear, awe, greed, betrayal, humor, sudden silence.
 - Use concrete examples, “what this means tomorrow”, and specific stakes (jobs, markets, power, safety).
 - Avoid filler openers like “let’s dive in”.
+
+WHAT THIS SEGMENT MUST DO:
+{assignment}
+
+SPECIAL INSTRUCTIONS FOR THIS SEGMENT:
+{extra}
+
+TODAY'S STORIES (must be clearly discussed across the full episode; reference as needed here):
+{story_block}
+
+NOW OUTPUT ONLY THIS SEGMENT.
 """.strip()
 
-    return generate_text(prompt, temperature=0.75, max_tokens=SCRIPT_MAX_TOKENS)
+def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[str]:
+    issues: List[str] = []
+    if not seg_text.strip().startswith(_segment_header(seg_num)):
+        issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
+
+    # Every non-marker/non-music line must be labeled
+    for ln in seg_text.splitlines():
+        line = ln.strip()
+        if not line:
+            continue
+        if line.startswith("###") or line.upper() == "[MUSIC]":
+            continue
+        if not SPEAKER_RE.match(line):
+            issues.append("Found non-labeled spoken line(s).")
+            break
+
+    wc = _word_count(seg_text)
+    if wc < seg_words_min:
+        issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
+    return issues
+
+def _segment_repair_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, issues: List[str], seg_text: str) -> str:
+    return f"""
+You are repairing ONLY {_segment_header(seg_num)} for "The AI Edge".
+
+CURRENT ISSUES (fix all):
+{chr(10).join([f"- {x}" for x in issues])}
+
+NON-NEGOTIABLE:
+- First line MUST be exactly "{_segment_header(seg_num)}"
+- Output MUST be dialogue lines only with EXACT labels: ALEX:, JAMIE:, RUFUS:
+- Every spoken line MUST start with one of those labels (no unlabeled lines).
+- Add MORE back-and-forth to increase length; do NOT compress.
+- Keep lines SHORT (1–2 sentences) to increase turn count and chemistry.
+- Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target}).
+
+HERE IS THE SEGMENT TO EXPAND/REPAIR (keep good parts, add more lines):
+{seg_text}
+""".strip()
+
+def _generate_segment(
+    seg_num: int,
+    seg_words_min: int,
+    seg_words_target: int,
+    date_str: str,
+    stories: List[Dict[str, str]],
+    sponsors: List[Dict[str, str]],
+) -> str:
+    prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
+
+    # Per-segment attempts (kept tight to avoid quota burn)
+    seg_text = ""
+    for attempt in range(1, 4):
+        seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
+        wc = _word_count(seg_text)
+        issues = _segment_validate(seg_text, seg_num, seg_words_min)
+
+        _safe_print(f"    ✍️ Segment {seg_num} attempt {attempt}/3 (min {seg_words_min}): {wc} words")
+
+        if not issues:
+            return seg_text.strip()
+
+        # Repair with stronger constraints
+        prompt = _segment_repair_prompt(seg_num, seg_words_min, seg_words_target, issues, seg_text)
+
+    return seg_text.strip()
 
 def validate_script(script: str) -> List[str]:
+    """
+    Updated validation:
+    - Keeps strict segment and labeling checks
+    - Word-count targets enforced
+    - Dialogue line count scaled to script length (prevents false failures on long lines)
+    """
     issues: List[str] = []
 
     for i in range(1, 6):
         if not re.search(rf"^###\s*SEGMENT\s*{i}\b", script, flags=re.IGNORECASE | re.MULTILINE):
             issues.append(f"Missing segment marker: ### SEGMENT {i}")
 
-    turns = sum(1 for line in script.splitlines() if SPEAKER_RE.match(line.strip()))
-    if turns < 220:
-        issues.append(f"Too few labeled dialogue lines ({turns}).")
-
-    for name in ("ALEX", "JAMIE", "RUFUS"):
-        if not re.search(rf"^{name}\s*:", script, flags=re.IGNORECASE | re.MULTILINE):
-            issues.append(f"Speaker missing: {name}")
-
-    min_words, max_words = _script_targets()
-    wc = _word_count(script)
-    if wc < min_words:
-        issues.append(f"Script too short ({wc} words). Minimum is {min_words}.")
-    if wc > max_words:
-        issues.append(f"Script too long ({wc} words). Maximum is {max_words}.")
-
-    if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
-        issues.append("Contains non-dialogue formatting blocks.")
-
-    # Every non-marker non-music line must be labeled dialogue
+    # Every non-marker/non-music line must be labeled
     for ln in script.splitlines():
         line = ln.strip()
         if not line:
@@ -508,6 +643,25 @@ def validate_script(script: str) -> List[str]:
             issues.append("Found non-labeled spoken line(s).")
             break
 
+    for name in ("ALEX", "JAMIE", "RUFUS"):
+        if not re.search(rf"^{name}\s*:", script, flags=re.IGNORECASE | re.MULTILINE):
+            issues.append(f"Speaker missing: {name}")
+
+    min_words, _, max_words = _script_targets()
+    wc = _word_count(script)
+    if wc < min_words:
+        issues.append(f"Script too short ({wc} words). Minimum is {min_words}.")
+    if wc > max_words:
+        issues.append(f"Script too long ({wc} words). Maximum is {max_words}.")
+
+    turns = sum(1 for line in script.splitlines() if SPEAKER_RE.match(line.strip()))
+    min_turns = max(90, wc // 45)  # ~1 line per 45 words minimum to preserve banter and pacing
+    if turns < min_turns:
+        issues.append(f"Too few labeled dialogue lines ({turns}). Minimum is {min_turns} for {wc} words.")
+
+    if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
+        issues.append("Contains non-dialogue formatting blocks.")
+
     return issues
 
 def repair_script(
@@ -517,8 +671,12 @@ def repair_script(
     date_str: str,
     issues: List[str],
 ) -> str:
-    min_words, max_words = _script_targets()
-    story_block = "\n".join([f"- {s['headline']} ({s.get('source_url','')})" for s in stories])
+    """
+    Final fallback repair (rare with segmentation):
+    Expands primarily inside SEGMENT 4 to preserve your show arc.
+    """
+    min_words, _, max_words = _script_targets()
+    story_block = "\n".join([f"- {s['headline']} ({s.get('source_url','')})" for s in stories[:5]])
 
     prompt = f"""
 You are fixing a podcast script for "The AI Edge" ({date_str}).
@@ -533,30 +691,53 @@ NON-NEGOTIABLE RULES:
 - ABSOLUTE LENGTH: {min_words} to {max_words} words. Do NOT go under {min_words}.
 - Do NOT summarize. EXPAND with more back-and-forth, concrete examples, interruptions, and stakes.
 - Preserve the show's tone: raw, urgent, emotional, messy, funny at times.
+- Add material primarily inside ### SEGMENT 4 (before ### SEGMENT 5).
 
-TODAY'S STORIES (must be clearly discussed):
+TODAY'S STORIES:
 {story_block}
 
-HERE IS THE SCRIPT TO REPAIR (keep the good parts; expand what’s thin):
+HERE IS THE SCRIPT TO REPAIR:
 {script}
 """.strip()
 
-    return generate_text(prompt, temperature=0.65, max_tokens=SCRIPT_MAX_TOKENS)
+    return generate_text(prompt, temperature=0.60, max_tokens=3000)
 
 def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
-    script = build_script(stories, sponsors, date_str)
+    """
+    Segmented generation prevents single-call truncation and guarantees length targets
+    without sacrificing persona chemistry and show structure.
+    """
+    seg_targets = _segment_word_targets()
+    seg_mins = [max(420, int(t * 0.92)) for t in seg_targets]
 
+    _safe_print(" >> ✍️ WRITING FULL EPISODE (SEGMENTED)...")
+    segments: List[str] = []
+    for i in range(1, 6):
+        segments.append(
+            _generate_segment(
+                seg_num=i,
+                seg_words_min=seg_mins[i - 1],
+                seg_words_target=seg_targets[i - 1],
+                date_str=date_str,
+                stories=stories,
+                sponsors=sponsors,
+            )
+        )
+
+    script = "\n\n".join(segments).strip()
+
+    # Full validation + rare pad/repair loop
     for attempt in range(1, SCRIPT_ATTEMPTS + 1):
         wc = _word_count(script)
         mins = estimate_minutes_from_text(script)
         issues = validate_script(script)
 
-        _safe_print(f"    Script attempt #{attempt}: ~{mins:.1f} min ({wc} words)")
+        _safe_print(f"    ✅ Full script check #{attempt}: ~{mins:.1f} min ({wc} words)")
 
         if not issues:
             return script
 
-        _safe_print("    ⚠️ Script issues detected:")
+        _safe_print("    ⚠️ Full script issues detected:")
         for x in issues[:10]:
             _safe_print(f"      - {x}")
 
@@ -1040,7 +1221,6 @@ def produce_episode():
 
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
-            # keep it simple: a short pause
             concat_files.append(silence_path)
             continue
 
