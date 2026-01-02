@@ -1,8 +1,9 @@
 # animate_social.py
 import os
-import re
 import subprocess
+import shutil
 from pathlib import Path
+from typing import Optional
 
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
@@ -16,6 +17,9 @@ FPS = int(os.getenv("SOCIAL_CLIP_FPS", "30"))
 def _safe_print(msg: str):
     print(msg, flush=True)
 
+def _has_ffmpeg() -> bool:
+    return shutil.which("ffmpeg") is not None
+
 def _run(cmd, fail_ok: bool = False) -> int:
     try:
         subprocess.run(cmd, check=True)
@@ -25,12 +29,15 @@ def _run(cmd, fail_ok: bool = False) -> int:
             return e.returncode
         raise
 
-def _latest_podcast_mp3() -> Path | None:
+def _latest_podcast_mp3() -> Optional[Path]:
     files = sorted(AUDIO_DIR.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
     return files[0] if files else None
 
 def create_clip():
     _safe_print(">> 🎬 STARTING VIDEO RENDER...")
+
+    if not _has_ffmpeg():
+        raise RuntimeError("ffmpeg not found in PATH. Install it or use a runner image that includes it.")
 
     if not SOCIAL_CARD.exists():
         raise FileNotFoundError(f"Missing social card image: {SOCIAL_CARD}")
@@ -50,13 +57,11 @@ def create_clip():
         audio_codec = ["-c:a", "aac", "-b:a", "192k"]
     else:
         _safe_print("   No audio found. Rendering silent clip.")
-        # Generate silent audio
         audio_input = ["-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo"]
         audio_filter = "anull"
         audio_codec = ["-c:a", "aac", "-b:a", "192k"]
 
-    # Fit/pad to vertical 1080x1920 without distortion
-    # Add simple fade in/out to the video
+    # Fit/pad to vertical 1080x1920 without distortion + fades
     vf = (
         "scale=1080:1920:force_original_aspect_ratio=decrease,"
         "pad=1080:1920:(ow-iw)/2:(oh-ih)/2,"
@@ -66,7 +71,10 @@ def create_clip():
     )
 
     cmd = [
-        "ffmpeg", "-y",
+        "ffmpeg",
+        "-hide_banner",
+        "-loglevel", "error",
+        "-y",
         "-loop", "1",
         "-i", str(SOCIAL_CARD),
         *audio_input,
@@ -76,6 +84,7 @@ def create_clip():
         "-af", audio_filter,
         "-c:v", "libx264",
         "-preset", "veryfast",
+        "-crf", "23",
         "-pix_fmt", "yuv420p",
         *audio_codec,
         "-movflags", "+faststart",
