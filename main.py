@@ -1347,6 +1347,7 @@ def update_feed_xml(meta: Dict):
     import xml.etree.ElementTree as ET
 
     ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+    # Register the prefix ONCE. Do NOT also manually set xmlns:itunes on the root element.
     ET.register_namespace("itunes", ITUNES_NS)
 
     def is_segment_item(item_el: ET.Element) -> bool:
@@ -1376,8 +1377,14 @@ def update_feed_xml(meta: Dict):
         dt = datetime.datetime.now(datetime.timezone.utc)
         return dt.strftime("%a, %d %b %Y %H:%M:%S -0000")
 
-    def make_item(title: str, description: str, audio_filename: str, audio_url: str,
-                  pubdate_rfc2822: str, duration_seconds: int = 0) -> ET.Element:
+    def make_item(
+        title: str,
+        description: str,
+        audio_filename: str,
+        audio_url: str,
+        pubdate_rfc2822: str,
+        duration_seconds: int = 0,
+    ) -> ET.Element:
         item = ET.Element("item")
         ET.SubElement(item, "title").text = title
         ET.SubElement(item, "description").text = (description or "")[:8000]
@@ -1400,9 +1407,11 @@ def update_feed_xml(meta: Dict):
         if duration_seconds and duration_seconds > 0:
             dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
             dur.text = str(int(duration_seconds))
+
         return item
 
-    rss = ET.Element("rss", {"version": "2.0", f"xmlns:itunes": ITUNES_NS})
+    # IMPORTANT FIX: do NOT set xmlns:itunes here (register_namespace already handles it)
+    rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
 
     ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
