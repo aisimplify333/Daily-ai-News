@@ -50,12 +50,12 @@ SPONSORS_PATH = BASE_DIR / "sponsors.json"
 
 AUDIO_BASE_URL = os.getenv(
     "AUDIO_BASE_URL",
-    "https://aisimplify333.github.io/Daily-ai-News/episode_audio/"
+    "https://aisimplify333.github.io/Daily-ai-News/episode_audio/",
 ).rstrip("/") + "/"
 
 LISTEN_URL = os.getenv(
     "LISTEN_URL",
-    "https://aisimplify333.github.io/Daily-ai-News/listen/"
+    "https://aisimplify333.github.io/Daily-ai-News/listen/",
 ).rstrip("/") + "/"
 
 PRIMARY_LLM = os.getenv("PRIMARY_LLM", "openai").strip().lower()  # gemini | openai
@@ -66,14 +66,12 @@ MIN_MINUTES = float(os.getenv("MIN_MINUTES", "25"))
 MAX_MINUTES = float(os.getenv("MAX_MINUTES", "30"))
 TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
 
-# Script sizing: set to 150 because your logs implied ~905 words => ~6.0 minutes
+# Script sizing
 WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "150"))
-
-# How many attempts to regenerate/repair script before failing
 SCRIPT_ATTEMPTS = int(os.getenv("SCRIPT_ATTEMPTS", "6"))
 
-# Token ceilings for script generation/repair
-SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "12000"))
+# Token ceilings
+SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "7000"))  # safe default for gpt-4o output
 JSON_MAX_TOKENS = int(os.getenv("JSON_MAX_TOKENS", "1800"))
 
 CLEANUP_TEMP = os.getenv("CLEANUP_TEMP", "true").strip().lower() in ("1", "true", "yes")
@@ -88,10 +86,13 @@ VOICE_MAP = {
     "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
 }
 
-# Merge adjacent turns for fewer TTS calls
+# TTS tuning
 TTS_MERGE_MAX_CHARS = int(os.getenv("TTS_MERGE_MAX_CHARS", "2400"))
 TTS_CHUNK_MAX_CHARS = int(os.getenv("TTS_CHUNK_MAX_CHARS", "2800"))
 TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
+
+# Audio stitch method: pydub (recommended) or ffmpeg
+STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
 # ----------------------------
 # SAFE PRINT
@@ -115,7 +116,7 @@ def _run(cmd: List[str], fail_ok: bool = False) -> int:
         raise
 
 # ----------------------------
-# LLM CLIENTS (OpenAI + Gemini)
+# LLM CLIENTS (OpenAI + Gemini via google-genai)
 # ----------------------------
 openai_key = os.environ.get("OPENAI_API_KEY", "").strip()
 if not openai_key:
@@ -124,84 +125,105 @@ if not openai_key:
 openai_client = OpenAI(api_key=openai_key)
 
 gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
-
-# New Gemini SDK (google-genai)
-genai_new = None
-genai_types = None
 gemini_client = None
-try:
-    from google import genai as genai_new  # from google-genai
-    from google.genai import types as genai_types
-    if gemini_key:
+genai_types = None
+
+if gemini_key:
+    try:
+        from google import genai as genai_new  # google-genai
+        from google.genai import types as genai_types  # google-genai
         gemini_client = genai_new.Client(api_key=gemini_key)
-    else:
-        # Some environments allow default creds/env discovery
-        gemini_client = genai_new.Client()
-except Exception:
-    genai_new = None
-    genai_types = None
-    gemini_client = None
+    except Exception:
+        gemini_client = None
+        genai_types = None
 
-# Old Gemini SDK (google-generativeai) - kept for backward compatibility only
-genai_old = None
-try:
-   from google import genai
-from google.genai import types
-
-gemini_client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
-
-resp = gemini_client.models.generate_content(
-    model="gemini-2.5-flash",
-    contents=prompt,
-    config=types.GenerateContentConfig(
-        temperature=0.7,
-        max_output_tokens=5000,
-    ),
-)
-text = resp.text
-
-def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 5000) -> str:
+def _gemini_candidate_models() -> List[str]:
     """
-    Gemini primary (if enabled + available), OpenAI fallback.
-    Fails fast on Gemini 429/404 rather than looping and burning your RPM.
+    Prefer stable, currently-available models (based on your rate-limit screenshot).
+    You can override with GEMINI_MODEL env var.
     """
-    if PRIMARY_LLM == "gemini" and gemini_key:
-        # Try NEW sdk first
-        if gemini_client and genai_types:
-            for model_name in _gemini_candidate_models()[:2]:
-                try:
-                    resp = gemini_client.models.generate_content(
-                        model=model_name,
-                        contents=prompt,
-                        config=genai_types.GenerateContentConfig(
-                            temperature=temperature,
-                            max_output_tokens=max_tokens,
-                        ),
-                    )
-                    txt = getattr(resp, "text", None)
-                    if txt and txt.strip():
-                        return txt.strip()
-                except Exception as e:
-                    _safe_print(f"    ⚠️ Gemini(new) failed on {model_name}: {e}. Falling back to OpenAI...")
-                    break
+    env_model = os.getenv("GEMINI_MODEL", "").strip()
+    models = []
+    if env_model:
+        models.append(env_model)
+    # Good defaults per your screenshot
+    models += [
+        "gemini-2.5-flash",
+        "gemini-2.5-flash-lite",
+        "gemini-3-flash",
+    ]
+    # Dedup preserve order
+    seen = set()
+    out = []
+    for m in models:
+        if m and m not in seen:
+            out.append(m)
+            seen.add(m)
+    return out
 
-        # Try OLD sdk (legacy)
-        if genai_old:
-            for model_name in _gemini_candidate_models()[:2]:
-                try:
-                    model = genai_old.GenerativeModel(model_name)
-                    resp = model.generate_content(
-                        prompt,
-                        generation_config={"temperature": temperature, "max_output_tokens": max_tokens},
-                    )
-                    txt = getattr(resp, "text", None)
-                    if txt and txt.strip():
-                        return txt.strip()
-                except Exception as e:
-                    _safe_print(f"    ⚠️ Gemini(old) failed on {model_name}: {e}. Falling back to OpenAI...")
-                    break
+def _extract_json_object(raw: str) -> Optional[dict]:
+    """
+    Robust JSON extractor: handles code fences or extra text by pulling the first {...} block.
+    """
+    if not raw:
+        return None
+    raw = raw.strip()
 
-    # OpenAI
+    # direct parse
+    try:
+        obj = json.loads(raw)
+        if isinstance(obj, dict):
+            return obj
+    except Exception:
+        pass
+
+    # strip code fences
+    raw2 = re.sub(r"^```(?:json)?\s*", "", raw, flags=re.IGNORECASE).strip()
+    raw2 = re.sub(r"\s*```$", "", raw2).strip()
+
+    # try again
+    try:
+        obj = json.loads(raw2)
+        if isinstance(obj, dict):
+            return obj
+    except Exception:
+        pass
+
+    # find first JSON object
+    m = re.search(r"(\{.*\})", raw2, flags=re.DOTALL)
+    if not m:
+        return None
+    try:
+        obj = json.loads(m.group(1))
+        if isinstance(obj, dict):
+            return obj
+    except Exception:
+        return None
+    return None
+
+def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000) -> str:
+    """
+    Gemini primary (optional) + OpenAI fallback.
+    Gemini behavior: fail fast on quota/model errors to avoid burning RPM.
+    """
+    if PRIMARY_LLM == "gemini" and gemini_key and gemini_client and genai_types:
+        for model_name in _gemini_candidate_models()[:2]:
+            try:
+                resp = gemini_client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=genai_types.GenerateContentConfig(
+                        temperature=temperature,
+                        max_output_tokens=max_tokens,
+                    ),
+                )
+                txt = getattr(resp, "text", None)
+                if txt and txt.strip():
+                    return txt.strip()
+            except Exception as e:
+                _safe_print(f"    ⚠️ Gemini failed on {model_name}: {e}. Falling back to OpenAI...")
+                break
+
     resp = openai_client.chat.completions.create(
         model=OPENAI_CHAT_MODEL,
         temperature=temperature,
@@ -223,16 +245,26 @@ def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 5000)
 # NEWS INTEL (RSS)
 # ----------------------------
 GOOGLE_NEWS_RSS = [
-    ("Frontier Models",
-     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
-    ("AI Money",
-     "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
-    ("AI Regulation",
-     "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
-    ("AI Security",
-     "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
-    ("AI in Work",
-     "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise)%20when:1d&hl=en-US&gl=US&ceid=US:en"),
+    (
+        "Frontier Models",
+        "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+    ),
+    (
+        "AI Money",
+        "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+    ),
+    (
+        "AI Regulation",
+        "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+    ),
+    (
+        "AI Security",
+        "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+    ),
+    (
+        "AI in Work",
+        "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+    ),
 ]
 
 def _strip_html(s: str) -> str:
@@ -319,31 +351,39 @@ Candidate items:
 """.strip()
 
     raw = generate_text(prompt, temperature=0.25, max_tokens=JSON_MAX_TOKENS)
+    j = _extract_json_object(raw)
 
     try:
-        j = json.loads(raw)
+        if not j or "stories" not in j:
+            raise ValueError("No JSON stories found.")
         stories = j.get("stories", [])
         stories = [s for s in stories if isinstance(s, dict)]
         norm: List[Dict[str, str]] = []
         for s in stories[:n]:
             angles = s.get("angles") if isinstance(s.get("angles"), dict) else {}
-            norm.append({
-                "headline": (s.get("headline") or "").strip(),
-                "why_shocking": (s.get("why_shocking") or "").strip(),
-                "angles": {
-                    "alex": (angles.get("alex") or "").strip(),
-                    "jamie": (angles.get("jamie") or "").strip(),
-                    "rufus": (angles.get("rufus") or "").strip(),
-                },
-                "source_url": (s.get("source_url") or "").strip(),
-            })
+            norm.append(
+                {
+                    "headline": (s.get("headline") or "").strip(),
+                    "why_shocking": (s.get("why_shocking") or "").strip(),
+                    "angles": {
+                        "alex": (angles.get("alex") or "").strip(),
+                        "jamie": (angles.get("jamie") or "").strip(),
+                        "rufus": (angles.get("rufus") or "").strip(),
+                    },
+                    "source_url": (s.get("source_url") or "").strip(),
+                }
+            )
         if len(norm) < n or any(not x["headline"] for x in norm):
             raise ValueError("Model returned incomplete stories.")
         return norm[:n]
     except Exception:
         return [
-            {"headline": x["title"], "why_shocking": x["summary"],
-             "angles": {"alex": "", "jamie": "", "rufus": ""}, "source_url": x["link"]}
+            {
+                "headline": x["title"],
+                "why_shocking": x["summary"],
+                "angles": {"alex": "", "jamie": "", "rufus": ""},
+                "source_url": x["link"],
+            }
             for x in intel_items[:n]
         ]
 
@@ -356,11 +396,10 @@ def _word_count(s: str) -> int:
     return len(re.findall(r"\b\w+\b", s or ""))
 
 def estimate_minutes_from_text(script: str) -> float:
-    words = _word_count(script)
-    return words / max(1.0, WORDS_PER_MINUTE)
+    return _word_count(script) / max(1.0, WORDS_PER_MINUTE)
 
 def _script_targets() -> Tuple[int, int]:
-    # Small buffer so real TTS timing still lands inside MIN/MAX
+    # Buffers so real TTS timing lands inside MIN/MAX
     min_words = int(MIN_MINUTES * WORDS_PER_MINUTE * 1.02)
     max_words = int(MAX_MINUTES * WORDS_PER_MINUTE * 1.10)
     return min_words, max_words
@@ -373,7 +412,10 @@ def build_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], 
     min_words, max_words = _script_targets()
 
     story_block = "\n".join(
-        [f"{i+1}. {s['headline']} — {s.get('why_shocking','')} ({s.get('source_url','')})" for i, s in enumerate(stories)]
+        [
+            f"{i+1}. {s['headline']} — {s.get('why_shocking','')} ({s.get('source_url','')})"
+            for i, s in enumerate(stories)
+        ]
     )
 
     prompt = f"""
@@ -433,22 +475,18 @@ STYLE REQUIREMENTS:
 def validate_script(script: str) -> List[str]:
     issues: List[str] = []
 
-    # Segment markers present
     for i in range(1, 6):
         if not re.search(rf"^###\s*SEGMENT\s*{i}\b", script, flags=re.IGNORECASE | re.MULTILINE):
             issues.append(f"Missing segment marker: ### SEGMENT {i}")
 
-    # Enough labeled dialogue turns
     turns = sum(1 for line in script.splitlines() if SPEAKER_RE.match(line.strip()))
     if turns < 220:
         issues.append(f"Too few labeled dialogue lines ({turns}).")
 
-    # Speakers present
     for name in ("ALEX", "JAMIE", "RUFUS"):
         if not re.search(rf"^{name}\s*:", script, flags=re.IGNORECASE | re.MULTILINE):
             issues.append(f"Speaker missing: {name}")
 
-    # Length targets
     min_words, max_words = _script_targets()
     wc = _word_count(script)
     if wc < min_words:
@@ -456,13 +494,29 @@ def validate_script(script: str) -> List[str]:
     if wc > max_words:
         issues.append(f"Script too long ({wc} words). Maximum is {max_words}.")
 
-    # Must not contain obvious non-dialogue blocks
     if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
         issues.append("Contains non-dialogue formatting blocks.")
 
+    # Every non-marker non-music line must be labeled dialogue
+    for ln in script.splitlines():
+        line = ln.strip()
+        if not line:
+            continue
+        if line.startswith("###") or line.upper() == "[MUSIC]":
+            continue
+        if not SPEAKER_RE.match(line):
+            issues.append("Found non-labeled spoken line(s).")
+            break
+
     return issues
 
-def repair_script(script: str, stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str, issues: List[str]) -> str:
+def repair_script(
+    script: str,
+    stories: List[Dict[str, str]],
+    sponsors: List[Dict[str, str]],
+    date_str: str,
+    issues: List[str],
+) -> str:
     min_words, max_words = _script_targets()
     story_block = "\n".join([f"- {s['headline']} ({s.get('source_url','')})" for s in stories])
 
@@ -503,7 +557,7 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
             return script
 
         _safe_print("    ⚠️ Script issues detected:")
-        for x in issues[:8]:
+        for x in issues[:10]:
             _safe_print(f"      - {x}")
 
         script = repair_script(script, stories, sponsors, date_str, issues)
@@ -556,7 +610,6 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
             buf = [m.group(2).strip()]
             continue
 
-        # Continuation line
         if current_speaker:
             buf.append(line)
 
@@ -644,6 +697,10 @@ def tts_to_file(text: str, voice: str, out_path: Path):
     raise RuntimeError(f"TTS failed after {TTS_RETRIES} retries: {last_err}")
 
 def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
+    """
+    Optional. MP3 concat can cause DTS warnings depending on segment encoding.
+    Kept as fallback. Default stitching is pydub (below).
+    """
     concat_txt = out_path.parent / f"concat_{uuid.uuid4().hex}.txt"
     concat_txt.write_text("\n".join([f"file '{p.as_posix()}'" for p in file_list]), encoding="utf-8")
 
@@ -664,6 +721,25 @@ def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
         concat_txt.unlink()
     except Exception:
         pass
+
+def stitch_with_pydub(file_list: List[Path], out_path: Path):
+    """
+    Recommended: decode each segment and export once.
+    Avoids FFmpeg non-monotonic DTS issues from MP3 concat.
+    """
+    combined = AudioSegment.empty()
+    for p in file_list:
+        combined += AudioSegment.from_file(p)
+    combined.export(out_path, format="mp3", bitrate="192k")
+
+def stitch_audio(file_list: List[Path], out_path: Path):
+    if not _has_ffmpeg():
+        raise RuntimeError("ffmpeg not found in runner (required by pydub/ffmpeg).")
+
+    if STITCH_METHOD == "ffmpeg":
+        stitch_with_ffmpeg(file_list, out_path)
+    else:
+        stitch_with_pydub(file_list, out_path)
 
 # ----------------------------
 # MARKETING PIPELINE
@@ -715,6 +791,7 @@ Rules:
 """.strip()
 
     raw = generate_text(prompt, temperature=0.45, max_tokens=900)
+    j = _extract_json_object(raw)
 
     fallback_hook = (stories[0].get("headline") if stories else "AI JUST MOVED — HERE’S WHAT CHANGED")[:64]
     out = {
@@ -723,15 +800,16 @@ Rules:
         "tweet1": f"{fallback_hook}\n\nWhat’s the real consequence here?",
         "tweet2": f"Full episode: {listen_url}\n\n#AI #TechNews",
         "yt_title": f"{fallback_hook} | The AI Edge",
-        "yt_description": f"Listen on Spotify: {listen_url}\n\nTop stories:\n" + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
+        "yt_description": f"Listen on Spotify: {listen_url}\n\nTop stories:\n"
+        + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
         "hashtags": "#AI #TechNews #OpenAI #Nvidia",
     }
 
     try:
-        j = json.loads(raw)
-        for k in out.keys():
-            if isinstance(j.get(k), str) and j[k].strip():
-                out[k] = j[k].strip()
+        if j:
+            for k in out.keys():
+                if isinstance(j.get(k), str) and j[k].strip():
+                    out[k] = j[k].strip()
 
         out["hook"] = out["hook"][:64].upper()
         out["card_subhook"] = out["card_subhook"][:52]
@@ -744,7 +822,7 @@ Rules:
         return out
 
 # ----------------------------
-# RSS FEED WRITER (ROBUST)
+# RSS FEED WRITER (robust)
 # ----------------------------
 def update_feed_xml(meta: Dict):
     import xml.etree.ElementTree as ET
@@ -933,9 +1011,11 @@ def produce_episode():
 
     dialogue = iter_dialogue(script)
     if len(dialogue) < 120:
-        raise RuntimeError("Dialogue parsing produced too few lines. Script format likely broken.")
+        raise RuntimeError(
+            f"Dialogue parsing produced too few lines ({len(dialogue)}). "
+            "Script format likely broken (missing speaker labels)."
+        )
 
-    # Merge turns to reduce TTS calls
     dialogue_merged = merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)
 
     run_tmp = TMP_AUDIO_DIR / today
@@ -944,8 +1024,10 @@ def produce_episode():
     run_tmp.mkdir(parents=True, exist_ok=True)
 
     concat_files: List[Path] = []
-    silence_path = run_tmp / "silence_150ms.mp3"
-    AudioSegment.silent(duration=150).export(silence_path, format="mp3")
+
+    # Use WAV silence to avoid MP3 timestamp quirks during stitching
+    silence_path = run_tmp / "silence_150ms.wav"
+    AudioSegment.silent(duration=150).export(silence_path, format="wav")
 
     if INTRO_PATH.exists():
         intro = AudioSegment.from_file(INTRO_PATH)[:15000].fade_out(1200)
@@ -958,6 +1040,7 @@ def produce_episode():
 
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
+            # keep it simple: a short pause
             concat_files.append(silence_path)
             continue
 
@@ -975,11 +1058,9 @@ def produce_episode():
         outro.export(outro_path, format="mp3", bitrate="192k")
         concat_files.append(outro_path)
 
-    _safe_print(" >> 🎚️ STITCHING (ffmpeg concat)...")
+    _safe_print(f" >> 🎚️ STITCHING ({STITCH_METHOD})...")
     final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
-    if not _has_ffmpeg():
-        raise RuntimeError("ffmpeg not found in runner.")
-    stitch_with_ffmpeg(concat_files, final_mp3)
+    stitch_audio(concat_files, final_mp3)
 
     final_audio = AudioSegment.from_mp3(final_mp3)
     duration_seconds = int(len(final_audio) / 1000)
@@ -991,7 +1072,6 @@ def produce_episode():
             f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}."
         )
 
-    # --- Marketing Pack (Hook + Copy) ---
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
 
     card_headline = pack["hook"]
