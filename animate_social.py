@@ -1,98 +1,120 @@
 import os
+import json
 from pathlib import Path
 
-# MoviePy v2 moved things around; this import works on v2
-# and we keep a fallback for v1 environments.
+# MoviePy v2 imports (with a compatibility fallback)
 try:
-    from moviepy import AudioFileClip, ImageClip, CompositeVideoClip
+    from moviepy import AudioFileClip, ImageClip
 except Exception:
-    from moviepy.editor import AudioFileClip, ImageClip, CompositeVideoClip  # type: ignore
+    from moviepy.editor import AudioFileClip, ImageClip  # older moviepy
 
 BASE_DIR = Path(__file__).parent
 AUDIO_DIR = BASE_DIR / "episode_audio"
-ASSETS_DIR = BASE_DIR / "assets"
+META_PATH = BASE_DIR / "episode_metadata.json"
 
-SOCIAL_CARD = BASE_DIR / "social_card.jpg"
-FALLBACK_COVER = ASSETS_DIR / "cover.png"
+CARD_PATH = BASE_DIR / "social_card.jpg"
+OUT_MAIN = BASE_DIR / "social_clip.mp4"
 
-OUTPUT = BASE_DIR / "social_clip.mp4"
+CLIPS_DIR = BASE_DIR / "social_clips"
+CLIPS_DIR.mkdir(exist_ok=True)
 
-# 9:16 vertical
 W, H = 1080, 1920
+CLIP_SECONDS = int(os.getenv("SOCIAL_CLIP_SECONDS", "58"))
+FPS = int(os.getenv("SOCIAL_FPS", "30"))
 
-# X/TikTok friendly teaser length
-TARGET_SECONDS = int(os.getenv("SOCIAL_TEASER_SECONDS", "58"))
+def _latest_audio_path() -> Path:
+    if META_PATH.exists():
+        try:
+            meta = json.loads(META_PATH.read_text(encoding="utf-8"))
+            fn = meta.get("audio_file")
+            if fn:
+                p = AUDIO_DIR / fn
+                if p.exists():
+                    return p
+        except Exception:
+            pass
 
+    # Fallback: latest by filename
+    candidates = sorted(AUDIO_DIR.glob("podcast_*.mp3"), reverse=True)
+    if candidates:
+        return candidates[0]
+    raise FileNotFoundError("No podcast_*.mp3 found in episode_audio/")
 
-def _latest_mp3() -> Path:
-    files = sorted(AUDIO_DIR.glob("podcast_*.mp3"))
-    if not files:
-        raise FileNotFoundError(f"No podcast_*.mp3 found in {AUDIO_DIR}")
-    return files[-1]
+def _next_clip_name() -> Path:
+    existing = sorted(CLIPS_DIR.glob("clip_*.mp4"))
+    if not existing:
+        return CLIPS_DIR / "clip_01.mp4"
+    last = existing[-1].stem  # clip_05
+    try:
+        n = int(last.split("_")[1])
+    except Exception:
+        n = len(existing)
+    return CLIPS_DIR / f"clip_{n+1:02d}.mp4"
 
-
-def _subclip_compat(audio, start: float, end: float):
-    """
-    MoviePy v1: subclip(start, end)
-    MoviePy v2: subclipped(start, end)
-    """
-    if hasattr(audio, "subclip"):
-        return audio.subclip(start, end)
+def _subclip(audio, start, end):
     if hasattr(audio, "subclipped"):
         return audio.subclipped(start, end)
-    raise AttributeError("AudioFileClip has neither subclip nor subclipped. Check moviepy version.")
+    return audio.subclip(start, end)
 
+def _with_duration(clip, d):
+    if hasattr(clip, "with_duration"):
+        return clip.with_duration(d)
+    return clip.set_duration(d)
+
+def _with_audio(clip, audio):
+    if hasattr(clip, "with_audio"):
+        return clip.with_audio(audio)
+    return clip.set_audio(audio)
+
+def _resized(clip, **kwargs):
+    if hasattr(clip, "resized"):
+        return clip.resized(**kwargs)
+    return clip.resize(**kwargs)
 
 def create_clip():
+    audio_path = _latest_audio_path()
     print(">> 🎬 STARTING VIDEO RENDER...")
+    print(f"   Using audio: {audio_path.name}")
 
-    mp3 = _latest_mp3()
-    print(f"   Using audio: {mp3.name}")
+    audio = AudioFileClip(str(audio_path))
+    safe_duration = min(float(CLIP_SECONDS), float(getattr(audio, "duration", CLIP_SECONDS) or CLIP_SECONDS))
+    audio_clip = _subclip(audio, 0, safe_duration)
 
-    # Choose visual
-    if SOCIAL_CARD.exists():
-        img_path = SOCIAL_CARD
-    elif FALLBACK_COVER.exists():
-        img_path = FALLBACK_COVER
-    else:
-        raise FileNotFoundError("Missing social_card.jpg and assets/cover.png")
+    if not CARD_PATH.exists():
+        raise FileNotFoundError("social_card.jpg not found. Run generate_social.py first.")
 
-    audio = AudioFileClip(str(mp3))
+    base = ImageClip(str(CARD_PATH))
+    base = _with_duration(base, safe_duration)
 
-    safe_duration = min(float(audio.duration), float(TARGET_SECONDS))
-    audio_clip = _subclip_compat(audio, 0, safe_duration)
+    # Ensure correct size (your card is already 1080x1920, but keep this safe)
+    base = _resized(base, height=H)
 
-    # Base image clip
-    img = ImageClip(str(img_path)).with_duration(safe_duration)
+    final = _with_audio(base, audio_clip)
 
-    # Fit/crop to 1080x1920 without relying on deprecated PIL constants
-    # Approach: scale to cover, then center-crop.
-    scale = max(W / img.w, H / img.h)
-    img = img.resized(scale)
-    x1 = int((img.w - W) / 2)
-    y1 = int((img.h - H) / 2)
-    img = img.cropped(x1=x1, y1=y1, width=W, height=H)
+    # Write outputs
+    clip_out = _next_clip_name()
 
-    # Subtle "Ken Burns" zoom-in for motion (2% over clip)
-    def zoom(t):
-        return 1.0 + 0.02 * (t / safe_duration)
-
-    img = img.resized(zoom)
-
-    video = CompositeVideoClip([img], size=(W, H)).with_audio(audio_clip)
-
-    # Render
-    video.write_videofile(
-        str(OUTPUT),
-        fps=24,
+    final.write_videofile(
+        str(OUT_MAIN),
+        fps=FPS,
         codec="libx264",
         audio_codec="aac",
-        ffmpeg_params=["-pix_fmt", "yuv420p"],
         threads=4,
+        preset="medium",
+        ffmpeg_params=["-movflags", "+faststart"],
+        verbose=False,
+        logger=None,
     )
 
-    print(f"✅ social clip created: {OUTPUT}")
+    # Also keep an archive copy
+    try:
+        import shutil
+        shutil.copyfile(OUT_MAIN, clip_out)
+    except Exception:
+        pass
 
+    print(f"✅ social clip generated: {OUT_MAIN}")
+    print(f"✅ archived clip: {clip_out.name}")
 
 if __name__ == "__main__":
     create_clip()
