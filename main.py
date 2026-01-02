@@ -145,28 +145,20 @@ except Exception:
 # Old Gemini SDK (google-generativeai) - kept for backward compatibility only
 genai_old = None
 try:
-    import google.generativeai as genai_old
-    if gemini_key:
-        try:
-            genai_old.configure(api_key=gemini_key)
-        except Exception:
-            pass
-except Exception:
-    genai_old = None
+   from google import genai
+from google.genai import types
 
-def _gemini_candidate_models() -> List[str]:
-    """
-    Prefer your current-generation model names first.
-    You can override with GEMINI_MODEL env var.
-    """
-    env_model = os.getenv("GEMINI_MODEL", "").strip()
-    models = [
-        env_model,
-        "gemini-2.5-flash",
-        "gemini-2.5-flash-lite",
-        "gemini-3-flash",
-    ]
-    return [m for m in models if m]
+gemini_client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+resp = gemini_client.models.generate_content(
+    model="gemini-2.5-flash",
+    contents=prompt,
+    config=types.GenerateContentConfig(
+        temperature=0.7,
+        max_output_tokens=5000,
+    ),
+)
+text = resp.text
 
 def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 5000) -> str:
     """
