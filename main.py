@@ -72,7 +72,7 @@ PUBLISH_SOCIAL = os.getenv("PUBLISH_SOCIAL", "false").strip().lower() in ("1", "
 VOICE_MAP = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
     "JAMIE": os.getenv("VOICE_JAMIE", "nova"),
-    "RUFUS": os.getenv("VOICE_RUFUS", "f"),
+    "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
 }
 
 # ----------------------------
