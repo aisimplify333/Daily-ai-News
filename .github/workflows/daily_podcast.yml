@@ -2,8 +2,8 @@ name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 13 * * *' # 6:00 AM PST (13:00 UTC)
-  workflow_dispatch:      # Manual Trigger Button
+    - cron: '0 10 * * *' # 2:00 AM PST (10:00 UTC)
+  workflow_dispatch:
 
 permissions:
   contents: write
