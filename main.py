@@ -555,6 +555,8 @@ def produce_episode():
         "audio_url": AUDIO_BASE_URL + final_mp3.name,
         "stories": stories,
         "marketing_pack": pack,
+        "duration_seconds": duration_seconds,
+        "show_notes": show_notes,
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
@@ -569,10 +571,10 @@ def produce_episode():
 def update_feed_xml(meta: Dict):
     """
     Rewrites feed.xml safely:
-    - Ensures channel header exists (Spotify identity preserved)
-    - Removes any seg_* items (and anything that looks like a segment enclosure)
-    - Adds the new episode as the newest item
-    - Keeps only KEEP_LAST_EPISODES episodes
+    - Always writes a valid RSS skeleton
+    - Tries to preserve existing items from prior feed.xml
+    - If prior feed.xml can't be parsed OR is missing items, rebuilds items from episode_audio/podcast_*.mp3
+    - Ensures enclosure URLs are unique and keeps newest-first
     """
     import xml.etree.ElementTree as ET
 
@@ -586,13 +588,61 @@ def update_feed_xml(meta: Dict):
         enc = item_el.find("enclosure")
         if enc is not None:
             url = (enc.get("url") or "").lower()
-            if "/seg_" in url or "seg_" in url:
-                return True
-            if "_seg_" in url:
+            if "/seg_" in url or "seg_" in url or "_seg_" in url:
                 return True
         return False
 
-    # Build a clean new feed skeleton every time (avoids malformed ordering)
+    def parse_date_from_filename(filename: str) -> str | None:
+        m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", filename)
+        return m.group(1) if m else None
+
+    def rfc2822_from_date(datestr: str) -> str:
+        # stable midday UTC timestamp to avoid timezone weirdness
+        try:
+            dt = datetime.datetime.strptime(datestr, "%Y-%m-%d")
+            dt = dt.replace(hour=12, minute=0, second=0, tzinfo=datetime.timezone.utc)
+        except Exception:
+            dt = datetime.datetime.now(datetime.timezone.utc)
+        return dt.strftime("%a, %d %b %Y %H:%M:%S -0000")
+
+    def make_item(
+        title: str,
+        description: str,
+        audio_filename: str,
+        audio_url: str,
+        pubdate_rfc2822: str,
+        duration_seconds: int = 0,
+    ) -> ET.Element:
+        item = ET.Element("item")
+
+        ET.SubElement(item, "title").text = title
+        ET.SubElement(item, "description").text = (description or "")[:8000]
+
+        guid_el = ET.SubElement(item, "guid")
+        guid_el.set("isPermaLink", "false")
+        guid_el.text = audio_url
+
+        ET.SubElement(item, "pubDate").text = pubdate_rfc2822
+
+        enclosure = ET.SubElement(item, "enclosure")
+        enclosure.set("url", audio_url)
+        enclosure.set("type", "audio/mpeg")
+
+        try:
+            length_bytes = int((AUDIO_DIR / audio_filename).stat().st_size)
+        except Exception:
+            length_bytes = 0
+        enclosure.set("length", str(length_bytes))
+
+        if duration_seconds and duration_seconds > 0:
+            dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
+            dur.text = str(int(duration_seconds))
+
+        return item
+
+    # ----------------------------
+    # 1) Fresh RSS skeleton
+    # ----------------------------
     rss = ET.Element("rss", {"version": "2.0", f"xmlns:itunes": ITUNES_NS})
     channel = ET.SubElement(rss, "channel")
 
@@ -613,6 +663,9 @@ def update_feed_xml(meta: Dict):
     ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = RSS_SETTINGS["author"]
     ET.SubElement(owner, f"{{{ITUNES_NS}}}email").text = RSS_SETTINGS["email"]
 
+    # ----------------------------
+    # 2) Load existing items from prior feed.xml (best effort)
+    # ----------------------------
     existing_episode_items: List[ET.Element] = []
     if FEED_XML_PATH.exists():
         try:
@@ -623,7 +676,6 @@ def update_feed_xml(meta: Dict):
                 for it in old_channel.findall("item"):
                     if is_segment_item(it):
                         continue
-                    # Keep only items that look like real episodes
                     enc = it.find("enclosure")
                     if enc is None:
                         continue
@@ -632,34 +684,36 @@ def update_feed_xml(meta: Dict):
                         continue
                     existing_episode_items.append(it)
         except Exception:
-            pass
+            existing_episode_items = []
 
-    # Create new item
+    # ----------------------------
+    # 3) Build the new episode item
+    # ----------------------------
     audio_file = meta["audio_file"]
     audio_url = meta["audio_url"]
 
-    item = ET.Element("item")
-    ET.SubElement(item, "title").text = meta["title"]
-    ET.SubElement(item, "description").text = (meta.get("show_notes") or "")[:8000]
-    ET.SubElement(item, "guid").text = audio_url
-    ET.SubElement(item, "pubDate").text = datetime.datetime.utcnow().strftime("%a, %d %b %Y %H:%M:%S -0000")
+    show_notes = meta.get("show_notes") or ""
+    duration_seconds = int(meta.get("duration_seconds") or 0)
 
-    enclosure = ET.SubElement(item, "enclosure")
-    enclosure.set("url", audio_url)
-    enclosure.set("type", "audio/mpeg")
-    try:
-        length_bytes = int((AUDIO_DIR / audio_file).stat().st_size)
-    except Exception:
-        length_bytes = 0
-    enclosure.set("length", str(length_bytes))
+    pubdate = rfc2822_from_date(meta.get("date") or datetime.date.today().isoformat())
 
-    dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
-    dur.text = str(int(meta.get("duration_seconds") or 0))
+    new_item = make_item(
+        title=meta["title"],
+        description=show_notes,
+        audio_filename=audio_file,
+        audio_url=audio_url,
+        pubdate_rfc2822=pubdate,
+        duration_seconds=duration_seconds,
+    )
 
-    # Merge newest-first, dedupe by enclosure URL
-    merged: List[ET.Element] = [item]
+    # ----------------------------
+    # 4) If needed, rebuild missing items from episode_audio/
+    # ----------------------------
+    # Use a URL set to dedupe everything
+    merged: List[ET.Element] = [new_item]
     seen_urls = {audio_url}
 
+    # Keep prior feed items first (they have richer titles/notes)
     for old in existing_episode_items:
         enc = old.find("enclosure")
         if enc is None:
@@ -670,6 +724,31 @@ def update_feed_xml(meta: Dict):
         seen_urls.add(url)
         merged.append(old)
 
+    # Now ensure every podcast_*.mp3 in episode_audio is represented
+    # (This prevents "only latest episode" if feed parsing ever fails.)
+    audio_files = sorted(AUDIO_DIR.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
+
+    for mp3 in audio_files:
+        url = AUDIO_BASE_URL + mp3.name
+        if url in seen_urls:
+            continue
+        date_str = parse_date_from_filename(mp3.name) or (meta.get("date") or datetime.date.today().isoformat())
+        fallback_title = f"{RSS_SETTINGS['title']} — {date_str}"
+        fallback_desc = f"Listen: {LISTEN_URL}"
+
+        merged.append(
+            make_item(
+                title=fallback_title,
+                description=fallback_desc,
+                audio_filename=mp3.name,
+                audio_url=url,
+                pubdate_rfc2822=rfc2822_from_date(date_str),
+                duration_seconds=0,
+            )
+        )
+        seen_urls.add(url)
+
+    # Keep newest-first, cap
     merged = merged[:KEEP_LAST_EPISODES]
 
     for it in merged:
@@ -677,6 +756,7 @@ def update_feed_xml(meta: Dict):
 
     tree = ET.ElementTree(rss)
     tree.write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
+
 
 if __name__ == "__main__":
     produce_episode()
