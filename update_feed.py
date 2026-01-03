@@ -1,4 +1,3 @@
-import os
 import datetime
 from pathlib import Path
 import xml.etree.ElementTree as ET
@@ -13,7 +12,8 @@ COVER_URL = "https://aisimplify333.github.io/Daily-ai-News/cover.png"
 
 RSS_SETTINGS = {
     "title": "The AI Edge",
-    "link": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/",
+    # Use the site root (not episode_audio/) for the channel link
+    "link": "https://aisimplify333.github.io/Daily-ai-News/",
     "description": "Daily AI News, Finance, and Regulation.",
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com",
@@ -23,10 +23,15 @@ RSS_SETTINGS = {
 }
 
 ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-ET.register_namespace("ns0", ITUNES_NS)
+# Register ONCE. Do NOT also set xmlns:* manually on the root element.
+ET.register_namespace("itunes", ITUNES_NS)
 
 def q(tag: str) -> str:
     return f"{{{ITUNES_NS}}}{tag}"
+
+def rfc2822_now() -> str:
+    dt = datetime.datetime.now(datetime.timezone.utc)
+    return dt.strftime("%a, %d %b %Y %H:%M:%S -0000")
 
 def is_real_episode_file(p: Path) -> bool:
     # Only publish full episodes, never segments
@@ -79,6 +84,7 @@ def build_channel(channel: ET.Element):
     ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
     ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
     ET.SubElement(channel, "language").text = "en-us"
+    ET.SubElement(channel, "lastBuildDate").text = rfc2822_now()
 
     cat = ET.SubElement(channel, q("category"))
     cat.set("text", RSS_SETTINGS["category"])
@@ -93,20 +99,30 @@ def build_channel(channel: ET.Element):
     ET.SubElement(owner, q("name")).text = RSS_SETTINGS["author"]
     ET.SubElement(owner, q("email")).text = RSS_SETTINGS["email"]
 
-def make_item(title: str, description: str, mp3_filename: str, length_bytes: int, pubdate: str, duration_seconds: int):
+def make_item(
+    title: str,
+    description: str,
+    mp3_filename: str,
+    length_bytes: int,
+    pubdate: str,
+    duration_seconds: int,
+):
     item = ET.Element("item")
     ET.SubElement(item, "title").text = title
 
-    # Keep description under control; Spotify can be sensitive to huge HTML blobs
+    # Keep description under control; Spotify can be sensitive to huge blobs
     ET.SubElement(item, "description").text = (description or "")[:6000]
 
+    audio_url = AUDIO_BASE_URL + mp3_filename
+
     enc = ET.SubElement(item, "enclosure")
-    enc.set("url", AUDIO_BASE_URL + mp3_filename)
+    enc.set("url", audio_url)
     enc.set("length", str(int(length_bytes)))
     enc.set("type", "audio/mpeg")
 
     guid = ET.SubElement(item, "guid")
-    guid.text = AUDIO_BASE_URL + mp3_filename
+    guid.set("isPermaLink", "false")
+    guid.text = audio_url
 
     ET.SubElement(item, "pubDate").text = pubdate
 
@@ -125,8 +141,8 @@ def rebuild_feed(new_episode_meta: dict | None = None):
     """
     existing_items = dedupe_items(read_existing_real_items())
 
+    # IMPORTANT: do NOT manually set xmlns:itunes or xmlns:anything here.
     rss = ET.Element("rss", {"version": "2.0"})
-    rss.set("xmlns:ns0", ITUNES_NS)
     channel = ET.SubElement(rss, "channel")
     build_channel(channel)
 
