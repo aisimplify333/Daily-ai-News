@@ -101,6 +101,66 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
 # ----------------------------
+# QUALITY GATES (98% standard)
+# ----------------------------
+MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))            # lines before [MUSIC] in Segment 1
+MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "12"))     # numeric density per segment
+MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))     # numeric density overall
+MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
+
+STRICT_EPISODE_FILENAME_RE = re.compile(r"^podcast_\d{4}-\d{2}-\d{2}\.mp3$")
+
+MONEY_RE = re.compile(r"(\$|€|£)\s?\d")
+NUMERIC_TOKEN_RE = re.compile(r"(\d+(\.\d+)?%|\$?\d[\d,]*(\.\d+)?|\b\d{4}\b|\bQ[1-4]\b)", re.IGNORECASE)
+
+def _digit_count(s: str) -> int:
+    return len(re.findall(r"\d", s or ""))
+
+def _numeric_score(s: str) -> int:
+    """
+    Quick heuristic: prefer items with digits, money tokens, %, 'billion/million', etc.
+    """
+    if not s:
+        return 0
+    s2 = s.lower()
+    score = 0
+    score += 3 * _digit_count(s2)
+    if "$" in s2 or "€" in s2 or "£" in s2:
+        score += 25
+    if "%" in s2:
+        score += 15
+    for w, pts in [("billion", 18), ("million", 14), ("bn", 14), ("m", 6), ("ipo", 10), ("funding", 10)]:
+        if w in s2:
+            score += pts
+    return score
+
+def _extract_numeric_sentences(text: str, max_items: int = 6) -> list[str]:
+    """
+    Pull short sentences that contain explicit figures (numbers, $, %, years, quarters).
+    """
+    if not text:
+        return []
+    sents = re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text).strip())
+    hits = []
+    for s in sents:
+        if NUMERIC_TOKEN_RE.search(s):
+            s2 = s.strip()
+            if 30 <= len(s2) <= 220:
+                hits.append(s2)
+        if len(hits) >= max_items:
+            break
+    # De-dupe while preserving order
+    out = []
+    seen = set()
+    for h in hits:
+        key = h.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(h)
+    return out[:max_items]
+
+# ----------------------------
 # SAFE PRINT
 # ----------------------------
 def _safe_print(msg: str):
@@ -244,25 +304,32 @@ def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000)
 # NEWS INTEL (RSS)
 # ----------------------------
 GOOGLE_NEWS_RSS = [
+    # Numbers-first feeds (to guarantee $/%/scale)
     (
-        "Frontier Models",
-        "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+        "Numbers & Markets",
+        "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en",
     ),
     (
         "AI Money",
-        "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:2d&hl=en-US&gl=US&ceid=US:en",
+    ),
+
+    # Your original buckets (kept)
+    (
+        "Frontier Models",
+        "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:2d&hl=en-US&gl=US&ceid=US:en",
     ),
     (
         "AI Regulation",
-        "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:2d&hl=en-US&gl=US&ceid=US:en",
     ),
     (
         "AI Security",
-        "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:2d&hl=en-US&gl=US&ceid=US:en",
     ),
     (
         "AI in Work",
-        "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise)%20when:1d&hl=en-US&gl=US&ceid=US:en",
+        "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise)%20when:2d&hl=en-US&gl=US&ceid=US:en",
     ),
 ]
 
@@ -369,17 +436,20 @@ def _resolve_final_url(url: str) -> str:
         return url
 
 @lru_cache(maxsize=128)
-def fetch_url_preview(url: str, max_chars: int = 1800) -> str:
+def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
     """
-    Lightweight preview scrape: meta description + first paragraphs.
-    We do NOT attempt full extraction; we just want enough text to pull explicit numbers/dates.
+    Stronger preview scrape to pull explicit numbers:
+    - meta description
+    - first paragraphs
+    - list items (often where $/% figures are)
+    - headings (sometimes contain numeric claims)
     """
     if not url:
         return ""
     headers = {"User-Agent": "Mozilla/5.0 (AI Edge Bot)"}
     try:
         final_url = _resolve_final_url(url)
-        r = requests.get(final_url, headers=headers, timeout=15)
+        r = requests.get(final_url, headers=headers, timeout=18)
         r.raise_for_status()
         html = r.text or ""
         soup = BeautifulSoup(html, "html.parser")
@@ -396,15 +466,41 @@ def fetch_url_preview(url: str, max_chars: int = 1800) -> str:
                     break
 
         base = soup.find("article") or soup.body or soup
+
+        chunks = []
+        if meta_desc:
+            chunks.append(meta_desc)
+
+        # Headings (often include “$X”, “Y%”, “Q1 2026”, etc.)
+        for h in base.find_all(["h1", "h2", "h3"]):
+            txt = h.get_text(" ", strip=True)
+            if txt and 20 <= len(txt) <= 180:
+                chunks.append(txt)
+            if len(chunks) >= 10:
+                break
+
+        # Paragraphs
         paras = []
         for p in base.find_all("p"):
             txt = p.get_text(" ", strip=True)
             if txt and len(txt) > 40:
                 paras.append(txt)
-            if len(paras) >= 6:
+            if len(paras) >= 10:
                 break
+        chunks.extend(paras)
 
-        preview = "\n".join([x for x in [meta_desc] if x] + paras)
+        # List items (frequently contain numeric bullet facts)
+        lis = []
+        for li in base.find_all("li"):
+            txt = li.get_text(" ", strip=True)
+            if txt and 20 <= len(txt) <= 200:
+                if NUMERIC_TOKEN_RE.search(txt) or MONEY_RE.search(txt):
+                    lis.append(txt)
+            if len(lis) >= 10:
+                break
+        chunks.extend(lis)
+
+        preview = " ".join(chunks)
         preview = re.sub(r"\s+", " ", preview).strip()
         return preview[:max_chars]
     except Exception:
@@ -451,11 +547,10 @@ def _fallback_data_points(text: str, max_items: int = 5) -> List[str]:
 
 def enrich_stories_with_data(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
     """
-    Adds:
-    - why_shocking (tightened, grounded)
-    - data_points (explicit numbers/dates/amounts) extracted from RSS+preview
-    - key_entities (optional)
-    IMPORTANT: prompt explicitly forbids inventing numbers.
+    Enrichment pass:
+    - Extract explicit numeric bullets from RSS + preview
+    - Forbid invented numbers
+    - If model output is weak, deterministic numeric sentence extraction kicks in
     """
     enriched: List[Dict[str, str]] = []
     for s in stories:
@@ -463,17 +558,17 @@ def enrich_stories_with_data(stories: List[Dict[str, str]]) -> List[Dict[str, st
         rss_summary = (s.get("rss_summary") or "").strip()
         publisher = (s.get("publisher") or "").strip()
         published = (s.get("published") or "").strip()
-        preview = fetch_url_preview(url, max_chars=1800)
+        preview = fetch_url_preview(url, max_chars=3800)
 
         prompt = f"""
 You are extracting HARD FACTS for a daily AI news podcast. Do NOT invent numbers.
-Only use numbers/dates/amounts that appear in the provided text snippets.
+Only use numbers/dates/amounts that appear in the provided snippets.
 
 Return ONLY valid JSON (no markdown):
 {{
   "why_shocking": "1-2 sentences, urgent, grounded in snippet facts",
-  "data_points": ["3-6 short bullets. Each bullet MUST include at least one explicit number/date/amount from the snippets. If none exist, write: 'No explicit figures in snippet.'"],
-  "key_entities": ["2-6 proper nouns from snippets"]
+  "data_points": ["3-6 bullets. Each bullet MUST include at least one explicit number/date/amount from snippets. If truly none exist, write: 'No explicit figures in snippet.'"],
+  "key_entities": ["2-8 proper nouns from snippets"]
 }}
 
 Publisher: {publisher}
@@ -487,23 +582,28 @@ Article Preview:
 {preview}
 """.strip()
 
-        raw = generate_text(prompt, temperature=0.25, max_tokens=850)
+        raw = generate_text(prompt, temperature=0.20, max_tokens=900)
         j = _extract_json_object(raw) or {}
 
-        data_points = j.get("data_points") if isinstance(j.get("data_points"), list) else []
-        data_points = [str(x).strip() for x in data_points if str(x).strip()]
-        if not data_points:
-            data_points = _fallback_data_points(rss_summary + " " + preview, max_items=5)
-        if not data_points:
-            data_points = ["No explicit figures in snippet."]
+        dp = j.get("data_points") if isinstance(j.get("data_points"), list) else []
+        dp = [str(x).strip() for x in dp if str(x).strip()][:8]
+
+        # If model dp is weak, extract numeric sentences deterministically from preview+summary
+        strong_dp = [b for b in dp if NUMERIC_TOKEN_RE.search(b)]
+        if len(strong_dp) < MIN_NUMERIC_BULLETS_PER_STORY:
+            extracted = _extract_numeric_sentences((rss_summary + " " + preview).strip(), max_items=8)
+            dp = (strong_dp + extracted)[:6]
+
+        if not dp:
+            dp = ["No explicit figures in snippet."]
 
         why = (j.get("why_shocking") or s.get("why_shocking") or "").strip()
         if not why:
-            why = (rss_summary[:220] or "High-stakes implications—details evolving.").strip()
+            why = (rss_summary[:240] or "High-stakes implications—details evolving.").strip()
 
         s2 = dict(s)
         s2["why_shocking"] = why
-        s2["data_points"] = data_points[:6]
+        s2["data_points"] = dp[:6]
         s2["key_entities"] = j.get("key_entities") if isinstance(j.get("key_entities"), list) else []
         enriched.append(s2)
 
@@ -511,13 +611,26 @@ Article Preview:
 
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
     """
-    UPDATED: story selection includes publisher/published + initial data_points placeholders,
-    then enrichment pass to extract explicit figures from RSS+preview.
+    Numbers-first selection:
+    1) Rank candidates by numeric_score(summary+title)
+    2) Ask model to pick top n (still)
+    3) Enrich and then enforce a numeric minimum; if weak, fall back to top numeric candidates
     """
+    if not intel_items:
+        return []
+
+    ranked = sorted(
+        intel_items,
+        key=lambda x: _numeric_score((x.get("title","") or "") + " " + (x.get("summary","") or "")),
+        reverse=True,
+    )
+
+    # Give the model the best 40 candidates (dense with numeric tokens)
+    candidates = ranked[:40]
     intel_compact = "\n".join(
         [
             f"- [{x.get('bucket','')}] {x.get('title','')} | {x.get('publisher','')} | {x.get('published','')} | {x.get('summary','')} | {x.get('link','')}"
-            for x in intel_items[:80]
+            for x in candidates
         ]
     )
 
@@ -529,8 +642,8 @@ Return ONLY valid JSON (no markdown), schema:
   "stories": [
     {{
       "headline": "...",
-      "why_shocking": "...",
-      "data_points": ["3-5 bullets with explicit numbers/dates/amounts pulled from the candidate line if present; otherwise write 'Needs enrichment'"],
+      "why_shocking": "1-2 sentences grounded in snippet facts",
+      "data_points": ["3-6 bullets. Each bullet MUST include an explicit number/date/amount from the candidate line if present; if not present write 'Needs enrichment'"],
       "angles": {{
         "alex": "...",
         "jamie": "...",
@@ -550,71 +663,84 @@ Candidate items:
     raw = generate_text(prompt, temperature=0.20, max_tokens=JSON_MAX_TOKENS)
     j = _extract_json_object(raw)
 
-    try:
-        if not j or "stories" not in j:
-            raise ValueError("No JSON stories found.")
-        stories = j.get("stories", [])
-        stories = [s for s in stories if isinstance(s, dict)]
-
-        norm: List[Dict[str, str]] = []
-        for s in stories[:n]:
+    stories: List[Dict[str, str]] = []
+    if j and isinstance(j.get("stories"), list):
+        for s in j["stories"][:n]:
+            if not isinstance(s, dict):
+                continue
             angles = s.get("angles") if isinstance(s.get("angles"), dict) else {}
             dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
 
-            norm.append(
-                {
-                    "headline": (s.get("headline") or "").strip(),
-                    "why_shocking": (s.get("why_shocking") or "").strip(),
-                    "data_points": [str(x).strip() for x in dp if str(x).strip()][:6],
-                    "angles": {
-                        "alex": (angles.get("alex") or "").strip(),
-                        "jamie": (angles.get("jamie") or "").strip(),
-                        "rufus": (angles.get("rufus") or "").strip(),
-                    },
-                    "source_url": (s.get("source_url") or "").strip(),
-                    "publisher": (s.get("publisher") or "").strip(),
-                    "published": (s.get("published") or "").strip(),
-                }
-            )
-
-        if len(norm) < n or any(not x["headline"] or not x["source_url"] for x in norm):
-            raise ValueError("Model returned incomplete stories.")
-
-        # Attach RSS summaries + fallback publisher/published from intel (for enrichment)
-        for st in norm:
-            match = next((x for x in intel_items if (x.get("link") or "").strip() == st["source_url"]), None)
-            if not match:
-                match = next(
-                    (
-                        x for x in intel_items
-                        if (x.get("title") or "").strip().lower() in (st["headline"] or "").lower()
-                    ),
-                    None
-                )
-            if match:
-                st["rss_summary"] = (match.get("summary") or "").strip()
-                st["publisher"] = st["publisher"] or (match.get("publisher") or "").strip()
-                st["published"] = st["published"] or (match.get("published") or "").strip()
-            else:
-                st["rss_summary"] = ""
-
-        return enrich_stories_with_data(norm[:n])
-
-    except Exception:
-        fallback = [
-            {
-                "headline": x.get("title", ""),
-                "why_shocking": x.get("summary", ""),
-                "data_points": _fallback_data_points(x.get("summary", ""), max_items=4) or ["No explicit figures in snippet."],
-                "angles": {"alex": "", "jamie": "", "rufus": ""},
-                "source_url": x.get("link", ""),
-                "publisher": x.get("publisher", ""),
-                "published": x.get("published", ""),
-                "rss_summary": x.get("summary", ""),
+            st = {
+                "headline": (s.get("headline") or "").strip(),
+                "why_shocking": (s.get("why_shocking") or "").strip(),
+                "data_points": [str(x).strip() for x in dp if str(x).strip()][:6],
+                "angles": {
+                    "alex": (angles.get("alex") or "").strip(),
+                    "jamie": (angles.get("jamie") or "").strip(),
+                    "rufus": (angles.get("rufus") or "").strip(),
+                },
+                "source_url": (s.get("source_url") or "").strip(),
+                "publisher": (s.get("publisher") or "").strip(),
+                "published": (s.get("published") or "").strip(),
             }
-            for x in intel_items[:n]
-        ]
-        return enrich_stories_with_data(fallback)
+            if st["headline"] and st["source_url"]:
+                stories.append(st)
+
+    # If model fails, fallback to top numeric candidates directly
+    if len(stories) < n:
+        stories = []
+        for x in candidates[:n]:
+            stories.append({
+                "headline": x.get("title",""),
+                "why_shocking": x.get("summary",""),
+                "data_points": _extract_numeric_sentences((x.get("summary","") or ""), max_items=4) or ["Needs enrichment"],
+                "angles": {"alex": "", "jamie": "", "rufus": ""},
+                "source_url": x.get("link",""),
+                "publisher": x.get("publisher",""),
+                "published": x.get("published",""),
+                "rss_summary": x.get("summary",""),
+            })
+
+    # Attach RSS summaries for enrichment
+    for st in stories:
+        match = next((x for x in intel_items if (x.get("link") or "").strip() == st["source_url"]), None)
+        if match:
+            st["rss_summary"] = (match.get("summary") or "").strip()
+            st["publisher"] = st["publisher"] or (match.get("publisher") or "").strip()
+            st["published"] = st["published"] or (match.get("published") or "").strip()
+        else:
+            st["rss_summary"] = st.get("rss_summary","") or ""
+
+    enriched = enrich_stories_with_data(stories[:n])
+
+    # Numeric enforcement: ensure each story has >= MIN_NUMERIC_BULLETS_PER_STORY bullets with digits/$/%
+    def numeric_bullets(dp: list[str]) -> int:
+        return sum(1 for b in (dp or []) if NUMERIC_TOKEN_RE.search(b or ""))
+
+    weak = [s for s in enriched if numeric_bullets(s.get("data_points") or []) < MIN_NUMERIC_BULLETS_PER_STORY]
+
+    if weak:
+        # Hard fallback: take top numeric candidates and enrich them
+        fallback = []
+        for x in candidates:
+            fb = {
+                "headline": x.get("title",""),
+                "why_shocking": x.get("summary",""),
+                "data_points": _extract_numeric_sentences((x.get("summary","") or ""), max_items=6) or ["Needs enrichment"],
+                "angles": {"alex": "", "jamie": "", "rufus": ""},
+                "source_url": x.get("link",""),
+                "publisher": x.get("publisher",""),
+                "published": x.get("published",""),
+                "rss_summary": x.get("summary",""),
+            }
+            fallback.append(fb)
+            if len(fallback) >= n:
+                break
+
+        enriched = enrich_stories_with_data(fallback[:n])
+
+    return enriched[:n]
 
 # ----------------------------
 # SCRIPTING (SOUL + GUARANTEED LENGTH + DATA RICHNESS)
@@ -813,6 +939,7 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
     if not seg_text.strip().startswith(_segment_header(seg_num)):
         issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
 
+    # label validation
     for ln in seg_text.splitlines():
         line = ln.strip()
         if not line:
@@ -826,6 +953,29 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
     wc = _word_count(seg_text)
     if wc < seg_words_min:
         issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
+
+    # Cold open enforcement: Segment 1 needs real dialogue before [MUSIC]
+    if seg_num == 1:
+        lines = [l.strip() for l in seg_text.splitlines() if l.strip()]
+        try:
+            music_idx = next(i for i, l in enumerate(lines) if l.upper() == "[MUSIC]")
+        except StopIteration:
+            issues.append("Segment 1 missing required [MUSIC] marker.")
+            music_idx = None
+
+        if music_idx is not None:
+            pre_music_dialogue = [l for l in lines[1:music_idx] if SPEAKER_RE.match(l)]
+            if len(pre_music_dialogue) < MIN_COLD_OPEN_LINES:
+                issues.append(
+                    f"Cold open too short before [MUSIC] ({len(pre_music_dialogue)} lines). Minimum is {MIN_COLD_OPEN_LINES}."
+                )
+
+    # Numeric density enforcement (drama/data)
+    if _digit_count(seg_text) < MIN_DIGITS_PER_SEGMENT:
+        issues.append(
+            f"Low numeric density in segment (digits={_digit_count(seg_text)}). Minimum is {MIN_DIGITS_PER_SEGMENT}."
+        )
+
     return issues
 
 def _segment_repair_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, issues: List[str], seg_text: str) -> str:
@@ -1345,25 +1495,14 @@ Rules:
 # ----------------------------
 def update_feed_xml(meta: Dict):
     import xml.etree.ElementTree as ET
+    from urllib.parse import quote
 
     ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
+    ATOM_NS = "http://www.w3.org/2005/Atom"
+
+    # Register prefixes ONCE; never manually set xmlns:itunes on root
     ET.register_namespace("itunes", ITUNES_NS)
-    rss = ET.Element("rss", {"version": "2.0"})
-
-    def is_segment_item(item_el: ET.Element) -> bool:
-        t = (item_el.findtext("title") or "").strip().lower()
-        if t.startswith("seg_") or t.startswith("segment") or t.startswith("clip_"):
-            return True
-        enc = item_el.find("enclosure")
-        if enc is not None:
-            url = (enc.get("url") or "").lower()
-            if "/seg_" in url or "seg_" in url or "_seg_" in url:
-                return True
-        return False
-
-    def parse_date_from_filename(filename: str) -> Optional[str]:
-        m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", filename)
-        return m.group(1) if m else None
+    ET.register_namespace("atom", ATOM_NS)
 
     def rfc2822_from_date(datestr: str) -> str:
         try:
@@ -1377,17 +1516,19 @@ def update_feed_xml(meta: Dict):
         dt = datetime.datetime.now(datetime.timezone.utc)
         return dt.strftime("%a, %d %b %Y %H:%M:%S -0000")
 
-    def make_item(
-        title: str,
-        description: str,
-        audio_filename: str,
-        audio_url: str,
-        pubdate_rfc2822: str,
-        duration_seconds: int = 0,
-    ) -> ET.Element:
+    def is_valid_episode_filename(name: str) -> bool:
+        return bool(STRICT_EPISODE_FILENAME_RE.match(name or ""))
+
+    def safe_url_join(base: str, filename: str) -> str:
+        # Avoid spaces/() issues by encoding the filename portion
+        return base.rstrip("/") + "/" + quote(filename)
+
+    def make_item(title: str, description: str, audio_filename: str, pubdate_rfc2822: str, duration_seconds: int = 0) -> ET.Element:
         item = ET.Element("item")
         ET.SubElement(item, "title").text = title
         ET.SubElement(item, "description").text = (description or "")[:8000]
+
+        audio_url = safe_url_join(AUDIO_BASE_URL, audio_filename)
 
         guid_el = ET.SubElement(item, "guid")
         guid_el.set("isPermaLink", "false")
@@ -1398,6 +1539,7 @@ def update_feed_xml(meta: Dict):
         enclosure = ET.SubElement(item, "enclosure")
         enclosure.set("url", audio_url)
         enclosure.set("type", "audio/mpeg")
+
         try:
             length_bytes = int((AUDIO_DIR / audio_filename).stat().st_size)
         except Exception:
@@ -1408,20 +1550,28 @@ def update_feed_xml(meta: Dict):
             dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
             dur.text = str(int(duration_seconds))
 
+        ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
         return item
 
-    # IMPORTANT FIX: do NOT set xmlns:itunes here (register_namespace already handles it)
+    # Root WITHOUT manual xmlns attributes
     rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
 
     ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
     ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
-    ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
+    ET.SubElement(channel, "link").text = LISTEN_URL.rstrip("/") + "/"  # better than GitHub repo for aggregators
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "lastBuildDate").text = rfc2822_now()
 
+    # Atom self link helps many validators
+    atom_link = ET.SubElement(channel, f"{{{ATOM_NS}}}link")
+    atom_link.set("href", (LISTEN_URL.rstrip("/") + "/feed.xml").replace("/listen/feed.xml", "/feed.xml"))
+    atom_link.set("rel", "self")
+    atom_link.set("type", "application/rss+xml")
+
     ET.SubElement(channel, f"{{{ITUNES_NS}}}author").text = RSS_SETTINGS["author"]
     ET.SubElement(channel, f"{{{ITUNES_NS}}}explicit").text = "no"
+    ET.SubElement(channel, f"{{{ITUNES_NS}}}type").text = "episodic"
 
     cat = ET.SubElement(channel, f"{{{ITUNES_NS}}}category")
     cat.set("text", RSS_SETTINGS["category"])
@@ -1433,6 +1583,7 @@ def update_feed_xml(meta: Dict):
     ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = RSS_SETTINGS["author"]
     ET.SubElement(owner, f"{{{ITUNES_NS}}}email").text = RSS_SETTINGS["email"]
 
+    # Load existing items (and filter out junk)
     existing_episode_items: List[ET.Element] = []
     if FEED_XML_PATH.exists():
         try:
@@ -1441,20 +1592,21 @@ def update_feed_xml(meta: Dict):
             old_channel = old_rss.find("channel")
             if old_channel is not None:
                 for it in old_channel.findall("item"):
-                    if is_segment_item(it):
-                        continue
                     enc = it.find("enclosure")
                     if enc is None:
                         continue
-                    url = (enc.get("url") or "").lower()
-                    if "podcast_" not in url:
+                    url = (enc.get("url") or "")
+                    # Keep only strict podcast_YYYY-MM-DD.mp3
+                    if not re.search(r"podcast_\d{4}-\d{2}-\d{2}\.mp3", url):
                         continue
                     existing_episode_items.append(it)
         except Exception:
             existing_episode_items = []
 
     audio_file = meta["audio_file"]
-    audio_url = meta["audio_url"]
+    if not is_valid_episode_filename(audio_file):
+        raise RuntimeError(f"Refusing to publish invalid episode filename: {audio_file}")
+
     show_notes = meta.get("show_notes") or ""
     duration_seconds = int(meta.get("duration_seconds") or 0)
     date_str = meta.get("date") or datetime.date.today().isoformat()
@@ -1463,14 +1615,18 @@ def update_feed_xml(meta: Dict):
         title=meta["title"],
         description=show_notes,
         audio_filename=audio_file,
-        audio_url=audio_url,
         pubdate_rfc2822=rfc2822_from_date(date_str),
         duration_seconds=duration_seconds,
     )
 
     merged: List[ET.Element] = [new_item]
-    seen_urls = {audio_url}
+    seen_urls = set()
+    # register the new enclosure url
+    new_enc = new_item.find("enclosure")
+    if new_enc is not None and new_enc.get("url"):
+        seen_urls.add(new_enc.get("url"))
 
+    # Add prior valid items
     for old in existing_episode_items:
         enc = old.find("enclosure")
         if enc is None:
@@ -1481,20 +1637,20 @@ def update_feed_xml(meta: Dict):
         seen_urls.add(url)
         merged.append(old)
 
+    # Also add any local files that match strict naming (no spaces/duplicates)
     audio_files = sorted(AUDIO_DIR.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
     for mp3 in audio_files:
-        url = AUDIO_BASE_URL + mp3.name
+        if not is_valid_episode_filename(mp3.name):
+            continue
+        url = safe_url_join(AUDIO_BASE_URL, mp3.name)
         if url in seen_urls:
             continue
-        d = parse_date_from_filename(mp3.name) or date_str
-        fallback_title = f"{RSS_SETTINGS['title']} — {d}"
-        fallback_desc = f"Listen: {LISTEN_URL}"
+        d = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", mp3.name).group(1)
         merged.append(
             make_item(
-                title=fallback_title,
-                description=fallback_desc,
+                title=f"{RSS_SETTINGS['title']} — {d}",
+                description=f"Listen: {LISTEN_URL}",
                 audio_filename=mp3.name,
-                audio_url=url,
                 pubdate_rfc2822=rfc2822_from_date(d),
                 duration_seconds=0,
             )
@@ -1506,7 +1662,7 @@ def update_feed_xml(meta: Dict):
         channel.append(it)
 
     ET.ElementTree(rss).write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
-    _safe_print(f"✅ feed.xml updated with {len(merged)} episode items")
+    _safe_print(f"✅ feed.xml updated with {len(merged)} episode items (strict filenames, valid namespaces)")
 
 # ----------------------------
 # MAIN PRODUCER
@@ -1559,19 +1715,23 @@ def produce_episode():
     silence_path = run_tmp / "silence_150ms.wav"
     AudioSegment.silent(duration=150).export(silence_path, format="wav")
 
-    if INTRO_PATH.exists():
-        intro = AudioSegment.from_file(INTRO_PATH)[:15000].fade_out(1200)
-        intro_path = run_tmp / "intro_trim.mp3"
-        intro.export(intro_path, format="mp3", bitrate="192k")
-        concat_files.append(intro_path)
-
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
 
-    for speaker, text in dialogue_merged:
-        if speaker == "MUSIC":
+    inserted_intro = False
+
+for speaker, text in dialogue_merged:
+    if speaker == "MUSIC":
+        # FIRST [MUSIC] marker = insert your intro bed there (after the cold open)
+        if INTRO_PATH.exists() and not inserted_intro:
+            intro = AudioSegment.from_file(INTRO_PATH)[:15000].fade_out(1200)
+            intro_path = run_tmp / "intro_trim.mp3"
+            intro.export(intro_path, format="mp3", bitrate="192k")
+            concat_files.append(intro_path)
+            inserted_intro = True
+        else:
             concat_files.append(silence_path)
-            continue
+        continue
 
         voice = VOICE_MAP.get(speaker, "onyx")
         for chunk in chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS):
