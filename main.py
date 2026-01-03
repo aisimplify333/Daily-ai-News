@@ -68,15 +68,9 @@ MIN_MINUTES = float(os.getenv("MIN_MINUTES", "25"))
 MAX_MINUTES = float(os.getenv("MAX_MINUTES", "30"))
 TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
 
-# Script sizing
 WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "150"))
-SCRIPT_ATTEMPTS = int(os.getenv("SCRIPT_ATTEMPTS", "6"))  # retained, but no longer used for full-script rewrite loops
-
-# Segment generation attempts (segmented scripting is the reliable path)
 SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "3"))
 
-# Token ceilings
-# Segmented scripting means we don't need a single giant output. Keep per-call budgets reasonable.
 SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "2200"))
 JSON_MAX_TOKENS = int(os.getenv("JSON_MAX_TOKENS", "1800"))
 
@@ -85,6 +79,8 @@ KEEP_LAST_EPISODES = int(os.getenv("KEEP_LAST_EPISODES", "60"))
 
 RUN_MARKETING_ASSETS = os.getenv("RUN_MARKETING_ASSETS", "true").strip().lower() in ("1", "true", "yes")
 PUBLISH_SOCIAL = os.getenv("PUBLISH_SOCIAL", "false").strip().lower() in ("1", "true", "yes")
+
+SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "false").strip().lower() in ("1", "true", "yes")
 
 VOICE_MAP = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
@@ -100,12 +96,15 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Audio stitch method: pydub (recommended) or ffmpeg
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
+# JAMIE speed (default 1.05 per your request)
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
+
 # ----------------------------
 # QUALITY GATES (98% standard)
 # ----------------------------
-MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))            # lines before [MUSIC] in Segment 1
-MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "12"))     # numeric density per segment
-MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))     # numeric density overall
+MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))
+MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "12"))
+MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
 
 STRICT_EPISODE_FILENAME_RE = re.compile(r"^podcast_\d{4}-\d{2}-\d{2}\.mp3$")
@@ -113,57 +112,12 @@ STRICT_EPISODE_FILENAME_RE = re.compile(r"^podcast_\d{4}-\d{2}-\d{2}\.mp3$")
 MONEY_RE = re.compile(r"(\$|€|£)\s?\d")
 NUMERIC_TOKEN_RE = re.compile(r"(\d+(\.\d+)?%|\$?\d[\d,]*(\.\d+)?|\b\d{4}\b|\bQ[1-4]\b)", re.IGNORECASE)
 
-def _digit_count(s: str) -> int:
-    return len(re.findall(r"\d", s or ""))
+SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
 
-def _numeric_score(s: str) -> int:
-    """
-    Quick heuristic: prefer items with digits, money tokens, %, 'billion/million', etc.
-    """
-    if not s:
-        return 0
-    s2 = s.lower()
-    score = 0
-    score += 3 * _digit_count(s2)
-    if "$" in s2 or "€" in s2 or "£" in s2:
-        score += 25
-    if "%" in s2:
-        score += 15
-    for w, pts in [("billion", 18), ("million", 14), ("bn", 14), ("m", 6), ("ipo", 10), ("funding", 10)]:
-        if w in s2:
-            score += pts
-    return score
-
-def _extract_numeric_sentences(text: str, max_items: int = 6) -> list[str]:
-    """
-    Pull short sentences that contain explicit figures (numbers, $, %, years, quarters).
-    """
-    if not text:
-        return []
-    sents = re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text).strip())
-    hits = []
-    for s in sents:
-        if NUMERIC_TOKEN_RE.search(s):
-            s2 = s.strip()
-            if 30 <= len(s2) <= 220:
-                hits.append(s2)
-        if len(hits) >= max_items:
-            break
-    # De-dupe while preserving order
-    out = []
-    seen = set()
-    for h in hits:
-        key = h.lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append(h)
-    return out[:max_items]
-    
 # ----------------------------
 # FEED + SEO METADATA (catalog-wide)
 # ----------------------------
-MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))  # skip broken MP3s in feed
+MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))
 EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
 EPISODE_META_MAX_DESC = int(os.getenv("EPISODE_META_MAX_DESC", "4500"))
 
@@ -189,6 +143,32 @@ def _run(cmd: List[str], fail_ok: bool = False) -> int:
         raise
 
 # ----------------------------
+# SIDE-CAR JSON (episode-level metadata persisted next to mp3)
+# ----------------------------
+def _date_from_episode_filename(name: str) -> Optional[str]:
+    m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", name or "")
+    return m.group(1) if m else None
+
+def _sidecar_meta_path_for_date(date_str: str) -> Path:
+    return AUDIO_DIR / f"podcast_{date_str}.json"
+
+def _load_sidecar_meta_for_date(date_str: str) -> Dict[str, str]:
+    p = _sidecar_meta_path_for_date(date_str)
+    if not p.exists():
+        return {}
+    try:
+        j = json.loads(p.read_text(encoding="utf-8"))
+        return j if isinstance(j, dict) else {}
+    except Exception:
+        return {}
+
+def _write_sidecar_meta_for_date(date_str: str, title: str, description: str) -> Path:
+    p = _sidecar_meta_path_for_date(date_str)
+    payload = {"title": (title or "").strip(), "description": (description or "").strip()}
+    p.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return p
+
+# ----------------------------
 # LLM CLIENTS (OpenAI + Gemini via google-genai)
 # ----------------------------
 openai_key = os.environ.get("OPENAI_API_KEY", "").strip()
@@ -203,26 +183,19 @@ genai_types = None
 
 if gemini_key:
     try:
-        from google import genai as genai_new  # google-genai
-        from google.genai import types as genai_types  # google-genai
+        from google import genai as genai_new
+        from google.genai import types as genai_types
         gemini_client = genai_new.Client(api_key=gemini_key)
     except Exception:
         gemini_client = None
         genai_types = None
 
 def _gemini_candidate_models() -> List[str]:
-    """
-    Prefer stable models. You can override with GEMINI_MODEL env var.
-    """
     env_model = os.getenv("GEMINI_MODEL", "").strip()
     models = []
     if env_model:
         models.append(env_model)
-    models += [
-        "gemini-2.5-flash",
-        "gemini-2.5-flash-lite",
-        "gemini-3-flash",
-    ]
+    models += ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3-flash"]
     seen = set()
     out = []
     for m in models:
@@ -232,9 +205,6 @@ def _gemini_candidate_models() -> List[str]:
     return out
 
 def _extract_json_object(raw: str) -> Optional[dict]:
-    """
-    Robust JSON extractor: handles code fences or extra text by pulling the first {...} block.
-    """
     if not raw:
         return None
     raw = raw.strip()
@@ -268,10 +238,6 @@ def _extract_json_object(raw: str) -> Optional[dict]:
     return None
 
 def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000) -> str:
-    """
-    Gemini primary (optional) + OpenAI fallback.
-    Gemini behavior: fail fast on quota/model errors to avoid burning RPM.
-    """
     if PRIMARY_LLM == "gemini" and gemini_key and gemini_client and genai_types:
         for model_name in _gemini_candidate_models()[:2]:
             try:
@@ -308,36 +274,64 @@ def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000)
     return resp.choices[0].message.content.strip()
 
 # ----------------------------
+# NUMERIC UTILITIES
+# ----------------------------
+def _digit_count(s: str) -> int:
+    return len(re.findall(r"\d", s or ""))
+
+def _numeric_score(s: str) -> int:
+    if not s:
+        return 0
+    s2 = s.lower()
+    score = 0
+    score += 3 * _digit_count(s2)
+    if "$" in s2 or "€" in s2 or "£" in s2:
+        score += 25
+    if "%" in s2:
+        score += 15
+    for w, pts in [("billion", 18), ("million", 14), ("bn", 14), ("m", 6), ("ipo", 10), ("funding", 10)]:
+        if w in s2:
+            score += pts
+    return score
+
+def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
+    if not text:
+        return []
+    sents = re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text).strip())
+    hits = []
+    for s in sents:
+        if NUMERIC_TOKEN_RE.search(s):
+            s2 = s.strip()
+            if 30 <= len(s2) <= 220:
+                hits.append(s2)
+        if len(hits) >= max_items:
+            break
+    out = []
+    seen = set()
+    for h in hits:
+        key = h.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(h)
+    return out[:max_items]
+
+# ----------------------------
 # NEWS INTEL (RSS)
 # ----------------------------
 GOOGLE_NEWS_RSS = [
-    # Numbers-first feeds (to guarantee $/%/scale)
-    (
-        "Numbers & Markets",
-        "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en",
-    ),
-    (
-        "AI Money",
-        "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:2d&hl=en-US&gl=US&ceid=US:en",
-    ),
-
-    # Your original buckets (kept)
-    (
-        "Frontier Models",
-        "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:2d&hl=en-US&gl=US&ceid=US:en",
-    ),
-    (
-        "AI Regulation",
-        "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:2d&hl=en-US&gl=US&ceid=US:en",
-    ),
-    (
-        "AI Security",
-        "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:2d&hl=en-US&gl=US&ceid=US:en",
-    ),
-    (
-        "AI in Work",
-        "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise)%20when:2d&hl=en-US&gl=US&ceid=US:en",
-    ),
+    ("Numbers & Markets",
+     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("AI Money",
+     "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("Frontier Models",
+     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("AI Regulation",
+     "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("AI Security",
+     "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("AI in Work",
+     "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
 ]
 
 def _strip_html(s: str) -> str:
@@ -348,10 +342,6 @@ def _strip_html(s: str) -> str:
     return re.sub(r"\s+", " ", txt).strip()
 
 def _split_headline_publisher(title: str) -> Tuple[str, str]:
-    """
-    Google News RSS often formats as: "Headline - Publisher"
-    We extract publisher if present.
-    """
     if not title:
         return "", ""
     parts = [p.strip() for p in title.split(" - ") if p.strip()]
@@ -360,9 +350,6 @@ def _split_headline_publisher(title: str) -> Tuple[str, str]:
     return title.strip(), ""
 
 def _published_iso_from_entry(entry) -> str:
-    """
-    Prefer parsed publish time if available.
-    """
     try:
         tt = getattr(entry, "published_parsed", None) or getattr(entry, "updated_parsed", None)
         if tt:
@@ -377,10 +364,6 @@ def _published_iso_from_entry(entry) -> str:
         return ""
 
 def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
-    """
-    UPDATED: includes publisher + published timestamps where possible,
-    and captures slightly larger summaries to support data extraction.
-    """
     items: List[Dict[str, str]] = []
     headers = {"User-Agent": "Mozilla/5.0 (AI Edge Bot; +https://github.com/aisimplify333/Daily-ai-News)"}
 
@@ -392,7 +375,6 @@ def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
             for entry in (feed.entries or [])[:max_per_feed]:
                 raw_title = (getattr(entry, "title", "") or "").strip()
                 title, publisher = _split_headline_publisher(raw_title)
-
                 link = (getattr(entry, "link", "") or "").strip()
                 summary = _strip_html(getattr(entry, "summary", "") or "")[:700]
                 published = _published_iso_from_entry(entry)
@@ -421,17 +403,8 @@ def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
         deduped.append(x)
     return deduped
 
-def _safe_domain(url: str) -> str:
-    try:
-        return (urlparse(url).netloc or "").lower()
-    except Exception:
-        return ""
-
 @lru_cache(maxsize=128)
 def _resolve_final_url(url: str) -> str:
-    """
-    Google News often redirects. We try to follow redirects cheaply.
-    """
     if not url:
         return url
     headers = {"User-Agent": "Mozilla/5.0 (AI Edge Bot)"}
@@ -444,13 +417,6 @@ def _resolve_final_url(url: str) -> str:
 
 @lru_cache(maxsize=128)
 def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
-    """
-    Stronger preview scrape to pull explicit numbers:
-    - meta description
-    - first paragraphs
-    - list items (often where $/% figures are)
-    - headings (sometimes contain numeric claims)
-    """
     if not url:
         return ""
     headers = {"User-Agent": "Mozilla/5.0 (AI Edge Bot)"}
@@ -478,7 +444,6 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
         if meta_desc:
             chunks.append(meta_desc)
 
-        # Headings (often include “$X”, “Y%”, “Q1 2026”, etc.)
         for h in base.find_all(["h1", "h2", "h3"]):
             txt = h.get_text(" ", strip=True)
             if txt and 20 <= len(txt) <= 180:
@@ -486,7 +451,6 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
             if len(chunks) >= 10:
                 break
 
-        # Paragraphs
         paras = []
         for p in base.find_all("p"):
             txt = p.get_text(" ", strip=True)
@@ -496,7 +460,6 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
                 break
         chunks.extend(paras)
 
-        # List items (frequently contain numeric bullet facts)
         lis = []
         for li in base.find_all("li"):
             txt = li.get_text(" ", strip=True)
@@ -532,33 +495,7 @@ def load_sponsors() -> List[Dict[str, str]]:
         {"name": "Sponsor Three", "tagline": "Ship smarter.", "cta": "Join the waitlist."},
     ]
 
-def _fallback_data_points(text: str, max_items: int = 5) -> List[str]:
-    """
-    Extract explicit numeric/date-like snippets from text as a weak fallback.
-    """
-    if not text:
-        return []
-    sents = re.split(r"(?<=[.!?])\s+", text)
-    hits = []
-    for s in sents:
-        if re.search(r"(\d|%|\$|€|£|billion|million|bn|m)\b", s, flags=re.IGNORECASE):
-            hits.append(s.strip())
-        if len(hits) >= max_items:
-            break
-    out = []
-    for h in hits:
-        h2 = h[:140].strip()
-        if h2 and h2 not in out:
-            out.append(h2)
-    return out[:max_items]
-
 def enrich_stories_with_data(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
-    """
-    Enrichment pass:
-    - Extract explicit numeric bullets from RSS + preview
-    - Forbid invented numbers
-    - If model output is weak, deterministic numeric sentence extraction kicks in
-    """
     enriched: List[Dict[str, str]] = []
     for s in stories:
         url = (s.get("source_url") or "").strip()
@@ -595,7 +532,6 @@ Article Preview:
         dp = j.get("data_points") if isinstance(j.get("data_points"), list) else []
         dp = [str(x).strip() for x in dp if str(x).strip()][:8]
 
-        # If model dp is weak, extract numeric sentences deterministically from preview+summary
         strong_dp = [b for b in dp if NUMERIC_TOKEN_RE.search(b)]
         if len(strong_dp) < MIN_NUMERIC_BULLETS_PER_STORY:
             extracted = _extract_numeric_sentences((rss_summary + " " + preview).strip(), max_items=8)
@@ -617,22 +553,15 @@ Article Preview:
     return enriched
 
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
-    """
-    Numbers-first selection:
-    1) Rank candidates by numeric_score(summary+title)
-    2) Ask model to pick top n (still)
-    3) Enrich and then enforce a numeric minimum; if weak, fall back to top numeric candidates
-    """
     if not intel_items:
         return []
 
     ranked = sorted(
         intel_items,
-        key=lambda x: _numeric_score((x.get("title","") or "") + " " + (x.get("summary","") or "")),
+        key=lambda x: _numeric_score((x.get("title", "") or "") + " " + (x.get("summary", "") or "")),
         reverse=True,
     )
 
-    # Give the model the best 40 candidates (dense with numeric tokens)
     candidates = ranked[:40]
     intel_compact = "\n".join(
         [
@@ -694,22 +623,22 @@ Candidate items:
             if st["headline"] and st["source_url"]:
                 stories.append(st)
 
-    # If model fails, fallback to top numeric candidates directly
     if len(stories) < n:
         stories = []
         for x in candidates[:n]:
-            stories.append({
-                "headline": x.get("title",""),
-                "why_shocking": x.get("summary",""),
-                "data_points": _extract_numeric_sentences((x.get("summary","") or ""), max_items=4) or ["Needs enrichment"],
-                "angles": {"alex": "", "jamie": "", "rufus": ""},
-                "source_url": x.get("link",""),
-                "publisher": x.get("publisher",""),
-                "published": x.get("published",""),
-                "rss_summary": x.get("summary",""),
-            })
+            stories.append(
+                {
+                    "headline": x.get("title", ""),
+                    "why_shocking": x.get("summary", ""),
+                    "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=4) or ["Needs enrichment"],
+                    "angles": {"alex": "", "jamie": "", "rufus": ""},
+                    "source_url": x.get("link", ""),
+                    "publisher": x.get("publisher", ""),
+                    "published": x.get("published", ""),
+                    "rss_summary": x.get("summary", ""),
+                }
+            )
 
-    # Attach RSS summaries for enrichment
     for st in stories:
         match = next((x for x in intel_items if (x.get("link") or "").strip() == st["source_url"]), None)
         if match:
@@ -717,34 +646,30 @@ Candidate items:
             st["publisher"] = st["publisher"] or (match.get("publisher") or "").strip()
             st["published"] = st["published"] or (match.get("published") or "").strip()
         else:
-            st["rss_summary"] = st.get("rss_summary","") or ""
+            st["rss_summary"] = st.get("rss_summary", "") or ""
 
     enriched = enrich_stories_with_data(stories[:n])
 
-    # Numeric enforcement: ensure each story has >= MIN_NUMERIC_BULLETS_PER_STORY bullets with digits/$/%
-    def numeric_bullets(dp: list[str]) -> int:
+    def numeric_bullets(dp: List[str]) -> int:
         return sum(1 for b in (dp or []) if NUMERIC_TOKEN_RE.search(b or ""))
 
     weak = [s for s in enriched if numeric_bullets(s.get("data_points") or []) < MIN_NUMERIC_BULLETS_PER_STORY]
-
     if weak:
-        # Hard fallback: take top numeric candidates and enrich them
         fallback = []
         for x in candidates:
             fb = {
-                "headline": x.get("title",""),
-                "why_shocking": x.get("summary",""),
-                "data_points": _extract_numeric_sentences((x.get("summary","") or ""), max_items=6) or ["Needs enrichment"],
+                "headline": x.get("title", ""),
+                "why_shocking": x.get("summary", ""),
+                "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=6) or ["Needs enrichment"],
                 "angles": {"alex": "", "jamie": "", "rufus": ""},
-                "source_url": x.get("link",""),
-                "publisher": x.get("publisher",""),
-                "published": x.get("published",""),
-                "rss_summary": x.get("summary",""),
+                "source_url": x.get("link", ""),
+                "publisher": x.get("publisher", ""),
+                "published": x.get("published", ""),
+                "rss_summary": x.get("summary", ""),
             }
             fallback.append(fb)
             if len(fallback) >= n:
                 break
-
         enriched = enrich_stories_with_data(fallback[:n])
 
     return enriched[:n]
@@ -752,8 +677,6 @@ Candidate items:
 # ----------------------------
 # SCRIPTING (SOUL + GUARANTEED LENGTH + DATA RICHNESS)
 # ----------------------------
-SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
-
 def _word_count(s: str) -> int:
     return len(re.findall(r"\b\w+\b", s or ""))
 
@@ -761,21 +684,13 @@ def estimate_minutes_from_text(script: str) -> float:
     return _word_count(script) / max(1.0, WORDS_PER_MINUTE)
 
 def _script_targets() -> Tuple[int, int, int]:
-    """
-    Returns (min_words, target_words, max_words)
-    Buffers help real TTS land inside MIN/MAX.
-    """
     min_words = int(MIN_MINUTES * WORDS_PER_MINUTE * 1.02)
     target_words = int(TARGET_MINUTES * WORDS_PER_MINUTE * 1.00)
     max_words = int(MAX_MINUTES * WORDS_PER_MINUTE * 1.10)
     return min_words, target_words, max_words
 
 def _segment_word_targets() -> List[int]:
-    """
-    Allocate total across 5 segments while preserving your show structure and pacing.
-    """
     min_words, _, max_words = _script_targets()
-
     seg = [650, 1200, 900, 1400, 650]  # total 4800
 
     total = sum(seg)
@@ -793,9 +708,6 @@ def _segment_header(i: int) -> str:
     return f"### SEGMENT {i}"
 
 def _story_block(stories: List[Dict[str, str]]) -> str:
-    """
-    UPDATED: includes publisher/published + data_points so the model can cite explicit figures on-air.
-    """
     out = []
     for i, s in enumerate(stories[:5]):
         dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
@@ -924,9 +836,9 @@ SEGMENT REQUIREMENTS:
 - Avoid filler openers like “let’s dive in”.
 
 DATA REQUIREMENTS (non-negotiable):
-- This show is data-rich. For every story you discuss in THIS segment, you MUST speak at least 2 explicit data points
+- For every story you discuss in THIS segment, you MUST speak at least 2 explicit data points
   (numbers/dates/amounts) from the provided "Data points" lines in TODAY'S STORIES.
-- Mention the publisher at least once when introducing a story (e.g., "Bloomberg says..." / "The Verge reports...").
+- Mention the publisher at least once when introducing a story.
 - Do NOT invent numbers. If a story has "No explicit figures in snippet", say that plainly and focus on consequences.
 
 WHAT THIS SEGMENT MUST DO:
@@ -935,7 +847,7 @@ WHAT THIS SEGMENT MUST DO:
 SPECIAL INSTRUCTIONS FOR THIS SEGMENT:
 {extra}
 
-TODAY'S STORIES (must be clearly discussed across the full episode; reference as needed here):
+TODAY'S STORIES:
 {story_block}
 
 NOW OUTPUT ONLY THIS SEGMENT.
@@ -946,7 +858,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
     if not seg_text.strip().startswith(_segment_header(seg_num)):
         issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
 
-    # label validation
     for ln in seg_text.splitlines():
         line = ln.strip()
         if not line:
@@ -961,7 +872,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
     if wc < seg_words_min:
         issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
 
-    # Cold open enforcement: Segment 1 needs real dialogue before [MUSIC]
     if seg_num == 1:
         lines = [l.strip() for l in seg_text.splitlines() if l.strip()]
         try:
@@ -977,7 +887,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
                     f"Cold open too short before [MUSIC] ({len(pre_music_dialogue)} lines). Minimum is {MIN_COLD_OPEN_LINES}."
                 )
 
-    # Numeric density enforcement (drama/data)
     if _digit_count(seg_text) < MIN_DIGITS_PER_SEGMENT:
         issues.append(
             f"Low numeric density in segment (digits={_digit_count(seg_text)}). Minimum is {MIN_DIGITS_PER_SEGMENT}."
@@ -995,12 +904,12 @@ CURRENT ISSUES (fix all):
 NON-NEGOTIABLE:
 - First line MUST be exactly "{_segment_header(seg_num)}"
 - Output MUST be dialogue lines only with EXACT labels: ALEX:, JAMIE:, RUFUS:
-- Every spoken line MUST start with one of those labels (no unlabeled lines).
-- Add MORE back-and-forth to increase length; do NOT compress.
-- Keep lines SHORT (1–2 sentences) to increase turn count and chemistry.
+- Every spoken line MUST start with one of those labels.
+- Add MORE back-and-forth; do NOT compress.
+- Keep lines SHORT (1–2 sentences) to increase turn count.
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target}).
 
-HERE IS THE SEGMENT TO EXPAND/REPAIR (keep good parts, add more lines):
+HERE IS THE SEGMENT TO EXPAND/REPAIR:
 {seg_text}
 """.strip()
 
@@ -1013,13 +922,12 @@ def _generate_segment(
     sponsors: List[Dict[str, str]],
 ) -> str:
     prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
-
     seg_text = ""
+
     for attempt in range(1, SEGMENT_ATTEMPTS + 1):
         seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
         wc = _word_count(seg_text)
         issues = _segment_validate(seg_text, seg_num, seg_words_min)
-
         _safe_print(f"    ✍️ Segment {seg_num} attempt {attempt}/{SEGMENT_ATTEMPTS} (min {seg_words_min}): {wc} words")
 
         if not issues:
@@ -1030,10 +938,6 @@ def _generate_segment(
     return seg_text.strip()
 
 def _sanitize_dialogue_only(text: str) -> str:
-    """
-    Ensures every non-marker/non-[MUSIC] line is labeled dialogue.
-    Unlabeled lines become continuation of last speaker (if any).
-    """
     if not text:
         return ""
     out: List[str] = []
@@ -1067,9 +971,6 @@ def _sanitize_dialogue_only(text: str) -> str:
     return "\n".join(out).strip()
 
 def _trim_script_to_max_words(script: str, max_words: int) -> str:
-    """
-    Deterministic trim: remove dialogue lines from SEGMENT 4 first.
-    """
     if _word_count(script) <= max_words:
         return script
 
@@ -1092,7 +993,6 @@ def _trim_script_to_max_words(script: str, max_words: int) -> str:
         idxs = [i for i, l in enumerate(lines) if SPEAKER_RE.match(l)]
         protected = set(idxs[:10] + idxs[-10:])
         removable = [i for i in idxs if i not in protected]
-
         mid = len(removable) // 2
         order = removable[mid:] + removable[:mid][::-1]
 
@@ -1100,7 +1000,6 @@ def _trim_script_to_max_words(script: str, max_words: int) -> str:
             if _word_count(rebuild()) <= max_words:
                 break
             lines[i] = ""
-
         parts[4] = [l for l in lines if l]
 
     trimmed = rebuild()
@@ -1120,9 +1019,6 @@ def _trim_script_to_max_words(script: str, max_words: int) -> str:
     return trimmed
 
 def _pad_script_to_min_words(script: str, min_words: int, stories, sponsors, date_str: str) -> str:
-    """
-    If short, insert an add-on block into SEGMENT 4 (best place to expand) without rewriting everything.
-    """
     wc = _word_count(script)
     if wc >= min_words:
         return script
@@ -1141,12 +1037,12 @@ Write an ADD-ON block to extend SEGMENT 4 of "The AI Edge" ({date_str}).
 
 RULES:
 - Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
-- NO segment markers in your output.
+- NO segment markers.
 - Add ~{add_words} words (do NOT go under {int(add_words*0.85)}).
-- MUST include at least 6 explicit data points (numbers/dates/amounts) from the story block below.
-- Keep the show vibe: fast banter, interruptions, dread/greed forecasting.
+- MUST include at least 6 explicit data points from the story block below.
+- Keep fast banter, interruptions, dread/greed forecasting.
 
-STORY BLOCK (use the data_points explicitly):
+STORY BLOCK:
 {story_block}
 """.strip()
 
@@ -1155,11 +1051,6 @@ STORY BLOCK (use the data_points explicitly):
 
     insert_at = m.start()
     return (script[:insert_at].rstrip() + "\n" + addon.strip() + "\n\n" + script[insert_at:].lstrip()).strip()
-
-def _data_richness_warning(script: str):
-    digits = len(re.findall(r"\d", script or ""))
-    if digits < 25:
-        _safe_print(f"    ⚠️ DATA-RICHNESS WARNING: low numeric density (digits={digits}). Consider increasing previews/max_per_feed.")
 
 def validate_script(script: str) -> List[str]:
     issues: List[str] = []
@@ -1200,16 +1091,11 @@ def validate_script(script: str) -> List[str]:
     return issues
 
 def enforce_episode_numeric_density(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
-    """
-    If the full script numeric density is below MIN_DIGITS_PER_EPISODE, we inject a short
-    data-heavy add-on into SEGMENT 4 using story data_points verbatim.
-    """
     if _digit_count(script) >= MIN_DIGITS_PER_EPISODE:
         return script
 
     deficit = MIN_DIGITS_PER_EPISODE - _digit_count(script)
     add_words = min(900, max(320, deficit * 6))
-
     story_block = _story_block(stories)
 
     prompt = f"""
@@ -1217,43 +1103,32 @@ Write a DATA-DUMP add-on for SEGMENT 4 of "The AI Edge" ({date_str}).
 
 NON-NEGOTIABLE:
 - Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
-- Use story DATA POINTS verbatim (numbers/dates/amounts must appear exactly).
+- Use story DATA POINTS verbatim (numbers/dates/amounts must appear).
 - Add ~{add_words} words.
-- MUST include at least 12 distinct numeric tokens overall ($, %, years, quantities, etc).
-- Keep it intense: fear/greed, consequences, and "what this means tomorrow".
+- MUST include at least 12 distinct numeric tokens overall.
+- Keep it intense: consequences + "what this means tomorrow".
 
-STORY BLOCK (use the Data points explicitly):
+STORY BLOCK:
 {story_block}
 """.strip()
 
     addon = generate_text(prompt, temperature=0.55, max_tokens=1800)
     addon = _sanitize_dialogue_only(addon)
 
-    # Insert right before SEGMENT 5
     m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
     if not m:
-        # If missing (shouldn't happen), just append
         script2 = (script.rstrip() + "\n" + addon.strip()).strip()
     else:
         script2 = (script[:m.start()].rstrip() + "\n" + addon.strip() + "\n\n" + script[m.start():].lstrip()).strip()
 
-    # Re-trim if needed
     min_words, _, max_words = _script_targets()
     if _word_count(script2) > max_words:
         script2 = _trim_script_to_max_words(script2, max_words=max_words)
 
     script2 = _sanitize_dialogue_only(script2)
-
-    # Final check
-    if _digit_count(script2) < MIN_DIGITS_PER_EPISODE:
-        _safe_print(f"    ⚠️ Still low numeric density after booster (digits={_digit_count(script2)}). Consider raising previews/max_per_feed.")
     return script2
 
 def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
-    """
-    UPDATED: segmented generation + sanitize + deterministic trim/pad.
-    Removes the risky full-script rewrite loop that caused marker loss / massive shortening.
-    """
     seg_targets = _segment_word_targets()
     seg_mins = [max(420, int(t * 0.92)) for t in seg_targets]
 
@@ -1283,27 +1158,16 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
 
     script = _sanitize_dialogue_only(script)
 
-    wc = _word_count(script)
-    mins = estimate_minutes_from_text(script)
-    _safe_print(f"    ✅ Full script check: ~{mins:.1f} min ({wc} words)")
-    _data_richness_warning(script)
-
     issues = validate_script(script)
     if issues:
         raise RuntimeError("Final script validation failed:\n" + "\n".join(issues))
+
     return script
 
 # ----------------------------
 # DIALOGUE PARSING (ROBUST)
 # ----------------------------
 def iter_dialogue(script: str) -> List[Tuple[str, str]]:
-    """
-    Parses:
-    - ALEX: ...
-    - JAMIE: ...
-    - RUFUS: ...
-    Supports continuation lines by appending them to the current speaker.
-    """
     out: List[Tuple[str, str]] = []
     current_speaker: Optional[str] = None
     buf: List[str] = []
@@ -1343,10 +1207,6 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
     return out
 
 def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 2400) -> List[Tuple[str, str]]:
-    """
-    Reduce the number of TTS calls by merging adjacent turns from the same speaker,
-    up to max_chars. Preserves MUSIC markers.
-    """
     merged: List[Tuple[str, str]] = []
     cur_spk: Optional[str] = None
     cur_txt: List[str] = []
@@ -1422,11 +1282,27 @@ def tts_to_file(text: str, voice: str, out_path: Path):
             time.sleep(sleep_s)
     raise RuntimeError(f"TTS failed after {TTS_RETRIES} retries: {last_err}")
 
+def apply_speed_ffmpeg(in_path: Path, out_path: Path, speed: float):
+    """
+    Uses ffmpeg atempo to speed audio while preserving pitch.
+    atempo supports 0.5-2.0; 1.05 is safe.
+    """
+    if abs(speed - 1.0) < 1e-6:
+        shutil.copyfile(in_path, out_path)
+        return
+    if not _has_ffmpeg():
+        raise RuntimeError("ffmpeg not found; required for JAMIE speed adjustment.")
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", str(in_path),
+        "-filter:a", f"atempo={speed:.4f}",
+        "-c:a", "libmp3lame",
+        "-b:a", "192k",
+        str(out_path),
+    ]
+    _run(cmd)
+
 def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
-    """
-    Optional. MP3 concat can cause DTS warnings depending on segment encoding.
-    Kept as fallback. Default stitching is pydub (below).
-    """
     concat_txt = out_path.parent / f"concat_{uuid.uuid4().hex}.txt"
     concat_txt.write_text("\n".join([f"file '{p.as_posix()}'" for p in file_list]), encoding="utf-8")
 
@@ -1449,19 +1325,14 @@ def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
         pass
 
 def stitch_with_pydub(file_list: List[Path], out_path: Path):
-    """
-    Recommended: decode each segment and export once.
-    Avoids FFmpeg non-monotonic DTS issues from MP3 concat.
-    """
+    if not _has_ffmpeg():
+        raise RuntimeError("ffmpeg not found in runner (required by pydub decode).")
     combined = AudioSegment.empty()
     for p in file_list:
         combined += AudioSegment.from_file(p)
     combined.export(out_path, format="mp3", bitrate="192k")
 
 def stitch_audio(file_list: List[Path], out_path: Path):
-    if not _has_ffmpeg():
-        raise RuntimeError("ffmpeg not found in runner (required by pydub/ffmpeg).")
-
     if STITCH_METHOD == "ffmpeg":
         stitch_with_ffmpeg(file_list, out_path)
     else:
@@ -1548,7 +1419,122 @@ Rules:
         return out
 
 # ----------------------------
-# RSS FEED WRITER (robust)
+# SHOW NOTES (deterministic fallback)
+# ----------------------------
+def _build_show_notes_deterministic(
+    date_str: str,
+    stories: List[Dict[str, str]],
+    listen_url: str,
+    marketing_pack: Optional[Dict[str, str]] = None,
+) -> str:
+    hook = (marketing_pack or {}).get("hook", "").strip()
+    if not hook:
+        hook = (stories[0].get("headline", "") if stories else "TODAY’S AI SHIFT")[:64].upper()
+
+    lines = []
+    lines.append(f"{hook}")
+    lines.append("")
+    lines.append("TODAY’S LINEUP")
+    for s in stories[:5]:
+        pub = (s.get("publisher") or "").strip()
+        head = (s.get("headline") or "").strip()
+        url = (s.get("source_url") or "").strip()
+        if pub:
+            lines.append(f"- {head} ({pub})")
+        else:
+            lines.append(f"- {head}")
+        if url:
+            lines.append(f"  Source: {url}")
+
+    lines.append("")
+    lines.append("KEY NUMBERS & DATA POINTS")
+    for i, s in enumerate(stories[:5], start=1):
+        head = (s.get("headline") or "").strip()
+        lines.append(f"{i}) {head}")
+        dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
+        dp = [str(x).strip() for x in dp if str(x).strip()]
+        if not dp:
+            dp = ["No explicit figures in snippet."]
+        for b in dp[:6]:
+            lines.append(f"   • {b}")
+
+    lines.append("")
+    lines.append("SOURCES")
+    for s in stories[:5]:
+        url = (s.get("source_url") or "").strip()
+        if url:
+            lines.append(f"- {url}")
+
+    lines.append("")
+    lines.append(f"LISTEN: {listen_url}")
+    lines.append("")
+    lines.append("NOTE: This episode discusses publicly reported information; details can change quickly.")
+    return "\n".join(lines).strip()
+
+def _generate_episode_seo_meta(
+    date_str: str,
+    stories: List[Dict[str, str]],
+    listen_url: str,
+    script_text: str,
+    marketing_pack: Optional[Dict[str, str]] = None,
+) -> Dict[str, str]:
+    story_block = _story_block(stories)
+    hook = (marketing_pack or {}).get("hook", "").strip()
+
+    prompt = f"""
+You are writing SEO metadata for a daily AI podcast episode.
+
+Return ONLY valid JSON (no markdown):
+{{
+  "title": "SEO title <= {EPISODE_META_MAX_TITLE} chars. Must be punchy and specific. Include at least ONE number/date/$/% from the story block if available.",
+  "description": "Professional show notes <= {EPISODE_META_MAX_DESC} chars. Must include sections: TODAY’S LINEUP, KEY NUMBERS, SOURCES, LISTEN. Use the story data_points verbatim wherever possible. Do NOT invent numbers."
+}}
+
+Episode date: {date_str}
+Listen URL: {listen_url}
+Hook (if useful): {hook}
+
+TODAY'S STORIES:
+{story_block}
+
+SCRIPT (for context; do not copy long chunks):
+{script_text[:1800]}
+""".strip()
+
+    raw = generate_text(prompt, temperature=0.25, max_tokens=1200)
+    j = _extract_json_object(raw) or {}
+
+    title = (j.get("title") or "").strip()
+    desc = (j.get("description") or "").strip()
+
+    def ok_title(t: str) -> bool:
+        if not t or len(t) > EPISODE_META_MAX_TITLE:
+            return False
+        return bool(NUMERIC_TOKEN_RE.search(t)) or bool(re.search(r"\d", t))
+
+    def ok_desc(d: str) -> bool:
+        if not d or len(d) > EPISODE_META_MAX_DESC:
+            return False
+        must = ["TODAY", "KEY", "SOURCE", "LISTEN"]
+        if sum(1 for m in must if m.lower() in d.lower()) < 3:
+            return False
+        return _digit_count(d) >= 35
+
+    if not ok_desc(desc):
+        desc = _build_show_notes_deterministic(date_str, stories, listen_url, marketing_pack=marketing_pack)
+        desc = desc[:EPISODE_META_MAX_DESC]
+
+    if not ok_title(title):
+        top = (stories[0].get("headline") if stories else "AI BREAKING UPDATE").strip()
+        m = NUMERIC_TOKEN_RE.search(story_block)
+        num = m.group(0) if m else date_str
+        title = f"{top[:70]} — {num} — {date_str}"
+        title = title[:EPISODE_META_MAX_TITLE]
+
+    return {"title": title, "description": desc}
+
+# ----------------------------
+# RSS FEED WRITER (catalog-wide truth)
 # ----------------------------
 def update_feed_xml(meta: Dict):
     import xml.etree.ElementTree as ET
@@ -1612,7 +1598,6 @@ def update_feed_xml(meta: Dict):
             dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
             dur.text = str(int(duration_seconds))
 
-        # Episode image
         ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
         ep_img.set("href", RSS_SETTINGS["image"])
 
@@ -1647,7 +1632,6 @@ def update_feed_xml(meta: Dict):
     ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = RSS_SETTINGS["author"]
     ET.SubElement(owner, f"{{{ITUNES_NS}}}email").text = RSS_SETTINGS["email"]
 
-    # Build items from local MP3s (catalog-wide truth)
     mp3s = sorted(AUDIO_DIR.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
 
     items_added = 0
@@ -1665,7 +1649,6 @@ def update_feed_xml(meta: Dict):
         title = (sidecar.get("title") or f"{RSS_SETTINGS['title']} — {date_str}").strip()
         desc = (sidecar.get("description") or f"Listen: {LISTEN_URL}").strip()
 
-        # If this is today’s episode, prefer meta passed in (freshest)
         if meta.get("audio_file") == mp3.name:
             title = (meta.get("title") or title).strip()
             desc = (meta.get("show_notes") or desc).strip()
@@ -1691,6 +1674,9 @@ def update_feed_xml(meta: Dict):
 # MAIN PRODUCER
 # ----------------------------
 def produce_episode():
+    if not _has_ffmpeg():
+        raise RuntimeError("ffmpeg is required for stitching and JAMIE speed adjustment. Install it on runner/host.")
+
     today = datetime.date.today().isoformat()
 
     _safe_print(" >> 📰 GATHERING INTEL (RSS PRIMARY)...")
@@ -1716,8 +1702,9 @@ def produce_episode():
     est = estimate_minutes_from_text(script)
     _safe_print(f"    Estimated minutes (text): ~{est:.1f}")
 
-    script_path = BASE_DIR / f"script_{today}.txt"
-    script_path.write_text(script, encoding="utf-8")
+    if SAVE_SCRIPT:
+        script_path = BASE_DIR / f"script_{today}.txt"
+        script_path.write_text(script, encoding="utf-8")
 
     dialogue = iter_dialogue(script)
     if len(dialogue) < 120:
@@ -1741,12 +1728,10 @@ def produce_episode():
 
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
-
-      inserted_intro = False
+    inserted_intro = False
 
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
-            # FIRST [MUSIC] marker = insert your intro bed there (after the cold open)
             if INTRO_PATH.exists() and not inserted_intro:
                 intro = AudioSegment.from_file(INTRO_PATH)[:15000].fade_out(1200)
                 intro_path = run_tmp / "intro_trim.mp3"
@@ -1760,11 +1745,18 @@ def produce_episode():
         voice = VOICE_MAP.get(speaker, "onyx")
         for chunk in chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS):
             seg_idx += 1
-            seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}.mp3"
-            tts_to_file(chunk, voice, seg_path)
-            concat_files.append(seg_path)
-            concat_files.append(silence_path)
+            raw_seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
+            tts_to_file(chunk, voice, raw_seg_path)
 
+            # Speed JAMIE to 1.05x
+            if speaker == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
+                sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
+                apply_speed_ffmpeg(raw_seg_path, sped_path, JAMIE_SPEED)
+                concat_files.append(sped_path)
+            else:
+                concat_files.append(raw_seg_path)
+
+            concat_files.append(silence_path)
 
     if OUTRO_PATH.exists():
         outro = AudioSegment.from_file(OUTRO_PATH)[:12000].fade_in(800).fade_out(1200)
@@ -1788,7 +1780,6 @@ def produce_episode():
 
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
 
-    # SEO title + professional show notes (RSS item metadata)
     seo = _generate_episode_seo_meta(
         date_str=today,
         stories=stories,
@@ -1797,29 +1788,19 @@ def produce_episode():
         marketing_pack=pack,
     )
 
+    # Final title + show-notes used for RSS + sidecar + metadata.json
     feed_title = f"{seo['title']} — {today}"
     show_notes = seo["description"]
 
     # Persist catalog-sidecar meta so future feed rebuilds can upgrade older items too
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
 
-
-    card_headline = pack["hook"]
-    feed_title = f"{pack['hook']} — {today}"
-
-    show_notes = (
-        "Top stories:\n"
-        + "\n".join([f"- {s.get('headline','')} ({s.get('source_url','')})" for s in stories])
-        + f"\n\nListen: {LISTEN_URL}\n\n"
-        + pack["hashtags"]
-    )
-
     viral_caption = "\n".join([
-        pack["tweet1"],
+        pack.get("tweet1", "").strip(),
         "",
-        pack["tweet2"],
+        pack.get("tweet2", "").strip(),
         "",
-        pack["hashtags"],
+        pack.get("hashtags", "").strip(),
     ]).strip()
 
     (BASE_DIR / "viral_caption.txt").write_text(viral_caption, encoding="utf-8")
@@ -1828,7 +1809,6 @@ def produce_episode():
     meta = {
         "date": today,
         "title": feed_title,
-        "card_headline": card_headline,
         "listen_url": LISTEN_URL,
         "minutes": round(minutes, 2),
         "audio_file": final_mp3.name,
@@ -1840,152 +1820,17 @@ def produce_episode():
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
-    def _date_from_episode_filename(name: str) -> Optional[str]:
-    m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", name or "")
-    return m.group(1) if m else None
-
-def _sidecar_meta_path_for_date(date_str: str) -> Path:
-    return AUDIO_DIR / f"podcast_{date_str}.json"
-
-def _load_sidecar_meta_for_date(date_str: str) -> Dict[str, str]:
-    p = _sidecar_meta_path_for_date(date_str)
-    if not p.exists():
-        return {}
-    try:
-        j = json.loads(p.read_text(encoding="utf-8"))
-        return j if isinstance(j, dict) else {}
-    except Exception:
-        return {}
-
-def _write_sidecar_meta_for_date(date_str: str, title: str, description: str) -> Path:
-    p = _sidecar_meta_path_for_date(date_str)
-    payload = {"title": (title or "").strip(), "description": (description or "").strip()}
-    p.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    return p
-
-def _build_show_notes_deterministic(
-    date_str: str,
-    stories: List[Dict[str, str]],
-    listen_url: str,
-    marketing_pack: Optional[Dict[str, str]] = None,
-) -> str:
-    hook = (marketing_pack or {}).get("hook", "").strip()
-    if not hook:
-        hook = (stories[0].get("headline", "") if stories else "TODAY’S AI SHIFT")[:64].upper()
-
-    lines = []
-    lines.append(f"{hook}")
-    lines.append("")
-    lines.append("TODAY’S LINEUP")
-    for s in stories[:5]:
-        pub = (s.get("publisher") or "").strip()
-        head = (s.get("headline") or "").strip()
-        url = (s.get("source_url") or "").strip()
-        if pub:
-            lines.append(f"- {head} ({pub})")
-        else:
-            lines.append(f"- {head}")
-        if url:
-            lines.append(f"  Source: {url}")
-
-    lines.append("")
-    lines.append("KEY NUMBERS & DATA POINTS")
-    for i, s in enumerate(stories[:5], start=1):
-        head = (s.get("headline") or "").strip()
-        lines.append(f"{i}) {head}")
-        dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
-        dp = [str(x).strip() for x in dp if str(x).strip()]
-        if not dp:
-            dp = ["No explicit figures in snippet."]
-        for b in dp[:6]:
-            lines.append(f"   • {b}")
-
-    lines.append("")
-    lines.append(f"LISTEN: {listen_url}")
-    lines.append("")
-    lines.append("NOTE: This episode discusses publicly reported information; details can change quickly.")
-    return "\n".join(lines).strip()
-    
+    # Rebuild the entire feed from local mp3s + sidecars (catalog-wide truth)
     update_feed_xml(meta)
+
+    # Optional downstream marketing assets
     run_marketing_pipeline()
 
     if CLEANUP_TEMP:
         shutil.rmtree(run_tmp, ignore_errors=True)
 
-def _generate_episode_seo_meta(
-    date_str: str,
-    stories: List[Dict[str, str]],
-    listen_url: str,
-    script_text: str,
-    marketing_pack: Optional[Dict[str, str]] = None,
-) -> Dict[str, str]:
-    """
-    Produces (title, description) for Spotify/Apple consumption from RSS item metadata.
-    Hard-validates numeric density; falls back deterministically if weak.
-    """
-    story_block = _story_block(stories)
-    hook = (marketing_pack or {}).get("hook", "").strip()
-
-    prompt = f"""
-You are writing SEO metadata for a daily AI podcast episode.
-
-Return ONLY valid JSON (no markdown):
-{{
-  "title": "SEO title <= {EPISODE_META_MAX_TITLE} chars. Must be punchy and specific. Include at least ONE number/date/$/% from the story block if available.",
-  "description": "Professional show notes <= {EPISODE_META_MAX_DESC} chars. Must include sections: TODAY’S LINEUP, KEY NUMBERS, SOURCES, LISTEN. Use the story data_points verbatim wherever possible. Do NOT invent numbers."
-}}
-
-Episode date: {date_str}
-Listen URL: {listen_url}
-Hook (if useful): {hook}
-
-TODAY'S STORIES (use these facts; do not invent):
-{story_block}
-
-SCRIPT (for context; do not copy long chunks):
-{script_text[:1800]}
-""".strip()
-
-    raw = generate_text(prompt, temperature=0.25, max_tokens=1200)
-    j = _extract_json_object(raw) or {}
-
-    title = (j.get("title") or "").strip()
-    desc = (j.get("description") or "").strip()
-
-    # Hard validation
-    def ok_title(t: str) -> bool:
-        if not t:
-            return False
-        if len(t) > EPISODE_META_MAX_TITLE:
-            return False
-        # Prefer at least one numeric token
-        return bool(NUMERIC_TOKEN_RE.search(t)) or bool(re.search(r"\d", t))
-
-    def ok_desc(d: str) -> bool:
-        if not d:
-            return False
-        if len(d) > EPISODE_META_MAX_DESC:
-            return False
-        must = ["TODAY", "KEY", "SOURCE", "LISTEN"]
-        if sum(1 for m in must if m.lower() in d.lower()) < 3:
-            return False
-        # Must contain meaningful numeric density
-        return _digit_count(d) >= 35
-
-    if not ok_desc(desc):
-        desc = _build_show_notes_deterministic(date_str, stories, listen_url, marketing_pack=marketing_pack)
-        desc = desc[:EPISODE_META_MAX_DESC]
-
-    if not ok_title(title):
-        # Deterministic punchy title using top stories + any visible numbers
-        top = (stories[0].get("headline") if stories else "AI BREAKING UPDATE").strip()
-        # pull a number token from the story block if present
-        m = NUMERIC_TOKEN_RE.search(story_block)
-        num = m.group(0) if m else date_str
-        title = f"{top[:70]} — {num} — {date_str}"
-        title = title[:EPISODE_META_MAX_TITLE]
-
-    return {"title": title, "description": desc}
-
+# ----------------------------
+# ENTRYPOINT
+# ----------------------------
 if __name__ == "__main__":
     produce_episode()
