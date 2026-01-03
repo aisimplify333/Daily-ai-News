@@ -10,7 +10,6 @@ import time
 from pathlib import Path
 from typing import List, Dict, Tuple, Optional
 from functools import lru_cache
-from urllib.parse import urlparse
 
 from dotenv import load_dotenv
 import feedparser
@@ -82,6 +81,9 @@ PUBLISH_SOCIAL = os.getenv("PUBLISH_SOCIAL", "false").strip().lower() in ("1", "
 
 SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "false").strip().lower() in ("1", "true", "yes")
 
+# Idempotency: do not recreate today's episode unless explicitly forced
+FORCE_REBUILD = os.getenv("FORCE_REBUILD", "false").strip().lower() in ("1", "true", "yes")
+
 VOICE_MAP = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
     "JAMIE": os.getenv("VOICE_JAMIE", "nova"),
@@ -122,8 +124,22 @@ EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
 EPISODE_META_MAX_DESC = int(os.getenv("EPISODE_META_MAX_DESC", "4500"))
 
 # ----------------------------
-# SAFE PRINT
+# VIRALITY / STORY PICKING
 # ----------------------------
+# Keywords that correlate with high engagement / virality in tech news.
+# (Used only to rank/select stories from RSS candidates; does NOT invent facts.)
+VIRAL_KEYWORDS = [
+    "leak", "leaked", "whistleblower", "lawsuit", "sues", "ban", "banned", "crackdown", "investigation",
+    "antitrust", "fraud", "hack", "breach", "ransomware", "exploit", "backdoor", "spy", "surveillance",
+    "layoffs", "fired", "strike", "walkout", "shutdown", "collapse", "panic", "boycott",
+    "copycat", "stolen", "copyright", "plagiarism", "deepfake", "election", "misinformation",
+    "warning", "urgent", "emergency", "death", "injury", "safety", "weapon", "military",
+]
+VIRAL_BRANDS = [
+    "openai", "anthropic", "nvidia", "microsoft", "google", "deepmind", "meta", "apple",
+    "tesla", "amazon", "tiktok", "bytedance", "x", "twitter", "samsung", "intel",
+]
+
 def _safe_print(msg: str):
     print(msg, flush=True)
 
@@ -289,10 +305,68 @@ def _numeric_score(s: str) -> int:
         score += 25
     if "%" in s2:
         score += 15
-    for w, pts in [("billion", 18), ("million", 14), ("bn", 14), ("m", 6), ("ipo", 10), ("funding", 10)]:
+    for w, pts in [("billion", 18), ("million", 14), ("bn", 14), ("ipo", 10), ("funding", 10), ("valuation", 10)]:
         if w in s2:
             score += pts
     return score
+
+def _virality_score(title: str, summary: str) -> int:
+    blob = f"{title or ''} {summary or ''}".lower()
+    score = 0
+    for kw in VIRAL_KEYWORDS:
+        if kw in blob:
+            score += 10
+    for b in VIRAL_BRANDS:
+        if b in blob:
+            score += 6
+    # Titles with strong punctuation tend to be higher CTR
+    if "!" in (title or ""):
+        score += 6
+    if "?" in (title or ""):
+        score += 4
+    return score
+
+def _parse_published_to_dt(published: str) -> Optional[datetime.datetime]:
+    if not published:
+        return None
+    s = published.strip()
+    try:
+        # Many entries are ISO-ish from our publisher extractor
+        dt = datetime.datetime.fromisoformat(s.replace("Z", "+00:00"))
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=datetime.timezone.utc)
+        return dt.astimezone(datetime.timezone.utc)
+    except Exception:
+        pass
+    # Last-resort: try RFC-style
+    try:
+        dt2 = datetime.datetime.strptime(s[:25], "%a, %d %b %Y %H:%M:%S")
+        return dt2.replace(tzinfo=datetime.timezone.utc)
+    except Exception:
+        return None
+
+def _recency_boost(published: str) -> int:
+    dt = _parse_published_to_dt(published)
+    if not dt:
+        return 0
+    now = datetime.datetime.now(datetime.timezone.utc)
+    age_hours = max(0.0, (now - dt).total_seconds() / 3600.0)
+    # within 6h: strong boost, within 24h: moderate
+    if age_hours <= 6:
+        return 35
+    if age_hours <= 12:
+        return 20
+    if age_hours <= 24:
+        return 10
+    if age_hours <= 48:
+        return 4
+    return 0
+
+def _combined_story_score(item: Dict[str, str]) -> int:
+    title = item.get("title") or ""
+    summary = item.get("summary") or ""
+    published = item.get("published") or ""
+    return _numeric_score(title + " " + summary) + _virality_score(title, summary) + _recency_boost(published)
 
 def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
     if not text:
@@ -320,18 +394,22 @@ def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
 # NEWS INTEL (RSS)
 # ----------------------------
 GOOGLE_NEWS_RSS = [
+    # High-magnitude + numbers
     ("Numbers & Markets",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
     ("AI Money",
      "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
     ("Frontier Models",
-     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch%20OR%20benchmark)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
     ("AI Regulation",
-     "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+     "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright%20OR%20antitrust)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
     ("AI Security",
-     "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+     "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak%20OR%20breach%20OR%20ransomware)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
     ("AI in Work",
-     "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+     "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise%20OR%20layoffs)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    # Added: scandal/shock buckets that tend to generate virality
+    ("Shock & Scandal",
+     "https://news.google.com/rss/search?q=(AI%20OR%20OpenAI%20OR%20Anthropic%20OR%20Nvidia)%20(leak%20OR%20lawsuit%20OR%20ban%20OR%20crackdown%20OR%20whistleblower%20OR%20investigation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
 ]
 
 def _strip_html(s: str) -> str:
@@ -424,6 +502,11 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
         final_url = _resolve_final_url(url)
         r = requests.get(final_url, headers=headers, timeout=18)
         r.raise_for_status()
+
+        ctype = (r.headers.get("Content-Type") or "").lower()
+        if "text/html" not in ctype and "application/xhtml" not in ctype:
+            return ""
+
         html = r.text or ""
         soup = BeautifulSoup(html, "html.parser")
 
@@ -553,25 +636,44 @@ Article Preview:
     return enriched
 
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
+    """
+    Select stories optimized for:
+    - numeric density (stakes)
+    - virality cues (conflict/scandal/security)
+    - recency (last 48 hours, weighted)
+    - diversity (avoid 5 items all from one bucket)
+    """
     if not intel_items:
         return []
 
-    ranked = sorted(
-        intel_items,
-        key=lambda x: _numeric_score((x.get("title", "") or "") + " " + (x.get("summary", "") or "")),
-        reverse=True,
-    )
+    ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
+    candidates = ranked[:50]
 
-    candidates = ranked[:40]
+    # Lightweight diversity: prefer no more than 2 from same bucket in the initial pick
+    picked: List[Dict[str, str]] = []
+    bucket_counts: Dict[str, int] = {}
+    for x in candidates:
+        b = (x.get("bucket") or "").strip()
+        if bucket_counts.get(b, 0) >= 2:
+            continue
+        picked.append(x)
+        bucket_counts[b] = bucket_counts.get(b, 0) + 1
+        if len(picked) >= max(n * 3, 12):
+            break
+
+    if len(picked) < n:
+        picked = candidates[:max(n * 3, 12)]
+
     intel_compact = "\n".join(
         [
             f"- [{x.get('bucket','')}] {x.get('title','')} | {x.get('publisher','')} | {x.get('published','')} | {x.get('summary','')} | {x.get('link','')}"
-            for x in candidates
+            for x in picked
         ]
     )
 
     prompt = f"""
 Select the TOP {n} stories for a daily AI show that must feel urgent, emotional, and high-stakes.
+Preference: scandal/security/regulation/market shock when credible.
 
 Return ONLY valid JSON (no markdown), schema:
 {{
@@ -639,6 +741,7 @@ Candidate items:
                 }
             )
 
+    # Attach RSS summary if available
     for st in stories:
         match = next((x for x in intel_items if (x.get("link") or "").strip() == st["source_url"]), None)
         if match:
@@ -868,6 +971,11 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
             issues.append("Found non-labeled spoken line(s).")
             break
 
+    # Enforce Segment 2: NO RUFUS
+    if seg_num == 2:
+        if re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
+            issues.append("Segment 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
+
     wc = _word_count(seg_text)
     if wc < seg_words_min:
         issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
@@ -1072,6 +1180,12 @@ def validate_script(script: str) -> List[str]:
     for name in ("ALEX", "JAMIE", "RUFUS"):
         if not re.search(rf"^{name}\s*:", script, flags=re.IGNORECASE | re.MULTILINE):
             issues.append(f"Speaker missing: {name}")
+
+    # Segment 2 must not include Rufus
+    seg2_block = re.search(r"^###\s*SEGMENT\s*2\b(.*?)(^###\s*SEGMENT\s*3\b|\Z)", script,
+                           flags=re.IGNORECASE | re.MULTILINE | re.DOTALL)
+    if seg2_block and re.search(r"^RUFUS\s*:", seg2_block.group(1), flags=re.IGNORECASE | re.MULTILINE):
+        issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
 
     min_words, _, max_words = _script_targets()
     wc = _word_count(script)
@@ -1303,6 +1417,10 @@ def apply_speed_ffmpeg(in_path: Path, out_path: Path, speed: float):
     _run(cmd)
 
 def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
+    """
+    IMPORTANT: ffmpeg concat demuxer requires consistent formats/codecs.
+    Therefore, if STITCH_METHOD=ffmpeg, only pass MP3 inputs in file_list.
+    """
     concat_txt = out_path.parent / f"concat_{uuid.uuid4().hex}.txt"
     concat_txt.write_text("\n".join([f"file '{p.as_posix()}'" for p in file_list]), encoding="utf-8")
 
@@ -1359,12 +1477,64 @@ def run_marketing_pipeline():
             _safe_print("    → publishing social (PUBLISH_SOCIAL=true)")
             _run([sys.executable, str(pub)], fail_ok=True)
 
+def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> str:
+    tags: List[str] = ["#AI", "#TechNews"]
+    # pull from key_entities if present
+    ent: List[str] = []
+    for s in stories[:5]:
+        ke = s.get("key_entities")
+        if isinstance(ke, list):
+            ent.extend([str(x).strip() for x in ke if str(x).strip()])
+    # Also infer from headlines
+    for s in stories[:5]:
+        ent.extend(re.findall(r"\b[A-Z][A-Za-z0-9]+\b", (s.get("headline") or "")))
+
+    # normalize to hashtags
+    cleaned: List[str] = []
+    for e in ent:
+        e2 = re.sub(r"[^A-Za-z0-9]", "", e)
+        if not e2:
+            continue
+        if len(e2) < 3:
+            continue
+        # common mappings
+        low = e2.lower()
+        if low in ("openai", "nvidia", "anthropic", "microsoft", "google", "deepmind", "meta", "apple"):
+            cleaned.append("#" + e2.upper() if low in ("ai",) else "#" + e2[0].upper() + e2[1:])
+        elif low in ("eu", "ftc", "sec", "doj"):
+            cleaned.append("#" + e2.upper())
+        else:
+            # keep only a few generic entity tags
+            cleaned.append("#" + e2)
+
+    # prioritize major brands
+    priority = ["#OpenAI", "#Nvidia", "#Anthropic", "#Microsoft", "#Google", "#DeepMind", "#Meta", "#Apple",
+                "#Cybersecurity", "#AIRegulation", "#AIGovernance", "#TechLayoffs"]
+    out: List[str] = []
+    for p in priority:
+        if p in cleaned and p not in out:
+            out.append(p)
+    for t in cleaned:
+        if t not in out and t not in tags:
+            out.append(t)
+
+    final = tags + out
+    # de-dupe while preserving order
+    seen = set()
+    uniq = []
+    for t in final:
+        if t in seen:
+            continue
+        seen.add(t)
+        uniq.append(t)
+    return " ".join(uniq[:max_tags])
+
 def generate_marketing_pack(stories: List[Dict[str, str]], date_str: str, listen_url: str) -> Dict[str, str]:
     story_lines = "\n".join([f"- {s.get('headline','')} | {s.get('source_url','')}" for s in stories[:5]])
 
     prompt = f"""
 You are a direct-response growth writer for a DAILY AI show called "The AI Edge".
-Goal: drive a click TODAY.
+Goal: drive a click TODAY using the most viral, high-stakes framing that remains grounded.
 
 Return ONLY valid JSON (no markdown). Schema:
 {{
@@ -1374,7 +1544,9 @@ Return ONLY valid JSON (no markdown). Schema:
   "tweet2": "Tweet 2 text (<= 260 chars). Must include this exact link: {listen_url}",
   "yt_title": "YouTube title (<= 90 chars)",
   "yt_description": "YouTube description (<= 1200 chars) including {listen_url}",
-  "hashtags": "#AI #TechNews #OpenAI #Nvidia (keep <= 6 tags)"
+  "ig_caption": "Instagram caption (<= 500 chars) including {listen_url}",
+  "tiktok_caption": "TikTok caption (<= 220 chars) including {listen_url}",
+  "hashtags": "Space-separated hashtags. Keep <= 6 total tags. Must include #AI and #TechNews"
 }}
 
 Today: {date_str}
@@ -1384,27 +1556,31 @@ Top stories:
 Rules:
 - No corporate speak.
 - Hook must be specific and urgent.
+- Make it feel like consequences are imminent.
 - Avoid repeating the date in hook/title.
 """.strip()
 
-    raw = generate_text(prompt, temperature=0.45, max_tokens=900)
+    raw = generate_text(prompt, temperature=0.45, max_tokens=1100)
     j = _extract_json_object(raw)
 
     fallback_hook = (stories[0].get("headline") if stories else "AI JUST MOVED — HERE’S WHAT CHANGED")[:64]
+    fallback_tags = _hashtags_from_stories(stories, max_tags=6)
+
     out = {
         "hook": fallback_hook.upper(),
         "card_subhook": "WHAT BREAKS NEXT?",
         "tweet1": f"{fallback_hook}\n\nWhat’s the real consequence here?",
-        "tweet2": f"Full episode: {listen_url}\n\n#AI #TechNews",
+        "tweet2": f"Full episode: {listen_url}\n\n{fallback_tags}",
         "yt_title": f"{fallback_hook} | The AI Edge",
-        "yt_description": f"Listen on Spotify: {listen_url}\n\nTop stories:\n"
-        + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
-        "hashtags": "#AI #TechNews #OpenAI #Nvidia",
+        "yt_description": f"Listen: {listen_url}\n\nTop stories:\n" + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
+        "ig_caption": f"{fallback_hook}\n\nListen: {listen_url}\n\n{fallback_tags}",
+        "tiktok_caption": f"{fallback_hook} {listen_url} {fallback_tags}",
+        "hashtags": fallback_tags,
     }
 
     try:
         if j:
-            for k in out.keys():
+            for k in list(out.keys()):
                 if isinstance(j.get(k), str) and j[k].strip():
                     out[k] = j[k].strip()
 
@@ -1414,6 +1590,26 @@ Rules:
         out["tweet2"] = out["tweet2"][:260]
         out["yt_title"] = out["yt_title"][:90]
         out["yt_description"] = out["yt_description"][:1200]
+        out["ig_caption"] = out["ig_caption"][:500]
+        out["tiktok_caption"] = out["tiktok_caption"][:220]
+
+        # Enforce hashtags constraints
+        tags = out.get("hashtags", "")
+        tags_list = [t.strip() for t in tags.split() if t.strip().startswith("#")]
+        if "#AI" not in tags_list:
+            tags_list = ["#AI"] + tags_list
+        if "#TechNews" not in tags_list:
+            tags_list = ["#TechNews"] + tags_list
+        # de-dupe
+        seen = set()
+        uniq = []
+        for t in tags_list:
+            if t in seen:
+                continue
+            seen.add(t)
+            uniq.append(t)
+        out["hashtags"] = " ".join(uniq[:6])
+
         return out
     except Exception:
         return out
@@ -1528,7 +1724,7 @@ SCRIPT (for context; do not copy long chunks):
         top = (stories[0].get("headline") if stories else "AI BREAKING UPDATE").strip()
         m = NUMERIC_TOKEN_RE.search(story_block)
         num = m.group(0) if m else date_str
-        title = f"{top[:70]} — {num} — {date_str}"
+        title = f"{top[:70]} — {num}"
         title = title[:EPISODE_META_MAX_TITLE]
 
     return {"title": title, "description": desc}
@@ -1673,11 +1869,52 @@ def update_feed_xml(meta: Dict):
 # ----------------------------
 # MAIN PRODUCER
 # ----------------------------
+def _maybe_append_date(title: str, date_str: str) -> str:
+    t = (title or "").strip()
+    if not t:
+        return f"{RSS_SETTINGS['title']} — {date_str}"
+    if date_str in t:
+        return t[:EPISODE_META_MAX_TITLE]
+    # keep within limit
+    suffix = f" — {date_str}"
+    if len(t) + len(suffix) <= EPISODE_META_MAX_TITLE:
+        return t + suffix
+    return t[:EPISODE_META_MAX_TITLE]
+
+def _file_ok_for_feed(p: Path) -> bool:
+    try:
+        return p.exists() and p.stat().st_size >= MIN_MP3_BYTES_FEED
+    except Exception:
+        return False
+
 def produce_episode():
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg is required for stitching and JAMIE speed adjustment. Install it on runner/host.")
 
     today = datetime.date.today().isoformat()
+    final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
+
+    # Idempotency guard: avoid accidental double publishing
+    if final_mp3.exists() and _file_ok_for_feed(final_mp3) and not FORCE_REBUILD:
+        _safe_print(f"🛑 Today's episode already exists ({final_mp3.name}). Set FORCE_REBUILD=true to regenerate.")
+        # Rebuild feed from sidecars so the site stays consistent.
+        try:
+            final_audio = AudioSegment.from_mp3(final_mp3)
+            duration_seconds = int(len(final_audio) / 1000)
+        except Exception:
+            duration_seconds = 0
+
+        sidecar = _load_sidecar_meta_for_date(today)
+        meta = {
+            "date": today,
+            "title": sidecar.get("title") or f"{RSS_SETTINGS['title']} — {today}",
+            "listen_url": LISTEN_URL,
+            "audio_file": final_mp3.name,
+            "duration_seconds": duration_seconds,
+            "show_notes": sidecar.get("description") or f"LISTEN: {LISTEN_URL}",
+        }
+        update_feed_xml(meta)
+        return
 
     _safe_print(" >> 📰 GATHERING INTEL (RSS PRIMARY)...")
     intel = fetch_rss_items(max_per_feed=10)
@@ -1698,6 +1935,12 @@ def produce_episode():
     _safe_print(" >> ✍️ WRITING FULL EPISODE (25–30 min, 5 segments)...")
     script = generate_episode_script(stories, sponsors, today)
     script = enforce_episode_numeric_density(script, stories, today)
+    script = _sanitize_dialogue_only(script)
+
+    # Re-validate after any add-ons/modifications
+    issues = validate_script(script)
+    if issues:
+        raise RuntimeError("Script validation failed after numeric-density enforcement:\n" + "\n".join(issues))
 
     est = estimate_minutes_from_text(script)
     _safe_print(f"    Estimated minutes (text): ~{est:.1f}")
@@ -1722,9 +1965,13 @@ def produce_episode():
 
     concat_files: List[Path] = []
 
-    # Use WAV silence to avoid MP3 timestamp quirks during stitching
-    silence_path = run_tmp / "silence_150ms.wav"
-    AudioSegment.silent(duration=150).export(silence_path, format="wav")
+    # Silence assets: MP3 if ffmpeg concat is used; otherwise WAV is fine.
+    if STITCH_METHOD == "ffmpeg":
+        silence_path = run_tmp / "silence_150ms.mp3"
+        AudioSegment.silent(duration=150).export(silence_path, format="mp3", bitrate="192k")
+    else:
+        silence_path = run_tmp / "silence_150ms.wav"
+        AudioSegment.silent(duration=150).export(silence_path, format="wav")
 
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
@@ -1748,7 +1995,7 @@ def produce_episode():
             raw_seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
             tts_to_file(chunk, voice, raw_seg_path)
 
-            # Speed JAMIE to 1.05x
+            # Speed JAMIE to 1.05x (default)
             if speaker == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
                 sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
                 apply_speed_ffmpeg(raw_seg_path, sped_path, JAMIE_SPEED)
@@ -1765,7 +2012,6 @@ def produce_episode():
         concat_files.append(outro_path)
 
     _safe_print(f" >> 🎚️ STITCHING ({STITCH_METHOD})...")
-    final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
     stitch_audio(concat_files, final_mp3)
 
     final_audio = AudioSegment.from_mp3(final_mp3)
@@ -1773,11 +2019,13 @@ def produce_episode():
     minutes = duration_seconds / 60.0
     _safe_print(f" ✅ EPISODE COMPLETE: {final_mp3.name} ({minutes:.2f} minutes)")
 
+    # Release gate: do NOT market or publish if episode is out of bounds
     if minutes < MIN_MINUTES or minutes > MAX_MINUTES:
         raise RuntimeError(
             f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}."
         )
 
+    # Build marketing + SEO meta
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
 
     seo = _generate_episode_seo_meta(
@@ -1789,12 +2037,13 @@ def produce_episode():
     )
 
     # Final title + show-notes used for RSS + sidecar + metadata.json
-    feed_title = f"{seo['title']} — {today}"
+    feed_title = _maybe_append_date(seo["title"], today)
     show_notes = seo["description"]
 
-    # Persist catalog-sidecar meta so future feed rebuilds can upgrade older items too
+    # Persist catalog-sidecar meta so future feed rebuilds use stable metadata
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
 
+    # Multi-platform text artifacts
     viral_caption = "\n".join([
         pack.get("tweet1", "").strip(),
         "",
@@ -1805,6 +2054,19 @@ def produce_episode():
 
     (BASE_DIR / "viral_caption.txt").write_text(viral_caption, encoding="utf-8")
     (BASE_DIR / "marketing.txt").write_text(show_notes, encoding="utf-8")
+    (BASE_DIR / "marketing_pack.json").write_text(json.dumps(pack, indent=2, ensure_ascii=False), encoding="utf-8")
+
+    platform_pack = {
+        "date": today,
+        "listen_url": LISTEN_URL,
+        "hook": pack.get("hook", ""),
+        "yt_title": pack.get("yt_title", ""),
+        "yt_description": pack.get("yt_description", ""),
+        "ig_caption": pack.get("ig_caption", ""),
+        "tiktok_caption": pack.get("tiktok_caption", ""),
+        "hashtags": pack.get("hashtags", ""),
+    }
+    (BASE_DIR / "platform_pack.json").write_text(json.dumps(platform_pack, indent=2, ensure_ascii=False), encoding="utf-8")
 
     meta = {
         "date": today,
@@ -1818,12 +2080,12 @@ def produce_episode():
         "duration_seconds": duration_seconds,
         "show_notes": show_notes,
     }
-    (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
+    (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     # Rebuild the entire feed from local mp3s + sidecars (catalog-wide truth)
     update_feed_xml(meta)
 
-    # Optional downstream marketing assets
+    # Optional downstream marketing assets (runs only after release gate + feed rebuild)
     run_marketing_pipeline()
 
     if CLEANUP_TEMP:
