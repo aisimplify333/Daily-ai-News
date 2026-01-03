@@ -1,20 +1,19 @@
-# update_feed.py
+import re
 import datetime
 from pathlib import Path
-import re
 import xml.etree.ElementTree as ET
-from typing import Optional, List
+from urllib.parse import quote
 
 FEED_XML_PATH = Path("feed.xml")
 EPISODE_DIR = Path("episode_audio")
 
+AUDIO_BASE_URL = "https://aisimplify333.github.io/Daily-ai-News/episode_audio/"
+COVER_URL = "https://aisimplify333.github.io/Daily-ai-News/cover.png"
 SITE_URL = "https://aisimplify333.github.io/Daily-ai-News/"
-AUDIO_BASE_URL = "https://aisimplify333.github.io/Daily-ai-News/episode_audio/".rstrip("/") + "/"
-COVER_URL = "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png"
 
 RSS_SETTINGS = {
     "title": "The AI Edge",
-    "link": "https://github.com/aisimplify333/Daily-ai-News",
+    "link": SITE_URL,
     "description": "Daily AI News Drama: raw, human, high-stakes conversations about the future.",
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com",
@@ -24,34 +23,45 @@ RSS_SETTINGS = {
 }
 
 ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-ET.register_namespace("itunes", ITUNES_NS)  # IMPORTANT: no manual xmlns:itunes anywhere
+ATOM_NS = "http://www.w3.org/2005/Atom"
+ET.register_namespace("itunes", ITUNES_NS)
+ET.register_namespace("atom", ATOM_NS)
+
+STRICT_RE = re.compile(r"^podcast_(\d{4}-\d{2}-\d{2})\.mp3$")
 
 def q(tag: str) -> str:
     return f"{{{ITUNES_NS}}}{tag}"
 
-def _rfc2822(dt: datetime.datetime) -> str:
+def rfc2822_from_date(datestr: str) -> str:
+    try:
+        dt = datetime.datetime.strptime(datestr, "%Y-%m-%d").replace(
+            hour=12, minute=0, second=0, tzinfo=datetime.timezone.utc
+        )
+    except Exception:
+        dt = datetime.datetime.now(datetime.timezone.utc)
     return dt.strftime("%a, %d %b %Y %H:%M:%S -0000")
 
-def _date_from_filename(name: str) -> Optional[str]:
-    m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", name)
-    return m.group(1) if m else None
-
-def _is_real_episode_file(p: Path) -> bool:
-    n = p.name.lower()
-    return n.startswith("podcast_") and n.endswith(".mp3") and "_seg_" not in n
+def safe_url(filename: str) -> str:
+    return AUDIO_BASE_URL.rstrip("/") + "/" + quote(filename)
 
 def build_channel(channel: ET.Element):
     ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
     ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
     ET.SubElement(channel, "link").text = RSS_SETTINGS["link"]
     ET.SubElement(channel, "language").text = "en-us"
-    ET.SubElement(channel, "lastBuildDate").text = _rfc2822(datetime.datetime.now(datetime.timezone.utc))
+    ET.SubElement(channel, "lastBuildDate").text = rfc2822_from_date(datetime.date.today().isoformat())
 
-    ET.SubElement(channel, q("author")).text = RSS_SETTINGS["author"]
-    ET.SubElement(channel, q("explicit")).text = RSS_SETTINGS["explicit"]
+    atom_link = ET.SubElement(channel, f"{{{ATOM_NS}}}link")
+    atom_link.set("href", SITE_URL.rstrip("/") + "/feed.xml")
+    atom_link.set("rel", "self")
+    atom_link.set("type", "application/rss+xml")
 
     cat = ET.SubElement(channel, q("category"))
     cat.set("text", RSS_SETTINGS["category"])
+
+    ET.SubElement(channel, q("explicit")).text = RSS_SETTINGS["explicit"]
+    ET.SubElement(channel, q("author")).text = RSS_SETTINGS["author"]
+    ET.SubElement(channel, q("type")).text = "episodic"
 
     img = ET.SubElement(channel, q("image"))
     img.set("href", RSS_SETTINGS["image"])
@@ -60,65 +70,60 @@ def build_channel(channel: ET.Element):
     ET.SubElement(owner, q("name")).text = RSS_SETTINGS["author"]
     ET.SubElement(owner, q("email")).text = RSS_SETTINGS["email"]
 
-def make_item(title: str, description: str, mp3_filename: str, length_bytes: int, pubdate_rfc2822: str) -> ET.Element:
+def make_item(title: str, description: str, mp3_filename: str, length_bytes: int, pubdate: str, duration_seconds: int):
     item = ET.Element("item")
     ET.SubElement(item, "title").text = title
     ET.SubElement(item, "description").text = (description or "")[:6000]
 
-    audio_url = AUDIO_BASE_URL + mp3_filename
-
-    guid = ET.SubElement(item, "guid")
-    guid.set("isPermaLink", "false")
-    guid.text = audio_url
-
-    ET.SubElement(item, "pubDate").text = pubdate_rfc2822
+    url = safe_url(mp3_filename)
 
     enc = ET.SubElement(item, "enclosure")
-    enc.set("url", audio_url)
+    enc.set("url", url)
     enc.set("length", str(int(length_bytes)))
     enc.set("type", "audio/mpeg")
 
-    # Optional but fine:
-    # dur = ET.SubElement(item, q("duration"))
-    # dur.text = ""
+    guid = ET.SubElement(item, "guid")
+    guid.set("isPermaLink", "false")
+    guid.text = url
 
+    ET.SubElement(item, "pubDate").text = pubdate
+
+    dur = ET.SubElement(item, q("duration"))
+    if duration_seconds:
+        dur.text = str(int(duration_seconds))
+
+    ET.SubElement(item, q("episodeType")).text = "full"
+
+    ep_img = ET.SubElement(item, q("image"))
+    ep_img.set("href", RSS_SETTINGS["image"])
     return item
 
-def rebuild_feed(limit: int = 60):
-    mp3s: List[Path] = sorted(
-        [p for p in EPISODE_DIR.glob("podcast_*.mp3") if _is_real_episode_file(p)],
-        key=lambda p: p.name,
-        reverse=True,
-    )
+def rebuild_feed():
+    mp3s = []
+    for p in sorted(EPISODE_DIR.glob("podcast_*.mp3"), key=lambda x: x.name, reverse=True):
+        m = STRICT_RE.match(p.name)
+        if not m:
+            continue
+        mp3s.append((p, m.group(1)))
 
-    rss = ET.Element("rss", {"version": "2.0"})  # DO NOT set xmlns:itunes here
+    rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
     build_channel(channel)
 
-    for mp3 in mp3s[:limit]:
-        datestr = _date_from_filename(mp3.name) or datetime.date.today().isoformat()
-        try:
-            dt = datetime.datetime.strptime(datestr, "%Y-%m-%d").replace(
-                hour=12, minute=0, second=0, tzinfo=datetime.timezone.utc
-            )
-        except Exception:
-            dt = datetime.datetime.now(datetime.timezone.utc)
-
-        title = f"{RSS_SETTINGS['title']} — {datestr}"
-        desc = f"Listen: {SITE_URL}listen/"
-
+    for p, datestr in mp3s:
         channel.append(
             make_item(
-                title=title,
-                description=desc,
-                mp3_filename=mp3.name,
-                length_bytes=mp3.stat().st_size,
-                pubdate_rfc2822=_rfc2822(dt),
+                title=f"{RSS_SETTINGS['title']} — {datestr}",
+                description=f"Listen: {SITE_URL}",
+                mp3_filename=p.name,
+                length_bytes=p.stat().st_size,
+                pubdate=rfc2822_from_date(datestr),
+                duration_seconds=0,
             )
         )
 
     ET.ElementTree(rss).write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
-    print("✅ feed.xml rebuilt cleanly (itunes namespace OK).")
+    print(f"✅ feed.xml rebuilt cleanly ({len(mp3s)} strict episodes).")
 
 if __name__ == "__main__":
     rebuild_feed()
