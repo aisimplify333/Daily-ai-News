@@ -1347,8 +1347,8 @@ def update_feed_xml(meta: Dict):
     import xml.etree.ElementTree as ET
 
     ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
-    # Register the prefix ONCE. Do NOT also manually set xmlns:itunes on the root element.
     ET.register_namespace("itunes", ITUNES_NS)
+    rss = ET.Element("rss", {"version": "2.0"})
 
     def is_segment_item(item_el: ET.Element) -> bool:
         t = (item_el.findtext("title") or "").strip().lower()
