@@ -1,35 +1,51 @@
-# -------------------------
+# =========================
 # Python / tooling
-# -------------------------
+# =========================
 __pycache__/
 *.py[cod]
 *.pyd
 *.log
 
-# Local env / secrets
+# Virtual envs / secrets
 .env
 .venv/
 venv/
+
+# Common dev tool caches
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+
+# IDE / editor
+.vscode/
+.idea/
 
 # OS junk
 .DS_Store
 Thumbs.db
 
-# -------------------------
-# Runtime / temp outputs (should NEVER be committed)
-# -------------------------
+# =========================
+# Runtime / temp outputs (NEVER commit)
+# =========================
 _tmp_audio/
+tmp_audio/
 concat_*.txt
 silence_*.wav
 temp_*.mp3
 temp_*.wav
+*.tmp
+*.bak
 
-# If you generate per-run scripts locally (optional)
-# script_*.txt
+# =========================
+# Generated episode artifacts (you said you don't need these after SEO)
+# =========================
+script_*.txt
 
-# -------------------------
-# Generated marketing assets (keep repo lean)
-# -------------------------
+# =========================
+# Generated marketing outputs (keep repo lean)
+# =========================
 social_clips/
 social_card*.jpg
 social_surge*.gif
@@ -40,3 +56,5 @@ episode_metadata.json
 
 # If you do NOT want the main mp4 committed:
 social_clip.mp4
+# If you ever want to commit it intentionally, run:
+#   git add -f social_clip.mp4
