@@ -50,6 +50,9 @@ jobs:
           TWITTER_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
         run: |
           python run_broadcast.py
+      - name: Rebuild RSS cleanly
+        run: |
+          python update_feed.py
 
            # 5. COMMIT ARTIFACTS (HARDENED)
       - name: Commit and Push
