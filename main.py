@@ -159,6 +159,13 @@ def _extract_numeric_sentences(text: str, max_items: int = 6) -> list[str]:
         seen.add(key)
         out.append(h)
     return out[:max_items]
+    
+# ----------------------------
+# FEED + SEO METADATA (catalog-wide)
+# ----------------------------
+MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))  # skip broken MP3s in feed
+EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
+EPISODE_META_MAX_DESC = int(os.getenv("EPISODE_META_MAX_DESC", "4500"))
 
 # ----------------------------
 # SAFE PRINT
@@ -1192,6 +1199,56 @@ def validate_script(script: str) -> List[str]:
 
     return issues
 
+def enforce_episode_numeric_density(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
+    """
+    If the full script numeric density is below MIN_DIGITS_PER_EPISODE, we inject a short
+    data-heavy add-on into SEGMENT 4 using story data_points verbatim.
+    """
+    if _digit_count(script) >= MIN_DIGITS_PER_EPISODE:
+        return script
+
+    deficit = MIN_DIGITS_PER_EPISODE - _digit_count(script)
+    add_words = min(900, max(320, deficit * 6))
+
+    story_block = _story_block(stories)
+
+    prompt = f"""
+Write a DATA-DUMP add-on for SEGMENT 4 of "The AI Edge" ({date_str}).
+
+NON-NEGOTIABLE:
+- Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
+- Use story DATA POINTS verbatim (numbers/dates/amounts must appear exactly).
+- Add ~{add_words} words.
+- MUST include at least 12 distinct numeric tokens overall ($, %, years, quantities, etc).
+- Keep it intense: fear/greed, consequences, and "what this means tomorrow".
+
+STORY BLOCK (use the Data points explicitly):
+{story_block}
+""".strip()
+
+    addon = generate_text(prompt, temperature=0.55, max_tokens=1800)
+    addon = _sanitize_dialogue_only(addon)
+
+    # Insert right before SEGMENT 5
+    m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    if not m:
+        # If missing (shouldn't happen), just append
+        script2 = (script.rstrip() + "\n" + addon.strip()).strip()
+    else:
+        script2 = (script[:m.start()].rstrip() + "\n" + addon.strip() + "\n\n" + script[m.start():].lstrip()).strip()
+
+    # Re-trim if needed
+    min_words, _, max_words = _script_targets()
+    if _word_count(script2) > max_words:
+        script2 = _trim_script_to_max_words(script2, max_words=max_words)
+
+    script2 = _sanitize_dialogue_only(script2)
+
+    # Final check
+    if _digit_count(script2) < MIN_DIGITS_PER_EPISODE:
+        _safe_print(f"    ⚠️ Still low numeric density after booster (digits={_digit_count(script2)}). Consider raising previews/max_per_feed.")
+    return script2
+
 def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
     """
     UPDATED: segmented generation + sanitize + deterministic trim/pad.
@@ -1500,33 +1557,38 @@ def update_feed_xml(meta: Dict):
     ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
     ATOM_NS = "http://www.w3.org/2005/Atom"
 
-    # Register prefixes ONCE; never manually set xmlns:itunes on root
     ET.register_namespace("itunes", ITUNES_NS)
     ET.register_namespace("atom", ATOM_NS)
 
     def rfc2822_from_date(datestr: str) -> str:
         try:
-            dt = datetime.datetime.strptime(datestr, "%Y-%m-%d")
-            dt = dt.replace(hour=12, minute=0, second=0, tzinfo=datetime.timezone.utc)
+            dtx = datetime.datetime.strptime(datestr, "%Y-%m-%d")
+            dtx = dtx.replace(hour=12, minute=0, second=0, tzinfo=datetime.timezone.utc)
         except Exception:
-            dt = datetime.datetime.now(datetime.timezone.utc)
-        return dt.strftime("%a, %d %b %Y %H:%M:%S -0000")
+            dtx = datetime.datetime.now(datetime.timezone.utc)
+        return dtx.strftime("%a, %d %b %Y %H:%M:%S -0000")
 
     def rfc2822_now() -> str:
-        dt = datetime.datetime.now(datetime.timezone.utc)
-        return dt.strftime("%a, %d %b %Y %H:%M:%S -0000")
+        dtx = datetime.datetime.now(datetime.timezone.utc)
+        return dtx.strftime("%a, %d %b %Y %H:%M:%S -0000")
+
+    def safe_url_join(base: str, filename: str) -> str:
+        return base.rstrip("/") + "/" + quote(filename)
 
     def is_valid_episode_filename(name: str) -> bool:
         return bool(STRICT_EPISODE_FILENAME_RE.match(name or ""))
 
-    def safe_url_join(base: str, filename: str) -> str:
-        # Avoid spaces/() issues by encoding the filename portion
-        return base.rstrip("/") + "/" + quote(filename)
+    def file_ok_for_feed(p: Path) -> bool:
+        try:
+            return p.exists() and p.stat().st_size >= MIN_MP3_BYTES_FEED
+        except Exception:
+            return False
 
     def make_item(title: str, description: str, audio_filename: str, pubdate_rfc2822: str, duration_seconds: int = 0) -> ET.Element:
         item = ET.Element("item")
-        ET.SubElement(item, "title").text = title
+        ET.SubElement(item, "title").text = title[:EPISODE_META_MAX_TITLE]
         ET.SubElement(item, "description").text = (description or "")[:8000]
+        ET.SubElement(item, f"{{{ITUNES_NS}}}summary").text = (description or "")[:8000]
 
         audio_url = safe_url_join(AUDIO_BASE_URL, audio_filename)
 
@@ -1550,20 +1612,22 @@ def update_feed_xml(meta: Dict):
             dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
             dur.text = str(int(duration_seconds))
 
+        # Episode image
+        ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
+        ep_img.set("href", RSS_SETTINGS["image"])
+
         ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
         return item
 
-    # Root WITHOUT manual xmlns attributes
     rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
 
     ET.SubElement(channel, "title").text = RSS_SETTINGS["title"]
     ET.SubElement(channel, "description").text = RSS_SETTINGS["description"]
-    ET.SubElement(channel, "link").text = LISTEN_URL.rstrip("/") + "/"  # better than GitHub repo for aggregators
+    ET.SubElement(channel, "link").text = LISTEN_URL.rstrip("/") + "/"
     ET.SubElement(channel, "language").text = "en-us"
     ET.SubElement(channel, "lastBuildDate").text = rfc2822_now()
 
-    # Atom self link helps many validators
     atom_link = ET.SubElement(channel, f"{{{ATOM_NS}}}link")
     atom_link.set("href", (LISTEN_URL.rstrip("/") + "/feed.xml").replace("/listen/feed.xml", "/feed.xml"))
     atom_link.set("rel", "self")
@@ -1583,86 +1647,45 @@ def update_feed_xml(meta: Dict):
     ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = RSS_SETTINGS["author"]
     ET.SubElement(owner, f"{{{ITUNES_NS}}}email").text = RSS_SETTINGS["email"]
 
-    # Load existing items (and filter out junk)
-    existing_episode_items: List[ET.Element] = []
-    if FEED_XML_PATH.exists():
-        try:
-            old_tree = ET.parse(FEED_XML_PATH)
-            old_rss = old_tree.getroot()
-            old_channel = old_rss.find("channel")
-            if old_channel is not None:
-                for it in old_channel.findall("item"):
-                    enc = it.find("enclosure")
-                    if enc is None:
-                        continue
-                    url = (enc.get("url") or "")
-                    # Keep only strict podcast_YYYY-MM-DD.mp3
-                    if not re.search(r"podcast_\d{4}-\d{2}-\d{2}\.mp3", url):
-                        continue
-                    existing_episode_items.append(it)
-        except Exception:
-            existing_episode_items = []
+    # Build items from local MP3s (catalog-wide truth)
+    mp3s = sorted(AUDIO_DIR.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
 
-    audio_file = meta["audio_file"]
-    if not is_valid_episode_filename(audio_file):
-        raise RuntimeError(f"Refusing to publish invalid episode filename: {audio_file}")
-
-    show_notes = meta.get("show_notes") or ""
-    duration_seconds = int(meta.get("duration_seconds") or 0)
-    date_str = meta.get("date") or datetime.date.today().isoformat()
-
-    new_item = make_item(
-        title=meta["title"],
-        description=show_notes,
-        audio_filename=audio_file,
-        pubdate_rfc2822=rfc2822_from_date(date_str),
-        duration_seconds=duration_seconds,
-    )
-
-    merged: List[ET.Element] = [new_item]
-    seen_urls = set()
-    # register the new enclosure url
-    new_enc = new_item.find("enclosure")
-    if new_enc is not None and new_enc.get("url"):
-        seen_urls.add(new_enc.get("url"))
-
-    # Add prior valid items
-    for old in existing_episode_items:
-        enc = old.find("enclosure")
-        if enc is None:
-            continue
-        url = enc.get("url") or ""
-        if not url or url in seen_urls:
-            continue
-        seen_urls.add(url)
-        merged.append(old)
-
-    # Also add any local files that match strict naming (no spaces/duplicates)
-    audio_files = sorted(AUDIO_DIR.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
-    for mp3 in audio_files:
+    items_added = 0
+    for mp3 in mp3s:
+        if items_added >= KEEP_LAST_EPISODES:
+            break
         if not is_valid_episode_filename(mp3.name):
             continue
-        url = safe_url_join(AUDIO_BASE_URL, mp3.name)
-        if url in seen_urls:
+        if not file_ok_for_feed(mp3):
             continue
-        d = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", mp3.name).group(1)
-        merged.append(
+
+        date_str = _date_from_episode_filename(mp3.name) or datetime.date.today().isoformat()
+        sidecar = _load_sidecar_meta_for_date(date_str)
+
+        title = (sidecar.get("title") or f"{RSS_SETTINGS['title']} — {date_str}").strip()
+        desc = (sidecar.get("description") or f"Listen: {LISTEN_URL}").strip()
+
+        # If this is today’s episode, prefer meta passed in (freshest)
+        if meta.get("audio_file") == mp3.name:
+            title = (meta.get("title") or title).strip()
+            desc = (meta.get("show_notes") or desc).strip()
+            dur = int(meta.get("duration_seconds") or 0)
+        else:
+            dur = 0
+
+        channel.append(
             make_item(
-                title=f"{RSS_SETTINGS['title']} — {d}",
-                description=f"Listen: {LISTEN_URL}",
+                title=title,
+                description=desc,
                 audio_filename=mp3.name,
-                pubdate_rfc2822=rfc2822_from_date(d),
-                duration_seconds=0,
+                pubdate_rfc2822=rfc2822_from_date(date_str),
+                duration_seconds=dur,
             )
         )
-        seen_urls.add(url)
-
-    merged = merged[:KEEP_LAST_EPISODES]
-    for it in merged:
-        channel.append(it)
+        items_added += 1
 
     ET.ElementTree(rss).write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
-    _safe_print(f"✅ feed.xml updated with {len(merged)} episode items (strict filenames, valid namespaces)")
+    _safe_print(f"✅ feed.xml rebuilt from local episodes: {items_added} items (skipped broken files < {MIN_MP3_BYTES_FEED} bytes)")
 
 # ----------------------------
 # MAIN PRODUCER
@@ -1688,6 +1711,7 @@ def produce_episode():
 
     _safe_print(" >> ✍️ WRITING FULL EPISODE (25–30 min, 5 segments)...")
     script = generate_episode_script(stories, sponsors, today)
+    script = enforce_episode_numeric_density(script, stories, today)
 
     est = estimate_minutes_from_text(script)
     _safe_print(f"    Estimated minutes (text): ~{est:.1f}")
@@ -1718,20 +1742,20 @@ def produce_episode():
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
 
-    inserted_intro = False
+      inserted_intro = False
 
-for speaker, text in dialogue_merged:
-    if speaker == "MUSIC":
-        # FIRST [MUSIC] marker = insert your intro bed there (after the cold open)
-        if INTRO_PATH.exists() and not inserted_intro:
-            intro = AudioSegment.from_file(INTRO_PATH)[:15000].fade_out(1200)
-            intro_path = run_tmp / "intro_trim.mp3"
-            intro.export(intro_path, format="mp3", bitrate="192k")
-            concat_files.append(intro_path)
-            inserted_intro = True
-        else:
-            concat_files.append(silence_path)
-        continue
+    for speaker, text in dialogue_merged:
+        if speaker == "MUSIC":
+            # FIRST [MUSIC] marker = insert your intro bed there (after the cold open)
+            if INTRO_PATH.exists() and not inserted_intro:
+                intro = AudioSegment.from_file(INTRO_PATH)[:15000].fade_out(1200)
+                intro_path = run_tmp / "intro_trim.mp3"
+                intro.export(intro_path, format="mp3", bitrate="192k")
+                concat_files.append(intro_path)
+                inserted_intro = True
+            else:
+                concat_files.append(silence_path)
+            continue
 
         voice = VOICE_MAP.get(speaker, "onyx")
         for chunk in chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS):
@@ -1740,6 +1764,7 @@ for speaker, text in dialogue_merged:
             tts_to_file(chunk, voice, seg_path)
             concat_files.append(seg_path)
             concat_files.append(silence_path)
+
 
     if OUTRO_PATH.exists():
         outro = AudioSegment.from_file(OUTRO_PATH)[:12000].fade_in(800).fade_out(1200)
@@ -1762,6 +1787,22 @@ for speaker, text in dialogue_merged:
         )
 
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
+
+    # SEO title + professional show notes (RSS item metadata)
+    seo = _generate_episode_seo_meta(
+        date_str=today,
+        stories=stories,
+        listen_url=LISTEN_URL,
+        script_text=script,
+        marketing_pack=pack,
+    )
+
+    feed_title = f"{seo['title']} — {today}"
+    show_notes = seo["description"]
+
+    # Persist catalog-sidecar meta so future feed rebuilds can upgrade older items too
+    _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
+
 
     card_headline = pack["hook"]
     feed_title = f"{pack['hook']} — {today}"
@@ -1799,11 +1840,152 @@ for speaker, text in dialogue_merged:
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2), encoding="utf-8")
 
+    def _date_from_episode_filename(name: str) -> Optional[str]:
+    m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", name or "")
+    return m.group(1) if m else None
+
+def _sidecar_meta_path_for_date(date_str: str) -> Path:
+    return AUDIO_DIR / f"podcast_{date_str}.json"
+
+def _load_sidecar_meta_for_date(date_str: str) -> Dict[str, str]:
+    p = _sidecar_meta_path_for_date(date_str)
+    if not p.exists():
+        return {}
+    try:
+        j = json.loads(p.read_text(encoding="utf-8"))
+        return j if isinstance(j, dict) else {}
+    except Exception:
+        return {}
+
+def _write_sidecar_meta_for_date(date_str: str, title: str, description: str) -> Path:
+    p = _sidecar_meta_path_for_date(date_str)
+    payload = {"title": (title or "").strip(), "description": (description or "").strip()}
+    p.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return p
+
+def _build_show_notes_deterministic(
+    date_str: str,
+    stories: List[Dict[str, str]],
+    listen_url: str,
+    marketing_pack: Optional[Dict[str, str]] = None,
+) -> str:
+    hook = (marketing_pack or {}).get("hook", "").strip()
+    if not hook:
+        hook = (stories[0].get("headline", "") if stories else "TODAY’S AI SHIFT")[:64].upper()
+
+    lines = []
+    lines.append(f"{hook}")
+    lines.append("")
+    lines.append("TODAY’S LINEUP")
+    for s in stories[:5]:
+        pub = (s.get("publisher") or "").strip()
+        head = (s.get("headline") or "").strip()
+        url = (s.get("source_url") or "").strip()
+        if pub:
+            lines.append(f"- {head} ({pub})")
+        else:
+            lines.append(f"- {head}")
+        if url:
+            lines.append(f"  Source: {url}")
+
+    lines.append("")
+    lines.append("KEY NUMBERS & DATA POINTS")
+    for i, s in enumerate(stories[:5], start=1):
+        head = (s.get("headline") or "").strip()
+        lines.append(f"{i}) {head}")
+        dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
+        dp = [str(x).strip() for x in dp if str(x).strip()]
+        if not dp:
+            dp = ["No explicit figures in snippet."]
+        for b in dp[:6]:
+            lines.append(f"   • {b}")
+
+    lines.append("")
+    lines.append(f"LISTEN: {listen_url}")
+    lines.append("")
+    lines.append("NOTE: This episode discusses publicly reported information; details can change quickly.")
+    return "\n".join(lines).strip()
+    
     update_feed_xml(meta)
     run_marketing_pipeline()
 
     if CLEANUP_TEMP:
         shutil.rmtree(run_tmp, ignore_errors=True)
+
+def _generate_episode_seo_meta(
+    date_str: str,
+    stories: List[Dict[str, str]],
+    listen_url: str,
+    script_text: str,
+    marketing_pack: Optional[Dict[str, str]] = None,
+) -> Dict[str, str]:
+    """
+    Produces (title, description) for Spotify/Apple consumption from RSS item metadata.
+    Hard-validates numeric density; falls back deterministically if weak.
+    """
+    story_block = _story_block(stories)
+    hook = (marketing_pack or {}).get("hook", "").strip()
+
+    prompt = f"""
+You are writing SEO metadata for a daily AI podcast episode.
+
+Return ONLY valid JSON (no markdown):
+{{
+  "title": "SEO title <= {EPISODE_META_MAX_TITLE} chars. Must be punchy and specific. Include at least ONE number/date/$/% from the story block if available.",
+  "description": "Professional show notes <= {EPISODE_META_MAX_DESC} chars. Must include sections: TODAY’S LINEUP, KEY NUMBERS, SOURCES, LISTEN. Use the story data_points verbatim wherever possible. Do NOT invent numbers."
+}}
+
+Episode date: {date_str}
+Listen URL: {listen_url}
+Hook (if useful): {hook}
+
+TODAY'S STORIES (use these facts; do not invent):
+{story_block}
+
+SCRIPT (for context; do not copy long chunks):
+{script_text[:1800]}
+""".strip()
+
+    raw = generate_text(prompt, temperature=0.25, max_tokens=1200)
+    j = _extract_json_object(raw) or {}
+
+    title = (j.get("title") or "").strip()
+    desc = (j.get("description") or "").strip()
+
+    # Hard validation
+    def ok_title(t: str) -> bool:
+        if not t:
+            return False
+        if len(t) > EPISODE_META_MAX_TITLE:
+            return False
+        # Prefer at least one numeric token
+        return bool(NUMERIC_TOKEN_RE.search(t)) or bool(re.search(r"\d", t))
+
+    def ok_desc(d: str) -> bool:
+        if not d:
+            return False
+        if len(d) > EPISODE_META_MAX_DESC:
+            return False
+        must = ["TODAY", "KEY", "SOURCE", "LISTEN"]
+        if sum(1 for m in must if m.lower() in d.lower()) < 3:
+            return False
+        # Must contain meaningful numeric density
+        return _digit_count(d) >= 35
+
+    if not ok_desc(desc):
+        desc = _build_show_notes_deterministic(date_str, stories, listen_url, marketing_pack=marketing_pack)
+        desc = desc[:EPISODE_META_MAX_DESC]
+
+    if not ok_title(title):
+        # Deterministic punchy title using top stories + any visible numbers
+        top = (stories[0].get("headline") if stories else "AI BREAKING UPDATE").strip()
+        # pull a number token from the story block if present
+        m = NUMERIC_TOKEN_RE.search(story_block)
+        num = m.group(0) if m else date_str
+        title = f"{top[:70]} — {num} — {date_str}"
+        title = title[:EPISODE_META_MAX_TITLE]
+
+    return {"title": title, "description": desc}
 
 if __name__ == "__main__":
     produce_episode()
