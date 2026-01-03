@@ -1,7 +1,42 @@
-# generated outputs
-social_card.jpg
-social_clips/
+# -------------------------
+# Python / tooling
+# -------------------------
+__pycache__/
+*.py[cod]
+*.pyd
+*.log
 
-# allow committing the main clip if desired
+# Local env / secrets
+.env
+.venv/
+venv/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Runtime / temp outputs (should NEVER be committed)
+# -------------------------
+_tmp_audio/
+concat_*.txt
+silence_*.wav
+temp_*.mp3
+temp_*.wav
+
+# If you generate per-run scripts locally (optional)
+# script_*.txt
+
+# -------------------------
+# Generated marketing assets (keep repo lean)
+# -------------------------
+social_clips/
+social_card*.jpg
+social_surge*.gif
+viral_caption.txt
+marketing.txt
+marketing_pack.json
+episode_metadata.json
+
+# If you do NOT want the main mp4 committed:
 social_clip.mp4
-!social_clip.mp4
