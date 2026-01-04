@@ -1005,9 +1005,10 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
             break
 
     # Enforce Segment 2: NO RUFUS
+        # Segment-specific rule: Segment 2 must be ONLY ALEX + JAMIE
     if seg_num == 2:
         if re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
-            issues.append("Segment 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
+            issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
 
     wc = _word_count(seg_text)
     if wc < seg_words_min:
@@ -1035,7 +1036,20 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
 
     return issues
 
-def _segment_repair_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, issues: List[str], seg_text: str) -> str:
+def _segment_repair_prompt(
+    seg_num: int,
+    seg_words_min: int,
+    seg_words_target: int,
+    issues: List[str],
+    seg_text: str
+) -> str:
+    seg_specific = ""
+    if seg_num == 2:
+        seg_specific = (
+            "- SEGMENT 2 MUST contain ONLY ALEX and JAMIE lines.\n"
+            "- Delete ANY RUFUS lines and do NOT reintroduce RUFUS.\n"
+        )
+
     return f"""
 You are repairing ONLY {_segment_header(seg_num)} for "The AI Edge".
 
@@ -1046,7 +1060,7 @@ NON-NEGOTIABLE:
 - First line MUST be exactly "{_segment_header(seg_num)}"
 - Output MUST be dialogue lines only with EXACT labels: ALEX:, JAMIE:, RUFUS:
 - Every spoken line MUST start with one of those labels.
-- Add MORE back-and-forth; do NOT compress.
+{seg_specific}- Add MORE back-and-forth; do NOT compress.
 - Keep lines SHORT (1–2 sentences) to increase turn count.
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target}).
 
@@ -1065,8 +1079,14 @@ def _generate_segment(
     prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
     seg_text = ""
 
+    allowed = {"ALEX", "JAMIE"} if seg_num == 2 else None
+
     for attempt in range(1, SEGMENT_ATTEMPTS + 1):
-        seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
+        raw = generate_text(prompt, temperature=0.75, max_tokens=2600)
+
+        # Sanitize early; for Segment 2, actively filter to ALEX/JAMIE only
+        seg_text = _sanitize_dialogue_only(raw, allowed_speakers=allowed)
+
         wc = _word_count(seg_text)
         issues = _segment_validate(seg_text, seg_num, seg_words_min)
         _safe_print(f"    ✍️ Segment {seg_num} attempt {attempt}/{SEGMENT_ATTEMPTS} (min {seg_words_min}): {wc} words")
@@ -1078,7 +1098,7 @@ def _generate_segment(
 
     return seg_text.strip()
 
-def _sanitize_dialogue_only(text: str) -> str:
+def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -> str:
     if not text:
         return ""
     out: List[str] = []
@@ -1088,10 +1108,12 @@ def _sanitize_dialogue_only(text: str) -> str:
         line = raw.strip()
         if not line:
             continue
+
         if line.startswith("###"):
             out.append(line)
             last_speaker = None
             continue
+
         if line.upper() == "[MUSIC]":
             out.append("[MUSIC]")
             last_speaker = None
@@ -1101,12 +1123,23 @@ def _sanitize_dialogue_only(text: str) -> str:
         if m:
             spk = m.group(1).upper()
             txt = m.group(2).strip()
+
+            # Enforce allowed speakers when requested (e.g., Segment 2)
+            if allowed_speakers is not None and spk not in allowed_speakers:
+                last_speaker = None
+                continue
+
             if txt:
                 out.append(f"{spk}: {txt}")
                 last_speaker = spk
+            else:
+                last_speaker = None
             continue
 
+        # If unlabeled line, only attach it if the last speaker is allowed
         if last_speaker:
+            if allowed_speakers is not None and last_speaker not in allowed_speakers:
+                continue
             out.append(f"{last_speaker}: {line}")
 
     return "\n".join(out).strip()
@@ -1290,7 +1323,7 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
             stories=stories,
             sponsors=sponsors,
         )
-        seg = _sanitize_dialogue_only(seg)
+        seg = _sanitize_dialogue_only(seg, allowed_speakers={"ALEX","JAMIE"} if i == 2 else None)
         segments.append(seg)
 
     script = "\n\n".join(segments).strip()
