@@ -2,6 +2,8 @@ import os
 import json
 import textwrap
 from pathlib import Path
+from typing import Optional, List
+
 from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageOps
 
 BASE_DIR = Path(__file__).parent
@@ -23,7 +25,19 @@ CTA_MODE = os.getenv("CTA_MODE", "x").strip().lower()
 W, H = 1080, 1920
 
 
-def _find_asset(*candidate_names: str) -> Path | None:
+# ----------------------------
+# Pillow compatibility helpers
+# ----------------------------
+def _resample_lanczos():
+    # Pillow >= 9: Image.Resampling.LANCZOS
+    # Older: Image.LANCZOS
+    return getattr(getattr(Image, "Resampling", Image), "LANCZOS", Image.LANCZOS)
+
+
+# ----------------------------
+# Assets / fonts
+# ----------------------------
+def _find_asset(*candidate_names: str) -> Optional[Path]:
     """Find asset by exact name or case-insensitive match (Linux-safe)."""
     for name in candidate_names:
         p = ASSETS_DIR / name
@@ -41,10 +55,10 @@ def _find_asset(*candidate_names: str) -> Path | None:
     return None
 
 
-def _load_font(size: int, bold: bool = True):
+def _load_font(size: int, bold: bool = True) -> ImageFont.FreeTypeFont:
+    # GitHub Actions (ubuntu-latest) typically has DejaVu available.
     candidates = [
         "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf" if bold else "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
-        "/usr/share/fonts/truetype/dejavu/DejavuSans-Bold.ttf",
         "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
     ]
     for p in candidates:
@@ -55,18 +69,7 @@ def _load_font(size: int, bold: bool = True):
     return ImageFont.load_default()
 
 
-def _circle_avatar(img: Image.Image, size: int) -> Image.Image:
-    img = img.convert("RGBA")
-    img = ImageOps.fit(img, (size, size), method=Image.LANCZOS, centering=(0.5, 0.5))
-    mask = Image.new("L", (size, size), 0)
-    d = ImageDraw.Draw(mask)
-    d.ellipse((0, 0, size - 1, size - 1), fill=255)
-    out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
-    out.paste(img, (0, 0), mask=mask)
-    return out
-
-
-def _safe_open(path: Path | None) -> Image.Image | None:
+def _safe_open(path: Optional[Path]) -> Optional[Image.Image]:
     if not path:
         return None
     try:
@@ -75,6 +78,20 @@ def _safe_open(path: Path | None) -> Image.Image | None:
         return None
 
 
+def _circle_avatar(img: Image.Image, size: int) -> Image.Image:
+    img = img.convert("RGBA")
+    img = ImageOps.fit(img, (size, size), method=_resample_lanczos(), centering=(0.5, 0.5))
+    mask = Image.new("L", (size, size), 0)
+    d = ImageDraw.Draw(mask)
+    d.ellipse((0, 0, size - 1, size - 1), fill=255)
+    out = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    out.paste(img, (0, 0), mask=mask)
+    return out
+
+
+# ----------------------------
+# Text helpers
+# ----------------------------
 def _first_nonempty_line(p: Path) -> str:
     if not p.exists():
         return ""
@@ -86,7 +103,7 @@ def _first_nonempty_line(p: Path) -> str:
     return ""
 
 
-def _teasers_from_meta(meta: dict, max_items: int = 2) -> list[str]:
+def _teasers_from_meta(meta: dict, max_items: int = 2) -> List[str]:
     stories = meta.get("stories", [])
     teasers = []
     if isinstance(stories, list):
@@ -101,9 +118,47 @@ def _teasers_from_meta(meta: dict, max_items: int = 2) -> list[str]:
     return teasers
 
 
+def _wrap_by_pixels(draw: ImageDraw.ImageDraw, text: str, font: ImageFont.ImageFont, max_width: int) -> List[str]:
+    """
+    Wrap text into lines such that each line fits within max_width pixels.
+    """
+    words = (text or "").split()
+    if not words:
+        return []
+    lines = []
+    cur = words[0]
+    for w in words[1:]:
+        candidate = cur + " " + w
+        if draw.textlength(candidate, font=font) <= max_width:
+            cur = candidate
+        else:
+            lines.append(cur)
+            cur = w
+    lines.append(cur)
+    return lines
+
+
+def _draw_text_shadow(draw: ImageDraw.ImageDraw, xy, text, font, fill, shadow=(0, 0, 0, 180), offset=(3, 3)):
+    x, y = xy
+    ox, oy = offset
+    draw.text((x + ox, y + oy), text, font=font, fill=shadow)
+    draw.text((x, y), text, font=font, fill=fill)
+
+
+def _rounded_rect(draw: ImageDraw.ImageDraw, box, radius: int, fill):
+    # Fallback if rounded_rectangle isn’t available.
+    if hasattr(draw, "rounded_rectangle"):
+        draw.rounded_rectangle(box, radius=radius, fill=fill, outline=None)
+    else:
+        draw.rectangle(box, fill=fill, outline=None)
+
+
+# ----------------------------
+# Main
+# ----------------------------
 def create_social_card():
     if not META_PATH.exists():
-        raise FileNotFoundError("episode_metadata.json not found. Run main.py first.")
+        raise FileNotFoundError("episode_metadata.json not found. Run mani.py first.")
 
     meta = json.loads(META_PATH.read_text(encoding="utf-8"))
     date = (meta.get("date") or "").strip()
@@ -117,13 +172,12 @@ def create_social_card():
         or (meta.get("title") or "THE AI EDGE").strip()
     )
 
-    # Optional subhook (more “agency-grade” than long bullets)
     subhook = (pack.get("card_subhook") or "").strip()
 
     # Clean and clamp
     hook = hook.replace("#", "").strip()
-    if len(hook) > 120:
-        hook = hook[:117].rstrip() + "..."
+    if len(hook) > 140:
+        hook = hook[:137].rstrip() + "..."
 
     teasers = _teasers_from_meta(meta, max_items=2)
 
@@ -137,8 +191,9 @@ def create_social_card():
     bg_src = _safe_open(cover_path)
     if bg_src is None:
         bg_src = Image.new("RGBA", (W, H), (10, 10, 10, 255))
+
     bg = bg_src.convert("RGBA")
-    bg = ImageOps.fit(bg, (W, H), method=Image.LANCZOS, centering=(0.5, 0.5))
+    bg = ImageOps.fit(bg, (W, H), method=_resample_lanczos(), centering=(0.5, 0.5))
     bg = bg.filter(ImageFilter.GaussianBlur(radius=10))
 
     canvas = Image.new("RGBA", (W, H), (0, 0, 0, 255))
@@ -151,21 +206,39 @@ def create_social_card():
     draw = ImageDraw.Draw(canvas)
 
     # Fonts
-    headline_font = _load_font(76, bold=True)
+    headline_font_size = 76
+    headline_font = _load_font(headline_font_size, bold=True)
     sub_font = _load_font(34, bold=False)
     body_font = _load_font(34, bold=False)
     brand_font = _load_font(32, bold=True)
     tiny_font = _load_font(28, bold=False)
 
-    # Headline block
-    wrap_width = 20
-    lines = textwrap.wrap(hook.upper(), width=wrap_width)
+    # Headline block (wrap by pixel width; auto-shrink if needed)
+    max_text_width = W - 144  # 72px padding on both sides
+    max_lines = 4
+
+    hook_upper = hook.upper()
+    lines = _wrap_by_pixels(draw, hook_upper, headline_font, max_text_width)
+
+    # If too many lines, reduce font until it fits (down to 56)
+    while len(lines) > max_lines and headline_font_size > 56:
+        headline_font_size -= 4
+        headline_font = _load_font(headline_font_size, bold=True)
+        lines = _wrap_by_pixels(draw, hook_upper, headline_font, max_text_width)
+
+    # If still too long, hard clamp to 4 lines
+    if len(lines) > max_lines:
+        lines = lines[:max_lines]
+        # add ellipsis to last line if it looks truncated
+        if not lines[-1].endswith("..."):
+            lines[-1] = (lines[-1][: max(0, len(lines[-1]) - 4)].rstrip() + "...")
 
     y = 140
-    for line in lines[:4]:
-        draw.text((72 + 3, y + 3), line, font=headline_font, fill=(0, 0, 0, 180))
-        draw.text((72, y), line, font=headline_font, fill=(255, 255, 255, 255))
-        y += 88
+    line_step = int(headline_font_size * 1.15)
+
+    for line in lines:
+        _draw_text_shadow(draw, (72, y), line, font=headline_font, fill=(255, 255, 255, 255))
+        y += line_step
 
     # Subtitle/date
     if date:
@@ -174,10 +247,10 @@ def create_social_card():
 
     # Subhook (preferred) OR teaser bullets (fallback)
     if subhook:
-        subhook = subhook.strip()
-        if len(subhook) > 85:
-            subhook = subhook[:82].rstrip() + "..."
-        draw.text((72, y + 10), subhook.upper(), font=body_font, fill=(235, 235, 235, 255))
+        subhook_clean = subhook.strip()
+        if len(subhook_clean) > 85:
+            subhook_clean = subhook_clean[:82].rstrip() + "..."
+        draw.text((72, y + 10), subhook_clean.upper(), font=body_font, fill=(235, 235, 235, 255))
         y += 58
     elif teasers:
         y_tease = y + 10
@@ -197,19 +270,20 @@ def create_social_card():
     cta_x, cta_y = 72, bar_y - 160
     radius = 24
 
-    draw.rounded_rectangle(
+    _rounded_rect(
+        draw,
         (cta_x, cta_y, cta_x + cta_w, cta_y + cta_h),
         radius=radius,
         fill=(255, 255, 255, 235),
-        outline=None
     )
 
+    cta_font = _load_font(40, True)
     cta_text = "LISTEN ON SPOTIFY"
-    tw = draw.textlength(cta_text, font=_load_font(40, True))
+    tw = draw.textlength(cta_text, font=cta_font)
     draw.text(
         (cta_x + (cta_w - tw) / 2, cta_y + 24),
         cta_text,
-        font=_load_font(40, True),
+        font=cta_font,
         fill=(0, 0, 0, 255),
     )
 
@@ -246,8 +320,11 @@ def create_social_card():
         draw.text((x - tw / 2, bar_y + 290), label, font=brand_font, fill=(255, 255, 255, 255))
 
     # Brand mark
-    draw.text((72, bar_y + 30), "THE AI EDGE", font=_load_font(44, True), fill=(255, 255, 255, 255))
-    draw.text((72, bar_y + 80), "AI • MONEY • REGULATION", font=_load_font(28, False), fill=(210, 210, 210, 255))
+    brand_title_font = _load_font(44, True)
+    brand_sub_font = _load_font(28, False)
+
+    draw.text((72, bar_y + 30), "THE AI EDGE", font=brand_title_font, fill=(255, 255, 255, 255))
+    draw.text((72, bar_y + 80), "AI • MONEY • REGULATION", font=brand_sub_font, fill=(210, 210, 210, 255))
 
     out = canvas.convert("RGB")
     out.save(OUT_PATH, quality=92)
