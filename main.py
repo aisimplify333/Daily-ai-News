@@ -397,44 +397,61 @@ GOOGLE_NEWS_RSS = [
     # High-magnitude + numbers
     ("Robots + Autonomy Incidents (AI-anchored)",
      "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22%20OR%20%22generative%20AI%22%20OR%20LLM%20OR%20ChatGPT%20OR%20OpenAI%20OR%20Anthropic%20OR%20Gemini)%20(robot%20OR%20humanoid%20OR%20drone%20OR%20autonomous)%20(accident%20OR%20injury%20OR%20crash%20OR%20recall%20OR%20malfunction)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+    
     ("Market Shock (AI-specific drivers)",
      "https://news.google.com/rss/search?q=(AI%20OR%20%22generative%20AI%22%20OR%20LLM%20OR%20%22AI%20chips%22%20OR%20GPU%20OR%20%22data%20center%22)%20(Nvidia%20OR%20Microsoft%20OR%20Alphabet%20OR%20Meta%20OR%20AMD%20OR%20TSMC)%20(shares%20OR%20stock%20OR%20plunge%20OR%20surge%20OR%20earnings%20OR%20guidance%20OR%20%22market%20cap%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
 ]
      ("Viral AI Breakers (Catch-all)",
      "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22%20OR%20ChatGPT%20OR%20OpenAI%20OR%20Anthropic%20OR%20Google%20Gemini%20OR%20xAI%20OR%20Grok%20OR%20Meta%20AI%20OR%20Nvidia)%20(leak%20OR%20%22data%20breach%22%20OR%20hack%20OR%20lawsuit%20OR%20ban%20OR%20scandal%20OR%20%22class%20action%22%20OR%20whistleblower%20OR%20%22internal%20memo%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("AI Leaks, Hacks, Breaches (Hard Security)",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Microsoft%20OR%20Google%20OR%20Meta%20OR%20Nvidia)%20(%22data%20breach%22%20OR%20breach%20OR%20hack%20OR%20leak%20OR%20ransomware%20OR%20%22prompt%20injection%22%20OR%20jailbreak%20OR%20%22model%20weights%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("Deepfakes, Scams, Election Chaos",
      "https://news.google.com/rss/search?q=(deepfake%20OR%20%22voice%20clone%22%20OR%20%22AI%20scam%22%20OR%20impersonation%20OR%20fraud)%20(CEO%20OR%20bank%20OR%20election%20OR%20robocall%20OR%20%22identity%20theft%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("Copyright, IP Wars, Artist Revolt",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Stability%20OR%20Midjourney%20OR%20Runway)%20(copyright%20OR%20lawsuit%20OR%20%22training%20data%22%20OR%20licensing%20OR%20%22class%20action%22%20OR%20%22rights%20holders%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+
     ("Regulators + Bans + Enforcement (Not Just ‘AI Act’)",
      "https://news.google.com/rss/search?q=(FTC%20OR%20DOJ%20OR%20%22European%20Commission%22%20OR%20ICO%20OR%20EDPB%20OR%20CNIL)%20(AI%20OR%20OpenAI%20OR%20Anthropic%20OR%20Meta%20AI)%20(investigation%20OR%20enforcement%20OR%20fine%20OR%20ban%20OR%20order)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+
     ("Market Shock / Stock Moves Tied to AI",
      "https://news.google.com/rss/search?q=(Nvidia%20OR%20Microsoft%20OR%20Alphabet%20OR%20Meta%20OR%20AMD%20OR%20TSMC)%20(AI)%20(shares%20OR%20stock%20OR%20plunge%20OR%20surge%20OR%20guidance%20OR%20earnings%20OR%20%22market%20cap%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("Chip War + Export Controls + Geopolitics",
      "https://news.google.com/rss/search?q=(Nvidia%20OR%20H100%20OR%20H200%20OR%20%22AI%20chips%22%20OR%20TSMC%20OR%20ASML%20OR%20AMD)%20(export%20controls%20OR%20sanctions%20OR%20China%20OR%20%22national%20security%22%20OR%20%22supply%20chain%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+
     ("OpenAI / Anthropic / xAI Drama (Leadership + Internal Conflict)",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20xAI%20OR%20Grok)%20(board%20OR%20CEO%20OR%20Altman%20OR%20resigns%20OR%20whistleblower%20OR%20%22internal%20memo%22%20OR%20%22employee%20walkout%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+
     ("AI Outages / Reliability Incidents (Instantly Viral)",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20ChatGPT%20OR%20Azure%20OR%20%22Google%20Cloud%22%20OR%20AWS)%20(outage%20OR%20downtime%20OR%20incident%20OR%20degraded%20OR%20%22service%20disruption%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("Robots + Autonomy Incidents (Physical Risk = Shares/Clicks)",
      "https://news.google.com/rss/search?q=(robot%20OR%20humanoid%20OR%20autonomous%20OR%20drone)%20(AI)%20(accident%20OR%20injury%20OR%20crash%20OR%20recall%20OR%20malfunction)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+
     ("AI in Schools + Cheating Crackdowns (Always Trends)",
      "https://news.google.com/rss/search?q=(ChatGPT%20OR%20AI)%20(schools%20OR%20students%20OR%20cheating%20OR%20plagiarism%20OR%20ban%20OR%20policy)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
 ]
     ("Numbers & Markets",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("AI Money",
      "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("Frontier Models",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch%20OR%20benchmark)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("AI Regulation",
      "https://news.google.com/rss/search?q=(AI%20regulation%20OR%20EU%20AI%20Act%20OR%20FTC%20OR%20copyright%20OR%20antitrust)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("AI Security",
      "https://news.google.com/rss/search?q=(AI%20jailbreak%20OR%20prompt%20injection%20OR%20security%20OR%20leak%20OR%20breach%20OR%20ransomware)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     ("AI in Work",
      "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise%20OR%20layoffs)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+
     # Added: scandal/shock buckets that tend to generate virality
     ("Shock & Scandal",
      "https://news.google.com/rss/search?q=(AI%20OR%20OpenAI%20OR%20Anthropic%20OR%20Nvidia)%20(leak%20OR%20lawsuit%20OR%20ban%20OR%20crackdown%20OR%20whistleblower%20OR%20investigation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
