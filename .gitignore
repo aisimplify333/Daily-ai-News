@@ -8,9 +8,9 @@ __pycache__/
 
 # Virtual envs / secrets
 .env
+.env.*
 .venv/
 venv/
-.env.*
 
 # Packaging / build
 build/
@@ -63,13 +63,17 @@ temp_*.wav
 # =========================
 script_*.txt
 
-# If you want to keep ONLY intro/outro in git, but ignore generated episodes:
-episode_audio/*.mp3
+# =========================
+# Published podcast audio (COMMIT THESE)
+# =========================
+# NOTE:
+# - Your RSS feed and GitHub Pages audio hosting REQUIRE episode_audio/podcast_*.mp3 to be committed.
+# - Do NOT ignore episode_audio/*.mp3
+
+# Keep intro/outro if you store them in repo root
+# (these are NOT ignored by any rule below; kept here for clarity)
 !intro.mp3
 !outro.mp3
-
-# If you publish your podcast episodes via GitHub Pages and NEED mp3s committed,
-# remove the two lines above (episode_audio/*.mp3 and the exceptions).
 
 # =========================
 # Generated marketing outputs (keep repo lean)
