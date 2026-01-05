@@ -126,8 +126,6 @@ EPISODE_META_MAX_DESC = int(os.getenv("EPISODE_META_MAX_DESC", "4500"))
 # ----------------------------
 # VIRALITY / STORY PICKING
 # ----------------------------
-# Keywords that correlate with high engagement / virality in tech news.
-# (Used only to rank/select stories from RSS candidates; does NOT invent facts.)
 VIRAL_KEYWORDS = [
     "leak", "leaked", "whistleblower", "lawsuit", "sues", "ban", "banned", "crackdown", "investigation",
     "antitrust", "fraud", "hack", "breach", "ransomware", "exploit", "backdoor", "spy", "surveillance",
@@ -140,8 +138,10 @@ VIRAL_BRANDS = [
     "tesla", "amazon", "tiktok", "bytedance", "x", "twitter", "samsung", "intel",
 ]
 
+
 def _safe_print(msg: str):
     print(msg, flush=True)
+
 
 # ----------------------------
 # SEO / TAGS HELPERS (98+)
@@ -152,16 +152,14 @@ TIER1_PUBLISHERS = {
     "associated press", "ap", "cnbc"
 }
 
+
 def _clean_keyword(s: str) -> str:
     s = re.sub(r"[^a-zA-Z0-9\s\-\&]", "", (s or "")).strip()
     s = re.sub(r"\s+", " ", s)
     return s
 
+
 def build_episode_keywords(stories: List[Dict[str, str]], max_keywords: int = 14) -> List[str]:
-    """
-    SEO keywords used for iTunes keywords + show notes tags.
-    Mix: core show tags + entities from stories.
-    """
     base = [
         "AI news", "OpenAI", "Anthropic", "Nvidia", "ChatGPT", "Gemini",
         "AI regulation", "AI security", "AI chips", "big tech", "AI jobs"
@@ -191,10 +189,8 @@ def build_episode_keywords(stories: List[Dict[str, str]], max_keywords: int = 14
             break
     return out
 
+
 def build_hashtags_from_keywords(keywords: List[str], max_tags: int = 6) -> str:
-    """
-    For show notes + social packs. Keep short, high-signal.
-    """
     map_to = {
         "ai news": "#AI",
         "openai": "#OpenAI",
@@ -221,11 +217,13 @@ def build_hashtags_from_keywords(keywords: List[str], max_tags: int = 6) -> str:
 
     return " ".join(tags[:max_tags])
 
+
 # ----------------------------
 # SYSTEM CHECKS
 # ----------------------------
 def _has_ffmpeg() -> bool:
     return shutil.which("ffmpeg") is not None
+
 
 def _run(cmd: List[str], fail_ok: bool = False) -> int:
     try:
@@ -236,6 +234,7 @@ def _run(cmd: List[str], fail_ok: bool = False) -> int:
             return e.returncode
         raise
 
+
 # ----------------------------
 # SIDE-CAR JSON (episode-level metadata persisted next to mp3)
 # ----------------------------
@@ -243,8 +242,10 @@ def _date_from_episode_filename(name: str) -> Optional[str]:
     m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", name or "")
     return m.group(1) if m else None
 
+
 def _sidecar_meta_path_for_date(date_str: str) -> Path:
     return AUDIO_DIR / f"podcast_{date_str}.json"
+
 
 def _load_sidecar_meta_for_date(date_str: str) -> Dict[str, str]:
     p = _sidecar_meta_path_for_date(date_str)
@@ -256,11 +257,13 @@ def _load_sidecar_meta_for_date(date_str: str) -> Dict[str, str]:
     except Exception:
         return {}
 
+
 def _write_sidecar_meta_for_date(date_str: str, title: str, description: str) -> Path:
     p = _sidecar_meta_path_for_date(date_str)
     payload = {"title": (title or "").strip(), "description": (description or "").strip()}
     p.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return p
+
 
 # ----------------------------
 # LLM CLIENTS (OpenAI + Gemini via google-genai)
@@ -284,6 +287,7 @@ if gemini_key:
         gemini_client = None
         genai_types = None
 
+
 def _gemini_candidate_models() -> List[str]:
     env_model = os.getenv("GEMINI_MODEL", "").strip()
     models = []
@@ -297,6 +301,7 @@ def _gemini_candidate_models() -> List[str]:
             out.append(m)
             seen.add(m)
     return out
+
 
 def _extract_json_object(raw: str) -> Optional[dict]:
     if not raw:
@@ -330,6 +335,7 @@ def _extract_json_object(raw: str) -> Optional[dict]:
     except Exception:
         return None
     return None
+
 
 def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000) -> str:
     if PRIMARY_LLM == "gemini" and gemini_key and gemini_client and genai_types:
@@ -367,11 +373,13 @@ def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000)
     )
     return resp.choices[0].message.content.strip()
 
+
 # ----------------------------
 # NUMERIC UTILITIES
 # ----------------------------
 def _digit_count(s: str) -> int:
     return len(re.findall(r"\d", s or ""))
+
 
 def _numeric_score(s: str) -> int:
     if not s:
@@ -388,6 +396,7 @@ def _numeric_score(s: str) -> int:
             score += pts
     return score
 
+
 def _virality_score(title: str, summary: str) -> int:
     blob = f"{title or ''} {summary or ''}".lower()
     score = 0
@@ -397,31 +406,30 @@ def _virality_score(title: str, summary: str) -> int:
     for b in VIRAL_BRANDS:
         if b in blob:
             score += 6
-    # Titles with strong punctuation tend to be higher CTR
     if "!" in (title or ""):
         score += 6
     if "?" in (title or ""):
         score += 4
     return score
 
+
 def _parse_published_to_dt(published: str) -> Optional[datetime.datetime]:
     if not published:
         return None
     s = published.strip()
     try:
-        # Many entries are ISO-ish from our publisher extractor
         dt = datetime.datetime.fromisoformat(s.replace("Z", "+00:00"))
         if dt.tzinfo is None:
             dt = dt.replace(tzinfo=datetime.timezone.utc)
         return dt.astimezone(datetime.timezone.utc)
     except Exception:
         pass
-    # Last-resort: try RFC-style
     try:
         dt2 = datetime.datetime.strptime(s[:25], "%a, %d %b %Y %H:%M:%S")
         return dt2.replace(tzinfo=datetime.timezone.utc)
     except Exception:
         return None
+
 
 def _recency_boost(published: str) -> int:
     dt = _parse_published_to_dt(published)
@@ -429,7 +437,6 @@ def _recency_boost(published: str) -> int:
         return 0
     now = datetime.datetime.now(datetime.timezone.utc)
     age_hours = max(0.0, (now - dt).total_seconds() / 3600.0)
-    # within 6h: strong boost, within 24h: moderate
     if age_hours <= 6:
         return 35
     if age_hours <= 12:
@@ -440,11 +447,13 @@ def _recency_boost(published: str) -> int:
         return 4
     return 0
 
+
 def _combined_story_score(item: Dict[str, str]) -> int:
     title = item.get("title") or ""
     summary = item.get("summary") or ""
     published = item.get("published") or ""
     return _numeric_score(title + " " + summary) + _virality_score(title, summary) + _recency_boost(published)
+
 
 def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
     if not text:
@@ -468,60 +477,43 @@ def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
         out.append(h)
     return out[:max_items]
 
+
 # ----------------------------
 # NEWS INTEL (RSS)
 # ----------------------------
 GOOGLE_NEWS_RSS = [
-    # High-magnitude + numbers
     ("Numbers & Markets",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
     ("Market Shock (AI-specific drivers)",
      "https://news.google.com/rss/search?q=(AI%20OR%20%22generative%20AI%22%20OR%20LLM%20OR%20%22AI%20chips%22%20OR%20GPU%20OR%20%22data%20center%22)%20(Nvidia%20OR%20Microsoft%20OR%20Alphabet%20OR%20Meta%20OR%20AMD%20OR%20TSMC)%20(shares%20OR%20stock%20OR%20plunge%20OR%20surge%20OR%20earnings%20OR%20guidance%20OR%20%22market%20cap%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
     ("AI Money",
      "https://news.google.com/rss/search?q=(AI%20funding%20OR%20valuation%20OR%20IPO%20OR%20Nvidia%20OR%20chips)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
     ("Frontier Models",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20DeepMind)%20(model%20OR%20release%20OR%20launch%20OR%20benchmark)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
-    # Viral catch-all (still AI-scoped)
     ("Viral AI Breakers (Catch-all)",
      "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22%20OR%20ChatGPT%20OR%20OpenAI%20OR%20Anthropic%20OR%20Google%20Gemini%20OR%20xAI%20OR%20Grok%20OR%20Meta%20AI%20OR%20Nvidia)%20(leak%20OR%20%22data%20breach%22%20OR%20hack%20OR%20lawsuit%20OR%20ban%20OR%20scandal%20OR%20%22class%20action%22%20OR%20whistleblower%20OR%20%22internal%20memo%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
-    # Security / reliability (fast-moving)
     ("AI Leaks, Hacks, Breaches (Hard Security)",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Microsoft%20OR%20Google%20OR%20Meta%20OR%20Nvidia)%20(%22data%20breach%22%20OR%20breach%20OR%20hack%20OR%20leak%20OR%20ransomware%20OR%20%22prompt%20injection%22%20OR%20jailbreak%20OR%20%22model%20weights%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
     ("AI Outages / Reliability Incidents (Instantly Viral)",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20ChatGPT%20OR%20Azure%20OR%20%22Google%20Cloud%22%20OR%20AWS)%20(outage%20OR%20downtime%20OR%20incident%20OR%20degraded%20OR%20%22service%20disruption%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
-    # Scams / deepfakes
     ("Deepfakes, Scams, Election Chaos",
      "https://news.google.com/rss/search?q=(AI%20OR%20deepfake%20OR%20%22voice%20clone%22%20OR%20%22AI%20scam%22%20OR%20impersonation%20OR%20fraud)%20(CEO%20OR%20bank%20OR%20election%20OR%20robocall%20OR%20%22identity%20theft%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-
-    # Slower-burn, still high-impact categories (7d gives enough volume)
     ("Copyright, IP Wars, Artist Revolt",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Stability%20OR%20Midjourney%20OR%20Runway)%20(copyright%20OR%20lawsuit%20OR%20%22training%20data%22%20OR%20licensing%20OR%20%22class%20action%22%20OR%20%22rights%20holders%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-
     ("Regulators + Bans + Enforcement",
      "https://news.google.com/rss/search?q=(FTC%20OR%20DOJ%20OR%20%22European%20Commission%22%20OR%20ICO%20OR%20EDPB%20OR%20CNIL)%20(AI%20OR%20OpenAI%20OR%20Anthropic%20OR%20Meta%20AI)%20(investigation%20OR%20enforcement%20OR%20fine%20OR%20ban%20OR%20order)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-
     ("Chip War + Export Controls + Geopolitics",
      "https://news.google.com/rss/search?q=(Nvidia%20OR%20H100%20OR%20H200%20OR%20%22AI%20chips%22%20OR%20TSMC%20OR%20ASML%20OR%20AMD)%20(export%20controls%20OR%20sanctions%20OR%20China%20OR%20%22national%20security%22%20OR%20%22supply%20chain%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-
     ("OpenAI / Anthropic / xAI Drama (Leadership + Conflict)",
      "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20xAI%20OR%20Grok)%20(board%20OR%20CEO%20OR%20Altman%20OR%20resigns%20OR%20whistleblower%20OR%20%22internal%20memo%22%20OR%20%22employee%20walkout%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-
     ("Robots + Autonomy Incidents (Physical Risk)",
      "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22%20OR%20%22generative%20AI%22%20OR%20LLM%20OR%20ChatGPT%20OR%20OpenAI%20OR%20Anthropic%20OR%20Gemini)%20(robot%20OR%20humanoid%20OR%20drone%20OR%20autonomous)%20(accident%20OR%20injury%20OR%20crash%20OR%20recall%20OR%20malfunction)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-
     ("AI in Work (Jobs + Layoffs + Enterprise)",
      "https://news.google.com/rss/search?q=(AI%20jobs%20OR%20automation%20OR%20productivity%20OR%20enterprise%20OR%20layoffs)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-
     ("AI in Schools + Cheating Crackdowns",
      "https://news.google.com/rss/search?q=(ChatGPT%20OR%20AI)%20(schools%20OR%20students%20OR%20cheating%20OR%20plagiarism%20OR%20ban%20OR%20policy)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
 ]
+
 
 def _strip_html(s: str) -> str:
     if not s:
@@ -530,6 +522,7 @@ def _strip_html(s: str) -> str:
     txt = soup.get_text(" ", strip=True)
     return re.sub(r"\s+", " ", txt).strip()
 
+
 def _split_headline_publisher(title: str) -> Tuple[str, str]:
     if not title:
         return "", ""
@@ -537,6 +530,7 @@ def _split_headline_publisher(title: str) -> Tuple[str, str]:
     if len(parts) >= 2:
         return " - ".join(parts[:-1]).strip(), parts[-1].strip()
     return title.strip(), ""
+
 
 def _published_iso_from_entry(entry) -> str:
     try:
@@ -551,6 +545,7 @@ def _published_iso_from_entry(entry) -> str:
         return s[:64]
     except Exception:
         return ""
+
 
 def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
     items: List[Dict[str, str]] = []
@@ -592,6 +587,7 @@ def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
         deduped.append(x)
     return deduped
 
+
 @lru_cache(maxsize=128)
 def _resolve_final_url(url: str) -> str:
     if not url:
@@ -603,6 +599,7 @@ def _resolve_final_url(url: str) -> str:
         return r.url or url
     except Exception:
         return url
+
 
 @lru_cache(maxsize=128)
 def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
@@ -670,6 +667,7 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
     except Exception:
         return ""
 
+
 # ----------------------------
 # SPONSORS / STORIES
 # ----------------------------
@@ -688,6 +686,7 @@ def load_sponsors() -> List[Dict[str, str]]:
         {"name": "Sponsor Two", "tagline": "Your edge, automated.", "cta": "Try it free today."},
         {"name": "Sponsor Three", "tagline": "Ship smarter.", "cta": "Join the waitlist."},
     ]
+
 
 def enrich_stories_with_data(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
     enriched: List[Dict[str, str]] = []
@@ -746,21 +745,14 @@ Article Preview:
 
     return enriched
 
+
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
-    """
-    Select stories optimized for:
-    - numeric density (stakes)
-    - virality cues (conflict/scandal/security)
-    - recency (last 48 hours, weighted)
-    - diversity (avoid 5 items all from one bucket)
-    """
     if not intel_items:
         return []
 
     ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
     candidates = ranked[:50]
 
-    # Lightweight diversity: prefer no more than 2 from same bucket in the initial pick
     picked: List[Dict[str, str]] = []
     bucket_counts: Dict[str, int] = {}
     for x in candidates:
@@ -852,7 +844,6 @@ Candidate items:
                 }
             )
 
-    # Attach RSS summary if available
     for st in stories:
         match = next((x for x in intel_items if (x.get("link") or "").strip() == st["source_url"]), None)
         if match:
@@ -888,14 +879,17 @@ Candidate items:
 
     return enriched[:n]
 
+
 # ----------------------------
 # SCRIPTING (SOUL + GUARANTEED LENGTH + DATA RICHNESS)
 # ----------------------------
 def _word_count(s: str) -> int:
     return len(re.findall(r"\b\w+\b", s or ""))
 
+
 def estimate_minutes_from_text(script: str) -> float:
     return _word_count(script) / max(1.0, WORDS_PER_MINUTE)
+
 
 def _script_targets() -> Tuple[int, int, int]:
     min_words = int(MIN_MINUTES * WORDS_PER_MINUTE * 1.02)
@@ -903,9 +897,10 @@ def _script_targets() -> Tuple[int, int, int]:
     max_words = int(MAX_MINUTES * WORDS_PER_MINUTE * 1.10)
     return min_words, target_words, max_words
 
+
 def _segment_word_targets() -> List[int]:
     min_words, _, max_words = _script_targets()
-    seg = [650, 1200, 900, 1400, 650]  # total 4800
+    seg = [650, 1200, 900, 1400, 650]  # total ~4800
 
     total = sum(seg)
     if total > max_words:
@@ -918,8 +913,10 @@ def _segment_word_targets() -> List[int]:
 
     return seg
 
+
 def _segment_header(i: int) -> str:
     return f"### SEGMENT {i}"
+
 
 def _story_block(stories: List[Dict[str, str]]) -> str:
     out = []
@@ -941,6 +938,7 @@ def _story_block(stories: List[Dict[str, str]]) -> str:
         )
     return "\n".join(out).strip()
 
+
 def _strict_dialogue_rules() -> str:
     return (
         'HARD FORMAT RULES (non-negotiable):\n'
@@ -951,6 +949,7 @@ def _strict_dialogue_rules() -> str:
         '- "[MUSIC]" may appear as a standalone line.\n'
         '- Do not add any other headings, bullets, or markdown.\n'
     )
+
 
 def _segment_assignment(seg_num: int, stories: List[Dict[str, str]]) -> str:
     if len(stories) < 5:
@@ -966,21 +965,21 @@ def _segment_assignment(seg_num: int, stories: List[Dict[str, str]]) -> str:
         )
     if seg_num == 2:
         return (
-            f"Studio segment: ONLY Alex + Jamie (no Rufus at all). High chemistry, fast pacing. "
-            f"Deep dive Story 1 + Story 2 with human stakes and emotional pushback.\n"
+            "Studio segment: ONLY Alex + Jamie (no Rufus at all). High chemistry, fast pacing. "
+            "Deep dive Story 1 + Story 2 with human stakes and emotional pushback.\n"
             f"(1) {s1['headline']}\n"
             f"(2) {s2['headline']}"
         )
     if seg_num == 3:
         return (
-            f"On-location: Alex throws to Rufus, then Rufus dominates with money/reg angle. "
-            f"Primary focus Story 3 with filings/trading/regulatory edge.\n"
+            "On-location: Alex throws to Rufus, then Rufus dominates with money/reg angle. "
+            "Primary focus Story 3 with filings/trading/regulatory edge.\n"
             f"(3) {s3['headline']}"
         )
     if seg_num == 4:
         return (
-            f"All three together: dread/greed forecast + lightning round. "
-            f"Cover Story 4 + Story 5, and callback earlier claims. Interruptions and analogies.\n"
+            "All three together: dread/greed forecast + lightning round. "
+            "Cover Story 4 + Story 5, and callback earlier claims. Interruptions and analogies.\n"
             f"(4) {s4['headline']}\n"
             f"(5) {s5['headline']}"
         )
@@ -988,6 +987,50 @@ def _segment_assignment(seg_num: int, stories: List[Dict[str, str]]) -> str:
         "Closing: Alex closes hard, Jamie lands one empathetic gut-punch, "
         "Rufus delivers one cynical prophecy. Keep it tight and memorable."
     )
+
+
+def _sanitize_segment_speakers(
+    seg_text: str,
+    allowed: Optional[set] = None,
+    disallowed: Optional[set] = None
+) -> str:
+    """
+    Defensive post-processing:
+    - If `allowed` is set, removes any speaker lines NOT in allowed.
+    - If `disallowed` is set, removes any speaker lines IN disallowed.
+    Keeps segment marker and [MUSIC].
+    """
+    if not seg_text:
+        return ""
+
+    allowed_set = {a.upper() for a in (allowed or set())}
+    disallowed_set = {d.upper() for d in (disallowed or set())}
+
+    out: List[str] = []
+    for raw in seg_text.splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        if line.startswith("###") or line.upper() == "[MUSIC]":
+            out.append("[MUSIC]" if line.upper() == "[MUSIC]" else line)
+            continue
+
+        m = SPEAKER_RE.match(line)
+        if not m:
+            continue
+
+        spk = m.group(1).upper()
+        txt = m.group(2).strip()
+
+        if allowed_set and spk not in allowed_set:
+            continue
+        if disallowed_set and spk in disallowed_set:
+            continue
+        if txt:
+            out.append(f"{spk}: {txt}")
+
+    return "\n".join(out).strip()
+
 
 def _segment_prompt(
     seg_num: int,
@@ -1067,12 +1110,12 @@ TODAY'S STORIES:
 NOW OUTPUT ONLY THIS SEGMENT.
 """.strip()
 
+
 def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[str]:
     issues: List[str] = []
     if not seg_text.strip().startswith(_segment_header(seg_num)):
         issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
 
-    # Strict line format check
     for ln in seg_text.splitlines():
         line = ln.strip()
         if not line:
@@ -1083,7 +1126,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
             issues.append("Found non-labeled spoken line(s).")
             break
 
-    # Segment 2 must have NO Rufus at all
     if seg_num == 2:
         if re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
             issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
@@ -1113,6 +1155,7 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
         )
 
     return issues
+
 
 def _segment_repair_prompt(
     seg_num: int,
@@ -1146,38 +1189,6 @@ HERE IS THE SEGMENT TO EXPAND/REPAIR:
 {seg_text}
 """.strip()
 
-def _generate_segment(
-    seg_num: int,
-    seg_words_min: int,
-    seg_words_target: int,
-    date_str: str,
-    stories: List[Dict[str, str]],
-    sponsors: List[Dict[str, str]],
-) -> str:
-    prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
-    seg_text = ""
-
-    for attempt in range(1, SEGMENT_ATTEMPTS + 1):
-        seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
-
-        # Defensive cleanup: Segment 2 must be ONLY ALEX + JAMIE
-        if seg_num == 2:
-            seg_text = _sanitize_segment_speakers(seg_text, allowed={"ALEX", "JAMIE"})
-
-            # Ensure header remains first line if model omitted it
-            if not seg_text.strip().startswith(_segment_header(seg_num)):
-                seg_text = f"{_segment_header(seg_num)}\n{seg_text}".strip()
-
-        wc = _word_count(seg_text)
-        issues = _segment_validate(seg_text, seg_num, seg_words_min)
-        _safe_print(f"    ✍️ Segment {seg_num} attempt {attempt}/{SEGMENT_ATTEMPTS} (min {seg_words_min}): {wc} words")
-
-        if not issues:
-            return seg_text.strip()
-
-        prompt = _segment_repair_prompt(seg_num, seg_words_min, seg_words_target, issues, seg_text)
-
-    return seg_text.strip()
 
 def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -> str:
     if not text:
@@ -1205,7 +1216,6 @@ def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -
             spk = m.group(1).upper()
             txt = m.group(2).strip()
 
-            # Enforce allowed speakers when requested (e.g., Segment 2)
             if allowed_speakers is not None and spk not in allowed_speakers:
                 last_speaker = None
                 continue
@@ -1217,13 +1227,44 @@ def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -
                 last_speaker = None
             continue
 
-        # If unlabeled line, only attach it if the last speaker is allowed
         if last_speaker:
             if allowed_speakers is not None and last_speaker not in allowed_speakers:
                 continue
             out.append(f"{last_speaker}: {line}")
 
     return "\n".join(out).strip()
+
+
+def _generate_segment(
+    seg_num: int,
+    seg_words_min: int,
+    seg_words_target: int,
+    date_str: str,
+    stories: List[Dict[str, str]],
+    sponsors: List[Dict[str, str]],
+) -> str:
+    prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
+    seg_text = ""
+
+    for attempt in range(1, SEGMENT_ATTEMPTS + 1):
+        seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
+
+        if seg_num == 2:
+            seg_text = _sanitize_segment_speakers(seg_text, allowed={"ALEX", "JAMIE"})
+            if not seg_text.strip().startswith(_segment_header(seg_num)):
+                seg_text = f"{_segment_header(seg_num)}\n{seg_text}".strip()
+
+        wc = _word_count(seg_text)
+        issues = _segment_validate(seg_text, seg_num, seg_words_min)
+        _safe_print(f"    ✍️ Segment {seg_num} attempt {attempt}/{SEGMENT_ATTEMPTS} (min {seg_words_min}): {wc} words")
+
+        if not issues:
+            return seg_text.strip()
+
+        prompt = _segment_repair_prompt(seg_num, seg_words_min, seg_words_target, issues, seg_text)
+
+    return seg_text.strip()
+
 
 def _trim_script_to_max_words(script: str, max_words: int) -> str:
     if _word_count(script) <= max_words:
@@ -1273,6 +1314,7 @@ def _trim_script_to_max_words(script: str, max_words: int) -> str:
 
     return trimmed
 
+
 def _pad_script_to_min_words(script: str, min_words: int, stories, sponsors, date_str: str) -> str:
     wc = _word_count(script)
     if wc >= min_words:
@@ -1307,6 +1349,7 @@ STORY BLOCK:
     insert_at = m.start()
     return (script[:insert_at].rstrip() + "\n" + addon.strip() + "\n\n" + script[insert_at:].lstrip()).strip()
 
+
 def validate_script(script: str) -> List[str]:
     issues: List[str] = []
 
@@ -1328,20 +1371,13 @@ def validate_script(script: str) -> List[str]:
         if not re.search(rf"^{name}\s*:", script, flags=re.IGNORECASE | re.MULTILINE):
             issues.append(f"Speaker missing: {name}")
 
-    # Segment 2 must not include Rufus
-    seg2_block = re.search(r"^###\s*SEGMENT\s*2\b(.*?)(^###\s*SEGMENT\s*3\b|\Z)", script,
-                           flags=re.IGNORECASE | re.MULTILINE | re.DOTALL)
+    seg2_block = re.search(
+        r"^###\s*SEGMENT\s*2\b(.*?)(^###\s*SEGMENT\s*3\b|\Z)",
+        script,
+        flags=re.IGNORECASE | re.MULTILINE | re.DOTALL
+    )
     if seg2_block and re.search(r"^RUFUS\s*:", seg2_block.group(1), flags=re.IGNORECASE | re.MULTILINE):
         issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
-
-    # Hard rule: Segment 2 must contain ONLY ALEX + JAMIE (no Rufus)
-    seg2_block = re.split(r"^###\s*SEGMENT\s*2\b", script, flags=re.IGNORECASE | re.MULTILINE)
-    if len(seg2_block) > 1:
-        after_seg2 = seg2_block[1]
-        # Clip to before SEGMENT 3 if present
-        clip = re.split(r"^###\s*SEGMENT\s*3\b", after_seg2, flags=re.IGNORECASE | re.MULTILINE)[0]
-        if re.search(r"^RUFUS\s*:", clip, flags=re.IGNORECASE | re.MULTILINE):
-            issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
 
     min_words, _, max_words = _script_targets()
     wc = _word_count(script)
@@ -1359,6 +1395,7 @@ def validate_script(script: str) -> List[str]:
         issues.append("Contains non-dialogue formatting blocks.")
 
     return issues
+
 
 def enforce_episode_numeric_density(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
     if _digit_count(script) >= MIN_DIGITS_PER_EPISODE:
@@ -1398,6 +1435,7 @@ STORY BLOCK:
     script2 = _sanitize_dialogue_only(script2)
     return script2
 
+
 def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
     seg_targets = _segment_word_targets()
     seg_mins = [max(420, int(t * 0.92)) for t in seg_targets]
@@ -1413,7 +1451,7 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
             stories=stories,
             sponsors=sponsors,
         )
-        seg = _sanitize_dialogue_only(seg, allowed_speakers={"ALEX","JAMIE"} if i == 2 else None)
+        seg = _sanitize_dialogue_only(seg, allowed_speakers={"ALEX", "JAMIE"} if i == 2 else None)
         segments.append(seg)
 
     script = "\n\n".join(segments).strip()
@@ -1434,41 +1472,6 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
 
     return script
 
-    def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None, disallowed: Optional[set] = None) -> str:
-    """
-    Defensive post-processing:
-    - If `allowed` is set, removes any speaker lines NOT in allowed.
-    - If `disallowed` is set, removes any speaker lines IN disallowed.
-    Keeps segment marker and [MUSIC].
-    """
-    allowed = {a.upper() for a in (allowed or set())}
-    disallowed = {d.upper() for d in (disallowed or set())}
-
-    out: List[str] = []
-    for raw in (seg_text or "").splitlines():
-        line = raw.strip()
-        if not line:
-            continue
-        if line.startswith("###") or line.upper() == "[MUSIC]":
-            out.append(line)
-            continue
-
-        m = SPEAKER_RE.match(line)
-        if not m:
-            # Drop non-speaker garbage; the system requires strict lines anyway
-            continue
-
-        spk = m.group(1).upper()
-        txt = m.group(2).strip()
-
-        if allowed and spk not in allowed:
-            continue
-        if disallowed and spk in disallowed:
-            continue
-        if txt:
-            out.append(f"{spk}: {txt}")
-
-    return "\n".join(out).strip()
 
 # ----------------------------
 # DIALOGUE PARSING (ROBUST)
@@ -1512,6 +1515,7 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
     flush()
     return out
 
+
 def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 2400) -> List[Tuple[str, str]]:
     merged: List[Tuple[str, str]] = []
     cur_spk: Optional[str] = None
@@ -1552,6 +1556,7 @@ def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 240
     flush()
     return merged
 
+
 # ----------------------------
 # TTS + STITCHING
 # ----------------------------
@@ -1569,6 +1574,7 @@ def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
     if s:
         chunks.append(s)
     return chunks
+
 
 def tts_to_file(text: str, voice: str, out_path: Path):
     last_err = None
@@ -1588,11 +1594,8 @@ def tts_to_file(text: str, voice: str, out_path: Path):
             time.sleep(sleep_s)
     raise RuntimeError(f"TTS failed after {TTS_RETRIES} retries: {last_err}")
 
+
 def apply_speed_ffmpeg(in_path: Path, out_path: Path, speed: float):
-    """
-    Uses ffmpeg atempo to speed audio while preserving pitch.
-    atempo supports 0.5-2.0; 1.05 is safe.
-    """
     if abs(speed - 1.0) < 1e-6:
         shutil.copyfile(in_path, out_path)
         return
@@ -1608,11 +1611,8 @@ def apply_speed_ffmpeg(in_path: Path, out_path: Path, speed: float):
     ]
     _run(cmd)
 
+
 def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
-    """
-    IMPORTANT: ffmpeg concat demuxer requires consistent formats/codecs.
-    Therefore, if STITCH_METHOD=ffmpeg, only pass MP3 inputs in file_list.
-    """
     concat_txt = out_path.parent / f"concat_{uuid.uuid4().hex}.txt"
     concat_txt.write_text("\n".join([f"file '{p.as_posix()}'" for p in file_list]), encoding="utf-8")
 
@@ -1634,6 +1634,7 @@ def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
     except Exception:
         pass
 
+
 def stitch_with_pydub(file_list: List[Path], out_path: Path):
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg not found in runner (required by pydub decode).")
@@ -1642,11 +1643,13 @@ def stitch_with_pydub(file_list: List[Path], out_path: Path):
         combined += AudioSegment.from_file(p)
     combined.export(out_path, format="mp3", bitrate="192k")
 
+
 def stitch_audio(file_list: List[Path], out_path: Path):
     if STITCH_METHOD == "ffmpeg":
         stitch_with_ffmpeg(file_list, out_path)
     else:
         stitch_with_pydub(file_list, out_path)
+
 
 # ----------------------------
 # MARKETING PIPELINE
@@ -1669,39 +1672,34 @@ def run_marketing_pipeline():
             _safe_print("    → publishing social (PUBLISH_SOCIAL=true)")
             _run([sys.executable, str(pub)], fail_ok=True)
 
+
 def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> str:
     tags: List[str] = ["#AI", "#TechNews"]
-    # pull from key_entities if present
     ent: List[str] = []
     for s in stories[:5]:
         ke = s.get("key_entities")
         if isinstance(ke, list):
             ent.extend([str(x).strip() for x in ke if str(x).strip()])
-    # Also infer from headlines
     for s in stories[:5]:
         ent.extend(re.findall(r"\b[A-Z][A-Za-z0-9]+\b", (s.get("headline") or "")))
 
-    # normalize to hashtags
     cleaned: List[str] = []
     for e in ent:
         e2 = re.sub(r"[^A-Za-z0-9]", "", e)
-        if not e2:
+        if not e2 or len(e2) < 3:
             continue
-        if len(e2) < 3:
-            continue
-        # common mappings
         low = e2.lower()
         if low in ("openai", "nvidia", "anthropic", "microsoft", "google", "deepmind", "meta", "apple"):
-            cleaned.append("#" + e2.upper() if low in ("ai",) else "#" + e2[0].upper() + e2[1:])
+            cleaned.append("#" + e2[0].upper() + e2[1:])
         elif low in ("eu", "ftc", "sec", "doj"):
             cleaned.append("#" + e2.upper())
         else:
-            # keep only a few generic entity tags
             cleaned.append("#" + e2)
 
-    # prioritize major brands
-    priority = ["#OpenAI", "#Nvidia", "#Anthropic", "#Microsoft", "#Google", "#DeepMind", "#Meta", "#Apple",
-                "#Cybersecurity", "#AIRegulation", "#AIGovernance", "#TechLayoffs"]
+    priority = [
+        "#OpenAI", "#Nvidia", "#Anthropic", "#Microsoft", "#Google", "#DeepMind", "#Meta", "#Apple",
+        "#Cybersecurity", "#AIRegulation", "#AIGovernance", "#TechLayoffs"
+    ]
     out: List[str] = []
     for p in priority:
         if p in cleaned and p not in out:
@@ -1711,7 +1709,6 @@ def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> 
             out.append(t)
 
     final = tags + out
-    # de-dupe while preserving order
     seen = set()
     uniq = []
     for t in final:
@@ -1720,6 +1717,7 @@ def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> 
         seen.add(t)
         uniq.append(t)
     return " ".join(uniq[:max_tags])
+
 
 def generate_marketing_pack(stories: List[Dict[str, str]], date_str: str, listen_url: str) -> Dict[str, str]:
     story_lines = "\n".join([f"- {s.get('headline','')} | {s.get('source_url','')}" for s in stories[:5]])
@@ -1785,14 +1783,13 @@ Rules:
         out["ig_caption"] = out["ig_caption"][:500]
         out["tiktok_caption"] = out["tiktok_caption"][:220]
 
-        # Enforce hashtags constraints
         tags = out.get("hashtags", "")
         tags_list = [t.strip() for t in tags.split() if t.strip().startswith("#")]
         if "#AI" not in tags_list:
             tags_list = ["#AI"] + tags_list
         if "#TechNews" not in tags_list:
             tags_list = ["#TechNews"] + tags_list
-        # de-dupe
+
         seen = set()
         uniq = []
         for t in tags_list:
@@ -1806,59 +1803,10 @@ Rules:
     except Exception:
         return out
 
+
 # ----------------------------
-# SHOW NOTES (deterministic fallback)
+# EPISODE SEO META
 # ----------------------------
-def _build_show_notes_deterministic(
-    date_str: str,
-    stories: List[Dict[str, str]],
-    listen_url: str,
-    marketing_pack: Optional[Dict[str, str]] = None,
-) -> str:
-    hook = (marketing_pack or {}).get("hook", "").strip()
-    if not hook:
-        hook = (stories[0].get("headline", "") if stories else "TODAY’S AI SHIFT")[:64].upper()
-
-    lines = []
-    lines.append(f"{hook}")
-    lines.append("")
-    lines.append("TODAY’S LINEUP")
-    for s in stories[:5]:
-        pub = (s.get("publisher") or "").strip()
-        head = (s.get("headline") or "").strip()
-        url = (s.get("source_url") or "").strip()
-        if pub:
-            lines.append(f"- {head} ({pub})")
-        else:
-            lines.append(f"- {head}")
-        if url:
-            lines.append(f"  Source: {url}")
-
-    lines.append("")
-    lines.append("KEY NUMBERS & DATA POINTS")
-    for i, s in enumerate(stories[:5], start=1):
-        head = (s.get("headline") or "").strip()
-        lines.append(f"{i}) {head}")
-        dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
-        dp = [str(x).strip() for x in dp if str(x).strip()]
-        if not dp:
-            dp = ["No explicit figures in snippet."]
-        for b in dp[:6]:
-            lines.append(f"   • {b}")
-
-    lines.append("")
-    lines.append("SOURCES")
-    for s in stories[:5]:
-        url = (s.get("source_url") or "").strip()
-        if url:
-            lines.append(f"- {url}")
-
-    lines.append("")
-    lines.append(f"LISTEN: {listen_url}")
-    lines.append("")
-    lines.append("NOTE: This episode discusses publicly reported information; details can change quickly.")
-    return "\n".join(lines).strip()
-
 def _generate_episode_seo_meta(
     date_str: str,
     stories: List[Dict[str, str]],
@@ -2000,6 +1948,7 @@ SCRIPT (context only; do not paste long chunks):
         "hashtags": hashtags,
     }
 
+
 # ----------------------------
 # RSS FEED WRITER (catalog-wide truth)
 # ----------------------------
@@ -2037,53 +1986,51 @@ def update_feed_xml(meta: Dict):
         except Exception:
             return False
 
-   def make_item(
-    title: str,
-    description: str,
-    audio_filename: str,
-    pubdate_rfc2822: str,
-    duration_seconds: int = 0,
-    subtitle: str = "",
-    keywords_csv: str = "",
-) -> ET.Element:
-    item = ET.Element("item")
-    ET.SubElement(item, "title").text = title[:EPISODE_META_MAX_TITLE]
-    ET.SubElement(item, "description").text = (description or "")[:8000]
-    ET.SubElement(item, f"{{{ITUNES_NS}}}summary").text = (description or "")[:8000]
+    def make_item(
+        title: str,
+        description: str,
+        audio_filename: str,
+        pubdate_rfc2822: str,
+        duration_seconds: int = 0,
+        subtitle: str = "",
+        keywords_csv: str = "",
+    ) -> ET.Element:
+        item = ET.Element("item")
+        ET.SubElement(item, "title").text = (title or "")[:EPISODE_META_MAX_TITLE]
+        ET.SubElement(item, "description").text = (description or "")[:8000]
+        ET.SubElement(item, f"{{{ITUNES_NS}}}summary").text = (description or "")[:8000]
 
-    if subtitle:
-        ET.SubElement(item, f"{{{ITUNES_NS}}}subtitle").text = subtitle[:255]
-    if keywords_csv:
-        ET.SubElement(item, f"{{{ITUNES_NS}}}keywords").text = keywords_csv[:255]
+        if subtitle:
+            ET.SubElement(item, f"{{{ITUNES_NS}}}subtitle").text = subtitle[:255]
+        if keywords_csv:
+            ET.SubElement(item, f"{{{ITUNES_NS}}}keywords").text = keywords_csv[:255]
 
-    audio_url = safe_url_join(AUDIO_BASE_URL, audio_filename)
+        audio_url = safe_url_join(AUDIO_BASE_URL, audio_filename)
 
-    guid_el = ET.SubElement(item, "guid")
-    guid_el.set("isPermaLink", "false")
-    guid_el.text = audio_url
+        guid_el = ET.SubElement(item, "guid")
+        guid_el.set("isPermaLink", "false")
+        guid_el.text = audio_url
 
-    ET.SubElement(item, "pubDate").text = pubdate_rfc2822
+        ET.SubElement(item, "pubDate").text = pubdate_rfc2822
 
-    enclosure = ET.SubElement(item, "enclosure")
-    enclosure.set("url", audio_url)
-    enclosure.set("type", "audio/mpeg")
+        enclosure = ET.SubElement(item, "enclosure")
+        enclosure.set("url", audio_url)
+        enclosure.set("type", "audio/mpeg")
+        try:
+            length_bytes = int((AUDIO_DIR / audio_filename).stat().st_size)
+        except Exception:
+            length_bytes = 0
+        enclosure.set("length", str(length_bytes))
 
-    try:
-        length_bytes = int((AUDIO_DIR / audio_filename).stat().st_size)
-    except Exception:
-        length_bytes = 0
-    enclosure.set("length", str(length_bytes))
+        if duration_seconds and duration_seconds > 0:
+            dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
+            dur.text = str(int(duration_seconds))
 
-    if duration_seconds and duration_seconds > 0:
-        dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
-        dur.text = str(int(duration_seconds))
+        ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
+        ep_img.set("href", RSS_SETTINGS["image"])
 
-    ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
-    ep_img.set("href", RSS_SETTINGS["image"])
-
-    ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
-    return item
-
+        ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
+        return item
 
     rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
@@ -2095,7 +2042,8 @@ def update_feed_xml(meta: Dict):
     ET.SubElement(channel, "lastBuildDate").text = rfc2822_now()
 
     atom_link = ET.SubElement(channel, f"{{{ATOM_NS}}}link")
-    atom_link.set("href", (LISTEN_URL.rstrip("/") + "/feed.xml").replace("/listen/feed.xml", "/feed.xml"))
+    feed_href = (LISTEN_URL.rstrip("/") + "/feed.xml").replace("/listen/feed.xml", "/feed.xml")
+    atom_link.set("href", feed_href)
     atom_link.set("rel", "self")
     atom_link.set("type", "application/rss+xml")
 
@@ -2134,49 +2082,64 @@ def update_feed_xml(meta: Dict):
             title = (meta.get("title") or title).strip()
             desc = (meta.get("show_notes") or desc).strip()
             dur = int(meta.get("duration_seconds") or 0)
-        subtitle = (meta.get("subtitle") or "").strip()
-        keywords_csv = (meta.get("keywords_csv") or "").strip()
+            subtitle = (meta.get("subtitle") or "").strip()
+            keywords_csv = (meta.get("keywords_csv") or "").strip()
         else:
-        dur = 0
-        subtitle = ""
-        keywords_csv = ""
+            dur = 0
+            subtitle = ""
+            keywords_csv = ""
 
         channel.append(
-    make_item(
-        title=title,
-        description=desc,
-        audio_filename=mp3.name,
-        pubdate_rfc2822=rfc2822_from_date(date_str),
-        duration_seconds=dur,
-        subtitle=subtitle,
-        keywords_csv=keywords_csv,
-    )
-)
+            make_item(
+                title=title,
+                description=desc,
+                audio_filename=mp3.name,
+                pubdate_rfc2822=rfc2822_from_date(date_str),
+                duration_seconds=dur,
+                subtitle=subtitle,
+                keywords_csv=keywords_csv,
+            )
+        )
         items_added += 1
 
     ET.ElementTree(rss).write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
-    _safe_print(f"✅ feed.xml rebuilt from local episodes: {items_added} items (skipped broken files < {MIN_MP3_BYTES_FEED} bytes)")
+    _safe_print(
+        f"✅ feed.xml rebuilt from local episodes: {items_added} items (skipped broken files < {MIN_MP3_BYTES_FEED} bytes)"
+    )
+
 
 # ----------------------------
 # MAIN PRODUCER
 # ----------------------------
 def _maybe_append_date(title: str, date_str: str) -> str:
+    """
+    Ensures date suffix is present and title length <= EPISODE_META_MAX_TITLE.
+    Preserves the date suffix by truncating the base title if needed.
+    """
     t = (title or "").strip()
     if not t:
-        return f"{RSS_SETTINGS['title']} — {date_str}"
+        return f"{RSS_SETTINGS['title']} — {date_str}"[:EPISODE_META_MAX_TITLE]
+
     if date_str in t:
-        return t[:EPISODE_META_MAX_TITLE]
-    # keep within limit
+        return t[:EPISODE_META_MAX_TITLE].strip()
+
     suffix = f" — {date_str}"
-    if len(t) + len(suffix) <= EPISODE_META_MAX_TITLE:
-        return t + suffix
-    return t[:EPISODE_META_MAX_TITLE]
+    max_base = EPISODE_META_MAX_TITLE - len(suffix)
+    if max_base < 10:
+        return (t[:EPISODE_META_MAX_TITLE]).strip()
+
+    base = t
+    if len(base) > max_base:
+        base = base[:max_base].rstrip(" -—:|")
+    return (base + suffix)[:EPISODE_META_MAX_TITLE].strip()
+
 
 def _file_ok_for_feed(p: Path) -> bool:
     try:
         return p.exists() and p.stat().st_size >= MIN_MP3_BYTES_FEED
     except Exception:
         return False
+
 
 def produce_episode():
     if not _has_ffmpeg():
@@ -2185,10 +2148,10 @@ def produce_episode():
     today = datetime.date.today().isoformat()
     final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
 
-    # Idempotency guard: avoid accidental double publishing
+    # Idempotency guard
     if final_mp3.exists() and _file_ok_for_feed(final_mp3) and not FORCE_REBUILD:
         _safe_print(f"🛑 Today's episode already exists ({final_mp3.name}). Set FORCE_REBUILD=true to regenerate.")
-        # Rebuild feed from sidecars so the site stays consistent.
+
         try:
             final_audio = AudioSegment.from_mp3(final_mp3)
             duration_seconds = int(len(final_audio) / 1000)
@@ -2199,8 +2162,14 @@ def produce_episode():
         meta = {
             "date": today,
             "title": sidecar.get("title") or f"{RSS_SETTINGS['title']} — {today}",
+            "subtitle": "",
+            "keywords_csv": "",
             "listen_url": LISTEN_URL,
+            "minutes": round(duration_seconds / 60.0, 2) if duration_seconds else 0,
             "audio_file": final_mp3.name,
+            "audio_url": AUDIO_BASE_URL + final_mp3.name,
+            "stories": [],
+            "marketing_pack": {},
             "duration_seconds": duration_seconds,
             "show_notes": sidecar.get("description") or f"LISTEN: {LISTEN_URL}",
         }
@@ -2228,7 +2197,6 @@ def produce_episode():
     script = enforce_episode_numeric_density(script, stories, today)
     script = _sanitize_dialogue_only(script)
 
-    # Re-validate after any add-ons/modifications
     issues = validate_script(script)
     if issues:
         raise RuntimeError("Script validation failed after numeric-density enforcement:\n" + "\n".join(issues))
@@ -2256,7 +2224,6 @@ def produce_episode():
 
     concat_files: List[Path] = []
 
-    # Silence assets: MP3 if ffmpeg concat is used; otherwise WAV is fine.
     if STITCH_METHOD == "ffmpeg":
         silence_path = run_tmp / "silence_150ms.mp3"
         AudioSegment.silent(duration=150).export(silence_path, format="mp3", bitrate="192k")
@@ -2286,7 +2253,6 @@ def produce_episode():
             raw_seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
             tts_to_file(chunk, voice, raw_seg_path)
 
-            # Speed JAMIE to 1.05x (default)
             if speaker == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
                 sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
                 apply_speed_ffmpeg(raw_seg_path, sped_path, JAMIE_SPEED)
@@ -2310,51 +2276,33 @@ def produce_episode():
     minutes = duration_seconds / 60.0
     _safe_print(f" ✅ EPISODE COMPLETE: {final_mp3.name} ({minutes:.2f} minutes)")
 
-    # Release gate: do NOT market or publish if episode is out of bounds
     if minutes < MIN_MINUTES or minutes > MAX_MINUTES:
         raise RuntimeError(
             f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}."
         )
 
-    # Build marketing + SEO meta
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
-
     seo = _generate_episode_seo_meta(
-    date_str=today,
-    stories=stories,
-    listen_url=LISTEN_URL,
-    script_text=script,
-    marketing_pack=pack,
-)
+        date_str=today,
+        stories=stories,
+        listen_url=LISTEN_URL,
+        script_text=script,
+        marketing_pack=pack,
+    )
 
-# Title should be viral/searchable; do NOT default to just the date.
-feed_title = seo["title"].strip()
-show_notes = seo["description"].strip()
-
-subtitle = (seo.get("subtitle") or "").strip()[:255]
-keywords_csv = ", ".join(seo.get("keywords") or [])[:255]
-
-# Persist sidecar so feed rebuild stays rich for this date
-_write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
-
-keywords_csv = ", ".join(seo.get("keywords") or [])[:255]
-subtitle = (seo.get("subtitle") or "").strip()[:255]
-
-
-    # Final title + show-notes used for RSS + sidecar + metadata.json
     feed_title = _maybe_append_date(seo["title"], today)
-    show_notes = seo["description"]
+    subtitle = (seo.get("subtitle") or "").strip()[:255]
+    keywords_csv = ", ".join(seo.get("keywords") or [])[:255]
+    show_notes = (seo.get("description") or "").strip()
 
-    # Persist catalog-sidecar meta so future feed rebuilds use stable metadata
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
 
-    # Multi-platform text artifacts
     viral_caption = "\n".join([
-        pack.get("tweet1", "").strip(),
+        (pack.get("tweet1", "") or "").strip(),
         "",
-        pack.get("tweet2", "").strip(),
+        (pack.get("tweet2", "") or "").strip(),
         "",
-        pack.get("hashtags", "").strip(),
+        (pack.get("hashtags", "") or "").strip(),
     ]).strip()
 
     (BASE_DIR / "viral_caption.txt").write_text(viral_caption, encoding="utf-8")
@@ -2373,31 +2321,29 @@ subtitle = (seo.get("subtitle") or "").strip()[:255]
     }
     (BASE_DIR / "platform_pack.json").write_text(json.dumps(platform_pack, indent=2, ensure_ascii=False), encoding="utf-8")
 
- meta = {
-    "date": today,
-    "title": feed_title,
-    "subtitle": subtitle,
-    "keywords_csv": keywords_csv,
-    "listen_url": LISTEN_URL,
-    "minutes": round(minutes, 2),
-    "audio_file": final_mp3.name,
-    "audio_url": AUDIO_BASE_URL + final_mp3.name,
-    "stories": stories,
-    "marketing_pack": pack,
-    "duration_seconds": duration_seconds,
-    "show_notes": show_notes,
-}
-
+    meta = {
+        "date": today,
+        "title": feed_title,
+        "subtitle": subtitle,
+        "keywords_csv": keywords_csv,
+        "listen_url": LISTEN_URL,
+        "minutes": round(minutes, 2),
+        "audio_file": final_mp3.name,
+        "audio_url": AUDIO_BASE_URL + final_mp3.name,
+        "stories": stories,
+        "marketing_pack": pack,
+        "duration_seconds": duration_seconds,
+        "show_notes": show_notes,
+    }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    # Rebuild the entire feed from local mp3s + sidecars (catalog-wide truth)
     update_feed_xml(meta)
 
-    # Optional downstream marketing assets (runs only after release gate + feed rebuild)
     run_marketing_pipeline()
 
     if CLEANUP_TEMP:
         shutil.rmtree(run_tmp, ignore_errors=True)
+
 
 # ----------------------------
 # ENTRYPOINT
