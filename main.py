@@ -98,27 +98,16 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Audio stitch method: pydub (recommended) or ffmpeg
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
-# JAMIE speed (default 1.05 per your request)
+# JAMIE speed (default 1.05)
 JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
 
-clip = AudioSegment.from_mp3(str(raw_seg_path))
-clip = trim_silence(clip, leading_ms=60, trailing_ms=140, thresh_db=-45.0)
-clip.export(raw_seg_path, format="mp3", bitrate="192k")
+# Post-processing thresholds
+TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
+TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "140"))
+TRIM_THRESH_DB = float(os.getenv("TRIM_THRESH_DB", "-45.0"))
+SEGMENT_EXPORT_BITRATE = os.getenv("SEGMENT_EXPORT_BITRATE", "192k")
 
-REQUIRE_INTRO_OUTRO = os.getenv("REQUIRE_INTRO_OUTRO", "true").strip().lower() in ("1","true","yes")
-
-if REQUIRE_INTRO_OUTRO and not INTRO_PATH.exists():
-    raise RuntimeError("intro.mp3 missing. 98+ mode requires an intro stinger.")
-if REQUIRE_INTRO_OUTRO and not OUTRO_PATH.exists():
-    raise RuntimeError("outro.mp3 missing. 98+ mode requires an outro stinger.")
-
-def match_level(seg: AudioSegment, target_dbfs: float = -18.0) -> AudioSegment:
-    if seg.dBFS == float("-inf"):
-        return seg
-    return seg.apply_gain(target_dbfs - seg.dBFS)
-
-intro = match_level(AudioSegment.from_file(INTRO_PATH)[:15000], target_dbfs=-18.0).fade_out(1200)
-outro = match_level(AudioSegment.from_file(OUTRO_PATH)[:12000], target_dbfs=-18.0).fade_in(800).fade_out(1200)
+REQUIRE_INTRO_OUTRO = os.getenv("REQUIRE_INTRO_OUTRO", "true").strip().lower() in ("1", "true", "yes")
 
 # ----------------------------
 # QUALITY GATES (98% standard)
@@ -132,7 +121,6 @@ STRICT_EPISODE_FILENAME_RE = re.compile(r"^podcast_\d{4}-\d{2}-\d{2}\.mp3$")
 
 MONEY_RE = re.compile(r"(\$|€|£)\s?\d")
 NUMERIC_TOKEN_RE = re.compile(r"(\d+(\.\d+)?%|\$?\d[\d,]*(\.\d+)?|\b\d{4}\b|\bQ[1-4]\b)", re.IGNORECASE)
-
 SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
 
 # ----------------------------
@@ -163,81 +151,6 @@ def _safe_print(msg: str):
 
 
 # ----------------------------
-# SEO / TAGS HELPERS (98+)
-# ----------------------------
-TIER1_PUBLISHERS = {
-    "reuters", "bloomberg", "wall street journal", "wsj", "financial times", "ft",
-    "new york times", "nytimes", "the verge", "techcrunch", "wired", "arstechnica",
-    "associated press", "ap", "cnbc"
-}
-
-
-def _clean_keyword(s: str) -> str:
-    s = re.sub(r"[^a-zA-Z0-9\s\-\&]", "", (s or "")).strip()
-    s = re.sub(r"\s+", " ", s)
-    return s
-
-
-def build_episode_keywords(stories: List[Dict[str, str]], max_keywords: int = 14) -> List[str]:
-    base = [
-        "AI news", "OpenAI", "Anthropic", "Nvidia", "ChatGPT", "Gemini",
-        "AI regulation", "AI security", "AI chips", "big tech", "AI jobs"
-    ]
-
-    entities: List[str] = []
-    for s in stories[:5]:
-        ke = s.get("key_entities") if isinstance(s.get("key_entities"), list) else []
-        for e in ke:
-            e2 = _clean_keyword(str(e))
-            if e2 and len(e2) <= 28:
-                entities.append(e2)
-
-        pub = (s.get("publisher") or "").strip()
-        if pub and pub.lower() in TIER1_PUBLISHERS:
-            entities.append(pub)
-
-    out: List[str] = []
-    seen = set()
-    for x in base + entities:
-        k = x.lower().strip()
-        if not k or k in seen:
-            continue
-        seen.add(k)
-        out.append(x.strip())
-        if len(out) >= max_keywords:
-            break
-    return out
-
-
-def build_hashtags_from_keywords(keywords: List[str], max_tags: int = 6) -> str:
-    map_to = {
-        "ai news": "#AI",
-        "openai": "#OpenAI",
-        "anthropic": "#Anthropic",
-        "nvidia": "#Nvidia",
-        "chatgpt": "#ChatGPT",
-        "gemini": "#Gemini",
-        "ai regulation": "#AIRegulation",
-        "ai security": "#AISecurity",
-        "ai chips": "#AIChips",
-        "ai jobs": "#AIJobs",
-        "big tech": "#BigTech",
-    }
-    tags: List[str] = []
-    for k in keywords:
-        t = map_to.get(k.lower().strip())
-        if t and t not in tags:
-            tags.append(t)
-        if len(tags) >= max_tags:
-            break
-
-    if "#AI" not in tags:
-        tags = ["#AI"] + [t for t in tags if t != "#AI"]
-
-    return " ".join(tags[:max_tags])
-
-
-# ----------------------------
 # SYSTEM CHECKS
 # ----------------------------
 def _has_ffmpeg() -> bool:
@@ -252,6 +165,89 @@ def _run(cmd: List[str], fail_ok: bool = False) -> int:
         if fail_ok:
             return e.returncode
         raise
+
+
+def _require_intro_outro_if_needed():
+    if REQUIRE_INTRO_OUTRO and not INTRO_PATH.exists():
+        raise RuntimeError("intro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires an intro stinger.")
+    if REQUIRE_INTRO_OUTRO and not OUTRO_PATH.exists():
+        raise RuntimeError("outro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires an outro stinger.")
+
+
+# ----------------------------
+# AUDIO UTILITIES
+# ----------------------------
+def match_level(seg: AudioSegment, target_dbfs: float = -18.0) -> AudioSegment:
+    if seg.dBFS == float("-inf"):
+        return seg
+    return seg.apply_gain(target_dbfs - seg.dBFS)
+
+
+def _lead_silence_ms(a: AudioSegment, thresh_db: float) -> int:
+    ms = 0
+    step = 10
+    while ms < len(a):
+        chunk = a[ms:ms + step]
+        if chunk.dBFS > thresh_db:
+            return ms
+        ms += step
+    return ms
+
+
+def trim_silence(
+    seg: AudioSegment,
+    leading_ms: int = 60,
+    trailing_ms: int = 140,
+    thresh_db: float = -45.0
+) -> AudioSegment:
+    """
+    Trims up to leading_ms and trailing_ms of silence based on thresh_db.
+    Conservative: will not cut beyond the configured caps.
+    """
+    if len(seg) < 40:
+        return seg
+
+    start = min(_lead_silence_ms(seg, thresh_db=thresh_db), leading_ms)
+    end = min(_lead_silence_ms(seg.reverse(), thresh_db=thresh_db), trailing_ms)
+
+    if len(seg) <= (start + end + 10):
+        return seg
+
+    return seg[start:len(seg) - end]
+
+
+def post_process_tts_mp3(path: Path):
+    """
+    In-place post-process: trims leading/trailing silence and re-exports at fixed bitrate.
+    """
+    try:
+        clip = AudioSegment.from_file(path)
+        clip = trim_silence(
+            clip,
+            leading_ms=TRIM_LEADING_MS,
+            trailing_ms=TRIM_TRAILING_MS,
+            thresh_db=TRIM_THRESH_DB
+        )
+        clip.export(path, format="mp3", bitrate=SEGMENT_EXPORT_BITRATE)
+    except Exception as e:
+        _safe_print(f"    ⚠️ Post-process failed for {path.name}: {e}")
+
+
+def master_final_audio_ffmpeg(in_path: Path, out_path: Path):
+    if not _has_ffmpeg():
+        raise RuntimeError("ffmpeg not found; required for final mastering.")
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", str(in_path),
+        "-af",
+        "acompressor=threshold=-18dB:ratio=3:attack=10:release=120:makeup=4,"
+        "loudnorm=I=-16:TP=-1.5:LRA=11",
+        "-c:a", "libmp3lame",
+        "-b:a", "192k",
+        str(out_path),
+    ]
+    _run(cmd)
 
 
 # ----------------------------
@@ -309,7 +305,7 @@ if gemini_key:
 
 def _gemini_candidate_models() -> List[str]:
     env_model = os.getenv("GEMINI_MODEL", "").strip()
-    models = []
+    models: List[str] = []
     if env_model:
         models.append(env_model)
     models += ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3-flash"]
@@ -650,7 +646,7 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
 
         base = soup.find("article") or soup.body or soup
 
-        chunks = []
+        chunks: List[str] = []
         if meta_desc:
             chunks.append(meta_desc)
 
@@ -1013,12 +1009,6 @@ def _sanitize_segment_speakers(
     allowed: Optional[set] = None,
     disallowed: Optional[set] = None
 ) -> str:
-    """
-    Defensive post-processing:
-    - If `allowed` is set, removes any speaker lines NOT in allowed.
-    - If `disallowed` is set, removes any speaker lines IN disallowed.
-    Keeps segment marker and [MUSIC].
-    """
     if not seg_text:
         return ""
 
@@ -1632,8 +1622,15 @@ def apply_speed_ffmpeg(in_path: Path, out_path: Path, speed: float):
 
 
 def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
+    # ffmpeg concat demuxer wants a text file list
     concat_txt = out_path.parent / f"concat_{uuid.uuid4().hex}.txt"
-    concat_txt.write_text("\n".join([f"file '{p.as_posix()}'" for p in file_list]), encoding="utf-8")
+
+    def esc(p: Path) -> str:
+        # Escape single quotes for ffmpeg concat
+        s = str(p)
+        return s.replace("'", "'\\''")
+
+    concat_txt.write_text("\n".join([f"file '{esc(p)}'" for p in file_list]), encoding="utf-8")
 
     cmd = [
         "ffmpeg", "-y",
@@ -1826,6 +1823,78 @@ Rules:
 # ----------------------------
 # EPISODE SEO META
 # ----------------------------
+TIER1_PUBLISHERS = {
+    "reuters", "bloomberg", "wall street journal", "wsj", "financial times", "ft",
+    "new york times", "nytimes", "the verge", "techcrunch", "wired", "arstechnica",
+    "associated press", "ap", "cnbc"
+}
+
+
+def _clean_keyword(s: str) -> str:
+    s = re.sub(r"[^a-zA-Z0-9\s\-\&]", "", (s or "")).strip()
+    s = re.sub(r"\s+", " ", s)
+    return s
+
+
+def build_episode_keywords(stories: List[Dict[str, str]], max_keywords: int = 14) -> List[str]:
+    base = [
+        "AI news", "OpenAI", "Anthropic", "Nvidia", "ChatGPT", "Gemini",
+        "AI regulation", "AI security", "AI chips", "big tech", "AI jobs"
+    ]
+
+    entities: List[str] = []
+    for s in stories[:5]:
+        ke = s.get("key_entities") if isinstance(s.get("key_entities"), list) else []
+        for e in ke:
+            e2 = _clean_keyword(str(e))
+            if e2 and len(e2) <= 28:
+                entities.append(e2)
+
+        pub = (s.get("publisher") or "").strip()
+        if pub and pub.lower() in TIER1_PUBLISHERS:
+            entities.append(pub)
+
+    out: List[str] = []
+    seen = set()
+    for x in base + entities:
+        k = x.lower().strip()
+        if not k or k in seen:
+            continue
+        seen.add(k)
+        out.append(x.strip())
+        if len(out) >= max_keywords:
+            break
+    return out
+
+
+def build_hashtags_from_keywords(keywords: List[str], max_tags: int = 6) -> str:
+    map_to = {
+        "ai news": "#AI",
+        "openai": "#OpenAI",
+        "anthropic": "#Anthropic",
+        "nvidia": "#Nvidia",
+        "chatgpt": "#ChatGPT",
+        "gemini": "#Gemini",
+        "ai regulation": "#AIRegulation",
+        "ai security": "#AISecurity",
+        "ai chips": "#AIChips",
+        "ai jobs": "#AIJobs",
+        "big tech": "#BigTech",
+    }
+    tags: List[str] = []
+    for k in keywords:
+        t = map_to.get(k.lower().strip())
+        if t and t not in tags:
+            tags.append(t)
+        if len(tags) >= max_tags:
+            break
+
+    if "#AI" not in tags:
+        tags = ["#AI"] + [t for t in tags if t != "#AI"]
+
+    return " ".join(tags[:max_tags])
+
+
 def _generate_episode_seo_meta(
     date_str: str,
     stories: List[Dict[str, str]],
@@ -2131,10 +2200,6 @@ def update_feed_xml(meta: Dict):
 # MAIN PRODUCER
 # ----------------------------
 def _maybe_append_date(title: str, date_str: str) -> str:
-    """
-    Ensures date suffix is present and title length <= EPISODE_META_MAX_TITLE.
-    Preserves the date suffix by truncating the base title if needed.
-    """
     t = (title or "").strip()
     if not t:
         return f"{RSS_SETTINGS['title']} — {date_str}"[:EPISODE_META_MAX_TITLE]
@@ -2153,7 +2218,7 @@ def _maybe_append_date(title: str, date_str: str) -> str:
     return (base + suffix)[:EPISODE_META_MAX_TITLE].strip()
 
 
-def _file_ok_for_feed(p: Path) -> bool:
+def _file_ok_min_bytes(p: Path) -> bool:
     try:
         return p.exists() and p.stat().st_size >= MIN_MP3_BYTES_FEED
     except Exception:
@@ -2162,13 +2227,15 @@ def _file_ok_for_feed(p: Path) -> bool:
 
 def produce_episode():
     if not _has_ffmpeg():
-        raise RuntimeError("ffmpeg is required for stitching and JAMIE speed adjustment. Install it on runner/host.")
+        raise RuntimeError("ffmpeg is required for stitching and mastering. Install it on runner/host.")
+
+    _require_intro_outro_if_needed()
 
     today = datetime.date.today().isoformat()
     final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
 
     # Idempotency guard
-    if final_mp3.exists() and _file_ok_for_feed(final_mp3) and not FORCE_REBUILD:
+    if final_mp3.exists() and _file_ok_min_bytes(final_mp3) and not FORCE_REBUILD:
         _safe_print(f"🛑 Today's episode already exists ({final_mp3.name}). Set FORCE_REBUILD=true to regenerate.")
 
         try:
@@ -2243,27 +2310,9 @@ def produce_episode():
 
     concat_files: List[Path] = []
 
-    if STITCH_METHOD == "ffmpeg":
-        silence_path = run_tmp / "silence_80ms.mp3"
-        AudioSegment.silent(duration=80).export(silence_path, format="mp3", bitrate="192k")
-    else:
-        silence_path = run_tmp / "silence_80ms.wav"
-        AudioSegment.silent(duration=80).export(silence_path, format="wav")
-
-    def trim_silence(seg: AudioSegment, leading_ms: int = 60, trailing_ms: int = 120, thresh_db: float = -45.0) -> AudioSegment:
-    def lead_silence_ms(a: AudioSegment) -> int:
-        ms = 0
-        step = 10
-        while ms < len(a):
-            if a[ms:ms+step].dBFS > thresh_db:
-                return ms
-            ms += step
-        return ms
-
-    start = min(lead_silence_ms(seg), leading_ms)
-    end = min(lead_silence_ms(seg.reverse()), trailing_ms)
-    trimmed = seg[start:len(seg)-end] if len(seg) > (start + end) else seg
-    return trimmed
+    # Use MP3 silence always (keeps concat consistent)
+    silence_path = run_tmp / "silence_80ms.mp3"
+    AudioSegment.silent(duration=80).export(silence_path, format="mp3", bitrate="192k")
 
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
@@ -2272,7 +2321,7 @@ def produce_episode():
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
             if INTRO_PATH.exists() and not inserted_intro:
-                intro = AudioSegment.from_file(INTRO_PATH)[:15000].fade_out(1200)
+                intro = match_level(AudioSegment.from_file(INTRO_PATH)[:15000], target_dbfs=-18.0).fade_out(1200)
                 intro_path = run_tmp / "intro_trim.mp3"
                 intro.export(intro_path, format="mp3", bitrate="192k")
                 concat_files.append(intro_path)
@@ -2287,9 +2336,13 @@ def produce_episode():
             raw_seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
             tts_to_file(chunk, voice, raw_seg_path)
 
+            # Trim silence and standardize
+            post_process_tts_mp3(raw_seg_path)
+
             if speaker == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
                 sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
                 apply_speed_ffmpeg(raw_seg_path, sped_path, JAMIE_SPEED)
+                post_process_tts_mp3(sped_path)
                 concat_files.append(sped_path)
             else:
                 concat_files.append(raw_seg_path)
@@ -2297,7 +2350,7 @@ def produce_episode():
             concat_files.append(silence_path)
 
     if OUTRO_PATH.exists():
-        outro = AudioSegment.from_file(OUTRO_PATH)[:12000].fade_in(800).fade_out(1200)
+        outro = match_level(AudioSegment.from_file(OUTRO_PATH)[:12000], target_dbfs=-18.0).fade_in(800).fade_out(1200)
         outro_path = run_tmp / "outro_trim.mp3"
         outro.export(outro_path, format="mp3", bitrate="192k")
         concat_files.append(outro_path)
@@ -2306,26 +2359,9 @@ def produce_episode():
     stitch_audio(concat_files, final_mp3)
 
     _safe_print(" >> 🎛️ MASTERING (loudness normalize)...")
-mastered = run_tmp / f"{today}_mastered.mp3"
-master_final_audio_ffmpeg(final_mp3, mastered)
-shutil.copyfile(mastered, final_mp3)
-
-    def master_final_audio_ffmpeg(in_path: Path, out_path: Path):
-    if not _has_ffmpeg():
-        raise RuntimeError("ffmpeg not found; required for final mastering.")
-
-    cmd = [
-        "ffmpeg", "-y",
-        "-i", str(in_path),
-        # light compression -> loudnorm (podcast-friendly)
-        "-af",
-        "acompressor=threshold=-18dB:ratio=3:attack=10:release=120:makeup=4,"
-        "loudnorm=I=-16:TP=-1.5:LRA=11",
-        "-c:a", "libmp3lame",
-        "-b:a", "192k",
-        str(out_path),
-    ]
-    _run(cmd)
+    mastered = run_tmp / f"{today}_mastered.mp3"
+    master_final_audio_ffmpeg(final_mp3, mastered)
+    shutil.copyfile(mastered, final_mp3)
 
     final_audio = AudioSegment.from_mp3(final_mp3)
     duration_seconds = int(len(final_audio) / 1000)
