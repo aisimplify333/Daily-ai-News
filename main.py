@@ -144,6 +144,84 @@ def _safe_print(msg: str):
     print(msg, flush=True)
 
 # ----------------------------
+# SEO / TAGS HELPERS (98+)
+# ----------------------------
+TIER1_PUBLISHERS = {
+    "reuters", "bloomberg", "wall street journal", "wsj", "financial times", "ft",
+    "new york times", "nytimes", "the verge", "techcrunch", "wired", "arstechnica",
+    "associated press", "ap", "cnbc"
+}
+
+def _clean_keyword(s: str) -> str:
+    s = re.sub(r"[^a-zA-Z0-9\s\-\&]", "", (s or "")).strip()
+    s = re.sub(r"\s+", " ", s)
+    return s
+
+def build_episode_keywords(stories: List[Dict[str, str]], max_keywords: int = 14) -> List[str]:
+    """
+    SEO keywords used for iTunes keywords + show notes tags.
+    Mix: core show tags + entities from stories.
+    """
+    base = [
+        "AI news", "OpenAI", "Anthropic", "Nvidia", "ChatGPT", "Gemini",
+        "AI regulation", "AI security", "AI chips", "big tech", "AI jobs"
+    ]
+
+    entities: List[str] = []
+    for s in stories[:5]:
+        ke = s.get("key_entities") if isinstance(s.get("key_entities"), list) else []
+        for e in ke:
+            e2 = _clean_keyword(str(e))
+            if e2 and len(e2) <= 28:
+                entities.append(e2)
+
+        pub = (s.get("publisher") or "").strip()
+        if pub and pub.lower() in TIER1_PUBLISHERS:
+            entities.append(pub)
+
+    out: List[str] = []
+    seen = set()
+    for x in base + entities:
+        k = x.lower().strip()
+        if not k or k in seen:
+            continue
+        seen.add(k)
+        out.append(x.strip())
+        if len(out) >= max_keywords:
+            break
+    return out
+
+def build_hashtags_from_keywords(keywords: List[str], max_tags: int = 6) -> str:
+    """
+    For show notes + social packs. Keep short, high-signal.
+    """
+    map_to = {
+        "ai news": "#AI",
+        "openai": "#OpenAI",
+        "anthropic": "#Anthropic",
+        "nvidia": "#Nvidia",
+        "chatgpt": "#ChatGPT",
+        "gemini": "#Gemini",
+        "ai regulation": "#AIRegulation",
+        "ai security": "#AISecurity",
+        "ai chips": "#AIChips",
+        "ai jobs": "#AIJobs",
+        "big tech": "#BigTech",
+    }
+    tags: List[str] = []
+    for k in keywords:
+        t = map_to.get(k.lower().strip())
+        if t and t not in tags:
+            tags.append(t)
+        if len(tags) >= max_tags:
+            break
+
+    if "#AI" not in tags:
+        tags = ["#AI"] + [t for t in tags if t != "#AI"]
+
+    return " ".join(tags[:max_tags])
+
+# ----------------------------
 # SYSTEM CHECKS
 # ----------------------------
 def _has_ffmpeg() -> bool:
@@ -994,6 +1072,7 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
     if not seg_text.strip().startswith(_segment_header(seg_num)):
         issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
 
+    # Strict line format check
     for ln in seg_text.splitlines():
         line = ln.strip()
         if not line:
@@ -1004,8 +1083,7 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
             issues.append("Found non-labeled spoken line(s).")
             break
 
-    # Enforce Segment 2: NO RUFUS
-        # Segment-specific rule: Segment 2 must be ONLY ALEX + JAMIE
+    # Segment 2 must have NO Rufus at all
     if seg_num == 2:
         if re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
             issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
@@ -1079,13 +1157,16 @@ def _generate_segment(
     prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
     seg_text = ""
 
-    allowed = {"ALEX", "JAMIE"} if seg_num == 2 else None
-
     for attempt in range(1, SEGMENT_ATTEMPTS + 1):
-        raw = generate_text(prompt, temperature=0.75, max_tokens=2600)
+        seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
 
-        # Sanitize early; for Segment 2, actively filter to ALEX/JAMIE only
-        seg_text = _sanitize_dialogue_only(raw, allowed_speakers=allowed)
+        # Defensive cleanup: Segment 2 must be ONLY ALEX + JAMIE
+        if seg_num == 2:
+            seg_text = _sanitize_segment_speakers(seg_text, allowed={"ALEX", "JAMIE"})
+
+            # Ensure header remains first line if model omitted it
+            if not seg_text.strip().startswith(_segment_header(seg_num)):
+                seg_text = f"{_segment_header(seg_num)}\n{seg_text}".strip()
 
         wc = _word_count(seg_text)
         issues = _segment_validate(seg_text, seg_num, seg_words_min)
@@ -1253,6 +1334,15 @@ def validate_script(script: str) -> List[str]:
     if seg2_block and re.search(r"^RUFUS\s*:", seg2_block.group(1), flags=re.IGNORECASE | re.MULTILINE):
         issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
 
+    # Hard rule: Segment 2 must contain ONLY ALEX + JAMIE (no Rufus)
+    seg2_block = re.split(r"^###\s*SEGMENT\s*2\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    if len(seg2_block) > 1:
+        after_seg2 = seg2_block[1]
+        # Clip to before SEGMENT 3 if present
+        clip = re.split(r"^###\s*SEGMENT\s*3\b", after_seg2, flags=re.IGNORECASE | re.MULTILINE)[0]
+        if re.search(r"^RUFUS\s*:", clip, flags=re.IGNORECASE | re.MULTILINE):
+            issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
+
     min_words, _, max_words = _script_targets()
     wc = _word_count(script)
     if wc < min_words:
@@ -1343,6 +1433,42 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
         raise RuntimeError("Final script validation failed:\n" + "\n".join(issues))
 
     return script
+
+    def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None, disallowed: Optional[set] = None) -> str:
+    """
+    Defensive post-processing:
+    - If `allowed` is set, removes any speaker lines NOT in allowed.
+    - If `disallowed` is set, removes any speaker lines IN disallowed.
+    Keeps segment marker and [MUSIC].
+    """
+    allowed = {a.upper() for a in (allowed or set())}
+    disallowed = {d.upper() for d in (disallowed or set())}
+
+    out: List[str] = []
+    for raw in (seg_text or "").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        if line.startswith("###") or line.upper() == "[MUSIC]":
+            out.append(line)
+            continue
+
+        m = SPEAKER_RE.match(line)
+        if not m:
+            # Drop non-speaker garbage; the system requires strict lines anyway
+            continue
+
+        spk = m.group(1).upper()
+        txt = m.group(2).strip()
+
+        if allowed and spk not in allowed:
+            continue
+        if disallowed and spk in disallowed:
+            continue
+        if txt:
+            out.append(f"{spk}: {txt}")
+
+    return "\n".join(out).strip()
 
 # ----------------------------
 # DIALOGUE PARSING (ROBUST)
@@ -1743,57 +1869,136 @@ def _generate_episode_seo_meta(
     story_block = _story_block(stories)
     hook = (marketing_pack or {}).get("hook", "").strip()
 
+    keywords = build_episode_keywords(stories, max_keywords=14)
+    hashtags = build_hashtags_from_keywords(keywords, max_tags=6)
+
+    top_headline = (stories[0].get("headline") if stories else "AI BREAKING UPDATE").strip()
+    top_pub = (stories[0].get("publisher") if stories else "").strip()
+    mnum = NUMERIC_TOKEN_RE.search(story_block)
+    num_token = mnum.group(0) if mnum else date_str
+
     prompt = f"""
-You are writing SEO metadata for a daily AI podcast episode.
+You are writing Spotify/Apple SEO metadata for a daily AI podcast episode.
 
 Return ONLY valid JSON (no markdown):
 {{
-  "title": "SEO title <= {EPISODE_META_MAX_TITLE} chars. Must be punchy and specific. Include at least ONE number/date/$/% from the story block if available.",
-  "description": "Professional show notes <= {EPISODE_META_MAX_DESC} chars. Must include sections: TODAY’S LINEUP, KEY NUMBERS, SOURCES, LISTEN. Use the story data_points verbatim wherever possible. Do NOT invent numbers."
+  "title": "VIRAL + SEARCHABLE episode title <= {EPISODE_META_MAX_TITLE} chars. Must include 1 clear keyword (OpenAI/Nvidia/Anthropic/ChatGPT/Gemini) AND at least one number/$/%/date token from story block if available. Do NOT start with just the date.",
+  "subtitle": "Short subtitle <= 120 chars. Must feel urgent and human-impact.",
+  "description": "Show notes <= {EPISODE_META_MAX_DESC} chars with sections EXACTLY:
+TODAY’S LINEUP
+KEY NUMBERS
+WHY IT MATTERS
+SOURCES
+LISTEN
+TAGS
+HASHTAGS
+Rules: use story data_points verbatim wherever possible; do NOT invent numbers."
 }}
 
 Episode date: {date_str}
 Listen URL: {listen_url}
-Hook (if useful): {hook}
+Hook (optional): {hook}
+
+Preferred TAGS/KEYWORDS (use in TAGS section):
+{", ".join(keywords)}
 
 TODAY'S STORIES:
 {story_block}
 
-SCRIPT (for context; do not copy long chunks):
-{script_text[:1800]}
+SCRIPT (context only; do not paste long chunks):
+{script_text[:1600]}
 """.strip()
 
-    raw = generate_text(prompt, temperature=0.25, max_tokens=1200)
+    raw = generate_text(prompt, temperature=0.25, max_tokens=1400)
     j = _extract_json_object(raw) or {}
 
     title = (j.get("title") or "").strip()
+    subtitle = (j.get("subtitle") or "").strip()
     desc = (j.get("description") or "").strip()
 
     def ok_title(t: str) -> bool:
         if not t or len(t) > EPISODE_META_MAX_TITLE:
             return False
-        return bool(NUMERIC_TOKEN_RE.search(t)) or bool(re.search(r"\d", t))
+        if re.fullmatch(r"\d{4}-\d{2}-\d{2}", t.strip()):
+            return False
+        if not (NUMERIC_TOKEN_RE.search(t) or re.search(r"\d", t)):
+            return False
+        core = ["openai", "nvidia", "anthropic", "chatgpt", "gemini", "xai", "grok", "meta"]
+        if not any(c in t.lower() for c in core):
+            return False
+        return True
 
     def ok_desc(d: str) -> bool:
         if not d or len(d) > EPISODE_META_MAX_DESC:
             return False
-        must = ["TODAY", "KEY", "SOURCE", "LISTEN"]
-        if sum(1 for m in must if m.lower() in d.lower()) < 3:
+        must = ["TODAY", "KEY NUMBERS", "WHY IT MATTERS", "SOURCES", "LISTEN", "TAGS", "HASHTAGS"]
+        if sum(1 for m in must if m.lower() in d.lower()) < 6:
             return False
         return _digit_count(d) >= 35
 
-    if not ok_desc(desc):
-        desc = _build_show_notes_deterministic(date_str, stories, listen_url, marketing_pack=marketing_pack)
-        desc = desc[:EPISODE_META_MAX_DESC]
-
     if not ok_title(title):
-        top = (stories[0].get("headline") if stories else "AI BREAKING UPDATE").strip()
-        m = NUMERIC_TOKEN_RE.search(story_block)
-        num = m.group(0) if m else date_str
-        title = f"{top[:70]} — {num}"
-        title = title[:EPISODE_META_MAX_TITLE]
+        core_kw = "OpenAI" if "openai" in story_block.lower() else ("Nvidia" if "nvidia" in story_block.lower() else "AI")
+        pub_bit = f" ({top_pub})" if top_pub else ""
+        title = f"{core_kw} shock: {num_token} — {top_headline[:70]}{pub_bit}"
+        title = title[:EPISODE_META_MAX_TITLE].strip()
 
-    return {"title": title, "description": desc}
+    if not subtitle:
+        subtitle = (hook or "5 stories. Real consequences. What breaks next.").strip()[:120]
+
+    if not ok_desc(desc):
+        lines = []
+        lines.append((hook or title).strip())
+        lines.append("")
+        lines.append("TODAY’S LINEUP")
+        for s in stories[:5]:
+            pub = (s.get("publisher") or "").strip()
+            head = (s.get("headline") or "").strip()
+            lines.append(f"- {head}" + (f" ({pub})" if pub else ""))
+
+        lines.append("")
+        lines.append("KEY NUMBERS")
+        for i, s in enumerate(stories[:5], start=1):
+            lines.append(f"{i}) {(s.get('headline') or '').strip()}")
+            dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
+            dp = [str(x).strip() for x in dp if str(x).strip()] or ["No explicit figures in snippet."]
+            for b in dp[:6]:
+                lines.append(f"   • {b}")
+
+        lines.append("")
+        lines.append("WHY IT MATTERS")
+        for s in stories[:5]:
+            why = (s.get("why_shocking") or "").strip()
+            if why:
+                lines.append(f"- {why[:220]}")
+
+        lines.append("")
+        lines.append("SOURCES")
+        for s in stories[:5]:
+            url = (s.get("source_url") or "").strip()
+            if url:
+                lines.append(f"- {url}")
+
+        lines.append("")
+        lines.append("LISTEN")
+        lines.append(listen_url)
+
+        lines.append("")
+        lines.append("TAGS")
+        lines.append(", ".join(keywords))
+
+        lines.append("")
+        lines.append("HASHTAGS")
+        lines.append(hashtags)
+
+        desc = "\n".join(lines).strip()[:EPISODE_META_MAX_DESC]
+
+    return {
+        "title": title,
+        "subtitle": subtitle,
+        "description": desc,
+        "keywords": keywords,
+        "hashtags": hashtags,
+    }
 
 # ----------------------------
 # RSS FEED WRITER (catalog-wide truth)
@@ -1832,39 +2037,53 @@ def update_feed_xml(meta: Dict):
         except Exception:
             return False
 
-    def make_item(title: str, description: str, audio_filename: str, pubdate_rfc2822: str, duration_seconds: int = 0) -> ET.Element:
-        item = ET.Element("item")
-        ET.SubElement(item, "title").text = title[:EPISODE_META_MAX_TITLE]
-        ET.SubElement(item, "description").text = (description or "")[:8000]
-        ET.SubElement(item, f"{{{ITUNES_NS}}}summary").text = (description or "")[:8000]
+   def make_item(
+    title: str,
+    description: str,
+    audio_filename: str,
+    pubdate_rfc2822: str,
+    duration_seconds: int = 0,
+    subtitle: str = "",
+    keywords_csv: str = "",
+) -> ET.Element:
+    item = ET.Element("item")
+    ET.SubElement(item, "title").text = title[:EPISODE_META_MAX_TITLE]
+    ET.SubElement(item, "description").text = (description or "")[:8000]
+    ET.SubElement(item, f"{{{ITUNES_NS}}}summary").text = (description or "")[:8000]
 
-        audio_url = safe_url_join(AUDIO_BASE_URL, audio_filename)
+    if subtitle:
+        ET.SubElement(item, f"{{{ITUNES_NS}}}subtitle").text = subtitle[:255]
+    if keywords_csv:
+        ET.SubElement(item, f"{{{ITUNES_NS}}}keywords").text = keywords_csv[:255]
 
-        guid_el = ET.SubElement(item, "guid")
-        guid_el.set("isPermaLink", "false")
-        guid_el.text = audio_url
+    audio_url = safe_url_join(AUDIO_BASE_URL, audio_filename)
 
-        ET.SubElement(item, "pubDate").text = pubdate_rfc2822
+    guid_el = ET.SubElement(item, "guid")
+    guid_el.set("isPermaLink", "false")
+    guid_el.text = audio_url
 
-        enclosure = ET.SubElement(item, "enclosure")
-        enclosure.set("url", audio_url)
-        enclosure.set("type", "audio/mpeg")
+    ET.SubElement(item, "pubDate").text = pubdate_rfc2822
 
-        try:
-            length_bytes = int((AUDIO_DIR / audio_filename).stat().st_size)
-        except Exception:
-            length_bytes = 0
-        enclosure.set("length", str(length_bytes))
+    enclosure = ET.SubElement(item, "enclosure")
+    enclosure.set("url", audio_url)
+    enclosure.set("type", "audio/mpeg")
 
-        if duration_seconds and duration_seconds > 0:
-            dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
-            dur.text = str(int(duration_seconds))
+    try:
+        length_bytes = int((AUDIO_DIR / audio_filename).stat().st_size)
+    except Exception:
+        length_bytes = 0
+    enclosure.set("length", str(length_bytes))
 
-        ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
-        ep_img.set("href", RSS_SETTINGS["image"])
+    if duration_seconds and duration_seconds > 0:
+        dur = ET.SubElement(item, f"{{{ITUNES_NS}}}duration")
+        dur.text = str(int(duration_seconds))
 
-        ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
-        return item
+    ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
+    ep_img.set("href", RSS_SETTINGS["image"])
+
+    ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
+    return item
+
 
     rss = ET.Element("rss", {"version": "2.0"})
     channel = ET.SubElement(rss, "channel")
@@ -1915,18 +2134,24 @@ def update_feed_xml(meta: Dict):
             title = (meta.get("title") or title).strip()
             desc = (meta.get("show_notes") or desc).strip()
             dur = int(meta.get("duration_seconds") or 0)
+        subtitle = (meta.get("subtitle") or "").strip()
+        keywords_csv = (meta.get("keywords_csv") or "").strip()
         else:
-            dur = 0
+        dur = 0
+        subtitle = ""
+        keywords_csv = ""
 
         channel.append(
-            make_item(
-                title=title,
-                description=desc,
-                audio_filename=mp3.name,
-                pubdate_rfc2822=rfc2822_from_date(date_str),
-                duration_seconds=dur,
-            )
-        )
+    make_item(
+        title=title,
+        description=desc,
+        audio_filename=mp3.name,
+        pubdate_rfc2822=rfc2822_from_date(date_str),
+        duration_seconds=dur,
+        subtitle=subtitle,
+        keywords_csv=keywords_csv,
+    )
+)
         items_added += 1
 
     ET.ElementTree(rss).write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
@@ -2095,12 +2320,26 @@ def produce_episode():
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
 
     seo = _generate_episode_seo_meta(
-        date_str=today,
-        stories=stories,
-        listen_url=LISTEN_URL,
-        script_text=script,
-        marketing_pack=pack,
-    )
+    date_str=today,
+    stories=stories,
+    listen_url=LISTEN_URL,
+    script_text=script,
+    marketing_pack=pack,
+)
+
+# Title should be viral/searchable; do NOT default to just the date.
+feed_title = seo["title"].strip()
+show_notes = seo["description"].strip()
+
+subtitle = (seo.get("subtitle") or "").strip()[:255]
+keywords_csv = ", ".join(seo.get("keywords") or [])[:255]
+
+# Persist sidecar so feed rebuild stays rich for this date
+_write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
+
+keywords_csv = ", ".join(seo.get("keywords") or [])[:255]
+subtitle = (seo.get("subtitle") or "").strip()[:255]
+
 
     # Final title + show-notes used for RSS + sidecar + metadata.json
     feed_title = _maybe_append_date(seo["title"], today)
@@ -2134,18 +2373,21 @@ def produce_episode():
     }
     (BASE_DIR / "platform_pack.json").write_text(json.dumps(platform_pack, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    meta = {
-        "date": today,
-        "title": feed_title,
-        "listen_url": LISTEN_URL,
-        "minutes": round(minutes, 2),
-        "audio_file": final_mp3.name,
-        "audio_url": AUDIO_BASE_URL + final_mp3.name,
-        "stories": stories,
-        "marketing_pack": pack,
-        "duration_seconds": duration_seconds,
-        "show_notes": show_notes,
-    }
+ meta = {
+    "date": today,
+    "title": feed_title,
+    "subtitle": subtitle,
+    "keywords_csv": keywords_csv,
+    "listen_url": LISTEN_URL,
+    "minutes": round(minutes, 2),
+    "audio_file": final_mp3.name,
+    "audio_url": AUDIO_BASE_URL + final_mp3.name,
+    "stories": stories,
+    "marketing_pack": pack,
+    "duration_seconds": duration_seconds,
+    "show_notes": show_notes,
+}
+
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     # Rebuild the entire feed from local mp3s + sidecars (catalog-wide truth)
