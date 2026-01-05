@@ -101,6 +101,25 @@ STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | f
 # JAMIE speed (default 1.05 per your request)
 JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
 
+clip = AudioSegment.from_mp3(str(raw_seg_path))
+clip = trim_silence(clip, leading_ms=60, trailing_ms=140, thresh_db=-45.0)
+clip.export(raw_seg_path, format="mp3", bitrate="192k")
+
+REQUIRE_INTRO_OUTRO = os.getenv("REQUIRE_INTRO_OUTRO", "true").strip().lower() in ("1","true","yes")
+
+if REQUIRE_INTRO_OUTRO and not INTRO_PATH.exists():
+    raise RuntimeError("intro.mp3 missing. 98+ mode requires an intro stinger.")
+if REQUIRE_INTRO_OUTRO and not OUTRO_PATH.exists():
+    raise RuntimeError("outro.mp3 missing. 98+ mode requires an outro stinger.")
+
+def match_level(seg: AudioSegment, target_dbfs: float = -18.0) -> AudioSegment:
+    if seg.dBFS == float("-inf"):
+        return seg
+    return seg.apply_gain(target_dbfs - seg.dBFS)
+
+intro = match_level(AudioSegment.from_file(INTRO_PATH)[:15000], target_dbfs=-18.0).fade_out(1200)
+outro = match_level(AudioSegment.from_file(OUTRO_PATH)[:12000], target_dbfs=-18.0).fade_in(800).fade_out(1200)
+
 # ----------------------------
 # QUALITY GATES (98% standard)
 # ----------------------------
@@ -2225,11 +2244,26 @@ def produce_episode():
     concat_files: List[Path] = []
 
     if STITCH_METHOD == "ffmpeg":
-        silence_path = run_tmp / "silence_150ms.mp3"
-        AudioSegment.silent(duration=150).export(silence_path, format="mp3", bitrate="192k")
+        silence_path = run_tmp / "silence_80ms.mp3"
+        AudioSegment.silent(duration=80).export(silence_path, format="mp3", bitrate="192k")
     else:
-        silence_path = run_tmp / "silence_150ms.wav"
-        AudioSegment.silent(duration=150).export(silence_path, format="wav")
+        silence_path = run_tmp / "silence_80ms.wav"
+        AudioSegment.silent(duration=80).export(silence_path, format="wav")
+
+    def trim_silence(seg: AudioSegment, leading_ms: int = 60, trailing_ms: int = 120, thresh_db: float = -45.0) -> AudioSegment:
+    def lead_silence_ms(a: AudioSegment) -> int:
+        ms = 0
+        step = 10
+        while ms < len(a):
+            if a[ms:ms+step].dBFS > thresh_db:
+                return ms
+            ms += step
+        return ms
+
+    start = min(lead_silence_ms(seg), leading_ms)
+    end = min(lead_silence_ms(seg.reverse()), trailing_ms)
+    trimmed = seg[start:len(seg)-end] if len(seg) > (start + end) else seg
+    return trimmed
 
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
@@ -2270,6 +2304,28 @@ def produce_episode():
 
     _safe_print(f" >> 🎚️ STITCHING ({STITCH_METHOD})...")
     stitch_audio(concat_files, final_mp3)
+
+    _safe_print(" >> 🎛️ MASTERING (loudness normalize)...")
+mastered = run_tmp / f"{today}_mastered.mp3"
+master_final_audio_ffmpeg(final_mp3, mastered)
+shutil.copyfile(mastered, final_mp3)
+
+    def master_final_audio_ffmpeg(in_path: Path, out_path: Path):
+    if not _has_ffmpeg():
+        raise RuntimeError("ffmpeg not found; required for final mastering.")
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-i", str(in_path),
+        # light compression -> loudnorm (podcast-friendly)
+        "-af",
+        "acompressor=threshold=-18dB:ratio=3:attack=10:release=120:makeup=4,"
+        "loudnorm=I=-16:TP=-1.5:LRA=11",
+        "-c:a", "libmp3lame",
+        "-b:a", "192k",
+        str(out_path),
+    ]
+    _run(cmd)
 
     final_audio = AudioSegment.from_mp3(final_mp3)
     duration_seconds = int(len(final_audio) / 1000)
