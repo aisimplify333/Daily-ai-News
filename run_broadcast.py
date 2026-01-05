@@ -77,8 +77,13 @@ def main():
         sys.exit(1)
 
     # 2) AGENCY (Visual Assets) - allow fail (marketing should not block audio publishing)
-    run_command("python generate_social.py", "2. Generating Visuals", allow_fail=True)
-    run_command("python animate_social.py", "3. Rendering Video Clips", allow_fail=True)
+    run_command("python generate_social.py", "2. Generating Visuals (Card)", allow_fail=True)
+
+    # NEW: Hook clip (8–15s). Uses episode_metadata.json + marketing_pack.json
+    run_command("python animate_hook.py", "2b. Rendering Hook Clip (social_hook.mp4)", allow_fail=True)
+
+    # Existing stylized clip
+    run_command("python animate_social.py", "3. Rendering Video Clips (social_clip.mp4)", allow_fail=True)
 
     # 3) TOWER (Distribution)
     print("\n >> 📡 UPLOADING TO GITHUB...")
