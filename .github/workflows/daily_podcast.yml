@@ -54,6 +54,13 @@ jobs:
           TARGET_MINUTES: "28"
           WORDS_PER_MINUTE: "175"
           JAMIE_SPEED: "1.05"
+          
+          INTRO_BED_MS: "6500"
+          INTRO_BED_FADE_OUT_MS: "1800"
+          MUSIC_TARGET_DBFS: "-25.0"
+          DUCK_THRESHOLD_DBFS: "-34.0"
+          DUCK_AMOUNT_DB: "12.0"
+          DUCK_WINDOW_MS: "40"
 
           # --- X/TWITTER CREDENTIALS (used by social_publisher.py) ---
           X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
