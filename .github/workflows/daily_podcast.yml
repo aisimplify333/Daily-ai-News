@@ -12,8 +12,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-SAVE_SCRIPT: "true"
-
     steps:
       # 1. SETUP
       - name: Check out repository
@@ -25,6 +23,8 @@ SAVE_SCRIPT: "true"
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+
+          SAVE_SCRIPT: "true"
 
       # 2. INSTALL SYSTEM LIBRARIES (Crucial for Video)
       - name: Install System Dependencies
