@@ -12,6 +12,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+SAVE_SCRIPT: "true"
+
     steps:
       # 1. SETUP
       - name: Check out repository
