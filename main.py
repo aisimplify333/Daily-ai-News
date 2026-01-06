@@ -45,6 +45,30 @@ TMP_AUDIO_DIR.mkdir(exist_ok=True)
 
 INTRO_PATH = BASE_DIR / "intro.mp3"
 OUTRO_PATH = BASE_DIR / "outro.mp3"
+TRANSITION_PATH = BASE_DIR / "transition.mp3"
+
+# Transitions: hard-gate optional (recommended once transition.mp3 is committed)
+REQUIRE_TRANSITIONS = os.getenv("REQUIRE_TRANSITIONS", "false").strip().lower() in ("1", "true", "yes")
+
+# Automatically inject a [MUSIC] marker between segments (2..5)
+TRANSITION_EVERY_SEGMENT = os.getenv("TRANSITION_EVERY_SEGMENT", "true").strip().lower() in ("1", "true", "yes")
+
+# Stinger durations
+INTRO_MS = int(os.getenv("INTRO_MS", "15000"))
+OUTRO_MS = int(os.getenv("OUTRO_MS", "12000"))
+TRANSITION_MS = int(os.getenv("TRANSITION_MS", "2500"))
+
+# Loudness + fades (stingers)
+STINGER_TARGET_DBFS = float(os.getenv("STINGER_TARGET_DBFS", "-18.0"))
+INTRO_FADE_IN_MS = int(os.getenv("INTRO_FADE_IN_MS", "120"))
+INTRO_FADE_OUT_MS = int(os.getenv("INTRO_FADE_OUT_MS", "1200"))
+OUTRO_FADE_IN_MS = int(os.getenv("OUTRO_FADE_IN_MS", "800"))
+OUTRO_FADE_OUT_MS = int(os.getenv("OUTRO_FADE_OUT_MS", "1200"))
+TRANSITION_FADE_IN_MS = int(os.getenv("TRANSITION_FADE_IN_MS", "120"))
+TRANSITION_FADE_OUT_MS = int(os.getenv("TRANSITION_FADE_OUT_MS", "350"))
+
+# Optional micro-crossfade when stitching via pydub (helps avoid clicks)
+CROSSFADE_MS = int(os.getenv("CROSSFADE_MS", "0"))  # try 40–80 if desired
 
 FEED_XML_PATH = BASE_DIR / "feed.xml"
 SPONSORS_PATH = BASE_DIR / "sponsors.json"
@@ -172,6 +196,8 @@ def _require_intro_outro_if_needed():
         raise RuntimeError("intro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires an intro stinger.")
     if REQUIRE_INTRO_OUTRO and not OUTRO_PATH.exists():
         raise RuntimeError("outro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires an outro stinger.")
+    if REQUIRE_TRANSITIONS and not TRANSITION_PATH.exists():
+        raise RuntimeError("transition.mp3 missing. REQUIRE_TRANSITIONS=true requires a transition stinger.")
 
 
 # ----------------------------
@@ -181,6 +207,30 @@ def match_level(seg: AudioSegment, target_dbfs: float = -18.0) -> AudioSegment:
     if seg.dBFS == float("-inf"):
         return seg
     return seg.apply_gain(target_dbfs - seg.dBFS)
+
+
+def load_stinger(
+    path: Path,
+    ms: int,
+    target_dbfs: float,
+    fade_in_ms: int,
+    fade_out_ms: int
+) -> AudioSegment:
+    """
+    Loads a stinger, trims to ms, level-matches to target_dbfs, and applies fades.
+    """
+    seg = AudioSegment.from_file(path)
+    if ms and ms > 0:
+        seg = seg[:ms]
+
+    seg = match_level(seg, target_dbfs=target_dbfs)
+
+    if fade_in_ms and fade_in_ms > 0:
+        seg = seg.fade_in(fade_in_ms)
+    if fade_out_ms and fade_out_ms > 0:
+        seg = seg.fade_out(fade_out_ms)
+
+    return seg
 
 
 def _lead_silence_ms(a: AudioSegment, thresh_db: float) -> int:
@@ -1483,17 +1533,27 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
 
 
 # ----------------------------
-# DIALOGUE PARSING (ROBUST)
+# DIALOGUE PARSING (ROBUST + AUTO-TRANSITIONS)
 # ----------------------------
+SEGMENT_MARKER_RE = re.compile(r"^###\s*SEGMENT\s*(\d+)\b", re.IGNORECASE)
+
 def iter_dialogue(script: str) -> List[Tuple[str, str]]:
+    """
+    Parses dialogue into (speaker, text) tuples.
+    Also injects a [MUSIC] marker automatically BEFORE segments 2..5 (if enabled),
+    so transitions are never forgotten even when the script writer misses them.
+    """
     out: List[Tuple[str, str]] = []
     current_speaker: Optional[str] = None
     buf: List[str] = []
+    seen_first_segment = False
+    last_emitted_was_music = False
 
     def flush():
-        nonlocal current_speaker, buf
+        nonlocal current_speaker, buf, last_emitted_was_music
         if current_speaker and buf:
             out.append((current_speaker, " ".join(buf).strip()))
+            last_emitted_was_music = False
         current_speaker = None
         buf = []
 
@@ -1502,13 +1562,23 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
         if not line:
             continue
 
-        if line.startswith("###"):
+        mseg = SEGMENT_MARKER_RE.match(line)
+        if mseg:
             flush()
+            seg_num = int(mseg.group(1))
+
+            # Inject transition marker before segments 2..5 unless already have one
+            if TRANSITION_EVERY_SEGMENT and seen_first_segment and seg_num >= 2 and not last_emitted_was_music:
+                out.append(("MUSIC", "[MUSIC]"))
+                last_emitted_was_music = True
+
+            seen_first_segment = True
             continue
 
         if line.upper() == "[MUSIC]":
             flush()
             out.append(("MUSIC", "[MUSIC]"))
+            last_emitted_was_music = True
             continue
 
         m = SPEAKER_RE.match(line)
@@ -1654,9 +1724,15 @@ def stitch_with_ffmpeg(file_list: List[Path], out_path: Path):
 def stitch_with_pydub(file_list: List[Path], out_path: Path):
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg not found in runner (required by pydub decode).")
+
     combined = AudioSegment.empty()
     for p in file_list:
-        combined += AudioSegment.from_file(p)
+        seg = AudioSegment.from_file(p)
+        if len(combined) == 0 or CROSSFADE_MS <= 0:
+            combined += seg
+        else:
+            combined = combined.append(seg, crossfade=min(CROSSFADE_MS, len(seg), len(combined)))
+
     combined.export(out_path, format="mp3", bitrate="192k")
 
 
@@ -2314,20 +2390,49 @@ def produce_episode():
     silence_path = run_tmp / "silence_80ms.mp3"
     AudioSegment.silent(duration=80).export(silence_path, format="mp3", bitrate="192k")
 
+    # Pre-load stingers once (fast + consistent)
+    intro_seg = None
+    outro_seg = None
+    transition_seg = None
+
+    if INTRO_PATH.exists():
+        intro_seg = load_stinger(
+            INTRO_PATH, INTRO_MS, STINGER_TARGET_DBFS,
+            INTRO_FADE_IN_MS, INTRO_FADE_OUT_MS
+        )
+
+    if OUTRO_PATH.exists():
+        outro_seg = load_stinger(
+            OUTRO_PATH, OUTRO_MS, STINGER_TARGET_DBFS,
+            OUTRO_FADE_IN_MS, OUTRO_FADE_OUT_MS
+        )
+
+    if TRANSITION_PATH.exists():
+        transition_seg = load_stinger(
+            TRANSITION_PATH, TRANSITION_MS, STINGER_TARGET_DBFS,
+            TRANSITION_FADE_IN_MS, TRANSITION_FADE_OUT_MS
+        )
+
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
     inserted_intro = False
 
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
-            if INTRO_PATH.exists() and not inserted_intro:
-                intro = match_level(AudioSegment.from_file(INTRO_PATH)[:15000], target_dbfs=-18.0).fade_out(1200)
+            # First MUSIC => intro; subsequent MUSIC => transition stinger
+            if intro_seg is not None and not inserted_intro:
                 intro_path = run_tmp / "intro_trim.mp3"
-                intro.export(intro_path, format="mp3", bitrate="192k")
+                intro_seg.export(intro_path, format="mp3", bitrate="192k")
                 concat_files.append(intro_path)
                 inserted_intro = True
             else:
-                concat_files.append(silence_path)
+                if transition_seg is not None:
+                    tpath = run_tmp / f"transition_{uuid.uuid4().hex}.mp3"
+                    transition_seg.export(tpath, format="mp3", bitrate="192k")
+                    concat_files.append(tpath)
+                else:
+                    # If transitions aren't available, keep timing stable
+                    concat_files.append(silence_path)
             continue
 
         voice = VOICE_MAP.get(speaker, "onyx")
@@ -2349,10 +2454,9 @@ def produce_episode():
 
             concat_files.append(silence_path)
 
-    if OUTRO_PATH.exists():
-        outro = match_level(AudioSegment.from_file(OUTRO_PATH)[:12000], target_dbfs=-18.0).fade_in(800).fade_out(1200)
+    if outro_seg is not None:
         outro_path = run_tmp / "outro_trim.mp3"
-        outro.export(outro_path, format="mp3", bitrate="192k")
+        outro_seg.export(outro_path, format="mp3", bitrate="192k")
         concat_files.append(outro_path)
 
     _safe_print(f" >> 🎚️ STITCHING ({STITCH_METHOD})...")
