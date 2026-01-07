@@ -2467,28 +2467,31 @@ def produce_episode():
             TRANSITION_FADE_IN_MS, TRANSITION_FADE_OUT_MS
         )
 
-    _safe_print(" >> 🎙️ RECORDING (TTS)...")
+       _safe_print(" >> 🎙️ RECORDING (TTS)...")
     seg_idx = 0
     inserted_intro = False
     pending_intro_bed = False
 
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
-            # First [MUSIC] => bed intro under the next spoken audio
+            # First [MUSIC] = intro bed under next spoken audio
             if INTRO_PATH.exists() and not inserted_intro:
                 pending_intro_bed = True
                 inserted_intro = True
             else:
-                # Later [MUSIC] markers => transition sting if available, else short silence
+                # For later [MUSIC] markers, use transition stinger if available; else silence
                 if transition_seg is not None:
-                    tpath = run_tmp / f"transition_{uuid.uuid4().hex}.mp3"
-                    transition_seg.export(tpath, format="mp3", bitrate="192k")
-                    concat_files.append(tpath)
+                    trans_path = run_tmp / f"transition_{uuid.uuid4().hex}.mp3"
+                    transition_seg.export(trans_path, format="mp3", bitrate="192k")
+                    concat_files.append(trans_path)
                 else:
                     concat_files.append(silence_path)
+
+            concat_files.append(silence_path)
             continue
 
         voice = VOICE_MAP.get(speaker, "onyx")
+
         for chunk in chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS):
             seg_idx += 1
             raw_seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
@@ -2510,13 +2513,12 @@ def produce_episode():
                 pending_intro_bed = False
 
                 voice_seg = AudioSegment.from_file(final_voice_path)
-
-                # Use the raw intro mp3 for bedding (not the -18dB stinger normalization)
                 bed = AudioSegment.from_file(INTRO_PATH)
+
                 bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
                 bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS).fade_out(INTRO_BED_FADE_OUT_MS)
 
-                mixed = duck_music_under_voice(
+                ducked = duck_music_under_voice(
                     voice=voice_seg,
                     music=bed,
                     threshold_dbfs=DUCK_THRESHOLD_DBFS,
@@ -2525,7 +2527,7 @@ def produce_episode():
                 )
 
                 intro_mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_introbed_mix.mp3"
-                mixed.export(intro_mix_path, format="mp3", bitrate="192k")
+                ducked.export(intro_mix_path, format="mp3", bitrate="192k")
                 concat_files.append(intro_mix_path)
             else:
                 concat_files.append(final_voice_path)
