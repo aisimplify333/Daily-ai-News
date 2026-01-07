@@ -2468,62 +2468,24 @@ def produce_episode():
         )
 
     _safe_print(" >> 🎙️ RECORDING (TTS)...")
-seg_idx = 0
-inserted_intro = False
-pending_intro_bed = False
+    seg_idx = 0
+    inserted_intro = False
+    pending_intro_bed = False
 
-for speaker, text in dialogue_merged:
-    if speaker == "MUSIC":
-        # Instead of inserting loud standalone music, we’ll bed it under the NEXT spoken audio
-        if INTRO_PATH.exists() and not inserted_intro:
-            pending_intro_bed = True
-            inserted_intro = True
-        else:
-            concat_files.append(silence_path)
-        continue
-
-    voice = VOICE_MAP.get(speaker, "onyx")
-    for chunk in chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS):
-        seg_idx += 1
-        raw_seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
-        tts_to_file(chunk, voice, raw_seg_path)
-
-        # Trim silence and standardize
-        post_process_tts_mp3(raw_seg_path)
-
-        # Optional JAMIE speed
-        final_voice_path = raw_seg_path
-        if speaker == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
-            sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
-            apply_speed_ffmpeg(raw_seg_path, sped_path, JAMIE_SPEED)
-            post_process_tts_mp3(sped_path)
-            final_voice_path = sped_path
-
-        # --- INTRO BED + DUCKING (ONLY ON VERY FIRST SPOKEN CHUNK AFTER [MUSIC]) ---
-        if pending_intro_bed and INTRO_PATH.exists():
-            pending_intro_bed = False
-
-            voice_seg = AudioSegment.from_file(final_voice_path)
-            bed = AudioSegment.from_file(INTRO_PATH)
-            bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
-            bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS).fade_out(INTRO_BED_FADE_OUT_MS)
-
-            ducked = duck_music_under_voice(
-                voice=voice_seg,
-                music=bed,
-                threshold_dbfs=DUCK_THRESHOLD_DBFS,
-                duck_db=DUCK_AMOUNT_DB,
-                window_ms=DUCK_WINDOW_MS,
-            )
-
-            intro_mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_introbed_mix.mp3"
-            ducked.export(intro_mix_path, format="mp3", bitrate="192k")
-            concat_files.append(intro_mix_path)
-        else:
-            concat_files.append(final_voice_path)
-
-        concat_files.append(silence_path)
-
+    for speaker, text in dialogue_merged:
+        if speaker == "MUSIC":
+            # First [MUSIC] => bed intro under the next spoken audio
+            if INTRO_PATH.exists() and not inserted_intro:
+                pending_intro_bed = True
+                inserted_intro = True
+            else:
+                # Later [MUSIC] markers => transition sting if available, else short silence
+                if transition_seg is not None:
+                    tpath = run_tmp / f"transition_{uuid.uuid4().hex}.mp3"
+                    transition_seg.export(tpath, format="mp3", bitrate="192k")
+                    concat_files.append(tpath)
+                else:
+                    concat_files.append(silence_path)
             continue
 
         voice = VOICE_MAP.get(speaker, "onyx")
@@ -2535,16 +2497,42 @@ for speaker, text in dialogue_merged:
             # Trim silence and standardize
             post_process_tts_mp3(raw_seg_path)
 
+            # Optional JAMIE speed
+            final_voice_path = raw_seg_path
             if speaker == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
                 sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
                 apply_speed_ffmpeg(raw_seg_path, sped_path, JAMIE_SPEED)
                 post_process_tts_mp3(sped_path)
-                concat_files.append(sped_path)
+                final_voice_path = sped_path
+
+            # --- INTRO BED + DUCKING (ONLY ON FIRST SPOKEN CHUNK AFTER FIRST [MUSIC]) ---
+            if pending_intro_bed and INTRO_PATH.exists():
+                pending_intro_bed = False
+
+                voice_seg = AudioSegment.from_file(final_voice_path)
+
+                # Use the raw intro mp3 for bedding (not the -18dB stinger normalization)
+                bed = AudioSegment.from_file(INTRO_PATH)
+                bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS).fade_out(INTRO_BED_FADE_OUT_MS)
+
+                mixed = duck_music_under_voice(
+                    voice=voice_seg,
+                    music=bed,
+                    threshold_dbfs=DUCK_THRESHOLD_DBFS,
+                    duck_db=DUCK_AMOUNT_DB,
+                    window_ms=DUCK_WINDOW_MS,
+                )
+
+                intro_mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_introbed_mix.mp3"
+                mixed.export(intro_mix_path, format="mp3", bitrate="192k")
+                concat_files.append(intro_mix_path)
             else:
-                concat_files.append(raw_seg_path)
+                concat_files.append(final_voice_path)
 
             concat_files.append(silence_path)
 
+    # Add outro stinger at end (standalone)
     if outro_seg is not None:
         outro_path = run_tmp / "outro_trim.mp3"
         outro_seg.export(outro_path, format="mp3", bitrate="192k")
@@ -2630,7 +2618,6 @@ for speaker, text in dialogue_merged:
 
     if CLEANUP_TEMP:
         shutil.rmtree(run_tmp, ignore_errors=True)
-
 
 # ----------------------------
 # ENTRYPOINT
