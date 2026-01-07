@@ -5,7 +5,8 @@ import os
 from pathlib import Path
 from pydub import AudioSegment
 
-MIN_MINUTES = float(os.getenv("MIN_EPISODE_MINUTES", "22"))
+MIN_MINUTES = float(os.getenv("MIN_MINUTES", os.getenv("MIN_EPISODE_MINUTES", "22")))
+
 BRANCH = os.getenv("GIT_BRANCH", "main")
 
 def run_command(command, description, allow_fail=False):
