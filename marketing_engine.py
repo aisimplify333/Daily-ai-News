@@ -349,5 +349,3 @@ aggression = (
     "Short sentences. Strong verbs. Clear consequence.\n"
     "End with a direct CTA."
 )
-
-)
