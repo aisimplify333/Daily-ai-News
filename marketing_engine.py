@@ -343,6 +343,9 @@ def _make_assets(date_str: str, meta: Dict[str, Any]) -> Dict[str, Any]:
     if _llm_enabled():
         story_block = _story_lines(stories)
 
-        aggression = "Go for high-stakes
-::contentReference[oaicite:0]{index=0}
-
+       aggression = (
+    "Go for high-stakes, urgent framing.\n"
+    "Keep claims grounded—do not invent numbers.\n"
+    "Short sentences. Strong verbs. Clear consequence.\n"
+    "End with a direct CTA."
+)
