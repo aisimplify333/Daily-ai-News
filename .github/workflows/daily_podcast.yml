@@ -12,6 +12,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    env:
+      SAVE_SCRIPT: "true"
+
     steps:
       # 1. SETUP
       - name: Check out repository
@@ -23,8 +26,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
-          SAVE_SCRIPT: "true"
 
       # 2. INSTALL SYSTEM LIBRARIES (Crucial for Video)
       - name: Install System Dependencies
@@ -40,7 +41,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4. RUN THE EMPIRE BROADCAST (The Soul & Video)
+      # 4a. FAST FAIL ON SYNTAX/INDENTATION
+      - name: Lint compile (fast fail)
+        run: |
+          python -m py_compile main.py
+
+      # 4b. RUN THE EMPIRE BROADCAST (The Soul & Video)
       - name: Run Empire Broadcast
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -54,7 +60,8 @@ jobs:
           TARGET_MINUTES: "28"
           WORDS_PER_MINUTE: "175"
           JAMIE_SPEED: "1.05"
-          
+
+          # --- INTRO BED / DUCKING ---
           INTRO_BED_MS: "6500"
           INTRO_BED_FADE_OUT_MS: "1800"
           MUSIC_TARGET_DBFS: "-25.0"
@@ -67,11 +74,6 @@ jobs:
           X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
-
-          - name: Lint compile (fast fail)
-        run: |
-          python -m py_compile main.py
-
         run: |
           python run_broadcast.py
 
