@@ -2,11 +2,15 @@ name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 10 * * *' # 2:00 AM PST (10:00 UTC)
+    - cron: '0 10 * * *' # ~2:00 AM Pacific (10:00 UTC; shifts during DST)
   workflow_dispatch:
 
 permissions:
   contents: write
+
+concurrency:
+  group: daily-podcast-socials
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -26,10 +30,13 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
       # 2. INSTALL SYSTEM LIBRARIES (Crucial for Video)
       - name: Install System Dependencies
+        shell: bash
         run: |
+          set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y ffmpeg imagemagick ghostscript
           # Fix for ImageMagick policy (Crucial for Video Text)
@@ -37,14 +44,20 @@ jobs:
 
       # 3. INSTALL PYTHON LIBRARIES
       - name: Install Dependencies
+        shell: bash
         run: |
+          set -euo pipefail
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       # 4a. FAST FAIL ON SYNTAX/INDENTATION
       - name: Lint compile (fast fail)
+        shell: bash
         run: |
+          set -euo pipefail
           python -m py_compile main.py
+          python -m tabnanny -v main.py
+          python -m compileall -q .
 
       # 4b. RUN THE EMPIRE BROADCAST (The Soul & Video)
       - name: Run Empire Broadcast
@@ -74,12 +87,17 @@ jobs:
           X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
           X_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        shell: bash
         run: |
+          set -euo pipefail
           python run_broadcast.py
 
       # 5. COMMIT ARTIFACTS (HARDENED)
       - name: Commit and Push
+        shell: bash
         run: |
+          set -euo pipefail
+
           git config user.name "AI Producer"
           git config user.email "bot@aisimplifymedia.com"
 
