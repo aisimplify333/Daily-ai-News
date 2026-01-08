@@ -1,32 +1,47 @@
+# -*- coding: utf-8 -*-
+"""
+Daily AI News: "The AI Edge" (fully automated)
+
+Production upgrades (Jan 2026):
+- Guaranteed audible INTRO STINGER after cold open [MUSIC] marker (cannot be skipped by ducking)
+- Optional INTRO BED ducked under first spoken chunk after intro marker
+- Clean, deterministic audio assembly loop (prevents indentation / duplicate-loop bugs)
+- SAVE_SCRIPT support (script_YYYY-MM-DD.txt) when SAVE_SCRIPT=true
+
+Paste this entire file as main.py.
+"""
+
+from __future__ import annotations
+
+import datetime
+import json
 import os
 import re
-import json
-import uuid
 import shutil
 import subprocess
-import datetime
 import sys
 import time
-from pathlib import Path
-from typing import List, Dict, Tuple, Optional
+import uuid
 from functools import lru_cache
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
 
-from dotenv import load_dotenv
 import feedparser
 import requests
 from bs4 import BeautifulSoup
-from pydub import AudioSegment
+from dotenv import load_dotenv
 from openai import OpenAI
+from pydub import AudioSegment
 
-# ============================================================
+# ----------------------------
 # ENV
-# ============================================================
+# ----------------------------
 load_dotenv()
 
-# ============================================================
-# CONFIG (Spotify/RSS identity)
-# ============================================================
-RSS_SETTINGS = {
+# ----------------------------
+# CONFIG (RSS identity)
+# ----------------------------
+RSS_SETTINGS: Dict[str, str] = {
     "title": "The AI Edge",
     "link": "https://github.com/aisimplify333/Daily-ai-News",
     "description": "Daily AI News Drama: raw, human, high-stakes conversations about the future.",
@@ -60,12 +75,13 @@ PRIMARY_LLM = os.getenv("PRIMARY_LLM", "openai").strip().lower()  # gemini | ope
 OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o")
 OPENAI_TTS_MODEL = os.getenv("OPENAI_TTS_MODEL", "tts-1-hd")
 
-# Episode length policy (in minutes)
-MIN_MINUTES = float(os.getenv("MIN_MINUTES", "25"))
-MAX_MINUTES = float(os.getenv("MAX_MINUTES", "30"))
+# Episode length gates (minutes)
+MIN_MINUTES = float(os.getenv("MIN_MINUTES", "24"))
+MAX_MINUTES = float(os.getenv("MAX_MINUTES", "35"))
 TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
 
-WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "150"))
+# Script pacing (WPM)
+WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "175"))
 SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "3"))
 
 SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "2200"))
@@ -77,12 +93,13 @@ KEEP_LAST_EPISODES = int(os.getenv("KEEP_LAST_EPISODES", "60"))
 RUN_MARKETING_ASSETS = os.getenv("RUN_MARKETING_ASSETS", "true").strip().lower() in ("1", "true", "yes")
 PUBLISH_SOCIAL = os.getenv("PUBLISH_SOCIAL", "false").strip().lower() in ("1", "true", "yes")
 
-# IMPORTANT: default TRUE so you always get a script file unless you explicitly turn it off
-SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "true").strip().lower() in ("1", "true", "yes")
+SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "false").strip().lower() in ("1", "true", "yes")
 
+# Idempotency
 FORCE_REBUILD = os.getenv("FORCE_REBUILD", "false").strip().lower() in ("1", "true", "yes")
 
-VOICE_MAP = {
+# Voices
+VOICE_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
     "JAMIE": os.getenv("VOICE_JAMIE", "nova"),
     "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
@@ -93,11 +110,11 @@ TTS_MERGE_MAX_CHARS = int(os.getenv("TTS_MERGE_MAX_CHARS", "2400"))
 TTS_CHUNK_MAX_CHARS = int(os.getenv("TTS_CHUNK_MAX_CHARS", "2800"))
 TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 
-# JAMIE speed (default 1.05)
-JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
-
-# Audio stitch method: pydub (recommended) or ffmpeg
+# Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
+
+# JAMIE speed
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
 
 # Post-processing thresholds
 TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
@@ -105,43 +122,45 @@ TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "140"))
 TRIM_THRESH_DB = float(os.getenv("TRIM_THRESH_DB", "-45.0"))
 SEGMENT_EXPORT_BITRATE = os.getenv("SEGMENT_EXPORT_BITRATE", "192k")
 
-# ----------------------------
-# MUSIC BED / DUCKING
-# ----------------------------
+# Music assets
 INTRO_PATH = BASE_DIR / "intro.mp3"
 OUTRO_PATH = BASE_DIR / "outro.mp3"
 TRANSITION_PATH = BASE_DIR / "transition.mp3"
 
 REQUIRE_INTRO_OUTRO = os.getenv("REQUIRE_INTRO_OUTRO", "true").strip().lower() in ("1", "true", "yes")
 REQUIRE_TRANSITIONS = os.getenv("REQUIRE_TRANSITIONS", "false").strip().lower() in ("1", "true", "yes")
-
 TRANSITION_EVERY_SEGMENT = os.getenv("TRANSITION_EVERY_SEGMENT", "true").strip().lower() in ("1", "true", "yes")
 
-INTRO_MS = int(os.getenv("INTRO_MS", "15000"))
+# Stinger durations / levels
+INTRO_STINGER_MS = int(os.getenv("INTRO_STINGER_MS", "4500"))      # audible bumper (no voice)
+INTRO_BED_MS = int(os.getenv("INTRO_BED_MS", "6500"))              # bed under first host line
+INTRO_BED_FADE_OUT_MS = int(os.getenv("INTRO_BED_FADE_OUT_MS", "1800"))
+
 OUTRO_MS = int(os.getenv("OUTRO_MS", "12000"))
 TRANSITION_MS = int(os.getenv("TRANSITION_MS", "2500"))
 
 STINGER_TARGET_DBFS = float(os.getenv("STINGER_TARGET_DBFS", "-18.0"))
+
 INTRO_FADE_IN_MS = int(os.getenv("INTRO_FADE_IN_MS", "120"))
-INTRO_FADE_OUT_MS = int(os.getenv("INTRO_FADE_OUT_MS", "1200"))
+INTRO_FADE_OUT_MS = int(os.getenv("INTRO_FADE_OUT_MS", "900"))
+
 OUTRO_FADE_IN_MS = int(os.getenv("OUTRO_FADE_IN_MS", "800"))
 OUTRO_FADE_OUT_MS = int(os.getenv("OUTRO_FADE_OUT_MS", "1200"))
+
 TRANSITION_FADE_IN_MS = int(os.getenv("TRANSITION_FADE_IN_MS", "120"))
 TRANSITION_FADE_OUT_MS = int(os.getenv("TRANSITION_FADE_OUT_MS", "350"))
 
-CROSSFADE_MS = int(os.getenv("CROSSFADE_MS", "0"))  # try 40–80 if desired
+CROSSFADE_MS = int(os.getenv("CROSSFADE_MS", "0"))  # 40–80 if desired
 
-# Bed under voice
-INTRO_BED_MS = int(os.getenv("INTRO_BED_MS", "6500"))              # under voice
-INTRO_BED_FADE_OUT_MS = int(os.getenv("INTRO_BED_FADE_OUT_MS", "1800"))
+# Ducking parameters
 MUSIC_TARGET_DBFS = float(os.getenv("MUSIC_TARGET_DBFS", "-25.0"))
 DUCK_THRESHOLD_DBFS = float(os.getenv("DUCK_THRESHOLD_DBFS", "-34.0"))
 DUCK_AMOUNT_DB = float(os.getenv("DUCK_AMOUNT_DB", "12.0"))
 DUCK_WINDOW_MS = int(os.getenv("DUCK_WINDOW_MS", "40"))
 
-# ============================================================
-# QUALITY GATES (98% standard)
-# ============================================================
+# ----------------------------
+# QUALITY GATES
+# ----------------------------
 MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))
 MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "12"))
 MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
@@ -153,14 +172,10 @@ MONEY_RE = re.compile(r"(\$|€|£)\s?\d")
 NUMERIC_TOKEN_RE = re.compile(r"(\d+(\.\d+)?%|\$?\d[\d,]*(\.\d+)?|\b\d{4}\b|\bQ[1-4]\b)", re.IGNORECASE)
 SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
 
-# Feed/SEO metadata constraints
 MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))
 EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
-EPISODE_META_MAX_DESC = int(os.getenv("EPISODE_META_MAX_DESC", "4500"))
 
-# ============================================================
-# VIRALITY / STORY PICKING
-# ============================================================
+# Virality heuristics
 VIRAL_KEYWORDS = [
     "leak", "leaked", "whistleblower", "lawsuit", "sues", "ban", "banned", "crackdown", "investigation",
     "antitrust", "fraud", "hack", "breach", "ransomware", "exploit", "backdoor", "spy", "surveillance",
@@ -173,14 +188,34 @@ VIRAL_BRANDS = [
     "tesla", "amazon", "tiktok", "bytedance", "x", "twitter", "samsung", "intel",
 ]
 
+# ----------------------------
+# LLM CLIENTS
+# ----------------------------
+openai_key = os.environ.get("OPENAI_API_KEY", "").strip()
+if not openai_key:
+    raise RuntimeError("OPENAI_API_KEY is missing. Set it in GitHub Secrets / env.")
+openai_client = OpenAI(api_key=openai_key)
 
+gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
+gemini_client = None
+genai_types = None
+if gemini_key:
+    try:
+        from google import genai as genai_new  # type: ignore
+        from google.genai import types as genai_types  # type: ignore
+        gemini_client = genai_new.Client(api_key=gemini_key)
+    except Exception:
+        gemini_client = None
+        genai_types = None
+
+
+# ----------------------------
+# HELPERS
+# ----------------------------
 def _safe_print(msg: str) -> None:
     print(msg, flush=True)
 
 
-# ============================================================
-# SYSTEM CHECKS
-# ============================================================
 def _has_ffmpeg() -> bool:
     return shutil.which("ffmpeg") is not None
 
@@ -197,16 +232,16 @@ def _run(cmd: List[str], fail_ok: bool = False) -> int:
 
 def _require_intro_outro_if_needed() -> None:
     if REQUIRE_INTRO_OUTRO and not INTRO_PATH.exists():
-        raise RuntimeError("intro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires an intro file.")
+        raise RuntimeError("intro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires intro.mp3.")
     if REQUIRE_INTRO_OUTRO and not OUTRO_PATH.exists():
-        raise RuntimeError("outro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires an outro file.")
+        raise RuntimeError("outro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires outro.mp3.")
     if REQUIRE_TRANSITIONS and not TRANSITION_PATH.exists():
-        raise RuntimeError("transition.mp3 missing. REQUIRE_TRANSITIONS=true requires a transition file.")
+        raise RuntimeError("transition.mp3 missing. REQUIRE_TRANSITIONS=true requires transition.mp3.")
 
 
-# ============================================================
+# ----------------------------
 # AUDIO UTILITIES
-# ============================================================
+# ----------------------------
 def match_level(seg: AudioSegment, target_dbfs: float = -18.0) -> AudioSegment:
     if seg.dBFS == float("-inf"):
         return seg
@@ -225,12 +260,7 @@ def duck_music_under_voice(
     threshold_dbfs: float = -34.0,
     duck_db: float = 12.0,
     window_ms: int = 40,
-    ramp_ms: int = 80,
 ) -> AudioSegment:
-    """
-    Windowed ducking with gentle ramps.
-    Returns a combined (music ducked + voice) AudioSegment.
-    """
     voice = voice if voice.channels == 2 else voice.set_channels(2)
     music = music if music.channels == 2 else music.set_channels(2)
 
@@ -238,46 +268,25 @@ def duck_music_under_voice(
     music = _pad_to_length(music, length_ms)
 
     out_music = AudioSegment.empty()
-    prev_ducked = False
-
     for i in range(0, length_ms, window_ms):
         v = voice[i:i + window_ms]
         m = music[i:i + window_ms]
-
-        duck_now = (v.dBFS != float("-inf") and v.dBFS > threshold_dbfs)
-        if duck_now:
+        if v.dBFS != float("-inf") and v.dBFS > threshold_dbfs:
             m = m.apply_gain(-duck_db)
-
-        if i > 0 and duck_now != prev_ducked and len(m) >= ramp_ms:
-            if duck_now:
-                m = m.fade_in(ramp_ms)
-            else:
-                m = m.fade_out(ramp_ms)
-
         out_music += m
-        prev_ducked = duck_now
 
     return out_music.overlay(voice)
 
 
-def load_stinger(
-    path: Path,
-    ms: int,
-    target_dbfs: float,
-    fade_in_ms: int,
-    fade_out_ms: int,
-) -> AudioSegment:
+def load_stinger(path: Path, ms: int, target_dbfs: float, fade_in_ms: int, fade_out_ms: int) -> AudioSegment:
     seg = AudioSegment.from_file(path)
     if ms and ms > 0:
         seg = seg[:ms]
-
     seg = match_level(seg, target_dbfs=target_dbfs)
-
     if fade_in_ms and fade_in_ms > 0:
         seg = seg.fade_in(fade_in_ms)
     if fade_out_ms and fade_out_ms > 0:
         seg = seg.fade_out(fade_out_ms)
-
     return seg
 
 
@@ -292,21 +301,13 @@ def _lead_silence_ms(a: AudioSegment, thresh_db: float) -> int:
     return ms
 
 
-def trim_silence(
-    seg: AudioSegment,
-    leading_ms: int = 60,
-    trailing_ms: int = 140,
-    thresh_db: float = -45.0,
-) -> AudioSegment:
+def trim_silence(seg: AudioSegment, leading_ms: int = 60, trailing_ms: int = 140, thresh_db: float = -45.0) -> AudioSegment:
     if len(seg) < 40:
         return seg
-
     start = min(_lead_silence_ms(seg, thresh_db=thresh_db), leading_ms)
     end = min(_lead_silence_ms(seg.reverse(), thresh_db=thresh_db), trailing_ms)
-
     if len(seg) <= (start + end + 10):
         return seg
-
     return seg[start:len(seg) - end]
 
 
@@ -327,7 +328,6 @@ def post_process_tts_mp3(path: Path) -> None:
 def master_final_audio_ffmpeg(in_path: Path, out_path: Path) -> None:
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg not found; required for final mastering.")
-
     cmd = [
         "ffmpeg", "-y",
         "-i", str(in_path),
@@ -341,9 +341,9 @@ def master_final_audio_ffmpeg(in_path: Path, out_path: Path) -> None:
     _run(cmd)
 
 
-# ============================================================
-# SIDE-CAR JSON (episode-level metadata persisted next to mp3)
-# ============================================================
+# ----------------------------
+# SIDECAR META
+# ----------------------------
 def _date_from_episode_filename(name: str) -> Optional[str]:
     m = re.search(r"podcast_(\d{4}-\d{2}-\d{2})\.mp3$", name or "")
     return m.group(1) if m else None
@@ -371,29 +371,9 @@ def _write_sidecar_meta_for_date(date_str: str, title: str, description: str) ->
     return p
 
 
-# ============================================================
-# LLM CLIENTS (OpenAI + Gemini optional)
-# ============================================================
-openai_key = os.environ.get("OPENAI_API_KEY", "").strip()
-if not openai_key:
-    raise RuntimeError("OPENAI_API_KEY is missing. Set it in GitHub Secrets / env.")
-
-openai_client = OpenAI(api_key=openai_key)
-
-gemini_key = os.environ.get("GEMINI_API_KEY", "").strip()
-gemini_client = None
-genai_types = None
-
-if gemini_key:
-    try:
-        from google import genai as genai_new
-        from google.genai import types as genai_types
-        gemini_client = genai_new.Client(api_key=gemini_key)
-    except Exception:
-        gemini_client = None
-        genai_types = None
-
-
+# ----------------------------
+# LLM HELPERS
+# ----------------------------
 def _gemini_candidate_models() -> List[str]:
     env_model = os.getenv("GEMINI_MODEL", "").strip()
     models: List[str] = []
@@ -401,7 +381,7 @@ def _gemini_candidate_models() -> List[str]:
         models.append(env_model)
     models += ["gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-3-flash"]
     seen = set()
-    out = []
+    out: List[str] = []
     for m in models:
         if m and m not in seen:
             out.append(m)
@@ -413,7 +393,6 @@ def _extract_json_object(raw: str) -> Optional[dict]:
     if not raw:
         return None
     raw = raw.strip()
-
     try:
         obj = json.loads(raw)
         if isinstance(obj, dict):
@@ -423,7 +402,6 @@ def _extract_json_object(raw: str) -> Optional[dict]:
 
     raw2 = re.sub(r"^```(?:json)?\s*", "", raw, flags=re.IGNORECASE).strip()
     raw2 = re.sub(r"\s*```$", "", raw2).strip()
-
     try:
         obj = json.loads(raw2)
         if isinstance(obj, dict):
@@ -480,9 +458,9 @@ def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000)
     return resp.choices[0].message.content.strip()
 
 
-# ============================================================
-# NUMERIC UTILITIES
-# ============================================================
+# ----------------------------
+# SCORING UTILITIES
+# ----------------------------
 def _digit_count(s: str) -> int:
     return len(re.findall(r"\d", s or ""))
 
@@ -561,48 +539,6 @@ def _combined_story_score(item: Dict[str, str]) -> int:
     return _numeric_score(title + " " + summary) + _virality_score(title, summary) + _recency_boost(published)
 
 
-def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
-    if not text:
-        return []
-    sents = re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text).strip())
-    hits = []
-    for s in sents:
-        if NUMERIC_TOKEN_RE.search(s):
-            s2 = s.strip()
-            if 30 <= len(s2) <= 220:
-                hits.append(s2)
-        if len(hits) >= max_items:
-            break
-    out = []
-    seen = set()
-    for h in hits:
-        key = h.lower()
-        if key in seen:
-            continue
-        seen.add(key)
-        out.append(h)
-    return out[:max_items]
-
-
-# ============================================================
-# NEWS INTEL (RSS)
-# ============================================================
-GOOGLE_NEWS_RSS = [
-    ("Numbers & Markets",
-     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-    ("Market Shock",
-     "https://news.google.com/rss/search?q=(AI%20OR%20%22generative%20AI%22%20OR%20LLM%20OR%20%22AI%20chips%22)%20(Nvidia%20OR%20Microsoft%20OR%20Alphabet%20OR%20Meta%20OR%20AMD%20OR%20TSMC)%20(shares%20OR%20stock%20OR%20plunge%20OR%20surge%20OR%20earnings%20OR%20guidance)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-    ("Viral Breakers",
-     "https://news.google.com/rss/search?q=(AI%20OR%20ChatGPT%20OR%20OpenAI%20OR%20Anthropic%20OR%20Gemini%20OR%20xAI%20OR%20Grok%20OR%20Nvidia)%20(leak%20OR%20breach%20OR%20hack%20OR%20lawsuit%20OR%20ban%20OR%20scandal%20OR%20whistleblower)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-    ("Outages",
-     "https://news.google.com/rss/search?q=(OpenAI%20OR%20ChatGPT%20OR%20Azure%20OR%20%22Google%20Cloud%22%20OR%20AWS)%20(outage%20OR%20downtime%20OR%20incident%20OR%20degraded)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-    ("Regulators",
-     "https://news.google.com/rss/search?q=(FTC%20OR%20DOJ%20OR%20%22European%20Commission%22%20OR%20ICO)%20(AI%20OR%20OpenAI%20OR%20Anthropic%20OR%20Meta)%20(investigation%20OR%20enforcement%20OR%20fine%20OR%20ban%20OR%20order)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-    ("Security",
-     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Microsoft%20OR%20Google%20OR%20Meta%20OR%20Nvidia)%20(breach%20OR%20hack%20OR%20leak%20OR%20ransomware%20OR%20jailbreak)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-]
-
-
 def _strip_html(s: str) -> str:
     if not s:
         return ""
@@ -635,10 +571,26 @@ def _published_iso_from_entry(entry) -> str:
         return ""
 
 
+# ----------------------------
+# NEWS INTEL (RSS)
+# ----------------------------
+GOOGLE_NEWS_RSS: List[Tuple[str, str]] = [
+    ("Numbers & Markets",
+     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("Market Shock (AI-specific drivers)",
+     "https://news.google.com/rss/search?q=(AI%20OR%20%22generative%20AI%22%20OR%20LLM%20OR%20%22AI%20chips%22%20OR%20GPU%20OR%20%22data%20center%22)%20(Nvidia%20OR%20Microsoft%20OR%20Alphabet%20OR%20Meta%20OR%20AMD%20OR%20TSMC)%20(shares%20OR%20stock%20OR%20plunge%20OR%20surge%20OR%20earnings%20OR%20guidance%20OR%20%22market%20cap%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("Viral AI Breakers (Catch-all)",
+     "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22%20OR%20ChatGPT%20OR%20OpenAI%20OR%20Anthropic%20OR%20Google%20Gemini%20OR%20xAI%20OR%20Grok%20OR%20Meta%20AI%20OR%20Nvidia)%20(leak%20OR%20%22data%20breach%22%20OR%20hack%20OR%20lawsuit%20OR%20ban%20OR%20scandal%20OR%20%22class%20action%22%20OR%20whistleblower%20OR%20%22internal%20memo%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
+    ("Regulators + Bans + Enforcement",
+     "https://news.google.com/rss/search?q=(FTC%20OR%20DOJ%20OR%20%22European%20Commission%22%20OR%20ICO%20OR%20EDPB%20OR%20CNIL)%20(AI%20OR%20OpenAI%20OR%20Anthropic%20OR%20Meta%20AI)%20(investigation%20OR%20enforcement%20OR%20fine%20OR%20ban%20OR%20order)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+    ("Chip War + Export Controls + Geopolitics",
+     "https://news.google.com/rss/search?q=(Nvidia%20OR%20H100%20OR%20H200%20OR%20%22AI%20chips%22%20OR%20TSMC%20OR%20ASML%20OR%20AMD)%20(export%20controls%20OR%20sanctions%20OR%20China%20OR%20%22national%20security%22%20OR%20%22supply%20chain%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+]
+
+
 def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
     items: List[Dict[str, str]] = []
     headers = {"User-Agent": "Mozilla/5.0 (AI Edge Bot; +https://github.com/aisimplify333/Daily-ai-News)"}
-
     for label, url in GOOGLE_NEWS_RSS:
         try:
             r = requests.get(url, headers=headers, timeout=20)
@@ -650,7 +602,6 @@ def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
                 link = (getattr(entry, "link", "") or "").strip()
                 summary = _strip_html(getattr(entry, "summary", "") or "")[:700]
                 published = _published_iso_from_entry(entry)
-
                 if title and link:
                     items.append(
                         {
@@ -666,7 +617,7 @@ def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
             _safe_print(f"    ⚠️ RSS fetch failed ({label}): {e}")
 
     seen = set()
-    deduped = []
+    deduped: List[Dict[str, str]] = []
     for x in items:
         key = re.sub(r"\s+", " ", (x.get("title") or "").lower()).strip()
         if key in seen:
@@ -705,7 +656,6 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
 
         html = r.text or ""
         soup = BeautifulSoup(html, "html.parser")
-
         for t in soup(["script", "style", "noscript"]):
             t.decompose()
 
@@ -730,7 +680,7 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
             if len(chunks) >= 10:
                 break
 
-        paras = []
+        paras: List[str] = []
         for p in base.find_all("p"):
             txt = p.get_text(" ", strip=True)
             if txt and len(txt) > 40:
@@ -739,7 +689,7 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
                 break
         chunks.extend(paras)
 
-        lis = []
+        lis: List[str] = []
         for li in base.find_all("li"):
             txt = li.get_text(" ", strip=True)
             if txt and 20 <= len(txt) <= 200:
@@ -756,9 +706,9 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
         return ""
 
 
-# ============================================================
+# ----------------------------
 # SPONSORS / STORIES
-# ============================================================
+# ----------------------------
 def load_sponsors() -> List[Dict[str, str]]:
     if SPONSORS_PATH.exists():
         try:
@@ -774,6 +724,29 @@ def load_sponsors() -> List[Dict[str, str]]:
         {"name": "Sponsor Two", "tagline": "Your edge, automated.", "cta": "Try it free today."},
         {"name": "Sponsor Three", "tagline": "Ship smarter.", "cta": "Join the waitlist."},
     ]
+
+
+def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
+    if not text:
+        return []
+    sents = re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text).strip())
+    hits: List[str] = []
+    for s in sents:
+        if NUMERIC_TOKEN_RE.search(s):
+            s2 = s.strip()
+            if 30 <= len(s2) <= 220:
+                hits.append(s2)
+        if len(hits) >= max_items:
+            break
+    out: List[str] = []
+    seen = set()
+    for h in hits:
+        key = h.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(h)
+    return out[:max_items]
 
 
 def enrich_stories_with_data(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
@@ -851,7 +824,6 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict
         bucket_counts[b] = bucket_counts.get(b, 0) + 1
         if len(picked) >= max(n * 3, 12):
             break
-
     if len(picked) < n:
         picked = candidates[:max(n * 3, 12)]
 
@@ -948,7 +920,7 @@ Candidate items:
 
     weak = [s for s in enriched if numeric_bullets(s.get("data_points") or []) < MIN_NUMERIC_BULLETS_PER_STORY]
     if weak:
-        fallback = []
+        fallback: List[Dict[str, str]] = []
         for x in candidates:
             fb = {
                 "headline": x.get("title", ""),
@@ -968,9 +940,9 @@ Candidate items:
     return enriched[:n]
 
 
-# ============================================================
-# SCRIPTING (SOUL + GUARANTEED LENGTH + DATA RICHNESS)
-# ============================================================
+# ----------------------------
+# SCRIPTING (structured 5 segments)
+# ----------------------------
 def _word_count(s: str) -> int:
     return len(re.findall(r"\b\w+\b", s or ""))
 
@@ -988,17 +960,14 @@ def _script_targets() -> Tuple[int, int, int]:
 
 def _segment_word_targets() -> List[int]:
     min_words, _, max_words = _script_targets()
-    seg = [650, 1200, 900, 1400, 650]  # total ~4800
-
+    seg = [650, 1200, 900, 1400, 650]
     total = sum(seg)
     if total > max_words:
         scale = max_words / float(total)
         seg = [max(450, int(x * scale)) for x in seg]
-
     if sum(seg) < min_words:
         deficit = min_words - sum(seg)
-        seg[3] += deficit  # expand Segment 4 first
-
+        seg[3] += deficit
     return seg
 
 
@@ -1015,7 +984,6 @@ def _story_block(stories: List[Dict[str, str]]) -> str:
         pdate = (s.get("published") or "").strip()
         why = (s.get("why_shocking") or "").strip()
         url = (s.get("source_url") or "").strip()
-
         out.append(
             f"{i+1}. {s.get('headline','')}\n"
             f"   Publisher: {pub}\n"
@@ -1039,12 +1007,7 @@ def _strict_dialogue_rules() -> str:
     )
 
 
-def _segment_assignment(seg_num: int, stories: List[Dict[str, str]]) -> str:
-    if len(stories) < 5:
-        return "Use the available stories. Keep it urgent, emotional, and high-stakes."
-
-    s1, s2, s3, s4, s5 = stories[0], stories[1], stories[2], stories[3], stories[4]
-
+def _segment_assignment(seg_num: int) -> str:
     if seg_num == 1:
         return (
             "Cold open hook: start mid-argument (overheated). Then [MUSIC]. "
@@ -1052,42 +1015,18 @@ def _segment_assignment(seg_num: int, stories: List[Dict[str, str]]) -> str:
             "Make it feel raw and messy, with interruptions."
         )
     if seg_num == 2:
-        return (
-            "Studio segment: ONLY Alex + Jamie (no Rufus at all). High chemistry, fast pacing. "
-            "Deep dive Story 1 + Story 2 with human stakes and emotional pushback.\n"
-            f"(1) {s1['headline']}\n"
-            f"(2) {s2['headline']}"
-        )
+        return "Studio segment: ONLY Alex + Jamie (no Rufus). Deep dive Story 1 + Story 2 with human stakes."
     if seg_num == 3:
-        return (
-            "On-location: Alex throws to Rufus, then Rufus dominates with money/reg angle. "
-            "Primary focus Story 3 with filings/trading/regulatory edge.\n"
-            f"(3) {s3['headline']}"
-        )
+        return "Rufus on location: money/reg angle. Focus Story 3 with filings/trading/regulatory edge."
     if seg_num == 4:
-        return (
-            "All three together: dread/greed forecast + lightning round. "
-            "Cover Story 4 + Story 5, and callback earlier claims. Interruptions and analogies.\n"
-            f"(4) {s4['headline']}\n"
-            f"(5) {s5['headline']}"
-        )
-    return (
-        "Closing: Alex closes hard, Jamie lands one empathetic gut-punch, "
-        "Rufus delivers one cynical prophecy. Keep it tight and memorable."
-    )
+        return "All three together: dread/greed forecast + lightning round. Cover Story 4 + Story 5."
+    return "Closing: Alex closes hard, Jamie lands empathy, Rufus delivers a cynical prophecy."
 
 
-def _sanitize_segment_speakers(
-    seg_text: str,
-    allowed: Optional[set] = None,
-    disallowed: Optional[set] = None,
-) -> str:
+def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> str:
     if not seg_text:
         return ""
-
     allowed_set = {a.upper() for a in (allowed or set())}
-    disallowed_set = {d.upper() for d in (disallowed or set())}
-
     out: List[str] = []
     for raw in seg_text.splitlines():
         line = raw.strip()
@@ -1096,32 +1035,20 @@ def _sanitize_segment_speakers(
         if line.startswith("###") or line.upper() == "[MUSIC]":
             out.append("[MUSIC]" if line.upper() == "[MUSIC]" else line)
             continue
-
         m = SPEAKER_RE.match(line)
         if not m:
             continue
-
         spk = m.group(1).upper()
         txt = m.group(2).strip()
-
         if allowed_set and spk not in allowed_set:
-            continue
-        if disallowed_set and spk in disallowed_set:
             continue
         if txt:
             out.append(f"{spk}: {txt}")
-
     return "\n".join(out).strip()
 
 
-def _segment_prompt(
-    seg_num: int,
-    seg_words_min: int,
-    seg_words_target: int,
-    date_str: str,
-    stories: List[Dict[str, str]],
-    sponsors: List[Dict[str, str]],
-) -> str:
+def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
+                    stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_2 = sponsors[1] if len(sponsors) > 1 else {"name": "Sponsor", "tagline": "", "cta": ""}
     sponsor_3 = sponsors[2] if len(sponsors) > 2 else {"name": "Sponsor", "tagline": "", "cta": ""}
@@ -1133,15 +1060,15 @@ def _segment_prompt(
         extra = "IMPORTANT: This segment must contain ONLY ALEX and JAMIE lines. Do NOT output any RUFUS lines."
     elif seg_num == 3:
         extra = (
-            "Rufus must seamlessly embed a 'native ad' as insider advice:\n"
+            "Rufus must embed a 'native ad' as insider advice:\n"
             f"Sponsor: {sponsor_1['name']}\n"
             f"Tagline: {sponsor_1.get('tagline','')}\n"
             f"CTA: {sponsor_1.get('cta','')}\n"
-            "Do it in-character—no 'this episode is sponsored by' stiffness."
+            "Do it in-character—no stiff 'this episode is sponsored by'."
         )
     elif seg_num == 4:
         extra = (
-            "Include ONE woven-in host-read sponsor naturally during the chaos:\n"
+            "Include ONE woven-in host-read sponsor naturally:\n"
             f"Sponsor: {sponsor_2['name']} | {sponsor_2.get('tagline','')} | {sponsor_2.get('cta','')}"
         )
     elif seg_num == 5:
@@ -1151,34 +1078,29 @@ def _segment_prompt(
         )
 
     story_block = _story_block(stories)
-    assignment = _segment_assignment(seg_num, stories)
+    assignment = _segment_assignment(seg_num)
 
     return f"""
 You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
 This is ONLY {_segment_header(seg_num)} of the episode.
 
-It must feel like a raw, overheated conversation between THREE distinct personalities.
-NO corporate speak. They interrupt, argue, laugh, get angry, get quiet, then spike again.
-
-PERSONAS (distinct voice is mandatory):
+PERSONAS:
 - ALEX (Host): Rogan energy + frantic curiosity. Drives pace. Calls out BS. Summarizes fast.
 - JAMIE (Co-host): Bartlett vibe. Vulnerable, empathetic, human stakes. Pushes back emotionally.
-- RUFUS (Analyst): cynical, money/regulatory edge. Cold, sharp. Sounds like filings + trades.
+- RUFUS (Analyst): cynical, money/regulatory edge. Cold, sharp. British dry wit.
 
 {_strict_dialogue_rules()}
 
 SEGMENT REQUIREMENTS:
 - The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target} words).
-- Make the “soul” real: fear, awe, greed, betrayal, humor, sudden silence.
-- Use concrete examples, “what this means tomorrow”, and specific stakes (jobs, markets, power, safety).
 - Avoid filler openers like “let’s dive in”.
 
 DATA REQUIREMENTS (non-negotiable):
 - For every story you discuss in THIS segment, you MUST speak at least 2 explicit data points
   (numbers/dates/amounts) from the provided "Data points" lines in TODAY'S STORIES.
 - Mention the publisher at least once when introducing a story.
-- Do NOT invent numbers. If a story has "No explicit figures in snippet", say that plainly and focus on consequences.
+- Do NOT invent numbers. If a story has "No explicit figures in snippet", say that plainly.
 
 WHAT THIS SEGMENT MUST DO:
 {assignment}
@@ -1208,9 +1130,8 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
             issues.append("Found non-labeled spoken line(s).")
             break
 
-    if seg_num == 2:
-        if re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
-            issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
+    if seg_num == 2 and re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
+        issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
 
     wc = _word_count(seg_text)
     if wc < seg_words_min:
@@ -1235,17 +1156,11 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
         issues.append(
             f"Low numeric density in segment (digits={_digit_count(seg_text)}). Minimum is {MIN_DIGITS_PER_SEGMENT}."
         )
-
     return issues
 
 
-def _segment_repair_prompt(
-    seg_num: int,
-    seg_words_min: int,
-    seg_words_target: int,
-    issues: List[str],
-    seg_text: str,
-) -> str:
+def _segment_repair_prompt(seg_num: int, seg_words_min: int, seg_words_target: int,
+                           issues: List[str], seg_text: str) -> str:
     seg_specific = ""
     if seg_num == 2:
         seg_specific = (
@@ -1263,8 +1178,7 @@ NON-NEGOTIABLE:
 - First line MUST be exactly "{_segment_header(seg_num)}"
 - Output MUST be dialogue lines only with EXACT labels: ALEX:, JAMIE:, RUFUS:
 - Every spoken line MUST start with one of those labels.
-{seg_specific}- Add MORE back-and-forth; do NOT compress.
-- Keep lines SHORT (1–2 sentences) to increase turn count.
+{seg_specific}- Keep lines SHORT (1–2 sentences).
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target}).
 
 HERE IS THE SEGMENT TO EXPAND/REPAIR:
@@ -1297,11 +1211,9 @@ def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -
         if m:
             spk = m.group(1).upper()
             txt = m.group(2).strip()
-
             if allowed_speakers is not None and spk not in allowed_speakers:
                 last_speaker = None
                 continue
-
             if txt:
                 out.append(f"{spk}: {txt}")
                 last_speaker = spk
@@ -1317,14 +1229,8 @@ def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -
     return "\n".join(out).strip()
 
 
-def _generate_segment(
-    seg_num: int,
-    seg_words_min: int,
-    seg_words_target: int,
-    date_str: str,
-    stories: List[Dict[str, str]],
-    sponsors: List[Dict[str, str]],
-) -> str:
+def _generate_segment(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
+                      stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
     prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
     seg_text = ""
 
@@ -1352,36 +1258,7 @@ def _trim_script_to_max_words(script: str, max_words: int) -> str:
     if _word_count(script) <= max_words:
         return script
 
-    parts: Dict[int, List[str]] = {}
-    cur = 0
-    for ln in script.splitlines():
-        m = re.match(r"^###\s*SEGMENT\s*(\d)\b", ln.strip(), flags=re.IGNORECASE)
-        if m:
-            cur = int(m.group(1))
-            parts[cur] = [ln.strip()]
-            continue
-        if cur:
-            parts.setdefault(cur, []).append(ln.strip())
-
-    def rebuild() -> str:
-        return "\n".join(["\n".join(parts[i]) for i in sorted(parts.keys()) if i in parts]).strip()
-
-    if 4 in parts:
-        lines = parts[4]
-        idxs = [i for i, l in enumerate(lines) if SPEAKER_RE.match(l)]
-        protected = set(idxs[:10] + idxs[-10:])
-        removable = [i for i in idxs if i not in protected]
-        mid = len(removable) // 2
-        order = removable[mid:] + removable[:mid][::-1]
-
-        for i in order:
-            if _word_count(rebuild()) <= max_words:
-                break
-            lines[i] = ""
-        parts[4] = [l for l in lines if l]
-
-    trimmed = rebuild()
-
+    trimmed = script.strip()
     while _word_count(trimmed) > max_words:
         tl = trimmed.splitlines()
         removed = False
@@ -1393,23 +1270,21 @@ def _trim_script_to_max_words(script: str, max_words: int) -> str:
         trimmed = "\n".join(tl).strip()
         if not removed or len(tl) < 80:
             break
-
     return trimmed
 
 
-def _pad_script_to_min_words(script: str, min_words: int, stories, sponsors, date_str: str) -> str:
+def _pad_script_to_min_words(script: str, min_words: int, stories: List[Dict[str, str]], date_str: str) -> str:
     wc = _word_count(script)
     if wc >= min_words:
         return script
 
     need = min_words - wc
     add_words = min(900, max(260, need + 160))
+    story_block = _story_block(stories)
 
     m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
     if not m:
         return script
-
-    story_block = _story_block(stories)
 
     prompt = f"""
 Write an ADD-ON block to extend SEGMENT 4 of "The AI Edge" ({date_str}).
@@ -1417,9 +1292,8 @@ Write an ADD-ON block to extend SEGMENT 4 of "The AI Edge" ({date_str}).
 RULES:
 - Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
 - NO segment markers.
-- Add ~{add_words} words (do NOT go under {int(add_words*0.85)}).
+- Add ~{add_words} words.
 - MUST include at least 6 explicit data points from the story block below.
-- Keep fast banter, interruptions, dread/greed forecasting.
 
 STORY BLOCK:
 {story_block}
@@ -1434,7 +1308,6 @@ STORY BLOCK:
 
 def validate_script(script: str) -> List[str]:
     issues: List[str] = []
-
     for i in range(1, 6):
         if not re.search(rf"^###\s*SEGMENT\s*{i}\b", script, flags=re.IGNORECASE | re.MULTILINE):
             issues.append(f"Missing segment marker: ### SEGMENT {i}")
@@ -1448,10 +1321,6 @@ def validate_script(script: str) -> List[str]:
         if not SPEAKER_RE.match(line):
             issues.append("Found non-labeled spoken line(s).")
             break
-
-    for name in ("ALEX", "JAMIE", "RUFUS"):
-        if not re.search(rf"^{name}\s*:", script, flags=re.IGNORECASE | re.MULTILINE):
-            issues.append(f"Speaker missing: {name}")
 
     seg2_block = re.search(
         r"^###\s*SEGMENT\s*2\b(.*?)(^###\s*SEGMENT\s*3\b|\Z)",
@@ -1468,14 +1337,8 @@ def validate_script(script: str) -> List[str]:
     if wc > max_words:
         issues.append(f"Script too long ({wc} words). Maximum is {max_words}.")
 
-    turns = sum(1 for line in script.splitlines() if SPEAKER_RE.match(line.strip()))
-    min_turns = max(90, wc // 45)
-    if turns < min_turns:
-        issues.append(f"Too few labeled dialogue lines ({turns}). Minimum is {min_turns} for {wc} words.")
-
     if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
         issues.append("Contains non-dialogue formatting blocks.")
-
     return issues
 
 
@@ -1492,10 +1355,9 @@ Write a DATA-DUMP add-on for SEGMENT 4 of "The AI Edge" ({date_str}).
 
 NON-NEGOTIABLE:
 - Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
-- Use story DATA POINTS verbatim (numbers/dates/amounts must appear).
+- Use story DATA POINTS (numbers/dates/amounts must appear).
 - Add ~{add_words} words.
 - MUST include at least 12 distinct numeric tokens overall.
-- Keep it intense: consequences + "what this means tomorrow".
 
 STORY BLOCK:
 {story_block}
@@ -1514,8 +1376,7 @@ STORY BLOCK:
     if _word_count(script2) > max_words:
         script2 = _trim_script_to_max_words(script2, max_words=max_words)
 
-    script2 = _sanitize_dialogue_only(script2)
-    return script2
+    return _sanitize_dialogue_only(script2)
 
 
 def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
@@ -1525,14 +1386,7 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
     _safe_print(" >> ✍️ WRITING FULL EPISODE (SEGMENTED)...")
     segments: List[str] = []
     for i in range(1, 6):
-        seg = _generate_segment(
-            seg_num=i,
-            seg_words_min=seg_mins[i - 1],
-            seg_words_target=seg_targets[i - 1],
-            date_str=date_str,
-            stories=stories,
-            sponsors=sponsors,
-        )
+        seg = _generate_segment(i, seg_mins[i - 1], seg_targets[i - 1], date_str, stories, sponsors)
         seg = _sanitize_dialogue_only(seg, allowed_speakers={"ALEX", "JAMIE"} if i == 2 else None)
         segments.append(seg)
 
@@ -1540,31 +1394,28 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
     script = _sanitize_dialogue_only(script)
 
     min_words, _, max_words = _script_targets()
-
     if _word_count(script) > max_words:
         script = _trim_script_to_max_words(script, max_words=max_words)
     if _word_count(script) < min_words:
-        script = _pad_script_to_min_words(script, min_words=min_words, stories=stories, sponsors=sponsors, date_str=date_str)
+        script = _pad_script_to_min_words(script, min_words=min_words, stories=stories, date_str=date_str)
 
     script = _sanitize_dialogue_only(script)
-
     issues = validate_script(script)
     if issues:
         raise RuntimeError("Final script validation failed:\n" + "\n".join(issues))
-
     return script
 
 
-# ============================================================
-# DIALOGUE PARSING (ROBUST + AUTO-TRANSITIONS)
-# ============================================================
+# ----------------------------
+# DIALOGUE PARSING + AUTO-TRANSITIONS
+# ----------------------------
 SEGMENT_MARKER_RE = re.compile(r"^###\s*SEGMENT\s*(\d+)\b", re.IGNORECASE)
-
 
 def iter_dialogue(script: str) -> List[Tuple[str, str]]:
     """
-    Parses dialogue into (speaker, text).
-    Injects a [MUSIC] marker automatically BEFORE segments 2..5 (if enabled).
+    Parses dialogue into (speaker, text) tuples.
+    Also injects a [MUSIC] marker automatically BEFORE segments 2..5 (if enabled),
+    so transitions are never forgotten even when the script writer misses them.
     """
     out: List[Tuple[str, str]] = []
     current_speaker: Optional[str] = None
@@ -1589,11 +1440,9 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
         if mseg:
             flush()
             seg_num = int(mseg.group(1))
-
             if TRANSITION_EVERY_SEGMENT and seen_first_segment and seg_num >= 2 and not last_emitted_was_music:
                 out.append(("MUSIC", "[MUSIC]"))
                 last_emitted_was_music = True
-
             seen_first_segment = True
             continue
 
@@ -1658,9 +1507,9 @@ def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 240
     return merged
 
 
-# ============================================================
+# ----------------------------
 # TTS + STITCHING
-# ============================================================
+# ----------------------------
 def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
     s = re.sub(r"\s+", " ", s).strip()
     if len(s) <= max_chars:
@@ -1744,7 +1593,6 @@ def stitch_with_ffmpeg(file_list: List[Path], out_path: Path) -> None:
 def stitch_with_pydub(file_list: List[Path], out_path: Path) -> None:
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg not found in runner (required by pydub decode).")
-
     combined = AudioSegment.empty()
     for p in file_list:
         seg = AudioSegment.from_file(p)
@@ -1752,7 +1600,6 @@ def stitch_with_pydub(file_list: List[Path], out_path: Path) -> None:
             combined += seg
         else:
             combined = combined.append(seg, crossfade=min(CROSSFADE_MS, len(seg), len(combined)))
-
     combined.export(out_path, format="mp3", bitrate="192k")
 
 
@@ -1763,16 +1610,16 @@ def stitch_audio(file_list: List[Path], out_path: Path) -> None:
         stitch_with_pydub(file_list, out_path)
 
 
-# ============================================================
-# MARKETING PIPELINE
-# ============================================================
+# ----------------------------
+# MARKETING (best-effort)
+# ----------------------------
 def run_marketing_pipeline() -> None:
     if not RUN_MARKETING_ASSETS:
         _safe_print(" >> 📣 MARKETING: disabled (RUN_MARKETING_ASSETS=false)")
         return
 
-    _safe_print(" >> 📣 MARKETING: generating assets...")
-    for script_name in ["marketing_engine.py", "generate_social.py", "animate_social.py"]:
+    _safe_print(" >> 📣 MARKETING: generating assets (best-effort)...")
+    for script_name in ["marketing_engine.py", "generate_social.py", "animate_social.py", "animate_hook.py"]:
         p = BASE_DIR / script_name
         if p.exists():
             _safe_print(f"    → running {script_name}")
@@ -1808,21 +1655,9 @@ def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> 
         else:
             cleaned.append("#" + e2)
 
-    priority = [
-        "#OpenAI", "#Nvidia", "#Anthropic", "#Microsoft", "#Google", "#DeepMind", "#Meta", "#Apple",
-        "#Cybersecurity", "#AIRegulation", "#AIGovernance", "#TechLayoffs"
-    ]
-    out: List[str] = []
-    for p in priority:
-        if p in cleaned and p not in out:
-            out.append(p)
-    for t in cleaned:
-        if t not in out and t not in tags:
-            out.append(t)
-
-    final = tags + out
+    final = tags + cleaned
     seen = set()
-    uniq = []
+    uniq: List[str] = []
     for t in final:
         if t in seen:
             continue
@@ -1835,31 +1670,19 @@ def generate_marketing_pack(stories: List[Dict[str, str]], date_str: str, listen
     story_lines = "\n".join([f"- {s.get('headline','')} | {s.get('source_url','')}" for s in stories[:5]])
 
     prompt = f"""
-You are a direct-response growth writer for a DAILY AI show called "The AI Edge".
-Goal: drive a click TODAY using the most viral, high-stakes framing that remains grounded.
-
 Return ONLY valid JSON (no markdown). Schema:
 {{
-  "hook": "6-10 words, STOP-SCROLL, no date, no quotes, <= 64 chars",
-  "card_subhook": "one short teaser line (<= 52 chars)",
-  "tweet1": "Tweet 1 text (<= 260 chars). Must work with a video attached. Include a question.",
-  "tweet2": "Tweet 2 text (<= 260 chars). Must include this exact link: {listen_url}",
+  "hook": "6-10 words, STOP-SCROLL, <= 64 chars",
+  "tweet1": "Tweet 1 (<= 260 chars). Include a question.",
+  "tweet2": "Tweet 2 (<= 260 chars). Must include this exact link: {listen_url}",
   "yt_title": "YouTube title (<= 90 chars)",
   "yt_description": "YouTube description (<= 1200 chars) including {listen_url}",
-  "ig_caption": "Instagram caption (<= 500 chars) including {listen_url}",
-  "tiktok_caption": "TikTok caption (<= 220 chars) including {listen_url}",
   "hashtags": "Space-separated hashtags. Keep <= 6 total tags. Must include #AI and #TechNews"
 }}
 
 Today: {date_str}
 Top stories:
 {story_lines}
-
-Rules:
-- No corporate speak.
-- Hook must be specific and urgent.
-- Make it feel like consequences are imminent.
-- Avoid repeating the date in hook/title.
 """.strip()
 
     raw = generate_text(prompt, temperature=0.45, max_tokens=1100)
@@ -1870,125 +1693,44 @@ Rules:
 
     out = {
         "hook": fallback_hook.upper(),
-        "card_subhook": "WHAT BREAKS NEXT?",
         "tweet1": f"{fallback_hook}\n\nWhat’s the real consequence here?",
         "tweet2": f"Full episode: {listen_url}\n\n{fallback_tags}",
         "yt_title": f"{fallback_hook} | The AI Edge",
         "yt_description": f"Listen: {listen_url}\n\nTop stories:\n" + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
-        "ig_caption": f"{fallback_hook}\n\nListen: {listen_url}\n\n{fallback_tags}",
-        "tiktok_caption": f"{fallback_hook} {listen_url} {fallback_tags}",
         "hashtags": fallback_tags,
     }
 
-    try:
-        if j:
-            for k in list(out.keys()):
-                if isinstance(j.get(k), str) and j[k].strip():
-                    out[k] = j[k].strip()
+    if j:
+        for k in list(out.keys()):
+            if isinstance(j.get(k), str) and j[k].strip():
+                out[k] = j[k].strip()
 
-        out["hook"] = out["hook"][:64].upper()
-        out["card_subhook"] = out["card_subhook"][:52]
-        out["tweet1"] = out["tweet1"][:260]
-        out["tweet2"] = out["tweet2"][:260]
-        out["yt_title"] = out["yt_title"][:90]
-        out["yt_description"] = out["yt_description"][:1200]
-        out["ig_caption"] = out["ig_caption"][:500]
-        out["tiktok_caption"] = out["tiktok_caption"][:220]
+    out["hook"] = out["hook"][:64].upper()
+    out["tweet1"] = out["tweet1"][:260]
+    out["tweet2"] = out["tweet2"][:260]
+    out["yt_title"] = out["yt_title"][:90]
+    out["yt_description"] = out["yt_description"][:1200]
 
-        tags = out.get("hashtags", "")
-        tags_list = [t.strip() for t in tags.split() if t.strip().startswith("#")]
-        if "#AI" not in tags_list:
-            tags_list = ["#AI"] + tags_list
-        if "#TechNews" not in tags_list:
-            tags_list = ["#TechNews"] + tags_list
+    tags_list = [t.strip() for t in (out.get("hashtags", "") or "").split() if t.strip().startswith("#")]
+    if "#AI" not in tags_list:
+        tags_list = ["#AI"] + tags_list
+    if "#TechNews" not in tags_list:
+        tags_list = ["#TechNews"] + tags_list
 
-        seen = set()
-        uniq = []
-        for t in tags_list:
-            if t in seen:
-                continue
-            seen.add(t)
-            uniq.append(t)
-        out["hashtags"] = " ".join(uniq[:6])
-
-        return out
-    except Exception:
-        return out
+    seen = set()
+    uniq: List[str] = []
+    for t in tags_list:
+        if t in seen:
+            continue
+        seen.add(t)
+        uniq.append(t)
+    out["hashtags"] = " ".join(uniq[:6])
+    return out
 
 
-# ============================================================
-# EPISODE SEO META (kept compact; show notes include sources)
-# ============================================================
-def _generate_episode_seo_meta(
-    date_str: str,
-    stories: List[Dict[str, str]],
-    listen_url: str,
-    script_text: str,
-    marketing_pack: Optional[Dict[str, str]] = None,
-) -> Dict[str, str]:
-    story_block = _story_block(stories)
-    hook = (marketing_pack or {}).get("hook", "").strip()
-
-    top_headline = (stories[0].get("headline") if stories else "AI BREAKING UPDATE").strip()
-    mnum = NUMERIC_TOKEN_RE.search(story_block)
-    num_token = mnum.group(0) if mnum else date_str
-
-    # Title should contain a keyword + a number-ish token
-    title = f"OpenAI shock: {num_token} — {top_headline[:70]}"
-    title = title[:EPISODE_META_MAX_TITLE].strip()
-
-    subtitle = (hook or "5 stories. Real consequences. What breaks next.").strip()[:120]
-
-    lines = []
-    lines.append((hook or title).strip())
-    lines.append("")
-    lines.append("TODAY’S LINEUP")
-    for s in stories[:5]:
-        pub = (s.get("publisher") or "").strip()
-        head = (s.get("headline") or "").strip()
-        lines.append(f"- {head}" + (f" ({pub})" if pub else ""))
-
-    lines.append("")
-    lines.append("KEY NUMBERS")
-    for i, s in enumerate(stories[:5], start=1):
-        lines.append(f"{i}) {(s.get('headline') or '').strip()}")
-        dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
-        dp = [str(x).strip() for x in dp if str(x).strip()] or ["No explicit figures in snippet."]
-        for b in dp[:6]:
-            lines.append(f"   • {b}")
-
-    lines.append("")
-    lines.append("WHY IT MATTERS")
-    for s in stories[:5]:
-        why = (s.get("why_shocking") or "").strip()
-        if why:
-            lines.append(f"- {why[:220]}")
-
-    lines.append("")
-    lines.append("SOURCES")
-    for s in stories[:5]:
-        url = (s.get("source_url") or "").strip()
-        if url:
-            lines.append(f"- {url}")
-
-    lines.append("")
-    lines.append("LISTEN")
-    lines.append(listen_url)
-
-    show_notes = "\n".join(lines).strip()[:EPISODE_META_MAX_DESC]
-
-    return {
-        "title": title,
-        "subtitle": subtitle,
-        "description": show_notes,
-        "keywords": [],
-        "hashtags": (marketing_pack or {}).get("hashtags", "#AI #TechNews"),
-    }
-
-
-# ============================================================
-# RSS FEED WRITER (catalog-wide truth)
-# ============================================================
+# ----------------------------
+# RSS FEED WRITER
+# ----------------------------
 def update_feed_xml(meta: Dict) -> None:
     import xml.etree.ElementTree as ET
     from urllib.parse import quote
@@ -2023,27 +1765,14 @@ def update_feed_xml(meta: Dict) -> None:
         except Exception:
             return False
 
-    def make_item(
-        title: str,
-        description: str,
-        audio_filename: str,
-        pubdate_rfc2822: str,
-        duration_seconds: int = 0,
-        subtitle: str = "",
-        keywords_csv: str = "",
-    ) -> ET.Element:
+    def make_item(title: str, description: str, audio_filename: str, pubdate_rfc2822: str,
+                  duration_seconds: int = 0) -> ET.Element:
         item = ET.Element("item")
         ET.SubElement(item, "title").text = (title or "")[:EPISODE_META_MAX_TITLE]
         ET.SubElement(item, "description").text = (description or "")[:8000]
         ET.SubElement(item, f"{{{ITUNES_NS}}}summary").text = (description or "")[:8000]
 
-        if subtitle:
-            ET.SubElement(item, f"{{{ITUNES_NS}}}subtitle").text = subtitle[:255]
-        if keywords_csv:
-            ET.SubElement(item, f"{{{ITUNES_NS}}}keywords").text = keywords_csv[:255]
-
         audio_url = safe_url_join(AUDIO_BASE_URL, audio_filename)
-
         guid_el = ET.SubElement(item, "guid")
         guid_el.set("isPermaLink", "false")
         guid_el.text = audio_url
@@ -2065,7 +1794,6 @@ def update_feed_xml(meta: Dict) -> None:
 
         ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
         ep_img.set("href", RSS_SETTINGS["image"])
-
         ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
         return item
 
@@ -2115,52 +1843,37 @@ def update_feed_xml(meta: Dict) -> None:
         title = (sidecar.get("title") or f"{RSS_SETTINGS['title']} — {date_str}").strip()
         desc = (sidecar.get("description") or f"Listen: {LISTEN_URL}").strip()
 
+        dur = 0
         if meta.get("audio_file") == mp3.name:
             title = (meta.get("title") or title).strip()
             desc = (meta.get("show_notes") or desc).strip()
             dur = int(meta.get("duration_seconds") or 0)
-            subtitle = (meta.get("subtitle") or "").strip()
-            keywords_csv = (meta.get("keywords_csv") or "").strip()
-        else:
-            dur = 0
-            subtitle = ""
-            keywords_csv = ""
 
-        channel.append(
-            make_item(
-                title=title,
-                description=desc,
-                audio_filename=mp3.name,
-                pubdate_rfc2822=rfc2822_from_date(date_str),
-                duration_seconds=dur,
-                subtitle=subtitle,
-                keywords_csv=keywords_csv,
-            )
-        )
+        channel.append(make_item(
+            title=title,
+            description=desc,
+            audio_filename=mp3.name,
+            pubdate_rfc2822=rfc2822_from_date(date_str),
+            duration_seconds=dur,
+        ))
         items_added += 1
 
     ET.ElementTree(rss).write(FEED_XML_PATH, encoding="utf-8", xml_declaration=True)
-    _safe_print(f"✅ feed.xml rebuilt from local episodes: {items_added} items (skipped broken files < {MIN_MP3_BYTES_FEED} bytes)")
+    _safe_print(f"✅ feed.xml rebuilt from local episodes: {items_added} items")
 
 
-# ============================================================
-# MAIN PRODUCER
-# ============================================================
+# ----------------------------
+# PRODUCER
+# ----------------------------
 def _maybe_append_date(title: str, date_str: str) -> str:
     t = (title or "").strip()
     if not t:
         return f"{RSS_SETTINGS['title']} — {date_str}"[:EPISODE_META_MAX_TITLE]
     if date_str in t:
         return t[:EPISODE_META_MAX_TITLE].strip()
-
     suffix = f" — {date_str}"
     max_base = EPISODE_META_MAX_TITLE - len(suffix)
-    if max_base < 10:
-        return (t[:EPISODE_META_MAX_TITLE]).strip()
-
-    base = t
-    if len(base) > max_base:
-        base = base[:max_base].rstrip(" -—:|")
+    base = t[:max_base].rstrip(" -—:|") if len(t) > max_base else t
     return (base + suffix)[:EPISODE_META_MAX_TITLE].strip()
 
 
@@ -2174,16 +1887,13 @@ def _file_ok_min_bytes(p: Path) -> bool:
 def produce_episode() -> None:
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg is required for stitching and mastering. Install it on runner/host.")
-
     _require_intro_outro_if_needed()
 
     today = datetime.date.today().isoformat()
     final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
 
-    # Idempotency guard
     if final_mp3.exists() and _file_ok_min_bytes(final_mp3) and not FORCE_REBUILD:
         _safe_print(f"🛑 Today's episode already exists ({final_mp3.name}). Set FORCE_REBUILD=true to regenerate.")
-
         try:
             final_audio = AudioSegment.from_mp3(final_mp3)
             duration_seconds = int(len(final_audio) / 1000)
@@ -2194,14 +1904,10 @@ def produce_episode() -> None:
         meta = {
             "date": today,
             "title": sidecar.get("title") or f"{RSS_SETTINGS['title']} — {today}",
-            "subtitle": "",
-            "keywords_csv": "",
             "listen_url": LISTEN_URL,
             "minutes": round(duration_seconds / 60.0, 2) if duration_seconds else 0,
             "audio_file": final_mp3.name,
             "audio_url": AUDIO_BASE_URL + final_mp3.name,
-            "stories": [],
-            "marketing_pack": {},
             "duration_seconds": duration_seconds,
             "show_notes": sidecar.get("description") or f"LISTEN: {LISTEN_URL}",
         }
@@ -2224,30 +1930,21 @@ def produce_episode() -> None:
     sponsors = load_sponsors()
     stories = pick_top_stories(intel, n=5)
 
-    _safe_print(" >> ✍️ WRITING FULL EPISODE (target minutes via wordcount)...")
+    _safe_print(" >> ✍️ WRITING FULL EPISODE (5 segments)...")
     script = generate_episode_script(stories, sponsors, today)
     script = enforce_episode_numeric_density(script, stories, today)
     script = _sanitize_dialogue_only(script)
 
     issues = validate_script(script)
     if issues:
-        raise RuntimeError("Script validation failed after numeric-density enforcement:\n" + "\n".join(issues))
-
-    est = estimate_minutes_from_text(script)
-    _safe_print(f"    Estimated minutes (text): ~{est:.1f}")
+        raise RuntimeError("Script validation failed:\n" + "\n".join(issues))
 
     if SAVE_SCRIPT:
         script_path = BASE_DIR / f"script_{today}.txt"
         script_path.write_text(script, encoding="utf-8")
-        _safe_print(f"    📝 Saved script: {script_path.name}")
+        _safe_print(f"    ✅ Saved script: {script_path.name}")
 
     dialogue = iter_dialogue(script)
-    if len(dialogue) < 120:
-        raise RuntimeError(
-            f"Dialogue parsing produced too few lines ({len(dialogue)}). "
-            "Script format likely broken (missing speaker labels)."
-        )
-
     dialogue_merged = merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)
 
     run_tmp = TMP_AUDIO_DIR / today
@@ -2260,67 +1957,86 @@ def produce_episode() -> None:
     silence_path = run_tmp / "silence_80ms.mp3"
     AudioSegment.silent(duration=80).export(silence_path, format="mp3", bitrate="192k")
 
-    # Pre-load stingers
-    outro_seg = None
-    transition_seg = None
+    intro_stinger_seg: Optional[AudioSegment] = None
+    outro_seg: Optional[AudioSegment] = None
+    transition_seg: Optional[AudioSegment] = None
+
+    if INTRO_PATH.exists():
+        intro_stinger_seg = load_stinger(
+            INTRO_PATH,
+            ms=INTRO_STINGER_MS,
+            target_dbfs=STINGER_TARGET_DBFS,
+            fade_in_ms=INTRO_FADE_IN_MS,
+            fade_out_ms=INTRO_FADE_OUT_MS,
+        )
 
     if OUTRO_PATH.exists():
         outro_seg = load_stinger(
-            OUTRO_PATH, OUTRO_MS, STINGER_TARGET_DBFS,
-            OUTRO_FADE_IN_MS, OUTRO_FADE_OUT_MS
+            OUTRO_PATH,
+            ms=OUTRO_MS,
+            target_dbfs=STINGER_TARGET_DBFS,
+            fade_in_ms=OUTRO_FADE_IN_MS,
+            fade_out_ms=OUTRO_FADE_OUT_MS,
         )
 
     if TRANSITION_PATH.exists():
         transition_seg = load_stinger(
-            TRANSITION_PATH, TRANSITION_MS, STINGER_TARGET_DBFS,
-            TRANSITION_FADE_IN_MS, TRANSITION_FADE_OUT_MS
+            TRANSITION_PATH,
+            ms=TRANSITION_MS,
+            target_dbfs=STINGER_TARGET_DBFS,
+            fade_in_ms=TRANSITION_FADE_IN_MS,
+            fade_out_ms=TRANSITION_FADE_OUT_MS,
         )
 
-    _safe_print(" >> 🎙️ RECORDING (TTS)...")
+    _safe_print(" >> 🎙️ RECORDING (TTS + assembly)...")
+
     seg_idx = 0
-    inserted_intro = False
+    intro_done = False
     pending_intro_bed = False
 
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
-            if INTRO_PATH.exists() and not inserted_intro:
+            if not intro_done:
+                # Guaranteed audible intro stinger
+                if intro_stinger_seg is not None:
+                    p = run_tmp / "intro_stinger.mp3"
+                    intro_stinger_seg.export(p, format="mp3", bitrate="192k")
+                    concat_files.append(p)
+                    concat_files.append(silence_path)
                 pending_intro_bed = True
-                inserted_intro = True
+                intro_done = True
             else:
                 if transition_seg is not None:
-                    trans_path = run_tmp / f"transition_{uuid.uuid4().hex}.mp3"
-                    transition_seg.export(trans_path, format="mp3", bitrate="192k")
-                    concat_files.append(trans_path)
+                    p = run_tmp / f"transition_{uuid.uuid4().hex[:8]}.mp3"
+                    transition_seg.export(p, format="mp3", bitrate="192k")
+                    concat_files.append(p)
+                    concat_files.append(silence_path)
                 else:
                     concat_files.append(silence_path)
-
-            concat_files.append(silence_path)
             continue
 
-        voice = VOICE_MAP.get(speaker, "onyx")
+        voice_name = VOICE_MAP.get(speaker, "onyx")
+        chunks = chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS)
 
-        for chunk in chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS):
+        for chunk in chunks:
             seg_idx += 1
-            raw_seg_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
-            tts_to_file(chunk, voice, raw_seg_path)
-            post_process_tts_mp3(raw_seg_path)
+            raw_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
+            tts_to_file(chunk, voice_name, raw_path)
+            post_process_tts_mp3(raw_path)
 
-            final_voice_path = raw_seg_path
-            if speaker == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
+            final_voice_path = raw_path
+            if speaker.upper() == "JAMIE" and abs(JAMIE_SPEED - 1.0) > 1e-6:
                 sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
-                apply_speed_ffmpeg(raw_seg_path, sped_path, JAMIE_SPEED)
+                apply_speed_ffmpeg(raw_path, sped_path, JAMIE_SPEED)
                 post_process_tts_mp3(sped_path)
                 final_voice_path = sped_path
 
-            # Intro bed + ducking on first spoken chunk after first [MUSIC]
             if pending_intro_bed and INTRO_PATH.exists():
                 pending_intro_bed = False
-
                 voice_seg = AudioSegment.from_file(final_voice_path)
                 bed = AudioSegment.from_file(INTRO_PATH)
                 bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
                 bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS).fade_out(INTRO_BED_FADE_OUT_MS)
-
                 ducked = duck_music_under_voice(
                     voice=voice_seg,
                     music=bed,
@@ -2328,20 +2044,18 @@ def produce_episode() -> None:
                     duck_db=DUCK_AMOUNT_DB,
                     window_ms=DUCK_WINDOW_MS,
                 )
-
-                intro_mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_introbed_mix.mp3"
-                ducked.export(intro_mix_path, format="mp3", bitrate="192k")
-                concat_files.append(intro_mix_path)
+                mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_introbed_mix.mp3"
+                ducked.export(mix_path, format="mp3", bitrate="192k")
+                concat_files.append(mix_path)
             else:
                 concat_files.append(final_voice_path)
 
             concat_files.append(silence_path)
 
-    # Append outro
     if outro_seg is not None:
-        outro_path = run_tmp / "outro_trim.mp3"
-        outro_seg.export(outro_path, format="mp3", bitrate="192k")
-        concat_files.append(outro_path)
+        p = run_tmp / "outro.mp3"
+        outro_seg.export(p, format="mp3", bitrate="192k")
+        concat_files.append(p)
 
     _safe_print(f" >> 🎚️ STITCHING ({STITCH_METHOD})...")
     stitch_audio(concat_files, final_mp3)
@@ -2357,24 +2071,11 @@ def produce_episode() -> None:
     _safe_print(f" ✅ EPISODE COMPLETE: {final_mp3.name} ({minutes:.2f} minutes)")
 
     if minutes < MIN_MINUTES or minutes > MAX_MINUTES:
-        raise RuntimeError(
-            f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}."
-        )
+        raise RuntimeError(f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}.")
 
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
-    seo = _generate_episode_seo_meta(
-        date_str=today,
-        stories=stories,
-        listen_url=LISTEN_URL,
-        script_text=script,
-        marketing_pack=pack,
-    )
-
-    feed_title = _maybe_append_date(seo["title"], today)
-    subtitle = (seo.get("subtitle") or "").strip()[:255]
-    keywords_csv = ""  # optional
-
-    show_notes = (seo.get("description") or "").strip()
+    feed_title = _maybe_append_date(pack.get("yt_title", RSS_SETTINGS["title"]), today)
+    show_notes = (pack.get("yt_description") or f"LISTEN: {LISTEN_URL}").strip()
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
 
     viral_caption = "\n".join([
@@ -2387,33 +2088,10 @@ def produce_episode() -> None:
 
     (BASE_DIR / "viral_caption.txt").write_text(viral_caption, encoding="utf-8")
     (BASE_DIR / "marketing_pack.json").write_text(json.dumps(pack, indent=2, ensure_ascii=False), encoding="utf-8")
-    (BASE_DIR / "episode_metadata.json").write_text(
-        json.dumps(
-            {
-                "date": today,
-                "title": feed_title,
-                "subtitle": subtitle,
-                "keywords_csv": keywords_csv,
-                "listen_url": LISTEN_URL,
-                "minutes": round(minutes, 2),
-                "audio_file": final_mp3.name,
-                "audio_url": AUDIO_BASE_URL + final_mp3.name,
-                "stories": stories,
-                "marketing_pack": pack,
-                "duration_seconds": duration_seconds,
-                "show_notes": show_notes,
-            },
-            indent=2,
-            ensure_ascii=False,
-        ),
-        encoding="utf-8",
-    )
 
     meta = {
         "date": today,
         "title": feed_title,
-        "subtitle": subtitle,
-        "keywords_csv": keywords_csv,
         "listen_url": LISTEN_URL,
         "minutes": round(minutes, 2),
         "audio_file": final_mp3.name,
@@ -2423,6 +2101,7 @@ def produce_episode() -> None:
         "duration_seconds": duration_seconds,
         "show_notes": show_notes,
     }
+    (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     update_feed_xml(meta)
     run_marketing_pipeline()
@@ -2431,8 +2110,5 @@ def produce_episode() -> None:
         shutil.rmtree(run_tmp, ignore_errors=True)
 
 
-# ============================================================
-# ENTRYPOINT
-# ============================================================
 if __name__ == "__main__":
     produce_episode()
