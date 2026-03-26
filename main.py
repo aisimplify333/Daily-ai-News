@@ -10,6 +10,14 @@ Highlights
 - TheLEDGR native reads built in with weekday rotation
 - Safer publish logic: auto-pad near-miss runtimes instead of killing the whole run
 - OpenAI TTS upgrade path with expressive instructions and automatic fallback
+
+
+Feature map
+- TheLEDGR spots 1-8 + kicker lines + weekday rotation preserved
+- Alex / Jamie / Rufus chemistry preserved
+- Rufus on-location framing preserved
+- Manhattan penthouse sonic identity preserved
+- Numeric-receipt prompts and rescue logic added for stability
 """
 
 from __future__ import annotations
@@ -841,6 +849,17 @@ Link: {s.link}"""
     return "\n\n".join(blocks)
 
 
+def _numeric_receipt_block(stories: List[StoryBrief], max_per_story: int = 3, max_lines: int = 12) -> str:
+    receipts: List[str] = []
+    for i, s in enumerate(stories, start=1):
+        picks = [dp for dp in s.data_points if re.search(r"\d", dp)]
+        if not picks:
+            picks = s.data_points[:1]
+        for dp in picks[:max_per_story]:
+            receipts.append(f"- STORY {i} / {s.publisher}: {dp}")
+    return "\n".join(receipts[:max_lines]) or "- No explicit figures located."
+
+
 def _script_targets() -> Tuple[int, Dict[int, int], int]:
     total_words = int(round(TARGET_MINUTES * WORDS_PER_MINUTE))
     segment_targets = {
@@ -902,12 +921,15 @@ SPECIAL:
 - After the cold open, output a standalone line: [MUSIC]
 - Weave the pre-roll TheLEDGR spot naturally after the welcome or first transition using this copy as source material:
 {pre}
+- CRITICAL: In the cold open and lineup, the hosts must say at least 3 explicit numbers, dates, dollar amounts, percentages, or benchmark figures out loud naturally.
+- Alex must call out at least one concrete number early. Jamie must react to at least one concrete number. Rufus must land one factual receipt.
 """
     elif seg_num == 2:
         special = """
 SPECIAL:
 - Output ONLY ALEX and JAMIE lines after the segment marker.
 - No RUFUS lines in Segment 2.
+- Alex and Jamie must each reference at least one concrete figure naturally in dialogue.
 """
     elif seg_num == 3:
         special = f"""
@@ -916,12 +938,14 @@ SPECIAL:
 - Weave the mid-roll TheLEDGR read naturally using this copy as source material:
 {mid}
 - The sponsor should sound native, smart, and premium, not like a stiff ad break.
+- Rufus must say at least two concrete figures, benchmarks, dates, or dollar amounts.
 """
     elif seg_num == 4:
         special = """
 SPECIAL:
 - At least one exchange should contain a quick cut-off or overlap cue like wait, hold on, or no, but.
 - Keep it polished. Jostling, not chaos.
+- Use concrete figures out loud naturally; do not leave all the numbers trapped in the story notes.
 """
     elif seg_num == 5:
         special = f"""
@@ -929,9 +953,11 @@ SPECIAL:
 - End with a short TheLEDGR button or kicker using this source line:
 {button}
 - Make the final line feel like a quiet Manhattan-at-night sign-off.
+- Include at least one specific number, date, score, or threshold before the sign-off.
 """
 
     story_block = _story_block(stories)
+    numeric_receipts = _numeric_receipt_block(stories)
     prompt = f"""
 Write ONLY {_segment_header(seg_num)} for a premium daily podcast called The AI Edge dated {date_str}.
 
@@ -956,8 +982,8 @@ NON-NEGOTIABLES:
 - FIRST line must be exactly {_segment_header(seg_num)}
 - Target length: about {seg_word_target} words
 - Mention the publisher when introducing each story
+- Say actual numbers out loud naturally; do not keep the hard data implicit
 - Use at least 2 explicit data points from the provided data lines for each story discussed
-- In Segment 2 especially, make sure Alex and Jamie say the actual numbers out loud naturally
 - Do NOT invent facts or numbers
 - All spoken lines must begin with ALEX:, JAMIE:, or RUFUS:
 - Avoid generic transitions like let's dive in
@@ -968,6 +994,9 @@ WHAT THIS SEGMENT MUST DO:
 CALLBACK MATERIAL:
 - callbacks: {json.dumps(callbacks, ensure_ascii=False)}
 - running bits: {json.dumps(running_bits, ensure_ascii=False)}
+
+NUMERIC RECEIPTS TO SAY OUT LOUD:
+{numeric_receipts}
 
 {special}
 
@@ -1032,19 +1061,69 @@ def _segment_validate(seg_text: str, seg_num: int, min_words: int) -> List[str]:
     return issues
 
 
-def _segment_repair_prompt(seg_num: int, seg_text: str, issues: List[str], seg_word_target: int) -> str:
+def _segment_repair_prompt(seg_num: int, seg_text: str, issues: List[str], seg_word_target: int, stories: List[StoryBrief]) -> str:
+    seg_specific = ""
+    if seg_num == 2:
+        seg_specific = (
+            "- SEGMENT 2 MUST contain ONLY ALEX and JAMIE lines.\n"
+            "- Delete ANY RUFUS lines and do NOT reintroduce RUFUS.\n"
+        )
+
+    numeric_fix = ""
+    if any("Low numeric density" in x for x in issues):
+        numeric_fix = (
+            "- CRITICAL FIX: Add explicit numbers, dates, dollar amounts, percentages, or benchmark scores naturally.\n"
+            "- Every speaker should reference at least one concrete figure where appropriate.\n"
+            "- Pull figures only from the provided numeric receipts or the broken segment context.\n"
+            "- Do NOT invent numbers.\n"
+            f"- Numeric receipts available:\n{_numeric_receipt_block(stories)}\n"
+        )
+
+    music_fix = ""
+    if seg_num == 1:
+        music_fix = "- SEGMENT 1 must keep a real cold open before a standalone [MUSIC] line.\n"
+
     return f"""
-Repair this segment so it passes the format and quality checks.
+You are repairing ONLY {_segment_header(seg_num)} for "The AI Edge".
 
-Issues:
-{json.dumps(issues, ensure_ascii=False)}
+CURRENT ISSUES (fix all):
+{chr(10).join([f"- {x}" for x in issues])}
 
-Broken segment:
+NON-NEGOTIABLE:
+- First line MUST be exactly "{_segment_header(seg_num)}"
+- Output MUST be dialogue lines only with EXACT labels: ALEX:, JAMIE:, RUFUS:
+- Every spoken line MUST start with one of those labels.
+{seg_specific}{numeric_fix}{music_fix}- Keep lines SHORT (1–2 sentences).
+- Reuse the same facts, sponsor language, chemistry, and premium style.
+- Target about {seg_word_target} words.
+
+HERE IS THE SEGMENT TO REPAIR:
 {seg_text}
+""".strip()
 
-Re-write ONLY {_segment_header(seg_num)} and its dialogue.
-Target about {seg_word_target} words.
-Remember the same cast chemistry, story facts, and premium style.
+
+def _segment_numeric_rescue_prompt(seg_num: int, date_str: str, stories: List[StoryBrief], sponsors: Dict[str, Dict[str, object]], memory: Dict[str, object], seg_word_target: int, previous: str) -> str:
+    return f"""
+Rewrite ONLY {_segment_header(seg_num)} for The AI Edge dated {date_str}.
+
+This segment failed because it did not say enough concrete numbers out loud.
+
+YOU MUST:
+- keep the premium Manhattan-after-dark chemistry
+- keep the same segment role and cast rules
+- say at least 4 explicit numbers, dates, dollar amounts, percentages, user counts, scores, or benchmark figures naturally
+- use ONLY the facts implied by these numeric receipts
+- do NOT invent numbers
+- keep the first line exactly {_segment_header(seg_num)}
+
+NUMERIC RECEIPTS TO USE:
+{_numeric_receipt_block(stories, max_per_story=3, max_lines=16)}
+
+PREVIOUS BROKEN VERSION:
+{previous}
+
+SOURCE MATERIAL FOR THIS SEGMENT:
+{_segment_prompt(seg_num, date_str, stories, sponsors, memory, seg_word_target)}
 """.strip()
 
 
@@ -1062,20 +1141,33 @@ def write_segment(seg_num: int, date_str: str, stories: List[StoryBrief], sponso
                     "Write with chemistry, emotional realism, and hard factual grounding. "
                     "Never use bullet points inside the output."
                 ),
-                temperature=0.72 if seg_num in (1, 4, 5) else 0.64,
+                temperature=0.68 if seg_num in (1, 4, 5) else 0.60,
                 max_tokens=SCRIPT_MAX_TOKENS,
             )
         else:
             raw = generate_text(
-                prompt=_segment_repair_prompt(seg_num, seg_text, issues, seg_word_target),
-                system="You repair podcast dialogue to strict format while keeping it natural and premium.",
-                temperature=0.35,
+                prompt=_segment_repair_prompt(seg_num, seg_text, issues, seg_word_target, stories),
+                system="You repair podcast dialogue to strict format while keeping it natural, numeric, and premium.",
+                temperature=0.25,
                 max_tokens=SCRIPT_MAX_TOKENS,
             )
         seg_text = _sanitize_dialogue_only(raw)
         issues = _segment_validate(seg_text, seg_num, min_words)
         if not issues:
             return seg_text
+
+    if any("Low numeric density" in x for x in issues):
+        raw = generate_text(
+            prompt=_segment_numeric_rescue_prompt(seg_num, date_str, stories, sponsors, memory, seg_word_target, seg_text),
+            system="You are a surgical dialogue repairer. Fix numeric density without breaking format or chemistry.",
+            temperature=0.15,
+            max_tokens=SCRIPT_MAX_TOKENS,
+        )
+        seg_text = _sanitize_dialogue_only(raw)
+        issues = _segment_validate(seg_text, seg_num, min_words)
+        if not issues:
+            return seg_text
+
     raise RuntimeError(f"Failed to produce valid segment {seg_num}: {issues}")
 
 
