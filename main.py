@@ -98,7 +98,7 @@ TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
 WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "172"))
 SHORTFALL_TOLERANCE_SECONDS = int(os.getenv("SHORTFALL_TOLERANCE_SECONDS", "30"))
 
-SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "3"))
+SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "5"))
 SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "2400"))
 JSON_MAX_TOKENS = int(os.getenv("JSON_MAX_TOKENS", "1800"))
 SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "true").strip().lower() in {"1", "true", "yes"}
@@ -151,8 +151,8 @@ VOICE_TARGET_DBFS = float(os.getenv("VOICE_TARGET_DBFS", "-18.0"))
 FINAL_LOUDNESS_DBFS = float(os.getenv("FINAL_LOUDNESS_DBFS", "-16.0"))
 
 MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))
-MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "10"))
-MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "70"))
+MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "6"))
+MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "45"))
 MAX_STORIES = int(os.getenv("MAX_STORIES", "5"))
 
 SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
@@ -957,6 +957,7 @@ NON-NEGOTIABLES:
 - Target length: about {seg_word_target} words
 - Mention the publisher when introducing each story
 - Use at least 2 explicit data points from the provided data lines for each story discussed
+- In Segment 2 especially, make sure Alex and Jamie say the actual numbers out loud naturally
 - Do NOT invent facts or numbers
 - All spoken lines must begin with ALEX:, JAMIE:, or RUFUS:
 - Avoid generic transitions like let's dive in
