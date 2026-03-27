@@ -1918,7 +1918,7 @@ Top stories:
         f"Today on The AI Edge, Alex, Jamie, and Rufus break down the stories that actually matter tomorrow morning.\n\n"
         f"Top stories:\n{top_bullets}\n\n"
         f"Tomorrow's tension: {tomorrow_tease or 'The follow-through on these moves will matter more than the launch headlines.'}\n\n"
-        f"Presented by TheLEDGR — The Ledger. Five specialized AI briefings. T-H-E-L-E-D-G-R dot I-O."
+        f"Presented by TheLEDGR — The Ledger. Five specialized AI briefings. THE-L-E-D-G-R dot I-O."
     )
 
     out = {
