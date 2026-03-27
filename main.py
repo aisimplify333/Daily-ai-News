@@ -116,10 +116,10 @@ VOICE_MAP: Dict[str, str] = {
 VOICE_INSTRUCTIONS: Dict[str, str] = {
     "ALEX": "",
     "JAMIE": (
-        "Sound like a bright, warm, intelligent young woman in her mid-20s. "
+        "Sound in a FEMALE VOICE, like a highly intelligent, warm, excitable young woman in her mid-20s. "
         "She is the emotional center of the room and lifts the energy when things get too intense. "
-        "She has a great sense of humor, high empathy, and natural charm. "
-        "Use more pitch movement, more emotional rise and fall, and more conversational warmth than a standard announcer. "
+        "She has a great sense of humor, a great LAUGH, high empathy, and natural charm. "
+        "Use more pitch movement, more emotional rise and fall like she has won the lottery and then realizeds she lost her ticket, and more conversational warmth she has a real BOND with ALEX. "
         "She should sound alive, quick witted, and human, never flat or anxious. "
         "Let there be a light smile in the voice when the line calls for it. "
         "Occasionally sound amused or softly delighted, but do not overdo it. "
@@ -127,13 +127,13 @@ VOICE_INSTRUCTIONS: Dict[str, str] = {
         "Sound playful, not anxious."
     ),
     "RUFUS": (
-        "Speak with a strong DIALECT OXFORD educated POSH, COCKNEY British accent. "
+        "Speak with a MALE, Strong DIALECT, OXFORD educated, POSH, COCKNEY British accent. "
         "Dry sense of humor. Calm, precise, and highly analytical. "
         "Sound like someone who grew up around the financial district and sees the world through data, incentives, policy, and second-order consequences. "
-        "Keep the delivery deliberate, confident, and slightly amused by hype. "
+        "Keep the delivery deliberate, confident, and slightly amused by hype. USES ENGLISH HUMOR WHEN HE CAN "
         "Use restrained emotion, crisp diction, and understated wit. "
         "Never sound theatrical. Sound like the smartest person in the room who does not need to raise his voice. "
-        "Keep the British accent consistent on every sentence."
+        "Keep the strong DIALECT, OXFORD educated, POSH, COCKNEY British accent consistent on every sentence."
     ),
 }
 
@@ -148,7 +148,7 @@ STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | f
 # Per-speaker speed modulation (listener-proven baseline)
 ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.03"))
 JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "0.97"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.01"))
 
 # Post-processing thresholds
 TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
