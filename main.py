@@ -120,14 +120,14 @@ VOICE_INSTRUCTIONS: Dict[str, str] = {
         "She is the emotional center of the room and lifts the energy when things get too intense. "
         "She has a great sense of humor, high empathy, and natural charm. "
         "Use more pitch movement, more emotional rise and fall, and more conversational warmth than a standard announcer. "
-        "She should sound alive, quick, and human, never flat or anxious. "
+        "She should sound alive, quick witted, and human, never flat or anxious. "
         "Let there be a light smile in the voice when the line calls for it. "
         "Occasionally sound amused or softly delighted, but do not overdo it. "
         "Keep the pacing natural and fluid, with crisp articulation and warm presence. "
         "Sound playful, not anxious."
     ),
     "RUFUS": (
-        "Speak with a strong educated British accent. "
+        "Speak with a strong DIALECT OXFORD educated POSH, COCKNEY British accent. "
         "Dry sense of humor. Calm, precise, and highly analytical. "
         "Sound like someone who grew up around the financial district and sees the world through data, incentives, policy, and second-order consequences. "
         "Keep the delivery deliberate, confident, and slightly amused by hype. "
