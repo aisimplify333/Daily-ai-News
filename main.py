@@ -99,11 +99,42 @@ SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "false").strip().lower() in ("1", "true",
 # Idempotency
 FORCE_REBUILD = os.getenv("FORCE_REBUILD", "false").strip().lower() in ("1", "true", "yes")
 
-# Voices
+# Voices / mixed-model experiment
+# Alex stays on the old proven host stack.
+VOICE_MODEL_MAP: Dict[str, str] = {
+    "ALEX": os.getenv("VOICE_MODEL_ALEX", "tts-1-hd"),
+    "JAMIE": os.getenv("VOICE_MODEL_JAMIE", "gpt-4o-mini-tts"),
+    "RUFUS": os.getenv("VOICE_MODEL_RUFUS", "gpt-4o-mini-tts"),
+}
+
 VOICE_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
-    "JAMIE": os.getenv("VOICE_JAMIE", "nova"),
-    "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
+    "JAMIE": os.getenv("VOICE_JAMIE", "marin"),
+    "RUFUS": os.getenv("VOICE_RUFUS", "cedar"),
+}
+
+VOICE_INSTRUCTIONS: Dict[str, str] = {
+    "ALEX": "",
+    "JAMIE": (
+        "Sound like a bright, warm, intelligent young woman in her mid-20s. "
+        "She is the emotional center of the room and lifts the energy when things get too intense. "
+        "She has a great sense of humor, high empathy, and natural charm. "
+        "Use more pitch movement, more emotional rise and fall, and more conversational warmth than a standard announcer. "
+        "She should sound alive, quick, and human, never flat or anxious. "
+        "Let there be a light smile in the voice when the line calls for it. "
+        "Occasionally sound amused or softly delighted, but do not overdo it. "
+        "Keep the pacing natural and fluid, with crisp articulation and warm presence. "
+        "Sound playful, not anxious."
+    ),
+    "RUFUS": (
+        "Speak with a strong educated British accent. "
+        "Dry sense of humor. Calm, precise, and highly analytical. "
+        "Sound like someone who grew up around the financial district and sees the world through data, incentives, policy, and second-order consequences. "
+        "Keep the delivery deliberate, confident, and slightly amused by hype. "
+        "Use restrained emotion, crisp diction, and understated wit. "
+        "Never sound theatrical. Sound like the smartest person in the room who does not need to raise his voice. "
+        "Keep the British accent consistent on every sentence."
+    ),
 }
 
 # TTS tuning
@@ -114,7 +145,7 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
-# Per-speaker speed modulation (proven listenability baseline)
+# Per-speaker speed modulation (listener-proven baseline)
 ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.03"))
 JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
 RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "0.97"))
@@ -1685,23 +1716,45 @@ def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
     return chunks
 
 
-def tts_to_file(text: str, voice: str, out_path: Path) -> None:
+def tts_to_file(text: str, speaker: str, out_path: Path) -> None:
+    speaker = speaker.upper()
+    model = VOICE_MODEL_MAP.get(speaker, OPENAI_TTS_MODEL)
+    voice = VOICE_MAP.get(speaker, "onyx")
+    instructions = VOICE_INSTRUCTIONS.get(speaker, "").strip()
+
     last_err = None
     for attempt in range(1, TTS_RETRIES + 1):
         try:
-            with openai_client.audio.speech.with_streaming_response.create(
-                model=OPENAI_TTS_MODEL,
-                voice=voice,
-                input=text,
-            ) as resp:
-                resp.stream_to_file(str(out_path))
+            if model == "gpt-4o-mini-tts" and instructions:
+                with openai_client.audio.speech.with_streaming_response.create(
+                    model=model,
+                    voice=voice,
+                    input=text,
+                    instructions=instructions,
+                ) as resp:
+                    resp.stream_to_file(str(out_path))
+            else:
+                with openai_client.audio.speech.with_streaming_response.create(
+                    model=model,
+                    voice=voice,
+                    input=text,
+                ) as resp:
+                    resp.stream_to_file(str(out_path))
             return
         except Exception as e:
             last_err = e
             sleep_s = min(10, 1.5 * attempt)
-            _safe_print(f"    ⚠️ TTS failed (attempt {attempt}/{TTS_RETRIES}): {e} — retrying in {sleep_s:.1f}s")
+            _safe_print(f"    ⚠️ TTS failed for {speaker} (attempt {attempt}/{TTS_RETRIES}): {e} — retrying in {sleep_s:.1f}s")
             time.sleep(sleep_s)
-    raise RuntimeError(f"TTS failed after {TTS_RETRIES} retries: {last_err}")
+    raise RuntimeError(f"TTS failed for {speaker} after {TTS_RETRIES} retries: {last_err}")
+
+
+def _voice_speed(speaker: str) -> float:
+    return {
+        "ALEX": ALEX_SPEED,
+        "JAMIE": JAMIE_SPEED,
+        "RUFUS": RUFUS_SPEED,
+    }.get(speaker.upper(), 1.0)
 
 
 def apply_speed_ffmpeg(in_path: Path, out_path: Path, speed: float) -> None:
@@ -2198,21 +2251,16 @@ def produce_episode() -> None:
                     concat_files.append(silence_path)
             continue
 
-        voice_name = VOICE_MAP.get(speaker, "onyx")
         chunks = chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS)
 
         for chunk in chunks:
             seg_idx += 1
             raw_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
-            tts_to_file(chunk, voice_name, raw_path)
+            tts_to_file(chunk, speaker, raw_path)
             post_process_tts_mp3(raw_path)
 
             final_voice_path = raw_path
-            speaker_speed = {
-                "ALEX": ALEX_SPEED,
-                "JAMIE": JAMIE_SPEED,
-                "RUFUS": RUFUS_SPEED,
-            }.get(speaker.upper(), 1.0)
+            speaker_speed = _voice_speed(speaker)
             if abs(speaker_speed - 1.0) > 1e-6:
                 sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
                 apply_speed_ffmpeg(raw_path, sped_path, speaker_speed)
