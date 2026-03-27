@@ -773,7 +773,7 @@ def _theledgr_brand_brief() -> str:
     return (
         "BRAND RULES FOR THELEDGR:\n"
         "- TheLEDGR is pronounced 'The Ledger' like a financial ledger.\n"
-        "- The URL must be spoken as: T-H-E-L-E-D-G-R dot I-O\n"
+        "- The URL must be spoken as: TheLEDGR.io T-H-E-L-E-D-G-R dot I-O\n"
         "- It is a network of five specialized AI briefings: strategy, tools, health AI, enterprise agents, and code.\n"
         "- Core promise: what to trust, what not to trust, what is working, what is failing, and what to do tomorrow morning.\n"
         "- High-value hooks you may paraphrase: 'Don't be the last person in the room to know.' 'When they get it wrong, they publish it.'\n"
@@ -2320,12 +2320,26 @@ def produce_episode() -> None:
             raise RuntimeError(f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}.")
     elif minutes > MAX_MINUTES:
         raise RuntimeError(f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}.")
-
+    
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
+    feed_title = pack.get("yt_title", RSS_SETTINGS["title"]).strip()
+    
+    theledgr_cta = """
+    Subscribe to TheLEDGR: https://theledgr.io
+    If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.
+    TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper. It covers strategy, tools, health AI, enterprise agents, and code.
+    This is not more AI content. It is signal you can actually use in real life.
+    Subscribe now: https://theledgr.io
+    """.strip()
+    
+    base_notes = pack.get("yt_description", f"LISTEN: {LISTEN_URL}").strip()
+    show_notes = f"{theledgr_cta}\n\n{base_notes}\n\nSubscribe to TheLEDGR: https://theledgr.io".strip()
+    
+    _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)pack = generate_marketing_pack(stories, today, LISTEN_URL)
     feed_title = _maybe_append_date(pack.get("yt_title", RSS_SETTINGS["title"]), today)
     show_notes = (pack.get("show_notes") or pack.get("yt_description") or f"LISTEN: {LISTEN_URL}").strip()
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
-
+    
     viral_caption = "\n".join([
         (pack.get("tweet1", "") or "").strip(),
         "",
