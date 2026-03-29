@@ -2,7 +2,7 @@
 """
 Daily AI News: "The AI Edge" (fully automated)
 
-Production upgrades (Jan 2026):
+Production upgrades (Jan 2026) — listener-first producer package:
 - Guaranteed audible INTRO STINGER after cold open [MUSIC] marker (cannot be skipped by ducking)
 - Optional INTRO BED ducked under first spoken chunk after intro marker
 - Clean, deterministic audio assembly loop (prevents indentation / duplicate-loop bugs)
@@ -102,7 +102,7 @@ TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
 
 # Script pacing (WPM)
 WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "175"))
-SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "3"))
+SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "5"))
 
 SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "2200"))
 JSON_MAX_TOKENS = int(os.getenv("JSON_MAX_TOKENS", "1800"))
@@ -123,37 +123,28 @@ FORCE_REBUILD = os.getenv("FORCE_REBUILD", "false").strip().lower() in ("1", "tr
 VOICE_MODEL_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_MODEL_ALEX", "tts-1-hd"),
     "JAMIE": os.getenv("VOICE_MODEL_JAMIE", "gpt-4o-mini-tts"),
-    "RUFUS": os.getenv("VOICE_MODEL_RUFUS", "gpt-4o-mini-tts"),
+    "RUFUS": os.getenv("VOICE_MODEL_RUFUS", "tts-1-hd"),
 }
 
 VOICE_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
     "JAMIE": os.getenv("VOICE_JAMIE", "marin"),
-    "RUFUS": os.getenv("VOICE_RUFUS", "cedar"),
+    "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
 }
 
 VOICE_INSTRUCTIONS: Dict[str, str] = {
     "ALEX": "",
     "JAMIE": (
-        "Sound like a bright, warm, intelligent young woman in her mid-20s. "
-        "She is the emotional center of the room and lifts the energy when things get too intense. "
-        "She has a great sense of humor, high empathy, and natural charm. "
-        "Use more pitch movement, more emotional rise and fall, and more conversational warmth than a standard announcer. "
-        "She should sound alive, quick, and human, never flat or anxious. "
+        "Sound like a bright, warm, intelligent woman in her mid-20s. "
+        "She is the bright side of the room and lifts the energy naturally when things get too tense. "
+        "She has a real bond with Alex and genuine affection for Rufus. "
+        "Use conversational warmth, playful humor, and natural rise and fall in tone. "
+        "She should sound human, quick, and emotionally alive, never anxious, shrill, or overperformed. "
         "Let there be a light smile in the voice when the line calls for it. "
-        "Occasionally sound amused or softly delighted, but do not overdo it. "
-        "Keep the pacing natural and fluid, with crisp articulation and warm presence. "
-        "Sound playful, not anxious."
+        "Occasionally sound amused or softly delighted, but keep it natural. "
+        "Keep the pacing fluid and the transitions smooth, like she is reacting in real time."
     ),
-    "RUFUS": (
-        "Speak with a strong educated British accent. "
-        "Dry sense of humor. Calm, precise, and highly analytical. "
-        "Sound like someone who grew up around the financial district and sees the world through data, incentives, policy, and second-order consequences. "
-        "Keep the delivery deliberate, confident, and slightly amused by hype. "
-        "Use restrained emotion, crisp diction, and understated wit. "
-        "Never sound theatrical. Sound like the smartest person in the room who does not need to raise his voice. "
-        "Keep the British accent consistent on every sentence."
-    ),
+    "RUFUS": "",
 }
 
 # TTS tuning
@@ -969,6 +960,7 @@ Candidate items:
                 "source_url": (s.get("source_url") or "").strip(),
                 "publisher": (s.get("publisher") or "").strip(),
                 "published": (s.get("published") or "").strip(),
+                "tomorrow_hook": (s.get("tomorrow_hook") or "").strip(),
             }
             if st["headline"] and st["source_url"]:
                 stories.append(st)
@@ -986,6 +978,7 @@ Candidate items:
                     "publisher": x.get("publisher", ""),
                     "published": x.get("published", ""),
                     "rss_summary": x.get("summary", ""),
+                    "tomorrow_hook": "",
                 }
             )
 
@@ -1016,6 +1009,7 @@ Candidate items:
                 "publisher": x.get("publisher", ""),
                 "published": x.get("published", ""),
                 "rss_summary": x.get("summary", ""),
+                "tomorrow_hook": "",
             }
             fallback.append(fb)
             if len(fallback) >= n:
@@ -1069,12 +1063,14 @@ def _story_block(stories: List[Dict[str, str]]) -> str:
         pdate = (s.get("published") or "").strip()
         why = (s.get("why_shocking") or "").strip()
         url = (s.get("source_url") or "").strip()
+        tomorrow = (s.get("tomorrow_hook") or "").strip()
         out.append(
             f"{i+1}. {s.get('headline','')}\n"
             f"   Publisher: {pub}\n"
             f"   Published: {pdate}\n"
             f"   Why it matters: {why}\n"
             f"   Data points: {dp_txt}\n"
+            f"   Tomorrow hook: {tomorrow}\n"
             f"   Source: {url}"
         )
     return "\n".join(out).strip()
@@ -1095,17 +1091,29 @@ def _strict_dialogue_rules() -> str:
 def _segment_assignment(seg_num: int) -> str:
     if seg_num == 1:
         return (
-            "Cold open hook: start mid-argument (overheated). Then [MUSIC]. "
-            "Then Alex welcomes and fires off today's 5-story lineup in rapid summary. "
-            "Make it feel raw and messy, with interruptions."
+            "Cold open hook: start mid-argument with real heat. Then [MUSIC]. "
+            "Immediately after [MUSIC], Alex gives a short premium TheLEDGR sponsor hit, then welcomes the audience and fires off today's 5-story lineup in rapid summary. "
+            "Make it feel rich, current, interruptive, and addictive, with at least one unresolved consequence that makes tomorrow feel necessary."
         )
     if seg_num == 2:
-        return "Studio segment: ONLY Alex + Jamie (no Rufus). Deep dive Story 1 + Story 2 with human stakes."
+        return (
+            "Studio segment: ONLY Alex + Jamie (no Rufus). Deep dive Story 1 + Story 2 with human stakes, operator consequence, "
+            "and at least one quick interruption plus one emotionally intelligent Jamie pushback."
+        )
     if seg_num == 3:
-        return "Rufus on location: money/reg angle. Focus Story 3 with filings/trading/regulatory edge."
+        return (
+            "Rufus on location: money, politics, regulation, and geopolitical edge. Focus Story 3 with filings, trading, regulatory, or power-structure consequence. "
+            "Rufus should land one hard receipt and one dry British undercut that listeners would forward."
+        )
     if seg_num == 4:
-        return "All three together: dread/greed forecast + lightning round. Cover Story 4 + Story 5."
-    return "Closing: Alex closes hard, Jamie lands empathy, Rufus delivers a cynical prophecy."
+        return (
+            "All three together: dread/greed forecast + lightning round. Cover Story 4 + Story 5 with one callback, one listener-facing pick-a-side question, "
+            "and one line sharp enough that a listener would send it to a friend or co-worker."
+        )
+    return (
+        "Closing: Alex closes hard with the practical takeaway, Jamie lands empathy, Rufus delivers a cynical prophecy, "
+        "and Alex ends on one unresolved question, risk, or consequence that makes tomorrow feel necessary."
+    )
 
 
 def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> str:
@@ -1148,23 +1156,31 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
 
     if seg_num == 1:
         extra += (
-            "Start mid-argument (hook). Then a standalone line: [MUSIC]. Then welcome + lineup.\n"
+            "Start mid-argument (hook). Then a standalone line: [MUSIC]. "
+            "Immediately after [MUSIC], Alex must deliver a short, premium TheLEDGR sponsor line before the welcome and lineup.\n"
+            "- The sponsor should feel useful, sharp, and native to the show, not like a generic ad break.\n"
+            f"- Alex must say the brand as 'The Ledger' and the URL exactly as {THELEDGR_SPOKEN_URL}.\n"
+            "- The sponsor must make listeners feel that TheLEDGR helps them make better daily decisions, cut through noise, and stay ahead at work.\n"
             "- CRITICAL: In the cold open and lineup, say at least 3 explicit numbers, dates, dollar amounts, or benchmark figures out loud naturally.\n"
             "- Alex should ask the listener-question everybody is already thinking.\n"
             "- Include at least one interruption or amused undercut.\n"
+            "- Include at least one line with genuine tomorrow tension.\n"
             "- Alex must welcome the audience and set up the rest of the episode, not close it.\n"
-            "- End the lineup with one line that makes listeners feel they need tomorrow's episode too.\n"
         )
     elif seg_num == 2:
         extra += (
             "IMPORTANT: This segment must contain ONLY ALEX and JAMIE lines. Do NOT output any RUFUS lines.\n"
             "- Alex must open the segment with a clear setup/turn.\n"
             "- Include one quick interruption, one strong emotional pushback from Jamie, and one concrete operator takeaway.\n"
+            "- Jamie should feel smooth and conversational in transitions, not theatrical.\n"
+            "- Let there be one natural smile, light laugh, or amused release beat if it fits.\n"
         )
     elif seg_num == 3:
         extra += (
             "Alex must throw to Rufus in the first spoken exchange, then Rufus takes over.\n"
             "Rufus should sound like he is on location somewhere real in the world before landing the core receipt.\n"
+            "He must connect the money, the politics, and the geopolitical consequence.\n"
+            "Include one dry British quip or undercut that only Rufus would say.\n"
             "Weave the sponsor naturally only if it feels native to the insight.\n"
             "This segment should hand momentum forward, not sound like the end of the episode.\n"
             f"Sponsor: {sponsor_1['name']}\n"
@@ -1179,6 +1195,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             f"CTA: {sponsor_2.get('cta','')}\n"
             "- Include one callback to something said earlier in the episode.\n"
             "- Include one quick interjection and one listener-facing 'pick a side' question.\n"
+            "- This segment must contain one line strong enough that a listener would forward it.\n"
         )
     elif seg_num == 5:
         extra += (
@@ -1186,6 +1203,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "Jamie should leave the audience with the human implication.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "End with a final micro sponsor tag or aside only if it feels native.\n"
+            "The final 2-3 lines must make tomorrow feel necessary.\n"
             f"Sponsor: {sponsor_3['name']}\n"
             f"Tagline: {sponsor_3.get('tagline','')}\n"
             f"CTA: {sponsor_3.get('cta','')}\n"
@@ -1199,9 +1217,9 @@ You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
 This is ONLY {_segment_header(seg_num)} of the episode.
 
 PERSONAS:
-- ALEX (Host): Rogan energy + frantic curiosity. Drives pace. Calls out BS. Summarizes fast.
-- JAMIE (Co-host): Bartlett vibe. Vulnerable, empathetic, human stakes. Pushes back emotionally.
-- RUFUS (Analyst): cynical, money/regulatory edge. Cold, sharp. British dry wit.
+- ALEX (Host): high-agency host energy. He asks the listener-question everybody is already thinking, calls out BS, cuts through waffle, and keeps the room moving.
+- JAMIE (Co-host): empathetic, emotionally intelligent, bright side of the room. She raises the energy, makes AI feel human, and occasionally disarms the room with a smile or laugh.
+- RUFUS (Analyst): British dry wit, finance/policy/regulatory edge, always tracking the money, incentives, and geopolitical consequence. He is the receipts machine and often the funniest line in the room.
 
 {_strict_dialogue_rules()}
 
@@ -1836,12 +1854,30 @@ Top stories:
     fallback_hook = (stories[0].get("headline") if stories else "AI JUST MOVED — HERE’S WHAT CHANGED")[:64]
     fallback_tags = _hashtags_from_stories(stories, max_tags=6)
 
+    tomorrow_tease = next((s.get("tomorrow_hook","").strip() for s in stories if (s.get("tomorrow_hook") or "").strip()), "")
+    top_story_lines = "\n".join([f"- {s.get('headline','')}" for s in stories[:5]])
+    default_desc = (
+        f"Listen: {listen_url}\n\n"
+        f"Today on The AI Edge: the stories, numbers, and power shifts that matter tomorrow morning.\n\n"
+        f"Top stories:\n{top_story_lines}\n\n"
+        f"Subscribe to TheLEDGR: {THELEDGR_SUBSCRIBE_URL}"
+    )
+    default_show_notes = (
+        f"Subscribe to TheLEDGR: {THELEDGR_SUBSCRIBE_URL}\n\n"
+        f"Today on The AI Edge, Alex, Jamie, and Rufus break down the stories serious AI operators cannot afford to miss.\n\n"
+        f"What we covered:\n" + "\n".join([f"• {s.get('headline','')}" for s in stories[:5]]) + "\n\n"
+        f"Tomorrow tension: {tomorrow_tease or 'The second-order consequences are just starting to show.'}\n\n"
+        f"If AI affects your work, your team, your company, or your career, subscribe to TheLEDGR at {THELEDGR_SUBSCRIBE_URL}."
+    )
     out = {
         "hook": fallback_hook.upper(),
         "tweet1": f"{fallback_hook}\n\nWhat’s the real consequence here?",
         "tweet2": f"Full episode: {listen_url}\n\n{fallback_tags}",
         "yt_title": f"{fallback_hook} | The AI Edge",
-        "yt_description": f"Listen: {listen_url}\n\nTop stories:\n" + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
+        "yt_description": default_desc,
+        "show_notes": default_show_notes,
+        "tomorrow_tease": tomorrow_tease or "Come back tomorrow — the second-order consequences are just starting to show.",
+        "seo_keywords": "AI news, artificial intelligence, enterprise AI, health AI, AI agents, coding tools, AI regulation, geopolitics",
         "hashtags": fallback_tags,
     }
 
@@ -1856,6 +1892,8 @@ Top stories:
     out["yt_title"] = out["yt_title"][:90]
     out["yt_description"] = out["yt_description"][:1200]
     out["show_notes"] = (out.get("show_notes") or out.get("yt_description") or "")[:2500]
+    out["tomorrow_tease"] = (out.get("tomorrow_tease") or "")[:220]
+    out["seo_keywords"] = ", ".join([x.strip() for x in (out.get("seo_keywords","") or "").split(",") if x.strip()][:12])
 
     tags_list = [t.strip() for t in (out.get("hashtags", "") or "").split() if t.strip().startswith("#")]
     if "#AI" not in tags_list:
@@ -2266,6 +2304,7 @@ Subscribe now: {THELEDGR_SUBSCRIBE_URL}
 
     base_notes = (pack.get("show_notes") or pack.get("yt_description") or f"LISTEN: {LISTEN_URL}").strip()
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
+    tomorrow_tease = (pack.get("tomorrow_tease") or next((s.get("tomorrow_hook","").strip() for s in stories if (s.get("tomorrow_hook") or "").strip()), "")).strip()
 
     show_notes = f"""{theledgr_cta}
 
@@ -2273,6 +2312,9 @@ What we covered:
 {story_bullets}
 
 {base_notes}
+
+Tomorrow tension:
+{tomorrow_tease or "The next 24 hours will matter more than the launch headlines."}
 """.strip()
 
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
