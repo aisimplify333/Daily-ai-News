@@ -2,7 +2,7 @@
 """
 Daily AI News: "The AI Edge" (fully automated)
 
-Production upgrades (Jan 2026) — hybrid listener-first rebuild:
+Production upgrades (Jan 2026):
 - Guaranteed audible INTRO STINGER after cold open [MUSIC] marker (cannot be skipped by ducking)
 - Optional INTRO BED ducked under first spoken chunk after intro marker
 - Clean, deterministic audio assembly loop (prevents indentation / duplicate-loop bugs)
@@ -61,6 +61,26 @@ TMP_AUDIO_DIR.mkdir(exist_ok=True)
 FEED_XML_PATH = BASE_DIR / "feed.xml"
 SPONSORS_PATH = BASE_DIR / "sponsors.json"
 
+THELEDGR_SUBSCRIBE_URL = "https://theledgr.io"
+THELEDGR_SPOKEN_URL = "T-H-E-L-E-D-G-R dot I-O"
+THELEDGR_DEFAULT_SPONSORS: List[Dict[str, str]] = [
+    {
+        "name": "TheLEDGR",
+        "tagline": "Daily AI intelligence that helps you make better decisions in real life.",
+        "cta": "If AI affects your work, you should already be subscribed. TheLEDGR helps you cut through noise, stay ahead, and walk into your day sharper. Subscribe at T-H-E-L-E-D-G-R dot I-O.",
+    },
+    {
+        "name": "TheLEDGR",
+        "tagline": "Five daily AI briefings across strategy, tools, health AI, enterprise agents, and code.",
+        "cta": "This is not more AI noise. It is signal you can actually use in real life. Subscribe now at T-H-E-L-E-D-G-R dot I-O.",
+    },
+    {
+        "name": "TheLEDGR",
+        "tagline": "Built for serious people who need AI signal, not hype.",
+        "cta": "TheLEDGR helps you make better decisions faster, avoid bad calls, and not be the last person in the room to know. Subscribe at T-H-E-L-E-D-G-R dot I-O.",
+    },
+]
+
 AUDIO_BASE_URL = os.getenv(
     "AUDIO_BASE_URL",
     "https://aisimplify333.github.io/Daily-ai-News/episode_audio/",
@@ -79,11 +99,10 @@ OPENAI_TTS_MODEL = os.getenv("OPENAI_TTS_MODEL", "tts-1-hd")
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", "24"))
 MAX_MINUTES = float(os.getenv("MAX_MINUTES", "35"))
 TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
-SHORTFALL_TOLERANCE_SECONDS = int(os.getenv("SHORTFALL_TOLERANCE_SECONDS", "30"))
 
 # Script pacing (WPM)
 WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "175"))
-SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "5"))
+SEGMENT_ATTEMPTS = int(os.getenv("SEGMENT_ATTEMPTS", "3"))
 
 SCRIPT_MAX_TOKENS = int(os.getenv("SCRIPT_MAX_TOKENS", "2200"))
 JSON_MAX_TOKENS = int(os.getenv("JSON_MAX_TOKENS", "1800"))
@@ -99,8 +118,8 @@ SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "false").strip().lower() in ("1", "true",
 # Idempotency
 FORCE_REBUILD = os.getenv("FORCE_REBUILD", "false").strip().lower() in ("1", "true", "yes")
 
-# Voices / mixed-model experiment
-# Alex stays on the old proven host stack.
+# Voices
+# Mixed-model voice routing: Alex stays on the old proven stack, Jamie/Rufus are experiments.
 VOICE_MODEL_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_MODEL_ALEX", "tts-1-hd"),
     "JAMIE": os.getenv("VOICE_MODEL_JAMIE", "gpt-4o-mini-tts"),
@@ -116,24 +135,24 @@ VOICE_MAP: Dict[str, str] = {
 VOICE_INSTRUCTIONS: Dict[str, str] = {
     "ALEX": "",
     "JAMIE": (
-        "Sound in a FEMALE VOICE, like a highly intelligent, warm, excitable young woman in her mid-20s. "
+        "Sound like a bright, warm, intelligent young woman in her mid-20s. "
         "She is the emotional center of the room and lifts the energy when things get too intense. "
-        "She has a great sense of humor, a great LAUGH, high empathy, and natural charm. "
-        "Use more pitch movement, more emotional rise and fall like she has won the lottery and then realizeds she lost her ticket, and more conversational warmth she has a real BOND with ALEX. "
-        "She should sound alive, quick witted, and human, never flat or anxious. "
+        "She has a great sense of humor, high empathy, and natural charm. "
+        "Use more pitch movement, more emotional rise and fall, and more conversational warmth than a standard announcer. "
+        "She should sound alive, quick, and human, never flat or anxious. "
         "Let there be a light smile in the voice when the line calls for it. "
         "Occasionally sound amused or softly delighted, but do not overdo it. "
         "Keep the pacing natural and fluid, with crisp articulation and warm presence. "
         "Sound playful, not anxious."
     ),
     "RUFUS": (
-        "Speak with a MALE, Strong DIALECT, OXFORD educated, POSH, COCKNEY British accent. "
+        "Speak with a strong educated British accent. "
         "Dry sense of humor. Calm, precise, and highly analytical. "
         "Sound like someone who grew up around the financial district and sees the world through data, incentives, policy, and second-order consequences. "
-        "Keep the delivery deliberate, confident, and slightly amused by hype. USES ENGLISH HUMOR WHEN HE CAN "
+        "Keep the delivery deliberate, confident, and slightly amused by hype. "
         "Use restrained emotion, crisp diction, and understated wit. "
         "Never sound theatrical. Sound like the smartest person in the room who does not need to raise his voice. "
-        "Keep the strong DIALECT, OXFORD educated, POSH, COCKNEY British accent consistent on every sentence."
+        "Keep the British accent consistent on every sentence."
     ),
 }
 
@@ -145,10 +164,9 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
-# Per-speaker speed modulation (listener-proven baseline)
 ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.03"))
 JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.01"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "0.97"))
 
 # Post-processing thresholds
 TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
@@ -196,11 +214,19 @@ DUCK_WINDOW_MS = int(os.getenv("DUCK_WINDOW_MS", "40"))
 # QUALITY GATES
 # ----------------------------
 MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))
-MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "6"))
-MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "45"))
+MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "12"))
+MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
 
 STRICT_EPISODE_FILENAME_RE = re.compile(r"^podcast_\d{4}-\d{2}-\d{2}\.mp3$")
+EARLY_SIGNOFF_RE = re.compile(
+    r"\b("
+    r"see you tomorrow|see you next time|that's the show|that's all for today|"
+    r"thanks for listening|until tomorrow|until next time|we'll be back tomorrow|"
+    r"good night|signing off|that does it for us|before we go|final thought|that wraps it up"
+    r")\b",
+    re.IGNORECASE,
+)
 
 MONEY_RE = re.compile(r"(\$|€|£)\s?\d")
 NUMERIC_TOKEN_RE = re.compile(r"(\d+(\.\d+)?%|\$?\d[\d,]*(\.\d+)?|\b\d{4}\b|\bQ[1-4]\b)", re.IGNORECASE)
@@ -743,53 +769,46 @@ def fetch_url_preview(url: str, max_chars: int = 3800) -> str:
 # ----------------------------
 # SPONSORS / STORIES
 # ----------------------------
+def _sponsors_look_legacy(sponsors: List[Dict[str, str]]) -> bool:
+    blob = json.dumps(sponsors, ensure_ascii=False).lower()
+    legacy_markers = [
+        "aisimplify333@",
+        "sponsor the ai edge",
+        "sponsor this show",
+        "email aisimplify333",
+    ]
+    return any(m in blob for m in legacy_markers)
+
+
 def load_sponsors() -> List[Dict[str, str]]:
+    sponsors: Optional[List[Dict[str, str]]] = None
     if SPONSORS_PATH.exists():
         try:
             data = json.loads(SPONSORS_PATH.read_text(encoding="utf-8"))
             if isinstance(data, list):
-                return data
-            if isinstance(data, dict) and "sponsors" in data and isinstance(data["sponsors"], list):
-                return data["sponsors"]
+                sponsors = data
+            elif isinstance(data, dict) and "sponsors" in data and isinstance(data["sponsors"], list):
+                sponsors = data["sponsors"]
         except Exception:
-            pass
-    return [
-        {"name": "Sponsor One", "tagline": "Run faster. Think clearer.", "cta": "Link in show notes."},
-        {"name": "Sponsor Two", "tagline": "Your edge, automated.", "cta": "Try it free today."},
-        {"name": "Sponsor Three", "tagline": "Ship smarter.", "cta": "Join the waitlist."},
-    ]
+            sponsors = None
 
+    if sponsors:
+        cleaned: List[Dict[str, str]] = []
+        for s in sponsors:
+            if not isinstance(s, dict):
+                continue
+            cleaned.append(
+                {
+                    "name": str(s.get("name", "")).strip(),
+                    "tagline": str(s.get("tagline", "")).strip(),
+                    "cta": str(s.get("cta", "")).strip(),
+                }
+            )
+        if cleaned and not _sponsors_look_legacy(cleaned):
+            return cleaned[:3]
 
-def _canonical_sponsor_name(name: str) -> str:
-    return re.sub(r"[^a-z0-9]+", "", (name or "").lower())
+    return [dict(x) for x in THELEDGR_DEFAULT_SPONSORS]
 
-
-def _is_theledgr_sponsor(s: Dict[str, str]) -> bool:
-    name = _canonical_sponsor_name(s.get("name", ""))
-    return name in {"theledgr", "theledger", "theledgrio"}
-
-
-def _theledgr_brand_brief() -> str:
-    return (
-        "BRAND RULES FOR THELEDGR:\n"
-        "- TheLEDGR is pronounced 'The Ledger' like a financial ledger.\n"
-        "- The URL must be spoken as: TheLEDGR.io T-H-E-L-E-D-G-R dot I-O\n"
-        "- It is a network of five specialized AI briefings: strategy, tools, health AI, enterprise agents, and code.\n"
-        "- Core promise: what to trust, what not to trust, what is working, what is failing, and what to do tomorrow morning.\n"
-        "- High-value hooks you may paraphrase: 'Don't be the last person in the room to know.' 'When they get it wrong, they publish it.'\n"
-        "- Never sound like a stiff ad. Sound like an insider recommendation.\n"
-    )
-
-
-def _sponsor_prompt_block(s: Dict[str, str]) -> str:
-    block = (
-        f"Sponsor: {s.get('name','')}\n"
-        f"Tagline: {s.get('tagline','')}\n"
-        f"CTA: {s.get('cta','')}\n"
-    )
-    if _is_theledgr_sponsor(s):
-        block += _theledgr_brand_brief()
-    return block
 
 
 def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
@@ -873,45 +892,6 @@ Article Preview:
     return enriched
 
 
-
-
-def _headline_signature(title: str) -> set:
-    toks = re.findall(r"[a-z0-9]+", (title or "").lower())
-    stop = {"the","a","an","and","or","to","of","for","in","on","with","from","by","is","are","at","new","ai","today"}
-    return {t for t in toks if t not in stop and len(t) > 2}
-
-
-def _story_duplicate_key(s: Dict[str, str]) -> str:
-    title = s.get("headline") or s.get("title") or ""
-    toks = sorted(list(_headline_signature(title)))[:6]
-    pub = (s.get("publisher") or "").lower().strip()
-    return "|".join(toks + [pub])
-
-
-def _dedupe_story_list(items: List[Dict[str, str]], limit: int = 5) -> List[Dict[str, str]]:
-    out: List[Dict[str, str]] = []
-    seen_urls = set()
-    seen_keys = []
-    for s in items:
-        url = (s.get("source_url") or s.get("link") or "").strip()
-        if url and url in seen_urls:
-            continue
-        sig = _headline_signature(s.get("headline") or s.get("title") or "")
-        duplicate = False
-        for prev in seen_keys:
-            overlap = len(sig & prev)
-            if sig and (overlap >= max(2, min(len(sig), len(prev)) - 1)):
-                duplicate = True
-                break
-        if duplicate:
-            continue
-        if url:
-            seen_urls.add(url)
-        seen_keys.append(sig)
-        out.append(s)
-        if len(out) >= limit:
-            break
-    return out
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
     if not intel_items:
         return []
@@ -940,24 +920,21 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict
     )
 
     prompt = f"""
-Select the TOP {n} stories for a daily AI show that must make listeners feel they cannot miss tomorrow's episode.
-Prioritize stories with real operator consequence: enterprise adoption, production failures, safety/regulatory shifts, health AI evidence, coding benchmarks, money flows, infrastructure moves, and geopolitical/chip power.
-Avoid duplicate same-event picks even if two publishers covered the same company/story.
-Preference: scandal/security/regulation/market shock when credible, but choose substance over hype.
+Select the TOP {n} stories for a daily AI show that must feel urgent, emotional, and high-stakes.
+Preference: scandal/security/regulation/market shock when credible.
 
 Return ONLY valid JSON (no markdown), schema:
 {{
   "stories": [
     {{
       "headline": "...",
-      "why_shocking": "2-3 sentences grounded in snippet facts and tomorrow-morning consequence",
+      "why_shocking": "1-2 sentences grounded in snippet facts",
       "data_points": ["3-6 bullets. Each bullet MUST include an explicit number/date/amount from the candidate line if present; if not present write 'Needs enrichment'"],
       "angles": {{
-        "alex": "the most listener-obvious question or provocation",
-        "jamie": "the human cost / people-world frame",
-        "rufus": "the incentives / money / regulation edge"
+        "alex": "...",
+        "jamie": "...",
+        "rufus": "..."
       }},
-      "tomorrow_hook": "one sentence that makes the audience want tomorrow's follow-up",
       "source_url": "...",
       "publisher": "...",
       "published": "..."
@@ -992,7 +969,6 @@ Candidate items:
                 "source_url": (s.get("source_url") or "").strip(),
                 "publisher": (s.get("publisher") or "").strip(),
                 "published": (s.get("published") or "").strip(),
-                "tomorrow_hook": (s.get("tomorrow_hook") or "").strip(),
             }
             if st["headline"] and st["source_url"]:
                 stories.append(st)
@@ -1010,7 +986,6 @@ Candidate items:
                     "publisher": x.get("publisher", ""),
                     "published": x.get("published", ""),
                     "rss_summary": x.get("summary", ""),
-                    "tomorrow_hook": "",
                 }
             )
 
@@ -1041,14 +1016,13 @@ Candidate items:
                 "publisher": x.get("publisher", ""),
                 "published": x.get("published", ""),
                 "rss_summary": x.get("summary", ""),
-                "tomorrow_hook": "",
             }
             fallback.append(fb)
             if len(fallback) >= n:
                 break
         enriched = enrich_stories_with_data(fallback[:n])
 
-    return _dedupe_story_list(enriched, limit=n)
+    return enriched[:n]
 
 
 # ----------------------------
@@ -1094,7 +1068,6 @@ def _story_block(stories: List[Dict[str, str]]) -> str:
         pub = (s.get("publisher") or "").strip()
         pdate = (s.get("published") or "").strip()
         why = (s.get("why_shocking") or "").strip()
-        tomorrow = (s.get("tomorrow_hook") or "").strip()
         url = (s.get("source_url") or "").strip()
         out.append(
             f"{i+1}. {s.get('headline','')}\n"
@@ -1102,7 +1075,6 @@ def _story_block(stories: List[Dict[str, str]]) -> str:
             f"   Published: {pdate}\n"
             f"   Why it matters: {why}\n"
             f"   Data points: {dp_txt}\n"
-            f"   Tomorrow hook: {tomorrow}\n"
             f"   Source: {url}"
         )
     return "\n".join(out).strip()
@@ -1125,28 +1097,15 @@ def _segment_assignment(seg_num: int) -> str:
         return (
             "Cold open hook: start mid-argument (overheated). Then [MUSIC]. "
             "Then Alex welcomes and fires off today's 5-story lineup in rapid summary. "
-            "Make it feel urgent, rich, and addictive, with at least one interruption, one amused undercut, "
-            "and one explicit reason listeners need to come back tomorrow."
+            "Make it feel raw and messy, with interruptions."
         )
     if seg_num == 2:
-        return (
-            "Alex must open the segment with a crisp setup line, then ONLY Alex + Jamie (no Rufus). "
-            "Deep dive Story 1 + Story 2 with human stakes, operator consequence, and one real push-pull disagreement."
-        )
+        return "Studio segment: ONLY Alex + Jamie (no Rufus). Deep dive Story 1 + Story 2 with human stakes."
     if seg_num == 3:
-        return (
-            "Alex must throw to Rufus in the first spoken exchange. Then Rufus is on location with Story 3: "
-            "money/reg angle, filings/trading/regulatory edge, one vivid scene-setting line, and one killer receipt."
-        )
+        return "Rufus on location: money/reg angle. Focus Story 3 with filings/trading/regulatory edge."
     if seg_num == 4:
-        return (
-            "Alex must tee up the turn. Then all three together: dread/greed forecast + lightning round. "
-            "Cover Story 4 + Story 5 with one callback, one quick interjection, and one listener-facing 'pick a side' question."
-        )
-    return (
-        "Alex must open and close the final segment. Jamie lands empathy, Rufus delivers a cynical prophecy, "
-        "and someone gives one compelling tomorrow teaser that creates return tension."
-    )
+        return "All three together: dread/greed forecast + lightning round. Cover Story 4 + Story 5."
+    return "Closing: Alex closes hard, Jamie lands empathy, Rufus delivers a cynical prophecy."
 
 
 def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> str:
@@ -1180,41 +1139,56 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
     sponsor_3 = sponsors[2] if len(sponsors) > 2 else {"name": "Sponsor", "tagline": "", "cta": ""}
 
     extra = ""
+    if seg_num in (1, 2, 3, 4):
+        extra += (
+            "- DO NOT sign off.\n"
+            "- DO NOT say goodbye, thanks for listening, until tomorrow, or anything that sounds like the end of the show.\n"
+            "- Keep the energy open and forward-moving. This is not the close.\n"
+        )
+
     if seg_num == 1:
-        extra = (
+        extra += (
             "Start mid-argument (hook). Then a standalone line: [MUSIC]. Then welcome + lineup.\n"
             "- CRITICAL: In the cold open and lineup, say at least 3 explicit numbers, dates, dollar amounts, or benchmark figures out loud naturally.\n"
             "- Alex should ask the listener-question everybody is already thinking.\n"
             "- Include at least one interruption or amused undercut.\n"
+            "- Alex must welcome the audience and set up the rest of the episode, not close it.\n"
             "- End the lineup with one line that makes listeners feel they need tomorrow's episode too.\n"
         )
     elif seg_num == 2:
-        extra = (
+        extra += (
             "IMPORTANT: This segment must contain ONLY ALEX and JAMIE lines. Do NOT output any RUFUS lines.\n"
             "- Alex must open the segment with a clear setup/turn.\n"
             "- Include one quick interruption, one strong emotional pushback from Jamie, and one concrete operator takeaway.\n"
         )
     elif seg_num == 3:
-        extra = (
+        extra += (
             "Alex must throw to Rufus in the first spoken exchange, then Rufus takes over.\n"
             "Rufus should sound like he is on location somewhere real in the world before landing the core receipt.\n"
             "Weave the sponsor naturally only if it feels native to the insight.\n"
-            f"{_sponsor_prompt_block(sponsor_1)}"
+            "This segment should hand momentum forward, not sound like the end of the episode.\n"
+            f"Sponsor: {sponsor_1['name']}\n"
+            f"Tagline: {sponsor_1.get('tagline','')}\n"
+            f"CTA: {sponsor_1.get('cta','')}\n"
         )
     elif seg_num == 4:
-        extra = (
+        extra += (
             "Alex must tee up the turn. Include ONE woven-in host-read sponsor naturally if it fits the conversation.\n"
-            f"{_sponsor_prompt_block(sponsor_2)}"
+            f"Sponsor: {sponsor_2['name']}\n"
+            f"Tagline: {sponsor_2.get('tagline','')}\n"
+            f"CTA: {sponsor_2.get('cta','')}\n"
             "- Include one callback to something said earlier in the episode.\n"
             "- Include one quick interjection and one listener-facing 'pick a side' question.\n"
         )
     elif seg_num == 5:
-        extra = (
+        extra += (
             "Alex must open the closing segment and land the practical takeaway.\n"
             "Jamie should leave the audience with the human implication.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "End with a final micro sponsor tag or aside only if it feels native.\n"
-            f"{_sponsor_prompt_block(sponsor_3)}"
+            f"Sponsor: {sponsor_3['name']}\n"
+            f"Tagline: {sponsor_3.get('tagline','')}\n"
+            f"CTA: {sponsor_3.get('cta','')}\n"
         )
 
     story_block = _story_block(stories)
@@ -1225,14 +1199,9 @@ You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
 This is ONLY {_segment_header(seg_num)} of the episode.
 
 PERSONAS:
-- ALEX (Host): relentless pace, provocative curiosity, slightly amused edge. He asks the question the listener is already thinking. He should open every segment and keep the room moving.
-- JAMIE (Co-host): warm, emotionally intelligent, human stakes, people-world consequences. Jamie can laugh, soften, or push back when the room gets too cold.
-- RUFUS (Analyst): dry British wit, incentives, regulation, filings, money, market structure. He talks less but lands the hardest receipt. In Segment 3 he should mentally transport the audience on location.
-
-TONE:
-- Premium studio in a Manhattan penthouse after dark overlooking Central Park.
-- Fast, sharp, intimate, expensive, not cheesy.
-- Use interruption, overlap, or amused jostling sparingly but audibly.
+- ALEX (Host): Rogan energy + frantic curiosity. Drives pace. Calls out BS. Summarizes fast.
+- JAMIE (Co-host): Bartlett vibe. Vulnerable, empathetic, human stakes. Pushes back emotionally.
+- RUFUS (Analyst): cynical, money/regulatory edge. Cold, sharp. British dry wit.
 
 {_strict_dialogue_rules()}
 
@@ -1240,18 +1209,12 @@ SEGMENT REQUIREMENTS:
 - The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target} words).
 - Avoid filler openers like “let’s dive in”.
-- Make the show feel worth returning to tomorrow.
 
 DATA REQUIREMENTS (non-negotiable):
 - For every story you discuss in THIS segment, you MUST speak at least 2 explicit data points
   (numbers/dates/amounts) from the provided "Data points" lines in TODAY'S STORIES.
 - Mention the publisher at least once when introducing a story.
 - Do NOT invent numbers. If a story has "No explicit figures in snippet", say that plainly.
-
-ENGAGEMENT REQUIREMENTS:
-- Give at least one line in this segment that reframes why the listener should care tomorrow morning.
-- Prefer vivid, specific, operator-level implications over generic hype.
-- Let Alex frame or hand off the segment clearly.
 
 WHAT THIS SEGMENT MUST DO:
 {assignment}
@@ -1307,6 +1270,8 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
         issues.append(
             f"Low numeric density in segment (digits={_digit_count(seg_text)}). Minimum is {MIN_DIGITS_PER_SEGMENT}."
         )
+    if seg_num < 5 and EARLY_SIGNOFF_RE.search(seg_text or ""):
+        issues.append(f"Segment {seg_num} contains premature sign-off language.")
     return issues
 
 
@@ -1318,21 +1283,13 @@ def _segment_repair_prompt(seg_num: int, seg_words_min: int, seg_words_target: i
             "- SEGMENT 2 MUST contain ONLY ALEX and JAMIE lines.\n"
             "- Delete ANY RUFUS lines and do NOT reintroduce RUFUS.\n"
         )
-    elif seg_num in (3, 4, 5):
-        seg_specific = "- Alex should clearly tee up or open the segment before the deeper turn.\n"
 
-    numeric_fix = ""
-    if any("numeric density" in (x or "").lower() for x in issues):
-        numeric_fix = (
-            "- CRITICAL FIX: Add specific numbers, dates, dollar amounts, percentages, or benchmark scores naturally.\n"
-            "- Each active speaker should reference at least one concrete figure when appropriate.\n"
-            "- Pull figures only from the provided story data already implied by the segment. Do NOT invent numbers.\n"
+    signoff_fix = ""
+    if any("premature sign-off" in (x or "").lower() for x in issues):
+        signoff_fix = (
+            "- CRITICAL FIX: Remove all goodbye, wrap-up, end-of-show, or tomorrow-style language.\n"
+            "- Keep the segment open and forward-moving.\n"
         )
-
-    chemistry_fix = (
-        "- Keep the chemistry alive: at least one interruption, amused undercut, or quick push-pull where it fits.\n"
-        if seg_num in (1, 2, 4) else ""
-    )
 
     return f"""
 You are repairing ONLY {_segment_header(seg_num)} for "The AI Edge".
@@ -1344,9 +1301,8 @@ NON-NEGOTIABLE:
 - First line MUST be exactly "{_segment_header(seg_num)}"
 - Output MUST be dialogue lines only with EXACT labels: ALEX:, JAMIE:, RUFUS:
 - Every spoken line MUST start with one of those labels.
-{seg_specific}{numeric_fix}{chemistry_fix}- Keep lines SHORT (1–2 sentences).
+{seg_specific}{signoff_fix}- Keep lines SHORT (1–2 sentences).
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target}).
-- Preserve story facts and premium tone.
 
 HERE IS THE SEGMENT TO EXPAND/REPAIR:
 {seg_text}
@@ -1402,7 +1358,7 @@ def _generate_segment(seg_num: int, seg_words_min: int, seg_words_target: int, d
     seg_text = ""
 
     for attempt in range(1, SEGMENT_ATTEMPTS + 1):
-        seg_text = generate_text(prompt, temperature=0.68, max_tokens=2600)
+        seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
 
         if seg_num == 2:
             seg_text = _sanitize_segment_speakers(seg_text, allowed={"ALEX", "JAMIE"})
@@ -1417,29 +1373,6 @@ def _generate_segment(seg_num: int, seg_words_min: int, seg_words_target: int, d
             return seg_text.strip()
 
         prompt = _segment_repair_prompt(seg_num, seg_words_min, seg_words_target, issues, seg_text)
-
-    # last-chance numeric rescue for otherwise strong segments
-    issues = _segment_validate(seg_text, seg_num, seg_words_min)
-    if issues and all("numeric density" in x.lower() for x in issues):
-        rescue_prompt = f"""
-Repair ONLY {_segment_header(seg_num)}.
-Add 2-4 natural lines with explicit numbers, dates, dollar amounts, or benchmark figures from the provided story facts.
-Do not change the cast chemistry or structure. Do not invent any figures.
-
-Story facts:
-{_story_block(stories)}
-
-Broken segment:
-{seg_text}
-""".strip()
-        rescued = generate_text(rescue_prompt, temperature=0.35, max_tokens=1200)
-        rescued = _sanitize_dialogue_only(rescued, allowed_speakers={"ALEX","JAMIE","RUFUS"})
-        if rescued and not rescued.startswith(_segment_header(seg_num)):
-            rescued = f"{_segment_header(seg_num)}\n{rescued}".strip()
-        if seg_num == 2:
-            rescued = _sanitize_segment_speakers(rescued, allowed={"ALEX","JAMIE"})
-        if not _segment_validate(rescued, seg_num, seg_words_min):
-            return rescued.strip()
 
     return seg_text.strip()
 
@@ -1716,6 +1649,14 @@ def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
     return chunks
 
 
+def _voice_speed(speaker: str) -> float:
+    return {
+        "ALEX": ALEX_SPEED,
+        "JAMIE": JAMIE_SPEED,
+        "RUFUS": RUFUS_SPEED,
+    }.get(speaker.upper(), 1.0)
+
+
 def tts_to_file(text: str, speaker: str, out_path: Path) -> None:
     speaker = speaker.upper()
     model = VOICE_MODEL_MAP.get(speaker, OPENAI_TTS_MODEL)
@@ -1749,20 +1690,12 @@ def tts_to_file(text: str, speaker: str, out_path: Path) -> None:
     raise RuntimeError(f"TTS failed for {speaker} after {TTS_RETRIES} retries: {last_err}")
 
 
-def _voice_speed(speaker: str) -> float:
-    return {
-        "ALEX": ALEX_SPEED,
-        "JAMIE": JAMIE_SPEED,
-        "RUFUS": RUFUS_SPEED,
-    }.get(speaker.upper(), 1.0)
-
-
 def apply_speed_ffmpeg(in_path: Path, out_path: Path, speed: float) -> None:
     if abs(speed - 1.0) < 1e-6:
         shutil.copyfile(in_path, out_path)
         return
     if not _has_ffmpeg():
-        raise RuntimeError("ffmpeg not found; required for speed adjustment.")
+        raise RuntimeError("ffmpeg not found; required for JAMIE speed adjustment.")
     cmd = [
         "ffmpeg", "-y",
         "-i", str(in_path),
@@ -1879,10 +1812,7 @@ def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> 
 
 
 def generate_marketing_pack(stories: List[Dict[str, str]], date_str: str, listen_url: str) -> Dict[str, str]:
-    story_lines = "\n".join([
-        f"- {s.get('headline','')} | {s.get('publisher','')} | {s.get('tomorrow_hook','')} | {s.get('source_url','')}"
-        for s in stories[:5]
-    ])
+    story_lines = "\n".join([f"- {s.get('headline','')} | {s.get('source_url','')}" for s in stories[:5]])
 
     prompt = f"""
 Return ONLY valid JSON (no markdown). Schema:
@@ -1892,44 +1822,26 @@ Return ONLY valid JSON (no markdown). Schema:
   "tweet2": "Tweet 2 (<= 260 chars). Must include this exact link: {listen_url}",
   "yt_title": "YouTube title (<= 90 chars)",
   "yt_description": "YouTube description (<= 1200 chars) including {listen_url}",
-  "show_notes": "Podcast show notes / Spotify description (300-1500 chars) with stakes, 5 bullets, and CTA",
-  "seo_keywords": "Comma-separated SEO keywords, max 12",
-  "tomorrow_tease": "1 sentence making people want tomorrow's episode",
   "hashtags": "Space-separated hashtags. Keep <= 6 total tags. Must include #AI and #TechNews"
 }}
-
-Write for a premium daily AI show. Make the metadata feel urgent, operator-useful, and worth coming back for tomorrow.
 
 Today: {date_str}
 Top stories:
 {story_lines}
 """.strip()
 
-    raw = generate_text(prompt, temperature=0.45, max_tokens=1400)
+    raw = generate_text(prompt, temperature=0.45, max_tokens=1100)
     j = _extract_json_object(raw)
 
     fallback_hook = (stories[0].get("headline") if stories else "AI JUST MOVED — HERE’S WHAT CHANGED")[:64]
     fallback_tags = _hashtags_from_stories(stories, max_tags=6)
-    tomorrow_tease = next((s.get("tomorrow_hook","").strip() for s in stories if (s.get("tomorrow_hook") or "").strip()), "")
-
-    top_bullets = "\n".join([f"- {s.get('headline','')}" for s in stories[:5]])
-    base_show_notes = (
-        f"Listen: {listen_url}\n\n"
-        f"Today on The AI Edge, Alex, Jamie, and Rufus break down the stories that actually matter tomorrow morning.\n\n"
-        f"Top stories:\n{top_bullets}\n\n"
-        f"Tomorrow's tension: {tomorrow_tease or 'The follow-through on these moves will matter more than the launch headlines.'}\n\n"
-        f"Presented by TheLEDGR — The Ledger. Five specialized AI briefings. THE-L-E-D-G-R dot I-O."
-    )
 
     out = {
         "hook": fallback_hook.upper(),
         "tweet1": f"{fallback_hook}\n\nWhat’s the real consequence here?",
         "tweet2": f"Full episode: {listen_url}\n\n{fallback_tags}",
         "yt_title": f"{fallback_hook} | The AI Edge",
-        "yt_description": f"Listen: {listen_url}\n\nTop stories:\n{top_bullets}",
-        "show_notes": base_show_notes,
-        "seo_keywords": "AI news, artificial intelligence, enterprise AI, health AI, AI coding tools, AI regulation",
-        "tomorrow_tease": tomorrow_tease or "Come back tomorrow — the second-order consequences are just starting to show.",
+        "yt_description": f"Listen: {listen_url}\n\nTop stories:\n" + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]]),
         "hashtags": fallback_tags,
     }
 
@@ -1943,9 +1855,7 @@ Top stories:
     out["tweet2"] = out["tweet2"][:260]
     out["yt_title"] = out["yt_title"][:90]
     out["yt_description"] = out["yt_description"][:1200]
-    out["show_notes"] = out["show_notes"][:2500]
-    out["seo_keywords"] = ", ".join([x.strip() for x in out.get("seo_keywords","").split(",") if x.strip()][:12])
-    out["tomorrow_tease"] = out["tomorrow_tease"][:220]
+    out["show_notes"] = (out.get("show_notes") or out.get("yt_description") or "")[:2500]
 
     tags_list = [t.strip() for t in (out.get("hashtags", "") or "").split() if t.strip().startswith("#")]
     if "#AI" not in tags_list:
@@ -2306,40 +2216,67 @@ def produce_episode() -> None:
     minutes = duration_seconds / 60.0
     _safe_print(f" ✅ EPISODE COMPLETE: {final_mp3.name} ({minutes:.2f} minutes)")
 
-    if minutes < MIN_MINUTES:
-        shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
-        if shortfall_seconds <= SHORTFALL_TOLERANCE_SECONDS:
-            _safe_print(f" ⚠️ Episode short by {shortfall_seconds}s. Auto-padding to minimum runtime.")
-            padded = final_audio + AudioSegment.silent(duration=shortfall_seconds * 1000)
-            padded.export(final_mp3, format="mp3", bitrate="192k")
-            final_audio = AudioSegment.from_mp3(final_mp3)
-            duration_seconds = int(len(final_audio) / 1000)
-            minutes = duration_seconds / 60.0
-            _safe_print(f" ✅ EPISODE PADDED: {final_mp3.name} ({minutes:.2f} minutes)")
-        else:
-            raise RuntimeError(f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}.")
-    elif minutes > MAX_MINUTES:
-        raise RuntimeError(f"Episode length out of bounds ({minutes:.2f} min). Must be {MIN_MINUTES}-{MAX_MINUTES}.")
-    
+    SHORTFALL_TOLERANCE_SECONDS = 30
+
+if minutes < MIN_MINUTES:
+    shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
+
+    if shortfall_seconds <= SHORTFALL_TOLERANCE_SECONDS:
+        _safe_print(
+            f" ⚠️ Episode short by {shortfall_seconds}s. "
+            f"Auto-padding to {MIN_MINUTES:.2f} minutes."
+        )
+
+        padded_audio = final_audio + AudioSegment.silent(duration=shortfall_seconds * 1000)
+        padded_audio.export(final_mp3, format="mp3", bitrate="192k")
+
+        final_audio = AudioSegment.from_mp3(final_mp3)
+        duration_seconds = int(len(final_audio) / 1000)
+        minutes = duration_seconds / 60.0
+
+        _safe_print(
+            f" ✅ EPISODE PADDED: {final_mp3.name} ({minutes:.2f} minutes)"
+        )
+    else:
+        raise RuntimeError(
+            f"Episode length out of bounds ({minutes:.2f} min). "
+            f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
+        )
+
+elif minutes > MAX_MINUTES:
+    raise RuntimeError(
+        f"Episode length out of bounds ({minutes:.2f} min). "
+        f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
+    )
+
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
-    feed_title = pack.get("yt_title", RSS_SETTINGS["title"]).strip()
-    
-    theledgr_cta = """
-    Subscribe to TheLEDGR: https://theledgr.io
-    If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.
-    TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper. It covers strategy, tools, health AI, enterprise agents, and code.
-    This is not more AI content. It is signal you can actually use in real life.
-    Subscribe now: https://theledgr.io
-    """.strip()
-    
-    base_notes = pack.get("yt_description", f"LISTEN: {LISTEN_URL}").strip()
-    show_notes = f"{theledgr_cta}\n\n{base_notes}\n\nSubscribe to TheLEDGR: https://theledgr.io".strip()
-    
-    _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)pack = generate_marketing_pack(stories, today, LISTEN_URL)
     feed_title = _maybe_append_date(pack.get("yt_title", RSS_SETTINGS["title"]), today)
-    show_notes = (pack.get("show_notes") or pack.get("yt_description") or f"LISTEN: {LISTEN_URL}").strip()
+
+    theledgr_cta = f"""
+Subscribe to TheLEDGR: {THELEDGR_SUBSCRIBE_URL}
+
+If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.
+
+TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper. It covers strategy, tools, health AI, enterprise agents, and code.
+
+This is not more AI content. It is signal you can actually use in real life.
+
+Subscribe now: {THELEDGR_SUBSCRIBE_URL}
+""".strip()
+
+    base_notes = (pack.get("show_notes") or pack.get("yt_description") or f"LISTEN: {LISTEN_URL}").strip()
+    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
+
+    show_notes = f"""{theledgr_cta}
+
+What we covered:
+{story_bullets}
+
+{base_notes}
+""".strip()
+
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
-    
+
     viral_caption = "\n".join([
         (pack.get("tweet1", "") or "").strip(),
         "",
@@ -2362,8 +2299,6 @@ def produce_episode() -> None:
         "marketing_pack": pack,
         "duration_seconds": duration_seconds,
         "show_notes": show_notes,
-        "seo_keywords": pack.get("seo_keywords", ""),
-        "tomorrow_tease": pack.get("tomorrow_tease", ""),
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
