@@ -2218,36 +2218,36 @@ def produce_episode() -> None:
 
     SHORTFALL_TOLERANCE_SECONDS = 30
 
-if minutes < MIN_MINUTES:
-    shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
+    if minutes < MIN_MINUTES:
+        shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
 
-    if shortfall_seconds <= SHORTFALL_TOLERANCE_SECONDS:
-        _safe_print(
-            f" ⚠️ Episode short by {shortfall_seconds}s. "
-            f"Auto-padding to {MIN_MINUTES:.2f} minutes."
-        )
+        if shortfall_seconds <= SHORTFALL_TOLERANCE_SECONDS:
+            _safe_print(
+                f" ⚠️ Episode short by {shortfall_seconds}s. "
+                f"Auto-padding to {MIN_MINUTES:.2f} minutes."
+            )
 
-        padded_audio = final_audio + AudioSegment.silent(duration=shortfall_seconds * 1000)
-        padded_audio.export(final_mp3, format="mp3", bitrate="192k")
+            padded_audio = final_audio + AudioSegment.silent(duration=shortfall_seconds * 1000)
+            padded_audio.export(final_mp3, format="mp3", bitrate="192k")
 
-        final_audio = AudioSegment.from_mp3(final_mp3)
-        duration_seconds = int(len(final_audio) / 1000)
-        minutes = duration_seconds / 60.0
+            final_audio = AudioSegment.from_mp3(final_mp3)
+            duration_seconds = int(len(final_audio) / 1000)
+            minutes = duration_seconds / 60.0
 
-        _safe_print(
-            f" ✅ EPISODE PADDED: {final_mp3.name} ({minutes:.2f} minutes)"
-        )
-    else:
+            _safe_print(
+                f" ✅ EPISODE PADDED: {final_mp3.name} ({minutes:.2f} minutes)"
+            )
+        else:
+            raise RuntimeError(
+                f"Episode length out of bounds ({minutes:.2f} min). "
+                f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
+            )
+
+    elif minutes > MAX_MINUTES:
         raise RuntimeError(
             f"Episode length out of bounds ({minutes:.2f} min). "
             f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
         )
-
-elif minutes > MAX_MINUTES:
-    raise RuntimeError(
-        f"Episode length out of bounds ({minutes:.2f} min). "
-        f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
-    )
 
     pack = generate_marketing_pack(stories, today, LISTEN_URL)
     feed_title = _maybe_append_date(pack.get("yt_title", RSS_SETTINGS["title"]), today)
