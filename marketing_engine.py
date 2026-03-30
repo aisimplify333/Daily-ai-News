@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-import os
 import re
 from pathlib import Path
 from typing import Any, Dict, List
@@ -11,6 +10,7 @@ from growth_engine import build_story_debug_table, choose_variant
 
 BASE_DIR = Path(__file__).parent
 META_PATH = BASE_DIR / "episode_metadata.json"
+FORWARDABLE_PATH = BASE_DIR / "forwardable_moments.json"
 
 OUT_MARKETING_PACK = BASE_DIR / "marketing_pack.json"
 OUT_X = BASE_DIR / "marketing_x.json"
@@ -25,12 +25,16 @@ OUT_CLIPS = BASE_DIR / "clip_candidates.json"
 OUT_DISTRIBUTION = BASE_DIR / "distribution_plan.json"
 OUT_STORY_SCORES = BASE_DIR / "story_scores.json"
 
+BAD_TAGS = {
+    "#googlenews", "#indexbox", "#msn", "#bitget", "#yahootech",
+}
 
-def _read_json(path: Path) -> Dict[str, Any]:
+
+def _read_json(path: Path) -> Any:
     try:
         return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
-        return {}
+        return {} if path.suffix == ".json" else []
 
 
 def _write_json(path: Path, payload: Any) -> None:
@@ -42,32 +46,41 @@ def _write_text(path: Path, text: str) -> None:
 
 
 def _clamp(text: str, limit: int) -> str:
-    text = (text or "").strip()
-    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
+    text = re.sub(r"\s+", " ", (text or "").strip())
+    return text if len(text) <= limit else text[: limit - 1].rstrip(" -—:|") + "…"
 
 
-def _digits(text: str) -> int:
-    return len(re.findall(r"\d", text or ""))
+def _clean_headline(text: str) -> str:
+    cleaned = re.sub(r"\s+", " ", text or "").strip()
+    cleaned = re.sub(r"\|\s*(news and statistics|news|statistics).*$", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\|\s*(ai infrastructure).*$", "", cleaned, flags=re.IGNORECASE)
+    return cleaned.strip(" -—:|")
 
 
 def _hashtags(stories: List[Dict[str, Any]], max_tags: int = 8) -> List[str]:
     base = ["#AI", "#TechNews", "#AIAgents", "#EnterpriseAI"]
     extra: List[str] = []
     for story in stories[:5]:
-        title = story.get("headline") or ""
-        if any(k in title.lower() for k in ["regulat", "ftc", "sec", "eu"]):
+        title = (story.get("headline") or "").lower()
+        if any(k in title for k in ["regulat", "ftc", "sec", "eu", "antitrust"]):
             extra.append("#AIRegulation")
-        if any(k in title.lower() for k in ["chip", "gpu", "nvidia", "datacenter"]):
+        if any(k in title for k in ["chip", "gpu", "nvidia", "datacenter", "inference"]):
             extra.append("#AIInfrastructure")
+        if any(k in title for k in ["agent", "swarm", "copilot", "assistant"]):
+            extra.append("#AIAgents")
+        if any(k in title for k in ["developer", "code", "github", "repo"]):
+            extra.append("#AICoding")
         for ent in story.get("key_entities") or []:
             tag = "#" + re.sub(r"[^A-Za-z0-9]", "", str(ent))
-            if 3 <= len(tag) <= 22:
+            tag_low = tag.lower()
+            if 3 <= len(tag) <= 22 and tag_low not in BAD_TAGS and "google" not in tag_low:
                 extra.append(tag)
     seen, ordered = set(), []
     for tag in base + extra:
-        if tag.lower() in seen:
+        tag_low = tag.lower()
+        if tag_low in seen or tag_low in BAD_TAGS:
             continue
-        seen.add(tag.lower())
+        seen.add(tag_low)
         ordered.append(tag)
     return ordered[:max_tags]
 
@@ -77,27 +90,34 @@ def _top_stories(meta: Dict[str, Any]) -> List[Dict[str, Any]]:
     return sorted(stories, key=lambda s: float(s.get("growth_score") or 0.0), reverse=True)[:5]
 
 
+def _forwardable_moments() -> List[Dict[str, Any]]:
+    payload = _read_json(FORWARDABLE_PATH)
+    return payload if isinstance(payload, list) else []
+
+
 def _pick_title(meta: Dict[str, Any], stories: List[Dict[str, Any]]) -> str:
     variant = (((meta.get("tracking") or {}).get("experiments") or {}).get("title_style")) or choose_variant("title_style")
     top = stories[0] if stories else {}
-    head = (top.get("headline") or meta.get("title") or "AI moved again").strip()
-    dp = " | ".join([str(x) for x in (top.get("data_points") or [])[:2]])
-    digit_rich = dp if _digits(dp) >= 3 else head
+    head = _clean_headline((top.get("headline") or meta.get("title") or "AI moved again").strip())
     if variant == "hard_number":
-        return _clamp(f"{head} — What the Numbers Mean Now", 90)
+        return _clamp(f"{head} — The Numbers Behind the Shift", 90)
     if variant == "operator_consequence":
         return _clamp(f"{head} | The Operator Consequence", 90)
     return _clamp(f"{head} | Why Tomorrow Gets Harder", 90)
 
 
-def _pick_hook(meta: Dict[str, Any], stories: List[Dict[str, Any]]) -> str:
+def _pick_hook(meta: Dict[str, Any], stories: List[Dict[str, Any]], moments: List[Dict[str, Any]]) -> str:
     variant = (((meta.get("tracking") or {}).get("experiments") or {}).get("clip_style")) or choose_variant("clip_style")
+    if moments:
+        moment = moments[0].get("text") or ""
+        if moment:
+            return _clamp(moment.upper(), 64)
     top = stories[0] if stories else {}
-    head = (top.get("headline") or meta.get("title") or "AI just shifted").strip()
+    head = _clean_headline((top.get("headline") or meta.get("title") or "AI just shifted").strip())
     if variant == "contrarian":
-        return _clamp(f"THE BIG AI STORY ISN'T WHAT YOU THINK", 64)
+        return _clamp("THE BIG AI STORY ISN'T WHAT YOU THINK", 64)
     if variant == "fear_greed":
-        return _clamp(f"WHO WINS IF THIS TREND HOLDS?", 64)
+        return _clamp("WHO WINS IF THIS TREND HOLDS?", 64)
     return _clamp(head.upper(), 64)
 
 
@@ -105,20 +125,22 @@ def _story_summary_lines(stories: List[Dict[str, Any]]) -> str:
     lines: List[str] = []
     for story in stories[:5]:
         data = "; ".join([str(x) for x in (story.get("data_points") or [])[:2]])
-        lines.append(f"- {story.get('headline','')}" + (f" ({data})" if data else ""))
+        line = _clean_headline(story.get("headline", ""))
+        lines.append(f"- {line}" + (f" ({data})" if data else ""))
     return "\n".join(lines)
 
 
-def _clip_candidates(meta: Dict[str, Any], stories: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+def _clip_candidates(meta: Dict[str, Any], stories: List[Dict[str, Any]], moments: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
     tracking = meta.get("tracking") or {}
     clips: List[Dict[str, Any]] = []
     for i, story in enumerate(stories[:3], start=1):
         score = float(story.get("growth_score") or 0.0)
-        question = story.get("tomorrow_hook") or f"What breaks first if {story.get('headline','this')} keeps accelerating?"
+        quote = moments[i - 1].get("text") if i - 1 < len(moments) else ""
+        hook = quote or story.get("tomorrow_hook") or f"What breaks first if {_clean_headline(story.get('headline','this'))} keeps accelerating?"
         clips.append({
             "rank": i,
-            "story": story.get("headline"),
-            "hook": _clamp(question, 120),
+            "story": _clean_headline(story.get("headline") or ""),
+            "hook": _clamp(hook, 120),
             "subhook": _clamp((story.get("why_shocking") or "").strip(), 140),
             "cta": tracking.get("subscribe_clip_primary" if i == 1 else "subscribe_clip_secondary", meta.get("listen_url", "")),
             "predicted_score": round(score, 2),
@@ -129,15 +151,17 @@ def _clip_candidates(meta: Dict[str, Any], stories: List[Dict[str, Any]]) -> Lis
 
 def build_assets(meta: Dict[str, Any]) -> Dict[str, Any]:
     stories = _top_stories(meta)
+    moments = _forwardable_moments()
     tracking = meta.get("tracking") or {}
     show_notes_url = tracking.get("subscribe_show_notes") or "https://theledgr.io"
     x_url = tracking.get("subscribe_x") or show_notes_url
     linkedin_url = tracking.get("subscribe_linkedin") or show_notes_url
 
     title = _pick_title(meta, stories)
-    hook = _pick_hook(meta, stories)
+    hook = _pick_hook(meta, stories, moments)
     hashtags = _hashtags(stories)
     bullets = _story_summary_lines(stories)
+    clips = _clip_candidates(meta, stories, moments)
 
     x_posts = {
         "post_1": _clamp(f"{hook}\n\nThe real question is not whether AI moved. It is who gets caught flat-footed next.\n\nListen: {meta.get('listen_url','')}", 280),
@@ -155,7 +179,7 @@ def build_assets(meta: Dict[str, Any]) -> Dict[str, Any]:
             f"Listen now: {meta.get('listen_url','')}\n\nWhat we covered:\n{bullets}\n\nSubscribe to TheLEDGR: {show_notes_url}",
             1200,
         ),
-        "shorts_hooks": [c["hook"] for c in _clip_candidates(meta, stories)],
+        "shorts_hooks": [c["hook"] for c in clips],
     }
 
     li = (
@@ -181,10 +205,8 @@ def build_assets(meta: Dict[str, Any]) -> Dict[str, Any]:
     tags = {
         "tags_6": " ".join(hashtags[:6]),
         "tags_12": " ".join(hashtags[:12]),
-        "seo_keywords": [story.get("headline") for story in stories if story.get("headline")],
+        "seo_keywords": [_clean_headline(story.get("headline") or "") for story in stories if story.get("headline")],
     }
-
-    clips = _clip_candidates(meta, stories)
 
     pack = {
         "hook": hook,
