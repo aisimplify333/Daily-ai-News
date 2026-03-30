@@ -1,56 +1,16 @@
 #!/usr/bin/env python3
-"""
-marketing_engine.py
+from __future__ import annotations
 
-Purpose:
-- Turn mani.py outputs (episode_metadata.json) into viral marketing assets:
-  - X/Twitter posts + thread
-  - YouTube title/description + Shorts hooks
-  - LinkedIn post
-  - Instagram/TikTok captions
-  - Viral tag sets (<= 6, <= 12, SEO keywords)
-  - A "press-style" blurb + email copy (optional use)
-
-Inputs (expected from mani.py):
-- episode_metadata.json (required)
-  includes: date, title, listen_url, stories[], marketing_pack{}, etc.
-
-Outputs (repo files; align with your .gitignore choices):
-- marketing_pack.json                (expanded, platform-ready)
-- marketing_x.json                   (X posts/thread)
-- marketing_youtube.json             (YT title/desc/shorts)
-- marketing_linkedin.txt
-- marketing_instagram.txt
-- marketing_tiktok.txt
-- viral_tags.txt                     (multiple tag sets)
-- seo_keywords.txt
-- marketing_blurb.txt
-
-Notes:
-- Safe fallbacks if OpenAI key is missing or request fails.
-- Keep content AI-edge: policy, markets, security, frontier models, chips, jobs.
-"""
-
+import json
 import os
 import re
-import json
-import sys
-import textwrap
-import datetime
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Any, Dict, List
 
-try:
-    from dotenv import load_dotenv
-    load_dotenv()
-except Exception:
-    pass
+from growth_engine import build_story_debug_table, choose_variant
 
-# ----------------------------
-# PATHS
-# ----------------------------
 BASE_DIR = Path(__file__).parent
-META_PATH_DEFAULT = BASE_DIR / "episode_metadata.json"
+META_PATH = BASE_DIR / "episode_metadata.json"
 
 OUT_MARKETING_PACK = BASE_DIR / "marketing_pack.json"
 OUT_X = BASE_DIR / "marketing_x.json"
@@ -61,291 +21,231 @@ OUT_TT = BASE_DIR / "marketing_tiktok.txt"
 OUT_TAGS = BASE_DIR / "viral_tags.txt"
 OUT_SEO = BASE_DIR / "seo_keywords.txt"
 OUT_BLURB = BASE_DIR / "marketing_blurb.txt"
+OUT_CLIPS = BASE_DIR / "clip_candidates.json"
+OUT_DISTRIBUTION = BASE_DIR / "distribution_plan.json"
+OUT_STORY_SCORES = BASE_DIR / "story_scores.json"
 
-# ----------------------------
-# LLM CONFIG
-# ----------------------------
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "").strip()
-OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o").strip()
-PRIMARY_LLM = os.getenv("PRIMARY_LLM", "openai").strip().lower()
 
-# Tone knobs
-MAX_STORIES = int(os.getenv("MARKETING_MAX_STORIES", "5"))
-FORCE_AI_PURITY = os.getenv("MARKETING_FORCE_AI_PURITY", "true").strip().lower() in ("1", "true", "yes")
-AGGRESSIVE = os.getenv("MARKETING_AGGRESSIVE", "true").strip().lower() in ("1", "true", "yes")
-
-# ----------------------------
-# UTILS
-# ----------------------------
-def _safe_print(msg: str) -> None:
-    print(msg, flush=True)
-
-def _read_json(p: Path) -> Dict[str, Any]:
+def _read_json(path: Path) -> Dict[str, Any]:
     try:
-        return json.loads(p.read_text(encoding="utf-8"))
+        return json.loads(path.read_text(encoding="utf-8"))
     except Exception:
         return {}
 
-def _write_text(p: Path, s: str) -> None:
-    p.write_text((s or "").strip() + "\n", encoding="utf-8")
 
-def _write_json(p: Path, obj: Any) -> None:
-    p.write_text(json.dumps(obj, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+def _write_json(path: Path, payload: Any) -> None:
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
-def _clamp(s: str, n: int) -> str:
-    s = (s or "").strip()
-    return s if len(s) <= n else s[: max(0, n - 1)].rstrip() + "…"
 
-def _extract_json_object(raw: str) -> Optional[dict]:
-    if not raw:
-        return None
-    raw = raw.strip()
-    try:
-        obj = json.loads(raw)
-        return obj if isinstance(obj, dict) else None
-    except Exception:
-        pass
+def _write_text(path: Path, text: str) -> None:
+    path.write_text((text or "").strip() + "\n", encoding="utf-8")
 
-    raw2 = re.sub(r"^```(?:json)?\s*", "", raw, flags=re.IGNORECASE).strip()
-    raw2 = re.sub(r"\s*```$", "", raw2).strip()
-    try:
-        obj = json.loads(raw2)
-        return obj if isinstance(obj, dict) else None
-    except Exception:
-        pass
 
-    m = re.search(r"(\{.*\})", raw2, flags=re.DOTALL)
-    if not m:
-        return None
-    try:
-        obj = json.loads(m.group(1))
-        return obj if isinstance(obj, dict) else None
-    except Exception:
-        return None
+def _clamp(text: str, limit: int) -> str:
+    text = (text or "").strip()
+    return text if len(text) <= limit else text[: limit - 1].rstrip() + "…"
 
-def _digits(s: str) -> int:
-    return len(re.findall(r"\d", s or ""))
 
-def _slugify(s: str) -> str:
-    s = (s or "").lower().strip()
-    s = re.sub(r"[^a-z0-9\s-]", "", s)
-    s = re.sub(r"\s+", "-", s)
-    s = re.sub(r"-{2,}", "-", s)
-    return s[:60].strip("-")
+def _digits(text: str) -> int:
+    return len(re.findall(r"\d", text or ""))
 
-# ----------------------------
-# STORY / TAG HEURISTICS
-# ----------------------------
-AI_ANCHORS = [
-    "ai", "artificial intelligence", "generative", "llm", "large language model",
-    "openai", "anthropic", "gemini", "xai", "grok", "chatgpt", "nvidia",
-    "deepmind", "microsoft", "meta"
-]
 
-VIRAL_THEMES = [
-    ("leak", 6), ("lawsuit", 5), ("ban", 5), ("outage", 6), ("recall", 5),
-    ("breach", 6), ("hack", 6), ("deepfake", 6), ("regulator", 4),
-    ("sec", 4), ("ftc", 4), ("eu", 3), ("export", 4), ("sanction", 4),
-    ("layoff", 5), ("strike", 4), ("crash", 5), ("collapse", 5),
-    ("valuation", 4), ("ipo", 4), ("funding", 4), ("billion", 4), ("million", 3)
-]
-
-def _ai_pure(text: str) -> bool:
-    t = (text or "").lower()
-    return any(a in t for a in AI_ANCHORS)
-
-def _shock_score(story: Dict[str, Any]) -> int:
-    head = (story.get("headline") or "")
-    why = (story.get("why_shocking") or "")
-    dp = story.get("data_points") or []
-    blob = " ".join([head, why] + [str(x) for x in dp])
-    score = 0
-    score += min(60, _digits(blob) * 2)
-    t = blob.lower()
-    for k, w in VIRAL_THEMES:
-        if k in t:
-            score += w * 6
-    # Reward money/percent tokens
-    if re.search(r"(\$|€|£)\s?\d", blob):
-        score += 18
-    if "%" in blob:
-        score += 12
-    # Penalize if not AI-pure and we are enforcing purity
-    if FORCE_AI_PURITY and not _ai_pure(blob):
-        score -= 25
-    return score
-
-def _top_stories(meta: Dict[str, Any], n: int = 5) -> List[Dict[str, Any]]:
-    stories = meta.get("stories") or []
-    if not isinstance(stories, list):
-        return []
-    stories2 = [s for s in stories if isinstance(s, dict)]
-    # Score and rank
-    ranked = sorted(stories2, key=_shock_score, reverse=True)
-    if FORCE_AI_PURITY:
-        # Keep only AI-pure first, then fill if needed
-        pure = [s for s in ranked if _ai_pure(" ".join([s.get("headline",""), s.get("why_shocking","")]))]
-        rest = [s for s in ranked if s not in pure]
-        ranked = pure + rest
-    return ranked[:n]
-
-def _entity_keywords(stories: List[Dict[str, Any]]) -> List[str]:
-    kws: List[str] = []
-    for s in stories:
-        ents = s.get("key_entities") or []
-        if isinstance(ents, list):
-            for e in ents:
-                e = str(e).strip()
-                if 2 <= len(e) <= 30:
-                    kws.append(e)
-        # Also mine headline tokens (lightly)
-        head = (s.get("headline") or "")
-        for tok in re.findall(r"\b[A-Z][a-zA-Z]{2,}\b", head):
-            kws.append(tok)
-    # Dedup preserve order
-    out = []
-    seen = set()
-    for k in kws:
-        kk = k.lower()
-        if kk in seen:
+def _hashtags(stories: List[Dict[str, Any]], max_tags: int = 8) -> List[str]:
+    base = ["#AI", "#TechNews", "#AIAgents", "#EnterpriseAI"]
+    extra: List[str] = []
+    for story in stories[:5]:
+        title = story.get("headline") or ""
+        if any(k in title.lower() for k in ["regulat", "ftc", "sec", "eu"]):
+            extra.append("#AIRegulation")
+        if any(k in title.lower() for k in ["chip", "gpu", "nvidia", "datacenter"]):
+            extra.append("#AIInfrastructure")
+        for ent in story.get("key_entities") or []:
+            tag = "#" + re.sub(r"[^A-Za-z0-9]", "", str(ent))
+            if 3 <= len(tag) <= 22:
+                extra.append(tag)
+    seen, ordered = set(), []
+    for tag in base + extra:
+        if tag.lower() in seen:
             continue
-        seen.add(kk)
-        out.append(k)
-    return out[:18]
+        seen.add(tag.lower())
+        ordered.append(tag)
+    return ordered[:max_tags]
 
-def _build_tag_sets(stories: List[Dict[str, Any]]) -> Dict[str, Any]:
-    # Core show tags + dynamic tags from entities/themes
-    core = ["#AI", "#TechNews", "#OpenAI", "#Nvidia", "#AIRegulation", "#AICybersecurity"]
-    entities = _entity_keywords(stories)
-    # Map entities into hashtags (safe)
-    entity_tags = []
-    for e in entities:
-        tag = "#" + re.sub(r"[^A-Za-z0-9]", "", e)
-        if len(tag) >= 3 and len(tag) <= 22:
-            entity_tags.append(tag)
 
-    # Theme tags from heuristics
-    blob = " ".join([(s.get("headline") or "") + " " + (s.get("why_shocking") or "") for s in stories]).lower()
-    theme_tags = []
-    if "outage" in blob or "downtime" in blob:
-        theme_tags.append("#Outage")
-    if "leak" in blob or "breach" in blob or "hack" in blob:
-        theme_tags.append("#Cybersecurity")
-    if "lawsuit" in blob or "copyright" in blob:
-        theme_tags.append("#Copyright")
-    if "eu" in blob or "ai act" in blob:
-        theme_tags.append("#EUAIACT")
-    if "ipo" in blob or "valuation" in blob or "funding" in blob:
-        theme_tags.append("#VentureCapital")
+def _top_stories(meta: Dict[str, Any]) -> List[Dict[str, Any]]:
+    stories = [s for s in (meta.get("stories") or []) if isinstance(s, dict)]
+    return sorted(stories, key=lambda s: float(s.get("growth_score") or 0.0), reverse=True)[:5]
 
-    # Build sets
-    set6 = (core[:4] + theme_tags + entity_tags)[:6]
-    set12 = (core + theme_tags + entity_tags)[:12]
 
-    # SEO keywords (not hashtags)
-    seo = []
-    for s in stories:
-        seo.append((s.get("headline") or "").strip())
-    seo += [e for e in entities]
-    seo = [x for x in seo if x]
-    # Dedup
-    seo_out, seen = [], set()
-    for k in seo:
-        kk = k.lower()
-        if kk in seen:
-            continue
-        seen.add(kk)
-        seo_out.append(k)
-    return {"tags_6": set6, "tags_12": set12, "seo_keywords": seo_out[:25]}
+def _pick_title(meta: Dict[str, Any], stories: List[Dict[str, Any]]) -> str:
+    variant = (((meta.get("tracking") or {}).get("experiments") or {}).get("title_style")) or choose_variant("title_style")
+    top = stories[0] if stories else {}
+    head = (top.get("headline") or meta.get("title") or "AI moved again").strip()
+    dp = " | ".join([str(x) for x in (top.get("data_points") or [])[:2]])
+    digit_rich = dp if _digits(dp) >= 3 else head
+    if variant == "hard_number":
+        return _clamp(f"{head} — What the Numbers Mean Now", 90)
+    if variant == "operator_consequence":
+        return _clamp(f"{head} | The Operator Consequence", 90)
+    return _clamp(f"{head} | Why Tomorrow Gets Harder", 90)
 
-# ----------------------------
-# LLM CALL (OPTIONAL)
-# ----------------------------
-def _llm_enabled() -> bool:
-    return bool(OPENAI_API_KEY) and PRIMARY_LLM == "openai"
 
-def _openai_client():
-    from openai import OpenAI
-    return OpenAI(api_key=OPENAI_API_KEY)
+def _pick_hook(meta: Dict[str, Any], stories: List[Dict[str, Any]]) -> str:
+    variant = (((meta.get("tracking") or {}).get("experiments") or {}).get("clip_style")) or choose_variant("clip_style")
+    top = stories[0] if stories else {}
+    head = (top.get("headline") or meta.get("title") or "AI just shifted").strip()
+    if variant == "contrarian":
+        return _clamp(f"THE BIG AI STORY ISN'T WHAT YOU THINK", 64)
+    if variant == "fear_greed":
+        return _clamp(f"WHO WINS IF THIS TREND HOLDS?", 64)
+    return _clamp(head.upper(), 64)
 
-def _generate_with_llm(prompt: str, temperature: float = 0.55, max_tokens: int = 900) -> str:
-    client = _openai_client()
-    resp = client.chat.completions.create(
-        model=OPENAI_CHAT_MODEL,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        messages=[
-            {"role": "system", "content": "You are a direct-response growth marketer for a daily AI news show. Output exactly what is requested."},
-            {"role": "user", "content": prompt},
+
+def _story_summary_lines(stories: List[Dict[str, Any]]) -> str:
+    lines: List[str] = []
+    for story in stories[:5]:
+        data = "; ".join([str(x) for x in (story.get("data_points") or [])[:2]])
+        lines.append(f"- {story.get('headline','')}" + (f" ({data})" if data else ""))
+    return "\n".join(lines)
+
+
+def _clip_candidates(meta: Dict[str, Any], stories: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    tracking = meta.get("tracking") or {}
+    clips: List[Dict[str, Any]] = []
+    for i, story in enumerate(stories[:3], start=1):
+        score = float(story.get("growth_score") or 0.0)
+        question = story.get("tomorrow_hook") or f"What breaks first if {story.get('headline','this')} keeps accelerating?"
+        clips.append({
+            "rank": i,
+            "story": story.get("headline"),
+            "hook": _clamp(question, 120),
+            "subhook": _clamp((story.get("why_shocking") or "").strip(), 140),
+            "cta": tracking.get("subscribe_clip_primary" if i == 1 else "subscribe_clip_secondary", meta.get("listen_url", "")),
+            "predicted_score": round(score, 2),
+            "visual_angle": "numbers + consequence + one hard question",
+        })
+    return clips
+
+
+def build_assets(meta: Dict[str, Any]) -> Dict[str, Any]:
+    stories = _top_stories(meta)
+    tracking = meta.get("tracking") or {}
+    show_notes_url = tracking.get("subscribe_show_notes") or "https://theledgr.io"
+    x_url = tracking.get("subscribe_x") or show_notes_url
+    linkedin_url = tracking.get("subscribe_linkedin") or show_notes_url
+
+    title = _pick_title(meta, stories)
+    hook = _pick_hook(meta, stories)
+    hashtags = _hashtags(stories)
+    bullets = _story_summary_lines(stories)
+
+    x_posts = {
+        "post_1": _clamp(f"{hook}\n\nThe real question is not whether AI moved. It is who gets caught flat-footed next.\n\nListen: {meta.get('listen_url','')}", 280),
+        "post_2": _clamp(f"TheLEDGR is where we turn these headlines into decision-grade signal.\n\nSubscribe: {x_url}", 280),
+        "thread": [
+            _clamp(f"Today's AI Edge in one line: {hook}", 280),
+            _clamp(f"What mattered most:\n{bullets}", 280),
+            _clamp(f"Subscribe to TheLEDGR: {x_url}", 280),
         ],
-    )
-    return (resp.choices[0].message.content or "").strip()
-
-# ----------------------------
-# COPY GENERATORS
-# ----------------------------
-def _story_lines(stories: List[Dict[str, Any]]) -> str:
-    lines = []
-    for i, s in enumerate(stories, start=1):
-        head = (s.get("headline") or "").strip()
-        pub = (s.get("publisher") or "").strip()
-        url = (s.get("source_url") or "").strip()
-        dp = s.get("data_points") or []
-        dp_txt = "; ".join([str(x).strip() for x in dp[:4] if str(x).strip()])
-        lines.append(f"{i}) {head} ({pub})")
-        if dp_txt:
-            lines.append(f"   Data: {dp_txt}")
-        if url:
-            lines.append(f"   Source: {url}")
-    return "\n".join(lines).strip()
-
-def _fallback_pack(date_str: str, title: str, listen_url: str, stories: List[Dict[str, Any]], tags: Dict[str, Any]) -> Dict[str, Any]:
-    top_head = (stories[0].get("headline") if stories else "AI JUST SHIFTED AGAIN").strip()
-    hook = _clamp(top_head.upper(), 64)
-
-    # Make a sharper hook if we have numbers
-    blob = " ".join([top_head] + [str(x) for x in (stories[0].get("data_points") or [])])
-    if _digits(blob) >= 3:
-        hook = _clamp((top_head + " — " + re.sub(r"\s+", " ", blob)[:30]).upper(), 64)
-
-    x1 = _clamp(f"{hook}\n\nIf this trend holds, what breaks first—jobs, markets, or safety?", 260)
-    x2 = _clamp(f"Full episode: {listen_url}\n\n" + " ".join(tags["tags_6"]), 260)
-
-    yt_title = _clamp(f"{top_head} | The AI Edge", 90)
-    yt_desc = _clamp(
-        "Today’s AI Edge breaks down:\n"
-        + "\n".join([f"- {s.get('headline','')}" for s in stories[:5]])
-        + f"\n\nListen: {listen_url}\n\nSources:\n"
-        + "\n".join([s.get("source_url","") for s in stories[:5] if s.get("source_url")]),
-        1200,
-    )
-
-    return {
-        "date": date_str,
-        "hook": hook,
-        "card_subhook": "THE CONSEQUENCES START NOW",
-        "x_post_1": x1,
-        "x_post_2": x2,
-        "yt_title": yt_title,
-        "yt_description": yt_desc,
-        "hashtags_6": " ".join(tags["tags_6"]),
-        "hashtags_12": " ".join(tags["tags_12"]),
     }
 
-def _make_assets(date_str: str, meta: Dict[str, Any]) -> Dict[str, Any]:
-    listen_url = (meta.get("listen_url") or meta.get("LISTEN_URL") or "").strip()
-    ep_title = (meta.get("title") or f"The AI Edge — {date_str}").strip()
+    yt = {
+        "title": title,
+        "description": _clamp(
+            f"Listen now: {meta.get('listen_url','')}\n\nWhat we covered:\n{bullets}\n\nSubscribe to TheLEDGR: {show_notes_url}",
+            1200,
+        ),
+        "shorts_hooks": [c["hook"] for c in _clip_candidates(meta, stories)],
+    }
 
-    stories = _top_stories(meta, n=min(MAX_STORIES, 5))
-    tags = _build_tag_sets(stories)
+    li = (
+        f"{hook}\n\n"
+        f"Most AI coverage stops at the headline. We do not.\n\n"
+        f"Today on The AI Edge we broke down:\n{bullets}\n\n"
+        f"If AI changes how you allocate budget, design workflows, hire, or compete, subscribe to TheLEDGR here: {linkedin_url}"
+    )
 
-    # If LLM is available, generate richer platform copy
-    if _llm_enabled():
-        story_block = _story_lines(stories)
+    ig = (
+        f"{hook}\n\n"
+        f"Serious AI people do not need more noise. They need the consequence.\n\n"
+        f"Subscribe: {show_notes_url}\n\n"
+        + " ".join(hashtags)
+    )
+    tt = ig
 
-aggression = (
-    "Go for high-stakes, urgent framing.\n"
-    "Keep claims grounded—do not invent numbers.\n"
-    "Short sentences. Strong verbs. Clear consequence.\n"
-    "End with a direct CTA."
-)
+    blurb = (
+        f"The AI Edge released a new episode focused on the second-order consequences behind the day's biggest AI stories. "
+        f"The companion growth engine routes listeners into TheLEDGR using tracked CTAs so the show can learn what actually creates subscribers."
+    )
+
+    tags = {
+        "tags_6": " ".join(hashtags[:6]),
+        "tags_12": " ".join(hashtags[:12]),
+        "seo_keywords": [story.get("headline") for story in stories if story.get("headline")],
+    }
+
+    clips = _clip_candidates(meta, stories)
+
+    pack = {
+        "hook": hook,
+        "yt_title": yt["title"],
+        "yt_description": yt["description"],
+        "tweet1": x_posts["post_1"],
+        "tweet2": x_posts["post_2"],
+        "show_notes": meta.get("show_notes") or yt["description"],
+        "hashtags": tags["tags_6"],
+        "tracked_urls": tracking,
+        "clip_candidates": clips,
+    }
+
+    return {
+        "pack": pack,
+        "x": x_posts,
+        "yt": yt,
+        "linkedin": li,
+        "instagram": ig,
+        "tiktok": tt,
+        "blurb": blurb,
+        "tags": tags,
+        "clips": clips,
+        "distribution": {
+            "primary_goal": "newsletter_signups",
+            "primary_cta": show_notes_url,
+            "channel_priority": ["youtube_shorts", "x", "linkedin", "rss_show_notes"],
+            "publish_order": [
+                "Drop episode",
+                "Post clip 1 within 15 minutes",
+                "Post X thread within 20 minutes",
+                "Post LinkedIn within 45 minutes",
+                "Post clip 2 within 4 hours",
+            ],
+        },
+        "story_scores": build_story_debug_table(stories),
+    }
+
+
+def main() -> int:
+    meta = _read_json(META_PATH)
+    if not meta:
+        print("marketing_engine.py: episode_metadata.json missing or unreadable", flush=True)
+        return 1
+
+    assets = build_assets(meta)
+    _write_json(OUT_MARKETING_PACK, assets["pack"])
+    _write_json(OUT_X, assets["x"])
+    _write_json(OUT_YT, assets["yt"])
+    _write_text(OUT_LI, assets["linkedin"])
+    _write_text(OUT_IG, assets["instagram"])
+    _write_text(OUT_TT, assets["tiktok"])
+    _write_text(OUT_TAGS, assets["tags"]["tags_12"])
+    _write_text(OUT_SEO, "\n".join(assets["tags"]["seo_keywords"]))
+    _write_text(OUT_BLURB, assets["blurb"])
+    _write_json(OUT_CLIPS, assets["clips"])
+    _write_json(OUT_DISTRIBUTION, assets["distribution"])
+    _write_json(OUT_STORY_SCORES, assets["story_scores"])
+    print("marketing_engine.py: wrote upgraded marketing assets", flush=True)
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
