@@ -1,14 +1,11 @@
 from __future__ import annotations
 
 import datetime as dt
-import hashlib
 import json
-import math
-import os
 import random
 import re
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
 
 BASE_DIR = Path(__file__).parent
@@ -16,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v1"
+MODEL_VERSION = "podcast-growth-v2"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
@@ -37,16 +34,49 @@ AUTHORITATIVE_DOMAINS = {
     "justice.gov": 96,
     "europa.eu": 96,
     "ec.europa.eu": 96,
-    "reuters.com": 90,
-    "bloomberg.com": 90,
-    "ft.com": 88,
-    "wsj.com": 88,
-    "theinformation.com": 84,
-    "techcrunch.com": 76,
-    "theverge.com": 74,
-    "wired.com": 74,
-    "cnbc.com": 72,
-    "axios.com": 72,
+    "reuters.com": 96,
+    "bloomberg.com": 95,
+    "ft.com": 93,
+    "wsj.com": 93,
+    "theinformation.com": 90,
+    "techcrunch.com": 82,
+    "theverge.com": 80,
+    "wired.com": 80,
+    "cnbc.com": 76,
+    "axios.com": 78,
+}
+
+WRAPPER_DOMAINS = {
+    "news.google.com",
+    "google.com",
+    "www.google.com",
+}
+
+PUBLISHER_SCORES = {
+    "reuters": 96.0,
+    "bloomberg": 95.0,
+    "financial times": 93.0,
+    "ft": 93.0,
+    "wall street journal": 93.0,
+    "wsj": 93.0,
+    "the information": 90.0,
+    "techcrunch": 82.0,
+    "the verge": 80.0,
+    "wired": 80.0,
+    "axios": 78.0,
+    "cnbc": 76.0,
+    "tom's hardware": 72.0,
+    "toms hardware": 72.0,
+    "yahoo tech": 58.0,
+    "msn": 40.0,
+    "indexbox": 32.0,
+    "bitget": 18.0,
+}
+
+LOW_SIGNAL_PUBLISHERS = {
+    "msn",
+    "indexbox",
+    "bitget",
 }
 
 VERTICAL_KEYWORDS = {
@@ -133,12 +163,20 @@ def _jaccard(a: Sequence[str], b: Sequence[str]) -> float:
     return len(sa & sb) / max(1, len(sa | sb))
 
 
+def _publisher_name(item: Dict[str, Any]) -> str:
+    return normalize_text(str(item.get("publisher") or ""))
+
+
 def _publisher_domain(item: Dict[str, Any]) -> str:
-    url = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
-    if url:
-        return urlparse(url).netloc.lower()
-    pub = normalize_text(str(item.get("publisher") or ""))
-    return pub.replace(" ", "")
+    raw_url = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
+    if raw_url:
+        domain = urlparse(raw_url).netloc.lower()
+        if domain.startswith("www."):
+            domain = domain[4:]
+        if domain in WRAPPER_DOMAINS:
+            return ""
+        return domain
+    return ""
 
 
 def parse_published(published: str) -> Optional[dt.datetime]:
@@ -173,17 +211,26 @@ def recency_score(published: str) -> float:
 
 
 def authority_score(item: Dict[str, Any]) -> float:
+    publisher = _publisher_name(item)
+
+    for key, score in PUBLISHER_SCORES.items():
+        if key in publisher:
+            return score
+
     domain = _publisher_domain(item)
-    for known, score in AUTHORITATIVE_DOMAINS.items():
-        if domain.endswith(known):
-            return float(score)
-    if domain.endswith(".gov"):
-        return 90.0
-    if domain.endswith(".edu"):
-        return 82.0
     if domain:
-        return 58.0
-    return 40.0
+        for known, score in AUTHORITATIVE_DOMAINS.items():
+            if domain.endswith(known):
+                return float(score)
+        if domain.endswith(".gov"):
+            return 92.0
+        if domain.endswith(".edu"):
+            return 84.0
+        return 55.0
+
+    if publisher:
+        return 50.0
+    return 35.0
 
 
 def numeric_density_score(title: str, summary: str) -> float:
@@ -191,24 +238,53 @@ def numeric_density_score(title: str, summary: str) -> float:
     digits = len(re.findall(r"\d", blob))
     money = 12 if re.search(r"(?:\$|€|£)\s?\d", blob) else 0
     pct = 8 if "%" in blob else 0
-    scale = min(100.0, digits * 5.0 + money + pct)
-    return scale
+    return min(100.0, digits * 5.0 + money + pct)
 
 
 def brand_fit_score(title: str, summary: str) -> float:
     blob = f"{title} {summary}".lower()
-    if "ai" not in blob and "artificial intelligence" not in blob and "chatgpt" not in blob and "llm" not in blob:
+
+    ai_terms = [
+        "ai", "artificial intelligence", "chatgpt", "llm", "model",
+        "agent", "copilot", "openai", "anthropic", "nvidia", "gemini",
+    ]
+    if not any(term in blob for term in ai_terms):
         return 0.0
-    score = 20.0
+
+    score = 0.0
+
     vertical_hits = 0
     for keywords in VERTICAL_KEYWORDS.values():
         if any(k in blob for k in keywords):
             vertical_hits += 1
-    score += min(40.0, vertical_hits * 10.0)
-    if any(k in blob for k in ["enterprise", "developer", "health", "regulation", "agent", "model", "chip"]):
+
+    score += min(54.0, vertical_hits * 18.0)
+
+    if any(k in blob for k in [
+        "enterprise", "developer", "health", "clinical", "hospital",
+        "regulation", "lawsuit", "export", "security", "breach",
+        "agent", "api", "model", "chip", "gpu", "datacenter",
+    ]):
         score += 20.0
-    if any(k in blob for k in ["crypto", "meme coin", "nft"]) and not any(k in blob for k in ["ai agent", "ai startup", "ai chip"]):
+
+    if any(k in blob for k in [
+        "forecast", "statistics", "stock growth", "market forecast",
+        "industry statistics",
+    ]):
+        score -= 18.0
+
+    if any(k in blob for k in ["crypto", "meme coin", "nft"]) and not any(
+        k in blob for k in ["ai agent", "ai startup", "ai chip", "ai infrastructure"]
+    ):
         score -= 35.0
+
+    if any(k in blob for k in ["earnings", "stock", "valuation", "funding"]):
+        if not any(k in blob for k in [
+            "enterprise", "regulation", "security", "developer",
+            "chip", "gpu", "agent", "deployment", "inference",
+        ]):
+            score -= 12.0
+
     return max(0.0, min(100.0, score))
 
 
@@ -257,13 +333,13 @@ def story_score_breakdown(item: Dict[str, Any], memory: Optional[Dict[str, Any]]
         "recency": round(recency_score(str(item.get("published") or "")), 2),
     }
     weighted = (
-        0.25 * breakdown["brand_fit"]
-        + 0.20 * breakdown["authority"]
-        + 0.15 * breakdown["novelty"]
-        + 0.15 * breakdown["forward_consequence"]
+        0.30 * breakdown["brand_fit"]
+        + 0.22 * breakdown["authority"]
+        + 0.10 * breakdown["novelty"]
+        + 0.18 * breakdown["forward_consequence"]
         + 0.10 * breakdown["numeric_density"]
-        + 0.10 * breakdown["clipability"]
-        + 0.05 * breakdown["recency"]
+        + 0.08 * breakdown["clipability"]
+        + 0.02 * breakdown["recency"]
     )
     breakdown["weighted"] = round(weighted, 2)
     return breakdown
@@ -283,7 +359,8 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
                 matched = cluster
                 break
             overlap = _jaccard(item_tokens, cluster["tokens"])
-            if overlap >= 0.78:
+            shared = len(set(item_tokens) & set(cluster["tokens"]))
+            if overlap >= 0.58 or shared >= 5:
                 matched = cluster
                 break
 
@@ -297,7 +374,6 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
             continue
 
         matched["items"].append(item)
-        # Prefer highest-authority or freshest story as cluster leader.
         current = matched["leader"]
         current_score = authority_score(current) + recency_score(str(current.get("published") or ""))
         new_score = authority_score(item) + recency_score(str(item.get("published") or ""))
@@ -310,9 +386,37 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
     for cluster in clusters:
         leader = dict(cluster["leader"])
         leader["cluster_size"] = len(cluster["items"])
-        leader["cluster_publishers"] = sorted({str(x.get("publisher") or "").strip() for x in cluster["items"] if str(x.get("publisher") or "").strip()})
+        leader["cluster_publishers"] = sorted({
+            str(x.get("publisher") or "").strip()
+            for x in cluster["items"]
+            if str(x.get("publisher") or "").strip()
+        })
         out.append(leader)
     return out
+
+
+def is_story_eligible(item: Dict[str, Any]) -> bool:
+    breakdown = item.get("score_breakdown") or {}
+    brand_fit = float(breakdown.get("brand_fit", 0.0))
+    authority = float(breakdown.get("authority", 0.0))
+    forward = float(breakdown.get("forward_consequence", 0.0))
+    numeric = float(breakdown.get("numeric_density", 0.0))
+    clipability = float(breakdown.get("clipability", 0.0))
+    publisher = _publisher_name(item)
+
+    if brand_fit < 45.0:
+        return False
+
+    if authority < 50.0 and brand_fit < 70.0:
+        return False
+
+    if forward < 12.0 and numeric < 20.0 and clipability < 12.0:
+        return False
+
+    if publisher in LOW_SIGNAL_PUBLISHERS and brand_fit < 70.0:
+        return False
+
+    return True
 
 
 def select_story_candidates(
@@ -323,29 +427,56 @@ def select_story_candidates(
 ) -> List[Dict[str, Any]]:
     memory = memory or load_show_memory()
     clustered = cluster_story_candidates(items)
+
     ranked: List[Dict[str, Any]] = []
     for item in clustered:
         item = dict(item)
         item["score_breakdown"] = story_score_breakdown(item, memory)
         item["growth_score"] = item["score_breakdown"]["weighted"]
         ranked.append(item)
-    ranked.sort(key=lambda x: (x.get("growth_score") or 0.0, x.get("cluster_size") or 0), reverse=True)
+
+    ranked.sort(
+        key=lambda x: (
+            x.get("growth_score") or 0.0,
+            x.get("score_breakdown", {}).get("authority", 0.0),
+            x.get("cluster_size") or 0,
+        ),
+        reverse=True,
+    )
 
     selected: List[Dict[str, Any]] = []
     bucket_counts: Dict[str, int] = {}
+
     for item in ranked:
         bucket = str(item.get("bucket") or "general").strip().lower()
+
         if bucket_counts.get(bucket, 0) >= bucket_cap:
             continue
-        if item.get("growth_score", 0.0) < 25.0:
+
+        if not is_story_eligible(item):
             continue
+
         selected.append(item)
         bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
+
         if len(selected) >= n:
             break
-    if len(selected) < n:
-        selected = ranked[:n]
-    return selected
+
+    if len(selected) >= n:
+        return selected[:n]
+
+    softened: List[Dict[str, Any]] = []
+    for item in ranked:
+        breakdown = item.get("score_breakdown") or {}
+        if float(breakdown.get("brand_fit", 0.0)) < 40.0:
+            continue
+        if float(breakdown.get("authority", 0.0)) < 45.0:
+            continue
+        softened.append(item)
+        if len(softened) >= n:
+            break
+
+    return softened[:n]
 
 
 def attach_story_scores(stories: Sequence[Dict[str, Any]], candidates: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -557,7 +688,6 @@ def episode_reward(metrics: Dict[str, Any]) -> float:
     completion = float(metrics.get("completion_rate", 0.0))
     sponsor_inquiry = float(metrics.get("sponsor_inquiry_rate", 0.0))
 
-    # Normalize into 0..1 bands with conservative ceilings.
     def norm(v: float, ceiling: float) -> float:
         return max(0.0, min(1.0, v / max(0.0001, ceiling)))
 
