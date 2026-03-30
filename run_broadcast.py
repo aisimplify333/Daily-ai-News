@@ -1,113 +1,144 @@
-import subprocess
-import time
-import sys
+from __future__ import annotations
+
 import os
+import subprocess
+import sys
+import time
 from pathlib import Path
+
 from pydub import AudioSegment
 
-MIN_MINUTES = float(os.getenv("MIN_MINUTES", os.getenv("MIN_EPISODE_MINUTES", "22")))
-
+MIN_MINUTES = float(os.getenv("MIN_MINUTES", os.getenv("MIN_EPISODE_MINUTES", "24")))
 BRANCH = os.getenv("GIT_BRANCH", "main")
+RSS_BUFFER_SECONDS = int(os.getenv("RSS_BUFFER_SECONDS", "120"))
 
-def run_command(command, description, allow_fail=False):
-    print(f"\n >> 🚀 STARTING: {description}...")
+# Ownership flags:
+# - main.py is the single owner of episode generation + marketing asset generation
+# - social_publisher.py should only be run here if you explicitly want post-push publishing
+RUN_POST_PUSH_PUBLISHER = os.getenv("RUN_POST_PUSH_PUBLISHER", "false").strip().lower() in ("1", "true", "yes")
+PUBLISH_SOCIAL_IN_MAIN = os.getenv("PUBLISH_SOCIAL", "false").strip().lower() in ("1", "true", "yes")
+
+
+def run_command(command: str, description: str, allow_fail: bool = False) -> bool:
+    print(f"\n>> STARTING: {description}...", flush=True)
     try:
         subprocess.run(command, shell=True, check=True, text=True)
-        print(f" >> ✅ COMPLETE: {description}")
+        print(f">> ✅ COMPLETE: {description}", flush=True)
         return True
     except subprocess.CalledProcessError as e:
-        print(f" >> ❌ ERROR in {description}: {e}")
+        print(f">> ❌ ERROR in {description}: {e}", flush=True)
         if allow_fail:
-            print("    ⚠️ CONTINUING despite error...")
+            print(">> ⚠️ CONTINUING despite error...", flush=True)
             return False
         sys.exit(1)
 
-def configure_git_identity():
-    """
-    GitHub Actions runners do not have an author identity by default.
-    This prevents: 'fatal: empty ident name ... not allowed'
-    """
-    run_command('git config user.name "github-actions[bot]"', "Configuring git user.name", allow_fail=False)
-    run_command('git config user.email "41898282+github-actions[bot]@users.noreply.github.com"', "Configuring git user.email", allow_fail=False)
 
-def get_latest_mp3(audio_dir="episode_audio"):
-    audio_dir = Path(audio_dir)
-    files = sorted(list(audio_dir.glob("*.mp3")), key=os.path.getmtime, reverse=True)
+def configure_git_identity() -> None:
+    run_command('git config user.name "github-actions[bot]"', "Configuring git user.name", allow_fail=False)
+    run_command(
+        'git config user.email "41898282+github-actions[bot]@users.noreply.github.com"',
+        "Configuring git user.email",
+        allow_fail=False,
+    )
+
+
+def get_latest_mp3(audio_dir: str = "episode_audio") -> Path | None:
+    audio_path = Path(audio_dir)
+    files = sorted(audio_path.glob("*.mp3"), key=lambda p: p.stat().st_mtime, reverse=True)
     return files[0] if files else None
+
 
 def get_mp3_duration_minutes(mp3_path: Path) -> float:
     audio = AudioSegment.from_mp3(mp3_path)
     return len(audio) / 1000.0 / 60.0
 
-def check_episode_length_or_fail():
-    print("\n >> 📏 CHECKING SHOW RUNNER...")
+
+def check_episode_length_or_fail() -> tuple[Path, float]:
+    print("\n>> CHECKING SHOW RUNNER...", flush=True)
     latest = get_latest_mp3()
     if not latest:
         raise RuntimeError("No audio files found in episode_audio/.")
 
     duration_min = get_mp3_duration_minutes(latest)
-    print(f"    📄 File: {latest.name}")
-    print(f"    ⏱️  Duration: {duration_min:.2f} minutes")
+    print(f">> File: {latest.name}", flush=True)
+    print(f">> ⏱️ Duration: {duration_min:.2f} minutes", flush=True)
 
     if duration_min < MIN_MINUTES:
-        raise RuntimeError(f"Episode is too short ({duration_min:.2f} min < {MIN_MINUTES:.0f} min). Refusing to publish.")
-    print(f"    ✅ GREEN LIGHT: Episode meets {MIN_MINUTES:.0f}+ min standard.")
+        raise RuntimeError(
+            f"Episode is too short ({duration_min:.2f} min < {MIN_MINUTES:.0f} min). Refusing to publish."
+        )
+
+    print(f">> ✅ GREEN LIGHT: Episode meets {MIN_MINUTES:.0f}+ min standard.", flush=True)
     return latest, duration_min
 
-def has_git_changes():
-    # returns exit code 0 if changes exist, 1 if clean
+
+def has_git_changes() -> bool:
     result = subprocess.run("git diff --cached --quiet", shell=True)
     return result.returncode != 0
 
-def main():
-    print("===================================================")
-    print("      🎙️  DAILY AI NEWS: EMPIRE BROADCAST        ")
-    print("===================================================")
 
-    # 0) Configure git identity BEFORE any commits
+def maybe_run_post_push_publisher() -> None:
+    if PUBLISH_SOCIAL_IN_MAIN:
+        print("\n>> ℹ️ Skipping post-push social publisher because main.py already owns social publishing (PUBLISH_SOCIAL=true).", flush=True)
+        return
+
+    if not RUN_POST_PUSH_PUBLISHER:
+        print("\n>> ℹ️ Post-push social publisher disabled (RUN_POST_PUSH_PUBLISHER=false).", flush=True)
+        return
+
+    if not Path("social_publisher.py").exists():
+        print("\n>> ⚠️ social_publisher.py not found. Skipping post-push social publisher.", flush=True)
+        return
+
+    run_command("python social_publisher.py", "Post-push Social Publisher", allow_fail=True)
+
+
+def main() -> None:
+    print("===================================================", flush=True)
+    print("   DAILY AI NEWS: EMPIRE BROADCAST — 2026 UPGRADE", flush=True)
+    print("===================================================", flush=True)
+
+    # 0) Configure git identity before any commits
     configure_git_identity()
 
-    # 1) STUDIO (Audio & Script)
-    run_command("python main.py", "1. Studio Recording", allow_fail=False)
+    # 1) Single production owner: main.py
+    # main.py now owns:
+    # - story selection
+    # - script generation
+    # - audio rendering
+    # - feed update
+    # - marketing_engine.py
+    # - visual asset generation hooks
+    run_command("python main.py", "1. Studio + Growth Engine + Marketing Pipeline", allow_fail=False)
 
-    # Enforce quality gate: do not publish short episodes
+    # 2) Hard quality gate
     try:
         check_episode_length_or_fail()
     except Exception as e:
-        print(f" >> ❌ QUALITY GATE FAILED: {e}")
+        print(f">> ❌ QUALITY GATE FAILED: {e}", flush=True)
         sys.exit(1)
 
-    # 2) AGENCY (Visual Assets) - allow fail (marketing should not block audio publishing)
-    run_command("python generate_social.py", "2. Generating Visuals (Card)", allow_fail=True)
-
-    # NEW: Hook clip (8–15s). Uses episode_metadata.json + marketing_pack.json
-    run_command("python animate_hook.py", "2b. Rendering Hook Clip (social_hook.mp4)", allow_fail=True)
-
-    # Existing stylized clip
-    run_command("python animate_social.py", "3. Rendering Video Clips (social_clip.mp4)", allow_fail=True)
-
-    # 3) TOWER (Distribution)
-    print("\n >> 📡 UPLOADING TO GITHUB...")
+    # 3) Push outputs
+    print("\n>> UPLOADING TO GITHUB...", flush=True)
     run_command("git add .", "Staging Files", allow_fail=False)
 
-    # If nothing changed, skip commit/push
     if not has_git_changes():
-        print(" >> ℹ️  No changes staged. Skipping commit and push.")
+        print(">> ℹ️ No changes staged. Skipping commit and push.", flush=True)
     else:
         run_command('git commit -m "Empire Broadcast: New Episode"', "Committing", allow_fail=False)
         run_command(f"git push origin {BRANCH}", "Pushing to Live", allow_fail=False)
 
-    # 4) BUFFER
-    wait_time = int(os.getenv("RSS_BUFFER_SECONDS", "120"))
-    print(f"\n >> ⏳ BUFFERING {wait_time}s for RSS propagation...")
-    time.sleep(wait_time)
+    # 4) Buffer for feed / pages propagation
+    print(f"\n>> ⏳ BUFFERING {RSS_BUFFER_SECONDS}s for RSS propagation...", flush=True)
+    time.sleep(RSS_BUFFER_SECONDS)
 
-    # 5) LAUNCH (Marketing) - allow fail
-    run_command("python social_publisher.py", "5. Firing Marketing Automation", allow_fail=True)
+    # 5) Optional post-push publisher
+    maybe_run_post_push_publisher()
 
-    print("\n===================================================")
-    print("      🎉 EMPIRE BROADCAST COMPLETE. LIVE.         ")
-    print("===================================================")
+    print("\n===================================================", flush=True)
+    print("   EMPIRE BROADCAST COMPLETE. LIVE.", flush=True)
+    print("===================================================", flush=True)
+
 
 if __name__ == "__main__":
     main()
