@@ -73,6 +73,7 @@ FEED_XML_PATH = BASE_DIR / "feed.xml"
 SPONSORS_PATH = BASE_DIR / "sponsors.json"
 STORY_SCORES_PATH = BASE_DIR / "story_scores.json"
 TRACKING_SUMMARY_PATH = BASE_DIR / "tracking_summary.json"
+FORWARDABLE_MOMENTS_PATH = BASE_DIR / "forwardable_moments.json"
 
 THELEDGR_SUBSCRIBE_URL = "https://theledgr.io"
 THELEDGR_SPOKEN_URL = "T-H-E-L-E-D-G-R dot I-O"
@@ -186,6 +187,8 @@ TRANSITION_PATH = BASE_DIR / "transition.mp3"
 REQUIRE_INTRO_OUTRO = os.getenv("REQUIRE_INTRO_OUTRO", "true").strip().lower() in ("1", "true", "yes")
 REQUIRE_TRANSITIONS = os.getenv("REQUIRE_TRANSITIONS", "false").strip().lower() in ("1", "true", "yes")
 TRANSITION_EVERY_SEGMENT = os.getenv("TRANSITION_EVERY_SEGMENT", "true").strip().lower() in ("1", "true", "yes")
+TRANSITION_MAX_PER_EPISODE = int(os.getenv("TRANSITION_MAX_PER_EPISODE", "3"))
+TRANSITION_SEGMENTS = {int(x) for x in os.getenv("TRANSITION_SEGMENTS", "2,3,4").split(",") if x.strip().isdigit()}
 
 # Stinger durations / levels
 INTRO_STINGER_MS = int(os.getenv("INTRO_STINGER_MS", "4500"))      # audible bumper (no voice)
@@ -221,6 +224,8 @@ MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))
 MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "12"))
 MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
+FORWARDABLE_MIN_PER_EPISODE = int(os.getenv("FORWARDABLE_MIN_PER_EPISODE", "2"))
+FORWARDABLE_PAUSE_MS = int(os.getenv("FORWARDABLE_PAUSE_MS", "240"))
 
 STRICT_EPISODE_FILENAME_RE = re.compile(r"^podcast_\d{4}-\d{2}-\d{2}\.mp3$")
 EARLY_SIGNOFF_RE = re.compile(
@@ -251,6 +256,12 @@ VIRAL_BRANDS = [
     "openai", "anthropic", "nvidia", "microsoft", "google", "deepmind", "meta", "apple",
     "tesla", "amazon", "tiktok", "bytedance", "x", "twitter", "samsung", "intel",
 ]
+
+FORWARDABLE_HINTS = {
+    "why", "because", "means", "consequence", "tomorrow", "next", "market", "security",
+    "regulation", "chip", "gpu", "enterprise", "career", "nobody", "everyone", "wins",
+    "loses", "caught", "ban", "breaks", "risk", "signal", "pricing", "power",
+}
 
 # ----------------------------
 # LLM CLIENTS
@@ -1156,6 +1167,52 @@ def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> 
     return "\n".join(out).strip()
 
 
+def _forwardable_line_score(text: str) -> int:
+    cleaned = re.sub(r"\s+", " ", text or "").strip()
+    if not cleaned:
+        return 0
+    score = 0
+    length = len(cleaned)
+    if 55 <= length <= 170:
+        score += 2
+    if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b", cleaned):
+        score += 1
+    low = cleaned.lower()
+    if any(h in low for h in FORWARDABLE_HINTS):
+        score += 1
+    if any(p in low for p in ["this means", "what happens", "the real", "the problem", "the risk", "the edge"]):
+        score += 1
+    if cleaned.endswith("?"):
+        score += 1
+    return score
+
+
+def is_forwardable_line_text(text: str) -> bool:
+    return _forwardable_line_score(text) >= 3
+
+
+def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[str, str]]:
+    moments: List[Dict[str, str]] = []
+    seen: set[str] = set()
+    for raw in script.splitlines():
+        line = raw.strip()
+        m = SPEAKER_RE.match(line)
+        if not m:
+            continue
+        speaker = m.group(1).upper()
+        text = m.group(2).strip()
+        if not is_forwardable_line_text(text):
+            continue
+        key = normalize_text(text)
+        if key in seen:
+            continue
+        seen.add(key)
+        moments.append({"speaker": speaker, "text": text, "score": _forwardable_line_score(text)})
+        if len(moments) >= max_items:
+            break
+    return moments
+
+
 def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
                     stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
@@ -1496,6 +1553,9 @@ def validate_script(script: str) -> List[str]:
 
     if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
         issues.append("Contains non-dialogue formatting blocks.")
+
+    if len(extract_forwardable_moments(script, max_items=FORWARDABLE_MIN_PER_EPISODE)) < FORWARDABLE_MIN_PER_EPISODE:
+        issues.append(f"Episode needs at least {FORWARDABLE_MIN_PER_EPISODE} forwardable moments.")
     return issues
 
 
@@ -1579,6 +1639,7 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
     buf: List[str] = []
     seen_first_segment = False
     last_emitted_was_music = False
+    transitions_used = 0
 
     def flush() -> None:
         nonlocal current_speaker, buf, last_emitted_was_music
@@ -1597,9 +1658,16 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
         if mseg:
             flush()
             seg_num = int(mseg.group(1))
-            if TRANSITION_EVERY_SEGMENT and seen_first_segment and seg_num >= 2 and not last_emitted_was_music:
+            if (
+                TRANSITION_EVERY_SEGMENT
+                and seen_first_segment
+                and seg_num in TRANSITION_SEGMENTS
+                and transitions_used < TRANSITION_MAX_PER_EPISODE
+                and not last_emitted_was_music
+            ):
                 out.append(("MUSIC", "[MUSIC]"))
                 last_emitted_was_music = True
+                transitions_used += 1
             seen_first_segment = True
             continue
 
@@ -1653,7 +1721,11 @@ def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 240
             continue
 
         candidate = ("\n".join(cur_txt) + "\n" + txt).strip()
-        if len(candidate) <= max_chars:
+        if is_forwardable_line_text(txt) or is_forwardable_line_text(" ".join(cur_txt)):
+            flush()
+            cur_spk = spk
+            cur_txt = [txt]
+        elif len(candidate) <= max_chars:
             cur_txt.append(txt)
         else:
             flush()
@@ -1845,6 +1917,46 @@ def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> 
     return " ".join(uniq[:max_tags])
 
 
+def _clean_packaging_text(text: str, max_len: int) -> str:
+    cleaned = re.sub(r"\s+", " ", text or "").strip()
+    cleaned = re.sub(r"\|\s*(news and statistics|news|statistics).*$", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\|\s*(ai infrastructure).*$", "", cleaned, flags=re.IGNORECASE)
+    cleaned = cleaned.strip(" -—:|")
+    if len(cleaned) <= max_len:
+        return cleaned
+    return cleaned[:max_len].rstrip(" -—:|")
+
+
+def build_episode_show_notes(
+    tracking: Dict[str, str],
+    pack: Dict[str, str],
+    stories: List[Dict[str, str]],
+) -> str:
+    cta_url = tracking.get("subscribe_show_notes", THELEDGR_SUBSCRIBE_URL)
+    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
+    tomorrow_tease = (pack.get("tomorrow_tease") or "The second-order consequences are just starting to show.").strip()
+    episode_blurb = (pack.get("episode_blurb") or "Today on The AI Edge, Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and what serious operators should watch next.").strip()
+
+    parts = [
+        f"Subscribe to TheLEDGR: {cta_url}",
+        "",
+        "If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.",
+        "",
+        "TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper.",
+        "",
+        "This is not more AI content. It is signal you can actually use in real life.",
+        "",
+        episode_blurb,
+        "",
+        "What we covered:",
+        story_bullets,
+        "",
+        "Tomorrow tension:",
+        tomorrow_tease or "The next 24 hours will matter more than the launch headlines.",
+    ]
+    return "\n".join(parts).strip()
+
+
 def generate_marketing_pack(
     stories: List[Dict[str, str]],
     date_str: str,
@@ -1860,7 +1972,7 @@ def generate_marketing_pack(
     title_style = experiments.get("title_style", "operator_consequence")
     cta_style = experiments.get("cta_style", "operator")
 
-    top_headline = (top_story.get("headline") or "AI JUST MOVED — HERE'S WHAT CHANGED").strip()
+    top_headline = _clean_packaging_text((top_story.get("headline") or "AI JUST MOVED — HERE'S WHAT CHANGED").strip(), 120)
     top_data = " | ".join([str(x).strip() for x in (top_story.get("data_points") or [])[:2] if str(x).strip()])
     subscribe_url = tracking.get("subscribe_show_notes", THELEDGR_SUBSCRIBE_URL)
     listen_cta = tracking.get("listen", listen_url)
@@ -1880,7 +1992,7 @@ def generate_marketing_pack(
     else:
         cta_line = f"If AI affects your work, subscribe to TheLEDGR for decision-grade signal: {subscribe_url}"
 
-    fallback_hook = (top_headline[:64] if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED").upper()
+    fallback_hook = _clean_packaging_text((top_headline if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED"), 64).upper()
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ranked[:5]])
     tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ranked if (s.get("tomorrow_hook") or "").strip()), "The second-order consequences are just starting to show.")
 
@@ -2139,7 +2251,9 @@ def produce_episode() -> None:
     concat_files: List[Path] = []
 
     silence_path = run_tmp / "silence_80ms.mp3"
+    quote_pause_path = run_tmp / "silence_forwardable.mp3"
     AudioSegment.silent(duration=80).export(silence_path, format="mp3", bitrate="192k")
+    AudioSegment.silent(duration=FORWARDABLE_PAUSE_MS).export(quote_pause_path, format="mp3", bitrate="192k")
 
     intro_stinger_seg: Optional[AudioSegment] = None
     outro_seg: Optional[AudioSegment] = None
@@ -2234,7 +2348,7 @@ def produce_episode() -> None:
             else:
                 concat_files.append(final_voice_path)
 
-            concat_files.append(silence_path)
+            concat_files.append(quote_pause_path if is_forwardable_line_text(chunk) else silence_path)
 
     if outro_seg is not None:
         p = run_tmp / "outro.mp3"
@@ -2305,32 +2419,12 @@ def produce_episode() -> None:
     )
     pack = generate_marketing_pack(stories, today, LISTEN_URL, tracking=tracking, experiments=experiments)
 
-    theledgr_cta = f"""
-Subscribe to TheLEDGR: {tracking.get('subscribe_show_notes', THELEDGR_SUBSCRIBE_URL)}
-
-If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.
-
-TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper.
-
-This is not more AI content. It is signal you can actually use in real life.
-""".strip()
-
     TRACKING_SUMMARY_PATH.write_text(json.dumps(tracking, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    base_notes = (pack.get("show_notes") or pack.get("yt_description") or f"LISTEN: {LISTEN_URL}").strip()
-    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
-    tomorrow_tease = (pack.get("tomorrow_tease") or next((s.get("tomorrow_hook","").strip() for s in stories if (s.get("tomorrow_hook") or "").strip()), "")).strip()
+    forwardable_moments = extract_forwardable_moments(script, max_items=4)
+    FORWARDABLE_MOMENTS_PATH.write_text(json.dumps(forwardable_moments, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    show_notes = f"""{theledgr_cta}
-
-What we covered:
-{story_bullets}
-
-{base_notes}
-
-Tomorrow tension:
-{tomorrow_tease or "The next 24 hours will matter more than the launch headlines."}
-""".strip()
+    show_notes = build_episode_show_notes(tracking, pack, stories)
 
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
 
@@ -2359,6 +2453,7 @@ Tomorrow tension:
         "tracking": tracking,
         "experiments": experiments,
         "model_version": MODEL_VERSION,
+        "forwardable_moments": forwardable_moments,
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
