@@ -33,6 +33,17 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from pydub import AudioSegment
 
+from growth_engine import (
+    MODEL_VERSION,
+    apply_sponsor_variant,
+    attach_story_scores,
+    build_episode_tracking_payload,
+    build_story_debug_table,
+    choose_episode_experiments,
+    load_show_memory,
+    select_story_candidates,
+)
+
 # ----------------------------
 # ENV
 # ----------------------------
@@ -60,6 +71,8 @@ TMP_AUDIO_DIR.mkdir(exist_ok=True)
 
 FEED_XML_PATH = BASE_DIR / "feed.xml"
 SPONSORS_PATH = BASE_DIR / "sponsors.json"
+STORY_SCORES_PATH = BASE_DIR / "story_scores.json"
+TRACKING_SUMMARY_PATH = BASE_DIR / "tracking_summary.json"
 
 THELEDGR_SUBSCRIBE_URL = "https://theledgr.io"
 THELEDGR_SPOKEN_URL = "T-H-E-L-E-D-G-R dot I-O"
@@ -887,45 +900,50 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict
     if not intel_items:
         return []
 
-    ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
-    candidates = ranked[:50]
-
-    picked: List[Dict[str, str]] = []
-    bucket_counts: Dict[str, int] = {}
-    for x in candidates:
-        b = (x.get("bucket") or "").strip()
-        if bucket_counts.get(b, 0) >= 2:
-            continue
-        picked.append(x)
-        bucket_counts[b] = bucket_counts.get(b, 0) + 1
-        if len(picked) >= max(n * 3, 12):
-            break
-    if len(picked) < n:
-        picked = candidates[:max(n * 3, 12)]
+    memory = load_show_memory()
+    curated = select_story_candidates(intel_items, n=max(n * 4, 12), memory=memory, bucket_cap=2)
+    if not curated:
+        return []
 
     intel_compact = "\n".join(
         [
-            f"- [{x.get('bucket','')}] {x.get('title','')} | {x.get('publisher','')} | {x.get('published','')} | {x.get('summary','')} | {x.get('link','')}"
-            for x in picked
+            (
+                f"- SCORE={x.get('growth_score', 0):.2f} | "
+                f"BUCKET=[{x.get('bucket','')}] | "
+                f"TITLE={x.get('title','')} | "
+                f"PUBLISHER={x.get('publisher','')} | "
+                f"PUBLISHED={x.get('published','')} | "
+                f"CLUSTER_SIZE={x.get('cluster_size', 1)} | "
+                f"SUMMARY={x.get('summary','')} | "
+                f"URL={x.get('link','')}"
+            )
+            for x in curated
         ]
     )
 
     prompt = f"""
-Select the TOP {n} stories for a daily AI show that must feel urgent, emotional, and high-stakes.
-Preference: scandal/security/regulation/market shock when credible.
+Select the TOP {n} stories for a daily AI show that must grow newsletter subscribers, not just chase clicks.
+
+Selection rules:
+- Pick the stories with the strongest operator consequence, enterprise consequence, regulatory consequence, or second-order market consequence.
+- Choose ONLY one item per real-world event. If two candidates are duplicates or near-duplicates, keep the strongest one.
+- Avoid crypto drift unless the AI consequence is central.
+- Prefer stories that serious AI operators would forward to a colleague.
+- Prefer stories where tomorrow will look meaningfully different because of what happened today.
 
 Return ONLY valid JSON (no markdown), schema:
 {{
   "stories": [
     {{
       "headline": "...",
-      "why_shocking": "1-2 sentences grounded in snippet facts",
-      "data_points": ["3-6 bullets. Each bullet MUST include an explicit number/date/amount from the candidate line if present; if not present write 'Needs enrichment'"],
+      "why_shocking": "1-2 sentences grounded in the candidate facts",
+      "data_points": ["3-6 bullets with explicit numbers / dates / amounts when present"],
       "angles": {{
         "alex": "...",
         "jamie": "...",
         "rufus": "..."
       }},
+      "tomorrow_hook": "one sentence that makes tomorrow feel necessary",
       "source_url": "...",
       "publisher": "...",
       "published": "..."
@@ -947,7 +965,6 @@ Candidate items:
                 continue
             angles = s.get("angles") if isinstance(s.get("angles"), dict) else {}
             dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
-
             st = {
                 "headline": (s.get("headline") or "").strip(),
                 "why_shocking": (s.get("why_shocking") or "").strip(),
@@ -957,22 +974,22 @@ Candidate items:
                     "jamie": (angles.get("jamie") or "").strip(),
                     "rufus": (angles.get("rufus") or "").strip(),
                 },
+                "tomorrow_hook": (s.get("tomorrow_hook") or "").strip(),
                 "source_url": (s.get("source_url") or "").strip(),
                 "publisher": (s.get("publisher") or "").strip(),
                 "published": (s.get("published") or "").strip(),
-                "tomorrow_hook": (s.get("tomorrow_hook") or "").strip(),
             }
             if st["headline"] and st["source_url"]:
                 stories.append(st)
 
     if len(stories) < n:
         stories = []
-        for x in candidates[:n]:
+        for x in curated[:n]:
             stories.append(
                 {
                     "headline": x.get("title", ""),
                     "why_shocking": x.get("summary", ""),
-                    "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=4) or ["Needs enrichment"],
+                    "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=6) or ["Needs enrichment"],
                     "angles": {"alex": "", "jamie": "", "rufus": ""},
                     "source_url": x.get("link", ""),
                     "publisher": x.get("publisher", ""),
@@ -983,7 +1000,7 @@ Candidate items:
             )
 
     for st in stories:
-        match = next((x for x in intel_items if (x.get("link") or "").strip() == st["source_url"]), None)
+        match = next((x for x in curated if (x.get("link") or "").strip() == st["source_url"]), None)
         if match:
             st["rss_summary"] = (match.get("summary") or "").strip()
             st["publisher"] = st["publisher"] or (match.get("publisher") or "").strip()
@@ -992,6 +1009,7 @@ Candidate items:
             st["rss_summary"] = st.get("rss_summary", "") or ""
 
     enriched = enrich_stories_with_data(stories[:n])
+    enriched = attach_story_scores(enriched, curated)
 
     def numeric_bullets(dp: List[str]) -> int:
         return sum(1 for b in (dp or []) if NUMERIC_TOKEN_RE.search(b or ""))
@@ -999,25 +1017,23 @@ Candidate items:
     weak = [s for s in enriched if numeric_bullets(s.get("data_points") or []) < MIN_NUMERIC_BULLETS_PER_STORY]
     if weak:
         fallback: List[Dict[str, str]] = []
-        for x in candidates:
-            fb = {
-                "headline": x.get("title", ""),
-                "why_shocking": x.get("summary", ""),
-                "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=6) or ["Needs enrichment"],
-                "angles": {"alex": "", "jamie": "", "rufus": ""},
-                "source_url": x.get("link", ""),
-                "publisher": x.get("publisher", ""),
-                "published": x.get("published", ""),
-                "rss_summary": x.get("summary", ""),
-                "tomorrow_hook": "",
-            }
-            fallback.append(fb)
-            if len(fallback) >= n:
-                break
-        enriched = enrich_stories_with_data(fallback[:n])
+        for x in curated[:n]:
+            fallback.append(
+                {
+                    "headline": x.get("title", ""),
+                    "why_shocking": x.get("summary", ""),
+                    "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=6) or ["Needs enrichment"],
+                    "angles": {"alex": "", "jamie": "", "rufus": ""},
+                    "source_url": x.get("link", ""),
+                    "publisher": x.get("publisher", ""),
+                    "published": x.get("published", ""),
+                    "rss_summary": x.get("summary", ""),
+                    "tomorrow_hook": "",
+                }
+            )
+        enriched = attach_story_scores(enrich_stories_with_data(fallback[:n]), curated)
 
     return enriched[:n]
-
 
 # ----------------------------
 # SCRIPTING (structured 5 segments)
@@ -1829,88 +1845,65 @@ def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> 
     return " ".join(uniq[:max_tags])
 
 
-def generate_marketing_pack(stories: List[Dict[str, str]], date_str: str, listen_url: str) -> Dict[str, str]:
-    story_lines = "\n".join([f"- {s.get('headline','')} | {s.get('source_url','')}" for s in stories[:5]])
+def generate_marketing_pack(
+    stories: List[Dict[str, str]],
+    date_str: str,
+    listen_url: str,
+    tracking: Optional[Dict[str, str]] = None,
+    experiments: Optional[Dict[str, str]] = None,
+) -> Dict[str, str]:
+    tracking = tracking or {}
+    experiments = experiments or {}
 
-    prompt = f"""
-Return ONLY valid JSON (no markdown). Schema:
-{{
-  "hook": "6-10 words, STOP-SCROLL, <= 64 chars",
-  "tweet1": "Tweet 1 (<= 260 chars). Include a question.",
-  "tweet2": "Tweet 2 (<= 260 chars). Must include this exact link: {listen_url}",
-  "yt_title": "YouTube title (<= 90 chars)",
-  "yt_description": "YouTube description (<= 1200 chars) including {listen_url}",
-  "hashtags": "Space-separated hashtags. Keep <= 6 total tags. Must include #AI and #TechNews"
-}}
+    ranked = sorted(stories, key=lambda s: float(s.get("growth_score") or 0.0), reverse=True)
+    top_story = ranked[0] if ranked else {}
+    title_style = experiments.get("title_style", "operator_consequence")
+    cta_style = experiments.get("cta_style", "operator")
 
-Today: {date_str}
-Top stories:
-{story_lines}
-""".strip()
+    top_headline = (top_story.get("headline") or "AI JUST MOVED — HERE'S WHAT CHANGED").strip()
+    top_data = " | ".join([str(x).strip() for x in (top_story.get("data_points") or [])[:2] if str(x).strip()])
+    subscribe_url = tracking.get("subscribe_show_notes", THELEDGR_SUBSCRIBE_URL)
+    listen_cta = tracking.get("listen", listen_url)
+    hashtags = _hashtags_from_stories(stories, max_tags=6)
 
-    raw = generate_text(prompt, temperature=0.45, max_tokens=1100)
-    j = _extract_json_object(raw)
+    if title_style == "hard_number":
+        yt_title = f"{top_headline} — The Numbers Behind the Shift"
+    elif title_style == "tomorrow_tension":
+        yt_title = f"{top_headline} | Why Tomorrow Gets Harder"
+    else:
+        yt_title = f"{top_headline} | The Operator Consequence"
 
-    fallback_hook = (stories[0].get("headline") if stories else "AI JUST MOVED — HERE’S WHAT CHANGED")[:64]
-    fallback_tags = _hashtags_from_stories(stories, max_tags=6)
+    if cta_style == "career":
+        cta_line = f"If AI can affect your role, your team, or your next promotion, subscribe to TheLEDGR: {subscribe_url}"
+    elif cta_style == "contrarian":
+        cta_line = f"Most people will read the headline and miss the consequence. TheLEDGR is for the people who do not. Subscribe: {subscribe_url}"
+    else:
+        cta_line = f"If AI affects your work, subscribe to TheLEDGR for decision-grade signal: {subscribe_url}"
 
-    tomorrow_tease = next((s.get("tomorrow_hook","").strip() for s in stories if (s.get("tomorrow_hook") or "").strip()), "")
-    top_story_lines = "\n".join([f"- {s.get('headline','')}" for s in stories[:5]])
-    default_desc = (
-        f"Listen: {listen_url}\n\n"
-        f"Today on The AI Edge: the stories, numbers, and power shifts that matter tomorrow morning.\n\n"
-        f"Top stories:\n{top_story_lines}\n\n"
-        f"Subscribe to TheLEDGR: {THELEDGR_SUBSCRIBE_URL}"
-    )
-    default_show_notes = (
-        f"Subscribe to TheLEDGR: {THELEDGR_SUBSCRIBE_URL}\n\n"
-        f"Today on The AI Edge, Alex, Jamie, and Rufus break down the stories serious AI operators cannot afford to miss.\n\n"
-        f"What we covered:\n" + "\n".join([f"• {s.get('headline','')}" for s in stories[:5]]) + "\n\n"
-        f"Tomorrow tension: {tomorrow_tease or 'The second-order consequences are just starting to show.'}\n\n"
-        f"If AI affects your work, your team, your company, or your career, subscribe to TheLEDGR at {THELEDGR_SUBSCRIBE_URL}."
-    )
-    out = {
-        "hook": fallback_hook.upper(),
-        "tweet1": f"{fallback_hook}\n\nWhat’s the real consequence here?",
-        "tweet2": f"Full episode: {listen_url}\n\n{fallback_tags}",
-        "yt_title": f"{fallback_hook} | The AI Edge",
-        "yt_description": default_desc,
-        "show_notes": default_show_notes,
-        "tomorrow_tease": tomorrow_tease or "Come back tomorrow — the second-order consequences are just starting to show.",
-        "seo_keywords": "AI news, artificial intelligence, enterprise AI, health AI, AI agents, coding tools, AI regulation, geopolitics",
-        "hashtags": fallback_tags,
+    fallback_hook = (top_headline[:64] if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED").upper()
+    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ranked[:5]])
+    tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ranked if (s.get("tomorrow_hook") or "").strip()), "The second-order consequences are just starting to show.")
+
+    return {
+        "hook": fallback_hook,
+        "tweet1": f"{fallback_hook}\n\nThis is the part most people will miss: the consequence.\n\nListen: {listen_cta}",
+        "tweet2": f"{cta_line}\n\n{hashtags}",
+        "yt_title": yt_title[:90],
+        "yt_description": (
+            f"Listen now: {listen_cta}\n\n"
+            f"What we covered:\n{story_bullets}\n\n"
+            f"Key data: {top_data or 'See full episode for the facts and consequence chain.'}\n\n"
+            f"{cta_line}"
+        )[:1200],
+        "show_notes": (
+            f"What we covered:\n{story_bullets}\n\n"
+            f"Tomorrow tension: {tomorrow_tease}\n\n"
+            f"{cta_line}"
+        ),
+        "tomorrow_tease": tomorrow_tease,
+        "seo_keywords": "AI news, enterprise AI, AI agents, AI regulation, health AI, coding AI, AI strategy",
+        "hashtags": hashtags,
     }
-
-    if j:
-        for k in list(out.keys()):
-            if isinstance(j.get(k), str) and j[k].strip():
-                out[k] = j[k].strip()
-
-    out["hook"] = out["hook"][:64].upper()
-    out["tweet1"] = out["tweet1"][:260]
-    out["tweet2"] = out["tweet2"][:260]
-    out["yt_title"] = out["yt_title"][:90]
-    out["yt_description"] = out["yt_description"][:1200]
-    out["show_notes"] = (out.get("show_notes") or out.get("yt_description") or "")[:2500]
-    out["tomorrow_tease"] = (out.get("tomorrow_tease") or "")[:220]
-    out["seo_keywords"] = ", ".join([x.strip() for x in (out.get("seo_keywords","") or "").split(",") if x.strip()][:12])
-
-    tags_list = [t.strip() for t in (out.get("hashtags", "") or "").split() if t.strip().startswith("#")]
-    if "#AI" not in tags_list:
-        tags_list = ["#AI"] + tags_list
-    if "#TechNews" not in tags_list:
-        tags_list = ["#TechNews"] + tags_list
-
-    seen = set()
-    uniq: List[str] = []
-    for t in tags_list:
-        if t in seen:
-            continue
-        seen.add(t)
-        uniq.append(t)
-    out["hashtags"] = " ".join(uniq[:6])
-    return out
-
 
 # ----------------------------
 # RSS FEED WRITER
@@ -2111,7 +2104,14 @@ def produce_episode() -> None:
             "summary": "Simulation. $500M wiped. 24 hours. 3 regulators. 1 leak."
         }]
 
-    sponsors = load_sponsors()
+    candidate_debug = select_story_candidates(intel, n=15, memory=load_show_memory(), bucket_cap=2)
+    STORY_SCORES_PATH.write_text(
+        json.dumps(build_story_debug_table(candidate_debug), indent=2, ensure_ascii=False),
+        encoding="utf-8",
+    )
+
+    experiments = choose_episode_experiments(seed=today)
+    sponsors = apply_sponsor_variant(load_sponsors(), experiments=experiments, spoken_url=THELEDGR_SPOKEN_URL)
     stories = pick_top_stories(intel, n=5)
 
     _safe_print(" >> ✍️ WRITING FULL EPISODE (5 segments)...")
@@ -2287,20 +2287,35 @@ def produce_episode() -> None:
             f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
         )
 
-    pack = generate_marketing_pack(stories, today, LISTEN_URL)
+    provisional_tracking = build_episode_tracking_payload(
+        date_str=today,
+        episode_title=stories[0].get("headline", RSS_SETTINGS["title"]),
+        listen_url=LISTEN_URL,
+        subscribe_url=THELEDGR_SUBSCRIBE_URL,
+        experiments=experiments,
+    )
+    pack = generate_marketing_pack(stories, today, LISTEN_URL, tracking=provisional_tracking, experiments=experiments)
     feed_title = _maybe_append_date(pack.get("yt_title", RSS_SETTINGS["title"]), today)
+    tracking = build_episode_tracking_payload(
+        date_str=today,
+        episode_title=feed_title,
+        listen_url=LISTEN_URL,
+        subscribe_url=THELEDGR_SUBSCRIBE_URL,
+        experiments=experiments,
+    )
+    pack = generate_marketing_pack(stories, today, LISTEN_URL, tracking=tracking, experiments=experiments)
 
     theledgr_cta = f"""
-Subscribe to TheLEDGR: {THELEDGR_SUBSCRIBE_URL}
+Subscribe to TheLEDGR: {tracking.get('subscribe_show_notes', THELEDGR_SUBSCRIBE_URL)}
 
 If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.
 
-TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper. It covers strategy, tools, health AI, enterprise agents, and code.
+TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper.
 
 This is not more AI content. It is signal you can actually use in real life.
-
-Subscribe now: {THELEDGR_SUBSCRIBE_URL}
 """.strip()
+
+    TRACKING_SUMMARY_PATH.write_text(json.dumps(tracking, indent=2, ensure_ascii=False), encoding="utf-8")
 
     base_notes = (pack.get("show_notes") or pack.get("yt_description") or f"LISTEN: {LISTEN_URL}").strip()
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
@@ -2341,6 +2356,9 @@ Tomorrow tension:
         "marketing_pack": pack,
         "duration_seconds": duration_seconds,
         "show_notes": show_notes,
+        "tracking": tracking,
+        "experiments": experiments,
+        "model_version": MODEL_VERSION,
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
