@@ -13,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v2"
+MODEL_VERSION = "podcast-growth-v2.1"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
@@ -68,6 +68,8 @@ PUBLISHER_SCORES = {
     "tom's hardware": 72.0,
     "toms hardware": 72.0,
     "yahoo tech": 58.0,
+    "yahoo": 55.0,
+    "cyber magazine": 50.0,
     "msn": 40.0,
     "indexbox": 32.0,
     "bitget": 18.0,
@@ -252,12 +254,10 @@ def brand_fit_score(title: str, summary: str) -> float:
         return 0.0
 
     score = 0.0
-
     vertical_hits = 0
     for keywords in VERTICAL_KEYWORDS.values():
         if any(k in blob for k in keywords):
             vertical_hits += 1
-
     score += min(54.0, vertical_hits * 18.0)
 
     if any(k in blob for k in [
@@ -395,28 +395,47 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
     return out
 
 
-def is_story_eligible(item: Dict[str, Any]) -> bool:
+def story_tier(item: Dict[str, Any]) -> Optional[str]:
     breakdown = item.get("score_breakdown") or {}
     brand_fit = float(breakdown.get("brand_fit", 0.0))
     authority = float(breakdown.get("authority", 0.0))
     forward = float(breakdown.get("forward_consequence", 0.0))
     numeric = float(breakdown.get("numeric_density", 0.0))
     clipability = float(breakdown.get("clipability", 0.0))
+    recency = float(breakdown.get("recency", 0.0))
     publisher = _publisher_name(item)
 
-    if brand_fit < 45.0:
-        return False
+    low_signal = publisher in LOW_SIGNAL_PUBLISHERS
 
-    if authority < 50.0 and brand_fit < 70.0:
-        return False
+    if (
+        brand_fit >= 58.0
+        and authority >= 50.0
+        and (forward >= 12.0 or numeric >= 20.0 or clipability >= 14.0)
+        and not (low_signal and brand_fit < 72.0)
+    ):
+        return "primary"
 
-    if forward < 12.0 and numeric < 20.0 and clipability < 12.0:
-        return False
+    if (
+        brand_fit >= 48.0
+        and authority >= 45.0
+        and (forward >= 8.0 or numeric >= 15.0 or clipability >= 10.0 or recency >= 35.0)
+        and not (low_signal and brand_fit < 68.0)
+    ):
+        return "support"
 
-    if publisher in LOW_SIGNAL_PUBLISHERS and brand_fit < 70.0:
-        return False
+    if (
+        brand_fit >= 40.0
+        and authority >= 40.0
+        and (forward >= 6.0 or numeric >= 10.0 or clipability >= 8.0 or recency >= 60.0)
+        and not (low_signal and brand_fit < 75.0)
+    ):
+        return "fill"
 
-    return True
+    return None
+
+
+def is_story_eligible(item: Dict[str, Any]) -> bool:
+    return story_tier(item) is not None
 
 
 def select_story_candidates(
@@ -433,10 +452,12 @@ def select_story_candidates(
         item = dict(item)
         item["score_breakdown"] = story_score_breakdown(item, memory)
         item["growth_score"] = item["score_breakdown"]["weighted"]
+        item["story_tier"] = story_tier(item)
         ranked.append(item)
 
     ranked.sort(
         key=lambda x: (
+            {"primary": 3, "support": 2, "fill": 1, None: 0}.get(x.get("story_tier"), 0),
             x.get("growth_score") or 0.0,
             x.get("score_breakdown", {}).get("authority", 0.0),
             x.get("cluster_size") or 0,
@@ -445,38 +466,71 @@ def select_story_candidates(
     )
 
     selected: List[Dict[str, Any]] = []
+    selected_keys = set()
     bucket_counts: Dict[str, int] = {}
 
-    for item in ranked:
-        bucket = str(item.get("bucket") or "general").strip().lower()
+    def add_from_tier(tier_name: str, limit: int) -> None:
+        nonlocal selected, selected_keys, bucket_counts
+        for item in ranked:
+            if item.get("story_tier") != tier_name:
+                continue
 
-        if bucket_counts.get(bucket, 0) >= bucket_cap:
-            continue
+            bucket = str(item.get("bucket") or "general").strip().lower()
+            if bucket_counts.get(bucket, 0) >= bucket_cap:
+                continue
 
-        if not is_story_eligible(item):
-            continue
+            key = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
+            if not key:
+                key = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
 
-        selected.append(item)
-        bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
+            if key in selected_keys:
+                continue
 
-        if len(selected) >= n:
-            break
+            selected.append(item)
+            selected_keys.add(key)
+            bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
 
-    if len(selected) >= n:
-        return selected[:n]
+            if len(selected) >= limit:
+                return
 
-    softened: List[Dict[str, Any]] = []
-    for item in ranked:
-        breakdown = item.get("score_breakdown") or {}
-        if float(breakdown.get("brand_fit", 0.0)) < 40.0:
-            continue
-        if float(breakdown.get("authority", 0.0)) < 45.0:
-            continue
-        softened.append(item)
-        if len(softened) >= n:
-            break
+    add_from_tier("primary", n)
 
-    return softened[:n]
+    if len(selected) < n:
+        add_from_tier("support", n)
+
+    if len(selected) < n:
+        add_from_tier("fill", n)
+
+    if len(selected) < min(5, n):
+        for item in ranked:
+            breakdown = item.get("score_breakdown") or {}
+            brand_fit = float(breakdown.get("brand_fit", 0.0))
+            authority = float(breakdown.get("authority", 0.0))
+
+            if brand_fit < 35.0:
+                continue
+            if authority < 35.0:
+                continue
+
+            bucket = str(item.get("bucket") or "general").strip().lower()
+            if bucket_counts.get(bucket, 0) >= max(bucket_cap, 3):
+                continue
+
+            key = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
+            if not key:
+                key = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
+
+            if key in selected_keys:
+                continue
+
+            selected.append(item)
+            selected_keys.add(key)
+            bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
+
+            if len(selected) >= n:
+                break
+
+    return selected[:n]
 
 
 def attach_story_scores(stories: Sequence[Dict[str, Any]], candidates: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -500,6 +554,7 @@ def attach_story_scores(stories: Sequence[Dict[str, Any]], candidates: Sequence[
             s["score_breakdown"] = match.get("score_breakdown")
             s["cluster_size"] = match.get("cluster_size")
             s["cluster_publishers"] = match.get("cluster_publishers")
+            s["story_tier"] = match.get("story_tier")
         out.append(s)
     return out
 
@@ -772,6 +827,7 @@ def build_story_debug_table(candidates: Sequence[Dict[str, Any]]) -> List[Dict[s
             "title": item.get("title") or item.get("headline"),
             "publisher": item.get("publisher"),
             "bucket": item.get("bucket"),
+            "story_tier": item.get("story_tier"),
             "score": item.get("growth_score"),
             "brand_fit": breakdown.get("brand_fit"),
             "authority": breakdown.get("authority"),
