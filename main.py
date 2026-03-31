@@ -142,7 +142,7 @@ VOICE_MODEL_MAP: Dict[str, str] = {
 
 VOICE_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
-    "JAMIE": os.getenv("VOICE_JAMIE", "cedar"),
+    "JAMIE": os.getenv("VOICE_JAMIE", "marin"),
     "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
 }
 
