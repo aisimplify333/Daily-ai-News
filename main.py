@@ -133,7 +133,7 @@ SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "false").strip().lower() in ("1", "true",
 FORCE_REBUILD = os.getenv("FORCE_REBUILD", "false").strip().lower() in ("1", "true", "yes")
 
 # Voices
-# Mixed-model voice routing: Alex stays on the old proven stack, Jamie/Rufus are experiments.
+# Mixed-model voice routing: Alex stays on the old proven stack, Jamie is experiment.
 VOICE_MODEL_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_MODEL_ALEX", "tts-1-hd"),
     "JAMIE": os.getenv("VOICE_MODEL_JAMIE", "gpt-4o-mini-tts"),
@@ -151,7 +151,7 @@ VOICE_INSTRUCTIONS: Dict[str, str] = {
     "JAMIE": (
         "Sound like a sharp, emotionally intelligent woman in her mid-20s who is part co-host, part color commentator, and part human conscience. "
         "She is not an announcer and never sounds like she is reading copy. She is in the conversation. "
-        "She reacts quickly to Alex, cuts in naturally, teases him lightly, and pushes back when Rufus gets too cold, cynical, or detached. "
+        "She reacts quickly to Alex, cuts in naturally, teases him lightly, and pushes back when Rufus gets too cold, cynical, or detached and always sounds annoyed with Rufus. "
         "Her voice should have wider emotional swings: amused, incredulous, warm, offended, curious, playful, and occasionally stunned. "
         "She should sound alive, conversational, and spontaneous, like she is reacting in real time to people she knows well. "
         "Use light laughs, breathy disbelief, quick pivots, and natural interruption energy when it fits. "
