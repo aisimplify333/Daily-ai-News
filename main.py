@@ -142,21 +142,20 @@ VOICE_MODEL_MAP: Dict[str, str] = {
 
 VOICE_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
-    "JAMIE": os.getenv("VOICE_JAMIE", "marin"),
+    "JAMIE": os.getenv("VOICE_JAMIE", "cedar"),
     "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
 }
 
 VOICE_INSTRUCTIONS: Dict[str, str] = {
     "ALEX": "",
     "JAMIE": (
-        "Sound like a bright, warm, intelligent woman in her mid-20s. "
-        "She is the bright side of the room and lifts the energy naturally when things get too tense. "
-        "She has a real bond with Alex and genuine affection for Rufus. "
-        "Use conversational warmth, playful humor, and natural rise and fall in tone. "
-        "She should sound human, quick, and emotionally alive, never anxious, shrill, or overperformed. "
-        "Let there be a light smile in the voice when the line calls for it. "
-        "Occasionally sound amused or softly delighted, but keep it natural. "
-        "Keep the pacing fluid and the transitions smooth, like she is reacting in real time."
+        "Sound like a sharp, emotionally intelligent woman in her mid-20s who is part co-host, part color commentator, and part human conscience. "
+        "She is not an announcer and never sounds like she is reading copy. She is in the conversation. "
+        "She reacts quickly to Alex, cuts in naturally, teases him lightly, and pushes back when Rufus gets too cold, cynical, or detached. "
+        "Her voice should have wider emotional swings: amused, incredulous, warm, offended, curious, playful, and occasionally stunned. "
+        "She should sound alive, conversational, and spontaneous, like she is reacting in real time to people she knows well. "
+        "Use light laughs, breathy disbelief, quick pivots, and natural interruption energy when it fits. "
+        "Keep it human, a little fast, emotionally responsive, and never polished like a presenter or announcer."
     ),
     "RUFUS": "",
 }
@@ -164,13 +163,15 @@ VOICE_INSTRUCTIONS: Dict[str, str] = {
 # TTS tuning
 TTS_MERGE_MAX_CHARS = int(os.getenv("TTS_MERGE_MAX_CHARS", "2400"))
 TTS_CHUNK_MAX_CHARS = int(os.getenv("TTS_CHUNK_MAX_CHARS", "2800"))
+JAMIE_TTS_MERGE_MAX_CHARS = int(os.getenv("JAMIE_TTS_MERGE_MAX_CHARS", "900"))
+JAMIE_TTS_CHUNK_MAX_CHARS = int(os.getenv("JAMIE_TTS_CHUNK_MAX_CHARS", "1100"))
 TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 
 # Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
 ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.03"))
-JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.05"))
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.08"))
 RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "0.97"))
 
 # Post-processing thresholds
@@ -1167,6 +1168,11 @@ def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> 
     return "\n".join(out).strip()
 
 
+
+
+def normalize_text(text: str) -> str:
+    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9\s]", " ", (text or "").lower())).strip()
+
 def _forwardable_line_score(text: str) -> int:
     cleaned = re.sub(r"\s+", " ", text or "").strip()
     if not cleaned:
@@ -1243,10 +1249,12 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
     elif seg_num == 2:
         extra += (
             "IMPORTANT: This segment must contain ONLY ALEX and JAMIE lines. Do NOT output any RUFUS lines.\n"
-            "- Alex must open the segment with a clear setup/turn.\n"
-            "- Include one quick interruption, one strong emotional pushback from Jamie, and one concrete operator takeaway.\n"
-            "- Jamie should feel smooth and conversational in transitions, not theatrical.\n"
-            "- Let there be one natural smile, light laugh, or amused release beat if it fits.\n"
+            "- Alex must open the segment with a clear setup or turn.\n"
+            "- Jamie must not sound like a presenter. She must react to Alex in real time, cut in naturally, and help create banter.\n"
+            "- Include at least two moments where Jamie interrupts, challenges, or reframes Alex in a warm but confident way.\n"
+            "- Jamie should sound emotionally alive: amused, incredulous, impressed, concerned, or lightly offended when the line calls for it.\n"
+            "- She should feel like the Bartlett-style color voice: human, fast, intuitive, and strong on the emotional or real-world implication.\n"
+            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, or absurd.\n"
         )
     elif seg_num == 3:
         extra += (
@@ -1267,13 +1275,16 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             f"Tagline: {sponsor_2.get('tagline','')}\n"
             f"CTA: {sponsor_2.get('cta','')}\n"
             "- Include one callback to something said earlier in the episode.\n"
+            "- Jamie must actively play off both Alex and Rufus. She should challenge Rufus if he becomes too cold or purely strategic.\n"
+            "- Include one moment where Jamie reacts with genuine offense, disbelief, or frustration at the human cost of the story.\n"
             "- Include one quick interjection and one listener-facing 'pick a side' question.\n"
             "- This segment must contain one line strong enough that a listener would forward it.\n"
         )
     elif seg_num == 5:
         extra += (
             "Alex must open the closing segment and land the practical takeaway.\n"
-            "Jamie should leave the audience with the human implication.\n"
+            "Jamie should leave the audience with the human implication and must sound emotionally invested, not polished.\n"
+            "She should respond directly to Rufus if he lands a cynical or detached prediction.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "End with a final micro sponsor tag or aside only if it feels native.\n"
             "The final 2-3 lines must make tomorrow feel necessary.\n"
@@ -1691,6 +1702,19 @@ def iter_dialogue(script: str) -> List[Tuple[str, str]]:
     return out
 
 
+
+def _tts_merge_max_chars(speaker: str) -> int:
+    if (speaker or "").upper() == "JAMIE":
+        return JAMIE_TTS_MERGE_MAX_CHARS
+    return TTS_MERGE_MAX_CHARS
+
+
+def _tts_chunk_max_chars(speaker: str) -> int:
+    if (speaker or "").upper() == "JAMIE":
+        return JAMIE_TTS_CHUNK_MAX_CHARS
+    return TTS_CHUNK_MAX_CHARS
+
+
 def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 2400) -> List[Tuple[str, str]]:
     merged: List[Tuple[str, str]] = []
     cur_spk: Optional[str] = None
@@ -1721,11 +1745,12 @@ def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 240
             continue
 
         candidate = ("\n".join(cur_txt) + "\n" + txt).strip()
+        speaker_limit = _tts_merge_max_chars(spk)
         if is_forwardable_line_text(txt) or is_forwardable_line_text(" ".join(cur_txt)):
             flush()
             cur_spk = spk
             cur_txt = [txt]
-        elif len(candidate) <= max_chars:
+        elif len(candidate) <= speaker_limit:
             cur_txt.append(txt)
         else:
             flush()
@@ -2313,7 +2338,7 @@ def produce_episode() -> None:
                     concat_files.append(silence_path)
             continue
 
-        chunks = chunk_text(text, max_chars=TTS_CHUNK_MAX_CHARS)
+        chunks = chunk_text(text, max_chars=_tts_chunk_max_chars(speaker))
 
         for chunk in chunks:
             seg_idx += 1
