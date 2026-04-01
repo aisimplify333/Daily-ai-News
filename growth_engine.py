@@ -13,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v2.1"
+MODEL_VERSION = "podcast-growth-v2.2"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
@@ -408,26 +408,26 @@ def story_tier(item: Dict[str, Any]) -> Optional[str]:
     low_signal = publisher in LOW_SIGNAL_PUBLISHERS
 
     if (
-        brand_fit >= 58.0
-        and authority >= 50.0
-        and (forward >= 12.0 or numeric >= 20.0 or clipability >= 14.0)
+        brand_fit >= 55.0
+        and authority >= 48.0
+        and (forward >= 10.0 or numeric >= 18.0 or clipability >= 12.0 or recency >= 35.0)
         and not (low_signal and brand_fit < 72.0)
     ):
         return "primary"
 
     if (
-        brand_fit >= 48.0
-        and authority >= 45.0
-        and (forward >= 8.0 or numeric >= 15.0 or clipability >= 10.0 or recency >= 35.0)
-        and not (low_signal and brand_fit < 68.0)
+        brand_fit >= 42.0
+        and authority >= 40.0
+        and (forward >= 6.0 or numeric >= 10.0 or clipability >= 8.0 or recency >= 25.0)
+        and not (low_signal and brand_fit < 65.0)
     ):
         return "support"
 
     if (
-        brand_fit >= 40.0
-        and authority >= 40.0
-        and (forward >= 6.0 or numeric >= 10.0 or clipability >= 8.0 or recency >= 60.0)
-        and not (low_signal and brand_fit < 75.0)
+        brand_fit >= 34.0
+        and authority >= 35.0
+        and (forward >= 0.0 or numeric >= 6.0 or clipability >= 4.0 or recency >= 15.0)
+        and not (low_signal and brand_fit < 78.0)
     ):
         return "fill"
 
@@ -442,7 +442,7 @@ def select_story_candidates(
     items: Sequence[Dict[str, Any]],
     n: int = 15,
     memory: Optional[Dict[str, Any]] = None,
-    bucket_cap: int = 2,
+    bucket_cap: int = 3,
 ) -> List[Dict[str, Any]]:
     memory = memory or load_show_memory()
     clustered = cluster_story_candidates(items)
@@ -469,64 +469,50 @@ def select_story_candidates(
     selected_keys = set()
     bucket_counts: Dict[str, int] = {}
 
-    def add_from_tier(tier_name: str, limit: int) -> None:
-        nonlocal selected, selected_keys, bucket_counts
+    def item_key(item: Dict[str, Any]) -> str:
+        key = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
+        if not key:
+            key = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
+        return key
+
+    def add_candidate(item: Dict[str, Any], ignore_bucket_cap: bool = False) -> bool:
+        bucket = str(item.get("bucket") or "general").strip().lower()
+        if not ignore_bucket_cap and bucket_counts.get(bucket, 0) >= bucket_cap:
+            return False
+        key = item_key(item)
+        if not key or key in selected_keys:
+            return False
+        selected.append(item)
+        selected_keys.add(key)
+        bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
+        return True
+
+    for tier_name in ("primary", "support", "fill"):
         for item in ranked:
             if item.get("story_tier") != tier_name:
                 continue
+            add_candidate(item)
+            if len(selected) >= n:
+                return selected[:n]
 
-            bucket = str(item.get("bucket") or "general").strip().lower()
-            if bucket_counts.get(bucket, 0) >= bucket_cap:
-                continue
-
-            key = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
-            if not key:
-                key = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
-
-            if key in selected_keys:
-                continue
-
-            selected.append(item)
-            selected_keys.add(key)
-            bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
-
-            if len(selected) >= limit:
-                return
-
-    add_from_tier("primary", n)
-
+    # Relax bucket caps if the slate is still thin.
     if len(selected) < n:
-        add_from_tier("support", n)
+        for item in ranked:
+            if item.get("story_tier") is None:
+                continue
+            add_candidate(item, ignore_bucket_cap=True)
+            if len(selected) >= n:
+                return selected[:n]
 
-    if len(selected) < n:
-        add_from_tier("fill", n)
-
+    # Final starvation guard: keep AI-relevant stories even if they are weaker.
     if len(selected) < min(5, n):
         for item in ranked:
             breakdown = item.get("score_breakdown") or {}
-            brand_fit = float(breakdown.get("brand_fit", 0.0))
-            authority = float(breakdown.get("authority", 0.0))
-
-            if brand_fit < 35.0:
+            if float(breakdown.get("brand_fit", 0.0)) < 28.0:
                 continue
-            if authority < 35.0:
+            if float(breakdown.get("authority", 0.0)) < 30.0:
                 continue
-
-            bucket = str(item.get("bucket") or "general").strip().lower()
-            if bucket_counts.get(bucket, 0) >= max(bucket_cap, 3):
-                continue
-
-            key = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
-            if not key:
-                key = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
-
-            if key in selected_keys:
-                continue
-
-            selected.append(item)
-            selected_keys.add(key)
-            bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
-
+            add_candidate(item, ignore_bucket_cap=True)
             if len(selected) >= n:
                 break
 
