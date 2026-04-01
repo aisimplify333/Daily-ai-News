@@ -651,17 +651,37 @@ def _published_iso_from_entry(entry) -> str:
 # NEWS INTEL (RSS)
 # ----------------------------
 GOOGLE_NEWS_RSS: List[Tuple[str, str]] = [
-    ("Numbers & Markets",
-     "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Nvidia%20OR%20DeepMind%20OR%20Microsoft)%20(billion%20OR%20million%20OR%20%25%20OR%20%24%20OR%20IPO%20OR%20funding%20OR%20revenue%20OR%20valuation)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-    ("Market Shock (AI-specific drivers)",
-     "https://news.google.com/rss/search?q=(AI%20OR%20%22generative%20AI%22%20OR%20LLM%20OR%20%22AI%20chips%22%20OR%20GPU%20OR%20%22data%20center%22)%20(Nvidia%20OR%20Microsoft%20OR%20Alphabet%20OR%20Meta%20OR%20AMD%20OR%20TSMC)%20(shares%20OR%20stock%20OR%20plunge%20OR%20surge%20OR%20earnings%20OR%20guidance%20OR%20%22market%20cap%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-    ("Viral AI Breakers (Catch-all)",
-     "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22%20OR%20ChatGPT%20OR%20OpenAI%20OR%20Anthropic%20OR%20Google%20Gemini%20OR%20xAI%20OR%20Grok%20OR%20Meta%20AI%20OR%20Nvidia)%20(leak%20OR%20%22data%20breach%22%20OR%20hack%20OR%20lawsuit%20OR%20ban%20OR%20scandal%20OR%20%22class%20action%22%20OR%20whistleblower%20OR%20%22internal%20memo%22)%20when:2d&hl=en-US&gl=US&ceid=US:en"),
-    ("Regulators + Bans + Enforcement",
-     "https://news.google.com/rss/search?q=(FTC%20OR%20DOJ%20OR%20%22European%20Commission%22%20OR%20ICO%20OR%20EDPB%20OR%20CNIL)%20(AI%20OR%20OpenAI%20OR%20Anthropic%20OR%20Meta%20AI)%20(investigation%20OR%20enforcement%20OR%20fine%20OR%20ban%20OR%20order)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
-    ("Chip War + Export Controls + Geopolitics",
-     "https://news.google.com/rss/search?q=(Nvidia%20OR%20H100%20OR%20H200%20OR%20%22AI%20chips%22%20OR%20TSMC%20OR%20ASML%20OR%20AMD)%20(export%20controls%20OR%20sanctions%20OR%20China%20OR%20%22national%20security%22%20OR%20%22supply%20chain%22)%20when:7d&hl=en-US&gl=US&ceid=US:en"),
+    # 1) AI Topline / biggest stories
+    ("topline", "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22%20OR%20OpenAI%20OR%20Anthropic%20OR%20Google%20Gemini%20OR%20Meta%20AI%20OR%20Nvidia)%20(funding%20OR%20lawsuit%20OR%20ban%20OR%20leak%20OR%20security%20OR%20chips%20OR%20datacenter%20OR%20launch%20OR%20deal%20OR%20earnings)%20when:3d&hl=en-US&gl=US&ceid=US:en"),
+    ("topline", "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Google%20DeepMind%20OR%20Meta%20OR%20Microsoft%20OR%20Nvidia)%20(AI%20OR%20agentic%20OR%20LLM)%20when:3d&hl=en-US&gl=US&ceid=US:en"),
+
+    # 2) Health AI
+    ("health_ai", "https://news.google.com/rss/search?q=(AI%20OR%20generative%20AI%20OR%20LLM)%20(healthcare%20OR%20health%20OR%20hospital%20OR%20clinical%20OR%20diagnostic%20OR%20payer%20OR%20provider%20OR%20EHR%20OR%20FDA)%20when:5d&hl=en-US&gl=US&ceid=US:en"),
+    ("health_ai", "https://news.google.com/rss/search?q=(AI%20OR%20machine%20learning)%20(medical%20OR%20clinical%20OR%20hospital%20OR%20pharma%20OR%20radiology%20OR%20diagnosis)%20when:5d&hl=en-US&gl=US&ceid=US:en"),
+
+    # 3) AI Tools
+    ("ai_tools", "https://news.google.com/rss/search?q=(AI%20tool%20OR%20AI%20assistant%20OR%20copilot%20OR%20workflow%20OR%20API%20OR%20launch)%20(review%20OR%20release%20OR%20benchmark%20OR%20feature%20OR%20pricing)%20when:4d&hl=en-US&gl=US&ceid=US:en"),
+    ("ai_tools", "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Google%20Gemini%20OR%20Perplexity%20OR%20Notion%20OR%20Canva)%20(tool%20OR%20assistant%20OR%20platform%20OR%20workflow)%20when:4d&hl=en-US&gl=US&ceid=US:en"),
+
+    # 4) AI Code
+    ("ai_code", "https://news.google.com/rss/search?q=(AI%20coding%20OR%20code%20assistant%20OR%20Copilot%20OR%20Cursor%20OR%20Windsurf%20OR%20repo%20OR%20developer)%20(benchmark%20OR%20bug%20OR%20launch%20OR%20agent%20OR%20security%20OR%20failure)%20when:4d&hl=en-US&gl=US&ceid=US:en"),
+    ("ai_code", "https://news.google.com/rss/search?q=(developer%20OR%20engineering%20OR%20repo%20OR%20GitHub)%20(AI%20coding%20OR%20code%20agent%20OR%20Copilot%20OR%20Cursor)%20when:4d&hl=en-US&gl=US&ceid=US:en"),
+
+    # 5) AI Agents
+    ("ai_agents", "https://news.google.com/rss/search?q=(AI%20agent%20OR%20agentic%20AI%20OR%20autonomous%20agent%20OR%20multi-agent%20OR%20orchestration)%20(use%20case%20OR%20security%20OR%20deployment%20OR%20failure%20OR%20launch)%20when:4d&hl=en-US&gl=US&ceid=US:en"),
+    ("ai_agents", "https://news.google.com/rss/search?q=(OpenAI%20OR%20Anthropic%20OR%20Google%20OR%20Meta)%20(agent%20OR%20agentic%20OR%20swarm%20OR%20orchestration)%20when:4d&hl=en-US&gl=US&ceid=US:en"),
 ]
+
+VERTICAL_ORDER = ["topline", "health_ai", "ai_tools", "ai_code", "ai_agents"]
+VERTICAL_FLEX_ORDER = ["ai_agents", "ai_code", "ai_tools", "topline", "health_ai"]
+VERTICAL_LABELS = {
+    "topline": "AI Topline",
+    "health_ai": "Health AI",
+    "ai_tools": "AI Tools",
+    "ai_code": "AI Code",
+    "ai_agents": "AI Agents",
+}
+
 
 
 def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
@@ -908,144 +928,157 @@ Article Preview:
     return enriched
 
 
+
+def _normalize_vertical_bucket(bucket: str) -> str:
+    b = (bucket or "").strip().lower()
+    if b in VERTICAL_LABELS:
+        return b
+    aliases = {
+        "top line": "topline",
+        "health": "health_ai",
+        "healthcare": "health_ai",
+        "tools": "ai_tools",
+        "code": "ai_code",
+        "coding": "ai_code",
+        "agents": "ai_agents",
+        "agent": "ai_agents",
+    }
+    return aliases.get(b, "topline")
+
+
+def broaden_intel_pool() -> List[Dict[str, str]]:
+    pool = fetch_rss_items(max_per_feed=12)
+    if len(pool) < 20:
+        pool = fetch_rss_items(max_per_feed=18)
+    if len(pool) < 12:
+        # one last broader pull using the same queries but higher per-feed depth
+        pool = fetch_rss_items(max_per_feed=24)
+    return pool
+
+
+def _candidate_to_story(x: Dict[str, str]) -> Dict[str, str]:
+    bucket = _normalize_vertical_bucket(x.get("bucket", ""))
+    return {
+        "headline": x.get("title", ""),
+        "why_shocking": x.get("summary", ""),
+        "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=6) or ["Needs enrichment"],
+        "angles": {"alex": "", "jamie": "", "rufus": ""},
+        "source_url": x.get("link", ""),
+        "publisher": x.get("publisher", ""),
+        "published": x.get("published", ""),
+        "rss_summary": x.get("summary", ""),
+        "tomorrow_hook": "",
+        "bucket": bucket,
+    }
+
+
+def _dedupe_story_list(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    out: List[Dict[str, str]] = []
+    seen = set()
+    for s in stories:
+        key = (s.get("source_url") or "").strip().lower() or re.sub(r"\s+", " ", (s.get("headline") or "").strip().lower())
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(s)
+    return out
+
+
+def _build_vertical_slate(curated: List[Dict[str, str]], n: int) -> List[Dict[str, str]]:
+    by_vertical: Dict[str, List[Dict[str, str]]] = {v: [] for v in VERTICAL_ORDER}
+    for item in curated:
+        by_vertical.setdefault(_normalize_vertical_bucket(item.get("bucket", "")), []).append(item)
+
+    selected: List[Dict[str, str]] = []
+    used = set()
+
+    def add_item(item: Dict[str, str]) -> None:
+        key = (item.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (item.get("title") or "").strip().lower())
+        if not key or key in used:
+            return
+        used.add(key)
+        selected.append(item)
+
+    # First pass: one per vertical where available
+    for vertical in VERTICAL_ORDER:
+        for item in by_vertical.get(vertical, []):
+            add_item(item)
+            if len(selected) and _normalize_vertical_bucket(selected[-1].get("bucket", "")) == vertical:
+                break
+
+    # Second pass: strongest remaining flex stories
+    if len(selected) < n:
+        for vertical in VERTICAL_FLEX_ORDER:
+            for item in by_vertical.get(vertical, []):
+                if len(selected) >= n:
+                    break
+                add_item(item)
+
+    # Third pass: anything strong enough left
+    if len(selected) < n:
+        for item in curated:
+            if len(selected) >= n:
+                break
+            add_item(item)
+
+    return selected[:n]
+
+
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
     if not intel_items:
         return []
 
     memory = load_show_memory()
-    curated = select_story_candidates(intel_items, n=max(n * 4, 12), memory=memory, bucket_cap=2)
+    curated = select_story_candidates(intel_items, n=max(n * 6, 30), memory=memory, bucket_cap=3)
     if not curated:
-        return []
+        ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
+        curated = ranked[:max(n * 6, 30)]
 
-    intel_compact = "\n".join(
-        [
-            (
-                f"- SCORE={x.get('growth_score', 0):.2f} | "
-                f"BUCKET=[{x.get('bucket','')}] | "
-                f"TITLE={x.get('title','')} | "
-                f"PUBLISHER={x.get('publisher','')} | "
-                f"PUBLISHED={x.get('published','')} | "
-                f"CLUSTER_SIZE={x.get('cluster_size', 1)} | "
-                f"SUMMARY={x.get('summary','')} | "
-                f"URL={x.get('link','')}"
-            )
-            for x in curated
-        ]
-    )
-
-    prompt = f"""
-Select the TOP {n} stories for a daily AI show that must grow newsletter subscribers, not just chase clicks.
-
-Selection rules:
-- Pick the stories with the strongest operator consequence, enterprise consequence, regulatory consequence, or second-order market consequence.
-- Choose ONLY one item per real-world event. If two candidates are duplicates or near-duplicates, keep the strongest one.
-- Avoid crypto drift unless the AI consequence is central.
-- Prefer stories that serious AI operators would forward to a colleague.
-- Prefer stories where tomorrow will look meaningfully different because of what happened today.
-
-Return ONLY valid JSON (no markdown), schema:
-{{
-  "stories": [
-    {{
-      "headline": "...",
-      "why_shocking": "1-2 sentences grounded in the candidate facts",
-      "data_points": ["3-6 bullets with explicit numbers / dates / amounts when present"],
-      "angles": {{
-        "alex": "...",
-        "jamie": "...",
-        "rufus": "..."
-      }},
-      "tomorrow_hook": "one sentence that makes tomorrow feel necessary",
-      "source_url": "...",
-      "publisher": "...",
-      "published": "..."
-    }}
-  ]
-}}
-
-Candidate items:
-{intel_compact}
-""".strip()
-
-    raw = generate_text(prompt, temperature=0.20, max_tokens=JSON_MAX_TOKENS)
-    j = _extract_json_object(raw)
-
-    stories: List[Dict[str, str]] = []
-    if j and isinstance(j.get("stories"), list):
-        for s in j["stories"][:n]:
-            if not isinstance(s, dict):
+    slate_candidates = _build_vertical_slate(curated, n=max(n, 5))
+    if len(slate_candidates) < max(n, 5):
+        ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
+        for item in ranked:
+            if len(slate_candidates) >= max(n, 5):
+                break
+            key = (item.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (item.get("title") or "").strip().lower())
+            existing = {(x.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (x.get("title") or "").strip().lower()) for x in slate_candidates}
+            if key in existing:
                 continue
-            angles = s.get("angles") if isinstance(s.get("angles"), dict) else {}
-            dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
-            st = {
-                "headline": (s.get("headline") or "").strip(),
-                "why_shocking": (s.get("why_shocking") or "").strip(),
-                "data_points": [str(x).strip() for x in dp if str(x).strip()][:6],
-                "angles": {
-                    "alex": (angles.get("alex") or "").strip(),
-                    "jamie": (angles.get("jamie") or "").strip(),
-                    "rufus": (angles.get("rufus") or "").strip(),
-                },
-                "tomorrow_hook": (s.get("tomorrow_hook") or "").strip(),
-                "source_url": (s.get("source_url") or "").strip(),
-                "publisher": (s.get("publisher") or "").strip(),
-                "published": (s.get("published") or "").strip(),
-            }
-            if st["headline"] and st["source_url"]:
-                stories.append(st)
+            slate_candidates.append(item)
 
-    if len(stories) < n:
-        stories = []
-        for x in curated[:n]:
-            stories.append(
-                {
-                    "headline": x.get("title", ""),
-                    "why_shocking": x.get("summary", ""),
-                    "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=6) or ["Needs enrichment"],
-                    "angles": {"alex": "", "jamie": "", "rufus": ""},
-                    "source_url": x.get("link", ""),
-                    "publisher": x.get("publisher", ""),
-                    "published": x.get("published", ""),
-                    "rss_summary": x.get("summary", ""),
-                    "tomorrow_hook": "",
-                }
-            )
+    stories = [_candidate_to_story(x) for x in slate_candidates[:max(n, 5)]]
+    stories = _dedupe_story_list(stories)
 
-    for st in stories:
-        match = next((x for x in curated if (x.get("link") or "").strip() == st["source_url"]), None)
-        if match:
-            st["rss_summary"] = (match.get("summary") or "").strip()
-            st["publisher"] = st["publisher"] or (match.get("publisher") or "").strip()
-            st["published"] = st["published"] or (match.get("published") or "").strip()
-        else:
-            st["rss_summary"] = st.get("rss_summary", "") or ""
+    # Guarantee minimum slate size before enrichment
+    if len(stories) < max(n, 5):
+        ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
+        for x in ranked:
+            if len(stories) >= max(n, 5):
+                break
+            st = _candidate_to_story(x)
+            merged = _dedupe_story_list(stories + [st])
+            if len(merged) > len(stories):
+                stories = merged
 
-    enriched = enrich_stories_with_data(stories[:n])
+    enriched = enrich_stories_with_data(stories[:max(n, 5)])
     enriched = attach_story_scores(enriched, curated)
 
-    def numeric_bullets(dp: List[str]) -> int:
-        return sum(1 for b in (dp or []) if NUMERIC_TOKEN_RE.search(b or ""))
+    # Final backfill if enrichment/filtering leaves us thin
+    if len(enriched) < max(n, 5):
+        present = {(s.get("source_url") or "").strip().lower() or re.sub(r"\s+", " ", (s.get("headline") or "").strip().lower()) for s in enriched}
+        for x in curated:
+            if len(enriched) >= max(n, 5):
+                break
+            key = (x.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (x.get("title") or "").strip().lower())
+            if key in present:
+                continue
+            extra = enrich_stories_with_data([_candidate_to_story(x)])
+            extra = attach_story_scores(extra, curated)
+            if extra:
+                enriched.extend(extra)
+                present.add(key)
 
-    weak = [s for s in enriched if numeric_bullets(s.get("data_points") or []) < MIN_NUMERIC_BULLETS_PER_STORY]
-    if weak:
-        fallback: List[Dict[str, str]] = []
-        for x in curated[:n]:
-            fallback.append(
-                {
-                    "headline": x.get("title", ""),
-                    "why_shocking": x.get("summary", ""),
-                    "data_points": _extract_numeric_sentences((x.get("summary", "") or ""), max_items=6) or ["Needs enrichment"],
-                    "angles": {"alex": "", "jamie": "", "rufus": ""},
-                    "source_url": x.get("link", ""),
-                    "publisher": x.get("publisher", ""),
-                    "published": x.get("published", ""),
-                    "rss_summary": x.get("summary", ""),
-                    "tomorrow_hook": "",
-                }
-            )
-        enriched = attach_story_scores(enrich_stories_with_data(fallback[:n]), curated)
-
-    return enriched[:n]
+    return _dedupe_story_list(enriched)[:max(n, 5)]
 
 # ----------------------------
 # SCRIPTING (structured 5 segments)
@@ -2229,7 +2262,7 @@ def produce_episode() -> None:
         return
 
     _safe_print(" >> 📰 GATHERING INTEL (RSS PRIMARY)...")
-    intel = fetch_rss_items(max_per_feed=10)
+    intel = broaden_intel_pool()
     if not intel:
         _safe_print("    ⚠️ RSS empty. Using test item.")
         intel = [{
@@ -2241,7 +2274,7 @@ def produce_episode() -> None:
             "summary": "Simulation. $500M wiped. 24 hours. 3 regulators. 1 leak."
         }]
 
-    candidate_debug = select_story_candidates(intel, n=15, memory=load_show_memory(), bucket_cap=2)
+    candidate_debug = select_story_candidates(intel, n=30, memory=load_show_memory(), bucket_cap=3)
     STORY_SCORES_PATH.write_text(
         json.dumps(build_story_debug_table(candidate_debug), indent=2, ensure_ascii=False),
         encoding="utf-8",
@@ -2250,6 +2283,14 @@ def produce_episode() -> None:
     experiments = choose_episode_experiments(seed=today)
     sponsors = apply_sponsor_variant(load_sponsors(), experiments=experiments, spoken_url=THELEDGR_SPOKEN_URL)
     stories = pick_top_stories(intel, n=5)
+    if len(stories) < 5:
+        _safe_print(f"    ⚠️ Story slate thin after selection ({len(stories)}). Broadening and retrying...")
+        intel = broaden_intel_pool()
+        candidate_debug = select_story_candidates(intel, n=40, memory=load_show_memory(), bucket_cap=3)
+        STORY_SCORES_PATH.write_text(json.dumps(build_story_debug_table(candidate_debug), indent=2, ensure_ascii=False), encoding="utf-8")
+        stories = pick_top_stories(intel, n=5)
+    if len(stories) < 5:
+        raise RuntimeError(f"Unable to build a 5-story slate. Only {len(stories)} stories survived intake + selection.")
 
     _safe_print(" >> ✍️ WRITING FULL EPISODE (5 segments)...")
     script = generate_episode_script(stories, sponsors, today)
