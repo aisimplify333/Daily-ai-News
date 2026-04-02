@@ -13,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v2.2"
+MODEL_VERSION = "podcast-growth-v2.3"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
@@ -70,6 +70,10 @@ PUBLISHER_SCORES = {
     "yahoo tech": 58.0,
     "yahoo": 55.0,
     "cyber magazine": 50.0,
+    "towards data science": 60.0,
+    "yahoo finance": 60.0,
+    "the tech buzz": 38.0,
+    "cathay capital": 46.0,
     "msn": 40.0,
     "indexbox": 32.0,
     "bitget": 18.0,
@@ -94,11 +98,13 @@ CONSEQUENCE_KEYWORDS = {
     "breach", "outage", "recall", "pricing", "capex", "layoff", "earnings", "margin",
     "enterprise", "health", "defense", "government", "market", "stock", "revenue",
     "valuation", "funding", "ipo", "datacenter", "gpu", "supply chain", "copyright",
+    "source code", "accuracy", "developers", "health systems", "diagnosis", "privacy", "workflow",
 }
 
 CLIPABLE_KEYWORDS = {
     "wins", "loses", "kills", "breaks", "banned", "caught", "secret", "panic", "warning",
     "why", "what happens", "nobody", "finally", "crash", "bubble", "surge", "ban", "lawsuit",
+    "accidentally", "source code", "accuracy", "security", "diagnosis", "developers",
 }
 
 VARIANT_DEFAULTS: Dict[str, List[str]] = {
@@ -106,7 +112,7 @@ VARIANT_DEFAULTS: Dict[str, List[str]] = {
     "cta_style": ["operator", "career", "contrarian"],
     "sponsor_style": ["decision_signal", "career_edge", "less_noise"],
     "clip_style": ["contrarian", "fear_greed", "operator_take"],
-    "voice_profile": ["control", "marin_cedar", "cedar_sage"],
+    "voice_profile": ["control", "marin_fable", "marin_nova"],
 }
 
 
