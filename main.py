@@ -707,6 +707,10 @@ VERTICAL_LABELS = {
 }
 
 
+DESK_CONTEXT_PER_VERTICAL = int(os.getenv("DESK_CONTEXT_PER_VERTICAL", "7"))
+DESK_SHORTLIST_PER_VERTICAL = int(os.getenv("DESK_SHORTLIST_PER_VERTICAL", "3"))
+DESK_MIN_WINNERS = int(os.getenv("DESK_MIN_WINNERS", "5"))
+
 
 def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
     items: List[Dict[str, str]] = []
@@ -1046,16 +1050,36 @@ def order_stories_for_episode(stories: List[Dict[str, str]]) -> List[Dict[str, s
     working = [dict(s) for s in stories]
     top_story = max(working, key=_editorial_impact_score)
     top_key = _story_identity_key(top_story)
-
-    remaining = [s for s in working if _story_identity_key(s) != top_key]
     ordered: List[Dict[str, str]] = [top_story]
-    bucket_order = ["health_ai", "ai_tools", "ai_code", "ai_agents", "topline"]
+    remaining = [s for s in working if _story_identity_key(s) != top_key]
 
-    for bucket in bucket_order:
-        bucket_items = [s for s in remaining if _normalize_vertical_bucket(s.get("bucket", "")) == bucket]
-        bucket_items.sort(key=_editorial_impact_score, reverse=True)
-        for item in bucket_items:
-            ordered.append(item)
+    def best_from_bucket(bucket: str) -> Optional[Dict[str, str]]:
+        candidates = [s for s in remaining if _normalize_vertical_bucket(s.get("bucket", "")) == bucket]
+        if not candidates:
+            return None
+        return max(candidates, key=_editorial_impact_score)
+
+    def add_story(item: Optional[Dict[str, str]]) -> None:
+        nonlocal remaining, ordered
+        if not item:
+            return
+        key = _story_identity_key(item)
+        if any(_story_identity_key(x) == key for x in ordered):
+            return
+        ordered.append(item)
+        remaining = [s for s in remaining if _story_identity_key(s) != key]
+
+    add_story(best_from_bucket("health_ai"))
+
+    rufus_candidates = [s for s in remaining if _normalize_vertical_bucket(s.get("bucket", "")) in {"ai_agents", "ai_code", "topline"}]
+    if rufus_candidates:
+        add_story(max(rufus_candidates, key=_editorial_impact_score))
+
+    for bucket in ["ai_tools", "ai_code", "ai_agents", "topline", "health_ai"]:
+        add_story(best_from_bucket(bucket))
+
+    for item in sorted(remaining, key=_editorial_impact_score, reverse=True):
+        add_story(item)
 
     out: List[Dict[str, str]] = []
     seen = set()
@@ -1066,6 +1090,7 @@ def order_stories_for_episode(stories: List[Dict[str, str]]) -> List[Dict[str, s
         seen.add(key)
         out.append(s)
     return out
+
 
 def _build_vertical_slate(curated: List[Dict[str, str]], n: int) -> List[Dict[str, str]]:
     by_vertical: Dict[str, List[Dict[str, str]]] = {v: [] for v in VERTICAL_ORDER}
@@ -1079,9 +1104,7 @@ def _build_vertical_slate(curated: List[Dict[str, str]], n: int) -> List[Dict[st
     used = set()
 
     def add_item(item: Dict[str, str]) -> None:
-        key = (item.get("link") or item.get("source_url") or "").strip().lower() or re.sub(
-            r"\s+", " ", (item.get("title") or item.get("headline") or "").strip().lower()
-        )
+        key = _story_identity_key(item)
         if not key or key in used:
             return
         used.add(key)
@@ -1105,32 +1128,175 @@ def _build_vertical_slate(curated: List[Dict[str, str]], n: int) -> List[Dict[st
     return selected[:n]
 
 
-def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict[str, str]]:
+def _compact_candidate_for_prompt(item: Dict[str, str]) -> str:
+    bd = item.get("score_breakdown") or {}
+    return (
+        f"REF={_story_identity_key(item)} | TITLE={item.get('title','')} | PUBLISHER={item.get('publisher','')} | "
+        f"PUBLISHED={item.get('published','')} | SCORE={item.get('growth_score', 0):.2f} | "
+        f"AUTHORITY={bd.get('authority', 0)} | CONSEQUENCE={bd.get('forward_consequence', 0)} | "
+        f"NUMERIC={bd.get('numeric_density', 0)} | CLIP={bd.get('clipability', 0)} | SUMMARY={item.get('summary','')}"
+    )
+
+
+def _match_ranked_candidate(ref_or_title: str, candidates: List[Dict[str, str]]) -> Optional[Dict[str, str]]:
+    needle = (ref_or_title or "").strip().lower()
+    if not needle:
+        return None
+    for c in candidates:
+        if _story_identity_key(c) == needle:
+            return c
+    for c in candidates:
+        if (c.get("link") or "").strip().lower() == needle:
+            return c
+    for c in candidates:
+        title = re.sub(r"\s+", " ", (c.get("title") or "").strip().lower())
+        if title == needle:
+            return c
+    for c in candidates:
+        title = re.sub(r"\s+", " ", (c.get("title") or "").strip().lower())
+        if needle in title or title in needle:
+            return c
+    return None
+
+
+def _desk_rank_vertical(date_str: str, vertical: str, candidates: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    ranked = sorted(candidates, key=_editorial_impact_score, reverse=True)
+    if len(ranked) <= DESK_SHORTLIST_PER_VERTICAL:
+        return [dict(x) for x in ranked]
+
+    label = VERTICAL_LABELS.get(vertical, vertical)
+    candidate_block = "\n".join([f"- {_compact_candidate_for_prompt(x)}" for x in ranked[:DESK_CONTEXT_PER_VERTICAL]])
+    prompt = f"""
+You are the Editor-in-Chief of The AI Edge on {date_str}.
+You are selecting the strongest {label} stories for today's show.
+
+Choose the top {DESK_SHORTLIST_PER_VERTICAL} candidates from the list below.
+Selection priorities:
+- strongest real-world consequence
+- strongest authority / source credibility
+- strongest operator or builder relevance
+- strongest shareability / forwardable potential
+- avoid weak rewrites and thin summaries
+
+Return ONLY valid JSON:
+{{
+  "winner_ref": "REF value of the best candidate",
+  "top_refs": ["REF1", "REF2", "REF3"],
+  "editor_reason": "one sharp sentence on why the winner belongs",
+  "share_angle": "one sentence someone would want to forward",
+  "tomorrow_hook": "one sentence about what changes next"
+}}
+
+Candidates:
+{candidate_block}
+""".strip()
+    try:
+        raw = generate_text(prompt, temperature=0.15, max_tokens=700)
+        j = _extract_json_object(raw) or {}
+    except Exception:
+        j = {}
+
+    selected: List[Dict[str, str]] = []
+    seen = set()
+    for ref in (j.get("top_refs") or []):
+        match = _match_ranked_candidate(str(ref), ranked)
+        if not match:
+            continue
+        key = _story_identity_key(match)
+        if key in seen:
+            continue
+        seen.add(key)
+        selected.append(dict(match))
+        if len(selected) >= DESK_SHORTLIST_PER_VERTICAL:
+            break
+
+    if not selected:
+        selected = [dict(x) for x in ranked[:DESK_SHORTLIST_PER_VERTICAL]]
+
+    winner_ref = str(j.get("winner_ref") or "").strip()
+    if winner_ref:
+        winner_match = _match_ranked_candidate(winner_ref, selected) or _match_ranked_candidate(winner_ref, ranked)
+        if winner_match:
+            key = _story_identity_key(winner_match)
+            selected.sort(key=lambda x: 1 if _story_identity_key(x) == key else 0, reverse=True)
+
+    if selected:
+        selected[0]["editor_reason"] = (j.get("editor_reason") or "").strip()
+        selected[0]["share_angle"] = (j.get("share_angle") or "").strip()
+        selected[0]["tomorrow_hook"] = (j.get("tomorrow_hook") or "").strip()
+    return selected
+
+
+def _editor_in_chief_slate(date_str: str, curated: List[Dict[str, str]], n: int) -> List[Dict[str, str]]:
+    by_vertical: Dict[str, List[Dict[str, str]]] = {v: [] for v in VERTICAL_ORDER}
+    for item in curated:
+        by_vertical.setdefault(_normalize_vertical_bucket(item.get("bucket", "")), []).append(item)
+    for vertical in by_vertical:
+        by_vertical[vertical].sort(key=_editorial_impact_score, reverse=True)
+
+    desk_winners: List[Dict[str, str]] = []
+    used = set()
+    for vertical in VERTICAL_ORDER:
+        ranked = _desk_rank_vertical(date_str, vertical, by_vertical.get(vertical, [])[:DESK_CONTEXT_PER_VERTICAL])
+        if not ranked:
+            continue
+        winner = dict(ranked[0])
+        winner["bucket"] = _normalize_vertical_bucket(winner.get("bucket", vertical))
+        key = _story_identity_key(winner)
+        if key and key not in used:
+            desk_winners.append(winner)
+            used.add(key)
+
+    if len(desk_winners) < DESK_MIN_WINNERS:
+        for item in _build_vertical_slate(curated, n=max(n, DESK_MIN_WINNERS)):
+            key = _story_identity_key(item)
+            if key in used:
+                continue
+            desk_winners.append(dict(item))
+            used.add(key)
+            if len(desk_winners) >= max(n, DESK_MIN_WINNERS):
+                break
+
+    if len(desk_winners) < n:
+        for item in sorted(curated, key=_editorial_impact_score, reverse=True):
+            key = _story_identity_key(item)
+            if key in used:
+                continue
+            desk_winners.append(dict(item))
+            used.add(key)
+            if len(desk_winners) >= n:
+                break
+
+    return desk_winners[:max(n, DESK_MIN_WINNERS)]
+
+
+def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Optional[str] = None) -> List[Dict[str, str]]:
     if not intel_items:
         return []
 
+    date_str = date_str or datetime.date.today().isoformat()
     memory = load_show_memory()
     curated = select_story_candidates(intel_items, n=max(n * 6, 30), memory=memory, bucket_cap=3)
     if not curated:
         ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
         curated = ranked[:max(n * 6, 30)]
 
-    slate_candidates = _build_vertical_slate(curated, n=max(n, 5))
+    slate_candidates = _editor_in_chief_slate(date_str, curated, n=max(n, 5))
     if len(slate_candidates) < max(n, 5):
         ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
+        existing = {_story_identity_key(x) for x in slate_candidates}
         for item in ranked:
             if len(slate_candidates) >= max(n, 5):
                 break
-            key = (item.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (item.get("title") or "").strip().lower())
-            existing = {(x.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (x.get("title") or "").strip().lower()) for x in slate_candidates}
+            key = _story_identity_key(item)
             if key in existing:
                 continue
             slate_candidates.append(item)
+            existing.add(key)
 
     stories = [_candidate_to_story(x) for x in slate_candidates[:max(n, 5)]]
     stories = _dedupe_story_list(stories)
 
-    # Guarantee minimum slate size before enrichment
     if len(stories) < max(n, 5):
         ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
         for x in ranked:
@@ -1144,13 +1310,23 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict
     enriched = enrich_stories_with_data(stories[:max(n, 5)])
     enriched = attach_story_scores(enriched, curated)
 
-    # Final backfill if enrichment/filtering leaves us thin
+    raw_by_key = {_story_identity_key(x): x for x in slate_candidates}
+    for s in enriched:
+        raw = raw_by_key.get(_story_identity_key(s))
+        if raw:
+            if raw.get("tomorrow_hook") and not s.get("tomorrow_hook"):
+                s["tomorrow_hook"] = raw.get("tomorrow_hook", "")
+            if raw.get("share_angle"):
+                s["share_angle"] = raw.get("share_angle", "")
+            if raw.get("editor_reason"):
+                s["editor_reason"] = raw.get("editor_reason", "")
+
     if len(enriched) < max(n, 5):
-        present = {(s.get("source_url") or "").strip().lower() or re.sub(r"\s+", " ", (s.get("headline") or "").strip().lower()) for s in enriched}
+        present = {_story_identity_key(s) for s in enriched}
         for x in curated:
             if len(enriched) >= max(n, 5):
                 break
-            key = (x.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (x.get("title") or "").strip().lower())
+            key = _story_identity_key(x)
             if key in present:
                 continue
             extra = enrich_stories_with_data([_candidate_to_story(x)])
@@ -1159,8 +1335,11 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5) -> List[Dict
                 enriched.extend(extra)
                 present.add(key)
 
-    return _dedupe_story_list(enriched)[:max(n, 5)]
+    ordered = order_stories_for_episode(_dedupe_story_list(enriched)[:max(n, 5)])
+    return ordered[:max(n, 5)]
 
+# ----------------------------
+# SCRIPTING (structured 5 segments)
 # ----------------------------
 # SCRIPTING (structured 5 segments)
 # ----------------------------
@@ -1293,19 +1472,19 @@ def _forwardable_line_score(text: str) -> int:
         return 0
     low = cleaned.lower()
     score = 0
-    if 55 <= len(cleaned) <= 170:
+    if 60 <= len(cleaned) <= 165:
         score += 1
     if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", cleaned, flags=re.IGNORECASE):
-        score += 2
+        score += 3
     if any(h in low for h in FORWARDABLE_HINTS):
         score += 1
     if any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS):
-        score += 2
+        score += 3
     if any(h in low for h in FORWARDABLE_SHOCK_HINTS):
-        score += 1
+        score += 2
     if any(p in low for p in ["this means", "what happens", "the real", "the problem", "the risk", "the edge", "the question is", "the truth is", "the blunt truth", "here's the catch"]):
-        score += 1
-    if re.search(r"\b(not .* but|more than|less than|instead of|so you're telling me)\b", low):
+        score += 2
+    if re.search(r"\b(not .* but|more than|less than|instead of|so you're telling me|the real risk|the real question)\b", low):
         score += 1
     if cleaned.endswith("?"):
         score += 1
@@ -1317,7 +1496,7 @@ def is_forwardable_line_text(text: str) -> bool:
     has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", text or "", flags=re.IGNORECASE))
     has_consequence = any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS)
     has_shock = any(h in low for h in FORWARDABLE_SHOCK_HINTS)
-    return _forwardable_line_score(text) >= 4 and (has_number or has_consequence or has_shock)
+    return _forwardable_line_score(text) >= 6 and (has_number or has_consequence or has_shock)
 
 
 def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[str, str]]:
@@ -1331,7 +1510,7 @@ def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[st
         speaker = m.group(1).upper()
         text = m.group(2).strip()
         score = _forwardable_line_score(text)
-        if score < 3:
+        if score < 4:
             continue
         key = normalize_text(text)
         if key in seen:
@@ -1347,12 +1526,21 @@ def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[st
             "has_shock": any(h in low for h in FORWARDABLE_SHOCK_HINTS),
         })
 
-    candidates.sort(key=lambda x: (1 if (x["has_number"] or x["has_consequence"] or x["has_shock"]) else 0, x["score"], len(x["text"])), reverse=True)
+    candidates.sort(
+        key=lambda x: (
+            1 if (x["has_number"] or x["has_consequence"] or x["has_shock"]) else 0,
+            x["score"],
+            len(x["text"]),
+        ),
+        reverse=True,
+    )
     out: List[Dict[str, str]] = []
     used_speakers = set()
     for c in candidates:
         if len(out) >= max_items:
             break
+        if c["score"] < 6 and len(out) < 2:
+            continue
         if len(out) < 2 and c["speaker"] in used_speakers and len({cand["speaker"] for cand in candidates}) > 1:
             continue
         out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
@@ -2059,8 +2247,8 @@ def run_marketing_pipeline() -> None:
 
 
 def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> str:
-    tags: List[str] = ["#AI", "#TechNews"]
-    bucket_tags = {"health_ai": "#HealthAI", "ai_tools": "#AITools", "ai_code": "#AICode", "ai_agents": "#AIAgents", "topline": "#AI"}
+    tags: List[str] = ["#AI", "#TheAIEdge"]
+    bucket_tags = {"health_ai": "#HealthAI", "ai_tools": "#AITools", "ai_code": "#AICode", "ai_agents": "#AIAgents", "topline": "#AINews"}
     for s in stories[:5]:
         tag = bucket_tags.get(_normalize_vertical_bucket(s.get("bucket", "")))
         if tag:
@@ -2106,19 +2294,22 @@ def _clean_packaging_text(text: str, max_len: int) -> str:
 def _title_support_phrase(top_story: Dict[str, str], title_style: str) -> str:
     blob = _story_numeric_blob(top_story)
     has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", blob, flags=re.IGNORECASE))
-    if title_style == "hard_number" and has_number:
-        return "The Numbers Behind the Shift"
+    if title_style == "hard_number":
+        return "What the Numbers Mean" if has_number else "The Real Risk"
     if title_style == "tomorrow_tension":
         return "Why Tomorrow Gets Harder"
-    return "The Operator Consequence"
+    return "What It Means Next"
 
 
 def _compose_episode_title(stories: List[Dict[str, str]], title_style: str, date_str: str) -> str:
     top_story = stories[0] if stories else {}
-    headline = _clean_packaging_text((top_story.get("headline") or "AI Just Moved — Here's What Changed").strip(), 72)
+    headline = _clean_packaging_text((top_story.get("headline") or "AI Just Moved — Here's What Changed").strip(), 68)
     support = _title_support_phrase(top_story, title_style)
+    max_base = max(32, EPISODE_META_MAX_TITLE - len(f" — {date_str}"))
     raw = f"{headline} | {support}"
-    return _smart_trim_text(raw, max_len=max(32, EPISODE_META_MAX_TITLE - len(f" — {date_str}")))
+    if len(raw) > max_base:
+        raw = headline
+    return _smart_trim_text(raw, max_len=max_base)
 
 
 def build_episode_show_notes(
