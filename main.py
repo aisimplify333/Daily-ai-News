@@ -105,6 +105,11 @@ LISTEN_URL = os.getenv(
     "https://aisimplify333.github.io/Daily-ai-News/listen/",
 ).rstrip("/") + "/"
 
+PUBLIC_SUBSCRIBE_URL = os.getenv(
+    "PUBLIC_SUBSCRIBE_URL",
+    "https://theledgr.io?utm_source=podcast",
+).strip()
+
 PRIMARY_LLM = os.getenv("PRIMARY_LLM", "openai").strip().lower()  # gemini | openai
 OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o")
 OPENAI_TTS_MODEL = os.getenv("OPENAI_TTS_MODEL", "tts-1-hd")
@@ -262,6 +267,25 @@ FORWARDABLE_HINTS = {
     "why", "because", "means", "consequence", "tomorrow", "next", "market", "security",
     "regulation", "chip", "gpu", "enterprise", "career", "nobody", "everyone", "wins",
     "loses", "caught", "ban", "breaks", "risk", "signal", "pricing", "power",
+}
+
+FORWARDABLE_CONSEQUENCE_HINTS = {
+    "because", "means", "therefore", "next", "tomorrow", "risk", "consequence", "pressure",
+    "security", "regulation", "lawsuit", "exposed", "revealed", "changes", "shift", "power",
+    "supply chain", "pricing", "margin", "care", "diagnosis", "agent", "code", "developers",
+}
+
+FORWARDABLE_SHOCK_HINTS = {
+    "accidentally", "leak", "leaked", "ban", "banned", "caught", "breaks", "fails", "wrong",
+    "panic", "warning", "stolen", "exposed", "harder", "monopoly", "vulnerable", "unsafe",
+}
+
+MAJOR_HASHTAG_ALLOWLIST = {
+    "openai": "#OpenAI", "anthropic": "#Anthropic", "claude": "#Claude", "google": "#Google",
+    "gemini": "#Gemini", "meta": "#Meta", "microsoft": "#Microsoft", "nvidia": "#NVIDIA",
+    "cursor": "#Cursor", "copilot": "#Copilot", "health": "#HealthAI", "healthcare": "#HealthAI",
+    "agents": "#AIAgents", "agent": "#AIAgents", "code": "#AICode", "coding": "#AICode",
+    "tools": "#AITools", "security": "#AISecurity",
 }
 
 # ----------------------------
@@ -984,39 +1008,96 @@ def _dedupe_story_list(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
     return out
 
 
+
+def _story_identity_key(item: Dict[str, str]) -> str:
+    return (item.get("source_url") or item.get("link") or "").strip().lower() or re.sub(
+        r"\s+", " ", (item.get("headline") or item.get("title") or "").strip().lower()
+    )
+
+def _story_breakdown(story: Dict[str, str]) -> Dict[str, float]:
+    bd = story.get("score_breakdown") or {}
+    return bd if isinstance(bd, dict) else {}
+
+def _story_numeric_blob(story: Dict[str, str]) -> str:
+    parts = [story.get("headline") or story.get("title") or "", story.get("why_shocking") or story.get("summary") or ""]
+    parts.extend([str(x) for x in (story.get("data_points") or [])[:4]])
+    return " ".join([p for p in parts if p])
+
+def _editorial_impact_score(story: Dict[str, str]) -> float:
+    bd = _story_breakdown(story)
+    growth = float(story.get("growth_score") or 0.0)
+    authority = float(bd.get("authority", 0.0))
+    consequence = float(bd.get("forward_consequence", 0.0))
+    numeric = float(bd.get("numeric_density", 0.0))
+    clipability = float(bd.get("clipability", 0.0))
+    recency = float(bd.get("recency", 0.0))
+    cluster = float(story.get("cluster_size") or 0.0)
+    publisher = (story.get("publisher") or "").lower()
+
+    score = growth + (0.30 * authority) + (0.35 * consequence) + (0.18 * numeric) + (0.15 * clipability) + (0.08 * recency) + (0.05 * cluster)
+    if any(x in publisher for x in ["bloomberg", "reuters", "wsj", "financial times", "ft"]):
+        score += 6.0
+    return round(score, 2)
+
+def order_stories_for_episode(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    if not stories:
+        return []
+
+    working = [dict(s) for s in stories]
+    top_story = max(working, key=_editorial_impact_score)
+    top_key = _story_identity_key(top_story)
+
+    remaining = [s for s in working if _story_identity_key(s) != top_key]
+    ordered: List[Dict[str, str]] = [top_story]
+    bucket_order = ["health_ai", "ai_tools", "ai_code", "ai_agents", "topline"]
+
+    for bucket in bucket_order:
+        bucket_items = [s for s in remaining if _normalize_vertical_bucket(s.get("bucket", "")) == bucket]
+        bucket_items.sort(key=_editorial_impact_score, reverse=True)
+        for item in bucket_items:
+            ordered.append(item)
+
+    out: List[Dict[str, str]] = []
+    seen = set()
+    for s in ordered:
+        key = _story_identity_key(s)
+        if not key or key in seen:
+            continue
+        seen.add(key)
+        out.append(s)
+    return out
+
 def _build_vertical_slate(curated: List[Dict[str, str]], n: int) -> List[Dict[str, str]]:
     by_vertical: Dict[str, List[Dict[str, str]]] = {v: [] for v in VERTICAL_ORDER}
     for item in curated:
         by_vertical.setdefault(_normalize_vertical_bucket(item.get("bucket", "")), []).append(item)
 
+    for vertical in by_vertical:
+        by_vertical[vertical].sort(key=_editorial_impact_score, reverse=True)
+
     selected: List[Dict[str, str]] = []
     used = set()
 
     def add_item(item: Dict[str, str]) -> None:
-        key = (item.get("link") or "").strip().lower() or re.sub(r"\s+", " ", (item.get("title") or "").strip().lower())
+        key = (item.get("link") or item.get("source_url") or "").strip().lower() or re.sub(
+            r"\s+", " ", (item.get("title") or item.get("headline") or "").strip().lower()
+        )
         if not key or key in used:
             return
         used.add(key)
         selected.append(item)
 
-    # First pass: one per vertical where available
+    if curated:
+        add_item(max(curated, key=_editorial_impact_score))
+
     for vertical in VERTICAL_ORDER:
         for item in by_vertical.get(vertical, []):
             add_item(item)
             if len(selected) and _normalize_vertical_bucket(selected[-1].get("bucket", "")) == vertical:
                 break
 
-    # Second pass: strongest remaining flex stories
     if len(selected) < n:
-        for vertical in VERTICAL_FLEX_ORDER:
-            for item in by_vertical.get(vertical, []):
-                if len(selected) >= n:
-                    break
-                add_item(item)
-
-    # Third pass: anything strong enough left
-    if len(selected) < n:
-        for item in curated:
+        for item in sorted(curated, key=_editorial_impact_score, reverse=True):
             if len(selected) >= n:
                 break
             add_item(item)
@@ -1210,16 +1291,21 @@ def _forwardable_line_score(text: str) -> int:
     cleaned = re.sub(r"\s+", " ", text or "").strip()
     if not cleaned:
         return 0
-    score = 0
-    length = len(cleaned)
-    if 55 <= length <= 170:
-        score += 2
-    if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b", cleaned):
-        score += 1
     low = cleaned.lower()
+    score = 0
+    if 55 <= len(cleaned) <= 170:
+        score += 1
+    if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", cleaned, flags=re.IGNORECASE):
+        score += 2
     if any(h in low for h in FORWARDABLE_HINTS):
         score += 1
-    if any(p in low for p in ["this means", "what happens", "the real", "the problem", "the risk", "the edge"]):
+    if any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS):
+        score += 2
+    if any(h in low for h in FORWARDABLE_SHOCK_HINTS):
+        score += 1
+    if any(p in low for p in ["this means", "what happens", "the real", "the problem", "the risk", "the edge", "the question is", "the truth is", "the blunt truth", "here's the catch"]):
+        score += 1
+    if re.search(r"\b(not .* but|more than|less than|instead of|so you're telling me)\b", low):
         score += 1
     if cleaned.endswith("?"):
         score += 1
@@ -1227,11 +1313,15 @@ def _forwardable_line_score(text: str) -> int:
 
 
 def is_forwardable_line_text(text: str) -> bool:
-    return _forwardable_line_score(text) >= 3
+    low = (text or "").lower()
+    has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", text or "", flags=re.IGNORECASE))
+    has_consequence = any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS)
+    has_shock = any(h in low for h in FORWARDABLE_SHOCK_HINTS)
+    return _forwardable_line_score(text) >= 4 and (has_number or has_consequence or has_shock)
 
 
 def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[str, str]]:
-    moments: List[Dict[str, str]] = []
+    candidates: List[Dict[str, str]] = []
     seen: set[str] = set()
     for raw in script.splitlines():
         line = raw.strip()
@@ -1240,16 +1330,43 @@ def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[st
             continue
         speaker = m.group(1).upper()
         text = m.group(2).strip()
-        if not is_forwardable_line_text(text):
+        score = _forwardable_line_score(text)
+        if score < 3:
             continue
         key = normalize_text(text)
         if key in seen:
             continue
         seen.add(key)
-        moments.append({"speaker": speaker, "text": text, "score": _forwardable_line_score(text)})
-        if len(moments) >= max_items:
+        low = text.lower()
+        candidates.append({
+            "speaker": speaker,
+            "text": text,
+            "score": score,
+            "has_number": bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", text, flags=re.IGNORECASE)),
+            "has_consequence": any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS),
+            "has_shock": any(h in low for h in FORWARDABLE_SHOCK_HINTS),
+        })
+
+    candidates.sort(key=lambda x: (1 if (x["has_number"] or x["has_consequence"] or x["has_shock"]) else 0, x["score"], len(x["text"])), reverse=True)
+    out: List[Dict[str, str]] = []
+    used_speakers = set()
+    for c in candidates:
+        if len(out) >= max_items:
             break
-    return moments
+        if len(out) < 2 and c["speaker"] in used_speakers and len({cand["speaker"] for cand in candidates}) > 1:
+            continue
+        out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
+        used_speakers.add(c["speaker"])
+    if len(out) < max_items:
+        existing = {normalize_text(x["text"]) for x in out}
+        for c in candidates:
+            if len(out) >= max_items:
+                break
+            if normalize_text(c["text"]) in existing:
+                continue
+            out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
+            existing.add(normalize_text(c["text"]))
+    return out[:max_items]
 
 
 def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
@@ -1943,36 +2060,39 @@ def run_marketing_pipeline() -> None:
 
 def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> str:
     tags: List[str] = ["#AI", "#TechNews"]
-    ent: List[str] = []
+    bucket_tags = {"health_ai": "#HealthAI", "ai_tools": "#AITools", "ai_code": "#AICode", "ai_agents": "#AIAgents", "topline": "#AI"}
     for s in stories[:5]:
-        ke = s.get("key_entities")
-        if isinstance(ke, list):
-            ent.extend([str(x).strip() for x in ke if str(x).strip()])
+        tag = bucket_tags.get(_normalize_vertical_bucket(s.get("bucket", "")))
+        if tag:
+            tags.append(tag)
+    entities: List[str] = []
     for s in stories[:5]:
-        ent.extend(re.findall(r"\b[A-Z][A-Za-z0-9]+\b", (s.get("headline") or "")))
-
-    cleaned: List[str] = []
-    for e in ent:
-        e2 = re.sub(r"[^A-Za-z0-9]", "", e)
-        if not e2 or len(e2) < 3:
-            continue
-        low = e2.lower()
-        if low in ("openai", "nvidia", "anthropic", "microsoft", "google", "deepmind", "meta", "apple"):
-            cleaned.append("#" + e2[0].upper() + e2[1:])
-        elif low in ("eu", "ftc", "sec", "doj"):
-            cleaned.append("#" + e2.upper())
-        else:
-            cleaned.append("#" + e2)
-
-    final = tags + cleaned
+        if isinstance(s.get("key_entities"), list):
+            entities.extend([str(x).strip() for x in s.get("key_entities") if str(x).strip()])
+        entities.extend(re.findall(r"\b[A-Z][A-Za-z0-9]+\b", (s.get("headline") or "")))
+    for ent in entities:
+        cleaned = re.sub(r"[^A-Za-z0-9]", "", ent).lower()
+        if cleaned in MAJOR_HASHTAG_ALLOWLIST:
+            tags.append(MAJOR_HASHTAG_ALLOWLIST[cleaned])
     seen = set()
     uniq: List[str] = []
-    for t in final:
-        if t in seen:
+    for t in tags:
+        if not t or t in seen:
             continue
         seen.add(t)
         uniq.append(t)
     return " ".join(uniq[:max_tags])
+
+
+def _smart_trim_text(text: str, max_len: int) -> str:
+    cleaned = re.sub(r"\s+", " ", text or "").strip().strip(" -—:|,")
+    if len(cleaned) <= max_len:
+        return cleaned
+    cut_zone = cleaned[: max_len + 1]
+    cut = max(cut_zone.rfind(" — "), cut_zone.rfind(" | "), cut_zone.rfind(": "), cut_zone.rfind(", "), cut_zone.rfind(" "))
+    if cut < int(max_len * 0.65):
+        cut = max_len
+    return cleaned[:cut].rstrip(" -—:|,")
 
 
 def _clean_packaging_text(text: str, max_len: int) -> str:
@@ -1980,9 +2100,25 @@ def _clean_packaging_text(text: str, max_len: int) -> str:
     cleaned = re.sub(r"\|\s*(news and statistics|news|statistics).*$", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(r"\|\s*(ai infrastructure).*$", "", cleaned, flags=re.IGNORECASE)
     cleaned = cleaned.strip(" -—:|")
-    if len(cleaned) <= max_len:
-        return cleaned
-    return cleaned[:max_len].rstrip(" -—:|")
+    return _smart_trim_text(cleaned, max_len)
+
+
+def _title_support_phrase(top_story: Dict[str, str], title_style: str) -> str:
+    blob = _story_numeric_blob(top_story)
+    has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", blob, flags=re.IGNORECASE))
+    if title_style == "hard_number" and has_number:
+        return "The Numbers Behind the Shift"
+    if title_style == "tomorrow_tension":
+        return "Why Tomorrow Gets Harder"
+    return "The Operator Consequence"
+
+
+def _compose_episode_title(stories: List[Dict[str, str]], title_style: str, date_str: str) -> str:
+    top_story = stories[0] if stories else {}
+    headline = _clean_packaging_text((top_story.get("headline") or "AI Just Moved — Here's What Changed").strip(), 72)
+    support = _title_support_phrase(top_story, title_style)
+    raw = f"{headline} | {support}"
+    return _smart_trim_text(raw, max_len=max(32, EPISODE_META_MAX_TITLE - len(f" — {date_str}")))
 
 
 def build_episode_show_notes(
@@ -1990,28 +2126,11 @@ def build_episode_show_notes(
     pack: Dict[str, str],
     stories: List[Dict[str, str]],
 ) -> str:
-    cta_url = tracking.get("subscribe_show_notes", THELEDGR_SUBSCRIBE_URL)
+    cta_url = PUBLIC_SUBSCRIBE_URL
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
     tomorrow_tease = (pack.get("tomorrow_tease") or "The second-order consequences are just starting to show.").strip()
     episode_blurb = (pack.get("episode_blurb") or "Today on The AI Edge, Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and what serious operators should watch next.").strip()
-
-    parts = [
-        f"Subscribe to TheLEDGR: {cta_url}",
-        "",
-        "If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.",
-        "",
-        "TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper.",
-        "",
-        "This is not more AI content. It is signal you can actually use in real life.",
-        "",
-        episode_blurb,
-        "",
-        "What we covered:",
-        story_bullets,
-        "",
-        "Tomorrow tension:",
-        tomorrow_tease or "The next 24 hours will matter more than the launch headlines.",
-    ]
+    parts = [f"Subscribe to TheLEDGR: {cta_url}", "", "If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.", "", "TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper.", "", "This is not more AI content. It is signal you can actually use in real life.", "", episode_blurb, "", "What we covered:", story_bullets, "", "Tomorrow tension:", tomorrow_tease or "The next 24 hours will matter more than the launch headlines."]
     return "\n".join(parts).strip()
 
 
@@ -2024,56 +2143,37 @@ def generate_marketing_pack(
 ) -> Dict[str, str]:
     tracking = tracking or {}
     experiments = experiments or {}
-
-    ranked = sorted(stories, key=lambda s: float(s.get("growth_score") or 0.0), reverse=True)
-    top_story = ranked[0] if ranked else {}
+    ordered = order_stories_for_episode(stories[:5])
+    top_story = ordered[0] if ordered else {}
     title_style = experiments.get("title_style", "operator_consequence")
     cta_style = experiments.get("cta_style", "operator")
-
-    top_headline = _clean_packaging_text((top_story.get("headline") or "AI JUST MOVED — HERE'S WHAT CHANGED").strip(), 120)
+    top_headline = _clean_packaging_text((top_story.get("headline") or "AI JUST MOVED — HERE'S WHAT CHANGED").strip(), 72)
     top_data = " | ".join([str(x).strip() for x in (top_story.get("data_points") or [])[:2] if str(x).strip()])
-    subscribe_url = tracking.get("subscribe_show_notes", THELEDGR_SUBSCRIBE_URL)
+    subscribe_url = PUBLIC_SUBSCRIBE_URL
     listen_cta = tracking.get("listen", listen_url)
-    hashtags = _hashtags_from_stories(stories, max_tags=6)
-
-    if title_style == "hard_number":
-        yt_title = f"{top_headline} — The Numbers Behind the Shift"
-    elif title_style == "tomorrow_tension":
-        yt_title = f"{top_headline} | Why Tomorrow Gets Harder"
-    else:
-        yt_title = f"{top_headline} | The Operator Consequence"
-
+    hashtags = _hashtags_from_stories(ordered, max_tags=6)
+    yt_title = _compose_episode_title(ordered, title_style, date_str)
     if cta_style == "career":
         cta_line = f"If AI can affect your role, your team, or your next promotion, subscribe to TheLEDGR: {subscribe_url}"
     elif cta_style == "contrarian":
         cta_line = f"Most people will read the headline and miss the consequence. TheLEDGR is for the people who do not. Subscribe: {subscribe_url}"
     else:
         cta_line = f"If AI affects your work, subscribe to TheLEDGR for decision-grade signal: {subscribe_url}"
-
-    fallback_hook = _clean_packaging_text((top_headline if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED"), 64).upper()
-    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ranked[:5]])
-    tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ranked if (s.get("tomorrow_hook") or "").strip()), "The second-order consequences are just starting to show.")
-
+    fallback_hook = _smart_trim_text((top_headline if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED"), 64).upper()
+    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ordered[:5]])
+    tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ordered if (s.get("tomorrow_hook") or "").strip()), "The second-order consequences are just starting to show.")
     return {
         "hook": fallback_hook,
         "tweet1": f"{fallback_hook}\n\nThis is the part most people will miss: the consequence.\n\nListen: {listen_cta}",
         "tweet2": f"{cta_line}\n\n{hashtags}",
-        "yt_title": yt_title[:90],
-        "yt_description": (
-            f"Listen now: {listen_cta}\n\n"
-            f"What we covered:\n{story_bullets}\n\n"
-            f"Key data: {top_data or 'See full episode for the facts and consequence chain.'}\n\n"
-            f"{cta_line}"
-        )[:1200],
-        "show_notes": (
-            f"What we covered:\n{story_bullets}\n\n"
-            f"Tomorrow tension: {tomorrow_tease}\n\n"
-            f"{cta_line}"
-        ),
+        "yt_title": yt_title,
+        "yt_description": (f"Listen now: {listen_cta}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Key data: {top_data or 'See full episode for the facts and consequence chain.'}\n\n" f"{cta_line}")[:1200],
+        "show_notes": (f"What we covered:\n{story_bullets}\n\n" f"Tomorrow tension: {tomorrow_tease}\n\n" f"{cta_line}"),
         "tomorrow_tease": tomorrow_tease,
-        "seo_keywords": "AI news, enterprise AI, AI agents, AI regulation, health AI, coding AI, AI strategy",
+        "seo_keywords": "AI news, enterprise AI, AI agents, health AI, AI tools, AI coding, AI strategy",
         "hashtags": hashtags,
     }
+
 
 # ----------------------------
 # RSS FEED WRITER
@@ -2213,15 +2313,12 @@ def update_feed_xml(meta: Dict) -> None:
 # PRODUCER
 # ----------------------------
 def _maybe_append_date(title: str, date_str: str) -> str:
-    t = (title or "").strip()
+    t = _smart_trim_text((title or "").strip(), max(24, EPISODE_META_MAX_TITLE - len(f" — {date_str}")))
     if not t:
         return f"{RSS_SETTINGS['title']} — {date_str}"[:EPISODE_META_MAX_TITLE]
     if date_str in t:
         return t[:EPISODE_META_MAX_TITLE].strip()
-    suffix = f" — {date_str}"
-    max_base = EPISODE_META_MAX_TITLE - len(suffix)
-    base = t[:max_base].rstrip(" -—:|") if len(t) > max_base else t
-    return (base + suffix)[:EPISODE_META_MAX_TITLE].strip()
+    return f"{t} — {date_str}"[:EPISODE_META_MAX_TITLE].strip()
 
 
 def _file_ok_min_bytes(p: Path) -> bool:
@@ -2282,13 +2379,13 @@ def produce_episode() -> None:
 
     experiments = choose_episode_experiments(seed=today)
     sponsors = apply_sponsor_variant(load_sponsors(), experiments=experiments, spoken_url=THELEDGR_SPOKEN_URL)
-    stories = pick_top_stories(intel, n=5)
+    stories = order_stories_for_episode(pick_top_stories(intel, n=5))
     if len(stories) < 5:
         _safe_print(f"    ⚠️ Story slate thin after selection ({len(stories)}). Broadening and retrying...")
         intel = broaden_intel_pool()
         candidate_debug = select_story_candidates(intel, n=40, memory=load_show_memory(), bucket_cap=3)
         STORY_SCORES_PATH.write_text(json.dumps(build_story_debug_table(candidate_debug), indent=2, ensure_ascii=False), encoding="utf-8")
-        stories = pick_top_stories(intel, n=5)
+        stories = order_stories_for_episode(pick_top_stories(intel, n=5))
     if len(stories) < 5:
         raise RuntimeError(f"Unable to build a 5-story slate. Only {len(stories)} stories survived intake + selection.")
 
