@@ -13,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v2.3"
+MODEL_VERSION = "podcast-growth-v2.4"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
@@ -410,35 +410,47 @@ def story_tier(item: Dict[str, Any]) -> Optional[str]:
     clipability = float(breakdown.get("clipability", 0.0))
     recency = float(breakdown.get("recency", 0.0))
     publisher = _publisher_name(item)
+    bucket = str(item.get("bucket") or "").strip().lower()
+    headline = str(item.get("title") or item.get("headline") or "").lower()
 
     low_signal = publisher in LOW_SIGNAL_PUBLISHERS
+    if "market to reach usd" in headline:
+        return None
+    if any(x in publisher for x in ["openpr", "prnewswire", "globenewswire"]):
+        return None
+
+    if bucket == "topline" and authority < 60.0:
+        return None
+    if bucket == "health_ai" and brand_fit < 42.0:
+        return None
+    if bucket == "ai_code" and authority < 48.0:
+        return None
 
     if (
-        brand_fit >= 55.0
-        and authority >= 48.0
-        and (forward >= 10.0 or numeric >= 18.0 or clipability >= 12.0 or recency >= 35.0)
+        brand_fit >= 56.0
+        and authority >= 50.0
+        and (forward >= 12.0 or numeric >= 18.0 or clipability >= 14.0)
         and not (low_signal and brand_fit < 72.0)
     ):
         return "primary"
 
     if (
-        brand_fit >= 42.0
-        and authority >= 40.0
-        and (forward >= 6.0 or numeric >= 10.0 or clipability >= 8.0 or recency >= 25.0)
-        and not (low_signal and brand_fit < 65.0)
+        brand_fit >= 44.0
+        and authority >= 45.0
+        and (forward >= 8.0 or numeric >= 12.0 or clipability >= 10.0 or recency >= 35.0)
+        and not (low_signal and brand_fit < 68.0)
     ):
         return "support"
 
     if (
-        brand_fit >= 34.0
-        and authority >= 35.0
-        and (forward >= 0.0 or numeric >= 6.0 or clipability >= 4.0 or recency >= 15.0)
-        and not (low_signal and brand_fit < 78.0)
+        brand_fit >= 38.0
+        and authority >= 40.0
+        and (forward >= 6.0 or numeric >= 8.0 or clipability >= 8.0 or recency >= 60.0)
+        and not (low_signal and brand_fit < 75.0)
     ):
         return "fill"
 
     return None
-
 
 def is_story_eligible(item: Dict[str, Any]) -> bool:
     return story_tier(item) is not None
