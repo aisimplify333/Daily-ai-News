@@ -152,17 +152,26 @@ VOICE_MAP: Dict[str, str] = {
 }
 
 VOICE_INSTRUCTIONS: Dict[str, str] = {
-    "ALEX": "",
+    "ALEX": (
+        "Sound like a high-agency host with bigger emotional contrast and sharper pacing. "
+        "He should not sound flat or evenly pleasant. He needs real swings: skeptical, excited, amused, urgent, annoyed, impressed. "
+        "He should tee up tension, step on the gas when a stat lands, and sound like he actually cares about the consequence. "
+        "Use short bursts, sharper emphasis, quick resets, and real host energy. Never sleepy, never monotone, never polished like a generic narrator."
+    ),
     "JAMIE": (
         "Sound like a sharp, emotionally intelligent woman in her mid-20s who is part co-host, part color commentator, and part human conscience. "
         "She is not an announcer and never sounds like she is reading copy. She is in the conversation. "
-        "She reacts quickly to Alex, cuts in naturally, teases him lightly, and pushes back when Rufus gets too cold, cynical, or detached and always sounds annoyed with Rufus. "
-        "Her voice should have wider emotional swings: amused, incredulous, warm, offended, curious, playful, and occasionally stunned. "
-        "She should sound alive, conversational, and spontaneous, like she is reacting in real time to people she knows well. "
-        "Use light laughs, breathy disbelief, quick pivots, and natural interruption energy when it fits. "
-        "Keep it human, a little fast, emotionally responsive, and never polished like a presenter or announcer."
+        "She reacts quickly to Alex, cuts in naturally, teases him lightly, and pushes back when Rufus gets too cold, cynical, or detached. "
+        "Her emotional range should be wide and clearly different from the others: amused, incredulous, warm, offended, delighted, worried, stunned. "
+        "Use light laughs, breathy disbelief, quick pivots, and interruption energy when it fits. "
+        "Keep it human, emotionally responsive, and never level or sleepy for too long."
     ),
-    "RUFUS": "",
+    "RUFUS": (
+        "Sound like a dry British analyst with stronger contrast and sharper emotional edges than before. "
+        "He should sound cool, wry, skeptical, and occasionally wickedly amused, but when the numbers get serious he should tighten and sound genuinely dangerous or impressed. "
+        "He is not monotone. Use dry undercuts, clipped emphasis, and a low simmer of disbelief when institutions behave absurdly. "
+        "Never sound sleepy, evenly pleasant, or like a neutral explainer."
+    ),
 }
 
 # TTS tuning
@@ -191,15 +200,17 @@ OUTRO_PATH = BASE_DIR / "outro.mp3"
 TRANSITION_PATH = BASE_DIR / "transition.mp3"
 
 REQUIRE_INTRO_OUTRO = os.getenv("REQUIRE_INTRO_OUTRO", "true").strip().lower() in ("1", "true", "yes")
-REQUIRE_TRANSITIONS = os.getenv("REQUIRE_TRANSITIONS", "false").strip().lower() in ("1", "true", "yes")
+REQUIRE_TRANSITIONS = os.getenv("REQUIRE_TRANSITIONS", "true").strip().lower() in ("1", "true", "yes")
 TRANSITION_EVERY_SEGMENT = os.getenv("TRANSITION_EVERY_SEGMENT", "true").strip().lower() in ("1", "true", "yes")
-TRANSITION_MAX_PER_EPISODE = int(os.getenv("TRANSITION_MAX_PER_EPISODE", "3"))
-TRANSITION_SEGMENTS = {int(x) for x in os.getenv("TRANSITION_SEGMENTS", "2,3,4").split(",") if x.strip().isdigit()}
+TRANSITION_MAX_PER_EPISODE = int(os.getenv("TRANSITION_MAX_PER_EPISODE", "4"))
+TRANSITION_SEGMENTS = {int(x) for x in os.getenv("TRANSITION_SEGMENTS", "2,3,4,5").split(",") if x.strip().isdigit()}
 
 # Stinger durations / levels
 INTRO_STINGER_MS = int(os.getenv("INTRO_STINGER_MS", "4500"))      # audible bumper (no voice)
 INTRO_BED_MS = int(os.getenv("INTRO_BED_MS", "6500"))              # bed under first host line
 INTRO_BED_FADE_OUT_MS = int(os.getenv("INTRO_BED_FADE_OUT_MS", "1800"))
+SEGMENT_BED_MS = int(os.getenv("SEGMENT_BED_MS", "3400"))
+SEGMENT_BED_FADE_OUT_MS = int(os.getenv("SEGMENT_BED_FADE_OUT_MS", "1200"))
 
 OUTRO_MS = int(os.getenv("OUTRO_MS", "12000"))
 TRANSITION_MS = int(os.getenv("TRANSITION_MS", "2500"))
@@ -875,15 +886,40 @@ def load_sponsors() -> List[Dict[str, str]]:
 
 
 
+def _clean_fact_bullet(text: str) -> str:
+    t = re.sub(r"\s+", " ", (text or "").strip())
+    if not t:
+        return ""
+    noise_patterns = [
+        r"Comprehensive up-to-date news coverage, aggregated from sources all over the world by Google News\.?$",
+        r"\bGoogle News\b",
+        r"\baggregated from sources all over the world\b",
+    ]
+    for pat in noise_patterns:
+        t = re.sub(pat, "", t, flags=re.IGNORECASE).strip(" -;:.")
+    return re.sub(r"\s+", " ", t).strip()
+
+def _fact_bullet_is_usable(text: str) -> bool:
+    t = _clean_fact_bullet(text)
+    if not t:
+        return False
+    if len(t) < 18:
+        return False
+    if "comprehensive up-to-date news coverage" in t.lower():
+        return False
+    return True
+
 def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
     if not text:
         return []
     sents = re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", text).strip())
     hits: List[str] = []
     for s in sents:
-        if NUMERIC_TOKEN_RE.search(s):
-            s2 = s.strip()
-            if 30 <= len(s2) <= 220:
+        s2 = _clean_fact_bullet(s)
+        if not _fact_bullet_is_usable(s2):
+            continue
+        if NUMERIC_TOKEN_RE.search(s2):
+            if 24 <= len(s2) <= 220:
                 hits.append(s2)
         if len(hits) >= max_items:
             break
@@ -933,15 +969,26 @@ Article Preview:
         j = _extract_json_object(raw) or {}
 
         dp = j.get("data_points") if isinstance(j.get("data_points"), list) else []
-        dp = [str(x).strip() for x in dp if str(x).strip()][:8]
+        dp = [_clean_fact_bullet(str(x)) for x in dp if str(x).strip()]
+        dp = [x for x in dp if _fact_bullet_is_usable(x)][:8]
 
         strong_dp = [b for b in dp if NUMERIC_TOKEN_RE.search(b)]
         if len(strong_dp) < MIN_NUMERIC_BULLETS_PER_STORY:
             extracted = _extract_numeric_sentences((rss_summary + " " + preview).strip(), max_items=8)
-            dp = (strong_dp + extracted)[:6]
+            dp = []
+            seen_dp = set()
+            for bullet in (strong_dp + extracted):
+                bullet = _clean_fact_bullet(bullet)
+                key = bullet.lower()
+                if not bullet or key in seen_dp:
+                    continue
+                seen_dp.add(key)
+                dp.append(bullet)
+            dp = dp[:6]
 
         if not dp:
-            dp = ["No explicit figures in snippet."]
+            pub_bullet = _clean_fact_bullet(f"Published on {published[:10]}." if published else "")
+            dp = [pub_bullet] if pub_bullet else ["No explicit figures in snippet."]
 
         why = (j.get("why_shocking") or s.get("why_shocking") or "").strip()
         if not why:
@@ -1042,6 +1089,35 @@ def _editorial_impact_score(story: Dict[str, str]) -> float:
     if any(x in publisher for x in ["bloomberg", "reuters", "wsj", "financial times", "ft"]):
         score += 6.0
     return round(score, 2)
+
+def _candidate_quality_pass(item: Dict[str, str]) -> bool:
+    bucket = _normalize_vertical_bucket(item.get("bucket", ""))
+    bd = _story_breakdown(item)
+    authority = float(bd.get("authority", 0.0))
+    brand_fit = float(bd.get("brand_fit", 0.0))
+    consequence = float(bd.get("forward_consequence", 0.0))
+    numeric = float(bd.get("numeric_density", 0.0))
+    recency = float(bd.get("recency", 0.0))
+    publisher = (item.get("publisher") or "").lower()
+    headline = (item.get("title") or item.get("headline") or "").lower()
+
+    low_signal_publishers = ["openpr", "prnewswire", "globenewswire", "ein presswire", "accessnewswire"]
+    if any(x in publisher for x in low_signal_publishers):
+        return False
+    if "market to reach usd" in headline or headline.endswith("to reach usd"):
+        return False
+
+    if bucket == "topline":
+        return authority >= 60.0 and brand_fit >= 50.0
+    if bucket == "health_ai":
+        return authority >= 48.0 and brand_fit >= 42.0 and (consequence >= 12.0 or numeric >= 12.0)
+    if bucket == "ai_code":
+        return authority >= 48.0 and brand_fit >= 48.0 and (consequence >= 8.0 or numeric >= 8.0 or recency >= 35.0)
+    if bucket == "ai_tools":
+        return authority >= 45.0 and brand_fit >= 50.0
+    if bucket == "ai_agents":
+        return authority >= 50.0 and brand_fit >= 50.0
+    return authority >= 45.0 and brand_fit >= 40.0
 
 def order_stories_for_episode(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
     if not stories:
@@ -1160,7 +1236,8 @@ def _match_ranked_candidate(ref_or_title: str, candidates: List[Dict[str, str]])
 
 
 def _desk_rank_vertical(date_str: str, vertical: str, candidates: List[Dict[str, str]]) -> List[Dict[str, str]]:
-    ranked = sorted(candidates, key=_editorial_impact_score, reverse=True)
+    filtered = [x for x in candidates if _candidate_quality_pass(x)]
+    ranked = sorted((filtered or candidates), key=_editorial_impact_score, reverse=True)
     if len(ranked) <= DESK_SHORTLIST_PER_VERTICAL:
         return [dict(x) for x in ranked]
 
@@ -1466,13 +1543,30 @@ def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> 
 def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9\s]", " ", (text or "").lower())).strip()
 
+def _story_anchor_terms(stories: Optional[List[Dict[str, str]]]) -> set[str]:
+    anchors: set[str] = set()
+    for story in stories or []:
+        for blob in [
+            story.get("headline") or "",
+            story.get("why_shocking") or "",
+            " ".join([str(x) for x in (story.get("data_points") or [])[:4]]),
+            " ".join([str(x) for x in (story.get("key_entities") or [])[:6]]),
+            story.get("share_angle") or "",
+            story.get("editor_reason") or "",
+        ]:
+            for tok in re.findall(r"[A-Za-z0-9€$%][A-Za-z0-9€$%\-_]{2,}", blob):
+                low = tok.lower().strip(".,:;!?")
+                if len(low) >= 4:
+                    anchors.add(low)
+    return anchors
+
 def _forwardable_line_score(text: str) -> int:
     cleaned = re.sub(r"\s+", " ", text or "").strip()
     if not cleaned:
         return 0
     low = cleaned.lower()
     score = 0
-    if 60 <= len(cleaned) <= 165:
+    if 55 <= len(cleaned) <= 175:
         score += 1
     if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", cleaned, flags=re.IGNORECASE):
         score += 3
@@ -1482,14 +1576,17 @@ def _forwardable_line_score(text: str) -> int:
         score += 3
     if any(h in low for h in FORWARDABLE_SHOCK_HINTS):
         score += 2
-    if any(p in low for p in ["this means", "what happens", "the real", "the problem", "the risk", "the edge", "the question is", "the truth is", "the blunt truth", "here's the catch"]):
+    if any(p in low for p in [
+        "this means", "what happens", "the real", "the problem", "the risk", "the edge",
+        "the question is", "the truth is", "the blunt truth", "here's the catch",
+        "that means", "which means", "what that tells you"
+    ]):
         score += 2
     if re.search(r"\b(not .* but|more than|less than|instead of|so you're telling me|the real risk|the real question)\b", low):
         score += 1
     if cleaned.endswith("?"):
         score += 1
     return score
-
 
 def is_forwardable_line_text(text: str) -> bool:
     low = (text or "").lower()
@@ -1498,8 +1595,8 @@ def is_forwardable_line_text(text: str) -> bool:
     has_shock = any(h in low for h in FORWARDABLE_SHOCK_HINTS)
     return _forwardable_line_score(text) >= 6 and (has_number or has_consequence or has_shock)
 
-
-def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[str, str]]:
+def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, str]]] = None, max_items: int = 4) -> List[Dict[str, str]]:
+    anchors = _story_anchor_terms(stories)
     candidates: List[Dict[str, str]] = []
     seen: set[str] = set()
     for raw in script.splitlines():
@@ -1517,18 +1614,22 @@ def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[st
             continue
         seen.add(key)
         low = text.lower()
+        tokens = {tok.lower().strip(".,:;!?") for tok in re.findall(r"[A-Za-z0-9€$%][A-Za-z0-9€$%\-_]{2,}", text)}
+        anchor_hits = len(tokens & anchors) if anchors else 0
         candidates.append({
             "speaker": speaker,
             "text": text,
-            "score": score,
+            "score": score + min(anchor_hits, 3),
             "has_number": bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", text, flags=re.IGNORECASE)),
             "has_consequence": any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS),
             "has_shock": any(h in low for h in FORWARDABLE_SHOCK_HINTS),
+            "anchor_hits": anchor_hits,
         })
 
     candidates.sort(
         key=lambda x: (
             1 if (x["has_number"] or x["has_consequence"] or x["has_shock"]) else 0,
+            1 if x["anchor_hits"] > 0 else 0,
             x["score"],
             len(x["text"]),
         ),
@@ -1539,7 +1640,9 @@ def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[st
     for c in candidates:
         if len(out) >= max_items:
             break
-        if c["score"] < 6 and len(out) < 2:
+        if len(out) < 2 and c["anchor_hits"] == 0:
+            continue
+        if c["score"] < 7 and len(out) < 2:
             continue
         if len(out) < 2 and c["speaker"] in used_speakers and len({cand["speaker"] for cand in candidates}) > 1:
             continue
@@ -1555,7 +1658,6 @@ def extract_forwardable_moments(script: str, max_items: int = 4) -> List[Dict[st
             out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
             existing.add(normalize_text(c["text"]))
     return out[:max_items]
-
 
 def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
                     stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
@@ -1869,7 +1971,7 @@ STORY BLOCK:
     return (script[:insert_at].rstrip() + "\n" + addon.strip() + "\n\n" + script[insert_at:].lstrip()).strip()
 
 
-def validate_script(script: str) -> List[str]:
+def validate_script(script: str, stories: Optional[List[Dict[str, str]]] = None) -> List[str]:
     issues: List[str] = []
     for i in range(1, 6):
         if not re.search(rf"^###\s*SEGMENT\s*{i}\b", script, flags=re.IGNORECASE | re.MULTILINE):
@@ -1903,7 +2005,7 @@ def validate_script(script: str) -> List[str]:
     if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
         issues.append("Contains non-dialogue formatting blocks.")
 
-    if len(extract_forwardable_moments(script, max_items=FORWARDABLE_MIN_PER_EPISODE)) < FORWARDABLE_MIN_PER_EPISODE:
+    if len(extract_forwardable_moments(script, stories=stories, max_items=FORWARDABLE_MIN_PER_EPISODE)) < FORWARDABLE_MIN_PER_EPISODE:
         issues.append(f"Episode needs at least {FORWARDABLE_MIN_PER_EPISODE} forwardable moments.")
     return issues
 
@@ -1966,7 +2068,7 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
         script = _pad_script_to_min_words(script, min_words=min_words, stories=stories, date_str=date_str)
 
     script = _sanitize_dialogue_only(script)
-    issues = validate_script(script)
+    issues = validate_script(script, stories=stories)
     if issues:
         raise RuntimeError("Final script validation failed:\n" + "\n".join(issues))
     return script
@@ -2585,7 +2687,7 @@ def produce_episode() -> None:
     script = enforce_episode_numeric_density(script, stories, today)
     script = _sanitize_dialogue_only(script)
 
-    issues = validate_script(script)
+    issues = validate_script(script, stories=stories)
     if issues:
         raise RuntimeError("Script validation failed:\n" + "\n".join(issues))
 
@@ -2645,6 +2747,7 @@ def produce_episode() -> None:
     seg_idx = 0
     intro_done = False
     pending_intro_bed = False
+    pending_segment_bed = False
 
     for speaker, text in dialogue_merged:
         if speaker == "MUSIC":
@@ -2663,6 +2766,7 @@ def produce_episode() -> None:
                     transition_seg.export(p, format="mp3", bitrate="192k")
                     concat_files.append(p)
                     concat_files.append(silence_path)
+                    pending_segment_bed = True
                 else:
                     concat_files.append(silence_path)
             continue
@@ -2697,6 +2801,21 @@ def produce_episode() -> None:
                     window_ms=DUCK_WINDOW_MS,
                 )
                 mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_introbed_mix.mp3"
+                ducked.export(mix_path, format="mp3", bitrate="192k")
+                concat_files.append(mix_path)
+            elif pending_segment_bed and transition_seg is not None:
+                pending_segment_bed = False
+                voice_seg = AudioSegment.from_file(final_voice_path)
+                bed = transition_seg[:min(SEGMENT_BED_MS, len(voice_seg))]
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 1.5).fade_out(SEGMENT_BED_FADE_OUT_MS)
+                ducked = duck_music_under_voice(
+                    voice=voice_seg,
+                    music=bed,
+                    threshold_dbfs=DUCK_THRESHOLD_DBFS,
+                    duck_db=DUCK_AMOUNT_DB + 1.5,
+                    window_ms=DUCK_WINDOW_MS,
+                )
+                mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_segmentbed_mix.mp3"
                 ducked.export(mix_path, format="mp3", bitrate="192k")
                 concat_files.append(mix_path)
             else:
@@ -2775,7 +2894,7 @@ def produce_episode() -> None:
 
     TRACKING_SUMMARY_PATH.write_text(json.dumps(tracking, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    forwardable_moments = extract_forwardable_moments(script, max_items=4)
+    forwardable_moments = extract_forwardable_moments(script, stories=stories, max_items=4)
     FORWARDABLE_MOMENTS_PATH.write_text(json.dumps(forwardable_moments, indent=2, ensure_ascii=False), encoding="utf-8")
 
     show_notes = build_episode_show_notes(tracking, pack, stories)
