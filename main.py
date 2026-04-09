@@ -75,6 +75,13 @@ STORY_SCORES_PATH = BASE_DIR / "story_scores.json"
 TRACKING_SUMMARY_PATH = BASE_DIR / "tracking_summary.json"
 FORWARDABLE_MOMENTS_PATH = BASE_DIR / "forwardable_moments.json"
 
+AUDIO_BRANDKIT_DIR = BASE_DIR / "audio_brandkit"
+BRANDKIT_SFX_DIR = AUDIO_BRANDKIT_DIR / "sfx"
+BRANDKIT_BEDS_DIR = AUDIO_BRANDKIT_DIR / "beds"
+AUDIO_BRANDKIT_MANIFEST = AUDIO_BRANDKIT_DIR / "manifest.json"
+for _p in [AUDIO_BRANDKIT_DIR, BRANDKIT_SFX_DIR, BRANDKIT_BEDS_DIR]:
+    _p.mkdir(parents=True, exist_ok=True)
+
 THELEDGR_SUBSCRIBE_URL = "https://theledgr.io"
 THELEDGR_SPOKEN_URL = "T-H-E-L-E-D-G-R dot I-O"
 THELEDGR_DEFAULT_SPONSORS: List[Dict[str, str]] = [
@@ -114,10 +121,36 @@ PRIMARY_LLM = os.getenv("PRIMARY_LLM", "openai").strip().lower()  # gemini | ope
 OPENAI_CHAT_MODEL = os.getenv("OPENAI_CHAT_MODEL", "gpt-4o")
 OPENAI_TTS_MODEL = os.getenv("OPENAI_TTS_MODEL", "tts-1-hd")
 
+AUDIO_BACKEND = os.getenv("AUDIO_BACKEND", "eleven").strip().lower()  # openai | eleven
+ELEVEN_API_KEY = (os.getenv("AI_EDGE_PODCAST_ELEVENLABS", "") or os.getenv("ELEVENLABS_API_KEY", "")).strip()
+ELEVEN_OUTPUT_FORMAT = os.getenv("ELEVEN_OUTPUT_FORMAT", "mp3_44100_128").strip()
+ELEVEN_MODEL_ALEX = os.getenv("ELEVEN_MODEL_ALEX", "eleven_v3").strip()
+ELEVEN_MODEL_JAMIE = os.getenv("ELEVEN_MODEL_JAMIE", "eleven_v3").strip()
+ELEVEN_MODEL_RUFUS = os.getenv("ELEVEN_MODEL_RUFUS", "eleven_v3").strip()
+ELEVEN_VOICE_ID_ALEX = os.getenv("ELEVEN_VOICE_ID_ALEX", "vDchjyOZZytffNeZXfZK").strip()
+ELEVEN_VOICE_ID_JAMIE = os.getenv("ELEVEN_VOICE_ID_JAMIE", "kdnRe2koJdOK4Ovxn2DI").strip()
+ELEVEN_VOICE_ID_RUFUS = os.getenv("ELEVEN_VOICE_ID_RUFUS", "Fahco4VZzobUeiPqni1S").strip()
+ELEVEN_STABILITY_ALEX = float(os.getenv("ELEVEN_STABILITY_ALEX", "0.38"))
+ELEVEN_STABILITY_JAMIE = float(os.getenv("ELEVEN_STABILITY_JAMIE", "0.34"))
+ELEVEN_STABILITY_RUFUS = float(os.getenv("ELEVEN_STABILITY_RUFUS", "0.40"))
+ELEVEN_SIMILARITY_ALEX = float(os.getenv("ELEVEN_SIMILARITY_ALEX", "0.82"))
+ELEVEN_SIMILARITY_JAMIE = float(os.getenv("ELEVEN_SIMILARITY_JAMIE", "0.80"))
+ELEVEN_SIMILARITY_RUFUS = float(os.getenv("ELEVEN_SIMILARITY_RUFUS", "0.84"))
+ELEVEN_STYLE_ALEX = float(os.getenv("ELEVEN_STYLE_ALEX", "0.28"))
+ELEVEN_STYLE_JAMIE = float(os.getenv("ELEVEN_STYLE_JAMIE", "0.33"))
+ELEVEN_STYLE_RUFUS = float(os.getenv("ELEVEN_STYLE_RUFUS", "0.24"))
+ELEVEN_USE_SPEAKER_BOOST = os.getenv("ELEVEN_USE_SPEAKER_BOOST", "true").strip().lower() in ("1","true","yes")
+AUTO_BUILD_AUDIO_BRANDKIT = os.getenv("AUTO_BUILD_AUDIO_BRANDKIT", "true").strip().lower() in ("1","true","yes")
+REBUILD_AUDIO_BRANDKIT = os.getenv("REBUILD_AUDIO_BRANDKIT", "false").strip().lower() in ("1","true","yes")
+ELEVEN_USE_DIALOGUE_SCENES = os.getenv("ELEVEN_USE_DIALOGUE_SCENES", "true").strip().lower() in ("1","true","yes")
+ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "6"))
+ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "1200"))
+ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "140"))
+
 # Episode length gates (minutes)
-MIN_MINUTES = float(os.getenv("MIN_MINUTES", "24"))
-MAX_MINUTES = float(os.getenv("MAX_MINUTES", "35"))
-TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "28"))
+MIN_MINUTES = float(os.getenv("MIN_MINUTES", "19"))
+MAX_MINUTES = float(os.getenv("MAX_MINUTES", "24"))
+TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "22"))
 
 # Script pacing (WPM)
 WORDS_PER_MINUTE = float(os.getenv("WORDS_PER_MINUTE", "175"))
@@ -138,7 +171,7 @@ SAVE_SCRIPT = os.getenv("SAVE_SCRIPT", "false").strip().lower() in ("1", "true",
 FORCE_REBUILD = os.getenv("FORCE_REBUILD", "false").strip().lower() in ("1", "true", "yes")
 
 # Voices
-# Mixed-model voice routing: Alex stays on the old proven stack, Jamie is experiment.
+# OpenAI fallback voice routing. Option B uses ElevenLabs as the primary performance layer.
 VOICE_MODEL_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_MODEL_ALEX", "tts-1-hd"),
     "JAMIE": os.getenv("VOICE_MODEL_JAMIE", "gpt-4o-mini-tts"),
@@ -2220,6 +2253,331 @@ def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
     return chunks
 
 
+
+
+def _eleven_headers() -> Dict[str, str]:
+    if not ELEVEN_API_KEY:
+        raise RuntimeError("AI_EDGE_PODCAST_ELEVENLABS is missing. Add it to GitHub Secrets / env.")
+    return {
+        "xi-api-key": ELEVEN_API_KEY,
+        "Content-Type": "application/json",
+        "Accept": "audio/mpeg",
+    }
+
+
+def _eleven_voice_id(speaker: str) -> str:
+    mapping = {
+        "ALEX": ELEVEN_VOICE_ID_ALEX,
+        "JAMIE": ELEVEN_VOICE_ID_JAMIE,
+        "RUFUS": ELEVEN_VOICE_ID_RUFUS,
+    }
+    voice_id = mapping.get((speaker or "").upper(), "")
+    if not voice_id or voice_id.startswith("REPLACE_"):
+        raise RuntimeError(f"Missing ElevenLabs voice ID for {speaker}. Set ELEVEN_VOICE_ID_{speaker.upper()} in GitHub Secrets / env.")
+    return voice_id
+
+
+def _eleven_model_id(speaker: str) -> str:
+    return {
+        "ALEX": ELEVEN_MODEL_ALEX,
+        "JAMIE": ELEVEN_MODEL_JAMIE,
+        "RUFUS": ELEVEN_MODEL_RUFUS,
+    }.get((speaker or "").upper(), "eleven_v3")
+
+
+def _eleven_voice_settings(speaker: str) -> Dict[str, float | bool]:
+    spk = (speaker or "").upper()
+    if spk == "ALEX":
+        return {
+            "stability": ELEVEN_STABILITY_ALEX,
+            "similarity_boost": ELEVEN_SIMILARITY_ALEX,
+            "style": ELEVEN_STYLE_ALEX,
+            "speed": ALEX_SPEED,
+            "use_speaker_boost": ELEVEN_USE_SPEAKER_BOOST,
+        }
+    if spk == "JAMIE":
+        return {
+            "stability": ELEVEN_STABILITY_JAMIE,
+            "similarity_boost": ELEVEN_SIMILARITY_JAMIE,
+            "style": ELEVEN_STYLE_JAMIE,
+            "speed": JAMIE_SPEED,
+            "use_speaker_boost": ELEVEN_USE_SPEAKER_BOOST,
+        }
+    return {
+        "stability": ELEVEN_STABILITY_RUFUS,
+        "similarity_boost": ELEVEN_SIMILARITY_RUFUS,
+        "style": ELEVEN_STYLE_RUFUS,
+        "speed": RUFUS_SPEED,
+        "use_speaker_boost": ELEVEN_USE_SPEAKER_BOOST,
+    }
+
+
+def _speech_friendly_text(text: str) -> str:
+    s = re.sub(r"\s+", " ", text or "").strip()
+    s = s.replace("AI", "A.I.")
+    s = s.replace("EHR", "E.H.R.")
+    s = s.replace("API", "A.P.I.")
+    s = s.replace("GPU", "G.P.U.")
+    s = s.replace("LLM", "L.L.M.")
+    s = s.replace("TheLEDGR", "The Ledger")
+    s = re.sub(r"\b(\d+)%\b", lambda m: f"{m.group(1)} percent", s)
+    s = re.sub(r"\$(\d+(?:\.\d+)?)\s*([mbMB]?)", lambda m: "$" + m.group(1) + (" " + {"m":"million","b":"billion","M":"million","B":"billion"}.get(m.group(2), "") if m.group(2) else ""), s)
+    return s
+
+
+def _eleven_emotion_tags(speaker: str, text: str) -> str:
+    low = (text or "").lower()
+    tags: List[str] = []
+    if speaker == "ALEX":
+        tags.extend(["confident", "energized"])
+        if "?" in low:
+            tags.append("challenging")
+        if any(k in low for k in ["lawsuit", "ban", "breach", "security", "warning", "risk"]):
+            tags.append("urgent")
+        if any(k in low for k in ["billion", "million", "percent", "revenue", "funding", "$"]):
+            tags.append("leaning in")
+    elif speaker == "JAMIE":
+        tags.extend(["warm", "reactive"])
+        if any(k in low for k in ["rufus", "cold", "ridiculous", "dangerous", "wrong"]):
+            tags.append("annoyed")
+        if any(k in low for k in ["patient", "nurse", "mental health", "human", "people", "care"]):
+            tags.append("concerned")
+        if "?" in low:
+            tags.append("incredulous")
+        if any(k in low for k in ["wow", "unbelievable", "really"]):
+            tags.append("amused")
+    else:
+        tags.extend(["dryly", "amused"])
+        if any(k in low for k in ["regulation", "export", "china", "policy", "lawsuit", "market"]):
+            tags.append("precise")
+        if any(k in low for k in ["million", "billion", "percent", "revenue", "valuation"]):
+            tags.append("matter-of-fact")
+        if "?" in low:
+            tags.append("skeptical")
+    uniq = []
+    seen = set()
+    for t in tags:
+        if t not in seen:
+            seen.add(t)
+            uniq.append(t)
+    return " ".join(f"[{t}]" for t in uniq[:4])
+
+
+def _eleven_prompted_text(speaker: str, text: str) -> str:
+    base = _speech_friendly_text(text)
+    tag_text = _eleven_emotion_tags((speaker or "").upper(), base)
+    return f"{tag_text} {base}".strip()
+
+
+
+def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[str, object]]:
+    if AUDIO_BACKEND != "eleven" or not ELEVEN_USE_DIALOGUE_SCENES:
+        return [(spk, txt) for spk, txt in merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)]
+
+    items: List[Tuple[str, object]] = []
+    scene: List[Tuple[str, str]] = []
+    scene_chars = 0
+
+    def flush_scene() -> None:
+        nonlocal scene, scene_chars
+        if not scene:
+            return
+        uniq = {spk for spk, _ in scene}
+        if len(scene) >= 2 and len(uniq) >= 2:
+            items.append(("SCENE", list(scene)))
+        else:
+            for spk, txt in scene:
+                items.append((spk, txt))
+        scene = []
+        scene_chars = 0
+
+    for spk, txt in dialogue:
+        if spk == "MUSIC":
+            flush_scene()
+            items.append(("MUSIC", "[MUSIC]"))
+            continue
+
+        txt = (txt or "").strip()
+        if not txt:
+            continue
+
+        projected = scene_chars + len(txt)
+        if scene and (len(scene) >= ELEVEN_SCENE_MAX_TURNS or projected > ELEVEN_SCENE_MAX_CHARS):
+            flush_scene()
+
+        scene.append((spk, txt))
+        scene_chars += len(txt)
+
+    flush_scene()
+    return items
+
+
+def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> None:
+    inputs = []
+    for speaker, text in scene:
+        inputs.append({
+            "text": _eleven_prompted_text(speaker, text),
+            "voice_id": _eleven_voice_id(speaker),
+        })
+
+    payload = {
+        "inputs": inputs,
+        "model_id": "eleven_v3",
+        "apply_text_normalization": "auto",
+    }
+    url = f"https://api.elevenlabs.io/v1/text-to-dialogue?output_format={ELEVEN_OUTPUT_FORMAT}"
+    last_err = None
+    for attempt in range(1, TTS_RETRIES + 1):
+        try:
+            r = requests.post(url, headers=_eleven_headers(), json=payload, timeout=240)
+            r.raise_for_status()
+            out_path.write_bytes(r.content)
+            return
+        except Exception as e:
+            last_err = e
+            sleep_s = min(12, 2 * attempt)
+            _safe_print(f"    ⚠️ ElevenLabs dialogue render failed (attempt {attempt}/{TTS_RETRIES}): {e} — retrying in {sleep_s:.1f}s")
+            time.sleep(sleep_s)
+    raise RuntimeError(f"ElevenLabs dialogue render failed after {TTS_RETRIES} retries: {last_err}")
+
+
+def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path: Path) -> bool:
+    voice_seg = AudioSegment.from_file(voice_path)
+    low = (text or "").lower()
+
+    bed_path: Optional[Path] = None
+    if "the ledger" in low or "subscribe" in low or "t-h-e-l-e-d-g-r" in low:
+        candidate = BRANDKIT_BEDS_DIR / "sponsor_bed_loop.mp3"
+        if candidate.exists():
+            bed_path = candidate
+    elif any(k in low for k in ["patient", "mental health", "nurse", "hospital", "people", "human", "care"]):
+        candidate = BRANDKIT_BEDS_DIR / "human_concern_bed_loop.mp3"
+        if candidate.exists():
+            bed_path = candidate
+    elif any(k in low for k in ["lawsuit", "regulation", "ban", "security", "risk", "china", "export", "market", "revenue", "funding"]):
+        candidate = BRANDKIT_BEDS_DIR / "suspense_bed_loop.mp3"
+        if candidate.exists():
+            bed_path = candidate
+
+    if bed_path is None:
+        return False
+
+    bed = AudioSegment.from_file(bed_path)
+    if len(bed) < len(voice_seg):
+        loops = int(len(voice_seg) / max(1, len(bed))) + 1
+        bed = bed * loops
+    bed = bed[:len(voice_seg)]
+    bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 2.0).fade_out(min(2200, max(500, int(len(voice_seg) * 0.35))))
+    ducked = duck_music_under_voice(
+        voice=voice_seg,
+        music=bed,
+        threshold_dbfs=DUCK_THRESHOLD_DBFS,
+        duck_db=DUCK_AMOUNT_DB + 2.0,
+        window_ms=DUCK_WINDOW_MS,
+    )
+    ducked.export(out_path, format="mp3", bitrate="192k")
+    return True
+
+def _eleven_tts_to_file(text: str, speaker: str, out_path: Path) -> None:
+    voice_id = _eleven_voice_id(speaker)
+    model_id = _eleven_model_id(speaker)
+    payload = {
+        "text": _eleven_prompted_text(speaker, text),
+        "model_id": model_id,
+        "voice_settings": _eleven_voice_settings(speaker),
+    }
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}?output_format={ELEVEN_OUTPUT_FORMAT}"
+    last_err = None
+    for attempt in range(1, TTS_RETRIES + 1):
+        try:
+            r = requests.post(url, headers=_eleven_headers(), json=payload, timeout=180)
+            r.raise_for_status()
+            out_path.write_bytes(r.content)
+            return
+        except Exception as e:
+            last_err = e
+            sleep_s = min(12, 2 * attempt)
+            _safe_print(f"    ⚠️ ElevenLabs TTS failed for {speaker} (attempt {attempt}/{TTS_RETRIES}): {e} — retrying in {sleep_s:.1f}s")
+            time.sleep(sleep_s)
+    raise RuntimeError(f"ElevenLabs TTS failed for {speaker} after {TTS_RETRIES} retries: {last_err}")
+
+
+def _generate_sound_effect_file(prompt: str, out_path: Path, *, duration_seconds: float | None = None, loop: bool = False, prompt_influence: float = 0.35) -> None:
+    payload = {
+        "text": prompt,
+        "model_id": "eleven_text_to_sound_v2",
+        "loop": loop,
+        "prompt_influence": prompt_influence,
+    }
+    if duration_seconds is not None:
+        payload["duration_seconds"] = duration_seconds
+    url = "https://api.elevenlabs.io/v1/sound-generation?output_format=mp3_44100_128"
+    r = requests.post(url, headers=_eleven_headers(), json=payload, timeout=180)
+    r.raise_for_status()
+    out_path.write_bytes(r.content)
+
+
+def ensure_audio_brandkit() -> None:
+    if AUDIO_BACKEND != "eleven":
+        return
+    if not AUTO_BUILD_AUDIO_BRANDKIT and not REBUILD_AUDIO_BRANDKIT:
+        return
+
+    manifest = {}
+    if AUDIO_BRANDKIT_MANIFEST.exists():
+        try:
+            manifest = json.loads(AUDIO_BRANDKIT_MANIFEST.read_text(encoding="utf-8"))
+        except Exception:
+            manifest = {}
+
+    spec = {
+        str(BRANDKIT_SFX_DIR / "intro_sting_brand.mp3"): {
+            "prompt": "premium futuristic podcast intro sting, dark blue tech energy, cinematic and restrained, confident, 2.8 seconds",
+            "duration": 2.8,
+            "loop": False,
+        },
+        str(BRANDKIT_SFX_DIR / "segment_transition_brand.mp3"): {
+            "prompt": "tight premium podcast transition sting, subtle suspense, clean tech pulse, 1.2 seconds",
+            "duration": 1.2,
+            "loop": False,
+        },
+        str(BRANDKIT_SFX_DIR / "danger_sting_brand.mp3"): {
+            "prompt": "short cinematic danger sting for regulation, lawsuit or security story, restrained but tense, 1.1 seconds",
+            "duration": 1.1,
+            "loop": False,
+        },
+        str(BRANDKIT_BEDS_DIR / "suspense_bed_loop.mp3"): {
+            "prompt": "subtle suspense bed for premium AI podcast, low pulse, dark but elegant, no melody, seamless loop",
+            "duration": 8.0,
+            "loop": True,
+        },
+        str(BRANDKIT_BEDS_DIR / "human_concern_bed_loop.mp3"): {
+            "prompt": "soft emotional underscore for human stakes in tech podcast, restrained, warm tension, seamless loop",
+            "duration": 8.0,
+            "loop": True,
+        },
+        str(BRANDKIT_BEDS_DIR / "sponsor_bed_loop.mp3"): {
+            "prompt": "subtle premium sponsor bed for business intelligence podcast, clean, understated, seamless loop",
+            "duration": 6.0,
+            "loop": True,
+        },
+    }
+
+    changed = False
+    for path_str, meta in spec.items():
+        p = Path(path_str)
+        if p.exists() and not REBUILD_AUDIO_BRANDKIT:
+            continue
+        try:
+            _safe_print(f" >> 🎛️ BRANDKIT: generating {p.name}...")
+            _generate_sound_effect_file(meta["prompt"], p, duration_seconds=meta["duration"], loop=meta["loop"])
+            manifest[p.name] = meta
+            changed = True
+        except Exception as e:
+            _safe_print(f"    ⚠️ Brandkit generation failed for {p.name}: {e}")
+    if changed:
+        AUDIO_BRANDKIT_MANIFEST.write_text(json.dumps(manifest, indent=2, ensure_ascii=False), encoding="utf-8")
+
 def _voice_speed(speaker: str) -> float:
     return {
         "ALEX": ALEX_SPEED,
@@ -2625,6 +2983,7 @@ def produce_episode() -> None:
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg is required for stitching and mastering. Install it on runner/host.")
     _require_intro_outro_if_needed()
+    ensure_audio_brandkit()
 
     today = datetime.date.today().isoformat()
     final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
@@ -2697,7 +3056,7 @@ def produce_episode() -> None:
         _safe_print(f"    ✅ Saved script: {script_path.name}")
 
     dialogue = iter_dialogue(script)
-    dialogue_merged = merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)
+    render_items = _build_eleven_render_items(dialogue) if AUDIO_BACKEND == "eleven" else merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)
 
     run_tmp = TMP_AUDIO_DIR / today
     if run_tmp.exists():
@@ -2749,7 +3108,7 @@ def produce_episode() -> None:
     pending_intro_bed = False
     pending_segment_bed = False
 
-    for speaker, text in dialogue_merged:
+    for speaker, text in render_items:
         if speaker == "MUSIC":
             if not intro_done:
                 # Guaranteed audible intro stinger
@@ -2771,6 +3130,55 @@ def produce_episode() -> None:
                     concat_files.append(silence_path)
             continue
 
+        if speaker == "SCENE":
+            scene = text
+            seg_idx += 1
+            raw_path = run_tmp / f"{today}_scene_{seg_idx:04d}_dialogue_raw.mp3"
+            _eleven_dialogue_to_file(scene, raw_path)
+            post_process_tts_mp3(raw_path)
+            final_voice_path = raw_path
+            scene_text = " ".join([t for _, t in scene])
+            mixed_scene_path = run_tmp / f"{today}_scene_{seg_idx:04d}_mix.mp3"
+            if _mix_brand_bed_if_needed(final_voice_path, scene_text, "ALEX", mixed_scene_path):
+                final_voice_path = mixed_scene_path
+
+            if pending_intro_bed and INTRO_PATH.exists():
+                pending_intro_bed = False
+                voice_seg = AudioSegment.from_file(final_voice_path)
+                bed = AudioSegment.from_file(INTRO_PATH)
+                bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS).fade_out(INTRO_BED_FADE_OUT_MS)
+                ducked = duck_music_under_voice(
+                    voice=voice_seg,
+                    music=bed,
+                    threshold_dbfs=DUCK_THRESHOLD_DBFS,
+                    duck_db=DUCK_AMOUNT_DB,
+                    window_ms=DUCK_WINDOW_MS,
+                )
+                mix_path = run_tmp / f"{today}_scene_{seg_idx:04d}_introbed_mix.mp3"
+                ducked.export(mix_path, format="mp3", bitrate="192k")
+                concat_files.append(mix_path)
+            elif pending_segment_bed and transition_seg is not None:
+                pending_segment_bed = False
+                voice_seg = AudioSegment.from_file(final_voice_path)
+                bed = transition_seg[:min(SEGMENT_BED_MS, len(voice_seg))]
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 1.5).fade_out(SEGMENT_BED_FADE_OUT_MS)
+                ducked = duck_music_under_voice(
+                    voice=voice_seg,
+                    music=bed,
+                    threshold_dbfs=DUCK_THRESHOLD_DBFS,
+                    duck_db=DUCK_AMOUNT_DB + 1.5,
+                    window_ms=DUCK_WINDOW_MS,
+                )
+                mix_path = run_tmp / f"{today}_scene_{seg_idx:04d}_segmentbed_mix.mp3"
+                ducked.export(mix_path, format="mp3", bitrate="192k")
+                concat_files.append(mix_path)
+            else:
+                concat_files.append(final_voice_path)
+
+            concat_files.append(quote_pause_path if is_forwardable_line_text(scene_text) else silence_path)
+            continue
+
         chunks = chunk_text(text, max_chars=_tts_chunk_max_chars(speaker))
 
         for chunk in chunks:
@@ -2786,6 +3194,10 @@ def produce_episode() -> None:
                 apply_speed_ffmpeg(raw_path, sped_path, speaker_speed)
                 post_process_tts_mp3(sped_path)
                 final_voice_path = sped_path
+
+            mixed_voice_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_mix.mp3"
+            if AUDIO_BACKEND == "eleven" and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
+                final_voice_path = mixed_voice_path
 
             if pending_intro_bed and INTRO_PATH.exists():
                 pending_intro_bed = False
