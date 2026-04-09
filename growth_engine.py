@@ -13,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v2.4"
+MODEL_VERSION = "podcast-growth-v2.6"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
@@ -70,6 +70,9 @@ PUBLISHER_SCORES = {
     "yahoo tech": 58.0,
     "yahoo": 55.0,
     "cyber magazine": 50.0,
+    "medical daily": 44.0,
+    "fierce healthcare": 72.0,
+    "openpr": 18.0,
     "towards data science": 60.0,
     "yahoo finance": 60.0,
     "the tech buzz": 38.0,
@@ -77,12 +80,16 @@ PUBLISHER_SCORES = {
     "msn": 40.0,
     "indexbox": 32.0,
     "bitget": 18.0,
+    "openpr": 20.0,
+    "openpr.com": 20.0,
 }
 
 LOW_SIGNAL_PUBLISHERS = {
     "msn",
     "indexbox",
     "bitget",
+    "openpr",
+    "the tech buzz",
 }
 
 VERTICAL_KEYWORDS = {
@@ -112,7 +119,7 @@ VARIANT_DEFAULTS: Dict[str, List[str]] = {
     "cta_style": ["operator", "career", "contrarian"],
     "sponsor_style": ["decision_signal", "career_edge", "less_noise"],
     "clip_style": ["contrarian", "fear_greed", "operator_take"],
-    "voice_profile": ["control", "marin_fable", "marin_nova"],
+    "voice_profile": ["mike_archer_eryn", "mike_archer_eryn_dialogue"],
 }
 
 
