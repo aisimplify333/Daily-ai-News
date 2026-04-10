@@ -32,14 +32,13 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      # 2. INSTALL SYSTEM LIBRARIES (Crucial for Video)
+      # 2. INSTALL SYSTEM LIBRARIES
       - name: Install System Dependencies
         shell: bash
         run: |
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y ffmpeg imagemagick ghostscript
-          # Fix for ImageMagick policy (Crucial for Video Text)
           sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
 
       # 3. INSTALL PYTHON LIBRARIES
@@ -56,21 +55,32 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile main.py
+          python -m py_compile growth_engine.py
+          python -m py_compile run_broadcast.py
           python -m tabnanny -v main.py
           python -m compileall -q .
 
-      # 4b. RUN THE EMPIRE BROADCAST (The Soul & Video)
+      # 4b. RUN THE EMPIRE BROADCAST
       - name: Run Empire Broadcast
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
 
-          # --- QUALITY GATES (ALIGN BOTH RUNNERS) ---
-          MIN_EPISODE_MINUTES: "24"
-          MIN_MINUTES: "24"
-          MAX_MINUTES: "35"
-          TARGET_MINUTES: "28"
+          # --- ELEVENLABS / OPTION B ---
+          AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
+          AUDIO_BACKEND: "eleven"
+
+          # --- LOCKED ELEVEN VOICES ---
+          ELEVEN_VOICE_ID_ALEX: "vDchjyOZZytffNeZXfZK"
+          ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
+          ELEVEN_VOICE_ID_JAMIE: "kdnRe2koJdOK4Ovxn2DI"
+
+          # --- QUALITY GATES / NEW RUNTIME TARGET ---
+          MIN_EPISODE_MINUTES: "19"
+          MIN_MINUTES: "19"
+          MAX_MINUTES: "24"
+          TARGET_MINUTES: "22"
           WORDS_PER_MINUTE: "175"
           JAMIE_SPEED: "1.05"
 
@@ -82,7 +92,7 @@ jobs:
           DUCK_AMOUNT_DB: "12.0"
           DUCK_WINDOW_MS: "40"
 
-          # --- X/TWITTER CREDENTIALS (used by social_publisher.py) ---
+          # --- X / TWITTER CREDENTIALS ---
           X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
@@ -92,7 +102,7 @@ jobs:
           set -euo pipefail
           python run_broadcast.py
 
-      # 5. COMMIT ARTIFACTS (HARDENED)
+      # 5. COMMIT ARTIFACTS
       - name: Commit and Push
         shell: bash
         run: |
@@ -101,24 +111,23 @@ jobs:
           git config user.name "AI Producer"
           git config user.email "bot@aisimplifymedia.com"
 
-          # Always sync first (avoid rebase with staged changes)
           git pull --rebase origin main || echo "No remote changes"
 
-          # Stage core assets (guard each add)
           git add feed.xml || true
           git add episode_metadata.json || true
           git add viral_caption.txt || true
+          git add story_scores.json || true
+          git add tracking_summary.json || true
+          git add forwardable_moments.json || true
           git add episode_audio/podcast_*.mp3 || true
           git add script_*.txt || true
 
-          # Stage social clip ONLY if it exists; force-add because .gitignore ignores it
           if [ -f social_clip.mp4 ]; then
             git add -f social_clip.mp4
           else
             echo "No social_clip.mp4 found (skipping)"
           fi
 
-          # Commit & push if anything changed
           git status --porcelain
           git commit -m "Automated: New Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
