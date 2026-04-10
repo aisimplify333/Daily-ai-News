@@ -1469,15 +1469,43 @@ def _script_targets() -> Tuple[int, int, int]:
 
 
 def _segment_word_targets() -> List[int]:
-    min_words, _, max_words = _script_targets()
-    seg = [650, 1200, 900, 1400, 650]
-    total = sum(seg)
-    if total > max_words:
-        scale = max_words / float(total)
-        seg = [max(450, int(x * scale)) for x in seg]
-    if sum(seg) < min_words:
-        deficit = min_words - sum(seg)
-        seg[3] += deficit
+    min_words, target_words, max_words = _script_targets()
+
+    # Segment weights tuned for the 5-part show structure:
+    # cold open/topline, Jamie human desk, Rufus desk, builder/operator block, close
+    weights = [0.13, 0.24, 0.18, 0.29, 0.16]
+
+    # For the Eleven-backed show, pauses, transitions, beds, and more natural pacing
+    # add meaningful runtime. We therefore target a tighter script than the legacy build.
+    backend = os.getenv("AUDIO_BACKEND", "openai").strip().lower()
+    compression = 0.88 if backend == "eleven" else 0.96
+
+    effective_target = max(min_words, int(target_words * compression))
+    effective_target = min(effective_target, max_words)
+
+    seg = [max(320, int(effective_target * w)) for w in weights]
+
+    # Put any remainder into Segment 4, the most flexible desk.
+    remainder = effective_target - sum(seg)
+    seg[3] += remainder
+
+    # Absolute ceilings by segment to stop the old long-form drift.
+    hard_caps = [620, 980, 760, 1120, 620]
+    seg = [min(seg[i], hard_caps[i]) for i in range(5)]
+
+    # Rebalance after caps while respecting hard caps.
+    deficit = effective_target - sum(seg)
+    flex_order = [3, 1, 2, 4, 0]
+    for idx in flex_order:
+        if deficit <= 0:
+            break
+        room = hard_caps[idx] - seg[idx]
+        if room <= 0:
+            continue
+        add = min(room, deficit)
+        seg[idx] += add
+        deficit -= add
+
     return seg
 
 
@@ -1804,7 +1832,7 @@ NOW OUTPUT ONLY THIS SEGMENT.
 """.strip()
 
 
-def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[str]:
+def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words_max: int) -> List[str]:
     issues: List[str] = []
     if not seg_text.strip().startswith(_segment_header(seg_num)):
         issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
@@ -1825,6 +1853,8 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int) -> List[s
     wc = _word_count(seg_text)
     if wc < seg_words_min:
         issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
+    if wc > seg_words_max:
+        issues.append(f"Segment too long ({wc} words). Maximum is {seg_words_max}.")
 
     if seg_num == 1:
         lines = [l.strip() for l in seg_text.splitlines() if l.strip()]
@@ -1929,11 +1959,12 @@ def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -
 
 def _generate_segment(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
                       stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
+    seg_words_max = max(seg_words_min + 120, int(seg_words_target * 1.10))
     prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
     seg_text = ""
 
     for attempt in range(1, SEGMENT_ATTEMPTS + 1):
-        seg_text = generate_text(prompt, temperature=0.75, max_tokens=2600)
+        seg_text = generate_text(prompt, temperature=0.72, max_tokens=2200)
 
         if seg_num == 2:
             seg_text = _sanitize_segment_speakers(seg_text, allowed={"ALEX", "JAMIE"})
@@ -1941,13 +1972,29 @@ def _generate_segment(seg_num: int, seg_words_min: int, seg_words_target: int, d
                 seg_text = f"{_segment_header(seg_num)}\n{seg_text}".strip()
 
         wc = _word_count(seg_text)
-        issues = _segment_validate(seg_text, seg_num, seg_words_min)
-        _safe_print(f"    ✍️ Segment {seg_num} attempt {attempt}/{SEGMENT_ATTEMPTS} (min {seg_words_min}): {wc} words")
+        issues = _segment_validate(seg_text, seg_num, seg_words_min, seg_words_max)
+        _safe_print(
+            f"    ✍️ Segment {seg_num} attempt {attempt}/{SEGMENT_ATTEMPTS} "
+            f"(min {seg_words_min}, max {seg_words_max}): {wc} words"
+        )
 
         if not issues:
             return seg_text.strip()
 
         prompt = _segment_repair_prompt(seg_num, seg_words_min, seg_words_target, issues, seg_text)
+
+    # Last-resort trim if the model keeps overshooting.
+    if _word_count(seg_text) > seg_words_max:
+        lines = seg_text.splitlines()
+        kept = []
+        word_total = 0
+        for line in lines:
+            kept.append(line)
+            if not line.strip().startswith("###"):
+                word_total += len(re.findall(r"\b\w+\b", line))
+            if word_total >= seg_words_max:
+                break
+        seg_text = "\n".join(kept).strip()
 
     return seg_text.strip()
 
@@ -2082,7 +2129,7 @@ STORY BLOCK:
 
 def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
     seg_targets = _segment_word_targets()
-    seg_mins = [max(420, int(t * 0.92)) for t in seg_targets]
+    seg_mins = [max(300, int(t * 0.82)) for t in seg_targets]
 
     _safe_print(" >> ✍️ WRITING FULL EPISODE (SEGMENTED)...")
     segments: List[str] = []
