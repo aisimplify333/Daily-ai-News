@@ -20,7 +20,6 @@ jobs:
       SAVE_SCRIPT: "true"
 
     steps:
-      # 1. SETUP
       - name: Check out repository
         uses: actions/checkout@v4
         with:
@@ -32,7 +31,6 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      # 2. INSTALL SYSTEM LIBRARIES
       - name: Install System Dependencies
         shell: bash
         run: |
@@ -41,7 +39,6 @@ jobs:
           sudo apt-get install -y ffmpeg imagemagick ghostscript
           sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
 
-      # 3. INSTALL PYTHON LIBRARIES
       - name: Install Dependencies
         shell: bash
         run: |
@@ -49,7 +46,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      # 4a. FAST FAIL ON SYNTAX/INDENTATION
       - name: Lint compile (fast fail)
         shell: bash
         run: |
@@ -60,7 +56,6 @@ jobs:
           python -m tabnanny -v main.py
           python -m compileall -q .
 
-      # 4b. RUN THE EMPIRE BROADCAST
       - name: Run Empire Broadcast
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
@@ -76,11 +71,11 @@ jobs:
           ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
           ELEVEN_VOICE_ID_JAMIE: "kdnRe2koJdOK4Ovxn2DI"
 
-          # --- QUALITY GATES / NEW RUNTIME TARGET ---
+          # --- QUALITY GATES / SHORTER SCRIPT TARGET ---
           MIN_EPISODE_MINUTES: "19"
           MIN_MINUTES: "19"
-          MAX_MINUTES: "26"
-          TARGET_MINUTES: "20"
+          MAX_MINUTES: "24"
+          TARGET_MINUTES: "18"
           WORDS_PER_MINUTE: "175"
           JAMIE_SPEED: "1.05"
 
@@ -102,7 +97,6 @@ jobs:
           set -euo pipefail
           python run_broadcast.py
 
-      # 5. COMMIT ARTIFACTS
       - name: Commit and Push
         shell: bash
         run: |
@@ -121,6 +115,11 @@ jobs:
           git add forwardable_moments.json || true
           git add episode_audio/podcast_*.mp3 || true
           git add script_*.txt || true
+
+          # Persist reusable Eleven brandkit assets so future runs reuse them
+          git add audio_brandkit/*.mp3 || true
+          git add audio_brandkit/*.json || true
+          git add -f audio_brandkit/** || true
 
           if [ -f social_clip.mp4 ]; then
             git add -f social_clip.mp4
