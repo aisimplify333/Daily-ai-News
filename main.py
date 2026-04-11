@@ -565,46 +565,109 @@ def _extract_json_object(raw: str) -> Optional[dict]:
     return None
 
 
-def generate_text(prompt: str, temperature: float = 0.7, max_tokens: int = 2000) -> str:
-    if PRIMARY_LLM == "gemini" and gemini_key and gemini_client and genai_types:
-        for model_name in _gemini_candidate_models()[:2]:
-            try:
-                resp = gemini_client.models.generate_content(
-                    model=model_name,
-                    contents=prompt,
-                    config=genai_types.GenerateContentConfig(
-                        temperature=temperature,
-                        max_output_tokens=max_tokens,
-                    ),
-                )
-                txt = getattr(resp, "text", None)
-                if txt and txt.strip():
-                    return txt.strip()
-            except Exception as e:
-                _safe_print(f"    ⚠️ Gemini failed on {model_name}: {e}. Falling back to OpenAI...")
-                break
 
-    resp = openai_client.chat.completions.create(
-        model=OPENAI_CHAT_MODEL,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        messages=[
-            {
-                "role": "system",
-                "content": (
-                    "You are a top-tier podcast writer. Follow the requested format exactly. "
-                    "Do not add headings except segment markers that begin with ###."
-                ),
-            },
-            {"role": "user", "content": prompt},
-        ],
+def _json_safe_text(value, max_chars: int = 120000) -> str:
+    """
+    Force arbitrary prompt content into a JSON-safe UTF-8 string.
+    This strips control chars, bad surrogates, and weird payload artifacts
+    that can break OpenAI chat.completions.create().
+    """
+    if value is None:
+        text = ""
+    elif isinstance(value, str):
+        text = value
+    else:
+        try:
+            text = json.dumps(value, ensure_ascii=False, default=str)
+        except Exception:
+            text = str(value)
+
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    # Keep tabs/newlines; drop most other control chars
+    text = "".join(
+        ch for ch in text
+        if ch == "\n" or ch == "\t" or ord(ch) >= 32
     )
-    return resp.choices[0].message.content.strip()
+
+    # Remove invalid unicode safely
+    text = text.encode("utf-8", errors="ignore").decode("utf-8", errors="ignore")
+
+    # Collapse runaway blank lines
+    text = re.sub(r"\n{4,}", "\n\n\n", text)
+
+    if len(text) > max_chars:
+        text = text[:max_chars]
+
+    return text.strip()
 
 
-# ----------------------------
-# SCORING UTILITIES
-# ----------------------------
+
+def generate_text(
+    prompt,
+    temperature: float = 0.7,
+    max_tokens: int = 1600,
+    system_prompt: str | None = None,
+    model: str | None = None,
+) -> str:
+    """
+    Safe wrapper for OpenAI text generation.
+    Cleans prompt/system text so malformed RSS/news characters do not break the
+    JSON request body sent by the OpenAI Python client.
+    """
+    chosen_model = (
+        model
+        or os.getenv("OPENAI_TEXT_MODEL")
+        or os.getenv("OPENAI_MODEL")
+        or OPENAI_CHAT_MODEL
+    )
+
+    safe_system = _json_safe_text(
+        system_prompt
+        or "You are writing polished, natural spoken-word podcast dialogue."
+    )
+    safe_prompt = _json_safe_text(prompt)
+
+    last_err = None
+
+    for attempt in range(1, 4):
+        try:
+            resp = openai_client.chat.completions.create(
+                model=chosen_model,
+                messages=[
+                    {"role": "system", "content": safe_system},
+                    {"role": "user", "content": safe_prompt},
+                ],
+                temperature=float(temperature),
+                max_tokens=int(max_tokens),
+            )
+
+            content = resp.choices[0].message.content or ""
+            return _json_safe_text(content, max_chars=200000)
+
+        except Exception as e:
+            last_err = e
+            err_text = str(e).lower()
+
+            # JSON-body corruption hard retry
+            if "could not parse the json body" in err_text:
+                safe_prompt = _json_safe_text(safe_prompt, max_chars=80000)
+                safe_prompt = safe_prompt.replace("\\", " ")
+                safe_prompt = safe_prompt.replace("\x00", " ")
+                safe_prompt = re.sub(r"[^\S\n\t]+", " ", safe_prompt)
+                safe_prompt = re.sub(r"\n{3,}", "\n\n", safe_prompt).strip()
+
+                safe_system = _json_safe_text(safe_system, max_chars=8000)
+
+                time.sleep(1.25 * attempt)
+                continue
+
+            # Generic retry
+            time.sleep(1.25 * attempt)
+
+    raise RuntimeError(f"generate_text failed after 3 attempts: {last_err}")
+
+
 def _digit_count(s: str) -> int:
     return len(re.findall(r"\d", s or ""))
 
