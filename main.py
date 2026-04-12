@@ -128,21 +128,22 @@ ELEVEN_MODEL_ALEX = os.getenv("ELEVEN_MODEL_ALEX", "eleven_v3").strip()
 ELEVEN_MODEL_JAMIE = os.getenv("ELEVEN_MODEL_JAMIE", "eleven_v3").strip()
 ELEVEN_MODEL_RUFUS = os.getenv("ELEVEN_MODEL_RUFUS", "eleven_v3").strip()
 ELEVEN_VOICE_ID_ALEX = os.getenv("ELEVEN_VOICE_ID_ALEX", "vDchjyOZZytffNeZXfZK").strip()
-ELEVEN_VOICE_ID_JAMIE = os.getenv("ELEVEN_VOICE_ID_JAMIE", "kdnRe2koJdOK4Ovxn2DI").strip()
+ELEVEN_VOICE_ID_JAMIE = os.getenv("ELEVEN_VOICE_ID_JAMIE", "uYXf8XasLslADfZ2MB4u").strip()
 ELEVEN_VOICE_ID_RUFUS = os.getenv("ELEVEN_VOICE_ID_RUFUS", "Fahco4VZzobUeiPqni1S").strip()
 ELEVEN_STABILITY_ALEX = float(os.getenv("ELEVEN_STABILITY_ALEX", "0.38"))
-ELEVEN_STABILITY_JAMIE = float(os.getenv("ELEVEN_STABILITY_JAMIE", "0.34"))
-ELEVEN_STABILITY_RUFUS = float(os.getenv("ELEVEN_STABILITY_RUFUS", "0.40"))
+ELEVEN_STABILITY_JAMIE = float(os.getenv("ELEVEN_STABILITY_JAMIE", "0.26"))
+ELEVEN_STABILITY_RUFUS = float(os.getenv("ELEVEN_STABILITY_RUFUS", "0.34"))
 ELEVEN_SIMILARITY_ALEX = float(os.getenv("ELEVEN_SIMILARITY_ALEX", "0.82"))
 ELEVEN_SIMILARITY_JAMIE = float(os.getenv("ELEVEN_SIMILARITY_JAMIE", "0.80"))
 ELEVEN_SIMILARITY_RUFUS = float(os.getenv("ELEVEN_SIMILARITY_RUFUS", "0.84"))
 ELEVEN_STYLE_ALEX = float(os.getenv("ELEVEN_STYLE_ALEX", "0.28"))
-ELEVEN_STYLE_JAMIE = float(os.getenv("ELEVEN_STYLE_JAMIE", "0.33"))
-ELEVEN_STYLE_RUFUS = float(os.getenv("ELEVEN_STYLE_RUFUS", "0.24"))
+ELEVEN_STYLE_JAMIE = float(os.getenv("ELEVEN_STYLE_JAMIE", "0.46"))
+ELEVEN_STYLE_RUFUS = float(os.getenv("ELEVEN_STYLE_RUFUS", "0.30"))
 ELEVEN_USE_SPEAKER_BOOST = os.getenv("ELEVEN_USE_SPEAKER_BOOST", "true").strip().lower() in ("1","true","yes")
 AUTO_BUILD_AUDIO_BRANDKIT = os.getenv("AUTO_BUILD_AUDIO_BRANDKIT", "true").strip().lower() in ("1","true","yes")
 REBUILD_AUDIO_BRANDKIT = os.getenv("REBUILD_AUDIO_BRANDKIT", "false").strip().lower() in ("1","true","yes")
 ELEVEN_USE_DIALOGUE_SCENES = os.getenv("ELEVEN_USE_DIALOGUE_SCENES", "true").strip().lower() in ("1","true","yes")
+ALEX_USE_OPENAI = os.getenv("ALEX_USE_OPENAI", "true").strip().lower() in ("1","true","yes")
 ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "6"))
 ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "1200"))
 ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "140"))
@@ -180,30 +181,26 @@ VOICE_MODEL_MAP: Dict[str, str] = {
 
 VOICE_MAP: Dict[str, str] = {
     "ALEX": os.getenv("VOICE_ALEX", "onyx"),
-    "JAMIE": os.getenv("VOICE_JAMIE", "marin"),
+    "JAMIE": os.getenv("VOICE_JAMIE", "shimmer"),
     "RUFUS": os.getenv("VOICE_RUFUS", "fable"),
 }
 
 VOICE_INSTRUCTIONS: Dict[str, str] = {
     "ALEX": (
-        "Sound like a high-agency host with bigger emotional contrast and sharper pacing. "
-        "He should not sound flat or evenly pleasant. He needs real swings: skeptical, excited, amused, urgent, annoyed, impressed. "
-        "He should tee up tension, step on the gas when a stat lands, and sound like he actually cares about the consequence. "
-        "Use short bursts, sharper emphasis, quick resets, and real host energy. Never sleepy, never monotone, never polished like a generic narrator."
+        "Sound like a high-agency Joe Rogan-style host with swagger, fast reactions, amused pressure, and real bravado. "
+        "He is not a polished anchor. He is provocative, playful, curious, and slightly dangerous. "
+        "He interrupts when someone is hedging, laughs when tension gets interesting, and sounds like he enjoys the fight. "
+        "Use sharper contrast, faster turns, and strong emphasis when a number lands."
     ),
     "JAMIE": (
-        "Sound like a sharp, emotionally intelligent woman in her mid-20s who is part co-host, part color commentator, and part human conscience. "
-        "She is not an announcer and never sounds like she is reading copy. She is in the conversation. "
-        "She reacts quickly to Alex, cuts in naturally, teases him lightly, and pushes back when Rufus gets too cold, cynical, or detached. "
-        "Her emotional range should be wide and clearly different from the others: amused, incredulous, warm, offended, delighted, worried, stunned. "
-        "Use light laughs, breathy disbelief, quick pivots, and interruption energy when it fits. "
-        "Keep it human, emotionally responsive, and never level or sleepy for too long."
+        "Sound bright, alive, and emotionally quick. She is warm, funny, incredulous, occasionally flirty with Alex, and visibly annoyed when Rufus gets too cold. "
+        "She should not sound like a presenter. She should sound like a real person reacting in the room. "
+        "Use light laughs, huffs of disbelief, sharper pivots, and a more playful, bubbly surface over real concern."
     ),
     "RUFUS": (
-        "Sound like a dry British analyst with stronger contrast and sharper emotional edges than before. "
-        "He should sound cool, wry, skeptical, and occasionally wickedly amused, but when the numbers get serious he should tighten and sound genuinely dangerous or impressed. "
-        "He is not monotone. Use dry undercuts, clipped emphasis, and a low simmer of disbelief when institutions behave absurdly. "
-        "Never sound sleepy, evenly pleasant, or like a neutral explainer."
+        "Sound like a dry British analyst with elite verbal precision, dry wit, and occasional withering amusement. "
+        "He keeps his British sayings, lands the hardest numbers cleanly, and undercuts hype with quiet menace. "
+        "He is serious, but never flat. He sounds like the cleverest person in the room and knows it."
     ),
 }
 
@@ -217,9 +214,9 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
-ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.03"))
-JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.08"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "0.97"))
+ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.08"))
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.12"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.01"))
 
 # Post-processing thresholds
 TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
@@ -242,11 +239,11 @@ TRANSITION_SEGMENTS = {int(x) for x in os.getenv("TRANSITION_SEGMENTS", "2,3,4,5
 INTRO_STINGER_MS = int(os.getenv("INTRO_STINGER_MS", "4500"))      # audible bumper (no voice)
 INTRO_BED_MS = int(os.getenv("INTRO_BED_MS", "6500"))              # bed under first host line
 INTRO_BED_FADE_OUT_MS = int(os.getenv("INTRO_BED_FADE_OUT_MS", "1800"))
-SEGMENT_BED_MS = int(os.getenv("SEGMENT_BED_MS", "3400"))
-SEGMENT_BED_FADE_OUT_MS = int(os.getenv("SEGMENT_BED_FADE_OUT_MS", "1200"))
+SEGMENT_BED_MS = int(os.getenv("SEGMENT_BED_MS", "1800"))
+SEGMENT_BED_FADE_OUT_MS = int(os.getenv("SEGMENT_BED_FADE_OUT_MS", "700"))
 
 OUTRO_MS = int(os.getenv("OUTRO_MS", "12000"))
-TRANSITION_MS = int(os.getenv("TRANSITION_MS", "2500"))
+TRANSITION_MS = int(os.getenv("TRANSITION_MS", "1600"))
 
 STINGER_TARGET_DBFS = float(os.getenv("STINGER_TARGET_DBFS", "-18.0"))
 
@@ -1220,48 +1217,24 @@ def order_stories_for_episode(stories: List[Dict[str, str]]) -> List[Dict[str, s
         return []
 
     working = [dict(s) for s in stories]
-    top_story = max(working, key=_editorial_impact_score)
-    top_key = _story_identity_key(top_story)
-    ordered: List[Dict[str, str]] = [top_story]
-    remaining = [s for s in working if _story_identity_key(s) != top_key]
+    biggest = [s for s in working if str(s.get("story_role") or "") == "biggest"]
+    verticals = [s for s in working if str(s.get("story_role") or "") == "vertical"]
+    other = [s for s in working if str(s.get("story_role") or "") not in {"biggest", "vertical"}]
 
-    def best_from_bucket(bucket: str) -> Optional[Dict[str, str]]:
-        candidates = [s for s in remaining if _normalize_vertical_bucket(s.get("bucket", "")) == bucket]
-        if not candidates:
-            return None
-        return max(candidates, key=_editorial_impact_score)
+    biggest.sort(key=_editorial_impact_score, reverse=True)
+    verticals.sort(key=_editorial_impact_score, reverse=True)
+    other.sort(key=_editorial_impact_score, reverse=True)
 
-    def add_story(item: Optional[Dict[str, str]]) -> None:
-        nonlocal remaining, ordered
-        if not item:
-            return
+    ordered = biggest[:3] + verticals[:2]
+    seen = {_story_identity_key(x) for x in ordered}
+    for item in biggest[3:] + verticals[2:] + other:
         key = _story_identity_key(item)
-        if any(_story_identity_key(x) == key for x in ordered):
-            return
-        ordered.append(item)
-        remaining = [s for s in remaining if _story_identity_key(s) != key]
-
-    add_story(best_from_bucket("health_ai"))
-
-    rufus_candidates = [s for s in remaining if _normalize_vertical_bucket(s.get("bucket", "")) in {"ai_agents", "ai_code", "topline"}]
-    if rufus_candidates:
-        add_story(max(rufus_candidates, key=_editorial_impact_score))
-
-    for bucket in ["ai_tools", "ai_code", "ai_agents", "topline", "health_ai"]:
-        add_story(best_from_bucket(bucket))
-
-    for item in sorted(remaining, key=_editorial_impact_score, reverse=True):
-        add_story(item)
-
-    out: List[Dict[str, str]] = []
-    seen = set()
-    for s in ordered:
-        key = _story_identity_key(s)
         if not key or key in seen:
             continue
+        ordered.append(item)
         seen.add(key)
-        out.append(s)
-    return out
+
+    return ordered[:5]
 
 
 def _build_vertical_slate(curated: List[Dict[str, str]], n: int) -> List[Dict[str, str]]:
@@ -1449,41 +1422,65 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
 
     date_str = date_str or datetime.date.today().isoformat()
     memory = load_show_memory()
-    curated = select_story_candidates(intel_items, n=max(n * 6, 30), memory=memory, bucket_cap=3)
+    curated = select_story_candidates(intel_items, n=max(n * 8, 36), memory=memory, bucket_cap=3)
     if not curated:
         ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
-        curated = ranked[:max(n * 6, 30)]
+        curated = ranked[:max(n * 8, 36)]
 
-    slate_candidates = _editor_in_chief_slate(date_str, curated, n=max(n, 5))
-    if len(slate_candidates) < max(n, 5):
-        ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
-        existing = {_story_identity_key(x) for x in slate_candidates}
-        for item in ranked:
-            if len(slate_candidates) >= max(n, 5):
-                break
-            key = _story_identity_key(item)
-            if key in existing:
-                continue
-            slate_candidates.append(item)
-            existing.add(key)
+    ranked_all = sorted([dict(x) for x in curated], key=_editorial_impact_score, reverse=True)
 
-    stories = [_candidate_to_story(x) for x in slate_candidates[:max(n, 5)]]
+    selected: List[Dict[str, str]] = []
+    used = set()
+
+    # 1) Lock the 3 biggest stories of the day, regardless of desk.
+    for item in ranked_all:
+        key = _story_identity_key(item)
+        if not key or key in used:
+            continue
+        item["story_role"] = "biggest"
+        selected.append(item)
+        used.add(key)
+        if len([x for x in selected if x.get("story_role") == "biggest"]) >= 3:
+            break
+
+    # 2) Add the 2 best remaining vertical stories from distinct owned verticals.
+    vertical_priority = ["ai_agents", "ai_code", "ai_tools", "health_ai"]
+    vertical_count = 0
+    used_verticals = set()
+    for bucket in vertical_priority:
+        candidates = [
+            dict(x) for x in ranked_all
+            if _normalize_vertical_bucket(x.get("bucket", "")) == bucket
+            and _story_identity_key(x) not in used
+        ]
+        if not candidates:
+            continue
+        winner = max(candidates, key=_editorial_impact_score)
+        winner["story_role"] = "vertical"
+        selected.append(winner)
+        used.add(_story_identity_key(winner))
+        used_verticals.add(bucket)
+        vertical_count += 1
+        if vertical_count >= 2:
+            break
+
+    # 3) Backfill with the strongest remaining stories if needed.
+    for item in ranked_all:
+        if len(selected) >= max(n, 5):
+            break
+        key = _story_identity_key(item)
+        if not key or key in used:
+            continue
+        item["story_role"] = item.get("story_role") or "flex"
+        selected.append(item)
+        used.add(key)
+
+    stories = [_candidate_to_story(x) for x in selected[:max(n, 5)]]
     stories = _dedupe_story_list(stories)
-
-    if len(stories) < max(n, 5):
-        ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
-        for x in ranked:
-            if len(stories) >= max(n, 5):
-                break
-            st = _candidate_to_story(x)
-            merged = _dedupe_story_list(stories + [st])
-            if len(merged) > len(stories):
-                stories = merged
-
     enriched = enrich_stories_with_data(stories[:max(n, 5)])
     enriched = attach_story_scores(enriched, curated)
 
-    raw_by_key = {_story_identity_key(x): x for x in slate_candidates}
+    raw_by_key = {_story_identity_key(x): x for x in selected}
     for s in enriched:
         raw = raw_by_key.get(_story_identity_key(s))
         if raw:
@@ -1493,20 +1490,8 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
                 s["share_angle"] = raw.get("share_angle", "")
             if raw.get("editor_reason"):
                 s["editor_reason"] = raw.get("editor_reason", "")
-
-    if len(enriched) < max(n, 5):
-        present = {_story_identity_key(s) for s in enriched}
-        for x in curated:
-            if len(enriched) >= max(n, 5):
-                break
-            key = _story_identity_key(x)
-            if key in present:
-                continue
-            extra = enrich_stories_with_data([_candidate_to_story(x)])
-            extra = attach_story_scores(extra, curated)
-            if extra:
-                enriched.extend(extra)
-                present.add(key)
+            if raw.get("story_role"):
+                s["story_role"] = raw.get("story_role")
 
     ordered = order_stories_for_episode(_dedupe_story_list(enriched)[:max(n, 5)])
     return ordered[:max(n, 5)]
@@ -1607,34 +1592,40 @@ def _strict_dialogue_rules() -> str:
         '- Segment markers are allowed as lines starting with "###" and will NOT be spoken.\n'
         '- "[MUSIC]" may appear as a standalone line.\n'
         '- Do not add any other headings, bullets, or markdown.\n'
+        '- This is a writer-room podcast, not a newsroom explainer. Build energy through conflict, rhythm, and reaction.\n'
+        '- Every segment must include at least one interruption, one audible reaction, one hard number, and one line with real subtext.\n'
+        '- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n'
+        '- At least one line per segment should be genuinely clipable or forwardable.\n'
     )
 
 
 def _segment_assignment(seg_num: int) -> str:
     if seg_num == 1:
         return (
-            "Cold open hook: start mid-argument with real heat. Then [MUSIC]. "
-            "Immediately after [MUSIC], Alex gives a short premium TheLEDGR sponsor hit, then welcomes the audience and fires off today's 5-story lineup in rapid summary. "
-            "Make it feel rich, current, interruptive, and addictive, with at least one unresolved consequence that makes tomorrow feel necessary."
+            "Story 1: the single biggest story of the day. Cold open with heat, disbelief, and status-play. Then [MUSIC]. "
+            "Immediately after [MUSIC], Alex lands a sharp TheLEDGR sponsor hit, welcomes the audience, and tears through the five-story lineup like people cannot afford to miss it. "
+            "This segment must feel expensive, urgent, funny in spots, and absolutely current."
         )
     if seg_num == 2:
         return (
-            "Studio segment: ONLY Alex + Jamie (no Rufus). Deep dive Story 1 + Story 2 with human stakes, operator consequence, "
-            "and at least one quick interruption plus one emotionally intelligent Jamie pushback."
+            "Story 2: the second biggest story of the day. ONLY Alex and Jamie. "
+            "This is where Jamie makes the story feel human, absurd, dangerous, or emotionally real. "
+            "The scene needs at least one interruption, one laugh/scoff/eye-roll beat, and one line that a listener would text to a friend."
         )
     if seg_num == 3:
         return (
-            "Rufus on location: money, politics, regulation, and geopolitical edge. Focus Story 3 with filings, trading, regulatory, or power-structure consequence. "
-            "Rufus should land one hard receipt and one dry British undercut that listeners would forward."
+            "Story 3: the third biggest story of the day. Alex throws to Rufus and Rufus owns the room with money, power, policy, or geopolitical consequence. "
+            "Rufus must land one elite dry British undercut and one hard number that changes how the listener sees the story."
         )
     if seg_num == 4:
         return (
-            "All three together: dread/greed forecast + lightning round. Cover Story 4 + Story 5 with one callback, one listener-facing pick-a-side question, "
-            "and one line sharp enough that a listener would send it to a friend or co-worker."
+            "Story 4: the strongest vertical story. All three are in. This should feel like a mini scene with friction, callbacks, and at least one genuine chuckle or smirk beat. "
+            "Somebody should interrupt. Somebody should disagree. Somebody should sound delighted by the tension."
         )
     return (
-        "Closing: Alex closes hard with the practical takeaway, Jamie lands empathy, Rufus delivers a cynical prophecy, "
-        "and Alex ends on one unresolved question, risk, or consequence that makes tomorrow feel necessary."
+        "Story 5: the second-best vertical story, used as the closing engine. "
+        "Alex closes hard, Jamie leaves the human consequence, Rufus delivers one cynical or devastatingly dry tomorrow-line. "
+        "The final beat must make tomorrow's episode feel necessary."
     )
 
 
@@ -1818,14 +1809,14 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- Include at least two moments where Jamie interrupts, challenges, or reframes Alex in a warm but confident way.\n"
             "- Jamie should sound emotionally alive: amused, incredulous, impressed, concerned, or lightly offended when the line calls for it.\n"
             "- She should feel like the Bartlett-style color voice: human, fast, intuitive, and strong on the emotional or real-world implication.\n"
-            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, or absurd.\n"
+            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, absurd, or darkly funny.\n- Jamie should sound quicker, brighter, and more teasing with Alex than before.\n"
         )
     elif seg_num == 3:
         extra += (
             "Alex must throw to Rufus in the first spoken exchange, then Rufus takes over.\n"
             "Rufus should sound like he is on location somewhere real in the world before landing the core receipt.\n"
             "He must connect the money, the politics, and the geopolitical consequence.\n"
-            "Include one dry British quip or undercut that only Rufus would say.\n"
+            "Include one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
             "Weave the sponsor naturally only if it feels native to the insight.\n"
             "This segment should hand momentum forward, not sound like the end of the episode.\n"
             f"Sponsor: {sponsor_1['name']}\n"
@@ -1851,7 +1842,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "She should respond directly to Rufus if he lands a cynical or detached prediction.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "End with a final micro sponsor tag or aside only if it feels native.\n"
-            "The final 2-3 lines must make tomorrow feel necessary.\n"
+            "The final 2-3 lines must make tomorrow feel necessary.\n- End on an unresolved edge, not a tidy summary.\n"
             f"Sponsor: {sponsor_3['name']}\n"
             f"Tagline: {sponsor_3.get('tagline','')}\n"
             f"CTA: {sponsor_3.get('cta','')}\n"
@@ -1865,9 +1856,9 @@ You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
 This is ONLY {_segment_header(seg_num)} of the episode.
 
 PERSONAS:
-- ALEX (Host): high-agency host energy. He asks the listener-question everybody is already thinking, calls out BS, cuts through waffle, and keeps the room moving.
-- JAMIE (Co-host): empathetic, emotionally intelligent, bright side of the room. She raises the energy, makes AI feel human, and occasionally disarms the room with a smile or laugh.
-- RUFUS (Analyst): British dry wit, finance/policy/regulatory edge, always tracking the money, incentives, and geopolitical consequence. He is the receipts machine and often the funniest line in the room.
+- ALEX (Host): Joe Rogan-style host energy. Swagger, curiosity, challenge, and amused dominance. He asks the listener-question everybody is already thinking, calls out BS, cuts through waffle, and loves a little chaos.
+- JAMIE (Co-host): emotionally intelligent, bright, funny, and fast. She makes AI feel human, reacts like a real person, occasionally laughs in disbelief, lightly flirts with Alex, and bristles when Rufus gets too cold.
+- RUFUS (Analyst): British dry wit, finance/policy/regulatory edge, always tracking the money, incentives, and geopolitical consequence. He keeps his unique British sayings, is the receipts machine, and often lands the funniest or most devastating line in the room.
 
 {_strict_dialogue_rules()}
 
@@ -2365,6 +2356,15 @@ def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
 
 
 
+
+def _speaker_audio_backend(speaker: str) -> str:
+    spk = (speaker or "").upper()
+    if spk == "ALEX" and ALEX_USE_OPENAI:
+        return "openai"
+    if AUDIO_BACKEND == "eleven":
+        return "eleven"
+    return "openai"
+
 def _eleven_headers() -> Dict[str, str]:
     if not ELEVEN_API_KEY:
         raise RuntimeError("AI_EDGE_PODCAST_ELEVENLABS is missing. Add it to GitHub Secrets / env.")
@@ -2439,23 +2439,25 @@ def _eleven_emotion_tags(speaker: str, text: str) -> str:
     low = (text or "").lower()
     tags: List[str] = []
     if speaker == "ALEX":
-        tags.extend(["confident", "energized"])
+        tags.extend(["confident", "energized", "amused"])
         if "?" in low:
             tags.append("challenging")
+        if any(k in low for k in ["wait", "come on", "seriously", "no way"]):
+            tags.append("laughs softly")
         if any(k in low for k in ["lawsuit", "ban", "breach", "security", "warning", "risk"]):
             tags.append("urgent")
         if any(k in low for k in ["billion", "million", "percent", "revenue", "funding", "$"]):
             tags.append("leaning in")
     elif speaker == "JAMIE":
-        tags.extend(["warm", "reactive"])
-        if any(k in low for k in ["rufus", "cold", "ridiculous", "dangerous", "wrong"]):
-            tags.append("annoyed")
+        tags.extend(["warm", "reactive", "bright"])
+        if any(k in low for k in ["rufus", "cold", "ridiculous", "dangerous", "wrong", "insane"]):
+            tags.append("annoyed exhale")
         if any(k in low for k in ["patient", "nurse", "mental health", "human", "people", "care"]):
             tags.append("concerned")
-        if "?" in low:
+        if "?" in low or any(k in low for k in ["really", "seriously", "come on"]):
             tags.append("incredulous")
         if any(k in low for k in ["wow", "unbelievable", "really"]):
-            tags.append("amused")
+            tags.append("laughs softly")
     else:
         tags.extend(["dryly", "amused"])
         if any(k in low for k in ["regulation", "export", "china", "policy", "lawsuit", "market"]):
@@ -2463,7 +2465,7 @@ def _eleven_emotion_tags(speaker: str, text: str) -> str:
         if any(k in low for k in ["million", "billion", "percent", "revenue", "valuation"]):
             tags.append("matter-of-fact")
         if "?" in low:
-            tags.append("skeptical")
+            tags.append("skeptical pause")
     uniq = []
     seen = set()
     for t in tags:
@@ -2476,12 +2478,15 @@ def _eleven_emotion_tags(speaker: str, text: str) -> str:
 def _eleven_prompted_text(speaker: str, text: str) -> str:
     base = _speech_friendly_text(text)
     tag_text = _eleven_emotion_tags((speaker or "").upper(), base)
+    if speaker == "JAMIE":
+        return f"{tag_text} {base} [keep it quick, bright, playful, emotionally alive]".strip()
+    if speaker == "RUFUS":
+        return f"{tag_text} {base} [keep it dry, precise, British, faintly amused]".strip()
     return f"{tag_text} {base}".strip()
 
 
-
 def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[str, object]]:
-    if AUDIO_BACKEND != "eleven" or not ELEVEN_USE_DIALOGUE_SCENES:
+    if AUDIO_BACKEND != "eleven":
         return [(spk, txt) for spk, txt in merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)]
 
     items: List[Tuple[str, object]] = []
@@ -2493,7 +2498,10 @@ def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[st
         if not scene:
             return
         uniq = {spk for spk, _ in scene}
-        if len(scene) >= 2 and len(uniq) >= 2:
+        scene_backends = {_speaker_audio_backend(spk) for spk, _ in scene}
+
+        # Only use Eleven dialogue scenes when every speaker in the scene is on Eleven.
+        if len(scene) >= 2 and len(uniq) >= 2 and scene_backends == {"eleven"}:
             items.append(("SCENE", list(scene)))
         else:
             for spk, txt in scene:
@@ -2509,6 +2517,12 @@ def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[st
 
         txt = (txt or "").strip()
         if not txt:
+            continue
+
+        # Alex stays on OpenAI/Onyx by design, so keep his turns discrete.
+        if _speaker_audio_backend(spk) != "eleven":
+            flush_scene()
+            items.append((spk, txt))
             continue
 
         projected = scene_chars + len(txt)
@@ -2553,6 +2567,8 @@ def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> No
 
 def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path: Path) -> bool:
     voice_seg = AudioSegment.from_file(voice_path)
+    if len(voice_seg) < 6500:
+        return False
     low = (text or "").lower()
 
     bed_path: Optional[Path] = None
@@ -2577,12 +2593,12 @@ def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path
         loops = int(len(voice_seg) / max(1, len(bed))) + 1
         bed = bed * loops
     bed = bed[:len(voice_seg)]
-    bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 2.0).fade_out(min(2200, max(500, int(len(voice_seg) * 0.35))))
+    bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 6.0).fade_out(min(1600, max(450, int(len(voice_seg) * 0.25))))
     ducked = duck_music_under_voice(
         voice=voice_seg,
         music=bed,
         threshold_dbfs=DUCK_THRESHOLD_DBFS,
-        duck_db=DUCK_AMOUNT_DB + 2.0,
+        duck_db=DUCK_AMOUNT_DB + 5.0,
         window_ms=DUCK_WINDOW_MS,
     )
     ducked.export(out_path, format="mp3", bitrate="192k")
@@ -2642,32 +2658,32 @@ def ensure_audio_brandkit() -> None:
 
     spec = {
         str(BRANDKIT_SFX_DIR / "intro_sting_brand.mp3"): {
-            "prompt": "premium futuristic podcast intro sting, dark blue tech energy, cinematic and restrained, confident, 2.8 seconds",
+            "prompt": "premium hi-tech podcast intro sting, sleek synth pulse, dark blue tech energy, cinematic and restrained, confident, no bells, no chimes, no piano, 2.4 seconds",
             "duration": 2.8,
             "loop": False,
         },
         str(BRANDKIT_SFX_DIR / "segment_transition_brand.mp3"): {
-            "prompt": "tight premium podcast transition sting, subtle suspense, clean tech pulse, 1.2 seconds",
+            "prompt": "tight premium hi-tech podcast transition sting, modern synth pulse, clean digital motion, no bells, no chimes, 0.8 seconds",
             "duration": 1.2,
             "loop": False,
         },
         str(BRANDKIT_SFX_DIR / "danger_sting_brand.mp3"): {
-            "prompt": "short cinematic danger sting for regulation, lawsuit or security story, restrained but tense, 1.1 seconds",
+            "prompt": "short hi-tech danger sting for regulation, lawsuit or security story, restrained but tense, no bells, no chimes, 0.9 seconds",
             "duration": 1.1,
             "loop": False,
         },
         str(BRANDKIT_BEDS_DIR / "suspense_bed_loop.mp3"): {
-            "prompt": "subtle suspense bed for premium AI podcast, low pulse, dark but elegant, no melody, seamless loop",
+            "prompt": "subtle suspense bed for premium AI podcast, low pulse, dark elegant synth texture, no melody, no bells, seamless loop",
             "duration": 8.0,
             "loop": True,
         },
         str(BRANDKIT_BEDS_DIR / "human_concern_bed_loop.mp3"): {
-            "prompt": "soft emotional underscore for human stakes in tech podcast, restrained, warm tension, seamless loop",
+            "prompt": "soft emotional underscore for human stakes in a hi-tech podcast, restrained, warm tension, modern synth texture, no bells, seamless loop",
             "duration": 8.0,
             "loop": True,
         },
         str(BRANDKIT_BEDS_DIR / "sponsor_bed_loop.mp3"): {
-            "prompt": "subtle premium sponsor bed for business intelligence podcast, clean, understated, seamless loop",
+            "prompt": "subtle premium sponsor bed for business intelligence podcast, clean, understated, modern synth pulse, no bells, seamless loop",
             "duration": 6.0,
             "loop": True,
         },
@@ -3249,20 +3265,19 @@ def produce_episode() -> None:
             final_voice_path = raw_path
             scene_text = " ".join([t for _, t in scene])
             mixed_scene_path = run_tmp / f"{today}_scene_{seg_idx:04d}_mix.mp3"
-            if _mix_brand_bed_if_needed(final_voice_path, scene_text, "ALEX", mixed_scene_path):
-                final_voice_path = mixed_scene_path
+            # Keep multi-speaker scenes dry to avoid muddy mixes.
 
             if pending_intro_bed and INTRO_PATH.exists():
                 pending_intro_bed = False
                 voice_seg = AudioSegment.from_file(final_voice_path)
                 bed = AudioSegment.from_file(INTRO_PATH)
                 bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
-                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS).fade_out(INTRO_BED_FADE_OUT_MS)
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 6.0).fade_out(min(INTRO_BED_FADE_OUT_MS, 1200))
                 ducked = duck_music_under_voice(
                     voice=voice_seg,
                     music=bed,
                     threshold_dbfs=DUCK_THRESHOLD_DBFS,
-                    duck_db=DUCK_AMOUNT_DB,
+                    duck_db=DUCK_AMOUNT_DB + 4.0,
                     window_ms=DUCK_WINDOW_MS,
                 )
                 mix_path = run_tmp / f"{today}_scene_{seg_idx:04d}_introbed_mix.mp3"
@@ -3272,12 +3287,12 @@ def produce_episode() -> None:
                 pending_segment_bed = False
                 voice_seg = AudioSegment.from_file(final_voice_path)
                 bed = transition_seg[:min(SEGMENT_BED_MS, len(voice_seg))]
-                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 1.5).fade_out(SEGMENT_BED_FADE_OUT_MS)
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 7.0).fade_out(min(SEGMENT_BED_FADE_OUT_MS, 700))
                 ducked = duck_music_under_voice(
                     voice=voice_seg,
                     music=bed,
                     threshold_dbfs=DUCK_THRESHOLD_DBFS,
-                    duck_db=DUCK_AMOUNT_DB + 1.5,
+                    duck_db=DUCK_AMOUNT_DB + 5.0,
                     window_ms=DUCK_WINDOW_MS,
                 )
                 mix_path = run_tmp / f"{today}_scene_{seg_idx:04d}_segmentbed_mix.mp3"
@@ -3294,7 +3309,7 @@ def produce_episode() -> None:
         for chunk in chunks:
             seg_idx += 1
             raw_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
-            tts_to_file(chunk, speaker, raw_path)
+            (_eleven_tts_to_file(chunk, speaker, raw_path) if _speaker_audio_backend(speaker) == "eleven" else tts_to_file(chunk, speaker, raw_path))
             post_process_tts_mp3(raw_path)
 
             final_voice_path = raw_path
@@ -3306,7 +3321,7 @@ def produce_episode() -> None:
                 final_voice_path = sped_path
 
             mixed_voice_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_mix.mp3"
-            if AUDIO_BACKEND == "eleven" and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
+            if _speaker_audio_backend(speaker) == "eleven" and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
                 final_voice_path = mixed_voice_path
 
             if pending_intro_bed and INTRO_PATH.exists():
@@ -3314,12 +3329,12 @@ def produce_episode() -> None:
                 voice_seg = AudioSegment.from_file(final_voice_path)
                 bed = AudioSegment.from_file(INTRO_PATH)
                 bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
-                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS).fade_out(INTRO_BED_FADE_OUT_MS)
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 6.0).fade_out(min(INTRO_BED_FADE_OUT_MS, 1200))
                 ducked = duck_music_under_voice(
                     voice=voice_seg,
                     music=bed,
                     threshold_dbfs=DUCK_THRESHOLD_DBFS,
-                    duck_db=DUCK_AMOUNT_DB,
+                    duck_db=DUCK_AMOUNT_DB + 4.0,
                     window_ms=DUCK_WINDOW_MS,
                 )
                 mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_introbed_mix.mp3"
@@ -3329,12 +3344,12 @@ def produce_episode() -> None:
                 pending_segment_bed = False
                 voice_seg = AudioSegment.from_file(final_voice_path)
                 bed = transition_seg[:min(SEGMENT_BED_MS, len(voice_seg))]
-                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 1.5).fade_out(SEGMENT_BED_FADE_OUT_MS)
+                bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 7.0).fade_out(min(SEGMENT_BED_FADE_OUT_MS, 700))
                 ducked = duck_music_under_voice(
                     voice=voice_seg,
                     music=bed,
                     threshold_dbfs=DUCK_THRESHOLD_DBFS,
-                    duck_db=DUCK_AMOUNT_DB + 1.5,
+                    duck_db=DUCK_AMOUNT_DB + 5.0,
                     window_ms=DUCK_WINDOW_MS,
                 )
                 mix_path = run_tmp / f"{today}_seg_{seg_idx:04d}_segmentbed_mix.mp3"
