@@ -13,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v2.7"
+MODEL_VERSION = "podcast-growth-v2.8"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
