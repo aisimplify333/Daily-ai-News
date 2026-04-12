@@ -13,7 +13,7 @@ EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 
-MODEL_VERSION = "podcast-growth-v2.6"
+MODEL_VERSION = "podcast-growth-v2.7"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
@@ -70,13 +70,13 @@ PUBLISHER_SCORES = {
     "yahoo tech": 58.0,
     "yahoo": 55.0,
     "cyber magazine": 50.0,
-    "medical daily": 44.0,
+    "medical daily": 36.0,
     "fierce healthcare": 72.0,
     "openpr": 18.0,
     "towards data science": 60.0,
-    "yahoo finance": 60.0,
+    "yahoo finance": 58.0,
     "the tech buzz": 38.0,
-    "cathay capital": 46.0,
+    "cathay capital": 40.0,
     "msn": 40.0,
     "indexbox": 32.0,
     "bitget": 18.0,
@@ -90,6 +90,8 @@ LOW_SIGNAL_PUBLISHERS = {
     "bitget",
     "openpr",
     "the tech buzz",
+    "medical daily",
+    "cathay capital",
 }
 
 VERTICAL_KEYWORDS = {
@@ -346,12 +348,12 @@ def story_score_breakdown(item: Dict[str, Any], memory: Optional[Dict[str, Any]]
         "recency": round(recency_score(str(item.get("published") or "")), 2),
     }
     weighted = (
-        0.30 * breakdown["brand_fit"]
+        0.28 * breakdown["brand_fit"]
         + 0.22 * breakdown["authority"]
-        + 0.10 * breakdown["novelty"]
-        + 0.18 * breakdown["forward_consequence"]
+        + 0.08 * breakdown["novelty"]
+        + 0.20 * breakdown["forward_consequence"]
         + 0.10 * breakdown["numeric_density"]
-        + 0.08 * breakdown["clipability"]
+        + 0.12 * breakdown["clipability"]
         + 0.02 * breakdown["recency"]
     )
     breakdown["weighted"] = round(weighted, 2)
@@ -428,9 +430,11 @@ def story_tier(item: Dict[str, Any]) -> Optional[str]:
 
     if bucket == "topline" and authority < 60.0:
         return None
-    if bucket == "health_ai" and brand_fit < 42.0:
+    if bucket == "health_ai" and (brand_fit < 48.0 or authority < 50.0):
         return None
-    if bucket == "ai_code" and authority < 48.0:
+    if bucket == "ai_code" and authority < 55.0:
+        return None
+    if bucket == "ai_tools" and authority < 48.0:
         return None
 
     if (
