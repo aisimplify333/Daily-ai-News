@@ -65,8 +65,10 @@ jobs:
           # --- ELEVENLABS / OPTION B ---
           AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
           AUDIO_BACKEND: "eleven"
+          ALEX_USE_OPENAI: "true"
+          VOICE_ALEX: "onyx"
 
-          # --- LOCKED ELEVEN VOICES ---
+          # --- LOCKED VOICES ---
           ELEVEN_VOICE_ID_ALEX: "vDchjyOZZytffNeZXfZK"
           ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
           ELEVEN_VOICE_ID_JAMIE: "uYXf8XasLslADfZ2MB4u"
@@ -79,12 +81,12 @@ jobs:
           WORDS_PER_MINUTE: "175"
           JAMIE_SPEED: "1.05"
 
-          # --- INTRO BED / DUCKING ---
+          # --- INTRO BED / DUCKING / MIX ---
           INTRO_BED_MS: "6500"
           INTRO_BED_FADE_OUT_MS: "1800"
-          MUSIC_TARGET_DBFS: "-25.0"
+          MUSIC_TARGET_DBFS: "-27.0"
           DUCK_THRESHOLD_DBFS: "-34.0"
-          DUCK_AMOUNT_DB: "12.0"
+          DUCK_AMOUNT_DB: "14.0"
           DUCK_WINDOW_MS: "40"
 
           # --- X / TWITTER CREDENTIALS ---
