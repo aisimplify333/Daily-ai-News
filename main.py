@@ -3584,6 +3584,8 @@ def produce_episode() -> None:
     _safe_print(f" ✅ EPISODE COMPLETE: {final_mp3.name} ({minutes:.2f} minutes)")
 
     SHORTFALL_TOLERANCE_SECONDS = 30
+    OVERAGE_TOLERANCE_SECONDS = 20
+    AUTO_TRIM_FADE_MS = 1200
 
     if minutes < MIN_MINUTES:
         shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
@@ -3611,10 +3613,35 @@ def produce_episode() -> None:
             )
 
     elif minutes > MAX_MINUTES:
-        raise RuntimeError(
-            f"Episode length out of bounds ({minutes:.2f} min). "
-            f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
-        )
+        overage_seconds = int(round((minutes - MAX_MINUTES) * 60))
+
+        if overage_seconds <= OVERAGE_TOLERANCE_SECONDS:
+            _safe_print(
+                f" ⚠️ Episode over by {overage_seconds}s. "
+                f"Auto-trimming to {MAX_MINUTES:.2f} minutes."
+            )
+
+            target_ms = int(MAX_MINUTES * 60 * 1000)
+            trimmed_audio = final_audio[:target_ms]
+
+            fade_ms = min(AUTO_TRIM_FADE_MS, max(350, overage_seconds * 1000))
+            if len(trimmed_audio) > fade_ms + 200:
+                trimmed_audio = trimmed_audio.fade_out(fade_ms)
+
+            trimmed_audio.export(final_mp3, format="mp3", bitrate="192k")
+
+            final_audio = AudioSegment.from_mp3(final_mp3)
+            duration_seconds = int(len(final_audio) / 1000)
+            minutes = duration_seconds / 60.0
+
+            _safe_print(
+                f" ✅ EPISODE TRIMMED: {final_mp3.name} ({minutes:.2f} minutes)"
+            )
+        else:
+            raise RuntimeError(
+                f"Episode length out of bounds ({minutes:.2f} min). "
+                f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
+            )
 
     provisional_tracking = build_episode_tracking_payload(
         date_str=today,
