@@ -62,7 +62,7 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
 
-          # --- ELEVENLABS / OPTION B ---
+          # --- ELEVENLABS / PRIMARY AUDIO PATH ---
           AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
           AUDIO_BACKEND: "eleven"
           ALEX_USE_OPENAI: "true"
@@ -70,24 +70,66 @@ jobs:
 
           # --- LOCKED VOICES ---
           ELEVEN_VOICE_ID_ALEX: "vDchjyOZZytffNeZXfZK"
-          ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
           ELEVEN_VOICE_ID_JAMIE: "uYXf8XasLslADfZ2MB4u"
+          ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
 
-          # --- QUALITY GATES / SHORTER SCRIPT TARGET ---
-          MIN_EPISODE_MINUTES: "19"
+          # --- RUNTIME / WRITING TARGETS ---
           MIN_MINUTES: "19"
           MAX_MINUTES: "26"
-          TARGET_MINUTES: "18"
-          WORDS_PER_MINUTE: "175"
-          JAMIE_SPEED: "1.05"
+          TARGET_MINUTES: "21"
+          WORDS_PER_MINUTE: "172"
+          SEGMENT_ATTEMPTS: "5"
 
-          # --- INTRO BED / DUCKING / MIX ---
+          # --- HOST PERFORMANCE TUNING ---
+          ALEX_GAIN_DB: "3.5"
+          JAMIE_GAIN_DB: "1.2"
+          RUFUS_GAIN_DB: "0.5"
+
+          ALEX_SPEED: "1.10"
+          JAMIE_SPEED: "1.02"
+          RUFUS_SPEED: "1.04"
+
+          ELEVEN_STABILITY_ALEX: "0.38"
+          ELEVEN_SIMILARITY_ALEX: "0.82"
+          ELEVEN_STYLE_ALEX: "0.28"
+
+          ELEVEN_STABILITY_JAMIE: "0.34"
+          ELEVEN_SIMILARITY_JAMIE: "0.82"
+          ELEVEN_STYLE_JAMIE: "0.28"
+
+          ELEVEN_STABILITY_RUFUS: "0.40"
+          ELEVEN_SIMILARITY_RUFUS: "0.85"
+          ELEVEN_STYLE_RUFUS: "0.24"
+
+          ELEVEN_USE_SPEAKER_BOOST: "true"
+
+          # --- SCENE / INTERRUPTION FEEL ---
+          ELEVEN_USE_DIALOGUE_SCENES: "true"
+          ELEVEN_SCENE_MAX_TURNS: "5"
+          ELEVEN_SCENE_MAX_CHARS: "950"
+          ELEVEN_SCENE_PAUSE_MS: "85"
+
+          # --- MIX / BEDS / DUCKING ---
+          AUTO_BUILD_AUDIO_BRANDKIT: "true"
+          REBUILD_AUDIO_BRANDKIT: "false"
+
           INTRO_BED_MS: "6500"
           INTRO_BED_FADE_OUT_MS: "1800"
+
           MUSIC_TARGET_DBFS: "-27.0"
           DUCK_THRESHOLD_DBFS: "-34.0"
-          DUCK_AMOUNT_DB: "14.0"
-          DUCK_WINDOW_MS: "40"
+          DUCK_AMOUNT_DB: "14.5"
+          DUCK_WINDOW_MS: "35"
+
+          STINGER_TARGET_DBFS: "-18.0"
+          SEGMENT_EXPORT_BITRATE: "192k"
+
+          # --- QUALITY / CLEANUP ---
+          CLEANUP_TEMP: "true"
+          KEEP_LAST_EPISODES: "60"
+          RUN_MARKETING_ASSETS: "true"
+          PUBLISH_SOCIAL: "false"
+          FORCE_REBUILD: "false"
 
           # --- X / TWITTER CREDENTIALS ---
           X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
@@ -111,6 +153,7 @@ jobs:
 
           git add feed.xml || true
           git add episode_metadata.json || true
+          git add marketing_pack.json || true
           git add viral_caption.txt || true
           git add story_scores.json || true
           git add tracking_summary.json || true
@@ -118,7 +161,7 @@ jobs:
           git add episode_audio/podcast_*.mp3 || true
           git add script_*.txt || true
 
-          # Persist reusable Eleven brandkit assets so future runs reuse them
+          # Persist reusable Eleven brandkit assets
           git add audio_brandkit/*.mp3 || true
           git add audio_brandkit/*.json || true
           git add -f audio_brandkit/** || true
