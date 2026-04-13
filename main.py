@@ -2227,6 +2227,65 @@ STORY BLOCK:
     return _sanitize_dialogue_only(script2)
 
 
+
+def _strip_premature_signoffs(script: str) -> str:
+    """
+    Remove premature wrap-up / goodbye language from segments 1-4 only.
+    Leave segment 5 alone so the real final sign-off still works.
+    """
+    if not script or "### SEGMENT" not in script:
+        return script
+
+    premature_patterns = [
+        r"\bthat'?s all for now\b",
+        r"\bthat'?s it for (?:today|now)\b",
+        r"\buntil next time\b",
+        r"\bsee you tomorrow\b",
+        r"\bsee you next time\b",
+        r"\bthanks for listening\b",
+        r"\bthat does it for us\b",
+        r"\bwe'?re out\b",
+        r"\bgood night\b",
+        r"\bcoming up tomorrow\b",
+        r"\bwe'?ll be back\b",
+        r"\bdon'?t go anywhere\b",
+        r"\bafter the break\b",
+        r"\bstick with us\b",
+        r"\bthat'?s the show\b",
+        r"\bthat wraps (?:it|us) up\b",
+        r"\bwe'?ll leave it there\b",
+    ]
+
+    parts = re.split(r"(?=^### SEGMENT\s+\d+\b)", script, flags=re.MULTILINE)
+    cleaned_parts = []
+
+    for part in parts:
+        match = re.match(r"^### SEGMENT\s+(\d+)\b", part.strip(), flags=re.MULTILINE)
+        if not match:
+            cleaned_parts.append(part)
+            continue
+
+        seg_num = int(match.group(1))
+        if seg_num >= 5:
+            cleaned_parts.append(part)
+            continue
+
+        kept_lines = []
+        for line in part.splitlines():
+            stripped = line.strip()
+
+            if re.match(r"^(ALEX|JAMIE|RUFUS)\s*:", stripped, flags=re.IGNORECASE):
+                spoken = re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", stripped, flags=re.IGNORECASE)
+                if any(re.search(pat, spoken, flags=re.IGNORECASE) for pat in premature_patterns):
+                    continue
+
+            kept_lines.append(line)
+
+        cleaned_parts.append("\n".join(kept_lines).rstrip())
+
+    return "\n".join(p for p in cleaned_parts if p is not None).strip() + "\n"
+
+
 def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
     seg_targets = _segment_word_targets()
     seg_mins = [max(300, int(t * 0.82)) for t in seg_targets]
