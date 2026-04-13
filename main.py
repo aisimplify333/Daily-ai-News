@@ -146,7 +146,7 @@ ELEVEN_USE_DIALOGUE_SCENES = os.getenv("ELEVEN_USE_DIALOGUE_SCENES", "true").str
 ALEX_USE_OPENAI = os.getenv("ALEX_USE_OPENAI", "true").strip().lower() in ("1","true","yes")
 ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "6"))
 ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "1200"))
-ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "140"))
+ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "105"))
 
 # Episode length gates (minutes)
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", "19"))
@@ -216,9 +216,9 @@ STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | f
 
 ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.12"))
 JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.16"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.04"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.07"))
 
-ALEX_GAIN_DB = float(os.getenv("ALEX_GAIN_DB", "2.2"))
+ALEX_GAIN_DB = float(os.getenv("ALEX_GAIN_DB", "3.0"))
 JAMIE_GAIN_DB = float(os.getenv("JAMIE_GAIN_DB", "0.0"))
 RUFUS_GAIN_DB = float(os.getenv("RUFUS_GAIN_DB", "0.0"))
 
@@ -263,9 +263,9 @@ TRANSITION_FADE_OUT_MS = int(os.getenv("TRANSITION_FADE_OUT_MS", "350"))
 CROSSFADE_MS = int(os.getenv("CROSSFADE_MS", "0"))  # 40–80 if desired
 
 # Ducking parameters
-MUSIC_TARGET_DBFS = float(os.getenv("MUSIC_TARGET_DBFS", "-25.0"))
+MUSIC_TARGET_DBFS = float(os.getenv("MUSIC_TARGET_DBFS", "-27.0"))
 DUCK_THRESHOLD_DBFS = float(os.getenv("DUCK_THRESHOLD_DBFS", "-34.0"))
-DUCK_AMOUNT_DB = float(os.getenv("DUCK_AMOUNT_DB", "12.0"))
+DUCK_AMOUNT_DB = float(os.getenv("DUCK_AMOUNT_DB", "14.0"))
 DUCK_WINDOW_MS = int(os.getenv("DUCK_WINDOW_MS", "40"))
 
 # ----------------------------
@@ -1639,36 +1639,35 @@ def _strict_dialogue_rules() -> str:
 
 
 def _segment_assignment(seg_num: int) -> str:
-    if _max_consecutive_speaker_lines(seg_text) > 3:
-        issues.append("Too many consecutive lines from the same speaker. Add more interruptions and reactions.")
-
     if seg_num == 1:
         return (
-            "Story 1: the single biggest story of the day. Cold open with heat, disbelief, and status-play. Then [MUSIC]. "
+            "Story 1: the single biggest story of the day. Cold open with heat, disbelief, interruption, and status-play. Then [MUSIC]. "
             "Immediately after [MUSIC], Alex lands a sharp TheLEDGR sponsor hit, welcomes the audience, and tears through the five-story lineup like people cannot afford to miss it. "
+            "Alex should sound amused, aggressive, and curious in a Joe-Rogan way: ask the obvious high-stakes question everyone is already thinking. "
             "This segment must feel expensive, urgent, funny in spots, and absolutely current."
         )
     if seg_num == 2:
         return (
             "Story 2: the second biggest story of the day. ONLY Alex and Jamie. "
             "This is where Jamie makes the story feel human, absurd, dangerous, or emotionally real. "
-            "The scene needs at least one interruption, one laugh/scoff/eye-roll beat, and one line that a listener would text to a friend."
+            "The scene needs at least one interruption, one laugh/scoff/eye-roll beat, one hard number, and one line that a listener would text to a friend."
         )
     if seg_num == 3:
         return (
             "Story 3: the third biggest story of the day. Alex throws to Rufus and Rufus owns the room with money, power, policy, or geopolitical consequence. "
-            "Rufus must land one elite dry British undercut and one hard number that changes how the listener sees the story."
+            "Rufus must land one elite dry British undercut, one memorable British saying, and one hard number that changes how the listener sees the story."
         )
     if seg_num == 4:
         return (
             "Story 4: the strongest vertical story. All three are in. This should feel like a mini scene with friction, callbacks, and at least one genuine chuckle or smirk beat. "
-            "Somebody should interrupt. Somebody should disagree. Somebody should sound delighted by the tension."
+            "Somebody should interrupt. Somebody should disagree. Somebody should sound delighted by the tension. No polite panel-talk."
         )
     return (
-        "Story 5: the second-best vertical story, used as the closing engine. "
-        "Alex closes hard, Jamie leaves the human consequence, Rufus delivers one cynical or devastatingly dry tomorrow-line. "
-        "The final beat must make tomorrow's episode feel necessary."
+        "Story 5: the second-best vertical or best flex story. Drive toward a real close. "
+        "The ending must feel memorable, slightly cinematic, and tomorrow-facing. "
+        "No weak wrap-up language until the actual final sign-off and outro."
     )
+
 
 
 def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> str:
