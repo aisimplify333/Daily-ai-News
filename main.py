@@ -131,13 +131,13 @@ ELEVEN_VOICE_ID_ALEX = os.getenv("ELEVEN_VOICE_ID_ALEX", "vDchjyOZZytffNeZXfZK")
 ELEVEN_VOICE_ID_JAMIE = os.getenv("ELEVEN_VOICE_ID_JAMIE", "uYXf8XasLslADfZ2MB4u").strip()
 ELEVEN_VOICE_ID_RUFUS = os.getenv("ELEVEN_VOICE_ID_RUFUS", "Fahco4VZzobUeiPqni1S").strip()
 ELEVEN_STABILITY_ALEX = float(os.getenv("ELEVEN_STABILITY_ALEX", "0.38"))
-ELEVEN_STABILITY_JAMIE = float(os.getenv("ELEVEN_STABILITY_JAMIE", "0.26"))
+ELEVEN_STABILITY_JAMIE = float(os.getenv("ELEVEN_STABILITY_JAMIE", "0.34"))
 ELEVEN_STABILITY_RUFUS = float(os.getenv("ELEVEN_STABILITY_RUFUS", "0.34"))
 ELEVEN_SIMILARITY_ALEX = float(os.getenv("ELEVEN_SIMILARITY_ALEX", "0.82"))
 ELEVEN_SIMILARITY_JAMIE = float(os.getenv("ELEVEN_SIMILARITY_JAMIE", "0.80"))
 ELEVEN_SIMILARITY_RUFUS = float(os.getenv("ELEVEN_SIMILARITY_RUFUS", "0.84"))
 ELEVEN_STYLE_ALEX = float(os.getenv("ELEVEN_STYLE_ALEX", "0.28"))
-ELEVEN_STYLE_JAMIE = float(os.getenv("ELEVEN_STYLE_JAMIE", "0.46"))
+ELEVEN_STYLE_JAMIE = float(os.getenv("ELEVEN_STYLE_JAMIE", "0.32"))
 ELEVEN_STYLE_RUFUS = float(os.getenv("ELEVEN_STYLE_RUFUS", "0.30"))
 ELEVEN_USE_SPEAKER_BOOST = os.getenv("ELEVEN_USE_SPEAKER_BOOST", "true").strip().lower() in ("1","true","yes")
 AUTO_BUILD_AUDIO_BRANDKIT = os.getenv("AUTO_BUILD_AUDIO_BRANDKIT", "true").strip().lower() in ("1","true","yes")
@@ -187,15 +187,16 @@ VOICE_MAP: Dict[str, str] = {
 
 VOICE_INSTRUCTIONS: Dict[str, str] = {
     "ALEX": (
-        "Sound like a high-agency Joe Rogan-style host with swagger, fast reactions, amused pressure, and real bravado. "
-        "He is not a polished anchor. He is provocative, playful, curious, and slightly dangerous. "
-        "He interrupts when someone is hedging, laughs when tension gets interesting, and sounds like he enjoys the fight. "
-        "Use sharper contrast, faster turns, and strong emphasis when a number lands."
+        "Sound like a high-agency Joe Rogan-style host who runs the room. "
+        "He is curious, amused by tension, quick to challenge weak framing, and never passive. "
+        "He interrupts to clarify, speed things up, and force sharper answers. "
+        "He should sound entertained by the stakes and slightly dangerous when a number or contradiction lands."
     ),
     "JAMIE": (
-        "Sound bright, alive, and emotionally quick. She is warm, funny, incredulous, occasionally flirty with Alex, and visibly annoyed when Rufus gets too cold. "
-        "She should not sound like a presenter. She should sound like a real person reacting in the room. "
-        "Use light laughs, huffs of disbelief, sharper pivots, and a more playful, bubbly surface over real concern."
+        "Sound extremely intelligent, polished, and emotionally alive. "
+        "She is executive-bright, fast, articulate, and credible. "
+        "She can get irritated, incredulous, dramatic, or disgusted when the story deserves it, but never shallow, bubbly, flirty, or valley-girl. "
+        "She should sound like a serious professional reacting in real time with warmth, bite, and clear judgment."
     ),
     "RUFUS": (
         "Sound like a dry British analyst with elite verbal precision, dry wit, and occasional withering amusement. "
@@ -215,11 +216,11 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
 ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.12"))
-JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.16"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.07"))
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.10"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.06"))
 
-ALEX_GAIN_DB = float(os.getenv("ALEX_GAIN_DB", "3.0"))
-JAMIE_GAIN_DB = float(os.getenv("JAMIE_GAIN_DB", "0.0"))
+ALEX_GAIN_DB = float(os.getenv("ALEX_GAIN_DB", "3.5"))
+JAMIE_GAIN_DB = float(os.getenv("JAMIE_GAIN_DB", "0.6"))
 RUFUS_GAIN_DB = float(os.getenv("RUFUS_GAIN_DB", "0.0"))
 
 # Post-processing thresholds
@@ -277,6 +278,13 @@ MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
 FORWARDABLE_MIN_PER_EPISODE = int(os.getenv("FORWARDABLE_MIN_PER_EPISODE", "2"))
 FORWARDABLE_PAUSE_MS = int(os.getenv("FORWARDABLE_PAUSE_MS", "240"))
+INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "55"))
+REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "95"))
+MAX_CONSECUTIVE_SAME_SPEAKER_LINES = int(os.getenv("MAX_CONSECUTIVE_SAME_SPEAKER_LINES", "2"))
+MAX_SPOKEN_WORDS_PER_LINE = int(os.getenv("MAX_SPOKEN_WORDS_PER_LINE", "42"))
+MIN_INTERRUPTION_CUES_PER_SEGMENT = int(os.getenv("MIN_INTERRUPTION_CUES_PER_SEGMENT", "2"))
+MIN_REACTION_CUES_PER_SEGMENT = int(os.getenv("MIN_REACTION_CUES_PER_SEGMENT", "2"))
+MIN_ALEX_CONTROL_CUES_PER_SEGMENT = int(os.getenv("MIN_ALEX_CONTROL_CUES_PER_SEGMENT", "1"))
 
 STRICT_EPISODE_FILENAME_RE = re.compile(r"^podcast_\d{4}-\d{2}-\d{2}\.mp3$")
 EARLY_SIGNOFF_RE = re.compile(
@@ -291,6 +299,9 @@ EARLY_SIGNOFF_RE = re.compile(
 MONEY_RE = re.compile(r"(\$|€|£)\s?\d")
 NUMERIC_TOKEN_RE = re.compile(r"(\d+(\.\d+)?%|\$?\d[\d,]*(\.\d+)?|\b\d{4}\b|\bQ[1-4]\b)", re.IGNORECASE)
 SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
+INTERRUPTION_CUE_RE = re.compile(r"\b(?:wait|wait wait wait|hold on|hang on|stop|come on|no no|no,? that|sorry|one at a time|say that again|cut through it|look)\b", re.IGNORECASE)
+REACTION_CUE_RE = re.compile(r"\[(?:laughs?|chuckles?|scoffs?|huffs?|sharp exhale|amused exhale|dry laugh|under[- ]the[- ]breath|incredulous pause|audible disbelief|mutters?|beat|pause)\]|\b(?:come on|seriously|no way|that'?s absurd|that is absurd|unbelievable|ridiculous)\b", re.IGNORECASE)
+ALEX_CONTROL_CUE_RE = re.compile(r"^ALEX\s*:\s*(?:okay,? hold on|hold on|wait,? wait,? wait|stop\.|stop,|one at a time|jamie[—-]? hang on|rufus,? cut through it|no,? that'?s not the question|say that again)", re.IGNORECASE)
 
 MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))
 EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
@@ -1548,6 +1559,32 @@ def _max_consecutive_speaker_lines(text: str) -> int:
     return best
 
 
+def _speaker_line_counts(text: str) -> Dict[str, int]:
+    counts: Dict[str, int] = {"ALEX": 0, "JAMIE": 0, "RUFUS": 0}
+    for raw in (text or "").splitlines():
+        m = SPEAKER_RE.match(raw.strip())
+        if not m:
+            continue
+        counts[m.group(1).upper()] = counts.get(m.group(1).upper(), 0) + 1
+    return counts
+
+
+def _cue_count(text: str, pattern: re.Pattern) -> int:
+    return len(pattern.findall(text or ""))
+
+
+def _long_spoken_line_count(text: str, max_words: int) -> int:
+    count = 0
+    for raw in (text or "").splitlines():
+        m = SPEAKER_RE.match(raw.strip())
+        if not m:
+            continue
+        words = len(re.findall(r"\w+", m.group(2)))
+        if words > max_words:
+            count += 1
+    return count
+
+
 def _script_targets() -> Tuple[int, int, int]:
     min_words = int(MIN_MINUTES * WORDS_PER_MINUTE * 1.02)
     target_words = int(TARGET_MINUTES * WORDS_PER_MINUTE * 1.00)
@@ -1624,50 +1661,52 @@ def _story_block(stories: List[Dict[str, str]]) -> str:
 
 def _strict_dialogue_rules() -> str:
     return (
-        'HARD FORMAT RULES (non-negotiable):\n'
-        '- Output MUST be dialogue lines only using EXACT labels: "ALEX:", "JAMIE:", "RUFUS:"\n'
-        '- Every spoken line MUST start with one of those labels. No unlabeled narration.\n'
-        '- Keep lines SHORT: 1–2 sentences per line. Prefer one thought per line.\n'
-        '- Segment markers are allowed as lines starting with "###" and will NOT be spoken.\n'
-        '- "[MUSIC]" may appear as a standalone line.\n'
-        '- Do not add any other headings, bullets, or markdown.\n'
-        '- This is a writer-room podcast, not a newsroom explainer. Build energy through conflict, rhythm, and reaction.\n'
-        '- Every segment must include at least one interruption, one audible reaction, one hard number, and one line with real subtext.\n'
-        '- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n'
-        '- At least one line per segment should be genuinely clipable or forwardable.\n'
+        "HARD FORMAT RULES (non-negotiable):\n"
+        "- Output MUST be dialogue lines only using EXACT labels: \"ALEX:\", \"JAMIE:\", \"RUFUS:\"\n"
+        "- Every spoken line MUST start with one of those labels. No unlabeled narration.\n"
+        "- Segment markers are allowed as lines starting with \"###\" and will NOT be spoken.\n"
+        "- \"[MUSIC]\" may appear as a standalone line.\n"
+        "- Do not add any other headings, bullets, or markdown.\n"
+        "- This is a live contested conversation, not a sequential explainer.\n"
+        "- Default spoken lines should usually be 5-28 words and 1-2 sentences. No bloated paragraphs.\n"
+        "- No speaker may hold the floor for more than two consecutive lines. Someone must interrupt, react, challenge, or redirect.\n"
+        "- Alex must actively run the room, regain control at least once, and force clearer answers.\n"
+        "- Jamie must sound extremely intelligent, polished, emotionally readable, and never bubbly, flirty, or valley-girl.\n"
+        "- Rufus must stay dry, British, surgical, and compact.\n"
+        "- Every segment must include at least two interruption/control cues, at least two audible realism cues, one hard number, and one genuinely clipable line.\n"
+        "- Use bracketed realism cues sparingly and tastefully: [laughs], [sharp exhale], [scoffs], [dry laugh], [under his breath], [audible disbelief].\n"
+        "- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n"
     )
-
 
 def _segment_assignment(seg_num: int) -> str:
     if seg_num == 1:
         return (
-            "Story 1: the single biggest story of the day. Cold open with heat, disbelief, interruption, and status-play. Then [MUSIC]. "
+            "Story 1: the single biggest story of the day. Cold open with heat, interruption, disbelief, and immediate status-play. Then [MUSIC]. "
             "Immediately after [MUSIC], Alex lands a sharp TheLEDGR sponsor hit, welcomes the audience, and tears through the five-story lineup like people cannot afford to miss it. "
-            "Alex should sound amused, aggressive, and curious in a Joe-Rogan way: ask the obvious high-stakes question everyone is already thinking. "
-            "This segment must feel expensive, urgent, funny in spots, and absolutely current."
+            "Alex should sound amused, aggressive, curious, and in command: he asks the high-stakes question everyone is already thinking, cuts people off when needed, and keeps the room moving. "
+            "This segment must feel expensive, current, fast, and clip-ready."
         )
     if seg_num == 2:
         return (
             "Story 2: the second biggest story of the day. ONLY Alex and Jamie. "
-            "This is where Jamie makes the story feel human, absurd, dangerous, or emotionally real. "
-            "The scene needs at least one interruption, one laugh/scoff/eye-roll beat, one hard number, and one line that a listener would text to a friend."
+            "This is where Jamie sounds formidable: extremely intelligent, emotionally alive, and professionally irritated when the story deserves it. "
+            "The scene needs multiple interruptions, at least one laugh/scoff/disbelief beat, one hard number, and one line a listener would text to a friend immediately."
         )
     if seg_num == 3:
         return (
             "Story 3: the third biggest story of the day. Alex throws to Rufus and Rufus owns the room with money, power, policy, or geopolitical consequence. "
-            "Rufus must land one elite dry British undercut, one memorable British saying, and one hard number that changes how the listener sees the story."
+            "Rufus must land one elite dry British undercut, one memorable British saying, and one hard number that changes how the listener sees the story, while Alex keeps forcing clarity."
         )
     if seg_num == 4:
         return (
-            "Story 4: the strongest vertical story. All three are in. This should feel like a mini scene with friction, callbacks, and at least one genuine chuckle or smirk beat. "
-            "Somebody should interrupt. Somebody should disagree. Somebody should sound delighted by the tension. No polite panel-talk."
+            "Story 4: the strongest vertical story. All three are in. This should feel like a mini scene with friction, callbacks, real interruptions, and at least one genuine chuckle or smirk beat. "
+            "Somebody should disagree. Somebody should cut in. Alex should have to get a handle on the room at least once. No polite panel-talk."
         )
     return (
         "Story 5: the second-best vertical or best flex story. Drive toward a real close. "
-        "The ending must feel memorable, slightly cinematic, and tomorrow-facing. "
+        "The ending must feel memorable, slightly cinematic, tomorrow-facing, and unresolved enough that listeners need the next episode. "
         "No weak wrap-up language until the actual final sign-off and outro."
     )
-
 
 
 def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> str:
@@ -1900,8 +1939,8 @@ You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
 This is ONLY {_segment_header(seg_num)} of the episode.
 
 PERSONAS:
-- ALEX (Host): Joe Rogan-style host energy. Swagger, curiosity, challenge, and amused dominance. He asks the listener-question everybody is already thinking, calls out BS, cuts through waffle, and loves a little chaos.
-- JAMIE (Co-host): emotionally intelligent, bright, funny, and fast. She makes AI feel human, reacts like a real person, occasionally laughs in disbelief, lightly flirts with Alex, and bristles when Rufus gets too cold.
+- ALEX (Host): Joe Rogan-style host energy. Swagger, curiosity, challenge, amused dominance, and real room control. He asks the listener-question everybody is already thinking, calls out weak framing, cuts through waffle, and gets a handle on the room when Jamie and Rufus start running.
+- JAMIE (Co-host): extremely intelligent, polished, emotionally alive, and fast. She makes AI feel human, reacts like a real person, can sound professionally irritated or dramatically incredulous when the story deserves it, and must never sound flirty, bubbly, or valley-girl.
 - RUFUS (Analyst): British dry wit, finance/policy/regulatory edge, always tracking the money, incentives, and geopolitical consequence. He keeps his unique British sayings, is the receipts machine, and often lands the funniest or most devastating line in the room.
 
 {_strict_dialogue_rules()}
@@ -1975,6 +2014,32 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
         )
     if seg_num < 5 and EARLY_SIGNOFF_RE.search(seg_text or ""):
         issues.append(f"Segment {seg_num} contains premature sign-off language.")
+
+    if _max_consecutive_speaker_lines(seg_text) > MAX_CONSECUTIVE_SAME_SPEAKER_LINES:
+        issues.append("Too much monologue or sequential turn-taking. Break up consecutive same-speaker lines.")
+
+    if _long_spoken_line_count(seg_text, MAX_SPOKEN_WORDS_PER_LINE) > 2:
+        issues.append("Too many overly long spoken lines. Keep the room punchier and more interruptible.")
+
+    counts = _speaker_line_counts(seg_text)
+    if counts.get("ALEX", 0) < 4:
+        issues.append("Alex is not active enough in this segment. He must drive the room.")
+    if seg_num == 2 and min(counts.get("ALEX", 0), counts.get("JAMIE", 0)) < 5:
+        issues.append("Segment 2 needs more active back-and-forth from both Alex and Jamie.")
+    if seg_num == 3 and min(counts.get("ALEX", 0), counts.get("RUFUS", 0)) < 5:
+        issues.append("Segment 3 needs more active back-and-forth from both Alex and Rufus.")
+    if seg_num in (4, 5) and min(counts.get("ALEX", 0), counts.get("JAMIE", 0), counts.get("RUFUS", 0)) < 3:
+        issues.append("All three hosts need to be active in this segment.")
+
+    if _cue_count(seg_text, INTERRUPTION_CUE_RE) < MIN_INTERRUPTION_CUES_PER_SEGMENT:
+        issues.append("Not enough interruption or control cues. The scene feels too polite.")
+
+    reaction_target = MIN_REACTION_CUES_PER_SEGMENT if seg_num < 5 else max(1, MIN_REACTION_CUES_PER_SEGMENT - 1)
+    if _cue_count(seg_text, REACTION_CUE_RE) < reaction_target:
+        issues.append("Not enough audible realism cues. Add sparse laughs, scoffs, huffs, or disbelief beats.")
+
+    if _cue_count(seg_text, ALEX_CONTROL_CUE_RE) < MIN_ALEX_CONTROL_CUES_PER_SEGMENT:
+        issues.append("Alex does not seize control clearly enough in this segment.")
     return issues
 
 
@@ -2426,7 +2491,15 @@ def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 240
 
         candidate = ("\n".join(cur_txt) + "\n" + txt).strip()
         speaker_limit = _tts_merge_max_chars(spk)
-        if is_forwardable_line_text(txt) or is_forwardable_line_text(" ".join(cur_txt)):
+        current_blob = " ".join(cur_txt)
+        force_break = (
+            is_forwardable_line_text(txt)
+            or is_forwardable_line_text(current_blob)
+            or INTERRUPTION_CUE_RE.search(txt or "") is not None
+            or REACTION_CUE_RE.search(txt or "") is not None
+            or len(re.findall(r"\b\w+\b", txt or "")) <= 8
+        )
+        if force_break:
             flush()
             cur_spk = spk
             cur_txt = [txt]
@@ -2439,7 +2512,6 @@ def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 240
 
     flush()
     return merged
-
 
 # ----------------------------
 # TTS + STITCHING
@@ -2585,10 +2657,10 @@ def _eleven_prompted_text(speaker: str, text: str) -> str:
     base = _speech_friendly_text(text)
     tag_text = _eleven_emotion_tags((speaker or "").upper(), base)
     if speaker == "JAMIE":
-        return f"{tag_text} {base} [keep it quick, bright, playful, emotionally alive, a touch breathier, with disbelief and warmth]".strip()
+        return f"{tag_text} {base} [keep it quick, articulate, executive-bright, emotionally alive, professionally irritated when needed, never bubbly, never valley-girl]".strip()
     if speaker == "RUFUS":
         return f"{tag_text} {base} [keep it dry, precise, British, faintly amused, with occasional understated undercuts]".strip()
-    return f"{tag_text} {base}".strip()
+    return f"{tag_text} {base} [keep it punchy, amused, dominant, and moving the room forward]".strip()
 
 
 def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[str, object]]:
@@ -3305,9 +3377,11 @@ def produce_episode() -> None:
 
     concat_files: List[Path] = []
 
-    silence_path = run_tmp / "silence_80ms.mp3"
+    silence_path = run_tmp / "silence_turn.mp3"
+    reaction_pause_path = run_tmp / "silence_reaction.mp3"
     quote_pause_path = run_tmp / "silence_forwardable.mp3"
-    AudioSegment.silent(duration=80).export(silence_path, format="mp3", bitrate="192k")
+    AudioSegment.silent(duration=INTER_TURN_SILENCE_MS).export(silence_path, format="mp3", bitrate="192k")
+    AudioSegment.silent(duration=REACTION_PAUSE_MS).export(reaction_pause_path, format="mp3", bitrate="192k")
     AudioSegment.silent(duration=FORWARDABLE_PAUSE_MS).export(quote_pause_path, format="mp3", bitrate="192k")
 
     intro_stinger_seg: Optional[AudioSegment] = None
@@ -3414,7 +3488,12 @@ def produce_episode() -> None:
             else:
                 concat_files.append(final_voice_path)
 
-            concat_files.append(quote_pause_path if is_forwardable_line_text(scene_text) else silence_path)
+            if is_forwardable_line_text(scene_text):
+                concat_files.append(quote_pause_path)
+            elif INTERRUPTION_CUE_RE.search(scene_text or "") or REACTION_CUE_RE.search(scene_text or ""):
+                concat_files.append(reaction_pause_path)
+            else:
+                concat_files.append(silence_path)
             continue
 
         chunks = chunk_text(text, max_chars=_tts_chunk_max_chars(speaker))
@@ -3478,7 +3557,12 @@ def produce_episode() -> None:
             else:
                 concat_files.append(final_voice_path)
 
-            concat_files.append(quote_pause_path if is_forwardable_line_text(chunk) else silence_path)
+            if is_forwardable_line_text(chunk):
+                concat_files.append(quote_pause_path)
+            elif INTERRUPTION_CUE_RE.search(chunk or "") or REACTION_CUE_RE.search(chunk or ""):
+                concat_files.append(reaction_pause_path)
+            else:
+                concat_files.append(silence_path)
 
     if outro_seg is not None:
         concat_files.append(silence_path)
