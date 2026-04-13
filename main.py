@@ -150,7 +150,7 @@ ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "105"))
 
 # Episode length gates (minutes)
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", "19"))
-MAX_MINUTES = float(os.getenv("MAX_MINUTES", "24"))
+MAX_MINUTES = float(os.getenv("MAX_MINUTES", "26"))
 TARGET_MINUTES = float(os.getenv("TARGET_MINUTES", "22"))
 
 # Script pacing (WPM)
@@ -733,7 +733,7 @@ def _recency_boost(published: str) -> int:
         return 35
     if age_hours <= 12:
         return 20
-    if age_hours <= 24:
+    if age_hours <= 26:
         return 10
     if age_hours <= 48:
         return 4
@@ -1016,7 +1016,7 @@ def _extract_numeric_sentences(text: str, max_items: int = 6) -> List[str]:
         if not _fact_bullet_is_usable(s2):
             continue
         if NUMERIC_TOKEN_RE.search(s2):
-            if 24 <= len(s2) <= 220:
+            if 26 <= len(s2) <= 220:
                 hits.append(s2)
         if len(hits) >= max_items:
             break
@@ -1124,7 +1124,7 @@ def broaden_intel_pool() -> List[Dict[str, str]]:
         pool = fetch_rss_items(max_per_feed=18)
     if len(pool) < 12:
         # one last broader pull using the same queries but higher per-feed depth
-        pool = fetch_rss_items(max_per_feed=24)
+        pool = fetch_rss_items(max_per_feed=26)
     return pool
 
 
