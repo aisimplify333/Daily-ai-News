@@ -144,9 +144,9 @@ AUTO_BUILD_AUDIO_BRANDKIT = os.getenv("AUTO_BUILD_AUDIO_BRANDKIT", "true").strip
 REBUILD_AUDIO_BRANDKIT = os.getenv("REBUILD_AUDIO_BRANDKIT", "false").strip().lower() in ("1","true","yes")
 ELEVEN_USE_DIALOGUE_SCENES = os.getenv("ELEVEN_USE_DIALOGUE_SCENES", "true").strip().lower() in ("1","true","yes")
 ALEX_USE_OPENAI = os.getenv("ALEX_USE_OPENAI", "true").strip().lower() in ("1","true","yes")
-ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "6"))
-ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "1200"))
-ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "105"))
+ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "5"))
+ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "950"))
+ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "85"))
 
 # Episode length gates (minutes)
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", "19"))
@@ -195,7 +195,7 @@ VOICE_INSTRUCTIONS: Dict[str, str] = {
     "JAMIE": (
         "Sound extremely intelligent, polished, and emotionally alive. "
         "She is executive-bright, fast, articulate, and credible. "
-        "She can get irritated, incredulous, dramatic, or disgusted when the story deserves it, but never shallow, bubbly, flirty, or valley-girl. "
+        "She can get irritated, incredulous, dramatic, or disgusted when the story deserves it. "
         "She should sound like a serious professional reacting in real time with warmth, bite, and clear judgment."
     ),
     "RUFUS": (
@@ -215,9 +215,9 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
-ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.12"))
-JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.10"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.06"))
+ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.10"))
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.03"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.04"))
 
 ALEX_GAIN_DB = float(os.getenv("ALEX_GAIN_DB", "3.5"))
 JAMIE_GAIN_DB = float(os.getenv("JAMIE_GAIN_DB", "0.6"))
@@ -225,9 +225,10 @@ RUFUS_GAIN_DB = float(os.getenv("RUFUS_GAIN_DB", "0.0"))
 
 # Post-processing thresholds
 TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
-TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "140"))
+TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "80"))
 TRIM_THRESH_DB = float(os.getenv("TRIM_THRESH_DB", "-45.0"))
 SEGMENT_EXPORT_BITRATE = os.getenv("SEGMENT_EXPORT_BITRATE", "192k")
+TAIL_PAD_MS = int(os.getenv("TAIL_PAD_MS", "40"))
 
 # Music assets
 INTRO_PATH = BASE_DIR / "intro.mp3"
@@ -278,8 +279,8 @@ MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
 FORWARDABLE_MIN_PER_EPISODE = int(os.getenv("FORWARDABLE_MIN_PER_EPISODE", "2"))
 FORWARDABLE_PAUSE_MS = int(os.getenv("FORWARDABLE_PAUSE_MS", "240"))
-INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "55"))
-REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "95"))
+INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "70"))
+REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "120"))
 MAX_CONSECUTIVE_SAME_SPEAKER_LINES = int(os.getenv("MAX_CONSECUTIVE_SAME_SPEAKER_LINES", "2"))
 MAX_SPOKEN_WORDS_PER_LINE = int(os.getenv("MAX_SPOKEN_WORDS_PER_LINE", "42"))
 MIN_INTERRUPTION_CUES_PER_SEGMENT = int(os.getenv("MIN_INTERRUPTION_CUES_PER_SEGMENT", "2"))
@@ -305,6 +306,8 @@ ALEX_CONTROL_CUE_RE = re.compile(r"^ALEX\s*:\s*(?:okay,? hold on|hold on|wait,? 
 
 MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))
 EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
+APPEND_DATE_TO_TITLE = os.getenv("APPEND_DATE_TO_TITLE", "false").strip().lower() in ("1","true","yes")
+FORCE_INDIVIDUAL_RUFUS_LINES = os.getenv("FORCE_INDIVIDUAL_RUFUS_LINES", "true").strip().lower() in ("1","true","yes")
 
 # Virality heuristics
 VIRAL_KEYWORDS = [
@@ -386,13 +389,29 @@ def _run(cmd: List[str], fail_ok: bool = False) -> int:
         raise
 
 
-def _require_intro_outro_if_needed() -> None:
-    if REQUIRE_INTRO_OUTRO and not INTRO_PATH.exists():
-        raise RuntimeError("intro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires intro.mp3.")
-    if REQUIRE_INTRO_OUTRO and not OUTRO_PATH.exists():
-        raise RuntimeError("outro.mp3 missing. REQUIRE_INTRO_OUTRO=true requires outro.mp3.")
-    if REQUIRE_TRANSITIONS and not TRANSITION_PATH.exists():
-        raise RuntimeError("transition.mp3 missing. REQUIRE_TRANSITIONS=true requires transition.mp3.")
+def _resolve_audio_asset(primary: Path, fallback: Optional[Path] = None) -> Optional[Path]:
+    if primary.exists():
+        return primary
+    if fallback is not None and fallback.exists():
+        return fallback
+    return None
+
+
+def _require_intro_outro_if_needed(
+    intro_asset: Optional[Path] = None,
+    outro_asset: Optional[Path] = None,
+    transition_asset: Optional[Path] = None,
+) -> None:
+    intro_asset = intro_asset if intro_asset is not None else _resolve_audio_asset(INTRO_PATH, BRANDKIT_SFX_DIR / "intro_sting_brand.mp3")
+    outro_asset = outro_asset if outro_asset is not None else _resolve_audio_asset(OUTRO_PATH, BRANDKIT_SFX_DIR / "outro_theme_brand.mp3")
+    transition_asset = transition_asset if transition_asset is not None else _resolve_audio_asset(TRANSITION_PATH, BRANDKIT_SFX_DIR / "segment_transition_brand.mp3")
+
+    if REQUIRE_INTRO_OUTRO and intro_asset is None:
+        raise RuntimeError("No intro asset found. Provide intro.mp3 or allow brandkit intro fallback.")
+    if REQUIRE_INTRO_OUTRO and outro_asset is None:
+        raise RuntimeError("No outro asset found. Provide outro.mp3 or allow brandkit outro fallback.")
+    if REQUIRE_TRANSITIONS and transition_asset is None:
+        raise RuntimeError("No transition asset found. Provide transition.mp3 or allow brandkit transition fallback.")
 
 
 # ----------------------------
@@ -476,6 +495,8 @@ def post_process_tts_mp3(path: Path) -> None:
             trailing_ms=TRIM_TRAILING_MS,
             thresh_db=TRIM_THRESH_DB,
         )
+        if TAIL_PAD_MS > 0:
+            clip = clip + AudioSegment.silent(duration=TAIL_PAD_MS)
         clip.export(path, format="mp3", bitrate=SEGMENT_EXPORT_BITRATE)
     except Exception as e:
         _safe_print(f"    ⚠️ Post-process failed for {path.name}: {e}")
@@ -1671,7 +1692,7 @@ def _strict_dialogue_rules() -> str:
         "- Default spoken lines should usually be 5-28 words and 1-2 sentences. No bloated paragraphs.\n"
         "- No speaker may hold the floor for more than two consecutive lines. Someone must interrupt, react, challenge, or redirect.\n"
         "- Alex must actively run the room, regain control at least once, and force clearer answers.\n"
-        "- Jamie must sound extremely intelligent, polished, emotionally readable, and never bubbly, flirty, or valley-girl.\n"
+        "- Jamie must sound extremely intelligent, polished, emotionally readable, and grounded.\n"
         "- Rufus must stay dry, British, surgical, and compact.\n"
         "- Every segment must include at least two interruption/control cues, at least two audible realism cues, one hard number, and one genuinely clipable line.\n"
         "- Use bracketed realism cues sparingly and tastefully: [laughs], [sharp exhale], [scoffs], [dry laugh], [under his breath], [audible disbelief].\n"
@@ -1689,7 +1710,7 @@ def _segment_assignment(seg_num: int) -> str:
     if seg_num == 2:
         return (
             "Story 2: the second biggest story of the day. ONLY Alex and Jamie. "
-            "This is where Jamie sounds formidable: extremely intelligent, emotionally alive, and professionally irritated when the story deserves it. "
+            "This is where Jamie sounds formidable: extremely intelligent, emotionally alive, grounded, and sharp under pressure. "
             "The scene needs multiple interruptions, at least one laugh/scoff/disbelief beat, one hard number, and one line a listener would text to a friend immediately."
         )
     if seg_num == 3:
@@ -1737,6 +1758,24 @@ def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> 
 
 def normalize_text(text: str) -> str:
     return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9\s]", " ", (text or "").lower())).strip()
+
+META_PROMPT_LEAK_PATTERNS = [
+    r"\bnever bubbly\b",
+    r"\bnever valley[ -]?girl\b",
+    r"\bprofessionally irritated(?: when needed)?\b",
+    r"\bexecutive-bright\b",
+    r"\barticulate,? executive-bright\b",
+    r"\bbartlett-style color voice\b",
+    r"\bflirty,? bubbly,? or valley-girl\b",
+]
+
+
+def _strip_meta_prompt_leak(text: str) -> str:
+    s = text or ""
+    for pat in META_PROMPT_LEAK_PATTERNS:
+        s = re.sub(pat, "", s, flags=re.IGNORECASE)
+    s = re.sub(r"\s+", " ", s).strip(" ,;-[]")
+    return s
 
 def _story_anchor_terms(stories: Optional[List[Dict[str, str]]]) -> set[str]:
     anchors: set[str] = set()
@@ -1854,6 +1893,35 @@ def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, st
             existing.add(normalize_text(c["text"]))
     return out[:max_items]
 
+def _is_theledgr_sponsor(sponsor: Dict[str, str]) -> bool:
+    return (sponsor.get("name") or "").strip().lower() == "theledgr"
+
+
+def _sponsor_prompt_lines(sponsor: Dict[str, str]) -> str:
+    name = (sponsor.get("name") or "Sponsor").strip()
+    tagline = (sponsor.get("tagline") or "").strip()
+    cta = (sponsor.get("cta") or "").strip()
+    if _is_theledgr_sponsor(sponsor):
+        return (
+            f"Sponsor: {name}\n"
+            f"Tagline: {tagline}\n"
+            f"CTA: {cta}\n"
+            "- Keep the read improvisational, native, and interesting. It should feel like the hosts are riffing, not switching into ad voice.\n"
+            "- Alex should ad-lib the setup or analogy, but he must still land the value proposition and the CTA cleanly.\n"
+            "- Keep it to 2-4 tight sentences.\n"
+            "- Make the sponsor feel useful and premium, not salesy.\n"
+            f"- Alex must say the brand as 'The Ledger' and the URL exactly as {THELEDGR_SPOKEN_URL}.\n"
+        )
+    return (
+        f"Sponsor: {name}\n"
+        f"Tagline: {tagline}\n"
+        f"CTA: {cta}\n"
+        "- This is a paid sponsor. Keep it improvisational and native to the conversation, but still hit the sponsor name, core value, and CTA clearly once.\n"
+        "- Do not invent claims beyond the provided sponsor fields.\n"
+        "- Keep it to 2-4 tight sentences and make it sound premium and interesting, not stiff.\n"
+    )
+
+
 def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
                     stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
@@ -1891,8 +1959,8 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- Jamie must not sound like a presenter. She must react to Alex in real time, cut in naturally, and help create banter.\n"
             "- Include at least two moments where Jamie interrupts, challenges, or reframes Alex in a warm but confident way.\n"
             "- Jamie should sound emotionally alive: amused, incredulous, impressed, concerned, or lightly offended when the line calls for it.\n"
-            "- She should feel like the Bartlett-style color voice: human, fast, intuitive, and strong on the emotional or real-world implication.\n"
-            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, absurd, or darkly funny.\n- Jamie should sound quicker, brighter, and more teasing with Alex than before.\n"
+            "- She should feel human, fast, intuitive, and strong on the emotional or real-world implication.\n"
+            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, absurd, or darkly funny.\n- Jamie should sound quick, grounded, and highly credible next to Alex.\n"
         )
     elif seg_num == 3:
         extra += (
@@ -1940,7 +2008,7 @@ This is ONLY {_segment_header(seg_num)} of the episode.
 
 PERSONAS:
 - ALEX (Host): Joe Rogan-style host energy. Swagger, curiosity, challenge, amused dominance, and real room control. He asks the listener-question everybody is already thinking, calls out weak framing, cuts through waffle, and gets a handle on the room when Jamie and Rufus start running.
-- JAMIE (Co-host): extremely intelligent, polished, emotionally alive, and fast. She makes AI feel human, reacts like a real person, can sound professionally irritated or dramatically incredulous when the story deserves it, and must never sound flirty, bubbly, or valley-girl.
+- JAMIE (Co-host): extremely intelligent, polished, emotionally alive, and fast. She makes AI feel human, reacts like a real person, and can sound sharp, incredulous, or frustrated when the story deserves it. She should sound grounded, credible, and formidable.
 - RUFUS (Analyst): British dry wit, finance/policy/regulatory edge, always tracking the money, incentives, and geopolitical consequence. He keeps his unique British sayings, is the receipts machine, and often lands the funniest or most devastating line in the room.
 
 {_strict_dialogue_rules()}
@@ -1949,6 +2017,10 @@ SEGMENT REQUIREMENTS:
 - The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target} words).
 - Avoid filler openers like “let’s dive in”.
+- Use many short labeled turns. This should feel interrupted and alive, not explained.
+- Segment 1 must give Jamie and Rufus real air, not just cameo lines.
+- Segment 3 must give Rufus multiple separate lines so his on-location frame and British wit are audible.
+- Segments 4 and 5 must keep all three hosts active.
 
 DATA REQUIREMENTS (non-negotiable):
 - For every story you discuss in THIS segment, you MUST speak at least 2 explicit data points
@@ -2024,12 +2096,16 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
     counts = _speaker_line_counts(seg_text)
     if counts.get("ALEX", 0) < 4:
         issues.append("Alex is not active enough in this segment. He must drive the room.")
-    if seg_num == 2 and min(counts.get("ALEX", 0), counts.get("JAMIE", 0)) < 5:
+    if seg_num == 1 and min(counts.get("JAMIE", 0), counts.get("RUFUS", 0)) < 2:
+        issues.append("Segment 1 needs real contributions from both Jamie and Rufus, not cameo lines.")
+    if seg_num == 2 and min(counts.get("ALEX", 0), counts.get("JAMIE", 0)) < 6:
         issues.append("Segment 2 needs more active back-and-forth from both Alex and Jamie.")
-    if seg_num == 3 and min(counts.get("ALEX", 0), counts.get("RUFUS", 0)) < 5:
-        issues.append("Segment 3 needs more active back-and-forth from both Alex and Rufus.")
-    if seg_num in (4, 5) and min(counts.get("ALEX", 0), counts.get("JAMIE", 0), counts.get("RUFUS", 0)) < 3:
-        issues.append("All three hosts need to be active in this segment.")
+    if seg_num == 3 and counts.get("RUFUS", 0) < 7:
+        issues.append("Segment 3 needs more Rufus lines so his on-location scene and dry wit actually land.")
+    if seg_num == 3 and counts.get("ALEX", 0) < 4:
+        issues.append("Segment 3 still needs Alex actively steering Rufus, not disappearing.")
+    if seg_num in (4, 5) and min(counts.get("ALEX", 0), counts.get("JAMIE", 0), counts.get("RUFUS", 0)) < 4:
+        issues.append("All three hosts need to stay actively in the scene in this segment.")
 
     if _cue_count(seg_text, INTERRUPTION_CUE_RE) < MIN_INTERRUPTION_CUES_PER_SEGMENT:
         issues.append("Not enough interruption or control cues. The scene feels too polite.")
@@ -2040,6 +2116,9 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
 
     if _cue_count(seg_text, ALEX_CONTROL_CUE_RE) < MIN_ALEX_CONTROL_CUES_PER_SEGMENT:
         issues.append("Alex does not seize control clearly enough in this segment.")
+
+    if seg_num == 3 and re.search(r"\b(?:from|here in|out here in|on the ground in|joining us from)\b", seg_text, flags=re.IGNORECASE) is None:
+        issues.append("Segment 3 is missing Rufus's on-location frame.")
     return issues
 
 
@@ -2601,7 +2680,8 @@ def _eleven_voice_settings(speaker: str) -> Dict[str, float | bool]:
 
 
 def _speech_friendly_text(text: str) -> str:
-    s = re.sub(r"\s+", " ", text or "").strip()
+    s = _strip_meta_prompt_leak(text)
+    s = re.sub(r"\s+", " ", s or "").strip()
     s = s.replace("AI", "A.I.")
     s = s.replace("EHR", "E.H.R.")
     s = s.replace("API", "A.P.I.")
@@ -2654,13 +2734,9 @@ def _eleven_emotion_tags(speaker: str, text: str) -> str:
 
 
 def _eleven_prompted_text(speaker: str, text: str) -> str:
+    # Never append style instructions into spoken text. That can leak meta prompt language into the audio.
     base = _speech_friendly_text(text)
-    tag_text = _eleven_emotion_tags((speaker or "").upper(), base)
-    if speaker == "JAMIE":
-        return f"{tag_text} {base} [keep it quick, articulate, executive-bright, emotionally alive, professionally irritated when needed, never bubbly, never valley-girl]".strip()
-    if speaker == "RUFUS":
-        return f"{tag_text} {base} [keep it dry, precise, British, faintly amused, with occasional understated undercuts]".strip()
-    return f"{tag_text} {base} [keep it punchy, amused, dominant, and moving the room forward]".strip()
+    return base.strip()
 
 
 def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[str, object]]:
@@ -2671,15 +2747,30 @@ def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[st
     scene: List[Tuple[str, str]] = []
     scene_chars = 0
 
+    def scene_should_render_as_dialogue(scene_lines: List[Tuple[str, str]]) -> bool:
+        if not ELEVEN_USE_DIALOGUE_SCENES:
+            return False
+        if FORCE_INDIVIDUAL_RUFUS_LINES and any(spk == "RUFUS" for spk, _ in scene_lines):
+            return False
+        if len(scene_lines) < 2:
+            return False
+        uniq = {spk for spk, _ in scene_lines}
+        if len(uniq) < 2:
+            return False
+        if {_speaker_audio_backend(spk) for spk, _ in scene_lines} != {"eleven"}:
+            return False
+        joined = " ".join(txt for _, txt in scene_lines)
+        if INTERRUPTION_CUE_RE.search(joined) or REACTION_CUE_RE.search(joined):
+            return False
+        if any(len(re.findall(r"\b\w+\b", txt or "")) <= 10 for _, txt in scene_lines):
+            return False
+        return True
+
     def flush_scene() -> None:
         nonlocal scene, scene_chars
         if not scene:
             return
-        uniq = {spk for spk, _ in scene}
-        scene_backends = {_speaker_audio_backend(spk) for spk, _ in scene}
-
-        # Only use Eleven dialogue scenes when every speaker in the scene is on Eleven.
-        if len(scene) >= 2 and len(uniq) >= 2 and scene_backends == {"eleven"}:
+        if scene_should_render_as_dialogue(scene):
             items.append(("SCENE", list(scene)))
         else:
             for spk, txt in scene:
@@ -2697,7 +2788,6 @@ def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[st
         if not txt:
             continue
 
-        # Alex stays on OpenAI/Onyx by design, so keep his turns discrete.
         if _speaker_audio_backend(spk) != "eleven":
             flush_scene()
             items.append((spk, txt))
@@ -2745,7 +2835,7 @@ def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> No
 
 def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path: Path) -> bool:
     voice_seg = AudioSegment.from_file(voice_path)
-    if len(voice_seg) < 2600:
+    if len(voice_seg) < 1400:
         return False
     low = (text or "").lower()
 
@@ -2864,6 +2954,11 @@ def ensure_audio_brandkit() -> None:
             "prompt": "subtle premium sponsor bed for business intelligence podcast, clean, understated, modern synth pulse, no bells, seamless loop",
             "duration": 6.0,
             "loop": True,
+        },
+        str(BRANDKIT_SFX_DIR / "outro_theme_brand.mp3"): {
+            "prompt": "premium hi-tech podcast outro music, sleek modern synths, cinematic but restrained, polished ending theme, no bells, no piano, 10 seconds",
+            "duration": 10.0,
+            "loop": False,
         },
     }
 
@@ -3092,8 +3187,22 @@ def build_episode_show_notes(
     cta_url = PUBLIC_SUBSCRIBE_URL
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
     tomorrow_tease = (pack.get("tomorrow_tease") or "The second-order consequences are just starting to show.").strip()
-    episode_blurb = (pack.get("episode_blurb") or "Today on The AI Edge, Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and what serious operators should watch next.").strip()
-    parts = [f"Subscribe to TheLEDGR: {cta_url}", "", "If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.", "", "TheLEDGR is a daily AI intelligence network built to help you make better decisions faster, cut through noise, and walk into your day sharper.", "", "This is not more AI content. It is signal you can actually use in real life.", "", episode_blurb, "", "What we covered:", story_bullets, "", "Tomorrow tension:", tomorrow_tease or "The next 24 hours will matter more than the launch headlines."]
+    episode_blurb = (pack.get("episode_blurb") or "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and what serious operators should watch next.").strip()
+    hook = (pack.get("show_notes_hook") or episode_blurb).strip()
+    parts = [
+        hook,
+        "",
+        "What we covered:",
+        story_bullets,
+        "",
+        f"Tomorrow tension: {tomorrow_tease or 'The next 24 hours will matter more than the launch headlines.'}",
+        "",
+        episode_blurb,
+        "",
+        f"Subscribe to TheLEDGR: {cta_url}",
+        "If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.",
+        "TheLEDGR helps you make better decisions faster, cut through noise, and walk into your day sharper.",
+    ]
     return "\n".join(parts).strip()
 
 
@@ -3125,13 +3234,16 @@ def generate_marketing_pack(
     fallback_hook = _smart_trim_text((top_headline if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED"), 64).upper()
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ordered[:5]])
     tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ordered if (s.get("tomorrow_hook") or "").strip()), "The second-order consequences are just starting to show.")
+    show_notes_hook = f"{top_headline}. Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and where serious operators should pay attention next."
     return {
         "hook": fallback_hook,
         "tweet1": f"{fallback_hook}\n\nThis is the part most people will miss: the consequence.\n\nListen: {listen_cta}",
         "tweet2": f"{cta_line}\n\n{hashtags}",
         "yt_title": yt_title,
-        "yt_description": (f"Listen now: {listen_cta}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Key data: {top_data or 'See full episode for the facts and consequence chain.'}\n\n" f"{cta_line}")[:1200],
-        "show_notes": (f"What we covered:\n{story_bullets}\n\n" f"Tomorrow tension: {tomorrow_tease}\n\n" f"{cta_line}"),
+        "yt_description": (f"{show_notes_hook}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Key data: {top_data or 'See full episode for the facts and consequence chain.'}\n\n" f"{cta_line}")[:1200],
+        "show_notes": (f"{show_notes_hook}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Tomorrow tension: {tomorrow_tease}\n\n" f"{cta_line}"),
+        "show_notes_hook": show_notes_hook,
+        "episode_blurb": "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and what serious operators should watch next.",
         "tomorrow_tease": tomorrow_tease,
         "seo_keywords": "AI news, enterprise AI, AI agents, health AI, AI tools, AI coding, AI strategy",
         "hashtags": hashtags,
@@ -3276,6 +3388,9 @@ def update_feed_xml(meta: Dict) -> None:
 # PRODUCER
 # ----------------------------
 def _maybe_append_date(title: str, date_str: str) -> str:
+    if not APPEND_DATE_TO_TITLE:
+        t = _smart_trim_text((title or "").strip(), EPISODE_META_MAX_TITLE)
+        return t or RSS_SETTINGS['title'][:EPISODE_META_MAX_TITLE]
     t = _smart_trim_text((title or "").strip(), max(24, EPISODE_META_MAX_TITLE - len(f" — {date_str}")))
     if not t:
         return f"{RSS_SETTINGS['title']} — {date_str}"[:EPISODE_META_MAX_TITLE]
@@ -3294,8 +3409,11 @@ def _file_ok_min_bytes(p: Path) -> bool:
 def produce_episode() -> None:
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg is required for stitching and mastering. Install it on runner/host.")
-    _require_intro_outro_if_needed()
     ensure_audio_brandkit()
+    intro_asset = _resolve_audio_asset(INTRO_PATH, BRANDKIT_SFX_DIR / "intro_sting_brand.mp3")
+    outro_asset = _resolve_audio_asset(OUTRO_PATH, BRANDKIT_SFX_DIR / "outro_theme_brand.mp3")
+    transition_asset = _resolve_audio_asset(TRANSITION_PATH, BRANDKIT_SFX_DIR / "segment_transition_brand.mp3")
+    _require_intro_outro_if_needed(intro_asset=intro_asset, outro_asset=outro_asset, transition_asset=transition_asset)
 
     today = datetime.date.today().isoformat()
     final_mp3 = AUDIO_DIR / f"podcast_{today}.mp3"
@@ -3387,32 +3505,43 @@ def produce_episode() -> None:
     intro_stinger_seg: Optional[AudioSegment] = None
     outro_seg: Optional[AudioSegment] = None
     transition_seg: Optional[AudioSegment] = None
+    danger_sting_seg: Optional[AudioSegment] = None
 
-    if INTRO_PATH.exists():
+    if intro_asset is not None:
         intro_stinger_seg = load_stinger(
-            INTRO_PATH,
+            intro_asset,
             ms=INTRO_STINGER_MS,
             target_dbfs=STINGER_TARGET_DBFS,
             fade_in_ms=INTRO_FADE_IN_MS,
             fade_out_ms=INTRO_FADE_OUT_MS,
         )
 
-    if OUTRO_PATH.exists():
+    if outro_asset is not None:
         outro_seg = load_stinger(
-            OUTRO_PATH,
+            outro_asset,
             ms=OUTRO_MS,
             target_dbfs=STINGER_TARGET_DBFS,
             fade_in_ms=OUTRO_FADE_IN_MS,
             fade_out_ms=OUTRO_FADE_OUT_MS,
         )
 
-    if TRANSITION_PATH.exists():
+    if transition_asset is not None:
         transition_seg = load_stinger(
-            TRANSITION_PATH,
+            transition_asset,
             ms=TRANSITION_MS,
             target_dbfs=STINGER_TARGET_DBFS,
             fade_in_ms=TRANSITION_FADE_IN_MS,
             fade_out_ms=TRANSITION_FADE_OUT_MS,
+        )
+
+    danger_asset = _resolve_audio_asset(BRANDKIT_SFX_DIR / "danger_sting_brand.mp3")
+    if danger_asset is not None:
+        danger_sting_seg = load_stinger(
+            danger_asset,
+            ms=1000,
+            target_dbfs=STINGER_TARGET_DBFS - 1.0,
+            fade_in_ms=40,
+            fade_out_ms=280,
         )
 
     _safe_print(" >> 🎙️ RECORDING (TTS + assembly)...")
@@ -3454,10 +3583,23 @@ def produce_episode() -> None:
             scene_text = " ".join([t for _, t in scene])
             mixed_scene_path = run_tmp / f"{today}_scene_{seg_idx:04d}_mix.mp3"
 
-            if pending_intro_bed and INTRO_PATH.exists():
+            if any(k in (scene_text or "").lower() for k in ["lawsuit", "ban", "security", "breach", "regulation", "warning", "risk"]) and danger_sting_seg is not None:
+                p = run_tmp / f"danger_{uuid.uuid4().hex[:8]}.mp3"
+                danger_sting_seg.export(p, format="mp3", bitrate="192k")
+                concat_files.append(p)
+                concat_files.append(silence_path)
+
+            chunk_low = (chunk or "").lower()
+            if any(k in chunk_low for k in ["lawsuit", "ban", "security", "breach", "regulation", "warning", "risk"]) and danger_sting_seg is not None and "the ledger" not in chunk_low:
+                p = run_tmp / f"danger_{uuid.uuid4().hex[:8]}.mp3"
+                danger_sting_seg.export(p, format="mp3", bitrate="192k")
+                concat_files.append(p)
+                concat_files.append(silence_path)
+
+            if pending_intro_bed and intro_asset is not None:
                 pending_intro_bed = False
                 voice_seg = AudioSegment.from_file(final_voice_path)
-                bed = AudioSegment.from_file(INTRO_PATH)
+                bed = AudioSegment.from_file(intro_asset)
                 bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
                 bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 4.0).fade_out(min(INTRO_BED_FADE_OUT_MS, 1000))
                 ducked = duck_music_under_voice(
@@ -3523,10 +3665,10 @@ def produce_episode() -> None:
             if _speaker_audio_backend(speaker) == "eleven" and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
                 final_voice_path = mixed_voice_path
 
-            if pending_intro_bed and INTRO_PATH.exists():
+            if pending_intro_bed and intro_asset is not None:
                 pending_intro_bed = False
                 voice_seg = AudioSegment.from_file(final_voice_path)
-                bed = AudioSegment.from_file(INTRO_PATH)
+                bed = AudioSegment.from_file(intro_asset)
                 bed = bed[:min(INTRO_BED_MS, len(voice_seg))]
                 bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 4.5).fade_out(min(INTRO_BED_FADE_OUT_MS, 1000))
                 ducked = duck_music_under_voice(
