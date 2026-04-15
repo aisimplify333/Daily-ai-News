@@ -144,9 +144,9 @@ AUTO_BUILD_AUDIO_BRANDKIT = os.getenv("AUTO_BUILD_AUDIO_BRANDKIT", "true").strip
 REBUILD_AUDIO_BRANDKIT = os.getenv("REBUILD_AUDIO_BRANDKIT", "false").strip().lower() in ("1","true","yes")
 ELEVEN_USE_DIALOGUE_SCENES = os.getenv("ELEVEN_USE_DIALOGUE_SCENES", "true").strip().lower() in ("1","true","yes")
 ALEX_USE_OPENAI = os.getenv("ALEX_USE_OPENAI", "true").strip().lower() in ("1","true","yes")
-ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "5"))
-ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "950"))
-ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "85"))
+ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "7"))
+ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "1500"))
+ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "120"))
 
 # Episode length gates (minutes)
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", "19"))
@@ -279,10 +279,10 @@ MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
 FORWARDABLE_MIN_PER_EPISODE = int(os.getenv("FORWARDABLE_MIN_PER_EPISODE", "2"))
 FORWARDABLE_PAUSE_MS = int(os.getenv("FORWARDABLE_PAUSE_MS", "240"))
-INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "70"))
-REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "120"))
-MAX_CONSECUTIVE_SAME_SPEAKER_LINES = int(os.getenv("MAX_CONSECUTIVE_SAME_SPEAKER_LINES", "2"))
-MAX_SPOKEN_WORDS_PER_LINE = int(os.getenv("MAX_SPOKEN_WORDS_PER_LINE", "42"))
+INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "90"))
+REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "150"))
+MAX_CONSECUTIVE_SAME_SPEAKER_LINES = int(os.getenv("MAX_CONSECUTIVE_SAME_SPEAKER_LINES", "3"))
+MAX_SPOKEN_WORDS_PER_LINE = int(os.getenv("MAX_SPOKEN_WORDS_PER_LINE", "52"))
 MIN_INTERRUPTION_CUES_PER_SEGMENT = int(os.getenv("MIN_INTERRUPTION_CUES_PER_SEGMENT", "2"))
 MIN_REACTION_CUES_PER_SEGMENT = int(os.getenv("MIN_REACTION_CUES_PER_SEGMENT", "2"))
 MIN_ALEX_CONTROL_CUES_PER_SEGMENT = int(os.getenv("MIN_ALEX_CONTROL_CUES_PER_SEGMENT", "1"))
@@ -1682,21 +1682,23 @@ def _story_block(stories: List[Dict[str, str]]) -> str:
 
 def _strict_dialogue_rules() -> str:
     return (
-        "HARD FORMAT RULES (non-negotiable):\n"
-        "- Output MUST be dialogue lines only using EXACT labels: \"ALEX:\", \"JAMIE:\", \"RUFUS:\"\n"
-        "- Every spoken line MUST start with one of those labels. No unlabeled narration.\n"
-        "- Segment markers are allowed as lines starting with \"###\" and will NOT be spoken.\n"
-        "- \"[MUSIC]\" may appear as a standalone line.\n"
-        "- Do not add any other headings, bullets, or markdown.\n"
-        "- This is a live contested conversation, not a sequential explainer.\n"
-        "- Default spoken lines should usually be 5-28 words and 1-2 sentences. No bloated paragraphs.\n"
-        "- No speaker may hold the floor for more than two consecutive lines. Someone must interrupt, react, challenge, or redirect.\n"
-        "- Alex must actively run the room, regain control at least once, and force clearer answers.\n"
-        "- Jamie must sound extremely intelligent, polished, emotionally readable, and grounded.\n"
-        "- Rufus must stay dry, British, surgical, and compact.\n"
-        "- Every segment must include at least two interruption/control cues, at least two audible realism cues, one hard number, and one genuinely clipable line.\n"
-        "- Use bracketed realism cues sparingly and tastefully: [laughs], [sharp exhale], [scoffs], [dry laugh], [under his breath], [audible disbelief].\n"
-        "- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n"
+        'HARD FORMAT RULES (non-negotiable):\n'
+        '- Output MUST be dialogue lines only using EXACT labels: "ALEX:", "JAMIE:", "RUFUS:"\n'
+        '- Every spoken line MUST start with one of those labels. No unlabeled narration.\n'
+        '- Segment markers are allowed as lines starting with "###" and will NOT be spoken.\n'
+        '- "[MUSIC]" may appear as a standalone line.\n'
+        '- Do not add any other headings, bullets, or markdown.\n'
+        '- This is a live contested conversation, not a sequential explainer.\n'
+        '- Default spoken lines should usually be 6-34 words and 1-2 sentences. Do not bloat them, but do let key arguments breathe.\n'
+        '- Avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Jamie and Rufus should occasionally get 2-3 connected lines when sharpening an argument.\n'
+        '- Alex must actively run the room, regain control at least once, and force clearer answers.\n'
+        '- Jamie must sound extremely intelligent, polished, emotionally readable, and grounded.\n'
+        '- Rufus must stay dry, British, surgical, and compact.\n'
+        '- In Segments 3, 4, and 5, Jamie and Rufus must have at least one real sparring exchange lasting 3-6 turns before Alex regains control.\n'
+        '- Their jabs should sound like two smart colleagues who respect each other but enjoy taking shots. The humor should come from worldview, timing, irritation, and intelligence.\n'
+        '- Every segment must include at least one interruption/control cue, at least two audible realism cues, one hard number, and one genuinely clipable line.\n'
+        '- Use bracketed realism cues sparingly and tastefully: [laughs], [sharp exhale], [scoffs], [dry laugh], [under his breath], [audible disbelief].\n'
+        '- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n'
     )
 
 def _segment_assignment(seg_num: int) -> str:
@@ -1716,15 +1718,18 @@ def _segment_assignment(seg_num: int) -> str:
     if seg_num == 3:
         return (
             "Story 3: the third biggest story of the day. Alex throws to Rufus and Rufus owns the room with money, power, policy, or geopolitical consequence. "
-            "Rufus must land one elite dry British undercut, one memorable British saying, and one hard number that changes how the listener sees the story, while Alex keeps forcing clarity."
+            "Rufus must land one elite dry British undercut, one memorable British saying, and one hard number that changes how the listener sees the story. "
+            "Jamie must challenge Rufus at least once, they should spar for 3-6 turns with real wit and irritation, and then Alex regains control and forces the takeaway."
         )
     if seg_num == 4:
         return (
             "Story 4: the strongest vertical story. All three are in. This should feel like a mini scene with friction, callbacks, real interruptions, and at least one genuine chuckle or smirk beat. "
+            "Jamie and Rufus must have one genuine sparring exchange with wit, sarcasm, and respect before Alex gets a handle on the room. "
             "Somebody should disagree. Somebody should cut in. Alex should have to get a handle on the room at least once. No polite panel-talk."
         )
     return (
         "Story 5: the second-best vertical or best flex story. Drive toward a real close. "
+        "Before the close, Jamie and Rufus should have one final sharp disagreement or teasing exchange that reveals their chemistry, then Alex lands the takeaway. "
         "The ending must feel memorable, slightly cinematic, tomorrow-facing, and unresolved enough that listeners need the next episode. "
         "No weak wrap-up language until the actual final sign-off and outro."
     )
@@ -1934,9 +1939,9 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- DO NOT sign off.\n"
             "- DO NOT say goodbye, thanks for listening, until tomorrow, or anything that sounds like the end of the show.\n"
             "- Keep the energy open and forward-moving. This is not the close.\n"
-            "- CRITICAL: avoid monologues. Rotate turns quickly. No speaker should dominate the segment.\n"
+            "- CRITICAL: avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Let Jamie and Rufus occasionally hold 2-3 connected turns when sharpening an argument.\n"
             "- Include at least one interruption, one real emotional reaction, and one line that could be clipped and shared.\n"
-            "- Keep dialogue fast, alive, and conflict-aware like a great writer's room, not a newsroom panel.\n"
+            "- Keep dialogue alive, conflict-aware, and writer-room sharp, but allow arguments to breathe before Alex cuts back in.\n"
         )
 
     if seg_num == 1:
@@ -1969,6 +1974,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "He must connect the money, the politics, and the geopolitical consequence.\n"
             "Include one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
             "Weave the sponsor naturally only if it feels native to the insight.\n"
+            "Jamie must challenge Rufus at least once before the segment ends, and their exchange should include one sarcastic jab or dry undercut before Alex regains control.\n"
             "This segment should hand momentum forward, not sound like the end of the episode.\n"
             f"Sponsor: {sponsor_1['name']}\n"
             f"Tagline: {sponsor_1.get('tagline','')}\n"
@@ -1982,6 +1988,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             f"CTA: {sponsor_2.get('cta','')}\n"
             "- Include one callback to something said earlier in the episode.\n"
             "- Jamie must actively play off both Alex and Rufus. She should challenge Rufus if he becomes too cold or purely strategic.\n"
+            "- Jamie and Rufus must have one genuine sparring exchange with wit, sarcasm, and a little amusement before Alex cuts through it.\n"
             "- Include one moment where Jamie reacts with genuine offense, disbelief, or frustration at the human cost of the story.\n"
             "- Include one quick interjection and one listener-facing 'pick a side' question.\n"
             "- This segment must contain one line strong enough that a listener would forward it.\n"
@@ -1992,6 +1999,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "Jamie should leave the audience with the human implication and must sound emotionally invested, not polished.\n"
             "She should respond directly to Rufus if he lands a cynical or detached prediction.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
+            "Before the close, Jamie and Rufus should have one final teasing disagreement or sharp exchange that shows their chemistry.\n"
             "End with a final micro sponsor tag or aside only if it feels native.\n"
             "The final 2-3 lines must make tomorrow feel necessary.\n- End on an unresolved edge, not a tidy summary.\n"
             f"Sponsor: {sponsor_3['name']}\n"
@@ -2017,7 +2025,7 @@ SEGMENT REQUIREMENTS:
 - The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
 - Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target} words).
 - Avoid filler openers like “let’s dive in”.
-- Use many short labeled turns. This should feel interrupted and alive, not explained.
+- Use many labeled turns with variation in length. This should feel interrupted and alive, but key arguments must have enough room to land before Alex cuts back in.
 - Segment 1 must give Jamie and Rufus real air, not just cameo lines.
 - Segment 3 must give Rufus multiple separate lines so his on-location frame and British wit are audible.
 - Segments 4 and 5 must keep all three hosts active.
@@ -2399,6 +2407,16 @@ def _strip_premature_signoffs(script: str) -> str:
         r"\bthat wraps (?:it|us) up\b",
         r"\bwe'?ll leave it there\b",
     ]
+    soft_wrap_patterns = [
+        r"\bthat'?s the real takeaway\b",
+        r"\bthat'?s the point\b",
+        r"\bthat'?s the bottom line\b",
+        r"\bnet[- ]net\b",
+        r"\band that'?s why this matters\b",
+        r"\bso that'?s where we land\b",
+        r"\bwe'll be watching that\b",
+        r"\bthat'?s where this gets interesting\b",
+    ]
 
     parts = re.split(r"(?=^### SEGMENT\s+\d+\b)", script, flags=re.MULTILINE)
     cleaned_parts = []
@@ -2424,6 +2442,14 @@ def _strip_premature_signoffs(script: str) -> str:
                     continue
 
             kept_lines.append(line)
+
+        for idx in range(len(kept_lines) - 1, -1, -1):
+            stripped = kept_lines[idx].strip()
+            if not re.match(r"^(ALEX|JAMIE|RUFUS)\s*:", stripped, flags=re.IGNORECASE):
+                continue
+            spoken = re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", stripped, flags=re.IGNORECASE)
+            if any(re.search(pat, spoken, flags=re.IGNORECASE) for pat in soft_wrap_patterns):
+                del kept_lines[idx]
 
         cleaned_parts.append("\n".join(kept_lines).rstrip())
 
