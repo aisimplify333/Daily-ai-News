@@ -189,8 +189,8 @@ VOICE_INSTRUCTIONS: Dict[str, str] = {
     "ALEX": (
         "Sound like a high-agency Joe Rogan-style host who runs the room. "
         "He is curious, amused by tension, quick to challenge weak framing, and never passive. "
-        "He interrupts to clarify, speed things up, and force sharper answers. "
-        "He should sound entertained by the stakes and slightly dangerous when a number or contradiction lands."
+        "He does NOT interrupt every beat; when Jamie and Rufus are cooking, he lets them go a few turns before cutting back in with force. "
+        "He should sound entertained by the stakes, confident, and slightly dangerous when a number or contradiction lands."
     ),
     "JAMIE": (
         "Sound extremely intelligent, polished, and emotionally alive. "
@@ -200,7 +200,7 @@ VOICE_INSTRUCTIONS: Dict[str, str] = {
     ),
     "RUFUS": (
         "Sound like a dry British analyst with elite verbal precision, dry wit, and occasional withering amusement. "
-        "He keeps his British sayings, lands the hardest numbers cleanly, and undercuts hype with quiet menace. "
+        "He keeps his British sayings, lands the hardest numbers cleanly, and undercuts hype with quiet menace and elegant sarcasm. "
         "He is serious, but never flat. He sounds like the cleverest person in the room and knows it."
     ),
 }
@@ -215,20 +215,20 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
-ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.10"))
-JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.03"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.04"))
+ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.08"))
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.02"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.03"))
 
 ALEX_GAIN_DB = float(os.getenv("ALEX_GAIN_DB", "3.5"))
-JAMIE_GAIN_DB = float(os.getenv("JAMIE_GAIN_DB", "0.6"))
-RUFUS_GAIN_DB = float(os.getenv("RUFUS_GAIN_DB", "0.0"))
+JAMIE_GAIN_DB = float(os.getenv("JAMIE_GAIN_DB", "1.0"))
+RUFUS_GAIN_DB = float(os.getenv("RUFUS_GAIN_DB", "0.3"))
 
 # Post-processing thresholds
 TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
-TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "80"))
+TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "110"))
 TRIM_THRESH_DB = float(os.getenv("TRIM_THRESH_DB", "-45.0"))
 SEGMENT_EXPORT_BITRATE = os.getenv("SEGMENT_EXPORT_BITRATE", "192k")
-TAIL_PAD_MS = int(os.getenv("TAIL_PAD_MS", "40"))
+TAIL_PAD_MS = int(os.getenv("TAIL_PAD_MS", "70"))
 
 # Music assets
 INTRO_PATH = BASE_DIR / "intro.mp3"
@@ -277,10 +277,10 @@ MIN_COLD_OPEN_LINES = int(os.getenv("MIN_COLD_OPEN_LINES", "6"))
 MIN_DIGITS_PER_SEGMENT = int(os.getenv("MIN_DIGITS_PER_SEGMENT", "12"))
 MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
-FORWARDABLE_MIN_PER_EPISODE = int(os.getenv("FORWARDABLE_MIN_PER_EPISODE", "2"))
+FORWARDABLE_MIN_PER_EPISODE = int(os.getenv("FORWARDABLE_MIN_PER_EPISODE", "3"))
 FORWARDABLE_PAUSE_MS = int(os.getenv("FORWARDABLE_PAUSE_MS", "240"))
-INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "90"))
-REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "150"))
+INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "105"))
+REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "175"))
 MAX_CONSECUTIVE_SAME_SPEAKER_LINES = int(os.getenv("MAX_CONSECUTIVE_SAME_SPEAKER_LINES", "3"))
 MAX_SPOKEN_WORDS_PER_LINE = int(os.getenv("MAX_SPOKEN_WORDS_PER_LINE", "52"))
 MIN_INTERRUPTION_CUES_PER_SEGMENT = int(os.getenv("MIN_INTERRUPTION_CUES_PER_SEGMENT", "2"))
@@ -303,6 +303,13 @@ SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
 INTERRUPTION_CUE_RE = re.compile(r"\b(?:wait|wait wait wait|hold on|hang on|stop|come on|no no|no,? that|sorry|one at a time|say that again|cut through it|look)\b", re.IGNORECASE)
 REACTION_CUE_RE = re.compile(r"\[(?:laughs?|chuckles?|scoffs?|huffs?|sharp exhale|amused exhale|dry laugh|under[- ]the[- ]breath|incredulous pause|audible disbelief|mutters?|beat|pause)\]|\b(?:come on|seriously|no way|that'?s absurd|that is absurd|unbelievable|ridiculous)\b", re.IGNORECASE)
 ALEX_CONTROL_CUE_RE = re.compile(r"^ALEX\s*:\s*(?:okay,? hold on|hold on|wait,? wait,? wait|stop\.|stop,|one at a time|jamie[—-]? hang on|rufus,? cut through it|no,? that'?s not the question|say that again)", re.IGNORECASE)
+
+STALE_FUTURE_YEAR_RE = re.compile(
+    r"\b(?:will|would|is expected to|are expected to|expected to|forecast(?:ed)? to|project(?:ed)? to|predicted to|set to|poised to|going to|on track to|scheduled to|could|should)\b[^\n.!?]{0,80}\b(20\d{2})\b",
+    re.IGNORECASE,
+)
+THELEDGR_NAME_RE = re.compile(r"\b(?:the ledger|theledgr)\b", re.IGNORECASE)
+THELEDGR_URL_RE = re.compile(r"t[- ]?h[- ]?e[- ]?l[- ]?e[- ]?d[- ]?g[- ]?r\s+dot\s+i[- ]?o", re.IGNORECASE)
 
 MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))
 EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
@@ -1691,15 +1698,16 @@ def _strict_dialogue_rules() -> str:
         '- This is a live contested conversation, not a sequential explainer.\n'
         '- Default spoken lines should usually be 6-34 words and 1-2 sentences. Do not bloat them, but do let key arguments breathe.\n'
         '- Avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Jamie and Rufus should occasionally get 2-3 connected lines when sharpening an argument.\n'
-        '- Alex must actively run the room, regain control at least once, and force clearer answers.\n'
+        '- Alex must actively run the room, but he should not interrupt every beat. He should let a strong Jamie/Rufus exchange breathe for a few turns, then cut back in with pressure, clarity, or the takeaway.\n'
         '- Jamie must sound extremely intelligent, polished, emotionally readable, and grounded.\n'
-        '- Rufus must stay dry, British, surgical, and compact.\n'
+        '- Rufus must stay dry, British, surgical, and compact, with at least one memorable British undercut somewhere in the episode.\n'
         '- In Segments 3, 4, and 5, Jamie and Rufus must have at least one real sparring exchange lasting 3-6 turns before Alex regains control.\n'
         '- Their jabs should sound like two smart colleagues who respect each other but enjoy taking shots. The humor should come from worldview, timing, irritation, and intelligence.\n'
         '- Every segment must include at least one interruption/control cue, at least two audible realism cues, one hard number, and one genuinely clipable line.\n'
         '- Use bracketed realism cues sparingly and tastefully: [laughs], [sharp exhale], [scoffs], [dry laugh], [under his breath], [audible disbelief].\n'
         '- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n'
     )
+
 
 def _segment_assignment(seg_num: int) -> str:
     if seg_num == 1:
@@ -1781,6 +1789,141 @@ def _strip_meta_prompt_leak(text: str) -> str:
         s = re.sub(pat, "", s, flags=re.IGNORECASE)
     s = re.sub(r"\s+", " ", s).strip(" ,;-[]")
     return s
+
+
+def _stale_future_lines(script: str, date_str: str) -> List[str]:
+    current_year = int((date_str or datetime.date.today().isoformat())[:4])
+    bad: List[str] = []
+    seen = set()
+    for raw in (script or "").splitlines():
+        m = SPEAKER_RE.match(raw.strip())
+        if not m:
+            continue
+        spoken = m.group(2).strip()
+        for hit in STALE_FUTURE_YEAR_RE.finditer(spoken):
+            try:
+                yr = int(hit.group(1))
+            except Exception:
+                continue
+            if yr < current_year:
+                line = raw.strip()
+                if line not in seen:
+                    seen.add(line)
+                    bad.append(line)
+                break
+    return bad
+
+
+def enforce_temporal_consistency(script: str, date_str: str) -> str:
+    stale_lines = _stale_future_lines(script, date_str)
+    if not stale_lines:
+        return script
+
+    prompt = f"""
+You are repairing stale time references in a podcast script.
+Episode date: {date_str}.
+
+RULES:
+- A future prediction cannot point to a past year relative to the episode date.
+- Preserve the speaker label exactly.
+- Keep the line sharp, current, and natural.
+- Do not add narration, bullets, or markdown.
+- Return ONLY valid JSON with this shape:
+{{
+  "replacements": [
+    {{"from": "ORIGINAL FULL LINE", "to": "REVISED FULL LINE"}}
+  ]
+}}
+
+Lines to fix:
+""" + "\n".join(stale_lines)
+
+    try:
+        raw = generate_text(prompt, temperature=0.15, max_tokens=900)
+        payload = _extract_json_object(raw) or {}
+        reps = payload.get("replacements") if isinstance(payload.get("replacements"), list) else []
+        mapping = {}
+        for item in reps:
+            if not isinstance(item, dict):
+                continue
+            src = str(item.get("from", "")).strip()
+            dst = str(item.get("to", "")).strip()
+            if src and dst and SPEAKER_RE.match(dst):
+                mapping[src] = dst
+        if mapping:
+            out_lines = []
+            for raw_line in (script or "").splitlines():
+                out_lines.append(mapping.get(raw_line.strip(), raw_line))
+            script = "\n".join(out_lines)
+    except Exception as e:
+        _safe_print(f"    ⚠️ Temporal consistency repair skipped: {e}")
+
+    # Fallback: make obviously stale future verbs less wrong even if model repair fails.
+    current_year = int((date_str or datetime.date.today().isoformat())[:4])
+    out_lines = []
+    for raw in (script or "").splitlines():
+        line = raw
+        m = SPEAKER_RE.match(raw.strip())
+        if m:
+            spoken = m.group(2)
+            if any(int(y) < current_year for y in re.findall(r"\b(20\d{2})\b", spoken)) and STALE_FUTURE_YEAR_RE.search(spoken):
+                fixed = spoken
+                fixed = re.sub(r"\bwill occur\b", "played out", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bwill happen\b", "happened", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bwill be\b", "was", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bis expected to\b", "was expected to", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bare expected to\b", "were expected to", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bexpected to\b", "expected to", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bset to\b", "set to", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bgoing to\b", "going to", fixed, flags=re.IGNORECASE)
+                line = f"{m.group(1).upper()}: {fixed.strip()}"
+        out_lines.append(line)
+    return "\n".join(out_lines)
+
+
+def _fallback_theledgr_read(sponsor: Dict[str, str]) -> str:
+    tagline = (sponsor.get("tagline") or "Decision-grade AI signal that helps you make better calls at work.").strip()
+    cta = (sponsor.get("cta") or f"Subscribe at {THELEDGR_SPOKEN_URL}.").strip()
+    return (
+        "ALEX: This show is brought to you by The Ledger — "
+        f"{tagline} "
+        f"{cta}"
+    ).strip()
+
+
+def ensure_sponsor_delivery(script: str, sponsors: List[Dict[str, str]]) -> str:
+    if not any(_is_theledgr_sponsor(s) for s in sponsors or []):
+        return script
+    low = (script or "").lower()
+    has_name = bool(THELEDGR_NAME_RE.search(low))
+    has_url = bool(THELEDGR_URL_RE.search(low))
+    if has_name and has_url:
+        return script
+
+    sponsor = next((s for s in (sponsors or []) if _is_theledgr_sponsor(s)), {"name": "TheLEDGR", "tagline": "", "cta": ""})
+    fallback = _fallback_theledgr_read(sponsor)
+    lines = (script or "").splitlines()
+    inserted = False
+    out: List[str] = []
+    for idx, line in enumerate(lines):
+        out.append(line)
+        if not inserted and line.strip().upper() == "[MUSIC]":
+            out.append(fallback)
+            inserted = True
+    if not inserted:
+        out.insert(1 if out else 0, fallback)
+    return "\n".join(out).strip()
+
+
+def _sponsor_validation_issues(script: str, sponsors: List[Dict[str, str]]) -> List[str]:
+    issues: List[str] = []
+    if any(_is_theledgr_sponsor(s) for s in sponsors or []):
+        low = (script or "").lower()
+        if not THELEDGR_NAME_RE.search(low):
+            issues.append("TheLEDGR sponsor name is missing from the episode script.")
+        if not THELEDGR_URL_RE.search(low):
+            issues.append("TheLEDGR spoken URL is missing from the episode script.")
+    return issues
 
 def _story_anchor_terms(stories: Optional[List[Dict[str, str]]]) -> set[str]:
     anchors: set[str] = set()
@@ -1914,7 +2057,7 @@ def _sponsor_prompt_lines(sponsor: Dict[str, str]) -> str:
             "- Keep the read improvisational, native, and interesting. It should feel like the hosts are riffing, not switching into ad voice.\n"
             "- Alex should ad-lib the setup or analogy, but he must still land the value proposition and the CTA cleanly.\n"
             "- Keep it to 2-4 tight sentences.\n"
-            "- Make the sponsor feel useful and premium, not salesy.\n"
+            "- Make the sponsor feel useful, loved, and premium, not salesy. It should sound like something the hosts genuinely value and are happy to plug because it helps the audience.\n"
             f"- Alex must say the brand as 'The Ledger' and the URL exactly as {THELEDGR_SPOKEN_URL}.\n"
         )
     return (
@@ -1942,13 +2085,14 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- CRITICAL: avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Let Jamie and Rufus occasionally hold 2-3 connected turns when sharpening an argument.\n"
             "- Include at least one interruption, one real emotional reaction, and one line that could be clipped and shared.\n"
             "- Keep dialogue alive, conflict-aware, and writer-room sharp, but allow arguments to breathe before Alex cuts back in.\n"
+            "- Do not let Alex keep poking every few seconds. He should feel more dangerous and in command when he does step in because he waited for the right moment.\n"
         )
 
     if seg_num == 1:
         extra += (
             "Start mid-argument (hook). Then a standalone line: [MUSIC]. "
             "Immediately after [MUSIC], Alex must deliver a short, premium TheLEDGR sponsor line before the welcome and lineup.\n"
-            "- The sponsor should feel useful, sharp, and native to the show, not like a generic ad break.\n"
+            "- The sponsor should feel useful, sharp, loved, and native to the show, not like a generic ad break. The hosts should sound like they enjoy giving this plug because it pays the bills and helps the audience.\n"
             f"- Alex must say the brand as 'The Ledger' and the URL exactly as {THELEDGR_SPOKEN_URL}.\n"
             "- The sponsor must make listeners feel that TheLEDGR helps them make better daily decisions, cut through noise, and stay ahead at work.\n"
             "- CRITICAL: In the cold open and lineup, say at least 3 explicit numbers, dates, dollar amounts, or benchmark figures out loud naturally.\n"
@@ -1973,7 +2117,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "Rufus should sound like he is on location somewhere real in the world before landing the core receipt.\n"
             "He must connect the money, the politics, and the geopolitical consequence.\n"
             "Include one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
-            "Weave the sponsor naturally only if it feels native to the insight.\n"
+            "Weave the sponsor naturally only if it feels native to the insight, and if it appears it should feel premium, playful, and genuinely supportive of the sponsor.\n"
             "Jamie must challenge Rufus at least once before the segment ends, and their exchange should include one sarcastic jab or dry undercut before Alex regains control.\n"
             "This segment should hand momentum forward, not sound like the end of the episode.\n"
             f"Sponsor: {sponsor_1['name']}\n"
@@ -1982,7 +2126,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
         )
     elif seg_num == 4:
         extra += (
-            "Alex must tee up the turn. Include ONE woven-in host-read sponsor naturally if it fits the conversation.\n"
+            "Alex must tee up the turn. Include ONE woven-in host-read sponsor naturally if it fits the conversation, and make it feel warm, premium, and happily plugged rather than obligated.\n"
             f"Sponsor: {sponsor_2['name']}\n"
             f"Tagline: {sponsor_2.get('tagline','')}\n"
             f"CTA: {sponsor_2.get('cta','')}\n"
@@ -2000,7 +2144,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "She should respond directly to Rufus if he lands a cynical or detached prediction.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "Before the close, Jamie and Rufus should have one final teasing disagreement or sharp exchange that shows their chemistry.\n"
-            "End with a final micro sponsor tag or aside only if it feels native.\n"
+            "End with a final micro sponsor tag or aside only if it feels native and genuinely warm toward the sponsor.\n"
             "The final 2-3 lines must make tomorrow feel necessary.\n- End on an unresolved edge, not a tidy summary.\n"
             f"Sponsor: {sponsor_3['name']}\n"
             f"Tagline: {sponsor_3.get('tagline','')}\n"
@@ -2015,7 +2159,7 @@ You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
 This is ONLY {_segment_header(seg_num)} of the episode.
 
 PERSONAS:
-- ALEX (Host): Joe Rogan-style host energy. Swagger, curiosity, challenge, amused dominance, and real room control. He asks the listener-question everybody is already thinking, calls out weak framing, cuts through waffle, and gets a handle on the room when Jamie and Rufus start running.
+- ALEX (Host): Joe Rogan-style host energy. Swagger, curiosity, challenge, amused dominance, and real room control. He asks the listener-question everybody is already thinking, calls out weak framing, cuts through waffle, and gets a handle on the room when Jamie and Rufus start running. He does not interject on every beat; when the exchange is getting good, he lets it breathe for a few turns before cutting back in.
 - JAMIE (Co-host): extremely intelligent, polished, emotionally alive, and fast. She makes AI feel human, reacts like a real person, and can sound sharp, incredulous, or frustrated when the story deserves it. She should sound grounded, credible, and formidable.
 - RUFUS (Analyst): British dry wit, finance/policy/regulatory edge, always tracking the money, incentives, and geopolitical consequence. He keeps his unique British sayings, is the receipts machine, and often lands the funniest or most devastating line in the room.
 
@@ -2470,6 +2614,8 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
     script = "\n\n".join(segments).strip()
     script = _sanitize_dialogue_only(script)
     script = _strip_premature_signoffs(script)
+    script = ensure_sponsor_delivery(script, sponsors)
+    script = enforce_temporal_consistency(script, date_str)
 
     min_words, _, max_words = _script_targets()
     if _word_count(script) > max_words:
@@ -2479,6 +2625,10 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
 
     script = _sanitize_dialogue_only(script)
     issues = validate_script(script, stories=stories)
+    issues.extend(_sponsor_validation_issues(script, sponsors))
+    stale_lines = _stale_future_lines(script, date_str)
+    if stale_lines:
+        issues.append("Episode still contains stale future-year references relative to the episode date.")
     if issues:
         raise RuntimeError("Final script validation failed:\n" + "\n".join(issues))
     return script
@@ -2861,7 +3011,7 @@ def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> No
 
 def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path: Path) -> bool:
     voice_seg = AudioSegment.from_file(voice_path)
-    if len(voice_seg) < 1400:
+    if len(voice_seg) < 1000:
         return False
     low = (text or "").lower()
 
@@ -3213,7 +3363,7 @@ def build_episode_show_notes(
     cta_url = PUBLIC_SUBSCRIBE_URL
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
     tomorrow_tease = (pack.get("tomorrow_tease") or "The second-order consequences are just starting to show.").strip()
-    episode_blurb = (pack.get("episode_blurb") or "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and what serious operators should watch next.").strip()
+    episode_blurb = (pack.get("episode_blurb") or "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, where the real stakes are, and the lines you will want to send to somebody else.").strip()
     hook = (pack.get("show_notes_hook") or episode_blurb).strip()
     parts = [
         hook,
@@ -3269,7 +3419,7 @@ def generate_marketing_pack(
         "yt_description": (f"{show_notes_hook}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Key data: {top_data or 'See full episode for the facts and consequence chain.'}\n\n" f"{cta_line}")[:1200],
         "show_notes": (f"{show_notes_hook}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Tomorrow tension: {tomorrow_tease}\n\n" f"{cta_line}"),
         "show_notes_hook": show_notes_hook,
-        "episode_blurb": "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and what serious operators should watch next.",
+        "episode_blurb": "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, where the real stakes are, and the lines you will want to send to somebody else.",
         "tomorrow_tease": tomorrow_tease,
         "seo_keywords": "AI news, enterprise AI, AI agents, health AI, AI tools, AI coding, AI strategy",
         "hashtags": hashtags,
@@ -3615,8 +3765,8 @@ def produce_episode() -> None:
                 concat_files.append(p)
                 concat_files.append(silence_path)
 
-            chunk_low = (chunk or "").lower()
-            if any(k in chunk_low for k in ["lawsuit", "ban", "security", "breach", "regulation", "warning", "risk"]) and danger_sting_seg is not None and "the ledger" not in chunk_low:
+            scene_low = (scene_text or "").lower()
+            if any(k in scene_low for k in ["lawsuit", "ban", "security", "breach", "regulation", "warning", "risk"]) and danger_sting_seg is not None and "the ledger" not in scene_low:
                 p = run_tmp / f"danger_{uuid.uuid4().hex[:8]}.mp3"
                 danger_sting_seg.export(p, format="mp3", bitrate="192k")
                 concat_files.append(p)
@@ -3661,7 +3811,9 @@ def produce_episode() -> None:
             elif INTERRUPTION_CUE_RE.search(scene_text or "") or REACTION_CUE_RE.search(scene_text or ""):
                 concat_files.append(reaction_pause_path)
             else:
-                concat_files.append(silence_path)
+                scene_pause = run_tmp / f"scene_pause_{uuid.uuid4().hex[:8]}.mp3"
+                AudioSegment.silent(duration=max(INTER_TURN_SILENCE_MS, ELEVEN_SCENE_PAUSE_MS)).export(scene_pause, format="mp3", bitrate="192k")
+                concat_files.append(scene_pause)
             continue
 
         chunks = chunk_text(text, max_chars=_tts_chunk_max_chars(speaker))
