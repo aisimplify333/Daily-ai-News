@@ -76,49 +76,61 @@ jobs:
           # --- RUNTIME / WRITING TARGETS ---
           MIN_MINUTES: "19"
           MAX_MINUTES: "26"
-          TARGET_MINUTES: "21"
-          WORDS_PER_MINUTE: "172"
+          TARGET_MINUTES: "20"
+          WORDS_PER_MINUTE: "170"
           SEGMENT_ATTEMPTS: "5"
+          FORWARDABLE_MIN_PER_EPISODE: "3"
 
           # --- HOST PERFORMANCE TUNING ---
           ALEX_GAIN_DB: "3.5"
-          JAMIE_GAIN_DB: "1.2"
-          RUFUS_GAIN_DB: "0.5"
+          JAMIE_GAIN_DB: "1.0"
+          RUFUS_GAIN_DB: "0.3"
 
-          ALEX_SPEED: "1.10"
+          ALEX_SPEED: "1.08"
           JAMIE_SPEED: "1.02"
-          RUFUS_SPEED: "1.04"
+          RUFUS_SPEED: "1.03"
 
-          ELEVEN_STABILITY_ALEX: "0.38"
+          ELEVEN_STABILITY_ALEX: "0.40"
           ELEVEN_SIMILARITY_ALEX: "0.82"
-          ELEVEN_STYLE_ALEX: "0.28"
+          ELEVEN_STYLE_ALEX: "0.24"
 
-          ELEVEN_STABILITY_JAMIE: "0.34"
+          ELEVEN_STABILITY_JAMIE: "0.38"
           ELEVEN_SIMILARITY_JAMIE: "0.82"
-          ELEVEN_STYLE_JAMIE: "0.28"
+          ELEVEN_STYLE_JAMIE: "0.26"
 
-          ELEVEN_STABILITY_RUFUS: "0.40"
+          ELEVEN_STABILITY_RUFUS: "0.42"
           ELEVEN_SIMILARITY_RUFUS: "0.85"
-          ELEVEN_STYLE_RUFUS: "0.24"
+          ELEVEN_STYLE_RUFUS: "0.25"
 
           ELEVEN_USE_SPEAKER_BOOST: "true"
+          FORCE_INDIVIDUAL_RUFUS_LINES: "true"
 
-          # --- SCENE / INTERRUPTION FEEL ---
+          # --- SCENE / EXCHANGE FEEL ---
           ELEVEN_USE_DIALOGUE_SCENES: "true"
           ELEVEN_SCENE_MAX_TURNS: "7"
           ELEVEN_SCENE_MAX_CHARS: "1500"
           ELEVEN_SCENE_PAUSE_MS: "120"
 
+          # --- PAUSE / FINISH-LINE POLISH ---
+          INTER_TURN_SILENCE_MS: "105"
+          REACTION_PAUSE_MS: "175"
+          MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "3"
+          MAX_SPOKEN_WORDS_PER_LINE: "52"
+          TRIM_TRAILING_MS: "110"
+          TAIL_PAD_MS: "70"
+
           # --- MIX / BEDS / DUCKING ---
           AUTO_BUILD_AUDIO_BRANDKIT: "true"
           REBUILD_AUDIO_BRANDKIT: "false"
 
-          INTRO_BED_MS: "6500"
-          INTRO_BED_FADE_OUT_MS: "1800"
+          INTRO_BED_MS: "7200"
+          INTRO_BED_FADE_OUT_MS: "2200"
+          SEGMENT_BED_MS: "2200"
+          SEGMENT_BED_FADE_OUT_MS: "850"
 
           MUSIC_TARGET_DBFS: "-27.0"
           DUCK_THRESHOLD_DBFS: "-34.0"
-          DUCK_AMOUNT_DB: "14.5"
+          DUCK_AMOUNT_DB: "15.0"
           DUCK_WINDOW_MS: "35"
 
           STINGER_TARGET_DBFS: "-18.0"
