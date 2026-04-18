@@ -215,9 +215,9 @@ TTS_RETRIES = int(os.getenv("TTS_RETRIES", "3"))
 # Stitching
 STITCH_METHOD = os.getenv("STITCH_METHOD", "pydub").strip().lower()  # pydub | ffmpeg
 
-ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.08"))
-JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.02"))
-RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.03"))
+ALEX_SPEED = float(os.getenv("ALEX_SPEED", "1.06"))
+JAMIE_SPEED = float(os.getenv("JAMIE_SPEED", "1.00"))
+RUFUS_SPEED = float(os.getenv("RUFUS_SPEED", "1.02"))
 
 ALEX_GAIN_DB = float(os.getenv("ALEX_GAIN_DB", "3.5"))
 JAMIE_GAIN_DB = float(os.getenv("JAMIE_GAIN_DB", "1.0"))
@@ -225,10 +225,10 @@ RUFUS_GAIN_DB = float(os.getenv("RUFUS_GAIN_DB", "0.3"))
 
 # Post-processing thresholds
 TRIM_LEADING_MS = int(os.getenv("TRIM_LEADING_MS", "60"))
-TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "110"))
+TRIM_TRAILING_MS = int(os.getenv("TRIM_TRAILING_MS", "95"))
 TRIM_THRESH_DB = float(os.getenv("TRIM_THRESH_DB", "-45.0"))
 SEGMENT_EXPORT_BITRATE = os.getenv("SEGMENT_EXPORT_BITRATE", "192k")
-TAIL_PAD_MS = int(os.getenv("TAIL_PAD_MS", "70"))
+TAIL_PAD_MS = int(os.getenv("TAIL_PAD_MS", "85"))
 
 # Music assets
 INTRO_PATH = BASE_DIR / "intro.mp3"
@@ -279,11 +279,11 @@ MIN_DIGITS_PER_EPISODE = int(os.getenv("MIN_DIGITS_PER_EPISODE", "85"))
 MIN_NUMERIC_BULLETS_PER_STORY = int(os.getenv("MIN_NUMERIC_BULLETS_PER_STORY", "2"))
 FORWARDABLE_MIN_PER_EPISODE = int(os.getenv("FORWARDABLE_MIN_PER_EPISODE", "3"))
 FORWARDABLE_PAUSE_MS = int(os.getenv("FORWARDABLE_PAUSE_MS", "240"))
-INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "105"))
-REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "175"))
-MAX_CONSECUTIVE_SAME_SPEAKER_LINES = int(os.getenv("MAX_CONSECUTIVE_SAME_SPEAKER_LINES", "3"))
-MAX_SPOKEN_WORDS_PER_LINE = int(os.getenv("MAX_SPOKEN_WORDS_PER_LINE", "52"))
-MIN_INTERRUPTION_CUES_PER_SEGMENT = int(os.getenv("MIN_INTERRUPTION_CUES_PER_SEGMENT", "2"))
+INTER_TURN_SILENCE_MS = int(os.getenv("INTER_TURN_SILENCE_MS", "120"))
+REACTION_PAUSE_MS = int(os.getenv("REACTION_PAUSE_MS", "190"))
+MAX_CONSECUTIVE_SAME_SPEAKER_LINES = int(os.getenv("MAX_CONSECUTIVE_SAME_SPEAKER_LINES", "4"))
+MAX_SPOKEN_WORDS_PER_LINE = int(os.getenv("MAX_SPOKEN_WORDS_PER_LINE", "56"))
+MIN_INTERRUPTION_CUES_PER_SEGMENT = int(os.getenv("MIN_INTERRUPTION_CUES_PER_SEGMENT", "1"))
 MIN_REACTION_CUES_PER_SEGMENT = int(os.getenv("MIN_REACTION_CUES_PER_SEGMENT", "2"))
 MIN_ALEX_CONTROL_CUES_PER_SEGMENT = int(os.getenv("MIN_ALEX_CONTROL_CUES_PER_SEGMENT", "1"))
 
@@ -305,11 +305,30 @@ REACTION_CUE_RE = re.compile(r"\[(?:laughs?|chuckles?|scoffs?|huffs?|sharp exhal
 ALEX_CONTROL_CUE_RE = re.compile(r"^ALEX\s*:\s*(?:okay,? hold on|hold on|wait,? wait,? wait|stop\.|stop,|one at a time|jamie[—-]? hang on|rufus,? cut through it|no,? that'?s not the question|say that again)", re.IGNORECASE)
 
 STALE_FUTURE_YEAR_RE = re.compile(
-    r"\b(?:will|would|is expected to|are expected to|expected to|forecast(?:ed)? to|project(?:ed)? to|predicted to|set to|poised to|going to|on track to|scheduled to|could|should)\b[^\n.!?]{0,80}\b(20\d{2})\b",
+    r"\b(?:will|would|is expected to|are expected to|expected to|forecast(?:ed)? to|project(?:ed)? to|predicted to|set to|poised to|going to|on track to|scheduled to|could|should|may|might|can|likely to|by|through|into|before|over the next|later in|heading into)\b[^\n.!?]{0,100}\b(20\d{2})\b",
     re.IGNORECASE,
 )
 THELEDGR_NAME_RE = re.compile(r"\b(?:the ledger|theledgr)\b", re.IGNORECASE)
 THELEDGR_URL_RE = re.compile(r"t[- ]?h[- ]?e[- ]?l[- ]?e[- ]?d[- ]?g[- ]?r\s+dot\s+i[- ]?o", re.IGNORECASE)
+SOFT_SEGMENT_END_RE = re.compile(
+    r"\b(?:bottom line|the takeaway(?: here)?|that'?s the takeaway|we'?ll leave it there|that'?s where this lands|that'?s what this means|that'?s the thing|we'?ll see|we shall see|time will tell|that does it for this one|that closes it out)\b",
+    re.IGNORECASE,
+)
+
+ENTITY_ALIAS_GROUPS: Dict[str, Tuple[str, ...]] = {
+    "microsoft": ("microsoft", "copilot", "power apps", "power platform", "azure", "d365", "dynamics 365"),
+    "openai": ("openai", "chatgpt", "gpt-4", "gpt 4", "gpt-5", "gpt 5", "sora"),
+    "anthropic": ("anthropic", "claude", "mythos"),
+    "google": ("google", "gemini", "deepmind", "alphabet"),
+    "meta": ("meta", "llama", "facebook"),
+    "amazon": ("amazon", "aws", "bedrock"),
+    "nvidia": ("nvidia", "blackwell", "cuda"),
+    "apple": ("apple",),
+    "tesla": ("tesla", "x.ai", "xai", "grok"),
+    "perplexity": ("perplexity",),
+    "notion": ("notion",),
+    "canva": ("canva",),
+}
 
 MIN_MP3_BYTES_FEED = int(os.getenv("MIN_MP3_BYTES_FEED", "200000"))
 EPISODE_META_MAX_TITLE = int(os.getenv("EPISODE_META_MAX_TITLE", "110"))
@@ -1459,31 +1478,163 @@ def _editor_in_chief_slate(date_str: str, curated: List[Dict[str, str]], n: int)
     return desk_winners[:max(n, DESK_MIN_WINNERS)]
 
 
+def _load_previous_episode_context(today: str) -> Dict[str, object]:
+    p = BASE_DIR / "episode_metadata.json"
+    if not p.exists():
+        return {}
+    try:
+        data = json.loads(p.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            return {}
+        if str(data.get("date") or "").strip() == str(today or "").strip():
+            return {}
+        return data
+    except Exception:
+        return {}
+
+
+def _story_text_blob_for_repeat(item: Dict[str, str]) -> str:
+    parts = [
+        item.get("headline") or item.get("title") or "",
+        item.get("why_shocking") or item.get("summary") or "",
+        item.get("publisher") or "",
+        item.get("source_url") or item.get("link") or "",
+        " ".join([str(x) for x in (item.get("data_points") or [])[:4]]),
+        " ".join([str(x) for x in (item.get("key_entities") or [])[:6]]),
+    ]
+    return " ".join([p for p in parts if p]).strip()
+
+
+def _headline_family_key(text: str) -> str:
+    s = (text or "").lower()
+    s = re.sub(r"\|\s*(what it means next|what the numbers mean|why tomorrow gets harder).*$", "", s, flags=re.IGNORECASE)
+    s = re.sub(r"[^a-z0-9\s]", " ", s)
+    tokens = [t for t in re.sub(r"\s+", " ", s).strip().split() if t not in {"the", "a", "an", "with", "and", "for", "to", "in", "of", "on"}]
+    return " ".join(tokens[:12])
+
+
+def _story_entity_key(item: Dict[str, str]) -> str:
+    low = _story_text_blob_for_repeat(item).lower()
+    for canonical, aliases in ENTITY_ALIAS_GROUPS.items():
+        if any(alias in low for alias in aliases):
+            return canonical
+    headline = (item.get("headline") or item.get("title") or "").strip()
+    caps = [tok.lower() for tok in re.findall(r"\b[A-Z][A-Za-z0-9&.-]{2,}\b", headline)]
+    for tok in caps:
+        if tok not in {"today", "ai", "apps", "agents", "power", "news", "edge"}:
+            return tok
+    return ""
+
+
+def _token_overlap_ratio(a: str, b: str) -> float:
+    ta = set((a or "").split())
+    tb = set((b or "").split())
+    if not ta or not tb:
+        return 0.0
+    return len(ta & tb) / max(1, min(len(ta), len(tb)))
+
+
+def _previous_story_titles(previous_meta: Dict[str, object]) -> List[str]:
+    titles: List[str] = []
+    title = str(previous_meta.get("title") or "").strip()
+    if title:
+        titles.append(title)
+    stories = previous_meta.get("stories") if isinstance(previous_meta.get("stories"), list) else []
+    for s in stories[:5]:
+        if isinstance(s, dict):
+            headline = str(s.get("headline") or s.get("title") or "").strip()
+            if headline:
+                titles.append(headline)
+    return titles
+
+
+def _repeat_penalty(item: Dict[str, str], previous_meta: Dict[str, object]) -> float:
+    if not previous_meta:
+        return 0.0
+    penalty = 0.0
+    item_link = (item.get("source_url") or item.get("link") or "").strip().lower()
+    item_head = _headline_family_key(item.get("headline") or item.get("title") or "")
+    item_entity = _story_entity_key(item)
+
+    prev_titles = [_headline_family_key(x) for x in _previous_story_titles(previous_meta)]
+    prev_stories = previous_meta.get("stories") if isinstance(previous_meta.get("stories"), list) else []
+    prev_links = {str((s.get("source_url") or s.get("link") or "")).strip().lower() for s in prev_stories if isinstance(s, dict)}
+    prev_entities = {_story_entity_key(s) for s in prev_stories if isinstance(s, dict)}
+
+    if item_link and item_link in prev_links:
+        penalty += 120.0
+    if item_head and any(item_head == x for x in prev_titles if x):
+        penalty += 120.0
+    elif item_head and any(_token_overlap_ratio(item_head, x) >= 0.72 for x in prev_titles if x):
+        penalty += 65.0
+    if item_entity and item_entity in prev_entities:
+        penalty += 32.0
+    return penalty
+
+
+def _selection_penalty(item: Dict[str, str], selected: List[Dict[str, str]]) -> float:
+    if not selected:
+        return 0.0
+    penalty = 0.0
+    entity = _story_entity_key(item)
+    bucket = _normalize_vertical_bucket(item.get("bucket", ""))
+    if entity:
+        same_entity = sum(1 for s in selected if _story_entity_key(s) == entity)
+        if same_entity >= 1:
+            penalty += 24.0 * same_entity
+    same_bucket = sum(1 for s in selected if _normalize_vertical_bucket(s.get("bucket", "")) == bucket)
+    if same_bucket >= 2 and bucket != "topline":
+        penalty += 18.0
+    return penalty
+
+
+def _rank_with_editorial_penalties(candidates: List[Dict[str, str]], previous_meta: Dict[str, object], selected: Optional[List[Dict[str, str]]] = None) -> List[Dict[str, str]]:
+    chosen = selected or []
+    return sorted(
+        [dict(x) for x in candidates],
+        key=lambda x: _editorial_impact_score(x) - _repeat_penalty(x, previous_meta) - _selection_penalty(x, chosen),
+        reverse=True,
+    )
+
+
+def _can_add_story(item: Dict[str, str], selected: List[Dict[str, str]], role: str) -> bool:
+    entity = _story_entity_key(item)
+    if role == "biggest" and entity:
+        if sum(1 for s in selected if str(s.get("story_role") or "") == "biggest" and _story_entity_key(s) == entity) >= 1:
+            return False
+    if entity and sum(1 for s in selected if _story_entity_key(s) == entity) >= 2:
+        return False
+    return True
+
+
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Optional[str] = None) -> List[Dict[str, str]]:
     if not intel_items:
         return []
 
     date_str = date_str or datetime.date.today().isoformat()
+    previous_meta = _load_previous_episode_context(date_str)
     memory = load_show_memory()
     curated = select_story_candidates(intel_items, n=max(n * 8, 40), memory=memory, bucket_cap=3)
     if not curated:
         ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
         curated = ranked[:max(n * 8, 40)]
 
-    ranked_all = sorted([dict(x) for x in curated], key=_editorial_impact_score, reverse=True)
+    ranked_all = _rank_with_editorial_penalties(curated, previous_meta, selected=[])
 
     selected: List[Dict[str, str]] = []
     used = set()
     biggest_count = 0
     bucket_biggest_counts: Dict[str, int] = {}
 
-    # 1) Lock the 3 biggest stories of the day, but avoid same-lane pileups.
+    # 1) Lock the 3 biggest stories of the day, but force fresher diversity.
     for item in ranked_all:
         key = _story_identity_key(item)
         if not key or key in used:
             continue
         bucket = _normalize_vertical_bucket(item.get("bucket", ""))
         if bucket_biggest_counts.get(bucket, 0) >= 2:
+            continue
+        if not _can_add_story(item, selected, role="biggest"):
             continue
         item["story_role"] = "biggest"
         selected.append(item)
@@ -1494,7 +1645,7 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
             break
 
     if biggest_count < 3:
-        for item in ranked_all:
+        for item in _rank_with_editorial_penalties(ranked_all, previous_meta, selected=selected):
             key = _story_identity_key(item)
             if not key or key in used:
                 continue
@@ -1505,8 +1656,11 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
             if biggest_count >= 3:
                 break
 
-    # 2) Add the 2 best remaining vertical stories from distinct owned verticals.
-    vertical_priority = ["ai_agents", "ai_code", "ai_tools", "health_ai"]
+    # 2) Add the 2 best remaining vertical stories from uncovered lanes first.
+    covered_buckets = {_normalize_vertical_bucket(x.get("bucket", "")) for x in selected}
+    vertical_priority = [b for b in ["ai_agents", "ai_code", "ai_tools", "health_ai"] if b not in covered_buckets]
+    vertical_priority += [b for b in ["ai_agents", "ai_code", "ai_tools", "health_ai"] if b not in vertical_priority]
+
     vertical_count = 0
     for bucket in vertical_priority:
         candidates = [
@@ -1514,10 +1668,11 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
             if _normalize_vertical_bucket(x.get("bucket", "")) == bucket
             and _story_identity_key(x) not in used
             and _editorial_impact_score(x) >= 38.0
+            and _can_add_story(x, selected, role="vertical")
         ]
         if not candidates:
             continue
-        winner = max(candidates, key=_editorial_impact_score)
+        winner = max(_rank_with_editorial_penalties(candidates, previous_meta, selected=selected), key=lambda x: _editorial_impact_score(x) - _repeat_penalty(x, previous_meta) - _selection_penalty(x, selected))
         winner["story_role"] = "vertical"
         selected.append(winner)
         used.add(_story_identity_key(winner))
@@ -1525,12 +1680,14 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
         if vertical_count >= 2:
             break
 
-    # 3) Backfill with the strongest remaining stories if needed.
-    for item in ranked_all:
+    # 3) Backfill with the strongest remaining stories if needed, while avoiding obvious repeats.
+    for item in _rank_with_editorial_penalties(ranked_all, previous_meta, selected=selected):
         if len(selected) >= max(n, 5):
             break
         key = _story_identity_key(item)
         if not key or key in used:
+            continue
+        if not _can_add_story(item, selected, role="flex"):
             continue
         item["story_role"] = item.get("story_role") or "flex"
         selected.append(item)
@@ -1696,14 +1853,12 @@ def _strict_dialogue_rules() -> str:
         '- "[MUSIC]" may appear as a standalone line.\n'
         '- Do not add any other headings, bullets, or markdown.\n'
         '- This is a live contested conversation, not a sequential explainer.\n'
-        '- Default spoken lines should usually be 6-34 words and 1-2 sentences. Do not bloat them, but do let key arguments breathe.\n'
-        '- Avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Jamie and Rufus should occasionally get 2-3 connected lines when sharpening an argument.\n'
-        '- Alex must actively run the room, but he should not interrupt every beat. He should let a strong Jamie/Rufus exchange breathe for a few turns, then cut back in with pressure, clarity, or the takeaway.\n'
+        '- Default spoken lines should usually be 6-36 words and 1-2 sentences, but let strong exchanges breathe when someone is building a case.\n'
+        '- Avoid dead monologues, but do NOT rotate turns so fast that nobody can build a point. A sharp exchange can run 4-7 turns before Alex steps back in.\n'
+        '- Alex must actively run the room, but he should interrupt with purpose rather than constant maintenance chatter.\n'
         '- Jamie must sound extremely intelligent, polished, emotionally readable, and grounded.\n'
-        '- Rufus must stay dry, British, surgical, and compact, with at least one memorable British undercut somewhere in the episode.\n'
-        '- In Segments 3, 4, and 5, Jamie and Rufus must have at least one real sparring exchange lasting 3-6 turns before Alex regains control.\n'
-        '- Their jabs should sound like two smart colleagues who respect each other but enjoy taking shots. The humor should come from worldview, timing, irritation, and intelligence.\n'
-        '- Every segment must include at least one interruption/control cue, at least two audible realism cues, one hard number, and one genuinely clipable line.\n'
+        '- Rufus must stay dry, British, surgical, and compact, with at least one dry quip or saying where it fits.\n'
+        '- Every segment must include at least one interruption or control cue, at least two audible realism cues, one hard number, and one genuinely clipable line.\n'
         '- Use bracketed realism cues sparingly and tastefully: [laughs], [sharp exhale], [scoffs], [dry laugh], [under his breath], [audible disbelief].\n'
         '- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n'
     )
@@ -1873,6 +2028,12 @@ Lines to fix:
                 fixed = re.sub(r"\bwill be\b", "was", fixed, flags=re.IGNORECASE)
                 fixed = re.sub(r"\bis expected to\b", "was expected to", fixed, flags=re.IGNORECASE)
                 fixed = re.sub(r"\bare expected to\b", "were expected to", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bmay see\b", "may have seen", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bmight see\b", "might have seen", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bcan see\b", "could see", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bby\s+(20\d{2})\b", "by then", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\bthrough\s+(20\d{2})\b", "through that period", fixed, flags=re.IGNORECASE)
+                fixed = re.sub(r"\binto\s+(20\d{2})\b", "into that period", fixed, flags=re.IGNORECASE)
                 fixed = re.sub(r"\bexpected to\b", "expected to", fixed, flags=re.IGNORECASE)
                 fixed = re.sub(r"\bset to\b", "set to", fixed, flags=re.IGNORECASE)
                 fixed = re.sub(r"\bgoing to\b", "going to", fixed, flags=re.IGNORECASE)
@@ -2109,15 +2270,17 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- Include at least two moments where Jamie interrupts, challenges, or reframes Alex in a warm but confident way.\n"
             "- Jamie should sound emotionally alive: amused, incredulous, impressed, concerned, or lightly offended when the line calls for it.\n"
             "- She should feel human, fast, intuitive, and strong on the emotional or real-world implication.\n"
-            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, absurd, or darkly funny.\n- Jamie should sound quick, grounded, and highly credible next to Alex.\n"
+            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, absurd, or darkly funny.\n- Give Alex and Jamie enough room to actually shape the story before the next interruption. Jamie should sound grounded, highly credible, and formidable next to Alex.\n"
         )
     elif seg_num == 3:
         extra += (
             "Alex must throw to Rufus in the first spoken exchange, then Rufus takes over.\n"
             "Rufus should sound like he is on location somewhere real in the world before landing the core receipt.\n"
             "He must connect the money, the politics, and the geopolitical consequence.\n"
+            "Give Alex and Rufus enough runway to build the argument before the next interruption.\n"
             "Include one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
-            "Weave the sponsor naturally only if it feels native to the insight, and if it appears it should feel premium, playful, and genuinely supportive of the sponsor.\n"
+            "If the sponsor appears in this segment, Rufus should lead the read in his own dry, witty way and make it feel like a genuine plug rather than a formal ad break.\n"
+            "Alex can tee it up briefly, but Rufus should carry the sponsor beat and still land the sponsor name, value, and CTA clearly.\n"
             "Jamie must challenge Rufus at least once before the segment ends, and their exchange should include one sarcastic jab or dry undercut before Alex regains control.\n"
             "This segment should hand momentum forward, not sound like the end of the episode.\n"
             f"Sponsor: {sponsor_1['name']}\n"
@@ -2127,6 +2290,8 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
     elif seg_num == 4:
         extra += (
             "Alex must tee up the turn. Include ONE woven-in host-read sponsor naturally if it fits the conversation, and make it feel warm, premium, and happily plugged rather than obligated.\n"
+            "If the sponsor appears in this segment, Jamie should lead the read in her own smart, warm, reactive voice and make it sound like she genuinely likes the sponsor.\n"
+            "Alex can set her up, but Jamie should carry the sponsor beat and still land the sponsor name, value, and CTA clearly.\n"
             f"Sponsor: {sponsor_2['name']}\n"
             f"Tagline: {sponsor_2.get('tagline','')}\n"
             f"CTA: {sponsor_2.get('cta','')}\n"
@@ -2144,7 +2309,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "She should respond directly to Rufus if he lands a cynical or detached prediction.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "Before the close, Jamie and Rufus should have one final teasing disagreement or sharp exchange that shows their chemistry.\n"
-            "End with a final micro sponsor tag or aside only if it feels native and genuinely warm toward the sponsor.\n"
+            "End with a final micro sponsor tag or aside only if it feels native and genuinely warm toward the sponsor. Jamie or Rufus can deliver it if that makes the moment feel more alive than Alex doing it again.\n"
             "The final 2-3 lines must make tomorrow feel necessary.\n- End on an unresolved edge, not a tidy summary.\n"
             f"Sponsor: {sponsor_3['name']}\n"
             f"Tagline: {sponsor_3.get('tagline','')}\n"
@@ -2238,6 +2403,12 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
         )
     if seg_num < 5 and EARLY_SIGNOFF_RE.search(seg_text or ""):
         issues.append(f"Segment {seg_num} contains premature sign-off language.")
+
+    if seg_num < 5:
+        spoken_lines = [l.strip() for l in seg_text.splitlines() if SPEAKER_RE.match(l.strip())]
+        tail_lines = spoken_lines[-4:]
+        if any(SOFT_SEGMENT_END_RE.search(re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", x, flags=re.IGNORECASE)) for x in tail_lines):
+            issues.append(f"Segment {seg_num} ends like a mini-wrap instead of pushing forward.")
 
     if _max_consecutive_speaker_lines(seg_text) > MAX_CONSECUTIVE_SAME_SPEAKER_LINES:
         issues.append("Too much monologue or sequential turn-taking. Break up consecutive same-speaker lines.")
@@ -2550,6 +2721,13 @@ def _strip_premature_signoffs(script: str) -> str:
         r"\bthat'?s the show\b",
         r"\bthat wraps (?:it|us) up\b",
         r"\bwe'?ll leave it there\b",
+        r"\bbottom line\b",
+        r"\bthe takeaway(?: here)?\b",
+        r"\bthat'?s the takeaway\b",
+        r"\bthat'?s where this lands\b",
+        r"\bthat'?s what this means\b",
+        r"\bwe'?ll see\b",
+        r"\btime will tell\b",
     ]
     soft_wrap_patterns = [
         r"\bthat'?s the real takeaway\b",
@@ -2613,6 +2791,7 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
 
     script = "\n\n".join(segments).strip()
     script = _sanitize_dialogue_only(script)
+    script = enforce_temporal_consistency(script, date_str)
     script = _strip_premature_signoffs(script)
     script = ensure_sponsor_delivery(script, sponsors)
     script = enforce_temporal_consistency(script, date_str)
@@ -2624,6 +2803,7 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
         script = _pad_script_to_min_words(script, min_words=min_words, stories=stories, date_str=date_str)
 
     script = _sanitize_dialogue_only(script)
+    script = enforce_temporal_consistency(script, date_str)
     issues = validate_script(script, stories=stories)
     issues.extend(_sponsor_validation_issues(script, sponsors))
     stale_lines = _stale_future_lines(script, date_str)
@@ -3650,7 +3830,9 @@ def produce_episode() -> None:
     _safe_print(" >> ✍️ WRITING FULL EPISODE (5 segments)...")
     script = generate_episode_script(stories, sponsors, today)
     script = enforce_episode_numeric_density(script, stories, today)
-    script = _sanitize_dialogue_only(script)
+    script = enforce_temporal_consistency(script, today)
+    script = ensure_sponsor_delivery(script, sponsors)
+    script = _strip_premature_signoffs(_sanitize_dialogue_only(script))
 
     issues = validate_script(script, stories=stories)
     if issues:
