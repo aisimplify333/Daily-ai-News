@@ -1,15 +1,15 @@
-name: Daily Podcast & Socials
+name: Weekday Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 10 * * *' # ~2:00 AM Pacific (10:00 UTC; shifts during DST)
+    - cron: '0 10 * * 1-5' # Weekdays ~2:00 AM Pacific (10:00 UTC; shifts during DST)
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: daily-podcast-socials
+  group: weekday-podcast-socials
   cancel-in-progress: false
 
 jobs:
@@ -86,9 +86,9 @@ jobs:
           JAMIE_GAIN_DB: "1.0"
           RUFUS_GAIN_DB: "0.3"
 
-          ALEX_SPEED: "1.08"
-          JAMIE_SPEED: "1.02"
-          RUFUS_SPEED: "1.03"
+          ALEX_SPEED: "1.06"
+          JAMIE_SPEED: "1.00"
+          RUFUS_SPEED: "1.02"
 
           ELEVEN_STABILITY_ALEX: "0.40"
           ELEVEN_SIMILARITY_ALEX: "0.82"
@@ -107,20 +107,20 @@ jobs:
 
           # --- SCENE / EXCHANGE FEEL ---
           ELEVEN_USE_DIALOGUE_SCENES: "true"
-          ELEVEN_SCENE_MAX_TURNS: "7"
-          ELEVEN_SCENE_MAX_CHARS: "1500"
-          ELEVEN_SCENE_PAUSE_MS: "120"
+          ELEVEN_SCENE_MAX_TURNS: "8"
+          ELEVEN_SCENE_MAX_CHARS: "1700"
+          ELEVEN_SCENE_PAUSE_MS: "145"
 
           # --- PAUSE / FINISH-LINE POLISH ---
-          INTER_TURN_SILENCE_MS: "105"
-          REACTION_PAUSE_MS: "175"
-          MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "3"
-          MAX_SPOKEN_WORDS_PER_LINE: "52"
+          INTER_TURN_SILENCE_MS: "120"
+          REACTION_PAUSE_MS: "190"
+          MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "4"
+          MAX_SPOKEN_WORDS_PER_LINE: "56"
           TRIM_TRAILING_MS: "110"
           TAIL_PAD_MS: "70"
 
           # --- MIX / BEDS / DUCKING ---
-          AUTO_BUILD_AUDIO_BRANDKIT: "true"
+          AUTO_BUILD_AUDIO_BRANDKIT: "false"
           REBUILD_AUDIO_BRANDKIT: "false"
 
           INTRO_BED_MS: "7200"
