@@ -1,15 +1,15 @@
-name: Weekday Podcast & Socials
+name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5' # Weekdays ~2:00 AM Pacific (10:00 UTC; shifts during DST)
+    - cron: '0 10 * * 1-5' # Mon-Fri ~2:00 AM Pacific (10:00 UTC; shifts during DST)
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: weekday-podcast-socials
+  group: daily-podcast-socials
   cancel-in-progress: false
 
 jobs:
@@ -62,27 +62,30 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
 
-          # --- ELEVENLABS / PRIMARY AUDIO PATH ---
           AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
           AUDIO_BACKEND: "eleven"
+          ELEVEN_FALLBACK_TO_OPENAI: "true"
+
           ALEX_USE_OPENAI: "true"
           VOICE_ALEX: "onyx"
 
-          # --- LOCKED VOICES ---
+          VOICE_MODEL_JAMIE: "gpt-4o-mini-tts"
+          VOICE_JAMIE: "marin"
+
+          VOICE_MODEL_RUFUS: "tts-1-hd"
+          VOICE_RUFUS: "fable"
+
           ELEVEN_VOICE_ID_ALEX: "vDchjyOZZytffNeZXfZK"
           ELEVEN_VOICE_ID_JAMIE: "uYXf8XasLslADfZ2MB4u"
           ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
 
-          # --- RUNTIME / WRITING TARGETS ---
           MIN_MINUTES: "19"
           MAX_MINUTES: "26"
           TARGET_MINUTES: "20"
           WORDS_PER_MINUTE: "170"
           SEGMENT_ATTEMPTS: "5"
           FORWARDABLE_MIN_PER_EPISODE: "3"
-          STORY_BUCKET_CAP: "5"
 
-          # --- HOST PERFORMANCE TUNING ---
           ALEX_GAIN_DB: "3.5"
           JAMIE_GAIN_DB: "1.0"
           RUFUS_GAIN_DB: "0.3"
@@ -105,22 +108,19 @@ jobs:
 
           ELEVEN_USE_SPEAKER_BOOST: "true"
           FORCE_INDIVIDUAL_RUFUS_LINES: "true"
-
-          # --- SCENE / EXCHANGE FEEL ---
           ELEVEN_USE_DIALOGUE_SCENES: "true"
           ELEVEN_SCENE_MAX_TURNS: "8"
           ELEVEN_SCENE_MAX_CHARS: "1700"
           ELEVEN_SCENE_PAUSE_MS: "145"
 
-          # --- PAUSE / FINISH-LINE POLISH ---
           INTER_TURN_SILENCE_MS: "120"
           REACTION_PAUSE_MS: "190"
           MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "4"
           MAX_SPOKEN_WORDS_PER_LINE: "56"
+
           TRIM_TRAILING_MS: "110"
           TAIL_PAD_MS: "70"
 
-          # --- MIX / BEDS / DUCKING ---
           AUTO_BUILD_AUDIO_BRANDKIT: "false"
           REBUILD_AUDIO_BRANDKIT: "false"
 
@@ -133,18 +133,15 @@ jobs:
           DUCK_THRESHOLD_DBFS: "-34.0"
           DUCK_AMOUNT_DB: "15.0"
           DUCK_WINDOW_MS: "35"
-
           STINGER_TARGET_DBFS: "-18.0"
           SEGMENT_EXPORT_BITRATE: "192k"
 
-          # --- QUALITY / CLEANUP ---
           CLEANUP_TEMP: "true"
           KEEP_LAST_EPISODES: "60"
           RUN_MARKETING_ASSETS: "true"
           PUBLISH_SOCIAL: "false"
           FORCE_REBUILD: "false"
 
-          # --- X / TWITTER CREDENTIALS ---
           X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
@@ -173,8 +170,6 @@ jobs:
           git add forwardable_moments.json || true
           git add episode_audio/podcast_*.mp3 || true
           git add script_*.txt || true
-
-          # Persist reusable Eleven brandkit assets
           git add audio_brandkit/*.mp3 || true
           git add audio_brandkit/*.json || true
           git add -f audio_brandkit/** || true
