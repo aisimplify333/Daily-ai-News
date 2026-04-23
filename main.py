@@ -147,6 +147,15 @@ ALEX_USE_OPENAI = os.getenv("ALEX_USE_OPENAI", "true").strip().lower() in ("1","
 ELEVEN_SCENE_MAX_TURNS = int(os.getenv("ELEVEN_SCENE_MAX_TURNS", "7"))
 ELEVEN_SCENE_MAX_CHARS = int(os.getenv("ELEVEN_SCENE_MAX_CHARS", "1500"))
 ELEVEN_SCENE_PAUSE_MS = int(os.getenv("ELEVEN_SCENE_PAUSE_MS", "120"))
+ELEVEN_FALLBACK_TO_OPENAI = os.getenv("ELEVEN_FALLBACK_TO_OPENAI", "false").strip().lower() in ("1","true","yes")
+ELEVEN_FALLBACK_SPEAKERS = {
+    s.strip().upper()
+    for s in os.getenv("ELEVEN_FALLBACK_SPEAKERS", "JAMIE,RUFUS").split(",")
+    if s.strip()
+}
+_ELEVEN_FORCE_OPENAI_GLOBAL = False
+_ELEVEN_FORCE_OPENAI_SPEAKERS: set[str] = set()
+_ELEVEN_FALLBACK_NOTICE_EMITTED = False
 
 # Episode length gates (minutes)
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", "19"))
