@@ -876,6 +876,7 @@ VERTICAL_LABELS = {
 DESK_CONTEXT_PER_VERTICAL = int(os.getenv("DESK_CONTEXT_PER_VERTICAL", "7"))
 DESK_SHORTLIST_PER_VERTICAL = int(os.getenv("DESK_SHORTLIST_PER_VERTICAL", "3"))
 DESK_MIN_WINNERS = int(os.getenv("DESK_MIN_WINNERS", "5"))
+STORY_BUCKET_CAP = int(os.getenv("STORY_BUCKET_CAP", "5"))
 
 
 def fetch_rss_items(max_per_feed: int = 10) -> List[Dict[str, str]]:
@@ -1602,8 +1603,12 @@ def _can_add_story(item: Dict[str, str], selected: List[Dict[str, str]], role: s
     if role == "biggest" and entity:
         if sum(1 for s in selected if str(s.get("story_role") or "") == "biggest" and _story_entity_key(s) == entity) >= 1:
             return False
-    if entity and sum(1 for s in selected if _story_entity_key(s) == entity) >= 2:
-        return False
+    if entity:
+        same_entity = sum(1 for s in selected if _story_entity_key(s) == entity)
+        if role in {"biggest", "vertical"} and same_entity >= 2:
+            return False
+        if role == "flex" and same_entity >= 3:
+            return False
     return True
 
 
@@ -1614,7 +1619,7 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
     date_str = date_str or datetime.date.today().isoformat()
     previous_meta = _load_previous_episode_context(date_str)
     memory = load_show_memory()
-    curated = select_story_candidates(intel_items, n=max(n * 8, 40), memory=memory, bucket_cap=3)
+    curated = select_story_candidates(intel_items, n=max(n * 10, 60), memory=memory, bucket_cap=STORY_BUCKET_CAP)
     if not curated:
         ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
         curated = ranked[:max(n * 8, 40)]
@@ -1667,7 +1672,7 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
             dict(x) for x in ranked_all
             if _normalize_vertical_bucket(x.get("bucket", "")) == bucket
             and _story_identity_key(x) not in used
-            and _editorial_impact_score(x) >= 38.0
+            and _editorial_impact_score(x) >= 28.0
             and _can_add_story(x, selected, role="vertical")
         ]
         if not candidates:
@@ -1692,6 +1697,17 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
         item["story_role"] = item.get("story_role") or "flex"
         selected.append(item)
         used.add(key)
+
+    if len(selected) < max(n, 5):
+        for item in ranked_all:
+            if len(selected) >= max(n, 5):
+                break
+            key = _story_identity_key(item)
+            if not key or key in used:
+                continue
+            item["story_role"] = item.get("story_role") or "flex"
+            selected.append(item)
+            used.add(key)
 
     stories = [_candidate_to_story(x) for x in selected[:max(n, 5)]]
     stories = _dedupe_story_list(stories)
@@ -2279,8 +2295,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "He must connect the money, the politics, and the geopolitical consequence.\n"
             "Give Alex and Rufus enough runway to build the argument before the next interruption.\n"
             "Include one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
-            "If the sponsor appears in this segment, Rufus should lead the read in his own dry, witty way and make it feel like a genuine plug rather than a formal ad break.\n"
-            "Alex can tee it up briefly, but Rufus should carry the sponsor beat and still land the sponsor name, value, and CTA clearly.\n"
+            "Weave the sponsor naturally only if it feels native to the insight, and if it appears it should feel premium, playful, and genuinely supportive of the sponsor.\n"
             "Jamie must challenge Rufus at least once before the segment ends, and their exchange should include one sarcastic jab or dry undercut before Alex regains control.\n"
             "This segment should hand momentum forward, not sound like the end of the episode.\n"
             f"Sponsor: {sponsor_1['name']}\n"
@@ -2290,8 +2305,6 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
     elif seg_num == 4:
         extra += (
             "Alex must tee up the turn. Include ONE woven-in host-read sponsor naturally if it fits the conversation, and make it feel warm, premium, and happily plugged rather than obligated.\n"
-            "If the sponsor appears in this segment, Jamie should lead the read in her own smart, warm, reactive voice and make it sound like she genuinely likes the sponsor.\n"
-            "Alex can set her up, but Jamie should carry the sponsor beat and still land the sponsor name, value, and CTA clearly.\n"
             f"Sponsor: {sponsor_2['name']}\n"
             f"Tagline: {sponsor_2.get('tagline','')}\n"
             f"CTA: {sponsor_2.get('cta','')}\n"
@@ -2309,7 +2322,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "She should respond directly to Rufus if he lands a cynical or detached prediction.\n"
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "Before the close, Jamie and Rufus should have one final teasing disagreement or sharp exchange that shows their chemistry.\n"
-            "End with a final micro sponsor tag or aside only if it feels native and genuinely warm toward the sponsor. Jamie or Rufus can deliver it if that makes the moment feel more alive than Alex doing it again.\n"
+            "End with a final micro sponsor tag or aside only if it feels native and genuinely warm toward the sponsor.\n"
             "The final 2-3 lines must make tomorrow feel necessary.\n- End on an unresolved edge, not a tidy summary.\n"
             f"Sponsor: {sponsor_3['name']}\n"
             f"Tagline: {sponsor_3.get('tagline','')}\n"
@@ -3809,7 +3822,7 @@ def produce_episode() -> None:
             "summary": "Simulation. $500M wiped. 24 hours. 3 regulators. 1 leak."
         }]
 
-    candidate_debug = select_story_candidates(intel, n=30, memory=load_show_memory(), bucket_cap=3)
+    candidate_debug = select_story_candidates(intel, n=40, memory=load_show_memory(), bucket_cap=STORY_BUCKET_CAP)
     STORY_SCORES_PATH.write_text(
         json.dumps(build_story_debug_table(candidate_debug), indent=2, ensure_ascii=False),
         encoding="utf-8",
@@ -3821,7 +3834,7 @@ def produce_episode() -> None:
     if len(stories) < 5:
         _safe_print(f"    ⚠️ Story slate thin after selection ({len(stories)}). Broadening and retrying...")
         intel = broaden_intel_pool()
-        candidate_debug = select_story_candidates(intel, n=40, memory=load_show_memory(), bucket_cap=3)
+        candidate_debug = select_story_candidates(intel, n=60, memory=load_show_memory(), bucket_cap=STORY_BUCKET_CAP)
         STORY_SCORES_PATH.write_text(json.dumps(build_story_debug_table(candidate_debug), indent=2, ensure_ascii=False), encoding="utf-8")
         stories = order_stories_for_episode(pick_top_stories(intel, n=5))
     if len(stories) < 5:
