@@ -2983,13 +2983,50 @@ def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
 
 
 
+def _eleven_can_fallback_speaker(speaker: str) -> bool:
+    return ELEVEN_FALLBACK_TO_OPENAI and (speaker or "").upper() in ELEVEN_FALLBACK_SPEAKERS
+
+
+def _should_fallback_from_eleven_error(err: Exception) -> bool:
+    status = None
+    response = getattr(err, "response", None)
+    if response is not None:
+        status = getattr(response, "status_code", None)
+    msg = str(err or "").lower()
+    hints = [
+        "unauthorized", "insufficient", "credit", "quota", "payment",
+        "access denied", "voice not found", "forbidden", "account", "subscription"
+    ]
+    if status in {401, 402, 403, 429}:
+        return True
+    return any(h in msg for h in hints)
+
+
+def _activate_eleven_fallback(speaker: str, reason: str = "") -> None:
+    global _ELEVEN_FORCE_OPENAI_GLOBAL, _ELEVEN_FALLBACK_NOTICE_EMITTED
+    spk = (speaker or "").upper()
+    if not _eleven_can_fallback_speaker(spk):
+        return
+    _ELEVEN_FORCE_OPENAI_GLOBAL = True
+    _ELEVEN_FORCE_OPENAI_SPEAKERS.update(ELEVEN_FALLBACK_SPEAKERS)
+    if not _ELEVEN_FALLBACK_NOTICE_EMITTED:
+        detail = f" ({reason})" if reason else ""
+        _safe_print(f"    ⚠️ ElevenLabs unavailable{detail}. Falling back to OpenAI voices for Jamie and Rufus.")
+        _ELEVEN_FALLBACK_NOTICE_EMITTED = True
+
+
 def _speaker_audio_backend(speaker: str) -> str:
     spk = (speaker or "").upper()
     if spk == "ALEX" and ALEX_USE_OPENAI:
         return "openai"
+    if spk in _ELEVEN_FORCE_OPENAI_SPEAKERS or (_ELEVEN_FORCE_OPENAI_GLOBAL and _eleven_can_fallback_speaker(spk)):
+        return "openai"
     if AUDIO_BACKEND == "eleven":
+        if not ELEVEN_API_KEY and _eleven_can_fallback_speaker(spk):
+            return "openai"
         return "eleven"
     return "openai"
+
 
 def _eleven_headers() -> Dict[str, str]:
     if not ELEVEN_API_KEY:
@@ -3173,6 +3210,29 @@ def _build_eleven_render_items(dialogue: List[Tuple[str, str]]) -> List[Tuple[st
     return items
 
 
+def _render_spoken_chunk_to_file(text: str, speaker: str, out_path: Path) -> None:
+    if _speaker_audio_backend(speaker) == "eleven":
+        _eleven_tts_to_file(text, speaker, out_path)
+    else:
+        tts_to_file(text, speaker, out_path)
+
+
+def _fallback_scene_to_individual_lines(scene: List[Tuple[str, str]], out_path: Path) -> None:
+    rendered: List[AudioSegment] = []
+    pause = AudioSegment.silent(duration=max(80, ELEVEN_SCENE_PAUSE_MS))
+    for idx, (speaker, text) in enumerate(scene, start=1):
+        tmp_path = out_path.parent / f"{out_path.stem}_fallback_{idx:02d}.mp3"
+        _render_spoken_chunk_to_file(text, speaker, tmp_path)
+        post_process_tts_mp3(tmp_path)
+        rendered.append(AudioSegment.from_file(tmp_path))
+        if idx < len(scene):
+            rendered.append(pause)
+    combined = AudioSegment.empty()
+    for seg in rendered:
+        combined += seg
+    combined.export(out_path, format="mp3", bitrate="192k")
+
+
 def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> None:
     inputs = []
     for speaker, text in scene:
@@ -3196,6 +3256,11 @@ def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> No
             return
         except Exception as e:
             last_err = e
+            if any(_eleven_can_fallback_speaker(spk) for spk, _ in scene) and _should_fallback_from_eleven_error(e):
+                first_spk = next((spk for spk, _ in scene if _eleven_can_fallback_speaker(spk)), "JAMIE")
+                _activate_eleven_fallback(first_spk, reason="credits/auth")
+                _fallback_scene_to_individual_lines(scene, out_path)
+                return
             sleep_s = min(12, 2 * attempt)
             _safe_print(f"    ⚠️ ElevenLabs dialogue render failed (attempt {attempt}/{TTS_RETRIES}): {e} — retrying in {sleep_s:.1f}s")
             time.sleep(sleep_s)
@@ -3259,6 +3324,10 @@ def _eleven_tts_to_file(text: str, speaker: str, out_path: Path) -> None:
             return
         except Exception as e:
             last_err = e
+            if _eleven_can_fallback_speaker(speaker) and _should_fallback_from_eleven_error(e):
+                _activate_eleven_fallback(speaker, reason="credits/auth")
+                tts_to_file(text, speaker, out_path)
+                return
             sleep_s = min(12, 2 * attempt)
             _safe_print(f"    ⚠️ ElevenLabs TTS failed for {speaker} (attempt {attempt}/{TTS_RETRIES}): {e} — retrying in {sleep_s:.1f}s")
             time.sleep(sleep_s)
@@ -4016,7 +4085,7 @@ def produce_episode() -> None:
         for chunk in chunks:
             seg_idx += 1
             raw_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
-            (_eleven_tts_to_file(chunk, speaker, raw_path) if _speaker_audio_backend(speaker) == "eleven" else tts_to_file(chunk, speaker, raw_path))
+            _render_spoken_chunk_to_file(chunk, speaker, raw_path)
             post_process_tts_mp3(raw_path)
 
             final_voice_path = raw_path
