@@ -84,15 +84,16 @@ jobs:
           TARGET_MINUTES: "20"
           WORDS_PER_MINUTE: "170"
           SEGMENT_ATTEMPTS: "5"
-          FORWARDABLE_MIN_PER_EPISODE: "3"
+          FORWARDABLE_MIN_PER_EPISODE: "4"
+          STORY_BUCKET_CAP: "6"
 
           ALEX_GAIN_DB: "3.5"
           JAMIE_GAIN_DB: "1.0"
           RUFUS_GAIN_DB: "0.3"
 
-          ALEX_SPEED: "1.06"
-          JAMIE_SPEED: "1.00"
-          RUFUS_SPEED: "1.02"
+          ALEX_SPEED: "1.05"
+          JAMIE_SPEED: "0.99"
+          RUFUS_SPEED: "1.01"
 
           ELEVEN_STABILITY_ALEX: "0.40"
           ELEVEN_SIMILARITY_ALEX: "0.82"
@@ -109,17 +110,17 @@ jobs:
           ELEVEN_USE_SPEAKER_BOOST: "true"
           FORCE_INDIVIDUAL_RUFUS_LINES: "true"
           ELEVEN_USE_DIALOGUE_SCENES: "true"
-          ELEVEN_SCENE_MAX_TURNS: "8"
-          ELEVEN_SCENE_MAX_CHARS: "1700"
-          ELEVEN_SCENE_PAUSE_MS: "145"
+          ELEVEN_SCENE_MAX_TURNS: "7"
+          ELEVEN_SCENE_MAX_CHARS: "1500"
+          ELEVEN_SCENE_PAUSE_MS: "160"
 
-          INTER_TURN_SILENCE_MS: "120"
-          REACTION_PAUSE_MS: "190"
-          MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "4"
-          MAX_SPOKEN_WORDS_PER_LINE: "56"
+          INTER_TURN_SILENCE_MS: "140"
+          REACTION_PAUSE_MS: "230"
+          MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "5"
+          MAX_SPOKEN_WORDS_PER_LINE: "60"
 
-          TRIM_TRAILING_MS: "110"
-          TAIL_PAD_MS: "70"
+          TRIM_TRAILING_MS: "130"
+          TAIL_PAD_MS: "90"
 
           AUTO_BUILD_AUDIO_BRANDKIT: "false"
           REBUILD_AUDIO_BRANDKIT: "false"
@@ -131,7 +132,7 @@ jobs:
 
           MUSIC_TARGET_DBFS: "-27.0"
           DUCK_THRESHOLD_DBFS: "-34.0"
-          DUCK_AMOUNT_DB: "15.0"
+          DUCK_AMOUNT_DB: "15.5"
           DUCK_WINDOW_MS: "35"
           STINGER_TARGET_DBFS: "-18.0"
           SEGMENT_EXPORT_BITRATE: "192k"
@@ -140,7 +141,7 @@ jobs:
           KEEP_LAST_EPISODES: "60"
           RUN_MARKETING_ASSETS: "true"
           PUBLISH_SOCIAL: "false"
-          FORCE_REBUILD: "false"
+          FORCE_REBUILD: "true"
 
           X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
