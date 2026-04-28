@@ -1598,6 +1598,7 @@ def _selection_penalty(item: Dict[str, str], selected: List[Dict[str, str]]) -> 
     return penalty
 
 
+
 def _rank_with_editorial_penalties(candidates: List[Dict[str, str]], previous_meta: Dict[str, object], selected: Optional[List[Dict[str, str]]] = None) -> List[Dict[str, str]]:
     chosen = selected or []
     return sorted(
@@ -1609,6 +1610,12 @@ def _rank_with_editorial_penalties(candidates: List[Dict[str, str]], previous_me
 
 def _can_add_story(item: Dict[str, str], selected: List[Dict[str, str]], role: str) -> bool:
     entity = _story_entity_key(item)
+    bucket = _normalize_vertical_bucket(item.get("bucket", ""))
+    bucket_counts = {}
+    for s in selected:
+        b = _normalize_vertical_bucket(s.get("bucket", ""))
+        bucket_counts[b] = bucket_counts.get(b, 0) + 1
+
     if role == "biggest" and entity:
         if sum(1 for s in selected if str(s.get("story_role") or "") == "biggest" and _story_entity_key(s) == entity) >= 1:
             return False
@@ -1618,7 +1625,184 @@ def _can_add_story(item: Dict[str, str], selected: List[Dict[str, str]], role: s
             return False
         if role == "flex" and same_entity >= 3:
             return False
+
+    max_bucket = 2 if bucket in {"ai_agents", "ai_tools", "ai_code", "health_ai"} else 3
+    if role in {"vertical", "flex"} and bucket_counts.get(bucket, 0) >= max_bucket:
+        return False
     return True
+
+
+def _story_non_date_number_count(item: Dict[str, str]) -> int:
+    blob_parts = [item.get("headline") or item.get("title") or ""]
+    blob_parts.extend([str(x) for x in (item.get("data_points") or [])[:6]])
+    blob = " ".join(blob_parts)
+    if not blob:
+        return 0
+    money_pct = re.findall(
+        r"(?:\$|€|£)\s?\d[\d,.]*|\b\d+(?:\.\d+)?%\b|\b\d+(?:\.\d+)?\s*(?:million|billion|trillion|m|bn|b)\b",
+        blob,
+        flags=re.IGNORECASE,
+    )
+    quarters = re.findall(r"\bQ[1-4]\b", blob, flags=re.IGNORECASE)
+    return len(money_pct) + len(quarters)
+
+
+def _story_has_real_numbers(item: Dict[str, str]) -> bool:
+    blob = " ".join([str(x) for x in (item.get("data_points") or [])[:6]])
+    if "No explicit figures in snippet" in blob:
+        return False
+    return _story_non_date_number_count(item) >= 2
+
+
+def _bucket_counts(stories: List[Dict[str, str]]) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    for s in stories:
+        b = _normalize_vertical_bucket(s.get("bucket", ""))
+        counts[b] = counts.get(b, 0) + 1
+    return counts
+
+
+def _best_remaining_candidate(
+    ranked_all: List[Dict[str, str]],
+    used: set,
+    selected: List[Dict[str, str]],
+    previous_meta: Dict[str, object],
+    required_bucket: Optional[str] = None,
+) -> Optional[Dict[str, str]]:
+    for item in _rank_with_editorial_penalties(ranked_all, previous_meta, selected=selected):
+        key = _story_identity_key(item)
+        if not key or key in used:
+            continue
+        bucket = _normalize_vertical_bucket(item.get("bucket", ""))
+        if required_bucket and bucket != required_bucket:
+            continue
+        if not _can_add_story(item, selected, role="vertical" if required_bucket else "flex"):
+            continue
+        return dict(item)
+    return None
+
+
+def _rebalance_selected_stories(
+    selected: List[Dict[str, str]],
+    ranked_all: List[Dict[str, str]],
+    previous_meta: Dict[str, object],
+) -> List[Dict[str, str]]:
+    if not selected:
+        return selected
+
+    selected = [dict(x) for x in selected]
+    used = {_story_identity_key(x) for x in selected}
+    counts = _bucket_counts(selected)
+
+    def weakest_index_for_replacement(exclude_buckets: set[str]) -> Optional[int]:
+        candidates = []
+        for idx, item in enumerate(selected):
+            bucket = _normalize_vertical_bucket(item.get("bucket", ""))
+            if bucket in exclude_buckets:
+                continue
+            role = str(item.get("story_role") or "")
+            score = _editorial_impact_score(item) - _repeat_penalty(item, previous_meta)
+            role_penalty = 0 if role in {"biggest", "flex"} else 8
+            bucket_penalty = 12 if counts.get(bucket, 0) > 1 else 0
+            candidates.append((score + role_penalty - bucket_penalty, idx))
+        if not candidates:
+            return None
+        candidates.sort()
+        return candidates[0][1]
+
+    for over_bucket in ["ai_agents", "ai_tools"]:
+        while counts.get(over_bucket, 0) > 2:
+            replacement_bucket = next((b for b in ["ai_code", "health_ai", "topline"] if counts.get(b, 0) == 0), None)
+            if not replacement_bucket:
+                break
+            candidate = _best_remaining_candidate(ranked_all, used, selected, previous_meta, required_bucket=replacement_bucket)
+            if not candidate:
+                break
+            idx = weakest_index_for_replacement(exclude_buckets={replacement_bucket})
+            if idx is None:
+                break
+            old_key = _story_identity_key(selected[idx])
+            used.discard(old_key)
+            candidate["story_role"] = selected[idx].get("story_role") or candidate.get("story_role") or "vertical"
+            selected[idx] = candidate
+            used.add(_story_identity_key(candidate))
+            counts = _bucket_counts(selected)
+
+    for wanted_bucket in ["ai_code", "health_ai"]:
+        if counts.get(wanted_bucket, 0) > 0:
+            continue
+        candidate = _best_remaining_candidate(ranked_all, used, selected, previous_meta, required_bucket=wanted_bucket)
+        if not candidate:
+            continue
+        idx = weakest_index_for_replacement(exclude_buckets={wanted_bucket, "health_ai"})
+        if idx is None:
+            continue
+        replace_score = _editorial_impact_score(selected[idx]) - _repeat_penalty(selected[idx], previous_meta)
+        candidate_score = _editorial_impact_score(candidate) - _repeat_penalty(candidate, previous_meta)
+        if candidate_score + 18 < replace_score:
+            continue
+        old_key = _story_identity_key(selected[idx])
+        used.discard(old_key)
+        candidate["story_role"] = selected[idx].get("story_role") or candidate.get("story_role") or "vertical"
+        selected[idx] = candidate
+        used.add(_story_identity_key(candidate))
+        counts = _bucket_counts(selected)
+
+    if len(counts) < 3:
+        missing_candidates = [b for b in ["topline", "ai_tools", "ai_agents", "ai_code", "health_ai"] if counts.get(b, 0) == 0]
+        for wanted_bucket in missing_candidates:
+            candidate = _best_remaining_candidate(ranked_all, used, selected, previous_meta, required_bucket=wanted_bucket)
+            if not candidate:
+                continue
+            idx = weakest_index_for_replacement(exclude_buckets={wanted_bucket})
+            if idx is None:
+                continue
+            replace_score = _editorial_impact_score(selected[idx]) - _repeat_penalty(selected[idx], previous_meta)
+            candidate_score = _editorial_impact_score(candidate) - _repeat_penalty(candidate, previous_meta)
+            if candidate_score + 14 < replace_score:
+                continue
+            old_key = _story_identity_key(selected[idx])
+            used.discard(old_key)
+            candidate["story_role"] = selected[idx].get("story_role") or candidate.get("story_role") or "vertical"
+            selected[idx] = candidate
+            used.add(_story_identity_key(candidate))
+            counts = _bucket_counts(selected)
+            if len(counts) >= 3:
+                break
+
+    counts = _bucket_counts(selected)
+    for bucket, count in list(counts.items()):
+        if count <= 2:
+            continue
+        alternatives = [b for b in ["ai_code", "health_ai", "ai_tools", "ai_agents", "topline"] if counts.get(b, 0) == 0]
+        if not alternatives:
+            continue
+        replacement_bucket = alternatives[0]
+        candidate = _best_remaining_candidate(ranked_all, used, selected, previous_meta, required_bucket=replacement_bucket)
+        if not candidate:
+            continue
+        weakest_same_bucket = None
+        weakest_score = float("inf")
+        for idx, item in enumerate(selected):
+            if _normalize_vertical_bucket(item.get("bucket", "")) != bucket:
+                continue
+            score = _editorial_impact_score(item) - _repeat_penalty(item, previous_meta)
+            if score < weakest_score:
+                weakest_score = score
+                weakest_same_bucket = idx
+        if weakest_same_bucket is None:
+            continue
+        candidate_score = _editorial_impact_score(candidate) - _repeat_penalty(candidate, previous_meta)
+        if candidate_score + 20 < weakest_score:
+            continue
+        old_key = _story_identity_key(selected[weakest_same_bucket])
+        used.discard(old_key)
+        candidate["story_role"] = selected[weakest_same_bucket].get("story_role") or candidate.get("story_role") or "vertical"
+        selected[weakest_same_bucket] = candidate
+        used.add(_story_identity_key(candidate))
+        counts = _bucket_counts(selected)
+
+    return selected
 
 
 def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Optional[str] = None) -> List[Dict[str, str]]:
@@ -1628,32 +1812,37 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
     date_str = date_str or datetime.date.today().isoformat()
     previous_meta = _load_previous_episode_context(date_str)
     memory = load_show_memory()
-    curated = select_story_candidates(intel_items, n=max(n * 10, 60), memory=memory, bucket_cap=STORY_BUCKET_CAP)
+    curated = select_story_candidates(intel_items, n=max(n * 12, 80), memory=memory, bucket_cap=STORY_BUCKET_CAP)
     if not curated:
         ranked = sorted(intel_items, key=_combined_story_score, reverse=True)
-        curated = ranked[:max(n * 8, 40)]
+        curated = ranked[:max(n * 10, 60)]
 
     ranked_all = _rank_with_editorial_penalties(curated, previous_meta, selected=[])
 
     selected: List[Dict[str, str]] = []
     used = set()
     biggest_count = 0
-    bucket_biggest_counts: Dict[str, int] = {}
+    biggest_buckets_seen: set[str] = set()
+    biggest_entities_seen: set[str] = set()
 
-    # 1) Lock the 3 biggest stories of the day, but force fresher diversity.
     for item in ranked_all:
         key = _story_identity_key(item)
         if not key or key in used:
             continue
         bucket = _normalize_vertical_bucket(item.get("bucket", ""))
-        if bucket_biggest_counts.get(bucket, 0) >= 2:
+        entity = _story_entity_key(item)
+        if bucket in biggest_buckets_seen and biggest_count < 2:
+            continue
+        if entity and entity in biggest_entities_seen:
             continue
         if not _can_add_story(item, selected, role="biggest"):
             continue
         item["story_role"] = "biggest"
         selected.append(item)
         used.add(key)
-        bucket_biggest_counts[bucket] = bucket_biggest_counts.get(bucket, 0) + 1
+        biggest_buckets_seen.add(bucket)
+        if entity:
+            biggest_entities_seen.add(entity)
         biggest_count += 1
         if biggest_count >= 3:
             break
@@ -1663,6 +1852,8 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
             key = _story_identity_key(item)
             if not key or key in used:
                 continue
+            if not _can_add_story(item, selected, role="biggest"):
+                continue
             item["story_role"] = "biggest"
             selected.append(item)
             used.add(key)
@@ -1670,31 +1861,25 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
             if biggest_count >= 3:
                 break
 
-    # 2) Add the 2 best remaining vertical stories from uncovered lanes first.
     covered_buckets = {_normalize_vertical_bucket(x.get("bucket", "")) for x in selected}
-    vertical_priority = [b for b in ["ai_agents", "ai_code", "ai_tools", "health_ai"] if b not in covered_buckets]
-    vertical_priority += [b for b in ["ai_agents", "ai_code", "ai_tools", "health_ai"] if b not in vertical_priority]
+    preferred_verticals = [b for b in ["health_ai", "ai_code", "ai_tools", "ai_agents"] if b not in covered_buckets]
+    preferred_verticals += [b for b in ["health_ai", "ai_code", "ai_tools", "ai_agents"] if b not in preferred_verticals]
 
     vertical_count = 0
-    for bucket in vertical_priority:
-        candidates = [
-            dict(x) for x in ranked_all
-            if _normalize_vertical_bucket(x.get("bucket", "")) == bucket
-            and _story_identity_key(x) not in used
-            and _editorial_impact_score(x) >= 28.0
-            and _can_add_story(x, selected, role="vertical")
-        ]
-        if not candidates:
+    for bucket in preferred_verticals:
+        candidate = _best_remaining_candidate(ranked_all, used, selected, previous_meta, required_bucket=bucket)
+        if not candidate:
             continue
-        winner = max(_rank_with_editorial_penalties(candidates, previous_meta, selected=selected), key=lambda x: _editorial_impact_score(x) - _repeat_penalty(x, previous_meta) - _selection_penalty(x, selected))
-        winner["story_role"] = "vertical"
-        selected.append(winner)
-        used.add(_story_identity_key(winner))
+        score = _editorial_impact_score(candidate) - _repeat_penalty(candidate, previous_meta)
+        if score < 24.0:
+            continue
+        candidate["story_role"] = "vertical"
+        selected.append(candidate)
+        used.add(_story_identity_key(candidate))
         vertical_count += 1
         if vertical_count >= 2:
             break
 
-    # 3) Backfill with the strongest remaining stories if needed, while avoiding obvious repeats.
     for item in _rank_with_editorial_penalties(ranked_all, previous_meta, selected=selected):
         if len(selected) >= max(n, 5):
             break
@@ -1718,6 +1903,8 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
             selected.append(item)
             used.add(key)
 
+    selected = _rebalance_selected_stories(selected[:max(n, 5)], ranked_all, previous_meta)
+
     stories = [_candidate_to_story(x) for x in selected[:max(n, 5)]]
     stories = _dedupe_story_list(stories)
     enriched = enrich_stories_with_data(stories[:max(n, 5)])
@@ -1739,12 +1926,14 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
     ordered = order_stories_for_episode(_dedupe_story_list(enriched)[:max(n, 5)])
     return ordered[:max(n, 5)]
 
+
 # ----------------------------
 # SCRIPTING (structured 5 segments)
 # ----------------------------
 # SCRIPTING (structured 5 segments)
 # ----------------------------
 def _word_count(s: str) -> int:
+
     return len(re.findall(r"\b\w+\b", s or ""))
 
 
@@ -1889,31 +2078,33 @@ def _strict_dialogue_rules() -> str:
     )
 
 
+
 def _segment_assignment(seg_num: int) -> str:
     if seg_num == 1:
         return (
             "Story 1: the single biggest story of the day. Cold open with heat, interruption, disbelief, and immediate status-play. Then [MUSIC]. "
             "Immediately after [MUSIC], Alex lands a sharp TheLEDGR sponsor hit, welcomes the audience, and tears through the five-story lineup like people cannot afford to miss it. "
-            "Alex should sound amused, aggressive, curious, and in command: he asks the high-stakes question everyone is already thinking, cuts people off when needed, and keeps the room moving. "
-            "This segment must feel expensive, current, fast, and clip-ready."
+            "Alex should sound amused, aggressive, curious, and in command: he asks the high-stakes question everyone is already thinking, but he does not rush. "
+            "This segment must feel expensive, current, story-rich, and instantly clip-ready."
         )
     if seg_num == 2:
         return (
             "Story 2: the second biggest story of the day. ONLY Alex and Jamie. "
             "This is where Jamie sounds formidable: extremely intelligent, emotionally alive, grounded, and sharp under pressure. "
-            "The scene needs multiple interruptions, at least one laugh/scoff/disbelief beat, one hard number, and one line a listener would text to a friend immediately."
+            "Alex asks the hard question, then lets Jamie actually build the case before cutting back in. "
+            "The scene needs one real turn of disagreement, at least one laugh/scoff/disbelief beat, one hard number, and one line a listener would text to a friend immediately."
         )
     if seg_num == 3:
         return (
             "Story 3: the third biggest story of the day. Alex throws to Rufus and Rufus owns the room with money, power, policy, or geopolitical consequence. "
             "Rufus must land one elite dry British undercut, one memorable British saying, and one hard number that changes how the listener sees the story. "
-            "Jamie must challenge Rufus at least once, they should spar for 3-6 turns with real wit and irritation, and then Alex regains control and forces the takeaway."
+            "Jamie challenges Rufus once, they spar for 4-7 turns with real wit and irritation, and then Alex regains control and forces the takeaway."
         )
     if seg_num == 4:
         return (
-            "Story 4: the strongest vertical story. All three are in. This should feel like a mini scene with friction, callbacks, real interruptions, and at least one genuine chuckle or smirk beat. "
+            "Story 4: the strongest vertical story. All three are in. This should feel like the best full-cast scene of the episode with friction, callbacks, real interruptions, and at least one genuine chuckle or smirk beat. "
             "Jamie and Rufus must have one genuine sparring exchange with wit, sarcasm, and respect before Alex gets a handle on the room. "
-            "Somebody should disagree. Somebody should cut in. Alex should have to get a handle on the room at least once. No polite panel-talk."
+            "No polite panel-talk. This is where the cast chemistry itself becomes the product."
         )
     return (
         "Story 5: the second-best vertical or best flex story. Drive toward a real close. "
@@ -1924,6 +2115,7 @@ def _segment_assignment(seg_num: int) -> str:
 
 
 def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> str:
+
     if not seg_text:
         return ""
     allowed_set = {a.upper() for a in (allowed or set())}
@@ -2163,71 +2355,129 @@ def is_forwardable_line_text(text: str) -> bool:
     has_shock = any(h in low for h in FORWARDABLE_SHOCK_HINTS)
     return _forwardable_line_score(text) >= 6 and (has_number or has_consequence or has_shock)
 
+
 def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, str]]] = None, max_items: int = 4) -> List[Dict[str, str]]:
     anchors = _story_anchor_terms(stories)
-    candidates: List[Dict[str, str]] = []
+    candidates: List[Dict[str, object]] = []
     seen: set[str] = set()
+
+    weak_openers = (
+        "first up",
+        "so,",
+        "so ",
+        "exactly, alex",
+        "exactly alex",
+        "let's start",
+        "we start",
+        "the article",
+        "published on",
+        "the event is",
+        "it sounds like",
+    )
+
     for raw in script.splitlines():
         line = raw.strip()
         m = SPEAKER_RE.match(line)
         if not m:
             continue
         speaker = m.group(1).upper()
-        text = m.group(2).strip()
-        score = _forwardable_line_score(text)
-        if score < 4:
-            continue
-        key = normalize_text(text)
-        if key in seen:
+        spoken = m.group(2).strip()
+        key = normalize_text(spoken)
+        if not spoken or key in seen:
             continue
         seen.add(key)
-        low = text.lower()
-        tokens = {tok.lower().strip(".,:;!?") for tok in re.findall(r"[A-Za-z0-9€$%][A-Za-z0-9€$%\-_]{2,}", text)}
+
+        low = spoken.lower()
+        score = _forwardable_line_score(spoken)
+        if score < 5:
+            continue
+        if any(low.startswith(prefix) for prefix in weak_openers):
+            score -= 3
+        if "published on" in low or "article from" in low:
+            score -= 4
+        if len(spoken) > 220:
+            score -= 2
+
+        tokens = {tok.lower().strip(".,:;!?") for tok in re.findall(r"[A-Za-z0-9€$%][A-Za-z0-9€$%\-_]{2,}", spoken)}
         anchor_hits = len(tokens & anchors) if anchors else 0
+        story_hits = 0
+        for story in stories or []:
+            title_tokens = {tok.lower() for tok in re.findall(r"[A-Za-z0-9][A-Za-z0-9\-_]{2,}", story.get("headline") or "")}
+            if tokens & title_tokens:
+                story_hits += 1
+
+        has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", spoken, flags=re.IGNORECASE))
+        has_consequence = any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS)
+        has_shock = any(h in low for h in FORWARDABLE_SHOCK_HINTS)
+        has_contrast = bool(re.search(r"\b(?:but|except|instead|the catch|the problem|the real risk|the real question|what matters is)\b", low))
+
+        score += min(anchor_hits, 2)
+        score += min(story_hits, 2)
+        if has_contrast:
+            score += 1
+        if speaker == "RUFUS" and ("[" in spoken or "come on" in low or has_contrast):
+            score += 1
+
+        if score < 6:
+            continue
+
         candidates.append({
             "speaker": speaker,
-            "text": text,
-            "score": score + min(anchor_hits, 3),
-            "has_number": bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", text, flags=re.IGNORECASE)),
-            "has_consequence": any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS),
-            "has_shock": any(h in low for h in FORWARDABLE_SHOCK_HINTS),
+            "text": spoken,
+            "score": score,
             "anchor_hits": anchor_hits,
+            "story_hits": story_hits,
+            "has_number": has_number,
+            "has_consequence": has_consequence,
+            "has_shock": has_shock,
+            "has_contrast": has_contrast,
         })
 
     candidates.sort(
         key=lambda x: (
-            1 if (x["has_number"] or x["has_consequence"] or x["has_shock"]) else 0,
-            1 if x["anchor_hits"] > 0 else 0,
+            1 if (x["has_number"] or x["has_consequence"] or x["has_shock"] or x["has_contrast"]) else 0,
+            x["anchor_hits"],
+            x["story_hits"],
             x["score"],
             len(x["text"]),
         ),
         reverse=True,
     )
-    out: List[Dict[str, str]] = []
-    used_speakers = set()
+
+    out: List[Dict[str, object]] = []
+    used_speakers: set[str] = set()
+    used_norms: set[str] = set()
     for c in candidates:
         if len(out) >= max_items:
             break
-        if len(out) < 2 and c["anchor_hits"] == 0:
+        norm = normalize_text(str(c["text"]))
+        if norm in used_norms:
             continue
-        if c["score"] < 7 and len(out) < 2:
+        if len(out) < 2 and int(c["anchor_hits"]) == 0:
             continue
-        if len(out) < 2 and c["speaker"] in used_speakers and len({cand["speaker"] for cand in candidates}) > 1:
+        if len(out) < 2 and int(c["score"]) < 8:
+            continue
+        if len(out) < 3 and c["speaker"] in used_speakers and len({str(x["speaker"]) for x in candidates}) > 1:
             continue
         out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
-        used_speakers.add(c["speaker"])
+        used_speakers.add(str(c["speaker"]))
+        used_norms.add(norm)
+
     if len(out) < max_items:
-        existing = {normalize_text(x["text"]) for x in out}
         for c in candidates:
             if len(out) >= max_items:
                 break
-            if normalize_text(c["text"]) in existing:
+            norm = normalize_text(str(c["text"]))
+            if norm in used_norms:
                 continue
             out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
-            existing.add(normalize_text(c["text"]))
+            used_norms.add(norm)
+
     return out[:max_items]
 
+
 def _is_theledgr_sponsor(sponsor: Dict[str, str]) -> bool:
+
     return (sponsor.get("name") or "").strip().lower() == "theledgr"
 
 
@@ -2256,6 +2506,7 @@ def _sponsor_prompt_lines(sponsor: Dict[str, str]) -> str:
     )
 
 
+
 def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
                     stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
@@ -2268,10 +2519,11 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- DO NOT sign off.\n"
             "- DO NOT say goodbye, thanks for listening, until tomorrow, or anything that sounds like the end of the show.\n"
             "- Keep the energy open and forward-moving. This is not the close.\n"
-            "- CRITICAL: avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Let Jamie and Rufus occasionally hold 2-3 connected turns when sharpening an argument.\n"
+            "- CRITICAL: avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Let Jamie and Rufus occasionally hold 2-4 connected turns when sharpening an argument.\n"
             "- Include at least one interruption, one real emotional reaction, and one line that could be clipped and shared.\n"
             "- Keep dialogue alive, conflict-aware, and writer-room sharp, but allow arguments to breathe before Alex cuts back in.\n"
-            "- Do not let Alex keep poking every few seconds. He should feel more dangerous and in command when he does step in because he waited for the right moment.\n"
+            "- Alex should feel stronger by speaking less often and landing harder when he does step in.\n"
+            "- Every segment needs one line that sounds like a text message someone would forward.\n"
         )
 
     if seg_num == 1:
@@ -2281,21 +2533,21 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- The sponsor should feel useful, sharp, loved, and native to the show, not like a generic ad break. The hosts should sound like they enjoy giving this plug because it pays the bills and helps the audience.\n"
             f"- Alex must say the brand as 'The Ledger' and the URL exactly as {THELEDGR_SPOKEN_URL}.\n"
             "- The sponsor must make listeners feel that TheLEDGR helps them make better daily decisions, cut through noise, and stay ahead at work.\n"
-            "- CRITICAL: In the cold open and lineup, say at least 3 explicit numbers, dates, dollar amounts, or benchmark figures out loud naturally.\n"
+            "- In the cold open and lineup, say at least 3 explicit numbers, dates, dollar amounts, or benchmark figures out loud naturally.\n"
             "- Alex should ask the listener-question everybody is already thinking.\n"
-            "- Alex must sound like a Joe Rogan-style instigator: curious, amused, slightly dangerous, and pushing the room forward.\n"
+            "- Alex must sound like a Joe Rogan-style instigator: curious, amused, slightly dangerous, and pushing the room forward without sounding rushed.\n"
             "- Include at least one interruption, one laugh/smirk beat, and one line with genuine tomorrow tension.\n"
             "- Alex must welcome the audience and set up the rest of the episode, not close it.\n"
         )
     elif seg_num == 2:
         extra += (
             "IMPORTANT: This segment must contain ONLY ALEX and JAMIE lines. Do NOT output any RUFUS lines.\n"
-            "- Alex must open the segment with a clear setup or turn.\n"
+            "- Alex must open the segment with a clear setup or turn, then give Jamie room to make the case.\n"
             "- Jamie must not sound like a presenter. She must react to Alex in real time, cut in naturally, and help create banter.\n"
             "- Include at least two moments where Jamie interrupts, challenges, or reframes Alex in a warm but confident way.\n"
             "- Jamie should sound emotionally alive: amused, incredulous, impressed, concerned, or lightly offended when the line calls for it.\n"
-            "- She should feel human, fast, intuitive, and strong on the emotional or real-world implication.\n"
-            "- Let there be at least one line that feels instantly clip-worthy because Jamie made the story feel personal, dangerous, absurd, or darkly funny.\n- Give Alex and Jamie enough room to actually shape the story before the next interruption. Jamie should sound grounded, highly credible, and formidable next to Alex.\n"
+            "- Give Alex and Jamie enough room to actually shape the story before the next interruption. Jamie should sound grounded, highly credible, and formidable next to Alex.\n"
+            "- Jamie must land at least one line that feels personal, dangerous, absurd, or darkly funny.\n"
         )
     elif seg_num == 3:
         extra += (
@@ -2303,8 +2555,8 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "Rufus should sound like he is on location somewhere real in the world before landing the core receipt.\n"
             "He must connect the money, the politics, and the geopolitical consequence.\n"
             "Give Alex and Rufus enough runway to build the argument before the next interruption.\n"
-            "Include one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
-            "Weave the sponsor naturally only if it feels native to the insight, and if it appears it should feel premium, playful, and genuinely supportive of the sponsor.\n"
+            "Include at least one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
+            "If a sponsor beat appears in this segment, Rufus should lead it and make it feel premium, sly, and genuinely approving rather than dutiful.\n"
             "Jamie must challenge Rufus at least once before the segment ends, and their exchange should include one sarcastic jab or dry undercut before Alex regains control.\n"
             "This segment should hand momentum forward, not sound like the end of the episode.\n"
             f"Sponsor: {sponsor_1['name']}\n"
@@ -2317,6 +2569,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             f"Sponsor: {sponsor_2['name']}\n"
             f"Tagline: {sponsor_2.get('tagline','')}\n"
             f"CTA: {sponsor_2.get('cta','')}\n"
+            "- Jamie should lead the sponsor beat in this segment if it appears, and it should feel intelligent, native, and genuinely enthusiastic.\n"
             "- Include one callback to something said earlier in the episode.\n"
             "- Jamie must actively play off both Alex and Rufus. She should challenge Rufus if he becomes too cold or purely strategic.\n"
             "- Jamie and Rufus must have one genuine sparring exchange with wit, sarcasm, and a little amusement before Alex cuts through it.\n"
@@ -2332,7 +2585,8 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "Rufus should leave one sharp, slightly cynical prediction.\n"
             "Before the close, Jamie and Rufus should have one final teasing disagreement or sharp exchange that shows their chemistry.\n"
             "End with a final micro sponsor tag or aside only if it feels native and genuinely warm toward the sponsor.\n"
-            "The final 2-3 lines must make tomorrow feel necessary.\n- End on an unresolved edge, not a tidy summary.\n"
+            "The final 2-3 lines must make tomorrow feel necessary.\n"
+            "- End on an unresolved edge, not a tidy summary.\n"
             f"Sponsor: {sponsor_3['name']}\n"
             f"Tagline: {sponsor_3.get('tagline','')}\n"
             f"CTA: {sponsor_3.get('cta','')}\n"
@@ -2360,12 +2614,14 @@ SEGMENT REQUIREMENTS:
 - Segment 1 must give Jamie and Rufus real air, not just cameo lines.
 - Segment 3 must give Rufus multiple separate lines so his on-location frame and British wit are audible.
 - Segments 4 and 5 must keep all three hosts active.
+- Every segment should contain at least one line that sounds memorable enough to share.
 
 DATA REQUIREMENTS (non-negotiable):
 - For every story you discuss in THIS segment, you MUST speak at least 2 explicit data points
   (numbers/dates/amounts) from the provided "Data points" lines in TODAY'S STORIES.
 - Mention the publisher at least once when introducing a story.
 - Do NOT invent numbers. If a story has "No explicit figures in snippet", say that plainly.
+- If a story is thin on hard numbers, pivot to consequence, incentives, regulation, customers, developers, patients, or market impact.
 
 WHAT THIS SEGMENT MUST DO:
 {assignment}
@@ -2381,6 +2637,7 @@ NOW OUTPUT ONLY THIS SEGMENT.
 
 
 def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words_max: int) -> List[str]:
+
     issues: List[str] = []
     if not seg_text.strip().startswith(_segment_header(seg_num)):
         issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
@@ -3586,6 +3843,7 @@ def _hashtags_from_stories(stories: List[Dict[str, str]], max_tags: int = 6) -> 
     return " ".join(uniq[:max_tags])
 
 
+
 def _smart_trim_text(text: str, max_len: int) -> str:
     cleaned = re.sub(r"\s+", " ", text or "").strip().strip(" -—:|,")
     if len(cleaned) <= max_len:
@@ -3602,28 +3860,62 @@ def _clean_packaging_text(text: str, max_len: int) -> str:
     cleaned = re.sub(r"\|\s*(news and statistics|news|statistics).*$", "", cleaned, flags=re.IGNORECASE)
     cleaned = re.sub(r"\|\s*(ai infrastructure).*$", "", cleaned, flags=re.IGNORECASE)
     cleaned = cleaned.strip(" -—:|")
+    cleaned = re.sub(r"\bcomes into view\b", "is here", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\bcould jump-start\b", "could reshape", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\bintroducing\b", "", cleaned, flags=re.IGNORECASE)
+    cleaned = re.sub(r"\s{2,}", " ", cleaned).strip(" -—:|,")
+    cleaned = re.sub(r"\b(?:comes into|comes|is|and|or|to|for|with|into|from|of|the|a|an)$", "", cleaned, flags=re.IGNORECASE).strip(" -—:|,")
     return _smart_trim_text(cleaned, max_len)
 
 
 def _title_support_phrase(top_story: Dict[str, str], title_style: str) -> str:
-    blob = _story_numeric_blob(top_story)
-    has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", blob, flags=re.IGNORECASE))
     if title_style == "hard_number":
-        return "What the Numbers Mean" if has_number else "The Real Risk"
+        return "What the Numbers Mean" if _story_has_real_numbers(top_story) else "What Changes Next"
     if title_style == "tomorrow_tension":
         return "Why Tomorrow Gets Harder"
-    return "What It Means Next"
+    if _normalize_vertical_bucket(top_story.get("bucket", "")) == "health_ai":
+        return "The Real Stakes"
+    return "What Changes Next"
+
+
+def _headline_title_core(top_story: Dict[str, str]) -> str:
+    headline = _clean_packaging_text((top_story.get("headline") or "AI Just Moved").strip(), 70)
+    headline = re.sub(r"\bGoogle Cloud Next 2026:\s*", "Google Cloud Next 2026: ", headline, flags=re.IGNORECASE)
+    headline = headline.strip(" -—:|,")
+    if not headline:
+        headline = "AI Just Moved"
+    return headline
 
 
 def _compose_episode_title(stories: List[Dict[str, str]], title_style: str, date_str: str) -> str:
     top_story = stories[0] if stories else {}
-    headline = _clean_packaging_text((top_story.get("headline") or "AI Just Moved — Here's What Changed").strip(), 68)
+    headline = _headline_title_core(top_story)
     support = _title_support_phrase(top_story, title_style)
     max_base = max(32, EPISODE_META_MAX_TITLE - len(f" — {date_str}"))
     raw = f"{headline} | {support}"
     if len(raw) > max_base:
         raw = headline
     return _smart_trim_text(raw, max_len=max_base)
+
+
+def _packaging_consequence_line(top_story: Dict[str, str]) -> str:
+    bucket = _normalize_vertical_bucket(top_story.get("bucket", ""))
+    headline = (top_story.get("headline") or "").lower()
+    if bucket == "health_ai":
+        return "This is where AI hype hits licensing boards, patients, and actual risk."
+    if bucket == "ai_code":
+        return "The real question is what this changes for builders, velocity, and software teams tomorrow morning."
+    if bucket == "ai_tools":
+        return "The product demo is not the story; the workflow consequence is."
+    if "google" in headline or "control plane" in headline or bucket == "ai_agents":
+        return "The real issue is who gets to orchestrate the agent stack inside the enterprise and who gets squeezed out."
+    return "The real issue is who wins, who gets squeezed, and what changes next."
+
+
+def _make_show_notes_hook(top_story: Dict[str, str]) -> str:
+    headline = _headline_title_core(top_story)
+    consequence = _packaging_consequence_line(top_story)
+    return f"{headline}. {consequence}"
 
 
 def build_episode_show_notes(
@@ -3633,7 +3925,7 @@ def build_episode_show_notes(
 ) -> str:
     cta_url = PUBLIC_SUBSCRIBE_URL
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
-    tomorrow_tease = (pack.get("tomorrow_tease") or "The second-order consequences are just starting to show.").strip()
+    tomorrow_tease = (pack.get("tomorrow_tease") or "Tomorrow's winners will be the operators who saw the second-order consequence first.").strip()
     episode_blurb = (pack.get("episode_blurb") or "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, where the real stakes are, and the lines you will want to send to somebody else.").strip()
     hook = (pack.get("show_notes_hook") or episode_blurb).strip()
     parts = [
@@ -3642,10 +3934,11 @@ def build_episode_show_notes(
         "What we covered:",
         story_bullets,
         "",
-        f"Tomorrow tension: {tomorrow_tease or 'The next 24 hours will matter more than the launch headlines.'}",
+        f"Tomorrow tension: {tomorrow_tease}",
         "",
         episode_blurb,
         "",
+        "This episode is brought to you by TheLEDGR — decision-grade AI signal for people who cannot afford to be late.",
         f"Subscribe to TheLEDGR: {cta_url}",
         "If AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.",
         "TheLEDGR helps you make better decisions faster, cut through noise, and walk into your day sharper.",
@@ -3666,8 +3959,8 @@ def generate_marketing_pack(
     top_story = ordered[0] if ordered else {}
     title_style = experiments.get("title_style", "operator_consequence")
     cta_style = experiments.get("cta_style", "operator")
-    top_headline = _clean_packaging_text((top_story.get("headline") or "AI JUST MOVED — HERE'S WHAT CHANGED").strip(), 72)
-    top_data = " | ".join([str(x).strip() for x in (top_story.get("data_points") or [])[:2] if str(x).strip()])
+    top_headline = _headline_title_core(top_story)
+    top_data = " | ".join([str(x).strip() for x in (top_story.get("data_points") or [])[:3] if str(x).strip() and "No explicit figures" not in str(x)])
     subscribe_url = PUBLIC_SUBSCRIBE_URL
     listen_cta = tracking.get("listen", listen_url)
     hashtags = _hashtags_from_stories(ordered, max_tags=6)
@@ -3680,8 +3973,8 @@ def generate_marketing_pack(
         cta_line = f"If AI affects your work, subscribe to TheLEDGR for decision-grade signal: {subscribe_url}"
     fallback_hook = _smart_trim_text((top_headline if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED"), 64).upper()
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ordered[:5]])
-    tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ordered if (s.get("tomorrow_hook") or "").strip()), "The second-order consequences are just starting to show.")
-    show_notes_hook = f"{top_headline}. Alex, Jamie, and Rufus break down what matters, what changes tomorrow, and where serious operators should pay attention next."
+    tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ordered if (s.get("tomorrow_hook") or "").strip()), "Tomorrow's winners will be the operators who saw the second-order consequence first.")
+    show_notes_hook = _make_show_notes_hook(top_story)
     return {
         "hook": fallback_hook,
         "tweet1": f"{fallback_hook}\n\nThis is the part most people will miss: the consequence.\n\nListen: {listen_cta}",
@@ -3699,6 +3992,7 @@ def generate_marketing_pack(
 
 # ----------------------------
 # RSS FEED WRITER
+
 # ----------------------------
 def update_feed_xml(meta: Dict) -> None:
     import xml.etree.ElementTree as ET
