@@ -1,1 +1,69 @@
+name: Rotate Podcast Cover Art Monthly
 
+on:
+  schedule:
+    # First day of every month at 8:15 UTC.
+    # This is separate from the daily podcast build.
+    - cron: "15 8 1 * *"
+  workflow_dispatch:
+    inputs:
+      cover_override:
+        description: "Optional filename inside assets/, e.g. cover_alex.png or cover_jamie.png"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: rotate-podcast-cover-art
+  cancel-in-progress: false
+
+jobs:
+  rotate-cover-art:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install image dependency
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install pillow
+
+      - name: Rotate cover art
+        env:
+          COVER_ART_OVERRIDE: ${{ github.event.inputs.cover_override }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python scripts/rotate_cover_art.py
+
+      - name: Commit and push rotated cover
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "AI Producer"
+          git config user.email "bot@aisimplifymedia.com"
+
+          git pull --rebase origin main || echo "No remote changes"
+
+          git add cover.png || true
+          git add assets/current_cover.png || true
+          git add assets/cover_rotation_manifest.json || true
+
+          git status --porcelain
+          git commit -m "Automated: Rotate podcast cover art $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
