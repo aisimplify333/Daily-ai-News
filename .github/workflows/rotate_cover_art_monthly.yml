@@ -1,0 +1,186 @@
+name: Daily Podcast & Socials
+
+on:
+  schedule:
+    - cron: '0 10 * * 1-5' # Mon-Fri ~2:00 AM Pacific (10:00 UTC; shifts during DST)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: daily-podcast-socials
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      SAVE_SCRIPT: "true"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install System Dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg imagemagick ghostscript
+          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
+
+      - name: Install Dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Lint compile (fast fail)
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile main.py
+          python -m py_compile growth_engine.py
+          python -m py_compile run_broadcast.py
+          python -m tabnanny -v main.py
+          python -m compileall -q .
+
+      - name: Run Empire Broadcast
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+
+          AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
+          AUDIO_BACKEND: "eleven"
+          ELEVEN_FALLBACK_TO_OPENAI: "true"
+
+          ALEX_USE_OPENAI: "true"
+          VOICE_ALEX: "onyx"
+
+          VOICE_MODEL_JAMIE: "gpt-4o-mini-tts"
+          VOICE_JAMIE: "marin"
+
+          VOICE_MODEL_RUFUS: "tts-1-hd"
+          VOICE_RUFUS: "fable"
+
+          ELEVEN_VOICE_ID_ALEX: "vDchjyOZZytffNeZXfZK"
+          ELEVEN_VOICE_ID_JAMIE: "uYXf8XasLslADfZ2MB4u"
+          ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
+
+          MIN_MINUTES: "19"
+          MAX_MINUTES: "26"
+          TARGET_MINUTES: "20"
+          WORDS_PER_MINUTE: "170"
+          SEGMENT_ATTEMPTS: "5"
+          FORWARDABLE_MIN_PER_EPISODE: "4"
+          STORY_BUCKET_CAP: "6"
+
+          ALEX_GAIN_DB: "3.5"
+          JAMIE_GAIN_DB: "1.0"
+          RUFUS_GAIN_DB: "0.3"
+
+          ALEX_SPEED: "1.05"
+          JAMIE_SPEED: "0.99"
+          RUFUS_SPEED: "1.01"
+
+          ELEVEN_STABILITY_ALEX: "0.40"
+          ELEVEN_SIMILARITY_ALEX: "0.82"
+          ELEVEN_STYLE_ALEX: "0.24"
+
+          ELEVEN_STABILITY_JAMIE: "0.38"
+          ELEVEN_SIMILARITY_JAMIE: "0.82"
+          ELEVEN_STYLE_JAMIE: "0.26"
+
+          ELEVEN_STABILITY_RUFUS: "0.42"
+          ELEVEN_SIMILARITY_RUFUS: "0.85"
+          ELEVEN_STYLE_RUFUS: "0.25"
+
+          ELEVEN_USE_SPEAKER_BOOST: "true"
+          FORCE_INDIVIDUAL_RUFUS_LINES: "true"
+          ELEVEN_USE_DIALOGUE_SCENES: "true"
+          ELEVEN_SCENE_MAX_TURNS: "7"
+          ELEVEN_SCENE_MAX_CHARS: "1500"
+          ELEVEN_SCENE_PAUSE_MS: "160"
+
+          INTER_TURN_SILENCE_MS: "140"
+          REACTION_PAUSE_MS: "230"
+          MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "5"
+          MAX_SPOKEN_WORDS_PER_LINE: "60"
+
+          TRIM_TRAILING_MS: "130"
+          TAIL_PAD_MS: "90"
+
+          AUTO_BUILD_AUDIO_BRANDKIT: "false"
+          REBUILD_AUDIO_BRANDKIT: "false"
+
+          INTRO_BED_MS: "7200"
+          INTRO_BED_FADE_OUT_MS: "2200"
+          SEGMENT_BED_MS: "2200"
+          SEGMENT_BED_FADE_OUT_MS: "850"
+
+          MUSIC_TARGET_DBFS: "-27.0"
+          DUCK_THRESHOLD_DBFS: "-34.0"
+          DUCK_AMOUNT_DB: "15.5"
+          DUCK_WINDOW_MS: "35"
+          STINGER_TARGET_DBFS: "-18.0"
+          SEGMENT_EXPORT_BITRATE: "192k"
+
+          CLEANUP_TEMP: "true"
+          KEEP_LAST_EPISODES: "60"
+          RUN_MARKETING_ASSETS: "true"
+          PUBLISH_SOCIAL: "false"
+          FORCE_REBUILD: "true"
+
+          X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
+          X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
+          X_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
+          X_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python run_broadcast.py
+
+      - name: Commit and Push
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git config user.name "AI Producer"
+          git config user.email "bot@aisimplifymedia.com"
+
+          git pull --rebase origin main || echo "No remote changes"
+
+          git add feed.xml || true
+          git add episode_metadata.json || true
+          git add marketing_pack.json || true
+          git add viral_caption.txt || true
+          git add story_scores.json || true
+          git add tracking_summary.json || true
+          git add forwardable_moments.json || true
+          git add episode_audio/podcast_*.mp3 || true
+          git add script_*.txt || true
+          git add audio_brandkit/*.mp3 || true
+          git add audio_brandkit/*.json || true
+          git add -f audio_brandkit/** || true
+
+          if [ -f social_clip.mp4 ]; then
+            git add -f social_clip.mp4
+          else
+            echo "No social_clip.mp4 found (skipping)"
+          fi
+
+          git status --porcelain
+          git commit -m "Automated: New Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git push
