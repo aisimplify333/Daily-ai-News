@@ -5,11 +5,14 @@ Rotate podcast show cover art monthly.
 
 This script updates the public root cover.png used by the podcast RSS feed.
 It selects the active monthly cover from /assets and copies it to /cover.png.
+It also writes assets/current_cover.png and assets/cover_rotation_manifest.json.
 
 Expected repo structure:
   assets/cover.png
   assets/cover_alex.png
   assets/cover_jamie.png
+  assets/cover_rufus.png
+  assets/cover_trio_master.png
   scripts/rotate_cover_art.py
 """
 
@@ -29,23 +32,32 @@ PUBLIC_ROOT_COVER = ROOT / "cover.png"
 ASSETS_CURRENT_COVER = ASSETS_DIR / "current_cover.png"
 MANIFEST_PATH = ASSETS_DIR / "cover_rotation_manifest.json"
 
-# Rotation:
-# Jan/Apr/Jul/Oct = standard logo cover
-# Feb/May/Aug/Nov = Alex cover
-# Mar/Jun/Sep/Dec = Jamie cover
+# Monthly rotation:
+# Jan = standard/logo
+# Feb = Alex
+# Mar = Jamie
+# Apr = Rufus
+# May = Trio
+# Jun = standard/logo
+# Jul = Alex
+# Aug = Jamie
+# Sep = Rufus
+# Oct = Trio
+# Nov = standard/logo
+# Dec = Alex
 MONTH_TO_COVER = {
     1: "cover.png",
     2: "cover_alex.png",
     3: "cover_jamie.png",
-    4: "cover.png",
-    5: "cover_alex.png",
-    6: "cover_jamie.png",
-    7: "cover.png",
-    8: "cover_alex.png",
-    9: "cover_jamie.png",
-    10: "cover.png",
-    11: "cover_alex.png",
-    12: "cover_jamie.png",
+    4: "cover_rufus.png",
+    5: "cover_trio_master.png",
+    6: "cover.png",
+    7: "cover_alex.png",
+    8: "cover_jamie.png",
+    9: "cover_rufus.png",
+    10: "cover_trio_master.png",
+    11: "cover.png",
+    12: "cover_alex.png",
 }
 
 FALLBACK_COVER = "cover.png"
@@ -88,7 +100,7 @@ def _validate_and_normalize_image(src: Path, dest: Path) -> None:
 
 def main() -> None:
     # Optional manual override from GitHub Actions:
-    # COVER_ART_OVERRIDE=cover_alex.png
+    # COVER_ART_OVERRIDE=cover_trio_master.png
     override = os.getenv("COVER_ART_OVERRIDE", "").strip()
 
     today = _dt.datetime.now(_dt.timezone.utc).date()
@@ -121,7 +133,7 @@ def main() -> None:
         "assets_current_cover": "assets/current_cover.png",
         "month": month,
         "rotation_pattern": MONTH_TO_COVER,
-        "note": "RSS should keep using a stable cover.png URL so Spotify can refresh the image without feed-code changes.",
+        "note": "RSS should keep using a stable cover.png URL or PODCAST_COVER_IMAGE_URL so podcast apps can refresh artwork safely.",
     }
 
     MANIFEST_PATH.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
