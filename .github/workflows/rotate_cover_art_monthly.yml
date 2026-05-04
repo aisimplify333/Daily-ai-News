@@ -3,12 +3,11 @@ name: Rotate Podcast Cover Art Monthly
 on:
   schedule:
     # First day of every month at 8:15 UTC.
-    # Separate from the daily podcast build.
     - cron: "15 8 1 * *"
   workflow_dispatch:
     inputs:
       cover_override:
-        description: "Optional filename inside assets/: cover_alex.png, cover_jamie.png, cover_rufus.png, cover_trio_master.png, or cover.png"
+        description: "Optional filename inside assets/: cover.png, cover_alex.png, cover_jamie.png, cover_rufus.png, or cover_trio_master.png"
         required: false
         default: ""
 
