@@ -2,8 +2,10 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import math
 import random
 import re
+import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 from urllib.parse import parse_qsl, urlencode, urlparse, urlunparse
@@ -12,23 +14,27 @@ BASE_DIR = Path(__file__).parent
 EXPERIMENTS_PATH = BASE_DIR / "experiments_state.json"
 PERFORMANCE_EVENTS_PATH = BASE_DIR / "performance_events.jsonl"
 SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
+FEED_XML_PATH = BASE_DIR / "feed.xml"
+EPISODE_METADATA_PATH = BASE_DIR / "episode_metadata.json"
 
-MODEL_VERSION = "podcast-growth-v2.8"
+MODEL_VERSION = "podcast-growth-v2.24-full-swing"
 
 STOPWORDS = {
-    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in",
-    "into", "is", "it", "its", "of", "on", "or", "that", "the", "their", "this",
-    "to", "was", "were", "will", "with", "you", "your", "after", "amid", "new",
+    "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in", "into", "is", "it",
+    "its", "of", "on", "or", "that", "the", "their", "this", "to", "was", "were", "will", "with", "you",
+    "your", "after", "amid", "new", "news", "launch", "launches", "announces", "says", "report",
 }
 
 AUTHORITATIVE_DOMAINS = {
     "openai.com": 100,
-    "anthropic.com": 95,
+    "anthropic.com": 98,
+    "deepmind.google": 96,
     "google.com": 92,
-    "deepmind.google": 92,
     "microsoft.com": 90,
-    "meta.com": 88,
-    "nvidia.com": 90,
+    "meta.com": 90,
+    "nvidia.com": 94,
+    "apple.com": 88,
+    "amazon.com": 86,
     "sec.gov": 98,
     "ftc.gov": 98,
     "justice.gov": 96,
@@ -40,17 +46,13 @@ AUTHORITATIVE_DOMAINS = {
     "wsj.com": 93,
     "theinformation.com": 90,
     "techcrunch.com": 82,
-    "theverge.com": 80,
+    "theverge.com": 82,
     "wired.com": 80,
+    "axios.com": 80,
     "cnbc.com": 76,
-    "axios.com": 78,
 }
 
-WRAPPER_DOMAINS = {
-    "news.google.com",
-    "google.com",
-    "www.google.com",
-}
+WRAPPER_DOMAINS = {"news.google.com", "google.com", "www.google.com"}
 
 PUBLISHER_SCORES = {
     "reuters": 96.0,
@@ -61,66 +63,124 @@ PUBLISHER_SCORES = {
     "wsj": 93.0,
     "the information": 90.0,
     "techcrunch": 82.0,
-    "the verge": 80.0,
+    "the verge": 82.0,
     "wired": 80.0,
-    "axios": 78.0,
+    "axios": 80.0,
     "cnbc": 76.0,
+    "fierce healthcare": 74.0,
+    "help net security": 72.0,
     "tom's hardware": 72.0,
     "toms hardware": 72.0,
-    "yahoo tech": 58.0,
-    "yahoo": 55.0,
-    "cyber magazine": 50.0,
-    "medical daily": 36.0,
-    "fierce healthcare": 72.0,
-    "openpr": 18.0,
-    "towards data science": 60.0,
+    "venturebeat": 72.0,
+    "zdnet": 70.0,
     "yahoo finance": 58.0,
-    "the tech buzz": 38.0,
-    "cathay capital": 40.0,
-    "msn": 40.0,
-    "indexbox": 32.0,
-    "bitget": 18.0,
-    "openpr": 20.0,
-    "openpr.com": 20.0,
+    "yahoo tech": 56.0,
+    "yahoo": 54.0,
+    "msn": 38.0,
+    "openpr": 18.0,
+    "openpr.com": 18.0,
+    "prnewswire": 28.0,
+    "globenewswire": 28.0,
+    "ein presswire": 18.0,
+    "indexbox": 16.0,
+    "bitget": 16.0,
+    "the tech buzz": 32.0,
+    "medical daily": 36.0,
+    "cathay capital": 36.0,
 }
 
 LOW_SIGNAL_PUBLISHERS = {
-    "msn",
-    "indexbox",
-    "bitget",
-    "openpr",
-    "the tech buzz",
-    "medical daily",
-    "cathay capital",
+    "msn", "indexbox", "bitget", "openpr", "openpr.com", "prnewswire", "globenewswire", "ein presswire",
+    "the tech buzz", "medical daily", "cathay capital",
 }
 
 VERTICAL_KEYWORDS = {
-    "strategy": ["enterprise", "roadmap", "deployment", "pricing", "procurement", "adoption", "board", "cfo"],
-    "tools": ["model", "workflow", "agent", "launch", "api", "assistant", "tool", "copilot"],
-    "agents": ["agent", "autonomous", "swarm", "orchestr", "tool use", "memory", "browser"],
-    "health_ai": ["hospital", "health", "payer", "provider", "clinical", "ehr", "fda", "diagnostic"],
-    "code": ["developer", "coding", "code", "repo", "github", "copilot", "swe", "benchmark"],
+    "strategy": ["enterprise", "roadmap", "deployment", "pricing", "procurement", "adoption", "board", "cfo", "strategy"],
+    "tools": ["model", "workflow", "agent", "launch", "api", "assistant", "tool", "copilot", "workspace"],
+    "agents": ["agent", "autonomous", "swarm", "orchestr", "tool use", "memory", "browser", "permission", "control plane"],
+    "health_ai": ["hospital", "health", "payer", "provider", "clinical", "ehr", "fda", "diagnostic", "doctor", "medical", "patient"],
+    "code": ["developer", "coding", "code", "repo", "github", "copilot", "swe", "benchmark", "codex", "cursor", "windsurf"],
+}
+
+AI_HEAT_TERMS = {
+    "openai": 30,
+    "anthropic": 30,
+    "claude": 24,
+    "google deepmind": 28,
+    "deepmind": 26,
+    "gemini": 20,
+    "nvidia": 28,
+    "meta ai": 22,
+    "llama": 18,
+    "xai": 18,
+    "grok": 18,
+    "model release": 24,
+    "frontier model": 28,
+    "benchmark": 22,
+    "swe-bench": 22,
+    "agent failure": 24,
+    "ai agent": 10,
+    "agentic": 8,
+    "safety": 20,
+    "regulation": 20,
+    "lawsuit": 22,
+    "antitrust": 24,
+    "chip": 20,
+    "gpu": 20,
+    "compute": 20,
+    "data center": 18,
+    "datacenter": 18,
+    "developer": 16,
+    "code": 14,
+    "health ai": 22,
+    "clinical": 20,
+    "fda": 20,
+    "security": 20,
+    "breach": 22,
+    "copyright": 18,
+    "revenue": 14,
+    "earnings": 14,
+    "valuation": 18,
+    "funding": 14,
+    "acquisition": 16,
 }
 
 CONSEQUENCE_KEYWORDS = {
-    "regulation", "antitrust", "ban", "fine", "probe", "lawsuit", "export", "security",
-    "breach", "outage", "recall", "pricing", "capex", "layoff", "earnings", "margin",
-    "enterprise", "health", "defense", "government", "market", "stock", "revenue",
-    "valuation", "funding", "ipo", "datacenter", "gpu", "supply chain", "copyright",
-    "source code", "accuracy", "developers", "health systems", "diagnosis", "privacy", "workflow",
+    "regulation", "antitrust", "ban", "fine", "probe", "lawsuit", "export", "security", "breach", "outage",
+    "recall", "pricing", "capex", "layoff", "earnings", "margin", "enterprise", "health", "defense", "government",
+    "market", "stock", "revenue", "valuation", "funding", "ipo", "datacenter", "data center", "gpu", "chip", "supply chain",
+    "copyright", "source code", "accuracy", "developers", "health systems", "diagnosis", "privacy", "workflow", "liability",
+    "risk", "permission", "control", "compliance", "audit", "deployment", "procurement",
 }
 
 CLIPABLE_KEYWORDS = {
-    "wins", "loses", "kills", "breaks", "banned", "caught", "secret", "panic", "warning",
-    "why", "what happens", "nobody", "finally", "crash", "bubble", "surge", "ban", "lawsuit",
-    "accidentally", "source code", "accuracy", "security", "diagnosis", "developers",
+    "wins", "loses", "kills", "breaks", "banned", "caught", "secret", "panic", "warning", "why", "what happens",
+    "nobody", "finally", "crash", "bubble", "surge", "ban", "lawsuit", "accidentally", "source code", "accuracy",
+    "security", "diagnosis", "developers", "liability", "exposed", "power", "permission", "control",
 }
 
+ROUTINE_ENTERPRISE_TERMS = {
+    "generally available", "now available", "available today", "expands capabilities", "new capabilities", "integrations",
+    "copilot studio", "workspace", "workflow", "control plane", "enterprise control plane", "platform update", "product update",
+    "introducing", "announces", "launches", "extends support", "support for", "feature", "preview", "ga",
+}
+
+EXCEPTIONAL_CONSEQUENCE_TERMS = {
+    "lawsuit", "regulation", "antitrust", "ban", "security", "breach", "vulnerability", "earnings", "revenue", "valuation",
+    "funding", "acquisition", "chip", "gpu", "compute", "data center", "datacenter", "openai", "anthropic", "deepmind",
+    "benchmark", "model", "health", "clinical", "patient", "fda", "developer", "liability", "privacy", "copyright",
+    "export", "china", "defense", "government", "safety", "audit", "compliance", "millions", "billion", "$",
+}
+
+FRONTIER_COMPANIES = [
+    "OpenAI", "Anthropic", "Google", "DeepMind", "NVIDIA", "Meta", "Microsoft", "Amazon", "Apple", "xAI", "Tesla",
+]
+
 VARIANT_DEFAULTS: Dict[str, List[str]] = {
-    "title_style": ["hard_number", "operator_consequence", "tomorrow_tension"],
+    "title_style": ["hard_number", "operator_consequence", "tomorrow_tension", "power_shift"],
     "cta_style": ["operator", "career", "contrarian"],
-    "sponsor_style": ["decision_signal", "career_edge", "less_noise"],
-    "clip_style": ["contrarian", "fear_greed", "operator_take"],
+    "sponsor_style": ["decision_signal", "career_edge", "less_noise", "readout"],
+    "clip_style": ["contrarian", "fear_greed", "operator_take", "power_shift"],
     "voice_profile": ["mike_archer_eryn", "mike_archer_eryn_dialogue"],
 }
 
@@ -217,23 +277,21 @@ def recency_score(published: str) -> float:
     if age_hours <= 6:
         return 100.0
     if age_hours <= 12:
-        return 80.0
+        return 82.0
     if age_hours <= 24:
-        return 60.0
+        return 65.0
     if age_hours <= 48:
-        return 35.0
+        return 42.0
     if age_hours <= 96:
-        return 15.0
+        return 18.0
     return 0.0
 
 
 def authority_score(item: Dict[str, Any]) -> float:
     publisher = _publisher_name(item)
-
     for key, score in PUBLISHER_SCORES.items():
         if key in publisher:
             return score
-
     domain = _publisher_domain(item)
     if domain:
         for known, score in AUTHORITATIVE_DOMAINS.items():
@@ -244,63 +302,135 @@ def authority_score(item: Dict[str, Any]) -> float:
         if domain.endswith(".edu"):
             return 84.0
         return 55.0
-
     if publisher:
         return 50.0
     return 35.0
 
 
+def _blob(title: str, summary: str) -> str:
+    return f"{title or ''} {summary or ''}".lower()
+
+
 def numeric_density_score(title: str, summary: str) -> float:
-    blob = f"{title} {summary}".lower()
+    blob = _blob(title, summary)
     digits = len(re.findall(r"\d", blob))
-    money = 12 if re.search(r"(?:\$|€|£)\s?\d", blob) else 0
-    pct = 8 if "%" in blob else 0
-    return min(100.0, digits * 5.0 + money + pct)
+    money = 18 if re.search(r"(?:\$|€|£)\s?\d", blob) else 0
+    pct = 12 if "%" in blob else 0
+    scale = 8 if any(w in blob for w in ["billion", "million", "trillion", "revenue", "valuation", "funding"]) else 0
+    return min(100.0, digits * 5.0 + money + pct + scale)
+
+
+def ai_heat_score(title: str, summary: str, publisher: str = "") -> float:
+    blob = _blob(title, summary) + " " + normalize_text(publisher)
+    score = 0.0
+    for term, pts in AI_HEAT_TERMS.items():
+        if term in blob:
+            score += pts
+    if "microsoft" in blob and not any(k in blob for k in ["openai", "security", "lawsuit", "revenue", "earnings", "chip", "gpu", "developer", "health", "benchmark", "model", "anthropic", "deepmind", "nvidia"]):
+        score -= 16.0
+    if any(term in blob for term in ROUTINE_ENTERPRISE_TERMS) and not any(term in blob for term in EXCEPTIONAL_CONSEQUENCE_TERMS):
+        score -= 22.0
+    if any(k in blob for k in ["market forecast", "market size", "industry report", "to reach usd", "cagr"]):
+        score -= 35.0
+    if any(k in blob for k in ["whistleblower", "court", "trial", "shuts down", "urges state", "unsafe", "safety"]):
+        score += 18.0
+    return max(0.0, min(100.0, score))
 
 
 def brand_fit_score(title: str, summary: str) -> float:
-    blob = f"{title} {summary}".lower()
-
-    ai_terms = [
-        "ai", "artificial intelligence", "chatgpt", "llm", "model",
-        "agent", "copilot", "openai", "anthropic", "nvidia", "gemini",
-    ]
+    blob = _blob(title, summary)
+    ai_terms = ["ai", "artificial intelligence", "chatgpt", "llm", "model", "agent", "copilot", "openai", "anthropic", "nvidia", "gemini", "deepmind"]
     if not any(term in blob for term in ai_terms):
         return 0.0
-
-    score = 0.0
+    score = 22.0
     vertical_hits = 0
     for keywords in VERTICAL_KEYWORDS.values():
         if any(k in blob for k in keywords):
             vertical_hits += 1
-    score += min(54.0, vertical_hits * 18.0)
-
-    if any(k in blob for k in [
-        "enterprise", "developer", "health", "clinical", "hospital",
-        "regulation", "lawsuit", "export", "security", "breach",
-        "agent", "api", "model", "chip", "gpu", "datacenter",
-    ]):
-        score += 20.0
-
-    if any(k in blob for k in [
-        "forecast", "statistics", "stock growth", "market forecast",
-        "industry statistics",
-    ]):
-        score -= 18.0
-
-    if any(k in blob for k in ["crypto", "meme coin", "nft"]) and not any(
-        k in blob for k in ["ai agent", "ai startup", "ai chip", "ai infrastructure"]
-    ):
+    score += min(42.0, vertical_hits * 14.0)
+    if ai_heat_score(title, summary) >= 35:
+        score += 18.0
+    if any(k in blob for k in CONSEQUENCE_KEYWORDS):
+        score += 14.0
+    if any(k in blob for k in ["forecast", "statistics", "stock growth", "market forecast", "industry statistics", "cagr"]):
+        score -= 22.0
+    if any(k in blob for k in ["crypto", "meme coin", "nft"]) and not any(k in blob for k in ["ai agent", "ai startup", "ai chip", "ai infrastructure"]):
         score -= 35.0
-
-    if any(k in blob for k in ["earnings", "stock", "valuation", "funding"]):
-        if not any(k in blob for k in [
-            "enterprise", "regulation", "security", "developer",
-            "chip", "gpu", "agent", "deployment", "inference",
-        ]):
-            score -= 12.0
-
     return max(0.0, min(100.0, score))
+
+
+def _recent_titles_from_feed(limit: int = 7) -> List[str]:
+    titles: List[str] = []
+    if FEED_XML_PATH.exists():
+        try:
+            root = ET.fromstring(FEED_XML_PATH.read_text(encoding="utf-8", errors="ignore"))
+            for item in root.findall(".//item"):
+                title = item.findtext("title") or ""
+                if title.strip():
+                    titles.append(title.strip())
+                if len(titles) >= limit:
+                    break
+        except Exception:
+            pass
+    if len(titles) < limit and EPISODE_METADATA_PATH.exists():
+        data = _safe_read_json(EPISODE_METADATA_PATH, {})
+        if isinstance(data, dict) and data.get("title"):
+            titles.append(str(data.get("title")))
+    memory = load_show_memory()
+    for row in memory.get("recent_headlines", [])[:limit]:
+        if isinstance(row, dict) and row.get("title"):
+            titles.append(str(row.get("title")))
+        elif isinstance(row, str):
+            titles.append(row)
+        if len(titles) >= limit:
+            break
+    seen: set[str] = set()
+    out: List[str] = []
+    for t in titles:
+        key = normalize_text(t)
+        if key and key not in seen:
+            seen.add(key)
+            out.append(t)
+    return out[:limit]
+
+
+def primary_entity(text: str) -> str:
+    blob = text or ""
+    for ent in FRONTIER_COMPANIES:
+        if re.search(rf"\b{re.escape(ent)}\b", blob, flags=re.IGNORECASE):
+            if ent == "Google" and re.search(r"\bGoogle News\b", blob, flags=re.IGNORECASE):
+                continue
+            return ent
+    return ""
+
+
+def company_fatigue_counts(limit: int = 7) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    for title in _recent_titles_from_feed(limit=limit):
+        ent = primary_entity(title)
+        if ent:
+            counts[ent] = counts.get(ent, 0) + 1
+    return counts
+
+
+def company_fatigue_penalty(item: Dict[str, Any], counts: Optional[Dict[str, int]] = None) -> float:
+    counts = counts or company_fatigue_counts()
+    title = str(item.get("title") or item.get("headline") or "")
+    summary = str(item.get("summary") or item.get("why_shocking") or "")
+    ent = primary_entity(f"{title} {summary}")
+    if not ent:
+        return 0.0
+    n = counts.get(ent, 0)
+    if n < 2:
+        return 0.0
+    heat = ai_heat_score(title, summary, str(item.get("publisher") or ""))
+    consequence = forward_consequence_score(title, summary)
+    # Fatigue is strong but not a ban. Truly hot stories can still break through.
+    if n >= 3 and heat < 78 and consequence < 48:
+        return min(36.0, 12.0 + 8.0 * (n - 2))
+    if n >= 2 and heat < 60:
+        return min(20.0, 8.0 + 5.0 * (n - 1))
+    return 0.0
 
 
 def novelty_score(item: Dict[str, Any], memory: Dict[str, Any]) -> float:
@@ -308,36 +438,55 @@ def novelty_score(item: Dict[str, Any], memory: Dict[str, Any]) -> float:
     title_fp = headline_fingerprint(title)
     recent = memory.get("recent_headlines") or []
     recent_fps = [headline_fingerprint(str(x.get("title") or x.get("headline") or x)) for x in recent]
-    if title_fp in recent_fps:
+    recent_fps.extend(headline_fingerprint(t) for t in _recent_titles_from_feed(limit=7))
+    if title_fp and title_fp in recent_fps:
         return 0.0
     tokens = _tokenize(title)
     best_overlap = 0.0
-    for fp in recent_fps[:25]:
-        overlap = _jaccard(tokens, fp.split())
-        best_overlap = max(best_overlap, overlap)
+    for fp in recent_fps[:40]:
+        if not fp:
+            continue
+        best_overlap = max(best_overlap, _jaccard(tokens, fp.split()))
     return max(0.0, 100.0 - best_overlap * 100.0)
 
 
 def forward_consequence_score(title: str, summary: str) -> float:
-    blob = f"{title} {summary}".lower()
+    blob = _blob(title, summary)
     hits = sum(1 for k in CONSEQUENCE_KEYWORDS if k in blob)
-    if any(k in blob for k in ["tomorrow", "next week", "coming months", "2026", "guidance"]):
+    if any(k in blob for k in ["tomorrow", "next week", "coming months", "2026", "guidance", "next", "will"]):
+        hits += 1
+    if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d+\s?(?:million|billion|trillion)\b", blob):
         hits += 2
-    return min(100.0, hits * 12.0)
+    return min(100.0, hits * 10.0)
 
 
 def clipability_score(title: str, summary: str) -> float:
-    blob = f"{title} {summary}".lower()
+    blob = _blob(title, summary)
     hits = sum(1 for k in CLIPABLE_KEYWORDS if k in blob)
     question_bonus = 10.0 if "?" in title else 0.0
-    brevity_bonus = 10.0 if 45 <= len(title) <= 90 else 0.0
-    return min(100.0, hits * 12.0 + question_bonus + brevity_bonus)
+    brevity_bonus = 10.0 if 45 <= len(title) <= 92 else 0.0
+    contradiction_bonus = 10.0 if re.search(r"\b(not|but|instead|actually|real question|real story)\b", blob) else 0.0
+    return min(100.0, hits * 10.0 + question_bonus + brevity_bonus + contradiction_bonus)
+
+
+def is_routine_enterprise_update(title: str, summary: str) -> bool:
+    blob = _blob(title, summary)
+    routine = any(term in blob for term in ROUTINE_ENTERPRISE_TERMS)
+    if not routine:
+        return False
+    exceptional = any(term in blob for term in EXCEPTIONAL_CONSEQUENCE_TERMS)
+    # Generic "AI agent" alone is not enough to make a routine launch lead-worthy.
+    if exceptional and not ("ai agent" in blob and len([t for t in EXCEPTIONAL_CONSEQUENCE_TERMS if t in blob]) <= 1):
+        return False
+    return True
 
 
 def story_score_breakdown(item: Dict[str, Any], memory: Optional[Dict[str, Any]] = None) -> Dict[str, float]:
     memory = memory or {}
     title = str(item.get("title") or item.get("headline") or "")
     summary = str(item.get("summary") or item.get("why_shocking") or "")
+    publisher = str(item.get("publisher") or "")
+    fatigue_counts = company_fatigue_counts()
     breakdown = {
         "brand_fit": round(brand_fit_score(title, summary), 2),
         "authority": round(authority_score(item), 2),
@@ -346,17 +495,28 @@ def story_score_breakdown(item: Dict[str, Any], memory: Optional[Dict[str, Any]]
         "numeric_density": round(numeric_density_score(title, summary), 2),
         "clipability": round(clipability_score(title, summary), 2),
         "recency": round(recency_score(str(item.get("published") or "")), 2),
+        "ai_heat": round(ai_heat_score(title, summary, publisher), 2),
+        "company_fatigue_penalty": round(company_fatigue_penalty(item, fatigue_counts), 2),
+        "routine_enterprise_update": 1.0 if is_routine_enterprise_update(title, summary) else 0.0,
     }
+    routine_penalty = 18.0 if breakdown["routine_enterprise_update"] and breakdown["forward_consequence"] < 35.0 and breakdown["ai_heat"] < 68.0 else 0.0
+    low_signal_penalty = 18.0 if _publisher_name(item) in LOW_SIGNAL_PUBLISHERS else 0.0
     weighted = (
-        0.28 * breakdown["brand_fit"]
-        + 0.22 * breakdown["authority"]
-        + 0.08 * breakdown["novelty"]
+        0.20 * breakdown["brand_fit"]
+        + 0.15 * breakdown["authority"]
+        + 0.07 * breakdown["novelty"]
         + 0.20 * breakdown["forward_consequence"]
-        + 0.10 * breakdown["numeric_density"]
-        + 0.12 * breakdown["clipability"]
-        + 0.02 * breakdown["recency"]
+        + 0.08 * breakdown["numeric_density"]
+        + 0.10 * breakdown["clipability"]
+        + 0.05 * breakdown["recency"]
+        + 0.20 * breakdown["ai_heat"]
+        - breakdown["company_fatigue_penalty"]
+        - routine_penalty
+        - low_signal_penalty
     )
-    breakdown["weighted"] = round(weighted, 2)
+    breakdown["routine_penalty"] = round(routine_penalty, 2)
+    breakdown["low_signal_penalty"] = round(low_signal_penalty, 2)
+    breakdown["weighted"] = round(max(0.0, min(100.0, weighted)), 2)
     return breakdown
 
 
@@ -367,7 +527,6 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
         item["canonical_url"] = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
         item["fingerprint"] = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
         item_tokens = item["fingerprint"].split()
-
         matched = None
         for cluster in clusters:
             if item["canonical_url"] and item["canonical_url"] == cluster["canonical_url"]:
@@ -378,7 +537,6 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
             if overlap >= 0.58 or shared >= 5:
                 matched = cluster
                 break
-
         if matched is None:
             clusters.append({
                 "canonical_url": item["canonical_url"],
@@ -387,7 +545,6 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
                 "items": [item],
             })
             continue
-
         matched["items"].append(item)
         current = matched["leader"]
         current_score = authority_score(current) + recency_score(str(current.get("published") or ""))
@@ -396,16 +553,11 @@ def cluster_story_candidates(items: Sequence[Dict[str, Any]]) -> List[Dict[str, 
             matched["leader"] = item
             matched["canonical_url"] = item["canonical_url"] or matched["canonical_url"]
             matched["tokens"] = item_tokens or matched["tokens"]
-
     out: List[Dict[str, Any]] = []
     for cluster in clusters:
         leader = dict(cluster["leader"])
         leader["cluster_size"] = len(cluster["items"])
-        leader["cluster_publishers"] = sorted({
-            str(x.get("publisher") or "").strip()
-            for x in cluster["items"]
-            if str(x.get("publisher") or "").strip()
-        })
+        leader["cluster_publishers"] = sorted({str(x.get("publisher") or "").strip() for x in cluster["items"] if str(x.get("publisher") or "").strip()})
         out.append(leader)
     return out
 
@@ -418,53 +570,61 @@ def story_tier(item: Dict[str, Any]) -> Optional[str]:
     numeric = float(breakdown.get("numeric_density", 0.0))
     clipability = float(breakdown.get("clipability", 0.0))
     recency = float(breakdown.get("recency", 0.0))
+    heat = float(breakdown.get("ai_heat", 0.0))
+    routine = bool(breakdown.get("routine_enterprise_update"))
     publisher = _publisher_name(item)
     bucket = str(item.get("bucket") or "").strip().lower()
     headline = str(item.get("title") or item.get("headline") or "").lower()
 
-    low_signal = publisher in LOW_SIGNAL_PUBLISHERS
-    if "market to reach usd" in headline:
+    if "market to reach usd" in headline or "cagr" in headline:
         return None
-    if any(x in publisher for x in ["openpr", "prnewswire", "globenewswire"]):
+    if any(x in publisher for x in ["openpr", "prnewswire", "globenewswire", "ein presswire", "indexbox", "bitget"]):
         return None
-
-    if bucket == "topline" and authority < 60.0:
+    if authority < 34.0:
         return None
-    if bucket == "health_ai" and (brand_fit < 48.0 or authority < 50.0):
+    if brand_fit < 28.0 and heat < 22.0:
         return None
-    if bucket == "ai_code" and authority < 55.0:
-        return None
-    if bucket == "ai_tools" and authority < 48.0:
-        return None
+    if routine and heat < 55.0 and forward < 35.0:
+        # It may be useful as a fill story, but it should not dominate the slate.
+        return "fill" if brand_fit >= 45.0 and authority >= 50.0 else None
 
     if (
-        brand_fit >= 56.0
+        brand_fit >= 58.0
         and authority >= 50.0
-        and (forward >= 12.0 or numeric >= 18.0 or clipability >= 14.0)
-        and not (low_signal and brand_fit < 72.0)
+        and (heat >= 42.0 or forward >= 28.0 or numeric >= 22.0 or clipability >= 24.0)
     ):
         return "primary"
-
     if (
         brand_fit >= 44.0
         and authority >= 45.0
-        and (forward >= 8.0 or numeric >= 12.0 or clipability >= 10.0 or recency >= 35.0)
-        and not (low_signal and brand_fit < 68.0)
+        and (heat >= 25.0 or forward >= 14.0 or numeric >= 12.0 or clipability >= 12.0 or recency >= 45.0)
     ):
         return "support"
-
     if (
-        brand_fit >= 38.0
+        brand_fit >= 36.0
         and authority >= 40.0
-        and (forward >= 6.0 or numeric >= 8.0 or clipability >= 8.0 or recency >= 60.0)
-        and not (low_signal and brand_fit < 75.0)
+        and (heat >= 14.0 or forward >= 8.0 or numeric >= 8.0 or clipability >= 8.0 or recency >= 60.0)
     ):
         return "fill"
-
+    # Protect critical health/safety items even when the source is mid-tier.
+    if bucket == "health_ai" and authority >= 40.0 and ("patient" in headline or "clinical" in headline or "fda" in headline or "medical" in headline):
+        return "support"
     return None
+
 
 def is_story_eligible(item: Dict[str, Any]) -> bool:
     return story_tier(item) is not None
+
+
+def _item_key(item: Dict[str, Any]) -> str:
+    key = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
+    if not key:
+        key = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
+    return key
+
+
+def _bucket_name(item: Dict[str, Any]) -> str:
+    return str(item.get("bucket") or "general").strip().lower() or "general"
 
 
 def select_story_candidates(
@@ -475,7 +635,6 @@ def select_story_candidates(
 ) -> List[Dict[str, Any]]:
     memory = memory or load_show_memory()
     clustered = cluster_story_candidates(items)
-
     ranked: List[Dict[str, Any]] = []
     for item in clustered:
         item = dict(item)
@@ -484,10 +643,13 @@ def select_story_candidates(
         item["story_tier"] = story_tier(item)
         ranked.append(item)
 
+    tier_rank = {"primary": 3, "support": 2, "fill": 1, None: 0}
     ranked.sort(
         key=lambda x: (
-            {"primary": 3, "support": 2, "fill": 1, None: 0}.get(x.get("story_tier"), 0),
+            tier_rank.get(x.get("story_tier"), 0),
             x.get("growth_score") or 0.0,
+            x.get("score_breakdown", {}).get("ai_heat", 0.0),
+            x.get("score_breakdown", {}).get("forward_consequence", 0.0),
             x.get("score_breakdown", {}).get("authority", 0.0),
             x.get("cluster_size") or 0,
         ),
@@ -495,20 +657,14 @@ def select_story_candidates(
     )
 
     selected: List[Dict[str, Any]] = []
-    selected_keys = set()
+    selected_keys: set[str] = set()
     bucket_counts: Dict[str, int] = {}
 
-    def item_key(item: Dict[str, Any]) -> str:
-        key = canonicalize_url(str(item.get("link") or item.get("source_url") or ""))
-        if not key:
-            key = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
-        return key
-
     def add_candidate(item: Dict[str, Any], ignore_bucket_cap: bool = False) -> bool:
-        bucket = str(item.get("bucket") or "general").strip().lower()
+        bucket = _bucket_name(item)
         if not ignore_bucket_cap and bucket_counts.get(bucket, 0) >= bucket_cap:
             return False
-        key = item_key(item)
+        key = _item_key(item)
         if not key or key in selected_keys:
             return False
         selected.append(item)
@@ -516,6 +672,7 @@ def select_story_candidates(
         bucket_counts[bucket] = bucket_counts.get(bucket, 0) + 1
         return True
 
+    # Round 1: best eligible stories with bucket discipline.
     for tier_name in ("primary", "support", "fill"):
         for item in ranked:
             if item.get("story_tier") != tier_name:
@@ -524,7 +681,7 @@ def select_story_candidates(
             if len(selected) >= n:
                 return selected[:n]
 
-    # Relax bucket caps if the slate is still thin.
+    # Round 2: relax bucket caps, but only for eligible stories.
     if len(selected) < n:
         for item in ranked:
             if item.get("story_tier") is None:
@@ -533,18 +690,16 @@ def select_story_candidates(
             if len(selected) >= n:
                 return selected[:n]
 
-    # Final starvation guard: keep AI-relevant stories even if they are weaker.
+    # Round 3 starvation guard: keep AI-relevant non-PR stories so main.py can still build a 5-story slate.
     if len(selected) < min(5, n):
         for item in ranked:
-            breakdown = item.get("score_breakdown") or {}
-            if float(breakdown.get("brand_fit", 0.0)) < 28.0:
+            if float((item.get("score_breakdown") or {}).get("brand_fit", 0.0)) < 26.0:
                 continue
-            if float(breakdown.get("authority", 0.0)) < 30.0:
+            if float((item.get("score_breakdown") or {}).get("authority", 0.0)) < 34.0:
                 continue
             add_candidate(item, ignore_bucket_cap=True)
             if len(selected) >= n:
                 break
-
     return selected[:n]
 
 
@@ -557,7 +712,6 @@ def attach_story_scores(stories: Sequence[Dict[str, Any]], candidates: Sequence[
         fp = headline_fingerprint(str(item.get("title") or item.get("headline") or ""))
         if fp:
             index.setdefault(fp, item)
-
     out: List[Dict[str, Any]] = []
     for story in stories:
         s = dict(story)
@@ -608,7 +762,6 @@ def choose_variant(test_name: str, variants: Optional[Sequence[str]] = None, see
     bucket = state.setdefault(test_name, {})
     for variant in variants:
         bucket.setdefault(variant, {"alpha": 1.0, "beta": 1.0, "impressions": 0, "successes": 0})
-
     rng = random.Random(seed or f"{test_name}:{dt.datetime.utcnow().isoformat()}")
     scored: List[Tuple[float, str]] = []
     for variant in variants:
@@ -700,20 +853,8 @@ def build_episode_tracking_payload(
             content="clip_secondary",
             extra={"clip_style": experiments.get("clip_style", "")},
         ),
-        "subscribe_linkedin": build_tracking_url(
-            subscribe_url,
-            source="podcast",
-            medium="linkedin",
-            campaign=campaign,
-            content="linkedin_post",
-        ),
-        "subscribe_x": build_tracking_url(
-            subscribe_url,
-            source="podcast",
-            medium="x",
-            campaign=campaign,
-            content="x_post",
-        ),
+        "subscribe_linkedin": build_tracking_url(subscribe_url, source="podcast", medium="linkedin", campaign=campaign, content="linkedin_post"),
+        "subscribe_x": build_tracking_url(subscribe_url, source="podcast", medium="x", campaign=campaign, content="x_post"),
         "experiments": experiments,
     }
 
@@ -736,6 +877,10 @@ def apply_sponsor_variant(
         ),
         "less_noise": (
             "TheLEDGR is built for operators who need less noise, more consequences, and a sharper read on what matters next. "
+            f"Subscribe at {spoken_url}."
+        ),
+        "readout": (
+            "TheLEDGR is the readout after the headline: what changed, who wins, who is exposed, and what serious operators should do tomorrow. "
             f"Subscribe at {spoken_url}."
         ),
     }
@@ -793,13 +938,13 @@ def update_show_memory(
     memory = load_show_memory()
     stories = episode_meta.get("stories") or []
     for story in stories:
-        memory["recent_headlines"].insert(0, {
-            "date": episode_meta.get("date"),
-            "title": story.get("headline"),
-            "growth_score": story.get("growth_score"),
-        })
+        if isinstance(story, dict):
+            memory["recent_headlines"].insert(0, {
+                "date": episode_meta.get("date"),
+                "title": story.get("headline"),
+                "growth_score": story.get("growth_score"),
+            })
     memory["recent_headlines"] = memory["recent_headlines"][:max_items]
-
     reward = episode_reward(metrics) if metrics else float(memory.get("last_reward", 0.0))
     memory["last_reward"] = reward
     title = (episode_meta.get("title") or "").strip()
@@ -851,6 +996,11 @@ def build_story_debug_table(candidates: Sequence[Dict[str, Any]]) -> List[Dict[s
             "numeric_density": breakdown.get("numeric_density"),
             "clipability": breakdown.get("clipability"),
             "recency": breakdown.get("recency"),
+            "ai_heat": breakdown.get("ai_heat"),
+            "company_fatigue_penalty": breakdown.get("company_fatigue_penalty"),
+            "routine_enterprise_update": bool(breakdown.get("routine_enterprise_update")),
+            "routine_penalty": breakdown.get("routine_penalty"),
+            "low_signal_penalty": breakdown.get("low_signal_penalty"),
             "cluster_size": item.get("cluster_size"),
         })
     return rows
