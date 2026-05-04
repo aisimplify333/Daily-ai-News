@@ -142,6 +142,8 @@ jobs:
           RUN_MARKETING_ASSETS: "true"
           PUBLISH_SOCIAL: "false"
           FORCE_REBUILD: "true"
+          # Optional: set a repo variable named PODCAST_COVER_IMAGE_URL to force a versioned Spotify/RSS artwork URL.
+          PODCAST_COVER_IMAGE_URL: ${{ vars.PODCAST_COVER_IMAGE_URL }}
 
           X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
           X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
@@ -169,6 +171,30 @@ jobs:
           git add story_scores.json || true
           git add tracking_summary.json || true
           git add forwardable_moments.json || true
+          git add story_slate_decision.json || true
+          git add episode_aircheck.json || true
+          git add packaging_gate.json || true
+          git add sponsor_delivery_report.json || true
+          git add sponsor_marketing_report.json || true
+          git add forwardable_exchange_map.json || true
+          git add forwardable_targets.json || true
+          git add x_thread.txt || true
+          git add x_posts.json || true
+          git add linkedin_post.txt || true
+          git add clip_hooks.json || true
+          git add theledgr_newsletter_teaser.txt || true
+          git add marketing_x.json || true
+          git add marketing_youtube.json || true
+          git add marketing_linkedin.txt || true
+          git add marketing_instagram.txt || true
+          git add marketing_tiktok.txt || true
+          git add marketing_blurb.txt || true
+          git add clip_candidates.json || true
+          git add distribution_plan.json || true
+          git add seo_keywords.txt || true
+          git add show_memory.json || true
+          git add experiments_state.json || true
+          git add performance_events.jsonl || true
           git add episode_audio/podcast_*.mp3 || true
           git add script_*.txt || true
           git add audio_brandkit/*.mp3 || true
