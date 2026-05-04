@@ -74,6 +74,12 @@ SPONSORS_PATH = BASE_DIR / "sponsors.json"
 STORY_SCORES_PATH = BASE_DIR / "story_scores.json"
 TRACKING_SUMMARY_PATH = BASE_DIR / "tracking_summary.json"
 FORWARDABLE_MOMENTS_PATH = BASE_DIR / "forwardable_moments.json"
+STORY_SLATE_DECISION_PATH = BASE_DIR / "story_slate_decision.json"
+EPISODE_AIRCHECK_PATH = BASE_DIR / "episode_aircheck.json"
+PACKAGING_GATE_PATH = BASE_DIR / "packaging_gate.json"
+SPONSOR_DELIVERY_REPORT_PATH = BASE_DIR / "sponsor_delivery_report.json"
+FORWARDABLE_EXCHANGE_MAP_PATH = BASE_DIR / "forwardable_exchange_map.json"
+FORWARDABLE_TARGETS_PATH = BASE_DIR / "forwardable_targets.json"
 
 AUDIO_BRANDKIT_DIR = BASE_DIR / "audio_brandkit"
 BRANDKIT_SFX_DIR = AUDIO_BRANDKIT_DIR / "sfx"
@@ -1284,6 +1290,240 @@ def _candidate_quality_pass(item: Dict[str, str]) -> bool:
         return authority >= 50.0 and brand_fit >= 50.0
     return authority >= 45.0 and brand_fit >= 40.0
 
+
+# ----------------------------
+# v2.24 COMPETITIVE MEDIA BOARD
+# ----------------------------
+AI_HEAT_TERMS = {
+    "openai", "anthropic", "deepmind", "google deepmind", "nvidia", "meta ai", "llama",
+    "frontier", "model", "benchmark", "inference", "gpu", "blackwell", "cuda",
+    "chip", "chips", "compute", "datacenter", "data center", "safety", "regulation",
+    "lawsuit", "antitrust", "fda", "clinical", "diagnosis", "developer", "github",
+    "cursor", "copilot", "agent failure", "agent security", "breach", "exploit", "autonomous",
+}
+
+ROUTINE_ENTERPRISE_TERMS = {
+    "generally available", "ga", "expands capabilities", "integration", "integrations", "workflow",
+    "copilot studio", "power platform", "microsoft 365", "agent 365", "workspace",
+    "announces", "introduces", "launches", "new feature", "preview", "availability",
+}
+
+MATERIAL_CONSEQUENCE_TERMS = {
+    "lawsuit", "regulation", "regulator", "ban", "antitrust", "sec", "ftc", "fda",
+    "security", "breach", "exploit", "vulnerability", "liability", "privacy", "patient",
+    "hospital", "clinical", "diagnosis", "earnings", "revenue", "valuation", "funding",
+    "billion", "million", "$", "%", "gpu", "chip", "datacenter", "data center",
+    "benchmark", "model", "frontier", "openai", "anthropic", "deepmind", "nvidia",
+    "developer", "github", "cursor", "job", "layoff", "market", "stock", "export",
+}
+
+BAD_MARKETING_OPENERS_RE = re.compile(
+    r"^(yeah,?\s+and\s+speaking\s+of|absolutely\.?|massive,?\s+right\??|exactly,?\s+alex|first up,?|so,?\s+alex)",
+    re.IGNORECASE,
+)
+
+BAD_TITLE_FRAGMENT_RE = re.compile(
+    r"(\band\s*\||\bcomes\s*\||\bcomes\s+into\.?$|\band\.?$|\bor\.?$|\bwith\.?$|\binto\.?$|\bto\.?$|\|\s*what\s+(?:changes\s+next|it\s+means)\s*$)",
+    re.IGNORECASE,
+)
+
+
+def _story_blob(item: Dict[str, str]) -> str:
+    parts = [
+        item.get("headline") or item.get("title") or "",
+        item.get("why_shocking") or item.get("summary") or "",
+        item.get("publisher") or "",
+        " ".join([str(x) for x in (item.get("data_points") or [])[:6]]),
+        " ".join([str(x) for x in (item.get("key_entities") or [])[:8]]),
+    ]
+    return " ".join([p for p in parts if p]).strip()
+
+
+def _ai_heat_score(item: Dict[str, str]) -> float:
+    blob = _story_blob(item).lower()
+    bd = _story_breakdown(item)
+    heat = 0.0
+    for term in AI_HEAT_TERMS:
+        if term in blob:
+            heat += 8.0
+    for lab in ["openai", "anthropic", "deepmind", "nvidia", "meta ai"]:
+        if lab in blob:
+            heat += 18.0
+    if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d+(?:\.\d+)?\s*(?:million|billion|trillion|m|bn|b)\b", blob, flags=re.IGNORECASE):
+        heat += 14.0
+    heat += min(24.0, float(bd.get("forward_consequence", 0.0)) * 0.35)
+    heat += min(16.0, float(bd.get("clipability", 0.0)) * 0.22)
+    heat += min(10.0, float(bd.get("numeric_density", 0.0)) * 0.14)
+    # Generic agent wording alone is no longer enough to lead.
+    if "agent" in blob and not any(x in blob for x in ["security", "failure", "liability", "openai", "anthropic", "deepmind", "benchmark", "breach", "exploit"]):
+        heat -= 10.0
+    return round(max(0.0, min(100.0, heat)), 2)
+
+
+def _is_routine_enterprise_update(item: Dict[str, str]) -> bool:
+    blob = _story_blob(item).lower()
+    routine_hits = sum(1 for term in ROUTINE_ENTERPRISE_TERMS if term in blob)
+    consequence_hits = sum(1 for term in MATERIAL_CONSEQUENCE_TERMS if term in blob)
+    return routine_hits >= 1 and consequence_hits < 2
+
+
+def _recent_title_entities(limit: int = 7) -> List[str]:
+    titles: List[str] = []
+    # Prefer feed.xml because it includes the recent public titles Spotify sees.
+    try:
+        txt = FEED_XML_PATH.read_text(encoding="utf-8") if FEED_XML_PATH.exists() else ""
+        titles.extend(re.findall(r"<item>.*?<title>(.*?)</title>", txt, flags=re.IGNORECASE | re.DOTALL))
+    except Exception:
+        pass
+    try:
+        meta = json.loads((BASE_DIR / "episode_metadata.json").read_text(encoding="utf-8"))
+        if isinstance(meta, dict) and meta.get("title"):
+            titles.insert(0, str(meta.get("title")))
+    except Exception:
+        pass
+    entities: List[str] = []
+    for title in titles[:limit]:
+        low = re.sub(r"<.*?>", " ", title or "").lower()
+        for canonical, aliases in ENTITY_ALIAS_GROUPS.items():
+            if any(alias in low for alias in aliases):
+                entities.append(canonical)
+                break
+    return entities
+
+
+def _company_fatigue_counts(limit: int = 7) -> Dict[str, int]:
+    counts: Dict[str, int] = {}
+    for ent in _recent_title_entities(limit=limit):
+        counts[ent] = counts.get(ent, 0) + 1
+    return counts
+
+
+def _company_fatigue_penalty(item: Dict[str, str], counts: Optional[Dict[str, int]] = None) -> float:
+    counts = counts or _company_fatigue_counts()
+    ent = _story_entity_key(item)
+    count = counts.get(ent, 0)
+    if not ent or count < 3:
+        return 0.0
+    # Exceptional AI heat can still lead; ordinary repetition cannot.
+    heat = _ai_heat_score(item)
+    if heat >= 78.0:
+        return 0.0
+    return 34.0 + (count - 3) * 8.0
+
+
+def _competitive_story_score(item: Dict[str, str], previous_meta: Dict[str, object], selected: Optional[List[Dict[str, str]]] = None, fatigue_counts: Optional[Dict[str, int]] = None) -> float:
+    selected = selected or []
+    score = _editorial_impact_score(item)
+    score += _ai_heat_score(item) * 0.72
+    score -= _repeat_penalty(item, previous_meta)
+    score -= _selection_penalty(item, selected)
+    score -= _company_fatigue_penalty(item, fatigue_counts)
+    if _is_routine_enterprise_update(item):
+        score -= 32.0
+    if _normalize_vertical_bucket(item.get("bucket", "")) in {"ai_code", "health_ai"}:
+        score += 8.0
+    return round(score, 2)
+
+
+def _apply_competitive_editorial_order(candidates: List[Dict[str, str]], previous_meta: Dict[str, object], selected: Optional[List[Dict[str, str]]] = None) -> List[Dict[str, str]]:
+    fatigue_counts = _company_fatigue_counts()
+    return sorted(
+        [dict(x) for x in candidates],
+        key=lambda x: _competitive_story_score(x, previous_meta, selected=selected, fatigue_counts=fatigue_counts),
+        reverse=True,
+    )
+
+
+def _lead_gate_reason(item: Dict[str, str], fatigue_counts: Optional[Dict[str, int]] = None) -> str:
+    if not item:
+        return "missing"
+    heat = _ai_heat_score(item)
+    ent = _story_entity_key(item)
+    fatigue = (fatigue_counts or _company_fatigue_counts()).get(ent, 0) if ent else 0
+    if fatigue >= 3 and heat < 78.0:
+        return f"company fatigue: {ent} appeared {fatigue} times in recent titles"
+    if _is_routine_enterprise_update(item) and heat < 70.0:
+        return "routine enterprise/product update without enough material consequence"
+    if heat < 46.0:
+        return f"AI heat too low ({heat})"
+    return "qualified"
+
+
+def _enforce_lead_story_gate(stories: List[Dict[str, str]], ranked_all: List[Dict[str, str]], previous_meta: Dict[str, object], date_str: str) -> List[Dict[str, str]]:
+    if not stories:
+        return stories
+    fatigue_counts = _company_fatigue_counts()
+    reason = _lead_gate_reason(stories[0], fatigue_counts)
+    demotions: List[Dict[str, str]] = []
+    if reason == "qualified":
+        _write_story_slate_decision(date_str, stories, ranked_all, demotions, fatigue_counts)
+        return stories
+    original = dict(stories[0])
+    demotions.append({"headline": original.get("headline") or original.get("title"), "reason": reason})
+    current_keys = {_story_identity_key(s) for s in stories}
+    replacement = None
+    for cand in _apply_competitive_editorial_order(ranked_all, previous_meta, selected=[]):
+        key = _story_identity_key(cand)
+        if not key:
+            continue
+        if _lead_gate_reason(cand, fatigue_counts) == "qualified":
+            replacement = cand
+            break
+    if replacement:
+        rep_key = _story_identity_key(replacement)
+        rest = [s for s in stories if _story_identity_key(s) != rep_key]
+        out = [replacement] + rest
+        out = _dedupe_story_list(out)[:5]
+        while len(out) < min(5, len(stories)):
+            for cand in ranked_all:
+                if _story_identity_key(cand) not in {_story_identity_key(x) for x in out}:
+                    out.append(cand)
+                    break
+        _write_story_slate_decision(date_str, out, ranked_all, demotions, fatigue_counts)
+        return out[:5]
+    _write_story_slate_decision(date_str, stories, ranked_all, demotions, fatigue_counts)
+    return stories
+
+
+def _write_story_slate_decision(date_str: str, stories: List[Dict[str, str]], ranked_all: List[Dict[str, str]], demotions: List[Dict[str, str]], fatigue_counts: Dict[str, int]) -> None:
+    try:
+        payload = {
+            "date": date_str,
+            "model": "v2.24-competitive-media-board",
+            "fatigue_counts_last_7_titles": fatigue_counts,
+            "demotions": demotions,
+            "selected_slate": [
+                {
+                    "rank": idx + 1,
+                    "headline": s.get("headline") or s.get("title"),
+                    "bucket": _normalize_vertical_bucket(s.get("bucket", "")),
+                    "entity": _story_entity_key(s),
+                    "ai_heat": _ai_heat_score(s),
+                    "routine_enterprise_update": _is_routine_enterprise_update(s),
+                    "lead_gate": _lead_gate_reason(s, fatigue_counts) if idx == 0 else "not-lead",
+                    "editorial_score": _editorial_impact_score(s),
+                    "growth_score": s.get("growth_score"),
+                }
+                for idx, s in enumerate(stories[:5])
+            ],
+            "candidate_snapshot": [
+                {
+                    "headline": x.get("title") or x.get("headline"),
+                    "publisher": x.get("publisher"),
+                    "bucket": x.get("bucket"),
+                    "entity": _story_entity_key(x),
+                    "ai_heat": _ai_heat_score(x),
+                    "routine_enterprise_update": _is_routine_enterprise_update(x),
+                    "competitive_score": _competitive_story_score(x, {}, selected=[]),
+                }
+                for x in ranked_all[:20]
+            ],
+        }
+        STORY_SLATE_DECISION_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception as e:
+        _safe_print(f"    ⚠️ Could not write story_slate_decision.json: {e}")
+
+
 def order_stories_for_episode(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
     if not stories:
         return []
@@ -1600,10 +1840,13 @@ def _selection_penalty(item: Dict[str, str], selected: List[Dict[str, str]]) -> 
 
 
 def _rank_with_editorial_penalties(candidates: List[Dict[str, str]], previous_meta: Dict[str, object], selected: Optional[List[Dict[str, str]]] = None) -> List[Dict[str, str]]:
+    # v2.24: keep the old impact score, but add real AI heat, company fatigue,
+    # routine-update demotion, and slate-diversity penalties before stories ever reach scripting.
     chosen = selected or []
+    fatigue_counts = _company_fatigue_counts() if "_company_fatigue_counts" in globals() else {}
     return sorted(
         [dict(x) for x in candidates],
-        key=lambda x: _editorial_impact_score(x) - _repeat_penalty(x, previous_meta) - _selection_penalty(x, chosen),
+        key=lambda x: _competitive_story_score(x, previous_meta, selected=chosen, fatigue_counts=fatigue_counts) if "_competitive_story_score" in globals() else (_editorial_impact_score(x) - _repeat_penalty(x, previous_meta) - _selection_penalty(x, chosen)),
         reverse=True,
     )
 
@@ -1924,6 +2167,7 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
                 s["story_role"] = raw.get("story_role")
 
     ordered = order_stories_for_episode(_dedupe_story_list(enriched)[:max(n, 5)])
+    ordered = _enforce_lead_story_gate(ordered[:max(n, 5)], ranked_all, previous_meta, date_str)
     return ordered[:max(n, 5)]
 
 
@@ -2507,6 +2751,174 @@ def _sponsor_prompt_lines(sponsor: Dict[str, str]) -> str:
 
 
 
+
+def build_forwardable_targets(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    top = stories[0] if stories else {}
+    h1 = _headline_title_core(top) if "_headline_title_core" in globals() else (top.get("headline") or "today's AI shift")
+    entity = _story_entity_key(top) or "the biggest AI player"
+    targets = [
+        {"type": "alex_pressure_question", "speaker": "ALEX", "target": f"Wait — if {entity} wins this layer, who actually owns the decision when the AI acts?"},
+        {"type": "jamie_human_consequence", "speaker": "JAMIE", "target": "The uncomfortable part is that this does not stay in a demo. It lands on teams, budgets, patients, developers, and somebody's name on the approval chain."},
+        {"type": "rufus_dry_undercut", "speaker": "RUFUS", "target": "Lovely. A productivity miracle with a liability grenade tucked neatly in the gift basket."},
+        {"type": "power_shift", "speaker": "ALEX", "target": f"The story is not the feature. The story is the power shift sitting underneath {h1}."},
+        {"type": "tomorrow_tension", "speaker": "JAMIE", "target": "Tomorrow morning, the serious question is not who announced something. It is who has to change a roadmap because of it."},
+    ]
+    return targets
+
+
+def _forwardable_targets_prompt(stories: List[Dict[str, str]]) -> str:
+    targets = build_forwardable_targets(stories)
+    try:
+        FORWARDABLE_TARGETS_PATH.write_text(json.dumps(targets, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    lines = ["MANDATORY FORWARDABLE MOMENTS TO NATURALLY WEAVE INTO THE EPISODE:"]
+    for t in targets:
+        lines.append(f"- {t['speaker']} / {t['type']}: {t['target']}")
+    lines.append("These should sound natural, not copy-pasted. Use the meaning even if you rephrase.")
+    return "\n".join(lines)
+
+
+def _find_insert_after_music(lines: List[str]) -> int:
+    for idx, line in enumerate(lines):
+        if line.strip().upper() == "[MUSIC]":
+            return idx + 1
+    return 1 if lines else 0
+
+
+def _build_theledgr_readout_lines(stories: List[Dict[str, str]], date_str: str) -> List[str]:
+    top = stories[0] if stories else {}
+    title = _headline_title_core(top) if "_headline_title_core" in globals() else (top.get("headline") or "today's AI move")
+    win_entity = _story_entity_key(top) or "whoever controls the next AI workflow"
+    return [
+        "ALEX: TheLEDGR Readout — this is the part The Ledger exists for. Headlines tell you what launched. The Ledger tells you what it changes.",
+        f"JAMIE: What changed: {title}. Who wins: the operators who see the second-order consequence before budget, workflow, or risk decisions harden.",
+        f"RUFUS: Who is exposed? Anyone treating this like a press release instead of a leverage shift. Very brave, in the way standing under a piano is brave.",
+        f"ALEX: What serious operators do tomorrow: read The Ledger, pressure-test the roadmap, and ask where the liability lands. Subscribe at {THELEDGR_SPOKEN_URL}.",
+    ]
+
+
+def ensure_theledgr_readout(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
+    low = (script or "").lower()
+    has_readout = "theledgr readout" in low or "the ledger readout" in low
+    has_url = bool(THELEDGR_URL_RE.search(low))
+    if has_readout and has_url:
+        return script
+    lines = (script or "").splitlines()
+    insert_at = _find_insert_after_music(lines)
+    readout_lines = _build_theledgr_readout_lines(stories, date_str)
+    # Avoid duplicating the plain fallback sponsor if it was already inserted right after [MUSIC].
+    lines[insert_at:insert_at] = readout_lines
+    return "\n".join(lines).strip()
+
+
+def _append_forwardable_fallbacks_if_needed(script: str, stories: List[Dict[str, str]]) -> str:
+    moments = extract_forwardable_moments(script, stories=stories, max_items=FORWARDABLE_MIN_PER_EPISODE)
+    if len(moments) >= FORWARDABLE_MIN_PER_EPISODE:
+        return script
+    targets = build_forwardable_targets(stories)
+    addon = ["### SEGMENT 4"]
+    for t in targets[: max(1, FORWARDABLE_MIN_PER_EPISODE - len(moments))]:
+        addon.append(f"{t['speaker']}: {t['target']}")
+    m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    block = "\n".join(addon[1:]).strip()
+    if m and block:
+        return (script[:m.start()].rstrip() + "\n" + block + "\n\n" + script[m.start():].lstrip()).strip()
+    return (script.rstrip() + "\n" + block).strip()
+
+
+def build_forwardable_exchange_map(script: str, stories: List[Dict[str, str]]) -> Dict[str, object]:
+    targets = build_forwardable_targets(stories)
+    lines = [ln.strip() for ln in (script or "").splitlines() if SPEAKER_RE.match(ln.strip())]
+    mapped = []
+    for t in targets:
+        speaker = t["speaker"]
+        target_norm = normalize_text(t["target"])
+        best = ""
+        best_score = 0.0
+        target_tokens = set(target_norm.split())
+        for ln in lines:
+            m = SPEAKER_RE.match(ln)
+            if not m or m.group(1).upper() != speaker:
+                continue
+            spoken = m.group(2).strip()
+            tokens = set(normalize_text(spoken).split())
+            overlap = len(tokens & target_tokens) / max(1, len(target_tokens))
+            score = overlap + (_forwardable_line_score(spoken) / 20.0)
+            if score > best_score:
+                best_score = score
+                best = spoken
+        mapped.append({
+            "type": t["type"],
+            "speaker": speaker,
+            "target": t["target"],
+            "matched_line": best,
+            "match_score": round(best_score, 2),
+            "forwardable": bool(best and _forwardable_line_score(best) >= 5),
+        })
+    return {"targets": targets, "matches": mapped, "minimum_required": FORWARDABLE_MIN_PER_EPISODE}
+
+
+def build_sponsor_delivery_report(script: str, stories: List[Dict[str, str]], date_str: str) -> Dict[str, object]:
+    low = (script or "").lower()
+    has_name = bool(THELEDGR_NAME_RE.search(low))
+    has_url = bool(THELEDGR_URL_RE.search(low))
+    has_readout = "theledgr readout" in low or "the ledger readout" in low
+    answers = {
+        "what_changed": "what changed" in low or any((_headline_title_core(s) if "_headline_title_core" in globals() else s.get("headline", "")).lower()[:20] in low for s in stories[:1]),
+        "who_wins": "who wins" in low or "wins" in low,
+        "who_is_exposed": "exposed" in low,
+        "operator_tomorrow": "tomorrow" in low and ("operator" in low or "roadmap" in low or "budget" in low),
+    }
+    score = 0
+    score += 2 if has_name else 0
+    score += 2 if has_url else 0
+    score += 3 if has_readout else 0
+    score += sum(1 for v in answers.values() if v)
+    return {
+        "date": date_str,
+        "TheLEDGR_Readout_present": has_readout,
+        "brand_present": has_name,
+        "spoken_url_present": has_url,
+        "cta_present": bool(re.search(r"\b(subscribe|read|go to|visit)\b", low)),
+        "readout_answers": answers,
+        "sponsor_tone_score": min(10, score),
+        "strongest_story": stories[0].get("headline") if stories else "",
+    }
+
+
+def build_episode_aircheck(script: str, stories: List[Dict[str, str]], pack: Dict[str, str], sponsors: List[Dict[str, str]], date_str: str) -> Dict[str, object]:
+    title = pack.get("yt_title") or ""
+    desc = pack.get("show_notes_hook") or pack.get("yt_description") or ""
+    moments = extract_forwardable_moments(script, stories=stories, max_items=6)
+    sponsor = build_sponsor_delivery_report(script, stories, date_str)
+    buckets = {_normalize_vertical_bucket(s.get("bucket", "")) for s in stories}
+    lead_heat = _ai_heat_score(stories[0]) if stories else 0.0
+    checks = {
+        "lead_story_heat": lead_heat >= 46.0,
+        "story_variety": len(buckets) >= 3,
+        "title_quality": bool(title and not BAD_TITLE_FRAGMENT_RE.search(title) and len(title) >= 28),
+        "description_quality": bool(desc and not BAD_MARKETING_OPENERS_RE.search(desc) and not BAD_TITLE_FRAGMENT_RE.search(desc) and len(desc) >= 90),
+        "sponsor_quality": sponsor.get("TheLEDGR_Readout_present") and sponsor.get("spoken_url_present"),
+        "forwardable_moments": len(moments) >= FORWARDABLE_MIN_PER_EPISODE,
+        "cast_chemistry": all(name in script for name in ["ALEX:", "JAMIE:", "RUFUS:"]) and ("[" in script or "come on" in script.lower()),
+        "malformed_metadata": not (BAD_TITLE_FRAGMENT_RE.search(title or "") or BAD_MARKETING_OPENERS_RE.search(desc or "")),
+    }
+    score = round(100.0 * sum(1 for v in checks.values() if v) / max(1, len(checks)), 1)
+    return {
+        "date": date_str,
+        "score": score,
+        "pass": score >= 75.0,
+        "checks": checks,
+        "lead_heat": lead_heat,
+        "forwardable_count": len(moments),
+        "sponsor": sponsor,
+        "title": title,
+        "description_first_180": (desc or "")[:180],
+        "note": "All checks run before TTS/audio. Repairs are deterministic text insertions, not expensive audio retries.",
+    }
+
+
 def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
                     stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
     sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
@@ -2628,6 +3040,8 @@ WHAT THIS SEGMENT MUST DO:
 
 SPECIAL INSTRUCTIONS FOR THIS SEGMENT:
 {extra}
+
+{_forwardable_targets_prompt(stories)}
 
 TODAY'S STORIES:
 {story_block}
@@ -3073,6 +3487,8 @@ def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[s
     script = enforce_temporal_consistency(script, date_str)
     script = _strip_premature_signoffs(script)
     script = ensure_sponsor_delivery(script, sponsors)
+    script = ensure_theledgr_readout(script, stories, date_str)
+    script = _append_forwardable_fallbacks_if_needed(script, stories)
     script = enforce_temporal_consistency(script, date_str)
 
     min_words, _, max_words = _script_targets()
@@ -3868,55 +4284,115 @@ def _clean_packaging_text(text: str, max_len: int) -> str:
     return _smart_trim_text(cleaned, max_len)
 
 
+
 def _title_support_phrase(top_story: Dict[str, str], title_style: str) -> str:
-    if title_style == "hard_number":
-        return "What the Numbers Mean" if _story_has_real_numbers(top_story) else "What Changes Next"
-    if title_style == "tomorrow_tension":
-        return "Why Tomorrow Gets Harder"
-    if _normalize_vertical_bucket(top_story.get("bucket", "")) == "health_ai":
-        return "The Real Stakes"
-    return "What Changes Next"
+    # Kept for backward compatibility; v2.24 titles are generated by _podcast_native_title.
+    return ""
 
 
 def _headline_title_core(top_story: Dict[str, str]) -> str:
-    headline = _clean_packaging_text((top_story.get("headline") or "AI Just Moved").strip(), 70)
-    headline = re.sub(r"\bGoogle Cloud Next 2026:\s*", "Google Cloud Next 2026: ", headline, flags=re.IGNORECASE)
-    headline = headline.strip(" -—:|,")
+    headline = _clean_packaging_text((top_story.get("headline") or "AI Just Moved").strip(), 82)
+    headline = re.sub(r"\bcomes into\.?$", "is here", headline, flags=re.IGNORECASE)
+    headline = re.sub(r"\b(?:and|or|with|into|to|for)\.?$", "", headline, flags=re.IGNORECASE).strip(" -—:|,")
     if not headline:
         headline = "AI Just Moved"
     return headline
 
 
+def _dominant_entity_label(story: Dict[str, str]) -> str:
+    ent = _story_entity_key(story)
+    labels = {
+        "microsoft": "Microsoft", "openai": "OpenAI", "anthropic": "Anthropic", "google": "Google",
+        "meta": "Meta", "amazon": "Amazon", "nvidia": "NVIDIA", "apple": "Apple", "tesla": "xAI",
+    }
+    return labels.get(ent, ent.title() if ent else "AI")
+
+
+def _podcast_native_title(stories: List[Dict[str, str]], title_style: str, date_str: str) -> str:
+    top = stories[0] if stories else {}
+    core = _headline_title_core(top)
+    bucket = _normalize_vertical_bucket(top.get("bucket", ""))
+    entity = _dominant_entity_label(top)
+    blob = _story_blob(top).lower() if "_story_blob" in globals() else core.lower()
+    if "health" in bucket or any(x in blob for x in ["clinical", "hospital", "patient", "fda", "diagnosis"]):
+        title = f"{entity} Pushes AI Into Healthcare — And the Liability Fight Begins"
+    elif any(x in blob for x in ["security", "breach", "exploit", "vulnerability"]):
+        title = "AI Agents Are Now a Security Problem, Not a Productivity Feature"
+    elif any(x in blob for x in ["chip", "gpu", "nvidia", "datacenter", "data center", "compute"]):
+        title = "The AI Compute Fight Is Becoming the Real Platform War"
+    elif any(x in blob for x in ["lawsuit", "regulation", "antitrust", "ban", "fda", "ftc", "sec"]):
+        title = "The AI Boom Just Hit Its Accountability Phase"
+    elif any(x in blob for x in ["agent", "workflow", "copilot", "orchestration"]):
+        title = "The AI Agent Stack Is Becoming a Land Grab"
+    elif any(x in blob for x in ["model", "benchmark", "frontier", "openai", "anthropic", "deepmind"]):
+        title = "The Model War Is Moving From Chatbots to Control"
+    else:
+        title = f"{core} — The Power Shift Under the Headline"
+    title = _repair_episode_title(title, stories)
+    return _smart_trim_text(title, max(42, EPISODE_META_MAX_TITLE - (len(f" — {date_str}") if APPEND_DATE_TO_TITLE else 0)))
+
+
+def _repair_episode_title(title: str, stories: List[Dict[str, str]]) -> str:
+    t = re.sub(r"\s+", " ", title or "").strip(" -—:|,")
+    t = re.sub(r"\|\s*(?:What Changes Next|What It Means|The Operator Consequence|Why Tomorrow Gets Harder)\s*$", "", t, flags=re.IGNORECASE).strip(" -—:|,")
+    t = re.sub(r"\bcomes into\.?$", "is here", t, flags=re.IGNORECASE)
+    t = re.sub(r"\b(?:and|or|with|into|to|for)\.?$", "", t, flags=re.IGNORECASE).strip(" -—:|,")
+    if BAD_TITLE_FRAGMENT_RE.search(t) or len(t) < 24:
+        top = stories[0] if stories else {}
+        bucket = _normalize_vertical_bucket(top.get("bucket", ""))
+        if bucket == "health_ai":
+            t = "AI Healthcare Is Moving Faster Than the Rules Around It"
+        elif bucket == "ai_code":
+            t = "AI Coding Tools Are Turning Into a Developer Power Shift"
+        elif bucket == "ai_agents":
+            t = "AI Agents Are Moving From Demos to Control"
+        else:
+            t = "The AI Story Everyone Misread Today"
+    return _smart_trim_text(t, EPISODE_META_MAX_TITLE)
+
+
 def _compose_episode_title(stories: List[Dict[str, str]], title_style: str, date_str: str) -> str:
-    top_story = stories[0] if stories else {}
-    headline = _headline_title_core(top_story)
-    support = _title_support_phrase(top_story, title_style)
-    max_base = max(32, EPISODE_META_MAX_TITLE - len(f" — {date_str}"))
-    raw = f"{headline} | {support}"
-    if len(raw) > max_base:
-        raw = headline
-    return _smart_trim_text(raw, max_len=max_base)
+    return _podcast_native_title(stories, title_style, date_str)
 
 
 def _packaging_consequence_line(top_story: Dict[str, str]) -> str:
     bucket = _normalize_vertical_bucket(top_story.get("bucket", ""))
-    headline = (top_story.get("headline") or "").lower()
-    if bucket == "health_ai":
-        return "This is where AI hype hits licensing boards, patients, and actual risk."
-    if bucket == "ai_code":
-        return "The real question is what this changes for builders, velocity, and software teams tomorrow morning."
-    if bucket == "ai_tools":
-        return "The product demo is not the story; the workflow consequence is."
-    if "google" in headline or "control plane" in headline or bucket == "ai_agents":
-        return "The real issue is who gets to orchestrate the agent stack inside the enterprise and who gets squeezed out."
-    return "The real issue is who wins, who gets squeezed, and what changes next."
+    blob = _story_blob(top_story).lower() if "_story_blob" in globals() else (top_story.get("headline") or "").lower()
+    if bucket == "health_ai" or any(x in blob for x in ["clinical", "hospital", "patient", "diagnosis"]):
+        return "The headline is healthcare AI. The real story is who carries the liability when software starts shaping care."
+    if bucket == "ai_code" or any(x in blob for x in ["developer", "github", "code", "repo"]):
+        return "The headline is a developer tool. The real story is how much judgment teams are willing to outsource."
+    if any(x in blob for x in ["security", "breach", "exploit", "vulnerability"]):
+        return "The headline is an AI feature. The real story is the new attack surface it creates."
+    if any(x in blob for x in ["agent", "workflow", "copilot", "orchestration"]):
+        return "The headline is agents. The real story is who controls the permission layer when AI starts acting."
+    if any(x in blob for x in ["chip", "gpu", "datacenter", "compute"]):
+        return "The headline is infrastructure. The real story is who can afford intelligence at scale."
+    return "The headline tells you what happened. The real story is who gained leverage and who has to react tomorrow."
 
 
 def _make_show_notes_hook(top_story: Dict[str, str]) -> str:
-    headline = _headline_title_core(top_story)
+    title = _headline_title_core(top_story)
     consequence = _packaging_consequence_line(top_story)
-    return f"{headline}. {consequence}"
+    hook = f"{title}. {consequence}"
+    hook = re.sub(r"\s+", " ", hook).strip()
+    if BAD_MARKETING_OPENERS_RE.search(hook) or BAD_TITLE_FRAGMENT_RE.search(hook):
+        hook = consequence
+    return _smart_trim_text(hook, 260)
 
+
+def _marketing_hook_from_stories(stories: List[Dict[str, str]]) -> str:
+    top = stories[0] if stories else {}
+    consequence = _packaging_consequence_line(top)
+    if "permission layer" in consequence:
+        return "AI agents are not becoming software features. They are becoming permission layers."
+    if "liability" in consequence:
+        return "The question is no longer whether AI can help. It is who gets blamed when it is wrong."
+    if "attack surface" in consequence:
+        return "Every AI agent that can act also becomes a new thing that can break."
+    if "intelligence at scale" in consequence:
+        return "The AI race is not just models anymore. It is power, chips, and who can afford the next answer."
+    return "Most AI coverage stops at the headline. The real story is who just gained leverage."
 
 def build_episode_show_notes(
     tracking: Dict[str, str],
@@ -3971,14 +4447,14 @@ def generate_marketing_pack(
         cta_line = f"Most people will read the headline and miss the consequence. TheLEDGR is for the people who do not. Subscribe: {subscribe_url}"
     else:
         cta_line = f"If AI affects your work, subscribe to TheLEDGR for decision-grade signal: {subscribe_url}"
-    fallback_hook = _smart_trim_text((top_headline if top_headline else "AI JUST MOVED — HERE'S WHAT CHANGED"), 64).upper()
+    fallback_hook = _smart_trim_text(_marketing_hook_from_stories(ordered), 96)
     story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ordered[:5]])
     tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ordered if (s.get("tomorrow_hook") or "").strip()), "Tomorrow's winners will be the operators who saw the second-order consequence first.")
     show_notes_hook = _make_show_notes_hook(top_story)
     return {
         "hook": fallback_hook,
-        "tweet1": f"{fallback_hook}\n\nThis is the part most people will miss: the consequence.\n\nListen: {listen_cta}",
-        "tweet2": f"{cta_line}\n\n{hashtags}",
+        "tweet1": f"{fallback_hook}\n\nListen: {listen_cta}",
+        "tweet2": f"Headlines tell you what launched. TheLEDGR tells you what it changes.\n\n{cta_line}\n\n{hashtags}",
         "yt_title": yt_title,
         "yt_description": (f"{show_notes_hook}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Key data: {top_data or 'See full episode for the facts and consequence chain.'}\n\n" f"{cta_line}")[:1200],
         "show_notes": (f"{show_notes_hook}\n\n" f"What we covered:\n{story_bullets}\n\n" f"Tomorrow tension: {tomorrow_tease}\n\n" f"{cta_line}"),
@@ -3992,8 +4468,20 @@ def generate_marketing_pack(
 
 # ----------------------------
 # RSS FEED WRITER
-
 # ----------------------------
+def _active_cover_image_url() -> str:
+    env_url = os.getenv("PODCAST_COVER_IMAGE_URL", "").strip()
+    if env_url:
+        return env_url
+    try:
+        manifest = json.loads((BASE_DIR / "assets" / "cover_rotation_manifest.json").read_text(encoding="utf-8"))
+        selected = str(manifest.get("selected_cover") or "").strip().lstrip("/")
+        if selected:
+            return f"https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/{selected}"
+    except Exception:
+        pass
+    return RSS_SETTINGS["image"]
+
 def update_feed_xml(meta: Dict) -> None:
     import xml.etree.ElementTree as ET
     from urllib.parse import quote
@@ -4028,6 +4516,8 @@ def update_feed_xml(meta: Dict) -> None:
         except Exception:
             return False
 
+    cover_image_url = _active_cover_image_url()
+
     def make_item(title: str, description: str, audio_filename: str, pubdate_rfc2822: str,
                   duration_seconds: int = 0) -> ET.Element:
         item = ET.Element("item")
@@ -4056,7 +4546,7 @@ def update_feed_xml(meta: Dict) -> None:
             dur.text = str(int(duration_seconds))
 
         ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
-        ep_img.set("href", RSS_SETTINGS["image"])
+        ep_img.set("href", cover_image_url)
         ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
         return item
 
@@ -4083,7 +4573,7 @@ def update_feed_xml(meta: Dict) -> None:
     cat.set("text", RSS_SETTINGS["category"])
 
     img = ET.SubElement(channel, f"{{{ITUNES_NS}}}image")
-    img.set("href", RSS_SETTINGS["image"])
+    img.set("href", cover_image_url)
 
     owner = ET.SubElement(channel, f"{{{ITUNES_NS}}}owner")
     ET.SubElement(owner, f"{{{ITUNES_NS}}}name").text = RSS_SETTINGS["author"]
@@ -4217,11 +4707,28 @@ def produce_episode() -> None:
     script = enforce_episode_numeric_density(script, stories, today)
     script = enforce_temporal_consistency(script, today)
     script = ensure_sponsor_delivery(script, sponsors)
+    script = ensure_theledgr_readout(script, stories, today)
+    script = _append_forwardable_fallbacks_if_needed(script, stories)
     script = _strip_premature_signoffs(_sanitize_dialogue_only(script))
 
     issues = validate_script(script, stories=stories)
     if issues:
         raise RuntimeError("Script validation failed:\n" + "\n".join(issues))
+
+    pre_tracking = build_episode_tracking_payload(
+        date_str=today,
+        episode_title=stories[0].get("headline", RSS_SETTINGS["title"]),
+        listen_url=LISTEN_URL,
+        subscribe_url=THELEDGR_SUBSCRIBE_URL,
+        experiments=experiments,
+    )
+    pre_pack = generate_marketing_pack(stories, today, LISTEN_URL, tracking=pre_tracking, experiments=experiments)
+    aircheck = build_episode_aircheck(script, stories, pre_pack, sponsors, today)
+    EPISODE_AIRCHECK_PATH.write_text(json.dumps(aircheck, indent=2, ensure_ascii=False), encoding="utf-8")
+    SPONSOR_DELIVERY_REPORT_PATH.write_text(json.dumps(build_sponsor_delivery_report(script, stories, today), indent=2, ensure_ascii=False), encoding="utf-8")
+    FORWARDABLE_EXCHANGE_MAP_PATH.write_text(json.dumps(build_forwardable_exchange_map(script, stories), indent=2, ensure_ascii=False), encoding="utf-8")
+    if not aircheck.get("pass"):
+        _safe_print(f"    ⚠️ Pre-TTS aircheck score {aircheck.get('score')} — continuing after deterministic text repairs; inspect episode_aircheck.json.")
 
     if SAVE_SCRIPT:
         script_path = BASE_DIR / f"script_{today}.txt"
@@ -4583,6 +5090,8 @@ def produce_episode() -> None:
         "experiments": experiments,
         "model_version": MODEL_VERSION,
         "forwardable_moments": forwardable_moments,
+        "episode_aircheck": json.loads(EPISODE_AIRCHECK_PATH.read_text(encoding="utf-8")) if EPISODE_AIRCHECK_PATH.exists() else {},
+        "sponsor_delivery_report": json.loads(SPONSOR_DELIVERY_REPORT_PATH.read_text(encoding="utf-8")) if SPONSOR_DELIVERY_REPORT_PATH.exists() else {},
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
