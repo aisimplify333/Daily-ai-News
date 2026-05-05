@@ -29,6 +29,7 @@ OUT_X_POSTS = BASE_DIR / "x_posts.json"
 OUT_LINKEDIN_POST = BASE_DIR / "linkedin_post.txt"
 OUT_CLIP_HOOKS = BASE_DIR / "clip_hooks.json"
 OUT_NEWSLETTER_TEASER = BASE_DIR / "theledgr_newsletter_teaser.txt"
+OUT_LEARNING_PROMISE = BASE_DIR / "episode_learning_promise.txt"
 OUT_SPONSOR_REPORT = BASE_DIR / "sponsor_marketing_report.json"
 
 BAD_TAGS = {"#googlenews", "#indexbox", "#msn", "#bitget", "#yahootech"}
@@ -71,9 +72,21 @@ def _safe_hook(text: str, fallback: str) -> str:
     return _clamp(t, 140)
 
 
+def _story_headline(story: Dict[str, Any]) -> str:
+    return _clean_headline(str(story.get("headline") or story.get("title") or ""))
+
+
 def _top_stories(meta: Dict[str, Any]) -> List[Dict[str, Any]]:
-    stories = [s for s in (meta.get("stories") or []) if isinstance(s, dict)]
-    return stories[:5]
+    stories = [s for s in (meta.get("stories") or []) if isinstance(s, dict) and _story_headline(s)]
+    out: List[Dict[str, Any]] = []
+    for story in stories:
+        head = _story_headline(story)
+        # Avoid publishing duplicate story families in social assets.
+        key_tokens = set(re.findall(r"[a-z0-9]{4,}", head.lower())) - {"with", "from", "that", "this", "launch", "launches", "building", "help", "news"}
+        if any(len(key_tokens & prev) / max(1, min(len(key_tokens), len(prev))) >= 0.62 for prev in [set(re.findall(r"[a-z0-9]{4,}", _story_headline(x).lower())) for x in out]):
+            continue
+        out.append(story)
+    return out[:5]
 
 
 def _forwardable_moments() -> List[Dict[str, Any]]:
@@ -152,8 +165,10 @@ def _hashtags(stories: List[Dict[str, Any]], max_tags: int = 8) -> List[str]:
 def _story_summary_lines(stories: List[Dict[str, Any]]) -> str:
     lines: List[str] = []
     for story in stories[:5]:
-        headline = _clean_headline(story.get("headline", ""))
-        data = [str(x) for x in (story.get("data_points") or [])[:2] if "No explicit" not in str(x)]
+        headline = _story_headline(story)
+        if not headline:
+            continue
+        data = [str(x) for x in (story.get("data_points") or [])[:2] if "No explicit" not in str(x) and not re.fullmatch(r"Published on \d{4}-\d{2}-\d{2}\.?", str(x), flags=re.I)]
         suffix = f" — {'; '.join(data)}" if data else ""
         lines.append(f"- {headline}{suffix}")
     return "\n".join(lines)
@@ -183,10 +198,14 @@ def _clip_candidates(meta: Dict[str, Any], stories: List[Dict[str, Any]], moment
     clips: List[Dict[str, Any]] = []
     for i, story in enumerate(stories[:5], start=1):
         quote = moments[i - 1].get("text") if i - 1 < len(moments) else ""
-        line = _safe_hook(quote, hook if i == 1 else f"What changes if {_clean_headline(story.get('headline','this story'))} is not just a headline, but a leverage shift?")
+        # Never let connective tissue become the marketing hook.
+        if re.search(r"^(that’s a significant risk|that's a significant risk|and while|meanwhile|absolutely|speaking of|another big development)", quote or "", flags=re.I):
+            quote = ""
+        story_head = _story_headline(story) or "this story"
+        line = _safe_hook(quote, hook if i == 1 else f"What changes if {story_head} is not just a headline, but a leverage shift?")
         clips.append({
             "rank": i,
-            "story": _clean_headline(story.get("headline") or ""),
+            "story": _story_headline(story),
             "hook": _clamp(line, 130),
             "subhook": _clamp((story.get("why_shocking") or "").strip(), 150),
             "cta": tracking.get("subscribe_clip_primary" if i == 1 else "subscribe_clip_secondary", meta.get("listen_url", "")),
@@ -209,6 +228,7 @@ def build_assets(meta: Dict[str, Any]) -> Dict[str, Any]:
     hook = _safe_hook(hook, "Most AI coverage stops at the headline. The real story is who just gained leverage.")
     title = _title(meta, stories)
     clips = _clip_candidates(meta, stories, moments)
+    learning_line = _learning_line(meta, stories)
     cta = f"Subscribe to TheLEDGR: {show_notes_url}"
 
     x_thread_lines = [
@@ -237,7 +257,7 @@ def build_assets(meta: Dict[str, Any]) -> Dict[str, Any]:
     )
     instagram = f"{hook}\n\nSerious AI people do not need more noise. They need the consequence.\n\n{cta}\n\n{' '.join(hashtags)}"
     blurb = f"The AI Edge turns today's biggest AI stories into operator-grade signal: {hook}"
-    tags = {"tags_6": " ".join(hashtags[:6]), "tags_12": " ".join(hashtags[:12]), "seo_keywords": [_clean_headline(s.get("headline") or "") for s in stories if s.get("headline")] + ["AI news podcast", "TheLEDGR", "AI strategy", "AI agents", "AI regulation"]}
+    tags = {"tags_6": " ".join(hashtags[:6]), "tags_12": " ".join(hashtags[:12]), "seo_keywords": [_story_headline(s) for s in stories if _story_headline(s)] + ["AI news podcast", "TheLEDGR", "AI strategy", "AI agents", "AI regulation"]}
     pack = {
         "hook": hook,
         "yt_title": title,
@@ -294,6 +314,7 @@ def main() -> int:
     _write_text(OUT_LINKEDIN_POST, assets["linkedin"])
     _write_json(OUT_CLIP_HOOKS, {"hooks": [c["hook"] for c in assets["clips"]]})
     _write_text(OUT_NEWSLETTER_TEASER, assets["newsletter_teaser"])
+    _write_text(OUT_LEARNING_PROMISE, assets["pack"].get("learning_line", ""))
     _write_json(OUT_SPONSOR_REPORT, assets["sponsor_report"])
     print("marketing_engine.py: wrote v2.24 competitive marketing assets", flush=True)
     return 0
