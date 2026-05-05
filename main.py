@@ -80,6 +80,7 @@ PACKAGING_GATE_PATH = BASE_DIR / "packaging_gate.json"
 SPONSOR_DELIVERY_REPORT_PATH = BASE_DIR / "sponsor_delivery_report.json"
 FORWARDABLE_EXCHANGE_MAP_PATH = BASE_DIR / "forwardable_exchange_map.json"
 FORWARDABLE_TARGETS_PATH = BASE_DIR / "forwardable_targets.json"
+LEARNING_PROMISE_PATH = BASE_DIR / "episode_learning_promise.json"
 
 AUDIO_BRANDKIT_DIR = BASE_DIR / "audio_brandkit"
 BRANDKIT_SFX_DIR = AUDIO_BRANDKIT_DIR / "sfx"
@@ -1218,18 +1219,19 @@ def _candidate_to_story(x: Dict[str, str]) -> Dict[str, str]:
     }
 
 
+
 def _dedupe_story_list(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
     out: List[Dict[str, str]] = []
     seen = set()
-    for s in stories:
-        key = (s.get("source_url") or "").strip().lower() or re.sub(r"\s+", " ", (s.get("headline") or "").strip().lower())
-        if not key or key in seen:
+    for raw in stories:
+        s = _coerce_story_record(dict(raw))
+        headline = _story_display_headline(s)
+        key = (s.get("source_url") or s.get("link") or "").strip().lower() or re.sub(r"\s+", " ", headline.lower())
+        if not key or key in seen or not headline:
             continue
         seen.add(key)
         out.append(s)
-    return out
-
-
+    return _dedupe_story_families(out)
 
 def _story_identity_key(item: Dict[str, str]) -> str:
     return (item.get("source_url") or item.get("link") or "").strip().lower() or re.sub(
@@ -1292,7 +1294,7 @@ def _candidate_quality_pass(item: Dict[str, str]) -> bool:
 
 
 # ----------------------------
-# v2.24 COMPETITIVE MEDIA BOARD
+# v2.25 ARC ENGINE + RECEIPTS BOARD
 # ----------------------------
 AI_HEAT_TERMS = {
     "openai", "anthropic", "deepmind", "google deepmind", "nvidia", "meta ai", "llama",
@@ -1338,6 +1340,113 @@ def _story_blob(item: Dict[str, str]) -> str:
     ]
     return " ".join([p for p in parts if p]).strip()
 
+
+
+def _story_display_headline(story: Dict[str, str]) -> str:
+    """Return the human headline regardless of whether the object is a raw candidate or enriched story."""
+    return re.sub(r"\s+", " ", (story.get("headline") or story.get("title") or "").strip())
+
+
+def _data_points_without_dates_only(story: Dict[str, str]) -> List[str]:
+    raw = story.get("data_points") if isinstance(story.get("data_points"), list) else []
+    out: List[str] = []
+    for item in raw:
+        t = re.sub(r"\s+", " ", str(item or "").strip())
+        if not t:
+            continue
+        if re.fullmatch(r"Published on \d{4}-\d{2}-\d{2}\.?", t, flags=re.IGNORECASE):
+            continue
+        if "google news" in t.lower() and len(t) < 80:
+            continue
+        if "no explicit figures" in t.lower():
+            continue
+        out.append(t)
+    return out
+
+
+def _receipt_quality_score(story: Dict[str, str]) -> int:
+    """Score whether Rufus/Jamie actually have receipts, not just a date."""
+    points = _data_points_without_dates_only(story)
+    blob = " ".join([
+        _story_display_headline(story),
+        story.get("why_shocking") or story.get("summary") or "",
+        " ".join(points),
+        story.get("publisher") or "",
+    ])
+    score = 0
+    if points:
+        score += min(3, len(points))
+    if NUMERIC_TOKEN_RE.search(blob) or MONEY_RE.search(blob):
+        score += 3
+    if any(k in blob.lower() for k in ["lawsuit", "security", "vulnerability", "code execution", "regulation", "bank", "clinical", "patient", "developer", "benchmark", "earnings", "revenue"]):
+        score += 2
+    if story.get("publisher"):
+        score += 1
+    if len((story.get("why_shocking") or story.get("summary") or "")) >= 80:
+        score += 1
+    return score
+
+
+def _story_family_tokens(story: Dict[str, str]) -> set[str]:
+    blob = normalize_text(" ".join([
+        _story_display_headline(story),
+        story.get("why_shocking") or story.get("summary") or "",
+        " ".join([str(x) for x in (story.get("key_entities") or [])[:8]]),
+    ]))
+    stop = {"the", "and", "with", "for", "from", "into", "about", "today", "launch", "launches", "announces", "building", "help", "helps", "using", "news", "google", "agentic"}
+    toks = {t for t in blob.split() if len(t) >= 4 and t not in stop}
+    # Force obvious duplicate families to collapse.
+    if {"anthropic", "fis"} <= toks and ("bank" in toks or "banks" in toks or "financial" in toks or "crime" in toks or "crimes" in toks or "aml" in toks):
+        return {"anthropic", "fis", "bank", "financial", "crime"}
+    if "mcp" in toks and ("server" in toks or "servers" in toks):
+        return {"mcp", "servers", "security", "agent"}
+    return toks
+
+
+def _story_family_overlap(a: Dict[str, str], b: Dict[str, str]) -> float:
+    ta = _story_family_tokens(a)
+    tb = _story_family_tokens(b)
+    if not ta or not tb:
+        return 0.0
+    return len(ta & tb) / max(1, min(len(ta), len(tb)))
+
+
+def _dedupe_story_families(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    out: List[Dict[str, str]] = []
+    for story in stories:
+        if not _story_display_headline(story):
+            continue
+        duplicate_idx = None
+        for idx, kept in enumerate(out):
+            if _story_family_overlap(story, kept) >= 0.62:
+                duplicate_idx = idx
+                break
+        if duplicate_idx is None:
+            out.append(story)
+        else:
+            # Keep the stronger sourced / receipt-rich version.
+            if (_receipt_quality_score(story), _editorial_impact_score(story)) > (_receipt_quality_score(out[duplicate_idx]), _editorial_impact_score(out[duplicate_idx])):
+                out[duplicate_idx] = story
+    return out
+
+
+def _coerce_story_record(item: Dict[str, str]) -> Dict[str, str]:
+    """Convert raw growth-engine candidates into the enriched story shape used by the writer."""
+    if item.get("headline") and item.get("source_url"):
+        return item
+    return _candidate_to_story(item)
+
+
+def _hard_receipt_instruction(stories: List[Dict[str, str]]) -> str:
+    thin = [s for s in stories[:5] if _receipt_quality_score(s) < 3]
+    if not thin:
+        return ""
+    names = "; ".join([_story_display_headline(s) for s in thin[:3]])
+    return (
+        "RECEIPTS WARNING: Some stories have thin public snippets, not enough hard numbers. "
+        f"Thin stories: {names}. Do not fake data. If the only hard fact is the publication date, say that plainly and pivot to incentives, liability, operator consequence, and what evidence is still missing. "
+        "Rufus should call out thin receipts with dry wit instead of pretending the evidence is stronger than it is."
+    )
 
 def _ai_heat_score(item: Dict[str, str]) -> float:
     blob = _story_blob(item).lower()
@@ -1449,47 +1558,57 @@ def _lead_gate_reason(item: Dict[str, str], fatigue_counts: Optional[Dict[str, i
     return "qualified"
 
 
+
 def _enforce_lead_story_gate(stories: List[Dict[str, str]], ranked_all: List[Dict[str, str]], previous_meta: Dict[str, object], date_str: str) -> List[Dict[str, str]]:
     if not stories:
         return stories
     fatigue_counts = _company_fatigue_counts()
+    stories = _dedupe_story_families([_coerce_story_record(dict(s)) for s in stories])
     reason = _lead_gate_reason(stories[0], fatigue_counts)
     demotions: List[Dict[str, str]] = []
-    if reason == "qualified":
+    if reason == "qualified" and _receipt_quality_score(stories[0]) >= 3:
         _write_story_slate_decision(date_str, stories, ranked_all, demotions, fatigue_counts)
         return stories
     original = dict(stories[0])
-    demotions.append({"headline": original.get("headline") or original.get("title"), "reason": reason})
+    if reason == "qualified":
+        reason = f"lead receipts too thin ({_receipt_quality_score(original)}/10)"
+    demotions.append({"headline": _story_display_headline(original), "reason": reason})
     current_keys = {_story_identity_key(s) for s in stories}
     replacement = None
     for cand in _apply_competitive_editorial_order(ranked_all, previous_meta, selected=[]):
         key = _story_identity_key(cand)
         if not key:
             continue
-        if _lead_gate_reason(cand, fatigue_counts) == "qualified":
-            replacement = cand
+        coerced = _coerce_story_record(dict(cand))
+        if _lead_gate_reason(coerced, fatigue_counts) == "qualified" and _receipt_quality_score(coerced) >= 3:
+            try:
+                coerced = enrich_stories_with_data([coerced])[0]
+            except Exception:
+                pass
+            replacement = coerced
             break
     if replacement:
         rep_key = _story_identity_key(replacement)
         rest = [s for s in stories if _story_identity_key(s) != rep_key]
-        out = [replacement] + rest
-        out = _dedupe_story_list(out)[:5]
-        while len(out) < min(5, len(stories)):
-            for cand in ranked_all:
-                if _story_identity_key(cand) not in {_story_identity_key(x) for x in out}:
-                    out.append(cand)
-                    break
+        out = _dedupe_story_families([replacement] + rest)
+        # Fill from candidate pool without introducing story-family duplicates or raw blank candidates.
+        for cand in _apply_competitive_editorial_order(ranked_all, previous_meta, selected=out):
+            if len(out) >= 5:
+                break
+            coerced = _coerce_story_record(dict(cand))
+            trial = _dedupe_story_families(out + [coerced])
+            if len(trial) > len(out):
+                out = trial
         _write_story_slate_decision(date_str, out, ranked_all, demotions, fatigue_counts)
         return out[:5]
     _write_story_slate_decision(date_str, stories, ranked_all, demotions, fatigue_counts)
-    return stories
-
+    return stories[:5]
 
 def _write_story_slate_decision(date_str: str, stories: List[Dict[str, str]], ranked_all: List[Dict[str, str]], demotions: List[Dict[str, str]], fatigue_counts: Dict[str, int]) -> None:
     try:
         payload = {
             "date": date_str,
-            "model": "v2.24-competitive-media-board",
+            "model": "v2.25-arc-engine-receipts-board",
             "fatigue_counts_last_7_titles": fatigue_counts,
             "demotions": demotions,
             "selected_slate": [
@@ -2168,6 +2287,14 @@ def pick_top_stories(intel_items: List[Dict[str, str]], n: int = 5, date_str: Op
 
     ordered = order_stories_for_episode(_dedupe_story_list(enriched)[:max(n, 5)])
     ordered = _enforce_lead_story_gate(ordered[:max(n, 5)], ranked_all, previous_meta, date_str)
+    ordered = _dedupe_story_families([_coerce_story_record(dict(s)) for s in ordered])
+    # Final safety fill: never publish blank duplicate slots.
+    for cand in _apply_competitive_editorial_order(ranked_all, previous_meta, selected=ordered):
+        if len(ordered) >= max(n, 5):
+            break
+        trial = _dedupe_story_families(ordered + [_coerce_story_record(dict(cand))])
+        if len(trial) > len(ordered):
+            ordered = trial
     return ordered[:max(n, 5)]
 
 
@@ -2280,20 +2407,25 @@ def _segment_header(i: int) -> str:
     return f"### SEGMENT {i}"
 
 
+
 def _story_block(stories: List[Dict[str, str]]) -> str:
     out = []
-    for i, s in enumerate(stories[:5]):
+    for i, s in enumerate(_dedupe_story_families(stories[:5])):
         dp = s.get("data_points") if isinstance(s.get("data_points"), list) else []
         dp_txt = "; ".join([str(x).strip() for x in dp if str(x).strip()][:6])
+        if not dp_txt:
+            dp_txt = "No hard data points found in the snippet; do not invent numbers."
         pub = (s.get("publisher") or "").strip()
         pdate = (s.get("published") or "").strip()
-        why = (s.get("why_shocking") or "").strip()
-        url = (s.get("source_url") or "").strip()
+        why = (s.get("why_shocking") or s.get("summary") or "").strip()
+        url = (s.get("source_url") or s.get("link") or "").strip()
         tomorrow = (s.get("tomorrow_hook") or "").strip()
+        receipt_score = _receipt_quality_score(s)
         out.append(
-            f"{i+1}. {s.get('headline','')}\n"
+            f"{i+1}. {_story_display_headline(s)}\n"
             f"   Publisher: {pub}\n"
             f"   Published: {pdate}\n"
+            f"   Receipt quality: {receipt_score}/10\n"
             f"   Why it matters: {why}\n"
             f"   Data points: {dp_txt}\n"
             f"   Tomorrow hook: {tomorrow}\n"
@@ -2310,53 +2442,53 @@ def _strict_dialogue_rules() -> str:
         '- Segment markers are allowed as lines starting with "###" and will NOT be spoken.\n'
         '- "[MUSIC]" may appear as a standalone line.\n'
         '- Do not add any other headings, bullets, or markdown.\n'
-        '- This is a live contested conversation, not a sequential explainer.\n'
-        '- Default spoken lines should usually be 6-36 words and 1-2 sentences, but let strong exchanges breathe when someone is building a case.\n'
+        '- This is not a headline relay. It is a shaped three-person show with curiosity, reveal, argument, comic release, and a practical takeaway.\n'
+        '- Think Kenny-and-Jillian style chemistry: one host drives curiosity, the co-host reacts honestly, and the facts become a little story people want to hear again. Do NOT copy them; use the lesson of warmth, timing, playful learning, and repeatable show rituals.\n'
+        '- The listener must leave smarter. Every segment should teach one reusable idea, mental model, or mistake to avoid.\n'
+        '- Each segment needs a mini-arc: curiosity question, simple explanation, playful pushback, receipt, consequence, and a small payoff.\n'
+        '- Use humor like seasoning: quick, human, a little dry, never goofy for too long. The joke must reveal character, clarify the story, or make the lesson memorable.\n'
+        '- Use plain-English teaching phrases naturally: the simple version, think of it like, the part people miss, the operator lesson, the mistake teams make.\n'
+        '- Default spoken lines should usually be 6-34 words and 1-2 sentences, but let strong exchanges breathe when someone is building a case.\n'
         '- Avoid dead monologues, but do NOT rotate turns so fast that nobody can build a point. A sharp exchange can run 4-7 turns before Alex steps back in.\n'
         '- Alex must actively run the room, but he should interrupt with purpose rather than constant maintenance chatter.\n'
-        '- Jamie must sound extremely intelligent, polished, emotionally readable, and grounded.\n'
+        '- Jamie must sound extremely intelligent, polished, emotionally readable, and grounded. She should occasionally tease Alex or Rufus when the moment calls for it.\n'
         '- Rufus must stay dry, British, surgical, and compact, with at least one dry quip or saying where it fits.\n'
-        '- Every segment must include at least one interruption or control cue, at least two audible realism cues, one hard number, and one genuinely clipable line.\n'
+        '- Every segment must include at least one interruption or control cue, at least two audible realism cues, one receipt/data point or explicit admission that the snippet is thin, and one genuinely clipable line.\n'
         '- Use bracketed realism cues sparingly and tastefully: [laughs], [sharp exhale], [scoffs], [dry laugh], [under his breath], [audible disbelief].\n'
         '- Across the segment, vary emotional temperature. Do not let three consecutive exchanges sit at the same emotional level.\n'
     )
 
 
-
 def _segment_assignment(seg_num: int) -> str:
     if seg_num == 1:
         return (
-            "Story 1: the single biggest story of the day. Cold open with heat, interruption, disbelief, and immediate status-play. Then [MUSIC]. "
-            "Immediately after [MUSIC], Alex lands a sharp TheLEDGR sponsor hit, welcomes the audience, and tears through the five-story lineup like people cannot afford to miss it. "
-            "Alex should sound amused, aggressive, curious, and in command: he asks the high-stakes question everyone is already thinking, but he does not rush. "
-            "This segment must feel expensive, current, story-rich, and instantly clip-ready."
+            "ACT 1 — The Hook, Promise, and Lesson. Open mid-argument with a surprising claim, a little comic friction, and one clean listener question. Then [MUSIC]. "
+            "Immediately after [MUSIC], Alex lands a warm, premium The Ledger sponsor hit, welcomes the audience, and frames the episode spine: what today's stories teach us about power, risk, and who has to react tomorrow. "
+            "Do not recite the five stories like a shopping list. Give the audience a reason to care, a simple concept they will understand by the end, and a reason to stay."
         )
     if seg_num == 2:
         return (
-            "Story 2: the second biggest story of the day. ONLY Alex and Jamie. "
-            "This is where Jamie sounds formidable: extremely intelligent, emotionally alive, grounded, and sharp under pressure. "
-            "Alex asks the hard question, then lets Jamie actually build the case before cutting back in. "
-            "The scene needs one real turn of disagreement, at least one laugh/scoff/disbelief beat, one hard number, and one line a listener would text to a friend immediately."
+            "ACT 2 — The Human/Operator Angle. ONLY Alex and Jamie. This is the approachable, smart, slightly playful explanation scene. "
+            "Jamie should make the abstract story feel real: budgets, jobs, patients, developers, teams, compliance, or the person who gets blamed. "
+            "Build one Kenny-and-Jillian-style learning beat: Alex asks the obvious question, Jamie explains it in plain English, Alex jokes or pushes back, Jamie corrects him with warmth and edge, and the listener learns a reusable AI concept."
         )
     if seg_num == 3:
         return (
-            "Story 3: the third biggest story of the day. Alex throws to Rufus and Rufus owns the room with money, power, policy, or geopolitical consequence. "
-            "Rufus must land one elite dry British undercut, one memorable British saying, and one hard number that changes how the listener sees the story. "
-            "Jamie challenges Rufus once, they spar for 4-7 turns with real wit and irritation, and then Alex regains control and forces the takeaway."
+            "ACT 3 — Receipts and Skepticism. Alex throws to Rufus, who must separate evidence from theater. "
+            "Rufus should say when receipts are thin, land the money/incentives read, and give one dry British undercut that makes the point memorable. "
+            "Jamie challenges him once so this does not become a lecture; Alex turns their disagreement into the takeaway."
         )
     if seg_num == 4:
         return (
-            "Story 4: the strongest vertical story. All three are in. This should feel like the best full-cast scene of the episode with friction, callbacks, real interruptions, and at least one genuine chuckle or smirk beat. "
-            "Jamie and Rufus must have one genuine sparring exchange with wit, sarcasm, and respect before Alex gets a handle on the room. "
-            "No polite panel-talk. This is where the cast chemistry itself becomes the product."
+            "ACT 4 — The Table Fight. All three are in. This is the episode's best chemistry scene: playful disagreement, callback, receipt, practical consequence. "
+            "Give Jamie and Rufus a real sparring window. Let Alex enjoy it for a beat before he reins it in. "
+            "One moment should feel funny enough to clip, but the joke must reveal the stakes."
         )
     return (
-        "Story 5: the second-best vertical or best flex story. Drive toward a real close. "
-        "Before the close, Jamie and Rufus should have one final sharp disagreement or teasing exchange that reveals their chemistry, then Alex lands the takeaway. "
-        "The ending must feel memorable, slightly cinematic, tomorrow-facing, and unresolved enough that listeners need the next episode. "
-        "No weak wrap-up language until the actual final sign-off and outro."
+        "ACT 5 — The Readout and Tomorrow Hook. Tie the stories into one lesson, not five summaries. "
+        "The final movement must include The Ledger Readout energy: what changed, who wins, who is exposed, what serious operators do tomorrow, and the one mental model the audience should keep. "
+        "End with a human, unresolved question that makes tomorrow's episode feel necessary."
     )
-
 
 def _sanitize_segment_speakers(seg_text: str, allowed: Optional[set] = None) -> str:
 
@@ -2617,6 +2749,12 @@ def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, st
         "published on",
         "the event is",
         "it sounds like",
+        "absolutely",
+        "and while",
+        "meanwhile",
+        "that’s a significant risk",
+        "that's a significant risk",
+        "speaking of",
     )
 
     for raw in script.splitlines():
@@ -2637,10 +2775,16 @@ def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, st
             continue
         if any(low.startswith(prefix) for prefix in weak_openers):
             score -= 3
-        if "published on" in low or "article from" in low:
+        if "published on" in low or "article from" in low or "according to" in low:
+            score -= 6
+        if re.search(r"(and while|meanwhile|speaking of|another big development|huge leap forward|revolutionizing healthcare)", low):
+            score -= 5
+        # Summary transitions are not forwardable. A forwardable line must contain a take, tension, consequence, or joke.
+        has_take_shape = bool(re.search(r"(real question|real story|who gets blamed|who owns|power shift|permission layer|liability|exposed|tomorrow|not .* but|the catch|the problem|splendid|lovely|bleakest|root access|no adult supervision)", low))
+        if not has_take_shape and not (has_number and (has_consequence or has_shock or has_contrast)):
             score -= 4
         if len(spoken) > 220:
-            score -= 2
+            score -= 3
 
         tokens = {tok.lower().strip(".,:;!?") for tok in re.findall(r"[A-Za-z0-9€$%][A-Za-z0-9€$%\-_]{2,}", spoken)}
         anchor_hits = len(tokens & anchors) if anchors else 0
@@ -2752,19 +2896,118 @@ def _sponsor_prompt_lines(sponsor: Dict[str, str]) -> str:
 
 
 
+
+
+
+def _episode_learning_concept(stories: List[Dict[str, str]]) -> str:
+    blob = " ".join([_story_display_headline(s) + " " + (s.get("why_shocking") or "") for s in stories[:5]]).lower()
+    if any(k in blob for k in ["mcp", "security", "vulnerability", "code execution", "breach", "attack"]):
+        return "agent surface area"
+    if any(k in blob for k in ["permission", "workflow", "agent", "copilot", "assistant"]):
+        return "permission layer"
+    if any(k in blob for k in ["health", "clinical", "patient", "medicine", "hospital"]):
+        return "clinical risk transfer"
+    if any(k in blob for k in ["bank", "finance", "aml", "fraud", "compliance"]):
+        return "liability chain"
+    if any(k in blob for k in ["chip", "gpu", "compute", "datacenter", "inference"]):
+        return "compute bottleneck"
+    if any(k in blob for k in ["model", "benchmark", "openai", "anthropic", "deepmind", "gemini"]):
+        return "model moat"
+    return "leverage shift"
+
+
+def build_episode_learning_promise(stories: List[Dict[str, str]]) -> Dict[str, object]:
+    concept = _episode_learning_concept(stories)
+    spine = _episode_spine(stories) if "_episode_spine" in globals() else "AI is moving from headline noise to operator consequence."
+    glossary = {
+        "permission layer": "who can approve, access, trigger, delete, escalate, or spend when an AI agent starts acting",
+        "agent surface area": "every tool, server, connector, and permission an agent can touch becomes a new place for risk",
+        "clinical risk transfer": "the moment AI moves from advice to care workflow, responsibility shifts onto doctors, hospitals, vendors, and patients",
+        "liability chain": "the trail of accountability when an automated decision causes financial, legal, or operational damage",
+        "compute bottleneck": "the constraint created when demand for intelligence outruns chips, power, data centers, or inference economics",
+        "model moat": "the advantage a lab builds when its model, data, distribution, and ecosystem make it hard to replace",
+        "leverage shift": "the hidden power change underneath a headline: who gains control, who loses options, and who has to react",
+    }
+    mental_model = glossary.get(concept, glossary["leverage shift"])
+    promise = {
+        "concept": concept,
+        "plain_english": mental_model,
+        "listener_promise": f"By the end of this episode, the listener should understand {concept}: {mental_model}.",
+        "operator_lesson": "Do not ask only what launched. Ask who gains control, who inherits risk, and what decision changes tomorrow.",
+        "episode_spine": spine,
+        "teaching_moves_required": [
+            "Alex asks the obvious listener question",
+            "Jamie explains the concept in plain English",
+            "Rufus gives a receipt, money trail, or dry undercut",
+            "The hosts turn the concept into an operator lesson",
+        ],
+    }
+    try:
+        LEARNING_PROMISE_PATH.write_text(json.dumps(promise, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    return promise
+
+
+def _learning_promise_prompt(stories: List[Dict[str, str]]) -> str:
+    promise = build_episode_learning_promise(stories)
+    return (
+        "EPISODE LEARNING PROMISE:\n"
+        f"- Concept the audience must learn: {promise['concept']}\n"
+        f"- Plain English version: {promise['plain_english']}\n"
+        f"- Listener promise: {promise['listener_promise']}\n"
+        f"- Operator lesson: {promise['operator_lesson']}\n"
+        "- Teach it through banter, not a lecture. Alex asks the obvious question, Jamie translates, Rufus adds the receipt or dry undercut.\n"
+        "- At least once, use a memorable analogy that makes the concept stick.\n"
+    )
+
+
+def _script_has_learning_arc(script: str, stories: List[Dict[str, str]]) -> bool:
+    low = (script or "").lower()
+    concept = _episode_learning_concept(stories).lower()
+    teaching_phrases = [
+        "simple version", "plain english", "think of it like", "part people miss", "operator lesson",
+        "mental model", "what that means", "the mistake", "so wait", "explain", "means",
+    ]
+    return concept in low and sum(1 for p in teaching_phrases if p in low) >= 2
+
+
+def _append_teaching_arc_fallback_if_needed(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
+    if _script_has_learning_arc(script, stories):
+        return script
+    promise = build_episode_learning_promise(stories)
+    addon = [
+        "ALEX: Wait — before we wrap this, give me the simple version. What did we actually learn today?",
+        f"JAMIE: The useful mental model is {promise['concept']}. In plain English, it means {promise['plain_english']}.",
+        "RUFUS: [dry laugh] Which is a marvellous way of saying the shiny bit gets the applause and the boring control layer gets the money.",
+        f"ALEX: So the operator lesson is: {promise['operator_lesson']}",
+        "JAMIE: Exactly. That is the reason this matters tomorrow, not just today.",
+    ]
+    marker = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    if not marker:
+        return (script.rstrip() + "\n" + "\n".join(addon)).strip()
+    # Insert near the beginning of Segment 5, after the marker and first spoken setup if possible.
+    lines = script.splitlines()
+    seg5_idx = next((i for i, ln in enumerate(lines) if re.match(r"^###\s*SEGMENT\s*5\b", ln.strip(), flags=re.IGNORECASE)), None)
+    if seg5_idx is None:
+        return (script.rstrip() + "\n" + "\n".join(addon)).strip()
+    insert_at = min(len(lines), seg5_idx + 2)
+    lines[insert_at:insert_at] = addon
+    return "\n".join(lines).strip()
+
 def build_forwardable_targets(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
     top = stories[0] if stories else {}
-    h1 = _headline_title_core(top) if "_headline_title_core" in globals() else (top.get("headline") or "today's AI shift")
+    h1 = _headline_title_core(top) if "_headline_title_core" in globals() else (_story_display_headline(top) or "today's AI shift")
     entity = _story_entity_key(top) or "the biggest AI player"
     targets = [
-        {"type": "alex_pressure_question", "speaker": "ALEX", "target": f"Wait — if {entity} wins this layer, who actually owns the decision when the AI acts?"},
-        {"type": "jamie_human_consequence", "speaker": "JAMIE", "target": "The uncomfortable part is that this does not stay in a demo. It lands on teams, budgets, patients, developers, and somebody's name on the approval chain."},
-        {"type": "rufus_dry_undercut", "speaker": "RUFUS", "target": "Lovely. A productivity miracle with a liability grenade tucked neatly in the gift basket."},
-        {"type": "power_shift", "speaker": "ALEX", "target": f"The story is not the feature. The story is the power shift sitting underneath {h1}."},
-        {"type": "tomorrow_tension", "speaker": "JAMIE", "target": "Tomorrow morning, the serious question is not who announced something. It is who has to change a roadmap because of it."},
+        {"type": "alex_pressure_question", "speaker": "ALEX", "target": f"Wait — if {entity} wins the permission layer, who owns the decision when the AI acts?"},
+        {"type": "jamie_human_consequence", "speaker": "JAMIE", "target": "The uncomfortable part is this does not stay in a demo. It lands on budgets, patients, developers, and somebody's name on the approval chain."},
+        {"type": "rufus_dry_undercut", "speaker": "RUFUS", "target": "Splendid. We have automated the work and preserved the blame. Very efficient, in the bleakest possible sense."},
+        {"type": "power_shift", "speaker": "ALEX", "target": f"The story is not the announcement. The story is the power shift underneath {h1}."},
+        {"type": "tomorrow_tension", "speaker": "JAMIE", "target": "Tomorrow morning, the serious question is not who launched something. It is who has to change the plan because of it."},
+        {"type": "comic_learning_beat", "speaker": "RUFUS", "target": "That is not a workflow. That is a tiny intern with root access and no adult supervision."},
     ]
     return targets
-
 
 def _forwardable_targets_prompt(stories: List[Dict[str, str]]) -> str:
     targets = build_forwardable_targets(stories)
@@ -2786,17 +3029,17 @@ def _find_insert_after_music(lines: List[str]) -> int:
     return 1 if lines else 0
 
 
+
 def _build_theledgr_readout_lines(stories: List[Dict[str, str]], date_str: str) -> List[str]:
     top = stories[0] if stories else {}
-    title = _headline_title_core(top) if "_headline_title_core" in globals() else (top.get("headline") or "today's AI move")
+    title = _headline_title_core(top) if "_headline_title_core" in globals() else (_story_display_headline(top) or "today's AI move")
     win_entity = _story_entity_key(top) or "whoever controls the next AI workflow"
     return [
-        "ALEX: TheLEDGR Readout — this is the part The Ledger exists for. Headlines tell you what launched. The Ledger tells you what it changes.",
+        "ALEX: The Ledger Readout — this is the part The Ledger exists for. Headlines tell you what launched. The Ledger tells you what it changes.",
         f"JAMIE: What changed: {title}. Who wins: the operators who see the second-order consequence before budget, workflow, or risk decisions harden.",
         f"RUFUS: Who is exposed? Anyone treating this like a press release instead of a leverage shift. Very brave, in the way standing under a piano is brave.",
         f"ALEX: What serious operators do tomorrow: read The Ledger, pressure-test the roadmap, and ask where the liability lands. Subscribe at {THELEDGR_SPOKEN_URL}.",
     ]
-
 
 def ensure_theledgr_readout(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
     low = (script or "").lower()
@@ -2887,36 +3130,82 @@ def build_sponsor_delivery_report(script: str, stories: List[Dict[str, str]], da
     }
 
 
+
 def build_episode_aircheck(script: str, stories: List[Dict[str, str]], pack: Dict[str, str], sponsors: List[Dict[str, str]], date_str: str) -> Dict[str, object]:
     title = pack.get("yt_title") or ""
     desc = pack.get("show_notes_hook") or pack.get("yt_description") or ""
     moments = extract_forwardable_moments(script, stories=stories, max_items=6)
     sponsor = build_sponsor_delivery_report(script, stories, date_str)
-    buckets = {_normalize_vertical_bucket(s.get("bucket", "")) for s in stories}
-    lead_heat = _ai_heat_score(stories[0]) if stories else 0.0
+    clean_stories = _dedupe_story_families([_coerce_story_record(dict(s)) for s in stories if _story_display_headline(s)])
+    buckets = {_normalize_vertical_bucket(s.get("bucket", "")) for s in clean_stories}
+    lead_heat = _ai_heat_score(clean_stories[0]) if clean_stories else 0.0
+    receipt_scores = [_receipt_quality_score(s) for s in clean_stories[:5]]
+    duplicate_family_risk = len(clean_stories) < len([s for s in stories if _story_display_headline(s)])
+    blank_story_slot = len(clean_stories) < min(5, len(stories)) or any(not _story_display_headline(s) for s in stories[:5])
+    targets = build_forwardable_exchange_map(script, clean_stories)
+    target_hits = sum(1 for m in targets.get("matches", []) if m.get("forwardable"))
     checks = {
         "lead_story_heat": lead_heat >= 46.0,
+        "lead_receipts": bool(receipt_scores and receipt_scores[0] >= 3),
         "story_variety": len(buckets) >= 3,
+        "no_duplicate_story_family": not duplicate_family_risk,
+        "no_blank_story_slots": not blank_story_slot,
         "title_quality": bool(title and not BAD_TITLE_FRAGMENT_RE.search(title) and len(title) >= 28),
         "description_quality": bool(desc and not BAD_MARKETING_OPENERS_RE.search(desc) and not BAD_TITLE_FRAGMENT_RE.search(desc) and len(desc) >= 90),
-        "sponsor_quality": sponsor.get("TheLEDGR_Readout_present") and sponsor.get("spoken_url_present"),
-        "forwardable_moments": len(moments) >= FORWARDABLE_MIN_PER_EPISODE,
-        "cast_chemistry": all(name in script for name in ["ALEX:", "JAMIE:", "RUFUS:"]) and ("[" in script or "come on" in script.lower()),
+        "sponsor_quality": sponsor.get("TheLEDGR_Readout_present") and sponsor.get("spoken_url_present") and sponsor.get("brand_present"),
+        "forwardable_moments": len(moments) >= FORWARDABLE_MIN_PER_EPISODE and target_hits >= 3,
+        "learning_arc": _script_has_learning_arc(script, clean_stories),
+        "cast_chemistry": all(name in script for name in ["ALEX:", "JAMIE:", "RUFUS:"]) and ("[" in script or "come on" in script.lower() or "lovely" in script.lower() or "splendid" in script.lower()),
         "malformed_metadata": not (BAD_TITLE_FRAGMENT_RE.search(title or "") or BAD_MARKETING_OPENERS_RE.search(desc or "")),
     }
     score = round(100.0 * sum(1 for v in checks.values() if v) / max(1, len(checks)), 1)
+    # Hard caps: a show with weak heat, thin receipts, duplicate families, or blank story slots cannot grade itself as excellent.
+    caps = []
+    if not checks["lead_story_heat"]:
+        caps.append(74.0)
+    if not checks["lead_receipts"]:
+        caps.append(72.0)
+    if not checks["no_duplicate_story_family"]:
+        caps.append(68.0)
+    if not checks["no_blank_story_slots"]:
+        caps.append(64.0)
+    if min(receipt_scores or [0]) < 2:
+        caps.append(76.0)
+    if not checks.get("learning_arc"):
+        caps.append(75.0)
+    if caps:
+        score = round(min(score, min(caps)), 1)
     return {
         "date": date_str,
         "score": score,
         "pass": score >= 75.0,
         "checks": checks,
         "lead_heat": lead_heat,
+        "receipt_scores": receipt_scores,
+        "duplicate_family_risk": duplicate_family_risk,
+        "blank_story_slot": blank_story_slot,
         "forwardable_count": len(moments),
+        "forwardable_target_hits": target_hits,
         "sponsor": sponsor,
+        "learning_promise": build_episode_learning_promise(clean_stories),
         "title": title,
         "description_first_180": (desc or "")[:180],
-        "note": "All checks run before TTS/audio. Repairs are deterministic text insertions, not expensive audio retries.",
+        "note": "Strict v2.26 teaching-arc aircheck. Lead heat, receipts, blank slots, duplicate story families, and missing learning arc cap the score before TTS/audio.",
     }
+
+def _episode_spine(stories: List[Dict[str, str]]) -> str:
+    if not stories:
+        return "Today's AI story is moving from headline noise to operator consequence."
+    blob = " ".join([_story_display_headline(s) + " " + (s.get("why_shocking") or "") for s in stories[:5]]).lower()
+    if "security" in blob or "vulnerability" in blob or "code execution" in blob:
+        return "AI is moving from helpful assistant to active attack surface; the question is who controls it and who gets blamed."
+    if "health" in blob or "clinical" in blob or "patient" in blob:
+        return "AI is moving into higher-stakes human systems; the question is whether governance can catch up before liability does."
+    if "agent" in blob or "workflow" in blob or "copilot" in blob:
+        return "AI agents are moving from demos to permission layers; the real fight is control, liability, and leverage."
+    if "chip" in blob or "gpu" in blob or "compute" in blob:
+        return "The model race is becoming an infrastructure race; intelligence now depends on who can afford the next answer."
+    return "The headline is not the product launch; the real story is who gained leverage and who has to react tomorrow."
 
 
 def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
@@ -3006,6 +3295,10 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
 
     story_block = _story_block(stories)
     assignment = _segment_assignment(seg_num)
+    receipts_warning = _hard_receipt_instruction(stories)
+    forwardable_targets = _forwardable_targets_prompt(stories)
+    episode_spine = _episode_spine(stories)
+    learning_promise = _learning_promise_prompt(stories)
 
     return f"""
 You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
@@ -3035,8 +3328,19 @@ DATA REQUIREMENTS (non-negotiable):
 - Do NOT invent numbers. If a story has "No explicit figures in snippet", say that plainly.
 - If a story is thin on hard numbers, pivot to consequence, incentives, regulation, customers, developers, patients, or market impact.
 
+EPISODE SPINE:
+{episode_spine}
+
+{learning_promise}
+
 WHAT THIS SEGMENT MUST DO:
 {assignment}
+
+RECEIPTS STANDARD:
+{receipts_warning}
+
+FORWARDABLE / HUMOR TARGETS:
+{forwardable_targets}
 
 SPECIAL INSTRUCTIONS FOR THIS SEGMENT:
 {extra}
@@ -4400,7 +4704,7 @@ def build_episode_show_notes(
     stories: List[Dict[str, str]],
 ) -> str:
     cta_url = PUBLIC_SUBSCRIBE_URL
-    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in stories[:5]])
+    story_bullets = "\n".join([f"• {_story_display_headline(s)}" for s in stories[:5]])
     tomorrow_tease = (pack.get("tomorrow_tease") or "Tomorrow's winners will be the operators who saw the second-order consequence first.").strip()
     episode_blurb = (pack.get("episode_blurb") or "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, where the real stakes are, and the lines you will want to send to somebody else.").strip()
     hook = (pack.get("show_notes_hook") or episode_blurb).strip()
@@ -4436,7 +4740,7 @@ def generate_marketing_pack(
     title_style = experiments.get("title_style", "operator_consequence")
     cta_style = experiments.get("cta_style", "operator")
     top_headline = _headline_title_core(top_story)
-    top_data = " | ".join([str(x).strip() for x in (top_story.get("data_points") or [])[:3] if str(x).strip() and "No explicit figures" not in str(x)])
+    top_data = " | ".join([str(x).strip() for x in _data_points_without_dates_only(top_story)[:3]])
     subscribe_url = PUBLIC_SUBSCRIBE_URL
     listen_cta = tracking.get("listen", listen_url)
     hashtags = _hashtags_from_stories(ordered, max_tags=6)
@@ -4448,7 +4752,7 @@ def generate_marketing_pack(
     else:
         cta_line = f"If AI affects your work, subscribe to TheLEDGR for decision-grade signal: {subscribe_url}"
     fallback_hook = _smart_trim_text(_marketing_hook_from_stories(ordered), 96)
-    story_bullets = "\n".join([f"• {s.get('headline','')}" for s in ordered[:5]])
+    story_bullets = "\n".join([f"• {_story_display_headline(s)}" for s in ordered[:5]])
     tomorrow_tease = next((s.get("tomorrow_hook", "").strip() for s in ordered if (s.get("tomorrow_hook") or "").strip()), "Tomorrow's winners will be the operators who saw the second-order consequence first.")
     show_notes_hook = _make_show_notes_hook(top_story)
     return {
@@ -4709,6 +5013,7 @@ def produce_episode() -> None:
     script = ensure_sponsor_delivery(script, sponsors)
     script = ensure_theledgr_readout(script, stories, today)
     script = _append_forwardable_fallbacks_if_needed(script, stories)
+    script = _append_teaching_arc_fallback_if_needed(script, stories, today)
     script = _strip_premature_signoffs(_sanitize_dialogue_only(script))
 
     issues = validate_script(script, stories=stories)
@@ -5090,6 +5395,7 @@ def produce_episode() -> None:
         "experiments": experiments,
         "model_version": MODEL_VERSION,
         "forwardable_moments": forwardable_moments,
+        "learning_promise": json.loads(LEARNING_PROMISE_PATH.read_text(encoding="utf-8")) if LEARNING_PROMISE_PATH.exists() else build_episode_learning_promise(stories),
         "episode_aircheck": json.loads(EPISODE_AIRCHECK_PATH.read_text(encoding="utf-8")) if EPISODE_AIRCHECK_PATH.exists() else {},
         "sponsor_delivery_report": json.loads(SPONSOR_DELIVERY_REPORT_PATH.read_text(encoding="utf-8")) if SPONSOR_DELIVERY_REPORT_PATH.exists() else {},
     }
