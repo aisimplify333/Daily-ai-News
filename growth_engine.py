@@ -17,7 +17,7 @@ SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 FEED_XML_PATH = BASE_DIR / "feed.xml"
 EPISODE_METADATA_PATH = BASE_DIR / "episode_metadata.json"
 
-MODEL_VERSION = "podcast-growth-v2.24-full-swing"
+MODEL_VERSION = "podcast-growth-v2.26-teaching-arc"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in", "into", "is", "it",
@@ -499,23 +499,26 @@ def story_score_breakdown(item: Dict[str, Any], memory: Optional[Dict[str, Any]]
         "company_fatigue_penalty": round(company_fatigue_penalty(item, fatigue_counts), 2),
         "routine_enterprise_update": 1.0 if is_routine_enterprise_update(title, summary) else 0.0,
     }
-    routine_penalty = 18.0 if breakdown["routine_enterprise_update"] and breakdown["forward_consequence"] < 35.0 and breakdown["ai_heat"] < 68.0 else 0.0
-    low_signal_penalty = 18.0 if _publisher_name(item) in LOW_SIGNAL_PUBLISHERS else 0.0
+    routine_penalty = 28.0 if breakdown["routine_enterprise_update"] and breakdown["forward_consequence"] < 35.0 and breakdown["ai_heat"] < 72.0 else 0.0
+    low_signal_penalty = 22.0 if _publisher_name(item) in LOW_SIGNAL_PUBLISHERS else 0.0
+    no_receipts_penalty = 10.0 if breakdown["numeric_density"] <= 0.0 and breakdown["forward_consequence"] < 20.0 else 0.0
     weighted = (
-        0.20 * breakdown["brand_fit"]
-        + 0.15 * breakdown["authority"]
-        + 0.07 * breakdown["novelty"]
-        + 0.20 * breakdown["forward_consequence"]
-        + 0.08 * breakdown["numeric_density"]
-        + 0.10 * breakdown["clipability"]
-        + 0.05 * breakdown["recency"]
-        + 0.20 * breakdown["ai_heat"]
+        0.18 * breakdown["brand_fit"]
+        + 0.13 * breakdown["authority"]
+        + 0.06 * breakdown["novelty"]
+        + 0.25 * breakdown["forward_consequence"]
+        + 0.10 * breakdown["numeric_density"]
+        + 0.12 * breakdown["clipability"]
+        + 0.04 * breakdown["recency"]
+        + 0.24 * breakdown["ai_heat"]
         - breakdown["company_fatigue_penalty"]
         - routine_penalty
         - low_signal_penalty
+        - no_receipts_penalty
     )
     breakdown["routine_penalty"] = round(routine_penalty, 2)
     breakdown["low_signal_penalty"] = round(low_signal_penalty, 2)
+    breakdown["no_receipts_penalty"] = round(no_receipts_penalty, 2)
     breakdown["weighted"] = round(max(0.0, min(100.0, weighted)), 2)
     return breakdown
 
