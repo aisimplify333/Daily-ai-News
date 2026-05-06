@@ -2349,7 +2349,7 @@ def _long_spoken_line_count(text: str, max_words: int) -> int:
         m = SPEAKER_RE.match(raw.strip())
         if not m:
             continue
-        words = len(re.findall(r"\w+", m.group(2)))
+        words = len(re.findall(r"\b\w+\b", m.group(2)))
         if words > max_words:
             count += 1
     return count
@@ -2777,10 +2777,16 @@ def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, st
             score -= 3
         if "published on" in low or "article from" in low or "according to" in low:
             score -= 6
-        if re.search(r"(and while|meanwhile|speaking of|another big development|huge leap forward|revolutionizing healthcare)", low):
+        if re.search(r"\b(and while|meanwhile|speaking of|another big development|huge leap forward|revolutionizing healthcare)\b", low):
             score -= 5
+
+        has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", spoken, flags=re.IGNORECASE))
+        has_consequence = any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS)
+        has_shock = any(h in low for h in FORWARDABLE_SHOCK_HINTS)
+        has_contrast = bool(re.search(r"\b(?:but|except|instead|the catch|the problem|the real risk|the real question|what matters is)\b", low))
+
         # Summary transitions are not forwardable. A forwardable line must contain a take, tension, consequence, or joke.
-        has_take_shape = bool(re.search(r"(real question|real story|who gets blamed|who owns|power shift|permission layer|liability|exposed|tomorrow|not .* but|the catch|the problem|splendid|lovely|bleakest|root access|no adult supervision)", low))
+        has_take_shape = bool(re.search(r"\b(real question|real story|who gets blamed|who owns|power shift|permission layer|liability|exposed|tomorrow|not .* but|the catch|the problem|splendid|lovely|bleakest|root access|no adult supervision)\b", low))
         if not has_take_shape and not (has_number and (has_consequence or has_shock or has_contrast)):
             score -= 4
         if len(spoken) > 220:
@@ -2793,11 +2799,6 @@ def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, st
             title_tokens = {tok.lower() for tok in re.findall(r"[A-Za-z0-9][A-Za-z0-9\-_]{2,}", story.get("headline") or "")}
             if tokens & title_tokens:
                 story_hits += 1
-
-        has_number = bool(re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d{4}\b|\b\d+[mkb]?\b", spoken, flags=re.IGNORECASE))
-        has_consequence = any(h in low for h in FORWARDABLE_CONSEQUENCE_HINTS)
-        has_shock = any(h in low for h in FORWARDABLE_SHOCK_HINTS)
-        has_contrast = bool(re.search(r"\b(?:but|except|instead|the catch|the problem|the real risk|the real question|what matters is)\b", low))
 
         score += min(anchor_hits, 2)
         score += min(story_hits, 2)
