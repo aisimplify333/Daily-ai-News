@@ -1,21 +1,35 @@
 {
-  "date": "2026-05-05",
-  "score": 87.5,
+  "date": "2026-05-06",
+  "score": 91.7,
   "pass": true,
   "checks": {
-    "lead_story_heat": false,
+    "lead_story_heat": true,
+    "lead_receipts": true,
     "story_variety": true,
+    "no_duplicate_story_family": true,
+    "no_blank_story_slots": true,
     "title_quality": true,
     "description_quality": true,
     "sponsor_quality": true,
-    "forwardable_moments": true,
+    "forwardable_moments": false,
+    "learning_arc": true,
     "cast_chemistry": true,
     "malformed_metadata": true
   },
-  "lead_heat": 28.2,
+  "lead_heat": 47.08,
+  "receipt_scores": [
+    6,
+    7,
+    4,
+    9,
+    2
+  ],
+  "duplicate_family_risk": false,
+  "blank_story_slot": false,
   "forwardable_count": 6,
+  "forwardable_target_hits": 2,
   "sponsor": {
-    "date": "2026-05-05",
+    "date": "2026-05-06",
     "TheLEDGR_Readout_present": true,
     "brand_present": true,
     "spoken_url_present": true,
@@ -27,9 +41,22 @@
       "operator_tomorrow": true
     },
     "sponsor_tone_score": 10,
-    "strongest_story": "OpenAI to Test Agentic AI Finance Tools In-House With PwC’s Help"
+    "strongest_story": "AI Achieves 99% Accuracy in Brain Tumour Diagnosis"
   },
-  "title": "The AI Agent Stack Is Becoming a Land Grab",
-  "description_first_180": "OpenAI to Test Agentic AI Finance Tools In-House With PwC’s Help. The headline is agents. The real story is who controls the permission layer when AI starts acting.",
-  "note": "All checks run before TTS/audio. Repairs are deterministic text insertions, not expensive audio retries."
+  "learning_promise": {
+    "concept": "agent surface area",
+    "plain_english": "every tool, server, connector, and permission an agent can touch becomes a new place for risk",
+    "listener_promise": "By the end of this episode, the listener should understand agent surface area: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
+    "operator_lesson": "Do not ask only what launched. Ask who gains control, who inherits risk, and what decision changes tomorrow.",
+    "episode_spine": "AI is moving from helpful assistant to active attack surface; the question is who controls it and who gets blamed.",
+    "teaching_moves_required": [
+      "Alex asks the obvious listener question",
+      "Jamie explains the concept in plain English",
+      "Rufus gives a receipt, money trail, or dry undercut",
+      "The hosts turn the concept into an operator lesson"
+    ]
+  },
+  "title": "Google Pushes AI Into Healthcare — And the Liability Fight Begins",
+  "description_first_180": "AI Achieves 99% Accuracy in Brain Tumour Diagnosis. The headline is healthcare AI. The real story is who carries the liability when software starts shaping care.",
+  "note": "Strict v2.26 teaching-arc aircheck. Lead heat, receipts, blank slots, duplicate story families, and missing learning arc cap the score before TTS/audio."
 }
