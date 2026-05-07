@@ -17,7 +17,7 @@ SHOW_MEMORY_PATH = BASE_DIR / "show_memory.json"
 FEED_XML_PATH = BASE_DIR / "feed.xml"
 EPISODE_METADATA_PATH = BASE_DIR / "episode_metadata.json"
 
-MODEL_VERSION = "podcast-growth-v2.26-teaching-arc"
+MODEL_VERSION = "podcast-growth-v3.0-ai-signal-room"
 
 STOPWORDS = {
     "a", "an", "and", "are", "as", "at", "be", "by", "for", "from", "how", "in", "into", "is", "it",
@@ -133,9 +133,16 @@ AI_HEAT_TERMS = {
     "developer": 16,
     "code": 14,
     "health ai": 22,
+    "healthcare ai": 24,
+    "diagnosis": 24,
+    "diagnostic": 20,
+    "accuracy": 18,
+    "liability": 24,
     "clinical": 20,
     "fda": 20,
     "security": 20,
+    "attack surface": 24,
+    "permission layer": 22,
     "breach": 22,
     "copyright": 18,
     "revenue": 14,
@@ -177,11 +184,11 @@ FRONTIER_COMPANIES = [
 ]
 
 VARIANT_DEFAULTS: Dict[str, List[str]] = {
-    "title_style": ["hard_number", "operator_consequence", "tomorrow_tension", "power_shift"],
+    "title_style": ["lesson_curiosity", "hard_number", "operator_consequence", "power_shift"],
     "cta_style": ["operator", "career", "contrarian"],
     "sponsor_style": ["decision_signal", "career_edge", "less_noise", "readout"],
-    "clip_style": ["contrarian", "fear_greed", "operator_take", "power_shift"],
-    "voice_profile": ["mike_archer_eryn", "mike_archer_eryn_dialogue"],
+    "clip_style": ["today_lesson", "contrarian", "operator_take", "power_shift"],
+    "voice_profile": ["ai_signal_room_dynamic", "mike_archer_eryn_dialogue"],
 }
 
 
