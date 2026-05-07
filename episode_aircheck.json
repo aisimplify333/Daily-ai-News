@@ -1,62 +1,75 @@
 {
-  "date": "2026-05-06",
-  "score": 91.7,
-  "pass": true,
+  "date": "2026-05-07",
+  "show": "The AI Signal Room",
+  "score": 70.0,
+  "target_band": "88-95",
+  "pass": false,
   "checks": {
     "lead_story_heat": true,
     "lead_receipts": true,
     "story_variety": true,
     "no_duplicate_story_family": true,
     "no_blank_story_slots": true,
-    "title_quality": true,
+    "title_quality": false,
     "description_quality": true,
     "sponsor_quality": true,
     "forwardable_moments": false,
     "learning_arc": true,
-    "cast_chemistry": true,
+    "scene_shape": true,
+    "signal_or_static": true,
+    "real_humor_or_banter": true,
+    "no_monologue": true,
+    "not_summary_heavy": true,
     "malformed_metadata": true
   },
-  "lead_heat": 47.08,
+  "lead_heat": 20.82,
   "receipt_scores": [
-    6,
-    7,
-    4,
     9,
-    2
+    2,
+    6,
+    4,
+    6
   ],
+  "summary_heavy_ratio": 0.044,
   "duplicate_family_risk": false,
   "blank_story_slot": false,
-  "forwardable_count": 6,
+  "forwardable_count": 8,
   "forwardable_target_hits": 2,
   "sponsor": {
-    "date": "2026-05-06",
+    "date": "2026-05-07",
     "TheLEDGR_Readout_present": true,
     "brand_present": true,
     "spoken_url_present": true,
-    "cta_present": true,
+    "cta_present": false,
     "readout_answers": {
-      "what_changed": true,
-      "who_wins": true,
-      "who_is_exposed": true,
+      "what_changed": false,
+      "who_wins": false,
+      "who_is_exposed": false,
       "operator_tomorrow": true
     },
-    "sponsor_tone_score": 10,
-    "strongest_story": "AI Achieves 99% Accuracy in Brain Tumour Diagnosis"
+    "sponsor_tone_score": 8,
+    "strongest_story": "A Look At GLOBALFOUNDRIES (GFS) Valuation After SCALE AI Launch And Strong Q1 2026 Earnings"
   },
-  "learning_promise": {
-    "concept": "agent surface area",
-    "plain_english": "every tool, server, connector, and permission an agent can touch becomes a new place for risk",
-    "listener_promise": "By the end of this episode, the listener should understand agent surface area: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
-    "operator_lesson": "Do not ask only what launched. Ask who gains control, who inherits risk, and what decision changes tomorrow.",
-    "episode_spine": "AI is moving from helpful assistant to active attack surface; the question is who controls it and who gets blamed.",
-    "teaching_moves_required": [
-      "Alex asks the obvious listener question",
-      "Jamie explains the concept in plain English",
-      "Rufus gives a receipt, money trail, or dry undercut",
-      "The hosts turn the concept into an operator lesson"
-    ]
+  "lesson_card": {
+    "show_name": "The AI Signal Room",
+    "concept": "developer leverage",
+    "plain_english": "when a small tool or clone changes what builders can ship, copy, automate, or replace",
+    "big_question": "When does a viral dev tool stop being a toy and start becoming leverage?",
+    "simple_analogy": "one clever repo turning into a forklift for every developer who was previously carrying boxes by hand",
+    "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
+    "hard_receipt": "GLOBALFOUNDRIES (GFS) is highlighted for its valuation post-SCALE AI launch",
+    "listener_payoff": "By the end, listeners should understand developer leverage well enough to explain why today's AI story matters tomorrow.",
+    "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
+    "episode_spine": "A Look At GLOBALFOUNDRIES (GFS) Valuation After SCALE AI Launch And Strong Q1 2026 Earnings is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
+    "titles": {
+      "spotify_title": "When Developers Clone the Future Before Companies Can Sell It",
+      "youtube_title": "A Viral AI Code Clone Just Showed Where Developer Power Is Moving",
+      "social_hook": "The clone is not the point. The leverage shift is.",
+      "operator_title": "Today’s AI Lesson: Developer Leverage",
+      "archive_title": "A Look At GLOBALFOUNDRIES (GFS) Valuation After SCALE AI Launch And Strong Q1 2026 — Developer Leverage"
+    }
   },
-  "title": "Google Pushes AI Into Healthcare — And the Liability Fight Begins",
-  "description_first_180": "AI Achieves 99% Accuracy in Brain Tumour Diagnosis. The headline is healthcare AI. The real story is who carries the liability when software starts shaping care.",
-  "note": "Strict v2.26 teaching-arc aircheck. Lead heat, receipts, blank slots, duplicate story families, and missing learning arc cap the score before TTS/audio."
+  "title": "When Developers Clone the Future Before Companies Can Sell It",
+  "description_first_180": "The clone is not the point. The leverage shift is. Today in The AI Signal Room, Alex, Jamie, and Rufus teach developer leverage: when a small tool or clone changes what builders ca",
+  "note": "V3.0 brutal aircheck. No fake 90s: missing moments, scene shape, humor, sponsor pronunciation, or title/story alignment hard-cap the score before TTS/audio."
 }
