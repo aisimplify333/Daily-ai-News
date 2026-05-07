@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Daily AI News: "The AI Edge" (fully automated)
+The AI Signal Room by TheLEDGR (fully automated)
 
 Production upgrades (Jan 2026) — listener-first producer package:
 - Guaranteed audible INTRO STINGER after cold open [MUSIC] marker (cannot be skipped by ducking)
@@ -53,9 +53,9 @@ load_dotenv()
 # CONFIG (RSS identity)
 # ----------------------------
 RSS_SETTINGS: Dict[str, str] = {
-    "title": "The AI Edge",
+    "title": "The AI Signal Room",
     "link": "https://github.com/aisimplify333/Daily-ai-News",
-    "description": "Daily AI News Drama: raw, human, high-stakes conversations about the future.",
+    "description": "The daily AI show that makes you smarter before tomorrow — one concept, one laugh, one sharp takeaway.",
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com",
     "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png",
@@ -81,6 +81,13 @@ SPONSOR_DELIVERY_REPORT_PATH = BASE_DIR / "sponsor_delivery_report.json"
 FORWARDABLE_EXCHANGE_MAP_PATH = BASE_DIR / "forwardable_exchange_map.json"
 FORWARDABLE_TARGETS_PATH = BASE_DIR / "forwardable_targets.json"
 LEARNING_PROMISE_PATH = BASE_DIR / "episode_learning_promise.json"
+EPISODE_LESSON_CARD_PATH = BASE_DIR / "episode_lesson_card.json"
+SCENE_CARDS_PATH = BASE_DIR / "scene_cards.json"
+SIGNAL_OR_STATIC_PATH = BASE_DIR / "signal_or_static_game.json"
+FORWARDABLE_LINE_TARGETS_PATH = BASE_DIR / "forwardable_line_targets.json"
+SCRIPT_AIRCHECK_PATH = BASE_DIR / "script_aircheck.json"
+LISTENER_TAKEAWAYS_PATH = BASE_DIR / "listener_takeaways.json"
+FINAL_BUTTON_PATH = BASE_DIR / "final_button.json"
 
 AUDIO_BRANDKIT_DIR = BASE_DIR / "audio_brandkit"
 BRANDKIT_SFX_DIR = AUDIO_BRANDKIT_DIR / "sfx"
@@ -4940,6 +4947,798 @@ def _file_ok_min_bytes(p: Path) -> bool:
         return p.exists() and p.stat().st_size >= MIN_MP3_BYTES_FEED
     except Exception:
         return False
+
+
+# ============================================================
+# V3.0 AI SIGNAL ROOM — MONOLITH-SAFE FORMAT RESET
+# ============================================================
+# This block intentionally overrides selected v2.x creative functions while
+# preserving the proven autonomous pipeline, audio assembly, feed writer,
+# ElevenLabs/OpenAI fallback, and GitHub Actions workflow.
+
+V3_SHOW_NAME = "The AI Signal Room"
+V3_MODEL_VERSION_NOTE = "v3.0-ai-signal-room-format-reset"
+V3_BANNED_DIALOGUE_RE = re.compile(
+    r"\b(?:exactly, alex|absolutely, alex|and speaking of|speaking of|published today|published on|"
+    r"that(?:'|’)s a significant risk|this is a huge leap|it(?:'|’)s happening fast|according to|"
+    r"another big development|meanwhile, in|let(?:'|’)s dive in)\b",
+    re.IGNORECASE,
+)
+V3_TEACHING_RE = re.compile(
+    r"\b(?:simple version|plain english|think of it like|the part people miss|today(?:'|’)s lesson|"
+    r"operator lesson|mental model|what that means|the mistake|explain|so wait|the useful way to think about it)\b",
+    re.IGNORECASE,
+)
+V3_HUMOR_RE = re.compile(
+    r"\[(?:laughs|dry laugh|scoffs|sharp exhale|under his breath|audible disbelief)\]|\b(?:come on|splendid|lovely|marvellous|nonsense|"
+    r"root access|no adult supervision|confidence score|bleakest|very british|fog machine|tiny intern|lawsuit)\b",
+    re.IGNORECASE,
+)
+
+
+def _v3_story_blob(story: Dict[str, str]) -> str:
+    return " ".join([
+        str(story.get("headline") or story.get("title") or ""),
+        str(story.get("why_shocking") or story.get("summary") or ""),
+        " ".join([str(x) for x in (story.get("data_points") or []) if str(x).strip()]),
+        str(story.get("bucket") or ""),
+    ]).lower()
+
+
+def _episode_learning_concept(stories: List[Dict[str, str]]) -> str:
+    """V3 concept selection: lead-story aligned, not generic metadata."""
+    lead = stories[0] if stories else {}
+    lead_blob = _v3_story_blob(lead)
+    all_blob = " ".join(_v3_story_blob(s) for s in stories[:5])
+    if any(k in lead_blob for k in ["diagnosis", "tumour", "tumor", "clinical", "medicine", "patient", "healthcare", "hospital"]):
+        if any(k in lead_blob for k in ["99%", "accuracy", "diagnosis"]):
+            return "liability chain"
+        return "clinical risk transfer"
+    if any(k in lead_blob for k in ["mcp", "vulnerability", "code execution", "breach", "attack surface", "security"]):
+        return "agent surface area"
+    if any(k in lead_blob for k in ["phone", "hardware", "device", "assistant", "agent phone"]):
+        return "permission layer"
+    if any(k in lead_blob for k in ["government test", "national security", "caisi", "nist", "frontier ai testing", "before launch"]):
+        return "regulatory blast radius"
+    if any(k in lead_blob for k in ["github", "developer", "code clone", "repo", "coding"]):
+        return "developer leverage"
+    if any(k in lead_blob for k in ["gpu", "chip", "compute", "data center", "datacenter", "inference"]):
+        return "compute bottleneck"
+    if any(k in lead_blob for k in ["model", "benchmark", "frontier", "openai", "anthropic", "deepmind", "gemini"]):
+        return "model moat"
+    if any(k in all_blob for k in ["healthcare", "diagnosis", "patient", "clinical"]):
+        return "liability chain"
+    if any(k in all_blob for k in ["agent", "workflow", "permission", "copilot"]):
+        return "permission layer"
+    return "leverage shift"
+
+
+def _v3_concept_glossary() -> Dict[str, str]:
+    return {
+        "permission layer": "who can approve, access, trigger, delete, escalate, or spend when an AI agent starts acting",
+        "agent surface area": "every tool, server, connector, and permission an agent can touch becomes a new place for risk",
+        "clinical risk transfer": "the moment AI moves from advice into care workflow and responsibility spreads across doctors, hospitals, vendors, and patients",
+        "liability chain": "the trail of accountability when an AI-shaped decision helps, harms, approves, denies, or misses something important",
+        "regulatory blast radius": "how one AI model launch can pull labs, customers, regulators, and national-security teams into the same accountability zone",
+        "developer leverage": "when a small tool or clone changes what builders can ship, copy, automate, or replace",
+        "compute bottleneck": "the constraint created when demand for intelligence outruns chips, power, data centers, or inference economics",
+        "model moat": "the advantage a lab builds when its model, data, distribution, and ecosystem make it hard to replace",
+        "leverage shift": "the hidden power change underneath a headline: who gains control, who loses options, and who has to react",
+    }
+
+
+def _v3_concept_analogy(concept: str, top_story: Dict[str, str]) -> str:
+    if concept == "liability chain":
+        return "a relay race where the baton is blame; the model, vendor, institution, and human signer all touch it"
+    if concept == "clinical risk transfer":
+        return "moving from a helpful second opinion to a silent co-pilot in the exam room"
+    if concept == "permission layer":
+        return "the remote control for what an AI agent is allowed to touch, approve, buy, or break"
+    if concept == "agent surface area":
+        return "giving an intern keys to every room in the building and then acting surprised when a door opens"
+    if concept == "regulatory blast radius":
+        return "a product launch that drags the lab, the buyer, and the government into the same room before the confetti lands"
+    if concept == "developer leverage":
+        return "one clever repo turning into a forklift for every developer who was previously carrying boxes by hand"
+    if concept == "compute bottleneck":
+        return "a brilliant restaurant with one stove, a mile-long queue, and customers ordering more every minute"
+    if concept == "model moat":
+        return "a castle built from distribution, data, habit, and switching costs instead of stone"
+    return "the quiet moment when a headline changes who has leverage before anyone admits it"
+
+
+def _v3_first_nondate_data(story: Dict[str, str]) -> str:
+    for dp in (story.get("data_points") or []):
+        txt = str(dp).strip()
+        if txt and not re.fullmatch(r"(?:published|the announcement was published|the article was published).*", txt, flags=re.IGNORECASE):
+            return txt
+    headline = _story_display_headline(story)
+    m = re.search(r"(?:\d+%|\b\d{4}\b|\b\d{1,3}(?:,\d{3})+\b|\b\d+(?:\.\d+)?\s?(?:million|billion|trillion|stars|users|models|servers)\b)", headline, flags=re.IGNORECASE)
+    return m.group(0) if m else "The provided story snippet is thin on hard numbers; the honest move is to say that and analyze consequence."
+
+
+def _v3_title_candidates(stories: List[Dict[str, str]], lesson: Dict[str, object]) -> Dict[str, str]:
+    top = stories[0] if stories else {}
+    concept = str(lesson.get("concept") or _episode_learning_concept(stories))
+    h = _story_display_headline(top)
+    blob = _v3_story_blob(top)
+    datum = _v3_first_nondate_data(top)
+    if "99%" in datum or "99%" in h:
+        spotify = "The 1% Problem Inside a 99% AI Diagnosis"
+        youtube = "AI Got the Diagnosis Right. Now Who Gets Sued?"
+        social = "The scary part is not the 99%. It is the one family living inside the 1%."
+    elif concept == "permission layer":
+        spotify = "Your AI Agent Has Keys. Who Gave It Permission?"
+        youtube = "Why OpenAI Might Need a Phone to Control Your Agents"
+        social = "The phone is not the product. The permission layer is."
+    elif concept == "agent surface area":
+        spotify = "The Hidden Attack Surface Inside AI Agents"
+        youtube = "Your AI Agent Can Act. That Means It Can Break Things."
+        social = "Every connector an AI agent touches becomes a new door someone has to lock."
+    elif concept == "regulatory blast radius":
+        spotify = "The AI Model Test Nobody Wants to Fail"
+        youtube = "The Quiet Deal That Could Decide Which AI Models Go Live"
+        social = "Frontier AI is entering its pre-launch inspection era."
+    elif concept == "developer leverage":
+        spotify = "When Developers Clone the Future Before Companies Can Sell It"
+        youtube = "A Viral AI Code Clone Just Showed Where Developer Power Is Moving"
+        social = "The clone is not the point. The leverage shift is."
+    elif concept == "compute bottleneck":
+        spotify = "The Bottleneck Behind the AI Boom"
+        youtube = "The AI Race Is Becoming a Fight Over Who Can Afford the Next Answer"
+        social = "The next AI winner may be the company that can afford the next answer."
+    elif concept == "model moat":
+        spotify = "The Model War Is Moving From Chatbots to Control"
+        youtube = "Why the AI Model War Is Really a Distribution War"
+        social = "The model is the headline. Control is the moat."
+    else:
+        core = _headline_title_core(top)
+        spotify = f"Today’s AI Lesson: {concept.title()}"
+        youtube = f"{core} — The Lesson Everyone Is Missing"
+        social = "Most people read the AI headline. The useful part is the lesson underneath."
+    return {
+        "spotify_title": _smart_trim_text(_repair_episode_title(spotify, stories), EPISODE_META_MAX_TITLE),
+        "youtube_title": _smart_trim_text(_repair_episode_title(youtube, stories), 96),
+        "social_hook": _smart_trim_text(social, 180),
+        "operator_title": f"Today’s AI Lesson: {concept.title()}",
+        "archive_title": _smart_trim_text(f"{_headline_title_core(top)} — {concept.title()} Explained", 110),
+    }
+
+
+def build_episode_lesson_card(stories: List[Dict[str, str]]) -> Dict[str, object]:
+    top = stories[0] if stories else {}
+    concept = _episode_learning_concept(stories)
+    glossary = _v3_concept_glossary()
+    plain = glossary.get(concept, glossary["leverage shift"])
+    datum = _v3_first_nondate_data(top)
+    big_question = {
+        "liability chain": "If the AI gets the answer right most of the time, why are we still nervous?",
+        "clinical risk transfer": "When does helpful medical AI become something doctors and hospitals are accountable for?",
+        "permission layer": "Is the product the agent, or the power to decide what the agent is allowed to do?",
+        "agent surface area": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
+        "regulatory blast radius": "Who gets to say a frontier model is safe enough before it launches?",
+        "developer leverage": "When does a viral dev tool stop being a toy and start becoming leverage?",
+        "compute bottleneck": "What happens when demand for AI outruns the infrastructure underneath it?",
+        "model moat": "Is the best model enough, or is the real moat distribution and control?",
+    }.get(concept, "What is the real power shift under today’s AI headline?")
+    card: Dict[str, object] = {
+        "show_name": V3_SHOW_NAME,
+        "concept": concept,
+        "plain_english": plain,
+        "big_question": big_question,
+        "simple_analogy": _v3_concept_analogy(concept, top),
+        "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
+        "hard_receipt": datum,
+        "listener_payoff": f"By the end, listeners should understand {concept} well enough to explain why today's AI story matters tomorrow.",
+        "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
+        "episode_spine": _episode_spine(stories),
+    }
+    card["titles"] = _v3_title_candidates(stories, card)
+    try:
+        EPISODE_LESSON_CARD_PATH.write_text(json.dumps(card, indent=2, ensure_ascii=False), encoding="utf-8")
+        LISTENER_TAKEAWAYS_PATH.write_text("\n".join([
+            f"Concept: {card['concept']}",
+            f"Plain English: {card['plain_english']}",
+            f"Analogy: {card['simple_analogy']}",
+            f"Operator lesson: {card['operator_lesson']}",
+        ]) + "\n", encoding="utf-8")
+    except Exception:
+        pass
+    return card
+
+
+def build_episode_learning_promise(stories: List[Dict[str, str]]) -> Dict[str, object]:
+    card = build_episode_lesson_card(stories)
+    promise = {
+        "concept": card["concept"],
+        "plain_english": card["plain_english"],
+        "listener_promise": card["listener_payoff"],
+        "operator_lesson": card["operator_lesson"],
+        "episode_spine": card["episode_spine"],
+        "big_question": card["big_question"],
+        "simple_analogy": card["simple_analogy"],
+        "hard_receipt": card["hard_receipt"],
+        "teaching_moves_required": [
+            "Alex asks The Question Nobody Wants to Ask",
+            "Jamie delivers Jamie’s Simple Version in plain English",
+            "Rufus Ruins the Press Release with a receipt and dry undercut",
+            "The hosts play Signal or Static",
+            "The Ledger Readout turns the lesson into tomorrow’s operator decision",
+        ],
+    }
+    try:
+        LEARNING_PROMISE_PATH.write_text(json.dumps(promise, indent=2, ensure_ascii=False), encoding="utf-8")
+        (BASE_DIR / "episode_learning_promise.txt").write_text(
+            f"Today’s AI Lesson: {promise['concept']}\n{promise['plain_english']}\nOperator lesson: {promise['operator_lesson']}\n",
+            encoding="utf-8",
+        )
+    except Exception:
+        pass
+    return promise
+
+
+def _learning_promise_prompt(stories: List[Dict[str, str]]) -> str:
+    card = build_episode_lesson_card(stories)
+    return (
+        "TODAY'S AI LESSON — THIS IS THE PRODUCT PROMISE:\n"
+        f"- Named concept: {card['concept']}\n"
+        f"- Plain English: {card['plain_english']}\n"
+        f"- Big question: {card['big_question']}\n"
+        f"- Analogy that must land naturally: {card['simple_analogy']}\n"
+        f"- Hard receipt to use honestly: {card['hard_receipt']}\n"
+        f"- Operator lesson: {card['operator_lesson']}\n"
+        "Teach through conversation, not lecture. Alex gets curious, Jamie makes it clear, Rufus makes it memorable.\n"
+    )
+
+
+def _episode_spine(stories: List[Dict[str, str]]) -> str:
+    concept = _episode_learning_concept(stories)
+    top = stories[0] if stories else {}
+    headline = _story_display_headline(top) or "today's AI shift"
+    if concept == "liability chain":
+        return f"{headline} is not just a breakthrough story; it is a liability-chain story about who owns the mistake."
+    if concept == "clinical risk transfer":
+        return f"{headline} shows AI moving from helpful advice into accountable care workflow."
+    if concept == "permission layer":
+        return f"{headline} is really about who controls what agents are allowed to do."
+    if concept == "agent surface area":
+        return f"{headline} shows that every new agent connector also creates a new place for risk."
+    if concept == "regulatory blast radius":
+        return f"{headline} shows frontier AI entering its inspection era before the launch button gets pressed."
+    if concept == "developer leverage":
+        return f"{headline} is a developer-leverage story: who can build, copy, and ship faster than the market can price in."
+    return "Today’s stories are not five separate headlines; they are evidence of one AI leverage shift."
+
+
+def build_signal_or_static_game(stories: List[Dict[str, str]]) -> Dict[str, object]:
+    card = build_episode_lesson_card(stories)
+    candidates = []
+    for i, s in enumerate(stories[:3], start=1):
+        h = _story_display_headline(s)
+        if not h:
+            continue
+        candidates.append({
+            "rank": i,
+            "story": h,
+            "question": f"Signal or Static: is this a real {card['concept']} shift, or just headline noise?",
+            "jamie_angle": "Signal if it changes what real people or teams must do tomorrow; static if it is only launch theater.",
+            "rufus_angle": "Follow the liability, money, or permission trail. That is where the signal hides.",
+        })
+    game = {"segment_name": "Signal or Static", "rules": "Each host must make a fast call: SIGNAL, STATIC, or TOO EARLY.", "items": candidates}
+    try:
+        SIGNAL_OR_STATIC_PATH.write_text(json.dumps(game, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    return game
+
+
+def build_scene_cards(stories: List[Dict[str, str]]) -> Dict[str, object]:
+    card = build_episode_lesson_card(stories)
+    game = build_signal_or_static_game(stories)
+    top = stories[0] if stories else {}
+    cards = [
+        {"scene": "Cold Open: The Question Nobody Wants to Ask", "owner": "ALEX", "purpose": "open with curiosity, not summary", "must_include": [card["big_question"], "one quick Jamie correction", "one Rufus dry undercut", "[MUSIC]"]},
+        {"scene": "Today's AI Lesson", "owner": "JAMIE", "purpose": "promise the concept and payoff", "must_include": [card["concept"], card["plain_english"], "why listeners will be smarter by the end"]},
+        {"scene": "The Spark", "owner": "ALEX", "purpose": "use the lead story to introduce the lesson", "must_include": [_story_display_headline(top), card["hard_receipt"], "why the headline is not the real story"]},
+        {"scene": "Jamie’s Simple Version", "owner": "JAMIE", "purpose": "plain-English teaching through analogy", "must_include": [card["simple_analogy"], "human/operator consequence", "Alex pushback"]},
+        {"scene": "Rufus Ruins the Press Release", "owner": "RUFUS", "purpose": "dry wit plus receipt, money, liability, or incentive", "must_include": ["one dry British undercut", "one receipt", "one skeptical prediction"]},
+        {"scene": "Signal or Static", "owner": "ALL", "purpose": "interactive game so the audience can play along", "must_include": ["SIGNAL / STATIC / TOO EARLY calls", "fast disagreement", "one laugh"]},
+        {"scene": "The Proof Stack", "owner": "ALL", "purpose": "supporting stories prove or complicate the lesson", "must_include": ["2-3 supporting stories", "one contradiction", "one operator takeaway"]},
+        {"scene": "The Ledger Readout", "owner": "ROTATING", "purpose": "sponsor as operator payoff, spoken as The Ledger", "must_include": ["what changed", "who wins", "who is exposed", f"{THELEDGR_SPOKEN_URL}"]},
+        {"scene": "Final Button", "owner": "ALEX/RUFUS", "purpose": "end with one unresolved question for tomorrow", "must_include": ["one sticky line", "tomorrow curiosity", "no tidy wrap"]},
+    ]
+    payload = {"show": V3_SHOW_NAME, "lesson": card, "signal_or_static": game, "cards": cards}
+    try:
+        SCENE_CARDS_PATH.write_text(json.dumps(payload, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    return payload
+
+
+def _scene_cards_prompt(stories: List[Dict[str, str]], seg_num: int) -> str:
+    payload = build_scene_cards(stories)
+    cards = payload["cards"]
+    if seg_num == 1:
+        use = cards[:3]
+    elif seg_num == 2:
+        use = [cards[3]]
+    elif seg_num == 3:
+        use = [cards[4]]
+    elif seg_num == 4:
+        use = [cards[5], cards[6]]
+    else:
+        use = [cards[7], cards[8]]
+    return "V3.0 SCENE CARDS FOR THIS SEGMENT:\n" + json.dumps(use, indent=2, ensure_ascii=False)
+
+
+def build_forwardable_targets(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    card = build_episode_lesson_card(stories)
+    concept = str(card.get("concept"))
+    targets = [
+        {"type": "alex_pressure_question", "speaker": "ALEX", "target": str(card.get("big_question"))},
+        {"type": "jamie_simple_version", "speaker": "JAMIE", "target": f"The simple version is this: {card.get('plain_english')}."},
+        {"type": "jamie_human_line", "speaker": "JAMIE", "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception."},
+        {"type": "rufus_undercut", "speaker": "RUFUS", "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense."},
+        {"type": "analogy_line", "speaker": "JAMIE", "target": f"Think of it like {card.get('simple_analogy')}."},
+        {"type": "operator_lesson", "speaker": "ALEX", "target": str(card.get("operator_lesson"))},
+        {"type": "final_button", "speaker": "RUFUS", "target": f"The question for tomorrow is not whether {concept} sounds clever. It is who gets caught when it becomes real."},
+    ]
+    try:
+        FORWARDABLE_TARGETS_PATH.write_text(json.dumps(targets, indent=2, ensure_ascii=False), encoding="utf-8")
+        FORWARDABLE_LINE_TARGETS_PATH.write_text(json.dumps({"minimum_required": 5, "targets": targets}, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    return targets
+
+
+def _forwardable_targets_prompt(stories: List[Dict[str, str]]) -> str:
+    targets = build_forwardable_targets(stories)
+    lines = ["V3.0 MUST-LAND MOMENTS — write these as natural dialogue, not as bullets:"]
+    for t in targets:
+        lines.append(f"- {t['speaker']} / {t['type']}: {t['target']}")
+    lines.append("At least three must appear almost verbatim, and at least one must be funny or dry.")
+    return "\n".join(lines)
+
+
+def _strict_dialogue_rules() -> str:
+    return (
+        "V3.0 AI SIGNAL ROOM RULES — NON-NEGOTIABLE:\n"
+        "- Output dialogue only with EXACT labels: ALEX:, JAMIE:, RUFUS:. Segment markers ### and [MUSIC] are allowed and not spoken.\n"
+        "- This is NOT a news digest. It is one AI lesson taught through dynamic scenes, jokes, receipts, and payoff.\n"
+        "- No monologues: normal host turns should be 6-32 words. Hard maximum is 45 words unless a repair is impossible.\n"
+        "- Every scene must move: Alex asks/challenges → Jamie explains/pushes back → Rufus undercuts/brings receipt → Jamie reframes → Alex lands the lesson.\n"
+        "- Use the recurring rituals by name where natural: The Question Nobody Wants to Ask, Jamie’s Simple Version, Rufus Ruins the Press Release, Signal or Static, The Ledger Readout, Final Button.\n"
+        "- Teach like a smart friend: one plain-English explanation, one analogy, one receipt, one practical lesson.\n"
+        "- Humor is required but must reveal the stakes. Dry wit, quick teasing, and smart undercuts only. No goofy filler.\n"
+        "- Ban filler phrases: Exactly, Alex; Absolutely; And speaking of; Published today; That’s a significant risk; This is a huge leap; It’s happening fast; According to.\n"
+        "- The sponsor is spoken ONLY as 'The Ledger'. Never say TheLEDGR as a spoken word. The URL is T-H-E-L-E-D-G-R dot I-O.\n"
+        "- Every segment must include friction: a challenge, correction, interruption, or playful disagreement.\n"
+        "- Every segment must include one line strong enough that a listener would quote it.\n"
+    )
+
+
+def _segment_assignment(seg_num: int) -> str:
+    if seg_num == 1:
+        return (
+            "ACT 1 — Cold Open + Today’s AI Lesson. Start with The Question Nobody Wants to Ask, not a headline. "
+            "Alex asks the listener’s real question; Jamie gives a quick correction; Rufus lands a dry undercut; then [MUSIC]. "
+            "After [MUSIC], Alex delivers a short native sponsor line for The Ledger and promises the one AI concept listeners will understand by the end."
+        )
+    if seg_num == 2:
+        return (
+            "ACT 2 — Jamie’s Simple Version. ONLY Alex and Jamie. Alex keeps asking the obvious questions. "
+            "Jamie explains the concept in plain English with an analogy, then makes the human/operator stakes feel real. "
+            "This should feel like smart educational banter, not a lecture."
+        )
+    if seg_num == 3:
+        return (
+            "ACT 3 — Rufus Ruins the Press Release. Alex brings in Rufus to separate signal from corporate theater. "
+            "Rufus must bring one receipt, one incentive/liability read, one dry British undercut, and one skeptical prediction. "
+            "Jamie challenges him once so it does not become a monologue."
+        )
+    if seg_num == 4:
+        return (
+            "ACT 4 — Signal or Static + Proof Stack. All three hosts play Signal or Static on the supporting stories. "
+            "The point is interactivity: real shift, hype, or too early? Let them disagree briefly, laugh once, then pull the pattern together."
+        )
+    return (
+        "ACT 5 — The Ledger Readout + Final Button. Turn the lesson into operator value: what changed, who wins, who is exposed, what to watch tomorrow. "
+        "End with a sticky unresolved question, not a tidy summary. The final line should make tomorrow’s episode feel necessary."
+    )
+
+
+def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
+                    stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
+    extra = ""
+    if seg_num in (1, 2, 3, 4):
+        extra += (
+            "- DO NOT sign off. Keep curiosity open.\n"
+            "- No monologues. No generic headline relay. No stale conference-panel phrasing.\n"
+            "- Every 4-7 turns must contain a challenge, correction, joke, or reframe.\n"
+        )
+    if seg_num == 1:
+        extra += (
+            "- Include [MUSIC] after the cold open.\n"
+            "- After [MUSIC], Alex must say 'The Ledger' and the URL exactly as T-H-E-L-E-D-G-R dot I-O.\n"
+            "- Do not say TheLEDGR in spoken dialogue.\n"
+        )
+    if seg_num == 2:
+        extra += "- ONLY ALEX and JAMIE may speak. This is the clearest educational scene of the episode.\n"
+    if seg_num == 3:
+        extra += "- Rufus must not lecture. He should be surgical, dry, and interrupted at least once.\n"
+    if seg_num == 4:
+        extra += "- Play Signal or Static explicitly. Use SIGNAL, STATIC, or TOO EARLY as quick calls.\n"
+    if seg_num == 5:
+        extra += "- Include The Ledger Readout and Final Button. End unresolved.\n"
+
+    story_block = _story_block(stories)
+    return f"""
+You are writing {V3_SHOW_NAME}, presented by TheLEDGR, for {date_str}.
+This is ONLY {_segment_header(seg_num)}.
+
+PERSONAS:
+- ALEX: curious driver, pressure-question host, listener avatar. He challenges jargon and asks what everyone is thinking.
+- JAMIE: smart translator. Warm, sharp, plain-English, emotionally alive. She turns complexity into something useful.
+- RUFUS: British receipt goblin. Dry wit, finance/regulation/liability lens, compact and memorable.
+
+{_strict_dialogue_rules()}
+
+SEGMENT REQUIREMENTS:
+- The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
+- Segment length MUST be at least {seg_words_min} words and target around {seg_words_target} words.
+- Keep most spoken turns under 45 words.
+- Every story must become a scene, not a paragraph.
+- Every segment must teach, make us smile, use one receipt, and land one takeaway.
+
+EPISODE SPINE:
+{_episode_spine(stories)}
+
+{_learning_promise_prompt(stories)}
+
+WHAT THIS SEGMENT MUST DO:
+{_segment_assignment(seg_num)}
+
+{_scene_cards_prompt(stories, seg_num)}
+
+SIGNAL OR STATIC GAME:
+{json.dumps(build_signal_or_static_game(stories), indent=2, ensure_ascii=False)}
+
+FORWARDABLE LINE TARGETS:
+{_forwardable_targets_prompt(stories)}
+
+SPECIAL INSTRUCTIONS:
+{extra}
+
+TODAY'S STORIES:
+{story_block}
+
+NOW OUTPUT ONLY THIS SEGMENT.
+""".strip()
+
+
+def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words_max: int) -> List[str]:
+    issues: List[str] = []
+    if not seg_text.strip().startswith(_segment_header(seg_num)):
+        issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
+    for ln in seg_text.splitlines():
+        line = ln.strip()
+        if not line:
+            continue
+        if line.startswith("###") or line.upper() == "[MUSIC]":
+            continue
+        if not SPEAKER_RE.match(line):
+            issues.append("Found non-labeled spoken line(s).")
+            break
+    wc = _word_count(seg_text)
+    if wc < seg_words_min:
+        issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
+    if wc > seg_words_max:
+        issues.append(f"Segment too long ({wc} words). Maximum is {seg_words_max}.")
+    if seg_num == 2 and re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
+        issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
+    if seg_num == 1 and "[MUSIC]" not in seg_text:
+        issues.append("Segment 1 missing [MUSIC] marker after cold open.")
+    if seg_num < 5 and EARLY_SIGNOFF_RE.search(seg_text or ""):
+        issues.append(f"Segment {seg_num} contains premature sign-off language.")
+    counts = _speaker_line_counts(seg_text)
+    if counts.get("ALEX", 0) < 4:
+        issues.append("Alex is not active enough; he must drive curiosity.")
+    if seg_num == 2 and min(counts.get("ALEX", 0), counts.get("JAMIE", 0)) < 6:
+        issues.append("Segment 2 needs more Alex/Jamie back-and-forth.")
+    if seg_num == 3 and counts.get("RUFUS", 0) < 6:
+        issues.append("Segment 3 needs more Rufus receipt/undercut lines.")
+    if seg_num in (4, 5) and min(counts.get("ALEX", 0), counts.get("JAMIE", 0), counts.get("RUFUS", 0)) < 3:
+        issues.append("All three hosts must be active in this segment.")
+    if _max_consecutive_speaker_lines(seg_text) > 2:
+        issues.append("Too monologue-heavy: more than two consecutive lines from one speaker.")
+    if _long_spoken_line_count(seg_text, 45) > 2:
+        issues.append("Too many long spoken lines. Keep turns under 45 words.")
+    if V3_BANNED_DIALOGUE_RE.search(seg_text or ""):
+        issues.append("Banned filler phrase detected. Replace with dynamic scene dialogue.")
+    if _cue_count(seg_text, INTERRUPTION_CUE_RE) < 1 and not re.search(r"\b(wait|hold on|come on|no,|but|so you(?:'|’)re telling me)\b", seg_text, flags=re.IGNORECASE):
+        issues.append("Not enough interruption, challenge, or correction.")
+    if _cue_count(seg_text, REACTION_CUE_RE) < 1 and not V3_HUMOR_RE.search(seg_text or ""):
+        issues.append("Not enough audible realism or humor beat.")
+    if not V3_TEACHING_RE.search(seg_text or ""):
+        issues.append("Missing plain-English teaching beat.")
+    if seg_num == 4 and not re.search(r"\b(signal|static|too early)\b", seg_text, flags=re.IGNORECASE):
+        issues.append("Segment 4 must explicitly play Signal or Static.")
+    if seg_num == 5 and "the ledger" not in (seg_text or "").lower():
+        issues.append("Segment 5 needs The Ledger Readout.")
+    return issues
+
+
+def _script_has_learning_arc(script: str, stories: List[Dict[str, str]]) -> bool:
+    low = (script or "").lower()
+    concept = _episode_learning_concept(stories).lower()
+    return concept in low and bool(V3_TEACHING_RE.search(low)) and ("signal or static" in low or "the ledger readout" in low)
+
+
+def _script_has_scene_shape(script: str) -> bool:
+    low = (script or "").lower()
+    rituals = ["question nobody wants to ask", "jamie", "simple version", "rufus", "press release", "signal or static", "the ledger readout"]
+    return sum(1 for r in rituals if r in low) >= 4
+
+
+def _script_summary_heavy_ratio(script: str) -> float:
+    lines = [ln for ln in (script or "").splitlines() if SPEAKER_RE.match(ln.strip())]
+    if not lines:
+        return 1.0
+    bad = 0
+    for ln in lines:
+        if V3_BANNED_DIALOGUE_RE.search(ln) or re.search(r"\b(published|according to|the article|the report|another development)\b", ln, flags=re.IGNORECASE):
+            bad += 1
+    return bad / max(1, len(lines))
+
+
+def _title_matches_story(title: str, stories: List[Dict[str, str]]) -> bool:
+    if not title or not stories:
+        return False
+    lead = stories[0]
+    title_low = title.lower()
+    lead_blob = _v3_story_blob(lead)
+    concept = _episode_learning_concept(stories).lower()
+    if concept in title_low:
+        return True
+    title_tokens = {t for t in normalize_text(title).split() if len(t) >= 4}
+    lead_tokens = {t for t in normalize_text(_story_display_headline(lead)).split() if len(t) >= 4}
+    if len(title_tokens & lead_tokens) >= 2:
+        return True
+    if "diagnosis" in lead_blob and any(k in title_low for k in ["diagnosis", "liability", "sued", "99%", "1%"]):
+        return True
+    if "phone" in lead_blob and any(k in title_low for k in ["phone", "permission", "agent"]):
+        return True
+    if "security" in lead_blob and any(k in title_low for k in ["security", "attack", "surface"]):
+        return True
+    return False
+
+
+def _spoken_script_has_bad_brand(script: str) -> bool:
+    # Written metadata can say TheLEDGR; spoken dialogue should not.
+    for ln in (script or "").splitlines():
+        if SPEAKER_RE.match(ln.strip()) and "TheLEDGR" in ln:
+            return True
+    return False
+
+
+def _podcast_native_title(stories: List[Dict[str, str]], title_style: str, date_str: str) -> str:
+    lesson = build_episode_lesson_card(stories)
+    title = str((lesson.get("titles") or {}).get("spotify_title") or "")
+    if not title:
+        title = f"Today’s AI Lesson: {str(lesson.get('concept') or 'The Power Shift')}"
+    return _smart_trim_text(_repair_episode_title(title, stories), max(42, EPISODE_META_MAX_TITLE - (len(f" — {date_str}") if APPEND_DATE_TO_TITLE else 0)))
+
+
+def _make_show_notes_hook(top_story: Dict[str, str]) -> str:
+    # Requires access to full story set for best result; this fallback stays accurate to the lead.
+    h = _headline_title_core(top_story)
+    blob = _v3_story_blob(top_story)
+    if "diagnosis" in blob or "tumour" in blob or "tumor" in blob:
+        hook = f"{h}. The useful lesson is the liability chain behind healthcare AI: who owns the mistake when software shapes care?"
+    elif "phone" in blob:
+        hook = f"{h}. The useful lesson is the permission layer: the device matters less than what the agent can control."
+    elif "security" in blob or "vulnerability" in blob:
+        hook = f"{h}. The useful lesson is agent surface area: every new connector is a new place for risk."
+    else:
+        hook = f"{h}. The useful lesson is who gains leverage and who has to react tomorrow."
+    return _smart_trim_text(hook, 300)
+
+
+def _marketing_hook_from_stories(stories: List[Dict[str, str]]) -> str:
+    card = build_episode_lesson_card(stories)
+    social = str((card.get("titles") or {}).get("social_hook") or "").strip()
+    return _smart_trim_text(social or f"Today’s AI lesson: {card.get('concept')}", 180)
+
+
+def generate_marketing_pack(
+    stories: List[Dict[str, str]],
+    date_str: str,
+    listen_url: str,
+    tracking: Optional[Dict[str, str]] = None,
+    experiments: Optional[Dict[str, str]] = None,
+) -> Dict[str, str]:
+    tracking = tracking or {}
+    experiments = experiments or {}
+    ordered = order_stories_for_episode(stories[:5])
+    top_story = ordered[0] if ordered else {}
+    card = build_episode_lesson_card(ordered)
+    titles = card.get("titles") or {}
+    spotify_title = str(titles.get("spotify_title") or _podcast_native_title(ordered, "lesson", date_str))
+    youtube_title = str(titles.get("youtube_title") or spotify_title)
+    hook = _smart_trim_text(str(titles.get("social_hook") or _marketing_hook_from_stories(ordered)), 180)
+    subscribe_url = PUBLIC_SUBSCRIBE_URL
+    listen_cta = tracking.get("listen", listen_url)
+    hashtags = _hashtags_from_stories(ordered, max_tags=8)
+    story_bullets = "\n".join([f"• {_story_display_headline(s)}" for s in ordered[:5] if _story_display_headline(s)])
+    keywords = _v3_seo_keywords(ordered, card)
+    show_notes_hook = (
+        f"{hook} Today in {V3_SHOW_NAME}, Alex, Jamie, and Rufus teach {card['concept']}: {card['plain_english']}."
+    )
+    cta_line = f"For the operator version of the lesson, subscribe to TheLEDGR: {subscribe_url}"
+    return {
+        "hook": hook,
+        "tweet1": f"Today’s AI lesson: {card['concept']}\n\n{hook}\n\nListen: {listen_cta}",
+        "tweet2": f"The headline tells you what happened. The Ledger tells you what it changes.\n\n{cta_line}\n\n{hashtags}",
+        "yt_title": spotify_title,
+        "youtube_title": youtube_title,
+        "spotify_title": spotify_title,
+        "yt_description": (f"{show_notes_hook}\n\nWhat we covered:\n{story_bullets}\n\nListener takeaway: {card['operator_lesson']}\n\nKeywords: {keywords}\n\n{cta_line}")[:1400],
+        "show_notes": (f"{show_notes_hook}\n\nWhat we covered:\n{story_bullets}\n\nToday’s AI Lesson: {card['concept']}\nPlain English: {card['plain_english']}\nAnalogy: {card['simple_analogy']}\n\nFinal Button: {build_final_button(ordered)}\n\n{cta_line}"),
+        "show_notes_hook": show_notes_hook,
+        "episode_blurb": f"A dynamic AI lesson through the day’s biggest stories: {card['concept']}, explained with banter, receipts, Signal or Static, and The Ledger Readout.",
+        "tomorrow_tease": build_final_button(ordered),
+        "seo_keywords": keywords,
+        "hashtags": hashtags,
+    }
+
+
+def _v3_seo_keywords(stories: List[Dict[str, str]], card: Dict[str, object]) -> str:
+    terms = ["AI news", "artificial intelligence", "The AI Signal Room", str(card.get("concept") or "AI strategy")]
+    for s in stories[:5]:
+        terms.append(_normalize_vertical_bucket(s.get("bucket", "")).replace("_", " "))
+        for ent in (s.get("key_entities") or [])[:4]:
+            ent_s = str(ent).strip()
+            if ent_s and "Google News" not in ent_s:
+                terms.append(ent_s)
+    seen: List[str] = []
+    for t in terms:
+        t = re.sub(r"\s+", " ", t).strip()
+        if t and t.lower() not in [x.lower() for x in seen]:
+            seen.append(t)
+    return ", ".join(seen[:18])
+
+
+def build_final_button(stories: List[Dict[str, str]]) -> str:
+    card = build_episode_lesson_card(stories)
+    concept = str(card.get("concept") or "AI leverage")
+    if concept == "liability chain":
+        line = "Tomorrow’s question: when AI gets almost everything right, who is ready to own the one thing it gets wrong?"
+    elif concept == "permission layer":
+        line = "Tomorrow’s question: if your agent can act for you, who decided where its authority stops?"
+    elif concept == "agent surface area":
+        line = "Tomorrow’s question: which new AI connector quietly became the door nobody remembered to lock?"
+    else:
+        line = f"Tomorrow’s question: who understands the {concept} before it shows up in their budget, product, or job?"
+    try:
+        FINAL_BUTTON_PATH.write_text(line + "\n", encoding="utf-8")
+    except Exception:
+        pass
+    return line
+
+
+def build_episode_aircheck(script: str, stories: List[Dict[str, str]], pack: Dict[str, str], sponsors: List[Dict[str, str]], date_str: str) -> Dict[str, object]:
+    title = pack.get("spotify_title") or pack.get("yt_title") or ""
+    desc = pack.get("show_notes_hook") or pack.get("yt_description") or ""
+    moments = extract_forwardable_moments(script, stories=stories, max_items=8)
+    sponsor = build_sponsor_delivery_report(script, stories, date_str)
+    clean_stories = _dedupe_story_families([_coerce_story_record(dict(s)) for s in stories if _story_display_headline(s)])
+    buckets = {_normalize_vertical_bucket(s.get("bucket", "")) for s in clean_stories}
+    lead_heat = _ai_heat_score(clean_stories[0]) if clean_stories else 0.0
+    receipt_scores = [_receipt_quality_score(s) for s in clean_stories[:5]]
+    duplicate_family_risk = len(clean_stories) < len([s for s in stories if _story_display_headline(s)])
+    blank_story_slot = len(clean_stories) < min(5, len(stories)) or any(not _story_display_headline(s) for s in stories[:5])
+    targets = build_forwardable_exchange_map(script, clean_stories)
+    target_hits = sum(1 for m in targets.get("matches", []) if m.get("forwardable"))
+    summary_ratio = _script_summary_heavy_ratio(script)
+    checks = {
+        "lead_story_heat": lead_heat >= 42.0 or (_receipt_quality_score(clean_stories[0]) if clean_stories else 0) >= 7,
+        "lead_receipts": bool(receipt_scores and receipt_scores[0] >= 3),
+        "story_variety": len(buckets) >= 3,
+        "no_duplicate_story_family": not duplicate_family_risk,
+        "no_blank_story_slots": not blank_story_slot,
+        "title_quality": bool(title and not BAD_TITLE_FRAGMENT_RE.search(title) and len(title) >= 32 and _title_matches_story(title, clean_stories)),
+        "description_quality": bool(desc and not BAD_MARKETING_OPENERS_RE.search(desc) and not BAD_TITLE_FRAGMENT_RE.search(desc) and len(desc) >= 120),
+        "sponsor_quality": sponsor.get("TheLEDGR_Readout_present") and sponsor.get("spoken_url_present") and sponsor.get("brand_present") and not _spoken_script_has_bad_brand(script),
+        "forwardable_moments": len(moments) >= FORWARDABLE_MIN_PER_EPISODE and target_hits >= 3,
+        "learning_arc": _script_has_learning_arc(script, clean_stories),
+        "scene_shape": _script_has_scene_shape(script),
+        "signal_or_static": "signal or static" in (script or "").lower(),
+        "real_humor_or_banter": bool(V3_HUMOR_RE.search(script or "")),
+        "no_monologue": _max_consecutive_speaker_lines(script) <= 2 and _long_spoken_line_count(script, 55) <= 4,
+        "not_summary_heavy": summary_ratio <= 0.10,
+        "malformed_metadata": not (BAD_TITLE_FRAGMENT_RE.search(title or "") or BAD_MARKETING_OPENERS_RE.search(desc or "")),
+    }
+    score = round(100.0 * sum(1 for v in checks.values() if v) / max(1, len(checks)), 1)
+    caps: List[float] = []
+    if not checks["learning_arc"]:
+        caps.append(72.0)
+    if not checks["scene_shape"]:
+        caps.append(74.0)
+    if not checks["real_humor_or_banter"]:
+        caps.append(76.0)
+    if not checks["forwardable_moments"]:
+        caps.append(74.0)
+    if not checks["title_quality"]:
+        caps.append(70.0)
+    if not checks["sponsor_quality"]:
+        caps.append(70.0)
+    if not checks["not_summary_heavy"]:
+        caps.append(68.0)
+    if not checks["lead_receipts"]:
+        caps.append(72.0)
+    if not checks["no_duplicate_story_family"]:
+        caps.append(68.0)
+    if not checks["no_blank_story_slots"]:
+        caps.append(64.0)
+    if min(receipt_scores or [0]) < 2:
+        caps.append(76.0)
+    if caps:
+        score = round(min(score, min(caps)), 1)
+    result = {
+        "date": date_str,
+        "show": V3_SHOW_NAME,
+        "score": score,
+        "target_band": "88-95",
+        "pass": score >= 84.0,
+        "checks": checks,
+        "lead_heat": lead_heat,
+        "receipt_scores": receipt_scores,
+        "summary_heavy_ratio": round(summary_ratio, 3),
+        "duplicate_family_risk": duplicate_family_risk,
+        "blank_story_slot": blank_story_slot,
+        "forwardable_count": len(moments),
+        "forwardable_target_hits": target_hits,
+        "sponsor": sponsor,
+        "lesson_card": build_episode_lesson_card(clean_stories),
+        "title": title,
+        "description_first_180": (desc or "")[:180],
+        "note": "V3.0 brutal aircheck. No fake 90s: missing moments, scene shape, humor, sponsor pronunciation, or title/story alignment hard-cap the score before TTS/audio.",
+    }
+    try:
+        SCRIPT_AIRCHECK_PATH.write_text(json.dumps(result, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    return result
+
+
+def _append_teaching_arc_fallback_if_needed(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
+    """V3 deterministic rescue: adds a real lesson/game/readout spine before audio if the model missed it."""
+    card = build_episode_lesson_card(stories)
+    lines = script.splitlines() if script else []
+    low = (script or "").lower()
+    inserts: List[str] = []
+    if not _script_has_learning_arc(script, stories):
+        inserts.extend([
+            "ALEX: Wait — give me the useful version. What is today’s AI lesson?",
+            f"JAMIE: The simple version is {card['concept']}. In plain English, {card['plain_english']}.",
+            f"JAMIE: Think of it like {card['simple_analogy']}.",
+            "RUFUS: [dry laugh] Which is usually where the press release ends and the invoice, lawsuit, or audit begins.",
+            f"ALEX: So the operator lesson is this: {card['operator_lesson']}",
+        ])
+    if "signal or static" not in low:
+        inserts.extend([
+            "ALEX: Quick round — Signal or Static? Real shift, hype, or too early?",
+            "JAMIE: Signal if it changes what a team has to do tomorrow. Static if it is only launch theater.",
+            "RUFUS: Too early when the demo is shiny and the accountability is conveniently missing. A beloved genre.",
+        ])
+    if inserts:
+        # Insert near Segment 4 if possible; otherwise append before close.
+        idx = next((i for i, ln in enumerate(lines) if re.match(r"^###\s*SEGMENT\s*4\b", ln.strip(), flags=re.IGNORECASE)), None)
+        if idx is None:
+            idx = max(0, len(lines) - 6)
+        lines[idx + 1:idx + 1] = inserts
+        script = "\n".join(lines).strip()
+    return script
 
 
 def produce_episode() -> None:
