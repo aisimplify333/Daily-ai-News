@@ -51,20 +51,52 @@ jobs:
         run: |
           set -euo pipefail
           python -m py_compile main.py
+          python -m py_compile v3_1_runner.py
+          python -m py_compile writer_room_v3_1.py
+          python -m py_compile growth_overlay_v3_1.py
+          python -m py_compile no_repeat_guard_v3_1.py
           python -m py_compile growth_engine.py
           python -m py_compile run_broadcast.py
           python -m tabnanny -v main.py
           python -m compileall -q .
 
-      - name: Run Empire Broadcast
+      - name: Run The AI Edge v3.1 Broadcast
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
           AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
           AUDIO_BACKEND: "eleven"
           ELEVEN_FALLBACK_TO_OPENAI: "true"
+
+          WRITERS_ROOM_MODE: "budget_plus"
+          PODCAST_SHOW_TITLE: "The AI Edge"
+          PODCAST_SHOW_DESCRIPTION: "The daily AI show that explains the one story today that could touch your work, money, health, privacy, family, school, safety, or trust."
+
+          STORY_BOARD_PROVIDER: "gemini"
+          STORY_BOARD_MODEL: "gemini-3.1-flash-lite"
+          STORY_BOARD_FALLBACK_MODEL: "gemini-3-flash-preview"
+
+          SCENE_WRITER_PROVIDER: "anthropic"
+          SCENE_WRITER_MODEL: "claude-sonnet-4-6"
+          SCENE_WRITER_FALLBACK_MODEL: "claude-opus-4-7"
+
+          PUNCHUP_PROVIDER: "xai"
+          PUNCHUP_MODEL: "grok-4.3"
+
+          RESCUE_PROVIDER: "openai"
+          RESCUE_MODEL: "gpt-5.5"
+          RESCUE_FALLBACK_MODEL: "gpt-5.4-mini"
+          OPENAI_CHEAP_MODEL: "gpt-5.4-mini"
+
+          PRE_TTS_MIN_SCORE: "84"
+          ENABLE_GROK_PUNCHUP: "true"
+          ENABLE_OPENAI_RESCUE: "true"
+          ANTHROPIC_SCRIPT_MAX_TOKENS: "6200"
+          NO_REPEAT_TITLE_WINDOW: "14"
 
           ALEX_USE_OPENAI: "true"
           VOICE_ALEX: "onyx"
@@ -81,7 +113,7 @@ jobs:
 
           MIN_MINUTES: "19"
           MAX_MINUTES: "26"
-          TARGET_MINUTES: "20"
+          TARGET_MINUTES: "21"
           WORDS_PER_MINUTE: "170"
           SEGMENT_ATTEMPTS: "5"
           FORWARDABLE_MIN_PER_EPISODE: "4"
@@ -125,6 +157,10 @@ jobs:
           AUTO_BUILD_AUDIO_BRANDKIT: "false"
           REBUILD_AUDIO_BRANDKIT: "false"
 
+          TRANSITION_EVERY_SEGMENT: "false"
+          TRANSITION_MAX_PER_EPISODE: "3"
+          TRANSITION_SEGMENTS: "2,4,5"
+
           INTRO_BED_MS: "7200"
           INTRO_BED_FADE_OUT_MS: "2200"
           SEGMENT_BED_MS: "2200"
@@ -142,7 +178,6 @@ jobs:
           RUN_MARKETING_ASSETS: "true"
           PUBLISH_SOCIAL: "false"
           FORCE_REBUILD: "true"
-          # Optional: set a repo variable named PODCAST_COVER_IMAGE_URL to force a versioned Spotify/RSS artwork URL.
           PODCAST_COVER_IMAGE_URL: ${{ vars.PODCAST_COVER_IMAGE_URL }}
 
           X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
@@ -188,6 +223,7 @@ jobs:
           git add final_button.json || true
           git add seo_discovery_brief.json || true
           git add forwardable_targets.json || true
+          git add duplicate_guard_report.json || true
           git add x_thread.txt || true
           git add x_posts.json || true
           git add linkedin_post.txt || true
@@ -206,10 +242,15 @@ jobs:
           git add experiments_state.json || true
           git add performance_events.jsonl || true
           git add episode_audio/podcast_*.mp3 || true
+          git add episode_audio/podcast_*.json || true
           git add script_*.txt || true
           git add audio_brandkit/*.mp3 || true
           git add audio_brandkit/*.json || true
           git add -f audio_brandkit/** || true
+          git add v3_1_runner.py || true
+          git add writer_room_v3_1.py || true
+          git add growth_overlay_v3_1.py || true
+          git add no_repeat_guard_v3_1.py || true
 
           if [ -f social_clip.mp4 ]; then
             git add -f social_clip.mp4
@@ -218,5 +259,5 @@ jobs:
           fi
 
           git status --porcelain
-          git commit -m "Automated: New Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
+          git commit -m "Automated: The AI Edge v3.1 Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
           git push
