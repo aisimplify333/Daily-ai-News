@@ -2,11 +2,15 @@ name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5' # Mon-Fri ~2:00 AM Pacific (10:00 UTC; shifts during DST)
+    - cron: '0 10 * * 1-5' # Mon-Fri ~2:00 AM Pacific / 10:00 UTC
   workflow_dispatch:
 
 permissions:
   contents: write
+
+defaults:
+  run:
+    shell: bash
 
 concurrency:
   group: daily-podcast-socials
@@ -18,6 +22,15 @@ jobs:
 
     env:
       SAVE_SCRIPT: "true"
+      PODCAST_SHOW_TITLE: "The AI Edge"
+      PODCAST_SHOW_DESCRIPTION: "The daily AI show that explains the one story today that could touch your work, money, health, privacy, family, school, safety, or trust."
+
+      # Cost-safe defaults. Do not let the old v3.0 marketing/social layer run inside main.py.
+      RUN_MARKETING_ASSETS: "false"
+      PUBLISH_SOCIAL: "false"
+      FORCE_REBUILD: "false"
+      HARD_FAIL_PRE_TTS: "true"
+      ALLOW_DUPLICATE_DATE_REBUILD: "false"
 
     steps:
       - name: Check out repository
@@ -32,35 +45,43 @@ jobs:
           cache: 'pip'
 
       - name: Install System Dependencies
-        shell: bash
         run: |
           set -euo pipefail
           sudo apt-get update
           sudo apt-get install -y ffmpeg imagemagick ghostscript
-          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml
+          sudo sed -i 's/none/read,write/g' /etc/ImageMagick-6/policy.xml || true
 
       - name: Install Dependencies
-        shell: bash
         run: |
           set -euo pipefail
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Lint compile (fast fail)
-        shell: bash
+      - name: Lint compile fast fail
         run: |
           set -euo pipefail
           python -m py_compile main.py
           python -m py_compile v3_1_runner.py
           python -m py_compile writer_room_v3_1.py
           python -m py_compile growth_overlay_v3_1.py
+          python -m py_compile preflight_guard_v3_1.py
+          python -m py_compile feed_sanitize_v3_1.py
           python -m py_compile no_repeat_guard_v3_1.py
           python -m py_compile growth_engine.py
           python -m py_compile run_broadcast.py
           python -m tabnanny -v main.py
           python -m compileall -q .
 
-      - name: Run The AI Edge v3.1 Broadcast
+      - name: Cheap cost-safe preflight before generation
+        env:
+          RUN_MARKETING_ASSETS: "false"
+          FORCE_REBUILD: "false"
+          ALLOW_DUPLICATE_DATE_REBUILD: "false"
+        run: |
+          set -euo pipefail
+          python preflight_guard_v3_1.py
+
+      - name: Run The AI Edge v3.1 Cost-Safe Broadcast
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -73,9 +94,6 @@ jobs:
           ELEVEN_FALLBACK_TO_OPENAI: "true"
 
           WRITERS_ROOM_MODE: "budget_plus"
-          PODCAST_SHOW_TITLE: "The AI Edge"
-          PODCAST_SHOW_DESCRIPTION: "The daily AI show that explains the one story today that could touch your work, money, health, privacy, family, school, safety, or trust."
-
           STORY_BOARD_PROVIDER: "gemini"
           STORY_BOARD_MODEL: "gemini-3.1-flash-lite"
           STORY_BOARD_FALLBACK_MODEL: "gemini-3-flash-preview"
@@ -97,13 +115,12 @@ jobs:
           ENABLE_OPENAI_RESCUE: "true"
           ANTHROPIC_SCRIPT_MAX_TOKENS: "6200"
           NO_REPEAT_TITLE_WINDOW: "14"
+          HARD_FAIL_PRE_TTS: "true"
 
           ALEX_USE_OPENAI: "true"
           VOICE_ALEX: "onyx"
-
           VOICE_MODEL_JAMIE: "gpt-4o-mini-tts"
           VOICE_JAMIE: "marin"
-
           VOICE_MODEL_RUFUS: "tts-1-hd"
           VOICE_RUFUS: "fable"
 
@@ -122,7 +139,6 @@ jobs:
           ALEX_GAIN_DB: "3.5"
           JAMIE_GAIN_DB: "1.0"
           RUFUS_GAIN_DB: "0.3"
-
           ALEX_SPEED: "1.05"
           JAMIE_SPEED: "0.99"
           RUFUS_SPEED: "1.01"
@@ -130,15 +146,12 @@ jobs:
           ELEVEN_STABILITY_ALEX: "0.40"
           ELEVEN_SIMILARITY_ALEX: "0.82"
           ELEVEN_STYLE_ALEX: "0.24"
-
           ELEVEN_STABILITY_JAMIE: "0.38"
           ELEVEN_SIMILARITY_JAMIE: "0.82"
           ELEVEN_STYLE_JAMIE: "0.26"
-
           ELEVEN_STABILITY_RUFUS: "0.42"
           ELEVEN_SIMILARITY_RUFUS: "0.85"
           ELEVEN_STYLE_RUFUS: "0.25"
-
           ELEVEN_USE_SPEAKER_BOOST: "true"
           FORCE_INDIVIDUAL_RUFUS_LINES: "true"
           ELEVEN_USE_DIALOGUE_SCENES: "true"
@@ -150,13 +163,11 @@ jobs:
           REACTION_PAUSE_MS: "230"
           MAX_CONSECUTIVE_SAME_SPEAKER_LINES: "5"
           MAX_SPOKEN_WORDS_PER_LINE: "60"
-
           TRIM_TRAILING_MS: "130"
           TAIL_PAD_MS: "90"
 
           AUTO_BUILD_AUDIO_BRANDKIT: "false"
           REBUILD_AUDIO_BRANDKIT: "false"
-
           TRANSITION_EVERY_SEGMENT: "false"
           TRANSITION_MAX_PER_EPISODE: "3"
           TRANSITION_SEGMENTS: "2,4,5"
@@ -165,7 +176,6 @@ jobs:
           INTRO_BED_FADE_OUT_MS: "2200"
           SEGMENT_BED_MS: "2200"
           SEGMENT_BED_FADE_OUT_MS: "850"
-
           MUSIC_TARGET_DBFS: "-27.0"
           DUCK_THRESHOLD_DBFS: "-34.0"
           DUCK_AMOUNT_DB: "15.5"
@@ -175,89 +185,37 @@ jobs:
 
           CLEANUP_TEMP: "true"
           KEEP_LAST_EPISODES: "60"
-          RUN_MARKETING_ASSETS: "true"
+          RUN_MARKETING_ASSETS: "false"
           PUBLISH_SOCIAL: "false"
-          FORCE_REBUILD: "true"
+          FORCE_REBUILD: "false"
           PODCAST_COVER_IMAGE_URL: ${{ vars.PODCAST_COVER_IMAGE_URL }}
-
-          X_API_KEY: ${{ secrets.TWITTER_API_KEY }}
-          X_API_SECRET: ${{ secrets.TWITTER_API_SECRET }}
-          X_ACCESS_TOKEN: ${{ secrets.TWITTER_ACCESS_TOKEN }}
-          X_ACCESS_SECRET: ${{ secrets.TWITTER_ACCESS_SECRET }}
-        shell: bash
         run: |
           set -euo pipefail
           python run_broadcast.py
 
-      - name: Commit and Push
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          git config user.name "AI Producer"
-          git config user.email "bot@aisimplifymedia.com"
-
-          git pull --rebase origin main || echo "No remote changes"
-
-          git add feed.xml || true
-          git add episode_metadata.json || true
-          git add marketing_pack.json || true
-          git add viral_caption.txt || true
-          git add story_scores.json || true
-          git add tracking_summary.json || true
-          git add forwardable_moments.json || true
-          git add story_slate_decision.json || true
-          git add episode_aircheck.json || true
-          git add packaging_gate.json || true
-          git add sponsor_delivery_report.json || true
-          git add sponsor_marketing_report.json || true
-          git add forwardable_exchange_map.json || true
-          git add episode_learning_promise.txt || true
-          git add episode_learning_promise.json || true
-          git add episode_lesson_card.json || true
-          git add scene_cards.json || true
-          git add signal_or_static_game.json || true
-          git add forwardable_line_targets.json || true
-          git add script_aircheck.json || true
-          git add listener_takeaways.json || true
-          git add final_button.json || true
-          git add seo_discovery_brief.json || true
-          git add forwardable_targets.json || true
-          git add duplicate_guard_report.json || true
-          git add x_thread.txt || true
-          git add x_posts.json || true
-          git add linkedin_post.txt || true
-          git add clip_hooks.json || true
-          git add theledgr_newsletter_teaser.txt || true
-          git add marketing_x.json || true
-          git add marketing_youtube.json || true
-          git add marketing_linkedin.txt || true
-          git add marketing_instagram.txt || true
-          git add marketing_tiktok.txt || true
-          git add marketing_blurb.txt || true
-          git add clip_candidates.json || true
-          git add distribution_plan.json || true
-          git add seo_keywords.txt || true
-          git add show_memory.json || true
-          git add experiments_state.json || true
-          git add performance_events.jsonl || true
-          git add episode_audio/podcast_*.mp3 || true
-          git add episode_audio/podcast_*.json || true
-          git add script_*.txt || true
-          git add audio_brandkit/*.mp3 || true
-          git add audio_brandkit/*.json || true
-          git add -f audio_brandkit/** || true
-          git add v3_1_runner.py || true
-          git add writer_room_v3_1.py || true
-          git add growth_overlay_v3_1.py || true
-          git add no_repeat_guard_v3_1.py || true
-
-          if [ -f social_clip.mp4 ]; then
-            git add -f social_clip.mp4
-          else
-            echo "No social_clip.mp4 found (skipping)"
-          fi
-
-          git status --porcelain
-          git commit -m "Automated: The AI Edge v3.1 Episode $(date +'%Y-%m-%d')" || echo "No changes to commit"
-          git push
+      - name: Upload production artifacts always
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: the-ai-edge-v3-1-production-artifacts
+          retention-days: 14
+          if-no-files-found: ignore
+          path: |
+            feed.xml
+            preflight_report_v3_1.json
+            feed_sanitize_report.json
+            duplicate_guard_report.json
+            script_aircheck.json
+            episode_aircheck.json
+            story_slate_decision.json
+            episode_metadata.json
+            marketing_pack.json
+            marketing_blurb.txt
+            story_scores.json
+            tracking_summary.json
+            forwardable_moments.json
+            listener_takeaways.json
+            final_button.json
+            script_*.txt
+            episode_audio/podcast_*.mp3
+            episode_audio/podcast_*.json
