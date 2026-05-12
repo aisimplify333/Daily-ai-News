@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-The AI Edge v3.1 production runner.
+The AI Edge v3.1 cost-safe production runner.
 
 Paste this entire file as: run_broadcast.py
 
-This file is a full replacement. It preserves main.py by calling v3_1_runner.py,
-then runs the public no-repeat guard before any commit/push.
+This fixes the expensive failure mode:
+1. Cheap preflight runs before any LLM/TTS spend.
+2. v3_1_runner generates only after preflight passes.
+3. Feed sanitizer cleans stale public copy before final guard.
+4. No-repeat guard remains as final public trust backstop.
+5. Commit/push only happens after all gates pass.
 """
 
 from __future__ import annotations
@@ -18,11 +22,10 @@ from pathlib import Path
 
 from pydub import AudioSegment
 
-
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", os.getenv("MIN_EPISODE_MINUTES", "19")))
+MAX_MINUTES = float(os.getenv("MAX_MINUTES", "26"))
 BRANCH = os.getenv("GIT_BRANCH", "main")
 RSS_BUFFER_SECONDS = int(os.getenv("RSS_BUFFER_SECONDS", "120"))
-
 RUN_POST_PUSH_PUBLISHER = os.getenv("RUN_POST_PUSH_PUBLISHER", "false").strip().lower() in ("1", "true", "yes")
 PUBLISH_SOCIAL_IN_MAIN = os.getenv("PUBLISH_SOCIAL", "false").strip().lower() in ("1", "true", "yes")
 
@@ -52,7 +55,7 @@ def configure_git_identity() -> None:
 
 def get_latest_mp3(audio_dir: str = "episode_audio") -> Path | None:
     audio_path = Path(audio_dir)
-    files = sorted(audio_path.glob("*.mp3"), key=lambda p: p.stat().st_mtime, reverse=True)
+    files = sorted(audio_path.glob("podcast_*.mp3"), key=lambda p: p.stat().st_mtime, reverse=True)
     return files[0] if files else None
 
 
@@ -62,7 +65,7 @@ def get_mp3_duration_minutes(mp3_path: Path) -> float:
 
 
 def check_episode_length_or_fail() -> tuple[Path, float]:
-    print("\n>> CHECKING SHOW RUNNER...", flush=True)
+    print("\n>> CHECKING EPISODE LENGTH...", flush=True)
     latest = get_latest_mp3()
     if not latest:
         raise RuntimeError("No audio files found in episode_audio/.")
@@ -72,49 +75,52 @@ def check_episode_length_or_fail() -> tuple[Path, float]:
     print(f">> ⏱️ Duration: {duration_min:.2f} minutes", flush=True)
 
     if duration_min < MIN_MINUTES:
-        raise RuntimeError(
-            f"Episode is too short ({duration_min:.2f} min < {MIN_MINUTES:.0f} min). Refusing to publish."
-        )
+        raise RuntimeError(f"Episode too short ({duration_min:.2f} min < {MIN_MINUTES:.0f} min).")
+    if duration_min > MAX_MINUTES:
+        raise RuntimeError(f"Episode too long ({duration_min:.2f} min > {MAX_MINUTES:.0f} min).")
 
-    print(f">> ✅ GREEN LIGHT: Episode meets {MIN_MINUTES:.0f}+ min standard.", flush=True)
+    print(f">> ✅ GREEN LIGHT: Episode inside {MIN_MINUTES:.0f}-{MAX_MINUTES:.0f} minute window.", flush=True)
     return latest, duration_min
 
 
-def has_git_changes() -> bool:
+def has_staged_changes() -> bool:
     result = subprocess.run("git diff --cached --quiet", shell=True)
     return result.returncode != 0
 
 
 def maybe_run_post_push_publisher() -> None:
     if PUBLISH_SOCIAL_IN_MAIN:
-        print("\n>> ℹ️ Skipping post-push social publisher because main.py already owns social publishing (PUBLISH_SOCIAL=true).", flush=True)
+        print("\n>> ℹ️ Skipping post-push publisher because PUBLISH_SOCIAL=true in main.", flush=True)
         return
-
     if not RUN_POST_PUSH_PUBLISHER:
-        print("\n>> ℹ️ Post-push social publisher disabled (RUN_POST_PUSH_PUBLISHER=false).", flush=True)
+        print("\n>> ℹ️ Post-push social publisher disabled.", flush=True)
         return
-
     if not Path("social_publisher.py").exists():
-        print("\n>> ⚠️ social_publisher.py not found. Skipping post-push social publisher.", flush=True)
+        print("\n>> ⚠️ social_publisher.py not found. Skipping.", flush=True)
         return
-
     run_command("python social_publisher.py", "Post-push Social Publisher", allow_fail=True)
 
 
 def main() -> None:
     print("===================================================", flush=True)
-    print("   THE AI EDGE — v3.1 EXPANSION-READY BROADCAST", flush=True)
+    print("   THE AI EDGE — v3.1 COST-SAFE BROADCAST", flush=True)
     print("===================================================", flush=True)
 
     configure_git_identity()
 
-    # V3.1 owner: this preserves main.py, installs overlays in memory, then calls produce_episode().
-    run_command("python v3_1_runner.py", "1. V3.1 Studio + Growth + Marketing Pipeline", allow_fail=False)
+    # 0) Cheap fail-fast checks. This protects the wallet.
+    run_command("python preflight_guard_v3_1.py", "0. Cost-Safe Preflight Guard", allow_fail=False)
 
-    # Public trust gate. This must run before git add/commit/push.
+    # 1) Expensive generation only starts after preflight passes.
+    run_command("python v3_1_runner.py", "1. V3.1 Studio Pipeline", allow_fail=False)
+
+    # 1B) Clean public generated copy before final guard. This prevents stale legacy copy from wasting a completed episode.
+    run_command("python feed_sanitize_v3_1.py", "1B. Public Feed Sanitizer", allow_fail=False)
+
+    # 1C) Final public trust backstop. This should catch true repeats, not simple stale branding.
     run_command(
         "python no_repeat_guard_v3_1.py --feed feed.xml --report duplicate_guard_report.json --window 14",
-        "1B. No-Repeat Public Trust Gate",
+        "1C. No-Repeat Public Trust Gate",
         allow_fail=False,
     )
 
@@ -127,10 +133,10 @@ def main() -> None:
     print("\n>> UPLOADING TO GITHUB...", flush=True)
     run_command("git add .", "Staging Files", allow_fail=False)
 
-    if not has_git_changes():
+    if not has_staged_changes():
         print(">> ℹ️ No changes staged. Skipping commit and push.", flush=True)
     else:
-        run_command('git commit -m "The AI Edge v3.1: New Episode"', "Committing", allow_fail=False)
+        run_command('git commit -m "The AI Edge v3.1: Cost-safe episode"', "Committing", allow_fail=False)
         run_command(f"git push origin {BRANCH}", "Pushing to Live", allow_fail=False)
 
     print(f"\n>> ⏳ BUFFERING {RSS_BUFFER_SECONDS}s for RSS propagation...", flush=True)
@@ -139,7 +145,7 @@ def main() -> None:
     maybe_run_post_push_publisher()
 
     print("\n===================================================", flush=True)
-    print("   THE AI EDGE v3.1 COMPLETE. LIVE.", flush=True)
+    print("   THE AI EDGE v3.1 COST-SAFE COMPLETE. LIVE.", flush=True)
     print("===================================================", flush=True)
 
 
