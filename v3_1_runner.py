@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
 """
-The AI Edge v3.1 runner.
-
-This file intentionally preserves the existing main.py production spine.
-It loads main.py without executing its __main__ block, installs the v3.1
-creative/story/marketing overlays in memory, then calls produce_episode().
+The AI Edge v3.1 runner — COST-SAFE HOTFIX.
 
 Paste this entire file as: v3_1_runner.py
+
+Purpose:
+- Preserve the existing 6,000+ line main.py production spine.
+- Disable legacy v3.0 marketing BEFORE main.py is imported.
+- Install v3.1 growth/writer overlays.
+- Run produce_episode() only after cost-safe preflight has passed.
 """
 
 from __future__ import annotations
@@ -26,22 +28,40 @@ def _safe_print(msg: str) -> None:
     print(msg, flush=True)
 
 
-def main() -> None:
-    if not MAIN_PATH.exists():
-        raise RuntimeError("main.py not found. v3_1_runner.py must live in the repo root next to main.py.")
+def _force_cost_safe_env_before_main_import() -> None:
+    """
+    These values must be set before main.py is loaded with runpy.run_path().
+    main.py reads several env flags during import, so setting them after import is too late.
+    """
+    os.environ["PODCAST_SHOW_TITLE"] = "The AI Edge"
+    os.environ[
+        "PODCAST_SHOW_DESCRIPTION"
+    ] = "The daily AI show that explains the one story today that could touch your work, money, health, privacy, family, school, safety, or trust."
 
-    # Default v3.1 env values. The workflow can override any of these.
-    os.environ.setdefault("PODCAST_SHOW_TITLE", "The AI Edge")
-    os.environ.setdefault(
-        "PODCAST_SHOW_DESCRIPTION",
-        "The daily AI show that explains the one story today that could touch your work, money, health, privacy, family, school, safety, or trust.",
-    )
+    # Critical cost-safety flags.
+    # This is the exact issue the preflight guard caught: legacy marketing must be off before main.py import.
+    os.environ["RUN_MARKETING_ASSETS"] = "false"
+    os.environ["PUBLISH_SOCIAL"] = "false"
+    os.environ["FORCE_REBUILD"] = "false"
+    os.environ["HARD_FAIL_PRE_TTS"] = "true"
+    os.environ["ALLOW_DUPLICATE_DATE_REBUILD"] = "false"
+
+    # v3.1 writer-room defaults. Workflow env can still set these, but these safe defaults keep the runner sane.
     os.environ.setdefault("WRITERS_ROOM_MODE", "budget_plus")
     os.environ.setdefault("NO_REPEAT_TITLE_WINDOW", "14")
     os.environ.setdefault("PRE_TTS_MIN_SCORE", "84")
 
+
+def main() -> None:
+    if not MAIN_PATH.exists():
+        raise RuntimeError("main.py not found. v3_1_runner.py must live in the repo root next to main.py.")
+
     _safe_print(">> STARTING: The AI Edge v3.1 runner")
     _safe_print(">> Preserving existing main.py production spine")
+
+    _force_cost_safe_env_before_main_import()
+    _safe_print(">> ✅ Cost-safe env locked before main.py import")
+    _safe_print(">> ✅ Legacy v3.0 marketing disabled before main.py import")
 
     try:
         import growth_overlay_v3_1
