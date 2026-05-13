@@ -32,6 +32,20 @@ jobs:
       HARD_FAIL_PRE_TTS: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
 
+      # Cost-controlled hybrid voice routing.
+      AUDIO_BACKEND: "openai"
+      TTS_ROUTER_MODE: "hybrid"
+      ALEX_TTS_PROVIDER: "openai"
+      JAMIE_TTS_PROVIDER: "gemini"
+      RUFUS_TTS_PROVIDER: "openai"
+      GEMINI_TTS_MODEL: "gemini-3.1-flash-tts-preview"
+      GEMINI_TTS_VOICE_JAMIE: "Sulafat"
+      GEMINI_TTS_FALLBACK_PROVIDER: "openai"
+      GEMINI_TTS_MAX_RETRIES: "2"
+      GEMINI_TTS_CACHE: "true"
+      ELEVENLABS_ENABLED: "false"
+      ELEVEN_USE_DIALOGUE_SCENES: "false"
+
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -66,6 +80,7 @@ jobs:
           python -m py_compile growth_overlay_v3_1.py
           python -m py_compile preflight_guard_v3_1.py
           python -m py_compile feed_sanitize_v3_1.py
+          python -m py_compile hybrid_tts_router_v3_1.py
           python -m py_compile no_repeat_guard_v3_1.py
           python -m py_compile growth_engine.py
           python -m py_compile run_broadcast.py
@@ -77,11 +92,16 @@ jobs:
           RUN_MARKETING_ASSETS: "false"
           FORCE_REBUILD: "false"
           ALLOW_DUPLICATE_DATE_REBUILD: "false"
+          AUDIO_BACKEND: "openai"
+          JAMIE_TTS_PROVIDER: "gemini"
+          GEMINI_TTS_MODEL: "gemini-3.1-flash-tts-preview"
+          GEMINI_TTS_VOICE_JAMIE: "Sulafat"
+          ELEVENLABS_ENABLED: "false"
         run: |
           set -euo pipefail
           python preflight_guard_v3_1.py
 
-      - name: Run The AI Edge v3.1 Cost-Safe Broadcast
+      - name: Run The AI Edge v3.1 Cost-Safe Hybrid Broadcast
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
@@ -89,9 +109,19 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
-          AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
-          AUDIO_BACKEND: "eleven"
-          ELEVEN_FALLBACK_TO_OPENAI: "true"
+          # Voice stack: Jamie=Gemini, Alex/Rufus=OpenAI, ElevenLabs=OFF.
+          AUDIO_BACKEND: "openai"
+          TTS_ROUTER_MODE: "hybrid"
+          ALEX_TTS_PROVIDER: "openai"
+          JAMIE_TTS_PROVIDER: "gemini"
+          RUFUS_TTS_PROVIDER: "openai"
+          GEMINI_TTS_MODEL: "gemini-3.1-flash-tts-preview"
+          GEMINI_TTS_VOICE_JAMIE: "Sulafat"
+          GEMINI_TTS_FALLBACK_PROVIDER: "openai"
+          GEMINI_TTS_MAX_RETRIES: "2"
+          GEMINI_TTS_CACHE: "true"
+          ELEVENLABS_ENABLED: "false"
+          ELEVEN_USE_DIALOGUE_SCENES: "false"
 
           WRITERS_ROOM_MODE: "budget_plus"
           STORY_BOARD_PROVIDER: "gemini"
@@ -118,15 +148,12 @@ jobs:
           HARD_FAIL_PRE_TTS: "true"
 
           ALEX_USE_OPENAI: "true"
+          VOICE_MODEL_ALEX: "tts-1-hd"
           VOICE_ALEX: "onyx"
           VOICE_MODEL_JAMIE: "gpt-4o-mini-tts"
           VOICE_JAMIE: "marin"
           VOICE_MODEL_RUFUS: "tts-1-hd"
           VOICE_RUFUS: "fable"
-
-          ELEVEN_VOICE_ID_ALEX: "vDchjyOZZytffNeZXfZK"
-          ELEVEN_VOICE_ID_JAMIE: "uYXf8XasLslADfZ2MB4u"
-          ELEVEN_VOICE_ID_RUFUS: "Fahco4VZzobUeiPqni1S"
 
           MIN_MINUTES: "19"
           MAX_MINUTES: "26"
@@ -142,22 +169,6 @@ jobs:
           ALEX_SPEED: "1.05"
           JAMIE_SPEED: "0.99"
           RUFUS_SPEED: "1.01"
-
-          ELEVEN_STABILITY_ALEX: "0.40"
-          ELEVEN_SIMILARITY_ALEX: "0.82"
-          ELEVEN_STYLE_ALEX: "0.24"
-          ELEVEN_STABILITY_JAMIE: "0.38"
-          ELEVEN_SIMILARITY_JAMIE: "0.82"
-          ELEVEN_STYLE_JAMIE: "0.26"
-          ELEVEN_STABILITY_RUFUS: "0.42"
-          ELEVEN_SIMILARITY_RUFUS: "0.85"
-          ELEVEN_STYLE_RUFUS: "0.25"
-          ELEVEN_USE_SPEAKER_BOOST: "true"
-          FORCE_INDIVIDUAL_RUFUS_LINES: "true"
-          ELEVEN_USE_DIALOGUE_SCENES: "true"
-          ELEVEN_SCENE_MAX_TURNS: "7"
-          ELEVEN_SCENE_MAX_CHARS: "1500"
-          ELEVEN_SCENE_PAUSE_MS: "160"
 
           INTER_TURN_SILENCE_MS: "140"
           REACTION_PAUSE_MS: "230"
@@ -197,7 +208,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: the-ai-edge-v3-1-production-artifacts
+          name: the-ai-edge-v3-1-hybrid-tts-artifacts
           retention-days: 14
           if-no-files-found: ignore
           path: |
@@ -205,6 +216,7 @@ jobs:
             preflight_report_v3_1.json
             feed_sanitize_report.json
             duplicate_guard_report.json
+            hybrid_tts_report.json
             script_aircheck.json
             episode_aircheck.json
             story_slate_decision.json
