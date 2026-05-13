@@ -29,6 +29,7 @@ REQUIRED_FILES = [
     "writer_room_v3_1.py",
     "growth_overlay_v3_1.py",
     "feed_sanitize_v3_1.py",
+    "hybrid_tts_router_v3_1.py",
     "no_repeat_guard_v3_1.py",
     "run_broadcast.py",
     "requirements.txt",
@@ -105,6 +106,12 @@ def main() -> int:
             fail("v3_1_runner_does_not_disable_legacy_marketing", fix="set RUN_MARKETING_ASSETS=false before main.py import")
         if "PODCAST_SHOW_TITLE" not in rt or SHOW_TITLE not in rt:
             fail("v3_1_runner_missing_show_title_override")
+        if "hybrid_tts_router_v3_1" not in rt:
+            fail("v3_1_runner_missing_hybrid_tts_router", fix="install hybrid_tts_router_v3_1 before produce_episode()")
+        if "AUDIO_BACKEND" not in rt or "openai" not in rt:
+            fail("v3_1_runner_does_not_force_openai_backend", fix="set AUDIO_BACKEND=openai before main.py import so ElevenLabs is not used")
+        if "ELEVENLABS_ENABLED" not in rt or "false" not in rt:
+            fail("v3_1_runner_does_not_disable_elevenlabs", fix="set ELEVENLABS_ENABLED=false before main.py import")
 
     workflow = Path(".github/workflows/daily_podcast.yml")
     if workflow.exists():
@@ -113,6 +120,16 @@ def main() -> int:
             warn("workflow_preflight_not_visible_directly", note="preflight may still run inside run_broadcast.py")
         if 'RUN_MARKETING_ASSETS: "false"' not in wf and "RUN_MARKETING_ASSETS: 'false'" not in wf:
             fail("workflow_legacy_marketing_assets_not_disabled", fix='set RUN_MARKETING_ASSETS: "false" for tomorrow')
+        if 'AUDIO_BACKEND: "eleven"' in wf or "AUDIO_BACKEND: 'eleven'" in wf:
+            fail("workflow_still_uses_elevenlabs_backend", fix='set AUDIO_BACKEND: "openai" and route only JAMIE to Gemini')
+        if 'AUDIO_BACKEND: "openai"' not in wf and "AUDIO_BACKEND: 'openai'" not in wf:
+            fail("workflow_missing_openai_backend", fix='set AUDIO_BACKEND: "openai"')
+        if 'JAMIE_TTS_PROVIDER: "gemini"' not in wf and "JAMIE_TTS_PROVIDER: 'gemini'" not in wf:
+            fail("workflow_missing_jamie_gemini_route", fix='set JAMIE_TTS_PROVIDER: "gemini"')
+        if "gemini-3.1-flash-tts-preview" not in wf:
+            fail("workflow_missing_gemini_3_1_tts_model", fix="set GEMINI_TTS_MODEL to gemini-3.1-flash-tts-preview")
+        if "AI_EDGE_PODCAST_ELEVENLABS" in wf or "ELEVENLABS_API_KEY" in wf:
+            fail("workflow_still_passes_elevenlabs_secret", fix="remove ElevenLabs secret from production env until audience economics justify it")
         if 'FORCE_REBUILD: "true"' in wf or "FORCE_REBUILD: 'true'" in wf:
             fail("workflow_force_rebuild_true", fix='set FORCE_REBUILD: "false" so manual reruns do not duplicate spend')
         if "Upload production artifacts" not in wf and "actions/upload-artifact" not in wf:
@@ -125,6 +142,14 @@ def main() -> int:
             value=run_marketing,
             fix="set RUN_MARKETING_ASSETS=false until the old v3.0 marketing engine is replaced",
         )
+
+    audio_backend = os.getenv("AUDIO_BACKEND", "openai").strip().lower()
+    if audio_backend == "eleven" and not _bool_env("ALLOW_ELEVENLABS_PRODUCTION"):
+        fail("runtime_audio_backend_is_eleven", value=audio_backend, fix="set AUDIO_BACKEND=openai; Jamie routes to Gemini through hybrid_tts_router_v3_1")
+
+    jamie_provider = os.getenv("JAMIE_TTS_PROVIDER", "gemini").strip().lower()
+    if jamie_provider != "gemini":
+        fail("runtime_jamie_not_routed_to_gemini", value=jamie_provider, fix="set JAMIE_TTS_PROVIDER=gemini")
 
     force_rebuild = os.getenv("FORCE_REBUILD", "false").strip().lower()
     if force_rebuild in ("true", "1", "yes") and not _bool_env("ALLOW_FORCE_REBUILD"):
@@ -150,7 +175,7 @@ def main() -> int:
             warn("existing_generated_file_contains_old_brand", file=file_name, hits=len(hits))
 
     report = {
-        "version": "v3.1-cost-safe-preflight",
+        "version": "v3.1-cost-safe-hybrid-tts-preflight",
         "passed": not failures,
         "failures": failures,
         "warnings": warnings,
@@ -159,6 +184,8 @@ def main() -> int:
             "blocks_legacy_marketing_before_generation": True,
             "blocks_same_day_duplicate_audio": True,
             "requires_artifact_upload_on_failure": True,
+            "requires_jamie_gemini_route": True,
+            "requires_elevenlabs_disabled": True,
         },
     }
     Path("preflight_report_v3_1.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
