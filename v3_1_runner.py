@@ -1,14 +1,15 @@
 # -*- coding: utf-8 -*-
 """
-The AI Edge v3.1 runner — COST-SAFE HOTFIX.
+The AI Edge v3.1 runner — Jamie Gemini / OpenAI hybrid TTS hotfix.
 
 Paste this entire file as: v3_1_runner.py
 
 Purpose:
 - Preserve the existing 6,000+ line main.py production spine.
 - Disable legacy v3.0 marketing BEFORE main.py is imported.
+- Disable ElevenLabs by default.
 - Install v3.1 growth/writer overlays.
-- Run produce_episode() only after cost-safe preflight has passed.
+- Install hybrid TTS routing: Jamie=Gemini, Alex/Rufus=OpenAI.
 """
 
 from __future__ import annotations
@@ -18,7 +19,6 @@ import runpy
 import sys
 import traceback
 from pathlib import Path
-
 
 BASE_DIR = Path(__file__).parent
 MAIN_PATH = BASE_DIR / "main.py"
@@ -39,14 +39,26 @@ def _force_cost_safe_env_before_main_import() -> None:
     ] = "The daily AI show that explains the one story today that could touch your work, money, health, privacy, family, school, safety, or trust."
 
     # Critical cost-safety flags.
-    # This is the exact issue the preflight guard caught: legacy marketing must be off before main.py import.
     os.environ["RUN_MARKETING_ASSETS"] = "false"
     os.environ["PUBLISH_SOCIAL"] = "false"
     os.environ["FORCE_REBUILD"] = "false"
     os.environ["HARD_FAIL_PRE_TTS"] = "true"
     os.environ["ALLOW_DUPLICATE_DATE_REBUILD"] = "false"
 
-    # v3.1 writer-room defaults. Workflow env can still set these, but these safe defaults keep the runner sane.
+    # Voice economics: no ElevenLabs by default at current audience size.
+    os.environ["AUDIO_BACKEND"] = "openai"
+    os.environ["ELEVENLABS_ENABLED"] = "false"
+    os.environ["ELEVEN_USE_DIALOGUE_SCENES"] = "false"
+    os.environ.setdefault("ALEX_TTS_PROVIDER", "openai")
+    os.environ.setdefault("JAMIE_TTS_PROVIDER", "gemini")
+    os.environ.setdefault("RUFUS_TTS_PROVIDER", "openai")
+    os.environ.setdefault("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview")
+    os.environ.setdefault("GEMINI_TTS_VOICE_JAMIE", "Sulafat")
+    os.environ.setdefault("GEMINI_TTS_FALLBACK_PROVIDER", "openai")
+    os.environ.setdefault("GEMINI_TTS_MAX_RETRIES", "2")
+    os.environ.setdefault("GEMINI_TTS_CACHE", "true")
+
+    # v3.1 writer-room defaults. Workflow env can still override these.
     os.environ.setdefault("WRITERS_ROOM_MODE", "budget_plus")
     os.environ.setdefault("NO_REPEAT_TITLE_WINDOW", "14")
     os.environ.setdefault("PRE_TTS_MIN_SCORE", "84")
@@ -62,6 +74,7 @@ def main() -> None:
     _force_cost_safe_env_before_main_import()
     _safe_print(">> ✅ Cost-safe env locked before main.py import")
     _safe_print(">> ✅ Legacy v3.0 marketing disabled before main.py import")
+    _safe_print(">> ✅ ElevenLabs disabled by default; hybrid TTS routing enabled")
 
     try:
         import growth_overlay_v3_1
@@ -80,6 +93,14 @@ def main() -> None:
         _safe_print(">> ✅ Installed v3.1 writer room overlay")
     except Exception as e:
         _safe_print(f">> ❌ V3.1 writer room install failed: {e}")
+        traceback.print_exc()
+        raise
+
+    try:
+        import hybrid_tts_router_v3_1
+        hybrid_tts_router_v3_1.install(g)
+    except Exception as e:
+        _safe_print(f">> ❌ Hybrid TTS router install failed: {e}")
         traceback.print_exc()
         raise
 
