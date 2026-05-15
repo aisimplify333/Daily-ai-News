@@ -1,0 +1,35 @@
+{
+  "version": "v3.1-cost-safe-hybrid-tts-preflight",
+  "passed": true,
+  "failures": [],
+  "warnings": [
+    {
+      "reason": "existing_generated_file_contains_old_brand",
+      "file": "feed.xml",
+      "hits": 5
+    },
+    {
+      "reason": "existing_generated_file_contains_old_brand",
+      "file": "episode_metadata.json",
+      "hits": 9
+    },
+    {
+      "reason": "existing_generated_file_contains_old_brand",
+      "file": "marketing_pack.json",
+      "hits": 4
+    },
+    {
+      "reason": "existing_generated_file_contains_old_brand",
+      "file": "marketing_blurb.txt",
+      "hits": 1
+    }
+  ],
+  "cost_protection": {
+    "runs_before_llm_and_tts": true,
+    "blocks_legacy_marketing_before_generation": true,
+    "blocks_same_day_duplicate_audio": true,
+    "requires_artifact_upload_on_failure": true,
+    "requires_jamie_gemini_route": true,
+    "requires_elevenlabs_disabled": true
+  }
+}
