@@ -1,147 +1,149 @@
 # -*- coding: utf-8 -*-
 """
-The AI Edge v3.1 growth/story scoring overlay.
+The AI Edge v3.2 growth/story scoring overlay.
 
 Paste this entire file as: growth_overlay_v3_1.py
 
-This does not replace growth_engine.py. It patches growth_engine in memory before
-main.py imports its functions. The goal is to preserve the stable production code
-while improving story selection toward universal audience relevance, data, and
-human stakes.
+v3.2 objective:
+- Prefer the top AI news events of the day, not forced sector balance.
+- Lift authority, recency, receipts, conflict, consequences, and human stakes.
+- Demote SEO/listicle/how-to/alternatives content unless it is genuinely newsworthy.
+
+This patches growth_engine in memory before main.py imports its functions.
 """
 
 from __future__ import annotations
 
 import re
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
+TOP_EVENT_TERMS = {
+    "lawsuit": 24, "sues": 22, "court": 18, "judge": 18, "antitrust": 22,
+    "regulation": 22, "regulator": 22, "ban": 20, "banned": 20, "policy": 16,
+    "launch": 18, "launches": 18, "unveils": 18, "releases": 14, "announces": 10,
+    "funding": 16, "pledge": 16, "investment": 16, "acquisition": 20, "deal": 16,
+    "security": 24, "cybersecurity": 24, "breach": 24, "hack": 24, "vulnerability": 24,
+    "health": 20, "healthcare": 22, "clinical": 22, "doctor": 18, "patient": 18,
+    "agent": 18, "agents": 18, "coding agent": 22, "benchmark": 12,
+    "chip": 18, "gpu": 18, "compute": 18, "data center": 18, "datacenter": 18,
+    "job": 18, "jobs": 18, "layoff": 22, "privacy": 22, "scam": 20, "fraud": 20,
+    "deepfake": 18, "copyright": 18, "military": 18, "defense": 18, "election": 20,
+    "government": 16, "white house": 16, "china": 16,
+}
 
 HUMAN_STAKES_TERMS = {
-    "power": 12, "money": 14, "job": 14, "jobs": 14, "trust": 14,
-    "health": 18, "doctor": 18, "doctors": 18, "patient": 18,
-    "privacy": 18, "security": 18, "lawsuit": 18, "liability": 18,
-    "government": 16, "white house": 16, "china": 16,
-    "openai": 10, "google": 9, "anthropic": 9, "nvidia": 10,
-    "agents": 14, "agent": 14, "boss": 16, "banks": 16, "bank": 16,
-    "kids": 16, "school": 16, "copyright": 14,
-    "who gets sued": 22, "who is watching": 22, "keys to": 18,
-    "control": 16, "permission": 18, "scam": 18, "fraud": 18,
-}
-
-UNIVERSAL_RELEVANCE_TERMS = {
     "job": 16, "jobs": 16, "work": 14, "boss": 14, "paycheck": 16,
-    "money": 18, "bank": 16, "banks": 16, "mortgage": 14, "rent": 12,
-    "shopping": 14, "doctor": 20, "health": 20, "hospital": 20,
-    "patient": 20, "medicine": 18, "insurance": 18, "school": 18,
-    "student": 18, "teacher": 16, "kids": 18, "children": 18,
+    "money": 18, "bank": 16, "banks": 16, "doctor": 20, "health": 20,
+    "hospital": 20, "patient": 20, "medicine": 18, "insurance": 18,
+    "school": 18, "student": 18, "teacher": 16, "kids": 18, "children": 18,
     "family": 18, "privacy": 20, "phone": 14, "scam": 20, "fraud": 20,
     "safety": 20, "trust": 20, "government": 18, "law": 16, "lawsuit": 20,
-    "copyright": 14, "car": 12, "home": 14, "small business": 16,
-    "creator": 14, "create": 10, "music": 8, "video": 8, "camera": 8,
+    "copyright": 14, "creator": 14, "small business": 16, "who gets sued": 25,
+    "who is exposed": 25, "who is watching": 22, "blame": 18, "liability": 22,
+    "control": 18, "permission": 20,
 }
 
-TITLE_TENSION_PATTERNS = [
-    r"\bhow\b.+\bwins?\b",
-    r"\bwho\b.+\bwatching\b",
-    r"\bwho\b.+\bsued\b",
-    r"\bmirage\b.+\brevolution\b",
-    r"\bwhat if\b",
-    r"\bwhy\b.+\bmatters?\b",
-    r"\bproblem\b",
-    r"\brace\b",
-    r"\bwar\b",
-    r"\btrust\b",
-    r"\bliability\b",
-    r"\bkeys?\s+to\b",
-    r"\bapprove\b.+\bmodels?\b",
+MAJOR_ACTORS = [
+    "openai", "anthropic", "google", "gemini", "deepmind", "microsoft", "nvidia", "meta",
+    "apple", "amazon", "aws", "xai", "mistral", "perplexity", "tesla", "oracle",
+    "salesforce", "adobe", "github", "cursor", "databricks", "snowflake", "cohere",
+    "white house", "eu", "china", "ftc", "doj", "fda", "sec", "gates foundation",
 ]
 
-INSIDER_ONLY_TERMS = [
-    "benchmark", "parameters", "api", "latency", "model card", "token",
-    "embedding", "context window", "fine-tuning", "inference",
+AUTHORITY_TERMS = {
+    "reuters": 22, "associated press": 20, "ap news": 20, "bloomberg": 22,
+    "financial times": 22, "wall street journal": 22, "wsj": 22,
+    "new york times": 18, "washington post": 18, "the verge": 14, "wired": 16,
+    "techcrunch": 14, "semianalysis": 18, "the information": 20, "axios": 16,
+    "cnbc": 14, "fortune": 14, "geekwire": 10,
+}
+
+LOW_VALUE_PATTERNS = [
+    r"\b\d+\s+best\b", r"\bbest\s+.+alternatives\b", r"\balternatives\b", r"\bhow to\b",
+    r"\btips\b", r"\bguide\b", r"\bwebinar\b", r"\bsponsored\b", r"\bguest post\b",
+    r"\bwhat is\b", r"\bexplained\b", r"\breview\b", r"\broundup\b",
 ]
 
+NUMBER_RE = re.compile(r"(?:\$|€|£)\s?\d|\b\d+(?:\.\d+)?%\b|\b\d+(?:\.\d+)?\s?(?:million|billion|trillion|m|b)\b", re.IGNORECASE)
 
-def _blob(title: str, summary: str = "") -> str:
-    return f"{title or ''} {summary or ''}".lower()
+
+def _title_summary(item: Dict[str, Any]) -> Tuple[str, str]:
+    title = str(item.get("title") or item.get("headline") or "")
+    summary = str(item.get("summary") or item.get("why_shocking") or item.get("description") or item.get("rss_summary") or "")
+    return title, summary
+
+
+def _blob(item: Dict[str, Any]) -> str:
+    title, summary = _title_summary(item)
+    return f"{title} {summary} {item.get('publisher') or ''} {item.get('source_url') or item.get('link') or ''}".lower()
 
 
 def listener_tension_score(title: str, summary: str = "") -> float:
-    blob = _blob(title, summary)
+    blob = f"{title} {summary}".lower()
     score = 0.0
     for term, pts in HUMAN_STAKES_TERMS.items():
         if term in blob:
             score += pts
-    for pat in TITLE_TENSION_PATTERNS:
-        if re.search(pat, blob, flags=re.IGNORECASE):
-            score += 12
-    if "?" in (title or ""):
+    if "?" in title:
         score += 8
-    if 38 <= len(title or "") <= 96:
-        score += 6
-    if re.search(r"(?:\$|€|£)\s?\d|\d+%|\b\d+\s?(?:million|billion|trillion)\b", blob):
+    if re.search(r"\b(who|why|how|what)\b", title, flags=re.IGNORECASE):
+        score += 8
+    if NUMBER_RE.search(blob):
         score += 12
     return max(0.0, min(100.0, score))
 
 
-def universal_relevance_score(title: str, summary: str = "") -> float:
-    blob = _blob(title, summary)
+def top_event_heat_score(item: Dict[str, Any]) -> float:
+    blob = _blob(item)
+    title, summary = _title_summary(item)
     score = 0.0
-    for term, pts in UNIVERSAL_RELEVANCE_TERMS.items():
+    for term, pts in TOP_EVENT_TERMS.items():
         if term in blob:
             score += pts
-
-    if "agent" in blob and any(x in blob for x in ["bank", "shopping", "work", "email", "calendar", "phone", "privacy", "security"]):
-        score += 18
-    if "ai" in blob and any(x in blob for x in ["doctor", "health", "school", "job", "government", "safety", "scam"]):
+    score += min(30.0, sum(1 for actor in MAJOR_ACTORS if actor in blob) * 8.0)
+    score += min(24.0, len(NUMBER_RE.findall(blob)) * 5.0)
+    for key, pts in AUTHORITY_TERMS.items():
+        if key in blob:
+            score += pts
+            break
+    if ".gov" in blob or ".edu" in blob:
         score += 20
-
-    public_terms = set(UNIVERSAL_RELEVANCE_TERMS.keys())
-    if any(x in blob for x in INSIDER_ONLY_TERMS) and not any(x in blob for x in public_terms):
-        score -= 24
-
+    if any(re.search(p, title.lower()) for p in LOW_VALUE_PATTERNS):
+        score -= 45
+    if re.search(r"\b(best|alternatives|guide|tips|how to|review)\b", title, flags=re.IGNORECASE) and not any(x in blob for x in ["lawsuit", "launch", "funding", "security", "regulation"]):
+        score -= 35
     return max(0.0, min(100.0, score))
-
-
-def _get_title_summary(item: Dict[str, Any]) -> tuple[str, str]:
-    title = str(item.get("title") or item.get("headline") or "")
-    summary = str(item.get("summary") or item.get("why_shocking") or item.get("description") or "")
-    return title, summary
 
 
 def install() -> None:
     import growth_engine  # type: ignore
 
-    if getattr(growth_engine, "V3_1_EXPANSION_OVERLAY_INSTALLED", False):
+    if getattr(growth_engine, "V3_2_TOP_EVENTS_OVERLAY_INSTALLED", False):
         return
 
     original_story_score_breakdown = getattr(growth_engine, "story_score_breakdown", None)
 
     if callable(original_story_score_breakdown):
-        def story_score_breakdown_v3_1(item, memory=None):
+        def story_score_breakdown_v3_2(item, memory=None):
             breakdown = original_story_score_breakdown(item, memory)
-            title, summary = _get_title_summary(item)
+            title, summary = _title_summary(item)
+            top_heat = top_event_heat_score(item)
             tension = listener_tension_score(title, summary)
-            universal = universal_relevance_score(title, summary)
 
-            breakdown["listener_tension"] = round(tension, 2)
-            breakdown["universal_relevance"] = round(universal, 2)
+            breakdown["top_event_heat"] = round(top_heat, 2)
+            breakdown["listener_tension"] = round(max(float(breakdown.get("listener_tension", 0.0) or 0.0), tension), 2)
+            breakdown["universal_relevance"] = round(max(float(breakdown.get("universal_relevance", 0.0) or 0.0), tension * 0.75), 2)
 
-            old_weighted = float(breakdown.get("weighted", 0.0))
-            authority = float(breakdown.get("authority", 0.0))
-            lift = (0.14 * tension) + (0.18 * universal)
-
-            if authority < 40:
-                lift *= 0.45
-            if float(breakdown.get("ai_heat", 0.0)) >= 50 and universal < 16:
-                lift -= 8
-            if float(breakdown.get("numeric_density", 0.0)) <= 0 and float(breakdown.get("forward_consequence", 0.0)) < 20:
+            old = float(breakdown.get("weighted", 0.0) or 0.0)
+            lift = 0.34 * top_heat + 0.18 * tension
+            if float(breakdown.get("authority", 0.0) or 0.0) < 35 and top_heat < 40:
                 lift *= 0.55
-
-            breakdown["weighted"] = round(max(0.0, min(100.0, old_weighted + lift)), 2)
+            if top_heat < 25 and tension < 18:
+                lift -= 18
+            breakdown["weighted"] = round(max(0.0, min(100.0, old + lift)), 2)
             return breakdown
 
-        growth_engine.story_score_breakdown = story_score_breakdown_v3_1
+        growth_engine.story_score_breakdown = story_score_breakdown_v3_2
 
-    growth_engine.MODEL_VERSION = "podcast-growth-v3.1-expansion-ready-universal-data-purpose"
-    growth_engine.V3_1_EXPANSION_OVERLAY_INSTALLED = True
+    growth_engine.MODEL_VERSION = "podcast-growth-v3.2-hard-debate-top-ai-events"
+    growth_engine.V3_2_TOP_EVENTS_OVERLAY_INSTALLED = True
