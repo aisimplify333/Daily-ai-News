@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-The AI Edge v3.3.4 clean runner — no new files, no main.py replacement.
+The AI Edge v3.3.5 clean runner — no new files, no main.py replacement.
 
 Paste this entire file as: v3_1_runner.py
 
@@ -9,6 +9,13 @@ Purpose:
 - Keep orchestration simple and readable.
 - Install the existing overlays in a deterministic order.
 - Prove Jamie Gemini voice before expensive generation and after final render when required.
+
+v3.3.5 change (and ONLY this change vs v3.3.4):
+- preflight_guard_v3_1.py requires the runner to FORCE cost-bearing flags off
+  before main.py is imported, not merely default them. RUN_MARKETING_ASSETS and
+  PUBLISH_SOCIAL are now hard-set with os.environ[...] = "false" instead of
+  setdefault(), matching how AUDIO_BACKEND / ELEVENLABS_ENABLED are already
+  hard-set just below. Nothing else is touched.
 """
 
 from __future__ import annotations
@@ -44,8 +51,14 @@ def _set_default_env() -> None:
 
     # Cost and reliability defaults.
     os.environ.setdefault("SAVE_SCRIPT", "true")
-    os.environ.setdefault("RUN_MARKETING_ASSETS", "false")
-    os.environ.setdefault("PUBLISH_SOCIAL", "false")
+
+    # COST-SAFETY: these two flags gate paid marketing/social generation. The
+    # preflight guard requires the runner to FORCE them off before main.py is
+    # imported — not setdefault() — so an inherited "true" can never slip
+    # through. Hard-set, exactly like AUDIO_BACKEND / ELEVENLABS_ENABLED below.
+    os.environ["RUN_MARKETING_ASSETS"] = "false"
+    os.environ["PUBLISH_SOCIAL"] = "false"
+
     os.environ.setdefault("HARD_FAIL_PRE_TTS", "false")
     os.environ.setdefault("ALLOW_DUPLICATE_DATE_REBUILD", "false")
     os.environ.setdefault("RECOVERY_ALLOW_DETERMINISTIC_SCRIPT", "true")
@@ -96,7 +109,7 @@ def _install_writer_room(g: Dict[str, Any]) -> None:
     from writer_room_v3_1 import install_v3_1
 
     install_v3_1(g)
-    _safe_print(">> ✅ Installed clean v3.3.4 hard-debate writer room")
+    _safe_print(">> ✅ Installed clean v3.3 hard-debate writer room")
 
 
 def _install_tts_router(g: Dict[str, Any]) -> Any:
@@ -147,11 +160,12 @@ def _enforce_gemini_jamie_report() -> None:
 
 
 def main() -> None:
-    _safe_print(">> STARTING: The AI Edge v3.3.4 clean stable runner")
+    _safe_print(">> STARTING: The AI Edge v3.3.5 clean stable runner")
     _safe_print(">> Preserving existing main.py production spine")
 
     _set_default_env()
     _safe_print(">> ✅ Stable env locked before main.py import")
+    _safe_print(">> ✅ Cost flags (RUN_MARKETING_ASSETS / PUBLISH_SOCIAL) forced false")
     _safe_print(">> ✅ No embedded code, no new modules, no main.py replacement")
 
     _install_growth_overlay()
@@ -164,10 +178,10 @@ def main() -> None:
     if not callable(produce_episode):
         raise RuntimeError("main.py did not expose produce_episode(). Cannot run production build.")
 
-    _safe_print(">> HANDOFF: running main.py produce_episode() under clean v3.3.4 overlays")
+    _safe_print(">> HANDOFF: running main.py produce_episode() under clean v3.3.5 overlays")
     produce_episode()
     _enforce_gemini_jamie_report()
-    _safe_print(">> ✅ COMPLETE: The AI Edge v3.3.4 clean stable runner")
+    _safe_print(">> ✅ COMPLETE: The AI Edge v3.3.5 clean stable runner")
 
 
 if __name__ == "__main__":
