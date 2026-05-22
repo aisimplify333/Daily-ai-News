@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-The AI Signal Room by TheLEDGR (fully automated)
+The AI EDGE by TheLEDGR (fully automated)
 
 Production upgrades (Jan 2026) — listener-first producer package:
 - Guaranteed audible INTRO STINGER after cold open [MUSIC] marker (cannot be skipped by ducking)
