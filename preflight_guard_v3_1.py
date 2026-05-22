@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
 """
-The AI Edge v3.2.1 preflight guard — hard-debate/Gemini false-positive hotfix.
+The AI Edge v3.2.2 preflight guard — v3.3 connection-first lineage accepted.
 
 Paste this entire file as: preflight_guard_v3_1.py
 
 Cheap checks before any LLM/TTS spend:
 - Required files exist and compile.
-- v3.2 hard-debate/top-events writer room is installed.
+- An approved hard-debate/top-events writer room is installed (v3.2 OR v3.3).
 - Gemini Jamie router patches both tts_to_file and _render_spoken_chunk_to_file.
 - Legacy marketing and ElevenLabs are disabled.
 
-Why v3.2.1 exists:
-The v3.2 guard incorrectly failed if writer_room_v3_1.py contained the phrase
-"Today’s AI Lesson" anywhere, even when it appeared only as a banned phrase in a
-negative instruction. This version checks for active lesson-first title generation
-instead of false-positive banned-language instructions.
+Why v3.2.2 exists:
+v3.3 ("connection-first") is an approved superset of the v3.2 hard-debate writer:
+it keeps top-events story selection and the no-lesson rule, and adds cross-episode
+continuity, designed-argument pre-production, and a binary structural gate. The
+v3.2.1 guard hard-coded the literal string "v3.2" and the function name
+"pick_top_stories_v3_2", so it rejected the v3.3 writer as unrecognized.
+
+v3.2.2 changes ONLY the writer-lineage fingerprint: it now accepts v3.2 OR v3.3,
+and accepts either pick_top_stories_v3_2 or pick_top_stories_v3_3. Every other
+check — marketing off, ElevenLabs off, lesson-first detection, the router patch
+checks, the growth overlay check, the environment checks — is byte-for-byte
+unchanged and just as strict. This does not weaken the guard; it teaches it about
+an approved version.
 """
 
 from __future__ import annotations
@@ -36,6 +44,11 @@ REQUIRED = [
     "no_repeat_guard_v3_1.py",
     "run_broadcast.py",
 ]
+
+# Approved writer lineages. Adding a future version means adding it here —
+# deliberately, in the guard — never by loosening the check to accept anything.
+APPROVED_WRITER_VERSIONS = ("v3.2", "v3.3")
+APPROVED_PICK_OVERRIDES = ("pick_top_stories_v3_2", "pick_top_stories_v3_3")
 
 
 def fail(reason: str) -> None:
@@ -69,7 +82,7 @@ def _contains_active_lesson_first_generation(writer: str) -> bool:
 
 
 def main() -> None:
-    print(">> STARTING: V3.2.1 hard-debate cost-safe preflight guard", flush=True)
+    print(">> STARTING: V3.2.2 hard-debate cost-safe preflight guard", flush=True)
 
     for name in REQUIRED:
         p = ROOT / name
@@ -93,10 +106,14 @@ def main() -> None:
         fail("v3_1_runner.py does not force ELEVENLABS_ENABLED=false")
 
     writer_l = writer.lower()
-    if "v3.2" not in writer_l or "hard-debate" not in writer_l or "top-events" not in writer_l:
-        fail("writer_room_v3_1.py is not the v3.2 hard-debate/top-events version")
-    if "pick_top_stories_v3_2" not in writer:
+    # --- writer lineage fingerprint (the ONLY thing changed in v3.2.2) ---
+    if not any(v in writer_l for v in APPROVED_WRITER_VERSIONS):
+        fail("writer_room_v3_1.py is not an approved (v3.2/v3.3) hard-debate writer version")
+    if "hard-debate" not in writer_l or "top-events" not in writer_l:
+        fail("writer_room_v3_1.py is not the hard-debate/top-events writer room")
+    if not any(name in writer for name in APPROVED_PICK_OVERRIDES):
         fail("writer_room_v3_1.py does not override pick_top_stories for top AI events")
+    # --- everything below is unchanged from v3.2.1, same strictness ---
     if "not an ai lesson show" not in writer_l or "hard human debate" not in writer_l:
         fail("writer_room_v3_1.py does not contain the hard-debate creative mandate")
     if "today's top ai events" not in writer_l and "top ai events" not in writer_l:
@@ -129,10 +146,10 @@ def main() -> None:
         fail("; ".join(bad_env))
 
     print(">> ✅ COST-SAFE PREFLIGHT PASSED", flush=True)
-    print(">> ✅ Creative format: v3.2 hard-debate human program", flush=True)
+    print(">> ✅ Creative format: approved hard-debate human program (v3.2/v3.3)", flush=True)
     print(">> ✅ Story selection: top AI events, no forced sector quota", flush=True)
     print(">> ✅ TTS routing: Jamie Gemini forced path + OpenAI fallback; Alex/Rufus OpenAI; ElevenLabs OFF", flush=True)
-    print(">> ✅ Preflight guard v3.2.1 false-positive fix active", flush=True)
+    print(">> ✅ Preflight guard v3.2.2 — v3.3 connection-first lineage accepted", flush=True)
 
 
 if __name__ == "__main__":
