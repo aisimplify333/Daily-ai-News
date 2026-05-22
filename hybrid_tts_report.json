@@ -1,26 +1,46 @@
 {
-  "version": "v3.2-hard-debate-jamie-gemini-forced-router",
+  "version": "v3.3-mood-aware-router",
   "routing": {
     "ALEX": "openai",
-    "JAMIE": "gemini-first-openai-fallback",
+    "JAMIE": "gemini",
     "RUFUS": "openai",
     "ELEVENLABS": "disabled"
   },
   "gemini_model": "gemini-3.1-flash-tts-preview",
-  "gemini_voice_jamie": "Sulafat",
+  "openai_tts_model": "gpt-4o-mini-tts",
   "installed": true,
   "patched": [
     "tts_to_file",
     "_render_spoken_chunk_to_file",
     "_speaker_audio_backend"
   ],
-  "calls": [],
+  "calls": [
+    {
+      "speaker": "JAMIE",
+      "provider": "gemini",
+      "mood": "neutral",
+      "cache": false,
+      "model": "gemini-3.1-flash-tts-preview",
+      "voice": "Sulafat",
+      "chars": 121,
+      "attempt": 1
+    }
+  ],
   "fallbacks": [],
-  "jamie_chars_requested": 0,
+  "mood_distribution": {},
+  "jamie_chars_requested": 121,
   "jamie_cache_hits": 0,
-  "jamie_gemini_successes": 0,
+  "jamie_gemini_successes": 1,
   "jamie_gemini_failures": 0,
-  "alex_openai_calls": 0,
-  "rufus_openai_calls": 0,
-  "non_speaker_calls": 0
+  "gemini_successes": 1,
+  "openai_router_calls": 0,
+  "openai_passthrough_calls": 0,
+  "jamie_gemini_verified": true,
+  "router_owned_openai": true,
+  "openai_client_available": true,
+  "jamie_gemini_smoke_test": {
+    "passed": true,
+    "path": "/home/runner/work/Daily-ai-News/Daily-ai-News/episode_audio/jamie_gemini_voice_proof_2026-05-22.mp3",
+    "bytes": 159885
+  }
 }
