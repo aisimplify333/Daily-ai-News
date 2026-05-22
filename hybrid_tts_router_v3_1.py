@@ -1,20 +1,44 @@
 # -*- coding: utf-8 -*-
 """
-The AI Edge v3.2 hybrid TTS router.
+The AI Edge v3.3 — Mood-aware hybrid TTS router.
+Drop-in replacement for: hybrid_tts_router_v3_1.py  (same filename, same entry point)
 
-Paste this entire file as: hybrid_tts_router_v3_1.py
+WHAT CHANGED vs v3.2, AND WHY
+-----------------------------
+v3.2 routed Jamie to Gemini and verified the call happened — both good, both kept.
+But it gave every Jamie line the SAME director's notes. A tense interruption and a
+warm laugh were performed with identical direction, so the voice got warmer but the
+*mood* never moved. A debate has to rise and fall; a flat read of a good script
+still sounds synthetic.
 
-Production voice routing:
-- JAMIE -> Gemini 3.1 Flash TTS Preview first
-- ALEX  -> OpenAI TTS
-- RUFUS -> OpenAI TTS
-- ElevenLabs -> off by default until audience/sponsor economics justify it
+v3.2 also expected bracket cues like [laughs] in the transcript. The v3.3 writer
+strips all brackets (so OpenAI TTS never reads "[laughs]" aloud). So emotion can no
+longer ride on inline tags — it has to be inferred from the words themselves.
 
-v3.2 fix:
-The prior router wrapped main.py's tts_to_file(), but the completed 2026-05-15
-run showed zero Jamie Gemini calls. This version wraps BOTH tts_to_file() and
-_render_spoken_chunk_to_file(), and it forces the speaker backend away from
-ElevenLabs scene rendering. The report must show calls > 0 after a real run.
+v3.3 fixes both:
+
+  1. PER-LINE MOOD INFERENCE. Every line is classified — deterministically, no extra
+     LLM calls — into a debate mood: pressure, pushback, amused, concern, explainer,
+     dry-wit, concession, interruption, or neutral. The v3.3 writer deliberately
+     writes the signals in (em-dash interruptions, "Wait.", concession phrases,
+     number-dense receipts), so reading them back is reliable and free.
+
+  2. MOOD DRIVES DELIVERY FOR ALL THREE HOSTS. The director's notes (Gemini) and the
+     style instructions (OpenAI gpt-4o-mini-tts) are now built per line from the
+     mood + the host's base temperament. Alex pressing a question, Rufus landing a
+     dry undercut, and Jamie conceding a point are now each directed differently.
+
+  3. ROUTER-OWNED OPENAI PATH. To direct Alex and Rufus, the router now renders them
+     itself via OpenAI TTS with a per-line `instructions` parameter. It still falls
+     back to main.py's original tts_to_file on any error (logged, never silent), and
+     you can revert Alex/Rufus to the old path entirely with ROUTER_OWN_OPENAI=false.
+
+  4. PER-HOST PROVIDER CONFIG. ALEX/JAMIE/RUFUS each have a provider env var. Default
+     keeps Jamie=Gemini, Alex/Rufus=OpenAI. If you want a genuinely British Rufus,
+     set RUFUS_TTS_PROVIDER=gemini and pick a Gemini voice — OpenAI voices cannot do
+     a real British accent (see the note at the bottom of this file).
+
+Entry point and globals contract unchanged: main.py still calls install(g).
 """
 
 from __future__ import annotations
@@ -29,33 +53,43 @@ import subprocess
 import time
 import wave
 from pathlib import Path
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Dict, Optional
 
 BASE_DIR = Path(__file__).parent
-CACHE_DIR = BASE_DIR / ".tts_cache" / "gemini_jamie"
+CACHE_DIR = BASE_DIR / ".tts_cache"
 REPORT_PATH = BASE_DIR / "hybrid_tts_report.json"
 
+# ----------------------------------------------------------------------------
+# Runtime handles, filled in by install()
+# ----------------------------------------------------------------------------
+_RT: Dict[str, Any] = {"openai_client": None, "original_tts": None}
+
+# ----------------------------------------------------------------------------
+# Report / telemetry
+# ----------------------------------------------------------------------------
 STATS: Dict[str, Any] = {
-    "version": "v3.2-hard-debate-jamie-gemini-forced-router",
+    "version": "v3.3-mood-aware-router",
     "routing": {
-        "ALEX": "openai",
-        "JAMIE": "gemini-first-openai-fallback",
-        "RUFUS": "openai",
+        "ALEX": os.getenv("ALEX_TTS_PROVIDER", "openai"),
+        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "gemini"),
+        "RUFUS": os.getenv("RUFUS_TTS_PROVIDER", "openai"),
         "ELEVENLABS": "disabled",
     },
     "gemini_model": os.getenv("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview"),
-    "gemini_voice_jamie": os.getenv("GEMINI_TTS_VOICE_JAMIE", "Sulafat"),
+    "openai_tts_model": os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts"),
     "installed": False,
     "patched": [],
     "calls": [],
     "fallbacks": [],
+    "mood_distribution": {},
     "jamie_chars_requested": 0,
     "jamie_cache_hits": 0,
     "jamie_gemini_successes": 0,
     "jamie_gemini_failures": 0,
-    "alex_openai_calls": 0,
-    "rufus_openai_calls": 0,
-    "non_speaker_calls": 0,
+    "gemini_successes": 0,
+    "openai_router_calls": 0,
+    "openai_passthrough_calls": 0,
+    "jamie_gemini_verified": False,
 }
 
 
@@ -68,58 +102,232 @@ def _bool_env(name: str, default: str = "false") -> bool:
 
 
 def _write_report() -> None:
+    STATS["jamie_gemini_verified"] = STATS["jamie_gemini_successes"] > 0
     try:
-        REPORT_PATH.write_text(json.dumps(STATS, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        REPORT_PATH.write_text(json.dumps(STATS, ensure_ascii=False, indent=2) + "\n",
+                               encoding="utf-8")
     except Exception:
         pass
 
 
+# ----------------------------------------------------------------------------
+# MOOD INFERENCE — the heart of v3.3. Deterministic, no LLM calls.
+# The v3.3 writer writes these signals into the script on purpose.
+# ----------------------------------------------------------------------------
+NUMERIC_RE = re.compile(
+    r"(?:\$|€|£)\s?\d[\d,.]*(?:\s?(?:million|billion|trillion|m|b))?"
+    r"|\b\d+(?:\.\d+)?%\b|\b\d[\d,]*\b|\bQ[1-4]\b",
+    re.IGNORECASE,
+)
+CONCESSION_RE = re.compile(
+    r"\b(you'?re right|you are right|okay,? you'?ve got me|i was wrong|i'?ll give you that|"
+    r"point taken|i concede|you'?ve convinced me|i'?ll grant (?:you|that)|alright,? you win|"
+    r"fair, actually|i'?ll walk that back|i take it back|that changes my mind)\b",
+    re.IGNORECASE,
+)
+PUSHBACK_RE = re.compile(
+    r"\b(wait\.?|hold on|hang on|hold up|come on|no,|nope|i disagree|that'?s not|"
+    r"that is not|let me stop you|i don'?t buy)\b", re.IGNORECASE,
+)
+AMUSED_RE = re.compile(
+    r"\b(hah|ha\.|funny|ridiculous|absurd|you'?re kidding|i love that|genuinely funny|"
+    r"that'?s great|oh, that'?s)\b", re.IGNORECASE,
+)
+CONCERN_RE = re.compile(
+    r"\b(scares?|scary|blamed?|lose (?:their|your|the)|patients?|workers?|families|"
+    r"family|privacy|someone'?s (?:job|life|data)|real people|laid off|at risk)\b",
+    re.IGNORECASE,
+)
+EXPLAINER_RE = re.compile(
+    r"\b(in plain terms|the simple version|plain english|basically|what that (?:means|is)|"
+    r"the normal[- ]person|put it this way|translate)\b", re.IGNORECASE,
+)
+PRESSURE_RE = re.compile(
+    r"\b(who wins|who loses|who gets blamed|who is exposed|what changed|why should|"
+    r"is this real|who decided|who owns)\b", re.IGNORECASE,
+)
+DRY_RE = re.compile(
+    r"\b(lovely|quite|rather|of course|convenient|splendid|marvellous|how reassuring|"
+    r"naturally|charming)\b", re.IGNORECASE,
+)
+
+MOODS = (
+    "interruption", "concession", "pushback", "amused", "concern",
+    "explainer", "pressure", "dry_wit", "neutral",
+)
+
+
+def infer_mood(text: str, speaker: str) -> str:
+    """Classify one line into a debate mood. Priority order matters: the most
+    delivery-defining signal wins."""
+    raw = (text or "").strip()
+    body = re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", raw, flags=re.IGNORECASE).strip()
+    low = body.lower()
+    spk = (speaker or "").strip().upper()
+    if not body:
+        return "neutral"
+
+    # 1. Interruption — the line is cut off (or cuts in) on an em-dash.
+    if body.endswith(("—", "–")) or body.startswith(("—", "–")):
+        return "interruption"
+    # 2. Concession — a host genuinely changes position.
+    if CONCESSION_RE.search(low):
+        return "concession"
+    # 3. Pushback — live disagreement.
+    if PUSHBACK_RE.search(low):
+        return "pushback"
+    # 4. Amused — something landed as absurd or funny.
+    if AMUSED_RE.search(low):
+        return "amused"
+    # 5. Pressure — a pointed question. A question is interrogative delivery
+    #    regardless of how weighty the topic is, so it outranks concern.
+    if PRESSURE_RE.search(low) or (spk == "ALEX" and body.endswith("?")):
+        return "pressure"
+    # 6. Concern — real stakes for real people, stated (not asked).
+    if CONCERN_RE.search(low):
+        return "concern"
+    # 7. Explainer — translating something, or dense with receipts.
+    if EXPLAINER_RE.search(low) or len(NUMERIC_RE.findall(body)) >= 2:
+        return "explainer"
+    # 8. Dry wit — Rufus's understatement, or Rufus by default.
+    if DRY_RE.search(low) or spk == "RUFUS":
+        return "dry_wit"
+    # 9. Neutral conversational.
+    return "neutral"
+
+
+# ----------------------------------------------------------------------------
+# DIRECTION LIBRARY — how each mood should be performed.
+# ----------------------------------------------------------------------------
+PERSONA = {
+    "ALEX": ("Alex — the host and engine of the room. Curious, blunt, high-agency, "
+             "energetic. Keeps the debate moving and presses the question others avoid."),
+    "JAMIE": ("Jamie — the heavy reactor. Warm, sharp, funny, emotionally present. "
+              "Translates jargon into plain English and makes the stakes land for "
+              "normal listeners. Modern and real; never robotic, never valley-girl, "
+              "never over-acted."),
+    "RUFUS": ("Rufus — the dry British analyst. Calm, precise, quietly funny, "
+              "unhurried. Tracks money, liability, and regulation. Understatement, "
+              "never theatrics."),
+}
+PERSONA_SHORT = {
+    "ALEX": "a blunt, energetic, curious podcast host",
+    "JAMIE": "a warm, sharp, funny, emotionally present podcast co-host",
+    "RUFUS": "a calm, dry, understated British analyst",
+}
+
+# mood -> (gemini director note, openai instruction overlay)
+MOOD_DIRECTION = {
+    "neutral": (
+        "Natural conversational podcast pace. Engaged and in the moment, talking with "
+        "people you can see — not reading an essay.",
+        "Speak naturally and conversationally, engaged and in the moment.",
+    ),
+    "pressure": (
+        "This is a pointed question. Lean in. Firm, probing, a little intensity — you "
+        "want a real answer, not a dodge. A slight rising drive toward the question mark.",
+        "Ask this as a pointed, probing question — firm and a little intense, pressing "
+        "for a real answer.",
+    ),
+    "pushback": (
+        "This is disagreement landing in real time. Quicker, sharper, a touch of "
+        "friction. You are cutting in because you do not buy what was just said.",
+        "Deliver this as live disagreement — quicker and sharper, cutting in, with a "
+        "touch of friction.",
+    ),
+    "amused": (
+        "Something just landed as absurd or funny. A real smile in the voice, light, a "
+        "beat of genuine amusement — never a performed or canned laugh.",
+        "Light and warm with a genuine smile in the voice — something here is absurd "
+        "and you find it funny.",
+    ),
+    "concern": (
+        "Real stakes for real people. Slow down. More weight, more sincerity. This is "
+        "not abstract — someone's job, health, money, or privacy is on the line.",
+        "Slower and weightier, sincere and a little grave — real people are exposed here.",
+    ),
+    "explainer": (
+        "You are translating something technical into plain English. Slightly slower, "
+        "clearer articulation, patient. Make it land on first listen.",
+        "Slower and very clear, patient and articulate — explain this so anyone can "
+        "follow it the first time.",
+    ),
+    "dry_wit": (
+        "Dry, calm, understated British wit. Do not push the joke — let it sit flat. "
+        "The humour is in the restraint and the timing, not the energy.",
+        "Dry, calm and understated — deliver any irony flat, with restraint; let the "
+        "wit sit rather than pushing it.",
+    ),
+    "concession": (
+        "This is the moment you genuinely change your mind. Slow down. Lower the "
+        "energy. Honest, a little reluctant, real — you are actually conceding the "
+        "point, not being polite about it.",
+        "Slower and lower-energy, honest and a little reluctant — you are genuinely "
+        "conceding the point, not being polite.",
+    ),
+    "interruption": (
+        "You are being cut off, or cutting in. Fast onset, clipped, urgent — the "
+        "thought does not get to finish cleanly.",
+        "Fast, clipped and urgent — this line is interrupted and does not finish "
+        "cleanly.",
+    ),
+}
+
+
+# ----------------------------------------------------------------------------
+# Text sanitation
+# ----------------------------------------------------------------------------
 def _sanitize_spoken_text(text: str) -> str:
+    """Strip the speaker label and ALL bracketed cues. The v3.3 writer already
+    removes brackets; this is defence-in-depth for the fallback generator's
+    output so no provider ever reads '[laughs]' aloud."""
     t = (text or "").strip()
     t = re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", t, flags=re.IGNORECASE).strip()
-    replacements = {
-        "[laugh]": "[laughs]",
-        "[chuckle]": "[laughs softly]",
-        "[chuckles]": "[laughs softly]",
-        "[scoff]": "[scoffs]",
-        "[huff]": "[sighs]",
-        "[pause]": "[short pause]",
-        "[beat]": "[short pause]",
-        "[amused exhale]": "[laughs softly]",
-        "[sharp exhale]": "[sighs]",
-        "[smirks]": "[amused]",
-        "[smirk]": "[amused]",
-    }
-    for old, new in replacements.items():
-        t = t.replace(old, new)
-    # Remove stage directions that should not be spoken.
-    t = re.sub(r"\[(?:leans in|on mic|under her breath|under his breath|beat of silence|stage direction)[^\]]*\]", "", t, flags=re.IGNORECASE)
+    t = re.sub(r"\[[^\]]*\]", "", t)            # remove every bracketed cue
     t = re.sub(r"\s+", " ", t).strip()
     return t
 
 
-def _jamie_prompt(text: str) -> str:
+# ----------------------------------------------------------------------------
+# Direction builders
+# ----------------------------------------------------------------------------
+def _gemini_prompt(text: str, speaker: str, mood: str) -> str:
     transcript = _sanitize_spoken_text(text)
-    return f"""Synthesize speech only. Do not read headings, instructions, labels, speaker names, markdown, or quotation marks. Speak only the exact words in the TRANSCRIPT section.
+    spk = (speaker or "").strip().upper()
+    persona = PERSONA.get(spk, PERSONA["JAMIE"])
+    note = MOOD_DIRECTION.get(mood, MOOD_DIRECTION["neutral"])[0]
+    return f"""Synthesize speech only. Speak only the exact words in the TRANSCRIPT
+section. Do not read headings, labels, speaker names, brackets, markdown, or
+quotation marks.
 
-# AUDIO PROFILE: Jamie
-Jamie is a sharp, warm, emotionally alive podcast co-host on The AI Edge. She is the heavy reactor in the room: intelligent, quick, funny, and human. She reacts to Alex and Rufus with amused disbelief, small laughs, warmth, and plain-English clarity. She sounds modern, confident, conversational, and real — never robotic, never valley-girl, never over-acted.
+# VOICE
+{persona}
 
 # SCENE
-A premium conversational AI news podcast. Alex is the host, Rufus is the dry British analyst, and Jamie is the human translator who makes the debate land for normal listeners. The room is moving fast. Jamie is listening closely and responding in the moment, not reading an essay.
+A premium daily AI debate podcast, The AI Edge. Three hosts argue through the day's
+biggest AI story. The room is fast and alive; you are responding in the moment.
 
-# DIRECTOR'S NOTES
-Style: Warm, intelligent, emotionally present, witty, and reactive. The listener should hear a tiny smile when something is ridiculous and real concern when people, jobs, patients, privacy, or money are exposed.
-Pacing: Natural podcast pace. Quick on short reactions. Slower and clearer when explaining the simple version.
-Performance: Use tasteful micro-reactions only when the transcript asks for them: [laughs], [laughs softly], [sighs], [sarcastic], [curious], [short pause]. Keep it human, not theatrical.
-Clarity: Crisp articulation. Serious show, not a character skit.
+# DIRECTION FOR THIS LINE  (mood: {mood})
+{note}
 
 # TRANSCRIPT
 {transcript}
 """.strip()
 
 
-def _write_wave(filename: Path, pcm: bytes, channels: int = 1, rate: int = 24000, sample_width: int = 2) -> None:
+def _openai_instructions(speaker: str, mood: str) -> str:
+    spk = (speaker or "").strip().upper()
+    base = PERSONA_SHORT.get(spk, "a podcast co-host")
+    overlay = MOOD_DIRECTION.get(mood, MOOD_DIRECTION["neutral"])[1]
+    return (f"You are {base} on a fast, premium daily AI debate podcast. {overlay} "
+            f"Sound like a real person mid-conversation, not a narrator.")
+
+
+# ----------------------------------------------------------------------------
+# Audio helpers
+# ----------------------------------------------------------------------------
+def _write_wave(filename: Path, pcm: bytes, channels: int = 1,
+                rate: int = 24000, sample_width: int = 2) -> None:
     with wave.open(str(filename), "wb") as wf:
         wf.setnchannels(channels)
         wf.setsampwidth(sample_width)
@@ -127,24 +335,39 @@ def _write_wave(filename: Path, pcm: bytes, channels: int = 1, rate: int = 24000
         wf.writeframes(pcm)
 
 
+def _ffmpeg_wav_to_mp3(wav_path: Path, mp3_path: Path) -> None:
+    subprocess.run(
+        ["ffmpeg", "-y", "-i", str(wav_path), "-c:a", "libmp3lame",
+         "-b:a", os.getenv("SEGMENT_EXPORT_BITRATE", "192k"), str(mp3_path)],
+        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+
+
+def _silence_mp3(out_path: Path, ms: int = 350) -> None:
+    """Render a short silent clip so an empty line never crashes the stitcher."""
+    subprocess.run(
+        ["ffmpeg", "-y", "-f", "lavfi", "-i",
+         f"anullsrc=r=24000:cl=mono:d={max(0.05, ms / 1000.0)}",
+         "-c:a", "libmp3lame", "-b:a", "192k", str(out_path)],
+        check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+    )
+
+
 def _extract_audio_bytes(response: Any) -> bytes:
     try:
         part = response.candidates[0].content.parts[0]
     except Exception as e:
         raise RuntimeError(f"Gemini TTS response did not include an audio part: {e}")
-
     inline = getattr(part, "inline_data", None) or getattr(part, "inlineData", None)
     if inline is None and isinstance(part, dict):
         inline = part.get("inline_data") or part.get("inlineData")
     if inline is None:
         raise RuntimeError("Gemini TTS response part had no inline_data audio payload")
-
     data = getattr(inline, "data", None)
     if data is None and isinstance(inline, dict):
         data = inline.get("data")
     if data is None:
         raise RuntimeError("Gemini TTS inline_data had no data field")
-
     if isinstance(data, bytes):
         return data
     if isinstance(data, str):
@@ -155,56 +378,65 @@ def _extract_audio_bytes(response: Any) -> bytes:
     raise RuntimeError(f"Unexpected Gemini TTS audio payload type: {type(data)!r}")
 
 
-def _ffmpeg_wav_to_mp3(wav_path: Path, mp3_path: Path) -> None:
-    cmd = [
-        "ffmpeg", "-y",
-        "-i", str(wav_path),
-        "-c:a", "libmp3lame",
-        "-b:a", os.getenv("SEGMENT_EXPORT_BITRATE", "192k"),
-        str(mp3_path),
-    ]
-    subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-
-def _cache_key(text: str, voice: str, model: str) -> str:
-    raw = json.dumps({"speaker": "JAMIE", "voice": voice, "model": model, "text": _sanitize_spoken_text(text)}, sort_keys=True)
+def _cache_key(text: str, speaker: str, voice: str, model: str, mood: str) -> str:
+    raw = json.dumps(
+        {"speaker": speaker, "voice": voice, "model": model, "mood": mood,
+         "text": _sanitize_spoken_text(text)},
+        sort_keys=True,
+    )
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:32]
 
 
-def _gemini_jamie_to_file(text: str, out_path: Path) -> None:
+# ----------------------------------------------------------------------------
+# Gemini render path (generalised from v3.2's Jamie-only path)
+# ----------------------------------------------------------------------------
+_GEMINI_VOICE_ENV = {
+    "ALEX": ("GEMINI_TTS_VOICE_ALEX", "Charon"),
+    "JAMIE": ("GEMINI_TTS_VOICE_JAMIE", "Sulafat"),
+    "RUFUS": ("GEMINI_TTS_VOICE_RUFUS", "Iapetus"),
+}
+
+
+def _gemini_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> None:
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
     if not api_key:
-        raise RuntimeError("GEMINI_API_KEY is missing; cannot render Jamie with Gemini TTS")
-
+        raise RuntimeError("GEMINI_API_KEY is missing; cannot render with Gemini TTS")
+    spk = (speaker or "").strip().upper()
     model = os.getenv("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview").strip()
-    voice = os.getenv("GEMINI_TTS_VOICE_JAMIE", "Sulafat").strip()
+    env_name, default_voice = _GEMINI_VOICE_ENV.get(spk, ("GEMINI_TTS_VOICE_JAMIE", "Sulafat"))
+    voice = os.getenv(env_name, default_voice).strip()
     retries = max(1, int(os.getenv("GEMINI_TTS_MAX_RETRIES", "2")))
     use_cache = _bool_env("GEMINI_TTS_CACHE", "true")
 
-    clean_text = _sanitize_spoken_text(text)
-    if not clean_text:
-        raise RuntimeError("Jamie line was empty after sanitization")
-
-    STATS["jamie_chars_requested"] += len(clean_text)
-
-    CACHE_DIR.mkdir(parents=True, exist_ok=True)
-    cache_file = CACHE_DIR / f"{_cache_key(clean_text, voice, model)}.mp3"
-    if use_cache and cache_file.exists() and cache_file.stat().st_size > 1000:
-        shutil.copyfile(cache_file, out_path)
-        STATS["jamie_cache_hits"] += 1
-        STATS["calls"].append({"speaker": "JAMIE", "provider": "gemini", "cache": True, "chars": len(clean_text)})
+    clean = _sanitize_spoken_text(text)
+    if not clean:
+        _silence_mp3(out_path)
+        STATS["fallbacks"].append({"speaker": spk, "reason": "empty line -> silence"})
         _write_report()
         return
 
-    prompt = _jamie_prompt(clean_text)
+    if spk == "JAMIE":
+        STATS["jamie_chars_requested"] += len(clean)
+
+    cache_dir = CACHE_DIR / "gemini"
+    cache_dir.mkdir(parents=True, exist_ok=True)
+    cache_file = cache_dir / f"{_cache_key(clean, spk, voice, model, mood)}.mp3"
+    if use_cache and cache_file.exists() and cache_file.stat().st_size > 1000:
+        shutil.copyfile(cache_file, out_path)
+        if spk == "JAMIE":
+            STATS["jamie_cache_hits"] += 1
+        STATS["calls"].append({"speaker": spk, "provider": "gemini", "mood": mood,
+                               "cache": True, "chars": len(clean)})
+        _write_report()
+        return
+
+    prompt = _gemini_prompt(text, spk, mood)
     last_err: Optional[Exception] = None
-
     for attempt in range(1, retries + 1):
-        wav_path = out_path.with_suffix(f".gemini_attempt_{attempt}.wav")
+        wav_path = out_path.with_suffix(f".gemini_{attempt}.wav")
         try:
-            from google import genai  # type: ignore
-            from google.genai import types  # type: ignore
-
+            from google import genai          # type: ignore
+            from google.genai import types    # type: ignore
             client = genai.Client(api_key=api_key)
             response = client.models.generate_content(
                 model=model,
@@ -226,23 +458,20 @@ def _gemini_jamie_to_file(text: str, out_path: Path) -> None:
             if out_path.exists() and out_path.stat().st_size > 1000:
                 if use_cache:
                     shutil.copyfile(out_path, cache_file)
-                STATS["jamie_gemini_successes"] += 1
-                STATS["calls"].append({
-                    "speaker": "JAMIE",
-                    "provider": "gemini",
-                    "cache": False,
-                    "model": model,
-                    "voice": voice,
-                    "chars": len(clean_text),
-                    "attempt": attempt,
-                })
+                STATS["gemini_successes"] += 1
+                if spk == "JAMIE":
+                    STATS["jamie_gemini_successes"] += 1
+                STATS["calls"].append({"speaker": spk, "provider": "gemini", "mood": mood,
+                                       "cache": False, "model": model, "voice": voice,
+                                       "chars": len(clean), "attempt": attempt})
                 _write_report()
                 return
             raise RuntimeError("Gemini TTS MP3 output missing or too small")
         except Exception as e:
             last_err = e
-            STATS["jamie_gemini_failures"] += 1
-            _safe_print(f" ⚠️ Gemini TTS failed for JAMIE attempt {attempt}/{retries}: {e}")
+            if spk == "JAMIE":
+                STATS["jamie_gemini_failures"] += 1
+            _safe_print(f"   ⚠️ Gemini TTS failed for {spk} attempt {attempt}/{retries}: {e}")
             time.sleep(min(6, 1.5 * attempt))
         finally:
             try:
@@ -250,39 +479,162 @@ def _gemini_jamie_to_file(text: str, out_path: Path) -> None:
                     wav_path.unlink()
             except Exception:
                 pass
+    raise RuntimeError(f"Gemini TTS failed for {spk} after {retries} attempts: {last_err}")
 
-    raise RuntimeError(f"Gemini TTS failed for JAMIE after {retries} attempts: {last_err}")
+
+# ----------------------------------------------------------------------------
+# OpenAI render path — router-owned, so Alex/Rufus get per-line direction
+# ----------------------------------------------------------------------------
+_OPENAI_VOICE_ENV = {
+    "ALEX": ("OPENAI_TTS_VOICE_ALEX", "ash"),
+    "JAMIE": ("OPENAI_TTS_VOICE_JAMIE", "coral"),
+    "RUFUS": ("OPENAI_TTS_VOICE_RUFUS", "onyx"),
+}
 
 
-def _record_openai_call(speaker: str, text: str) -> None:
+def _openai_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> None:
+    client = _RT.get("openai_client")
+    if client is None:
+        raise RuntimeError("No OpenAI client available for router-owned OpenAI TTS")
     spk = (speaker or "").strip().upper()
-    if spk == "ALEX":
-        STATS["alex_openai_calls"] += 1
-    elif spk == "RUFUS":
-        STATS["rufus_openai_calls"] += 1
-    else:
-        STATS["non_speaker_calls"] += 1
-    STATS["calls"].append({"speaker": spk or "UNKNOWN", "provider": "openai", "chars": len(_sanitize_spoken_text(text))})
-    _write_report()
+    model = os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts").strip()
+    env_name, default_voice = _OPENAI_VOICE_ENV.get(spk, ("OPENAI_TTS_VOICE_ALEX", "ash"))
+    voice = os.getenv(env_name, default_voice).strip()
+
+    clean = _sanitize_spoken_text(text)
+    if not clean:
+        _silence_mp3(out_path)
+        STATS["fallbacks"].append({"speaker": spk, "reason": "empty line -> silence"})
+        _write_report()
+        return
+
+    instructions = _openai_instructions(spk, mood)
+    base = dict(model=model, voice=voice, input=clean, response_format="mp3")
+
+    # gpt-4o-mini-tts and newer accept `instructions`; older models/SDKs do not.
+    for kwargs in ({**base, "instructions": instructions}, base):
+        try:
+            try:
+                with client.audio.speech.with_streaming_response.create(**kwargs) as resp:
+                    resp.stream_to_file(str(out_path))
+            except AttributeError:
+                resp = client.audio.speech.create(**kwargs)
+                content = getattr(resp, "content", None)
+                if content:
+                    out_path.write_bytes(content)
+                else:
+                    resp.stream_to_file(str(out_path))  # legacy SDK
+            if out_path.exists() and out_path.stat().st_size > 1000:
+                STATS["openai_router_calls"] += 1
+                STATS["calls"].append({
+                    "speaker": spk, "provider": "openai_router", "mood": mood,
+                    "model": model, "voice": voice, "chars": len(clean),
+                    "directed": "instructions" in kwargs,
+                })
+                _write_report()
+                return
+            raise RuntimeError("OpenAI TTS output missing or too small")
+        except Exception as e:
+            last_err = e  # noqa: F841 — retried without instructions, then raised
+            continue
+    raise RuntimeError(f"Router-owned OpenAI TTS failed for {spk}")
 
 
+# ----------------------------------------------------------------------------
+# Routing
+# ----------------------------------------------------------------------------
+def _provider_for(speaker: str) -> str:
+    spk = (speaker or "").strip().upper()
+    return {
+        "ALEX": os.getenv("ALEX_TTS_PROVIDER", "openai"),
+        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "gemini"),
+        "RUFUS": os.getenv("RUFUS_TTS_PROVIDER", "openai"),
+    }.get(spk, "openai").strip().lower()
+
+
+def _note_mood(mood: str) -> None:
+    STATS["mood_distribution"][mood] = STATS["mood_distribution"].get(mood, 0) + 1
+
+
+def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
+    """Single entry for every spoken line. Infers mood, routes to a provider,
+    and always degrades gracefully — every fallback is logged, never silent."""
+    spk = (speaker or "").strip().upper()
+    out = Path(out_path)
+    mood = infer_mood(text, spk)
+    _note_mood(mood)
+    provider = _provider_for(spk)
+
+    # 1. Gemini route.
+    if provider == "gemini":
+        try:
+            _gemini_tts_to_file(text, spk, mood, out)
+            return
+        except Exception as e:
+            STATS["fallbacks"].append({"speaker": spk, "mood": mood,
+                                       "from": "gemini", "to": "openai",
+                                       "reason": str(e)[:400]})
+            _write_report()
+            _safe_print(f"   ⚠️ {spk}: Gemini failed, falling back to OpenAI — {e}")
+
+    # 2. Router-owned OpenAI route (per-line directed) — unless disabled.
+    if _bool_env("ROUTER_OWN_OPENAI", "true"):
+        try:
+            _openai_tts_to_file(text, spk, mood, out)
+            return
+        except Exception as e:
+            STATS["fallbacks"].append({"speaker": spk, "mood": mood,
+                                       "from": "openai_router", "to": "passthrough",
+                                       "reason": str(e)[:400]})
+            _write_report()
+            _safe_print(f"   ⚠️ {spk}: router OpenAI failed, using main.py path — {e}")
+
+    # 3. Passthrough to main.py's original tts_to_file (no mood direction).
+    original = _RT.get("original_tts")
+    if callable(original):
+        STATS["openai_passthrough_calls"] += 1
+        STATS["calls"].append({"speaker": spk, "provider": "openai_passthrough",
+                               "mood": mood, "chars": len(_sanitize_spoken_text(text))})
+        _write_report()
+        original(text, speaker, out)
+        return
+    raise RuntimeError(f"No TTS path succeeded for {spk} and no passthrough available")
+
+
+# ----------------------------------------------------------------------------
+# INSTALLER — entry point, called by main.py. Signature unchanged.
+# ----------------------------------------------------------------------------
 def install(g: Dict[str, Any]) -> None:
-    """Install hybrid TTS routing into the loaded main.py globals dictionary."""
+    """Install mood-aware hybrid TTS routing into main.py's globals dictionary."""
     original_tts_to_file = g.get("tts_to_file")
     if not callable(original_tts_to_file):
-        raise RuntimeError("hybrid_tts_router_v3_1 could not find main.py tts_to_file() to wrap")
+        raise RuntimeError("hybrid_tts_router_v3_3 could not find main.py tts_to_file() to wrap")
+
+    _RT["original_tts"] = original_tts_to_file
+    _RT["openai_client"] = g.get("openai_client")
+    if _RT["openai_client"] is None:
+        # Build one if main.py did not expose a client.
+        try:
+            from openai import OpenAI
+            if os.getenv("OPENAI_API_KEY", "").strip():
+                _RT["openai_client"] = OpenAI()
+        except Exception:
+            _RT["openai_client"] = None
 
     original_render_spoken = g.get("_render_spoken_chunk_to_file")
     original_backend = g.get("_speaker_audio_backend")
 
-    # Force main.py away from ElevenLabs scene/dialogue rendering.
+    # Keep main.py off ElevenLabs scene rendering.
     os.environ["AUDIO_BACKEND"] = "openai"
     os.environ["ELEVENLABS_ENABLED"] = "false"
     os.environ["ELEVEN_USE_DIALOGUE_SCENES"] = "false"
+    os.environ.setdefault("ALEX_TTS_PROVIDER", "openai")
     os.environ.setdefault("JAMIE_TTS_PROVIDER", "gemini")
+    os.environ.setdefault("RUFUS_TTS_PROVIDER", "openai")
+    os.environ.setdefault("ROUTER_OWN_OPENAI", "true")
     os.environ.setdefault("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview")
     os.environ.setdefault("GEMINI_TTS_VOICE_JAMIE", "Sulafat")
-    os.environ.setdefault("GEMINI_TTS_FALLBACK_PROVIDER", "openai")
+    os.environ.setdefault("OPENAI_TTS_MODEL", "gpt-4o-mini-tts")
     os.environ.setdefault("GEMINI_TTS_MAX_RETRIES", "2")
     os.environ.setdefault("GEMINI_TTS_CACHE", "true")
 
@@ -290,36 +642,16 @@ def install(g: Dict[str, Any]) -> None:
     if "ELEVEN_USE_DIALOGUE_SCENES" in g:
         g["ELEVEN_USE_DIALOGUE_SCENES"] = False
 
-    def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
-        spk = (speaker or "").strip().upper()
-        out = Path(out_path)
-        if spk == "JAMIE" and os.getenv("JAMIE_TTS_PROVIDER", "gemini").strip().lower() == "gemini":
-            try:
-                _gemini_jamie_to_file(text, out)
-                return
-            except Exception as e:
-                STATS["fallbacks"].append({"speaker": "JAMIE", "from": "gemini", "to": "openai", "reason": str(e)[:500]})
-                _write_report()
-                if os.getenv("GEMINI_TTS_FALLBACK_PROVIDER", "openai").strip().lower() == "openai":
-                    _safe_print(f" ⚠️ Falling back to OpenAI TTS for JAMIE: {e}")
-                    _record_openai_call("JAMIE", text)
-                    return original_tts_to_file(text, speaker, out)
-                raise
-        _record_openai_call(spk, text)
-        return original_tts_to_file(text, speaker, out)
-
     def hybrid_tts_to_file(text: str, speaker: str, out_path: Path) -> None:
         return route_text_to_file(text, speaker, Path(out_path))
 
     def hybrid_render_spoken_chunk_to_file(text: str, speaker: str, out_path: Path) -> None:
-        # The production audio loop may call this wrapper instead of tts_to_file directly.
         return route_text_to_file(text, speaker, Path(out_path))
 
     def hybrid_speaker_audio_backend(speaker: str) -> str:
-        # Return openai to prevent ElevenLabs dialogue-scene bundling. Jamie is intercepted by this router.
         spk = (speaker or "").strip().upper()
         if spk in {"ALEX", "JAMIE", "RUFUS"}:
-            return "openai"
+            return "openai"   # prevents ElevenLabs dialogue-scene bundling
         if callable(original_backend):
             try:
                 return original_backend(speaker)
@@ -329,14 +661,34 @@ def install(g: Dict[str, Any]) -> None:
 
     g["tts_to_file"] = hybrid_tts_to_file
     STATS["patched"].append("tts_to_file")
-
     if callable(original_render_spoken):
         g["_render_spoken_chunk_to_file"] = hybrid_render_spoken_chunk_to_file
         STATS["patched"].append("_render_spoken_chunk_to_file")
-
     g["_speaker_audio_backend"] = hybrid_speaker_audio_backend
     STATS["patched"].append("_speaker_audio_backend")
 
+    STATS["routing"] = {
+        "ALEX": _provider_for("ALEX"),
+        "JAMIE": _provider_for("JAMIE"),
+        "RUFUS": _provider_for("RUFUS"),
+        "ELEVENLABS": "disabled",
+    }
     STATS["installed"] = True
+    STATS["router_owned_openai"] = _bool_env("ROUTER_OWN_OPENAI", "true")
+    STATS["openai_client_available"] = _RT["openai_client"] is not None
     _write_report()
-    _safe_print(">> ✅ Installed hybrid TTS router v3.2: Jamie=Gemini-forced, Alex/Rufus=OpenAI, ElevenLabs=OFF")
+    _safe_print(">> ✅ Installed mood-aware hybrid TTS router v3.3 — "
+                f"Alex={STATS['routing']['ALEX']}, Jamie={STATS['routing']['JAMIE']}, "
+                f"Rufus={STATS['routing']['RUFUS']}, ElevenLabs=OFF")
+    g["V3_3_MOOD_TTS_ROUTER_INSTALLED"] = True
+
+
+# ----------------------------------------------------------------------------
+# NOTE ON A GENUINELY BRITISH RUFUS
+# ----------------------------------------------------------------------------
+# OpenAI TTS voices are American-English; the `instructions` parameter nudges
+# tone and pacing but cannot reliably produce a British accent. If a British
+# Rufus matters to the show's identity, set RUFUS_TTS_PROVIDER=gemini and choose
+# a Gemini voice that reads British to your ear (GEMINI_TTS_VOICE_RUFUS). The
+# router already supports this — it is one env var. Audition a few lines before
+# committing; voice choice is a by-ear decision, not a code decision.
