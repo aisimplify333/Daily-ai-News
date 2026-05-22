@@ -602,6 +602,35 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
 
 
 # ----------------------------------------------------------------------------
+# SMOKE TEST — prove Jamie's Gemini voice works BEFORE a full episode is paid for.
+# v3_1_runner.py calls this when REQUIRE_GEMINI_JAMIE=true.
+# ----------------------------------------------------------------------------
+def smoke_test_jamie_voice(out_path: Any) -> None:
+    """Render one short Jamie line through the real Gemini path and write it to
+    out_path. Raises if Gemini does not produce a usable MP3 — that is the point:
+    fail cheap, before the episode spends money, if the voice upgrade is broken.
+
+    This bypasses the OpenAI/passthrough fallback on purpose: a smoke test that
+    silently fell back would prove nothing."""
+    out = Path(out_path)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    line = ("JAMIE: Okay — quick voice check. If you can hear this clearly, "
+            "Jamie is rendering on Gemini, and we are good to record the show.")
+    mood = infer_mood(line, "JAMIE")
+    _safe_print(f"   🎙️  Jamie Gemini smoke test (mood: {mood}) ...")
+    _gemini_tts_to_file(line, "JAMIE", mood, out)   # raises on any Gemini failure
+    if not out.exists() or out.stat().st_size < 1000:
+        raise RuntimeError("Jamie Gemini smoke test produced no usable MP3")
+    STATS["jamie_gemini_smoke_test"] = {
+        "passed": True,
+        "path": str(out),
+        "bytes": out.stat().st_size,
+    }
+    _write_report()
+    _safe_print(f"   ✅ Jamie Gemini smoke test passed -> {out}")
+
+
+# ----------------------------------------------------------------------------
 # INSTALLER — entry point, called by main.py. Signature unchanged.
 # ----------------------------------------------------------------------------
 def install(g: Dict[str, Any]) -> None:
