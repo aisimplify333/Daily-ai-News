@@ -126,7 +126,7 @@ def _run_jamie_primary_smoke_test(router_module: Any) -> None:
         )
     if not hasattr(router_module, "smoke_test_jamie_voice"):
         raise RuntimeError("hybrid_tts_router_v3_1.py does not expose smoke_test_jamie_voice().")
-    today = _dt.date.today().isoformat()
+    today = os.getenv("RECOVERY_RUN_DATE", "").strip() or _dt.date.today().isoformat()
     out_path = BASE_DIR / "episode_audio" / f"jamie_grok_ursa_voice_proof_{today}.mp3"
     router_module.smoke_test_jamie_voice(out_path)
     if not out_path.exists() or out_path.stat().st_size < 1000:
@@ -221,7 +221,10 @@ def main() -> None:
 
         recovery = recover_completed_render(
             BASE_DIR,
-            date_str=_dt.date.today().isoformat(),
+            date_str=(
+                os.getenv("RECOVERY_RUN_DATE", "").strip()
+                or _dt.date.today().isoformat()
+            ),
             min_minutes=float(os.getenv("MIN_MINUTES", "24")),
             max_minutes=float(os.getenv("MAX_MINUTES", "30")),
         )
