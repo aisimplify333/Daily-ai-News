@@ -1246,6 +1246,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 "selected": [{
                     "rank": i + 1, "headline": _headline(s), "publisher": _publisher(s),
                     "top_event_score": s.get("top_event_score"),
+                    "story_age_hours": s.get("story_age_hours"),
                     "bucket_original": s.get("bucket"), "source_url": _url(s),
                 } for i, s in enumerate(selected)],
             }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
