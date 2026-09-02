@@ -438,8 +438,10 @@ def _anthropic_text(g: Dict[str, Any], prompt: str, model: str, max_tokens: int 
     try:
         import anthropic  # type: ignore
         client = anthropic.Anthropic(api_key=api_key)
+        # Anthropic SDK 1.3 removed the legacy temperature keyword from this
+        # messages surface; omit it for forward compatibility.
         resp = client.messages.create(
-            model=model, max_tokens=max_tokens, temperature=0.78,
+            model=model, max_tokens=max_tokens,
             system=(
                 "You are the head writer and showrunner for a premium daily AI debate "
                 "podcast. Write only clean spoken dialogue. Make it human, sharp, "
@@ -884,6 +886,8 @@ NEVER use bracketed stage directions like [laughs] or [leans in] — TTS reads t
 
 NON-NEGOTIABLES:
 - Five segments. 24-30 minute target; 27 minutes is ideal and 30:00 is absolute.
+- HARD LENGTH CONTRACT: deliver 4,250-4,750 spoken words. Do not summarize early.
+  Allocate about 55-60% to the lead event and use the remaining stories as evidence.
 - Dialogue only. Exact labels ALEX:, JAMIE:, RUFUS:. Segment headers. Exactly one [MUSIC].
 - Segment 1 opens on the argument already in motion — no "welcome back".
 - Exactly one [MUSIC] after the cold open, then Alex's short Ledger CTA.
@@ -981,6 +985,9 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     low = full.lower()
     title = str(board.get("published_title") or "")
     spoken = [ln for ln in full.splitlines() if SPEAKER_RE.match(ln)]
+    words = _word_count(full)
+    min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "4200"))
+    max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "5000"))
 
     segments = len(re.findall(r"^###\s*SEGMENT\s+[1-5]\b", full, flags=re.MULTILINE | re.IGNORECASE))
     music = full.count("[MUSIC]")
@@ -1022,6 +1029,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     # ---- THE GATE: objective, binary, pass/fail. This is the real quality bar. ----
     gate: Dict[str, bool] = {
         "five_segments": segments == 5,
+        "runtime_word_band": min_episode_words <= words <= max_episode_words,
         "one_music_marker": music == 1,
         "ledger_cta_spelled_url": "t-h-e-l-e-d-g-r dot i-o" in low,
         "sponsor_cta_immediately_after_music": (
@@ -1088,7 +1096,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "score": signal,            # kept for backward-compat with build_episode_aircheck
         "target": KEYWORD_SIGNAL_TARGET,
         "metrics": {
-            "words": _word_count(full),
+            "words": words,
+            "runtime_word_band": [min_episode_words, max_episode_words],
             "speaker_lines": len(spoken),
             "segments": segments,
             "receipts": numbers,
@@ -1136,6 +1145,8 @@ It also has these soft weaknesses to improve while you are in there:
 
 Hard requirements:
 - Exactly five segment headers and exactly one [MUSIC].
+- Return 4,250-4,750 spoken words; expand the argument with concrete evidence,
+  counterarguments, human consequences, and tomorrow-watch items. Never pad with recap.
 - The Ledger CTA must spell the URL: T-H-E-L-E-D-G-R dot I-O.
 - At least six concrete receipts (numbers, dates, named institutions).
 - A REAL concession: one host genuinely changes position — not "good point".
@@ -1158,14 +1169,14 @@ Script:
 def _script_via_models(g: Dict[str, Any], prompt: str) -> str:
     for model in (SCENE_WRITER_MODEL, SCENE_WRITER_FALLBACK_MODEL):
         txt = _anthropic_text(g, prompt, model=model,
-                              max_tokens=int(os.getenv("ANTHROPIC_SCRIPT_MAX_TOKENS", "7000")))
+                              max_tokens=int(os.getenv("ANTHROPIC_SCRIPT_MAX_TOKENS", "9000")))
         if txt:
             _safe_print(g, f"   ✅ Writer pass succeeded: {model}")
             return txt
     _safe_print(g, "   ⚠️ Anthropic unavailable; trying OpenAI writer fallback.")
     for model in (RESCUE_MODEL, RESCUE_FALLBACK_MODEL, OPENAI_CHEAP_MODEL,
                   os.getenv("OPENAI_CHAT_MODEL", "gpt-4o")):
-        txt = _openai_text(g, prompt, model=model, max_tokens=7000, temperature=0.74)
+        txt = _openai_text(g, prompt, model=model, max_tokens=9000, temperature=0.74)
         if txt:
             _safe_print(g, f"   ✅ OpenAI writer pass succeeded: {model}")
             return txt
@@ -1308,7 +1319,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             _safe_print(g, f"      ⚠️ gate failed: {assessment['failed']} — running rescue")
             for model in (RESCUE_MODEL, RESCUE_FALLBACK_MODEL, OPENAI_CHEAP_MODEL):
                 repaired = _openai_text(g, _rescue_prompt(script, assessment, board, stories),
-                                        model=model, max_tokens=7000, temperature=0.65)
+                                        model=model, max_tokens=9000, temperature=0.65)
                 if repaired:
                     cand = _clean_script(repaired)
                     cand_assess = _assess(cand, stories, board, fuel)
