@@ -210,7 +210,28 @@ def main() -> None:
         raise RuntimeError("main.py live namespace lost produce_episode().")
 
     _safe_print(">> HANDOFF: running main.py produce_episode() under verified v3.3.5 overlays")
-    live_produce_episode()
+    try:
+        live_produce_episode()
+    except RuntimeError as exc:
+        # A paid voice render is an asset even when the old duration estimate was
+        # wrong. Preserve it and attempt a pitch-safe correction without new TTS.
+        if "Episode length out of bounds" not in str(exc):
+            raise
+        from post_render_recovery import recover_completed_render
+
+        recovery = recover_completed_render(
+            BASE_DIR,
+            date_str=_dt.date.today().isoformat(),
+            min_minutes=float(os.getenv("MIN_MINUTES", "24")),
+            max_minutes=float(os.getenv("MAX_MINUTES", "30")),
+        )
+        _safe_print(
+            ">> PAID RENDER RECOVERY: "
+            f"{recovery.get('disposition')} "
+            f"({float(recovery.get('duration_before_seconds') or 0) / 60:.2f} -> "
+            f"{float(recovery.get('duration_after_seconds') or 0) / 60:.2f} min; "
+            "new TTS calls=0)"
+        )
     _enforce_jamie_primary_report()
     _safe_print(">> ✅ COMPLETE: The AI Edge v3.3.5 clean stable runner")
 
