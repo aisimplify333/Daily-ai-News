@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import datetime as dt
 import json
+import os
 import re
 import sys
 from pathlib import Path
@@ -30,7 +31,7 @@ def _words(text: str) -> int:
 
 
 def main() -> int:
-    today = dt.date.today().isoformat()
+    today = os.getenv("RECOVERY_RUN_DATE", "").strip() or dt.date.today().isoformat()
     script_path = ROOT / f"script_{today}.txt"
     audio_path = ROOT / "episode_audio" / f"podcast_{today}.mp3"
     failures: List[str] = []
