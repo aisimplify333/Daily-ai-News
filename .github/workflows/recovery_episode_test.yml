@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "namespace-binding-v3"
+      RECOVERY_BUILD_REVISION: "runtime-contract-v4"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -68,7 +68,7 @@ jobs:
       OPENAI_CHEAP_MODEL: "gpt-5.4-mini"
       ENABLE_GROK_PUNCHUP: "true"
       ENABLE_OPENAI_RESCUE: "true"
-      ANTHROPIC_SCRIPT_MAX_TOKENS: "7000"
+      ANTHROPIC_SCRIPT_MAX_TOKENS: "9000"
       PRE_TTS_MIN_SCORE: "84"
       NO_REPEAT_TITLE_WINDOW: "14"
       TOP_EVENT_MIN_SCORE: "34"
@@ -78,6 +78,8 @@ jobs:
       TARGET_MINUTES: "27"
       MAX_MINUTES: "30"
       WORDS_PER_MINUTE: "170"
+      RECOVERY_MIN_SCRIPT_WORDS: "4200"
+      RECOVERY_MAX_SCRIPT_WORDS: "5000"
       SEGMENT_ATTEMPTS: "5"
       FORWARDABLE_MIN_PER_EPISODE: "4"
 
