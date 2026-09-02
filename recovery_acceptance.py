@@ -79,24 +79,37 @@ def main() -> int:
     if not seg3_match or "RUFUS:" not in seg3_match.group(1).upper():
         failures.append("Segment 3 did not include Rufus's money/power desk")
 
-    music_pos = script.find("[MUSIC]")
-    post_music = script[music_pos + 7:music_pos + 1407] if music_pos >= 0 else ""
-    sponsor_lines = [
-        match.group(2)
-        for line in post_music.splitlines()
+    sponsor_block_match = re.search(
+        r"\[MUSIC\]\s*(.*?)^###\s*SEGMENT\s*2\b",
+        script, flags=re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    )
+    sponsor_block = sponsor_block_match.group(1) if sponsor_block_match else ""
+    sponsor_matches = [
+        match
+        for line in sponsor_block.splitlines()
         if (match := SPEAKER_RE.match(line.strip()))
-    ][:3]
+    ]
+    sponsor_lines = [match.group(2) for match in sponsor_matches]
+    sponsor_speakers = [match.group(1).upper() for match in sponsor_matches]
     sponsor_window = " ".join(sponsor_lines)
     sponsor_window_low = sponsor_window.lower()
     sponsor_words = _words(sponsor_window)
+    if sponsor_speakers != ["ALEX", "ALEX"]:
+        failures.append(
+            f"primary sponsor must be exactly two Alex lines; found {sponsor_speakers}"
+        )
     if "the ledger" not in sponsor_window_low:
         failures.append("primary sponsor was not named immediately after music")
     if "t-h-e-l-e-d-g-r dot i-o" not in sponsor_window_low:
         failures.append("primary sponsor CTA was not immediately after music")
-    if not 35 <= sponsor_words <= 110:
-        failures.append(f"sponsor window was {sponsor_words} words; expected 35-110")
+    if script.lower().count("t-h-e-l-e-d-g-r dot i-o") != 1:
+        failures.append("The Ledger spoken CTA must appear exactly once")
+    if not 45 <= sponsor_words <= 65:
+        failures.append(f"sponsor read was {sponsor_words} words; expected 45-65")
     if any(p in script.lower() for p in ("sponsor the ai edge", "sponsor this show", "aisimplify333@")):
         failures.append("legacy sponsor solicitation language appeared")
+    if "ai signal room" in script.lower():
+        failures.append("legacy AI Signal Room branding appeared in the script")
 
     tts = _read_json(ROOT / "hybrid_tts_report.json")
     episode_grok = int(tts.get("jamie_grok_episode_successes") or 0)
@@ -135,7 +148,7 @@ def main() -> int:
         warnings.append(f"{unknown_age} selected stories had no machine-readable timestamp")
 
     report = {
-        "version": "recovery-acceptance-v1",
+        "version": "recovery-acceptance-v2",
         "date": today,
         "pass": not failures,
         "human_listening_approval_required": True,
@@ -151,6 +164,8 @@ def main() -> int:
             "segments": segment_count,
             "segment2_speakers": sorted(seg2_speakers),
             "sponsor_window_words": sponsor_words,
+            "sponsor_speakers": sponsor_speakers,
+            "sponsor_cta_count": script.lower().count("t-h-e-l-e-d-g-r dot i-o"),
         },
         "voice": {
             "provider": "grok",
