@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "calibrated-single-sponsor-v6"
+      RECOVERY_BUILD_REVISION: "audience-proxy-calibrated-v7"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -78,8 +78,8 @@ jobs:
       TARGET_MINUTES: "27"
       MAX_MINUTES: "30"
       WORDS_PER_MINUTE: "145"
-      RECOVERY_MIN_SCRIPT_WORDS: "3600"
-      RECOVERY_MAX_SCRIPT_WORDS: "4200"
+      RECOVERY_MIN_SCRIPT_WORDS: "3550"
+      RECOVERY_MAX_SCRIPT_WORDS: "4350"
       SEGMENT_ATTEMPTS: "5"
       FORWARDABLE_MIN_PER_EPISODE: "4"
 
@@ -123,6 +123,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
+      - name: Pin recovery episode date
+        run: echo "RECOVERY_RUN_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
+
       - name: Compile and run zero-spend preflight
         run: |
           set -euo pipefail
@@ -148,7 +151,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _recovery_artifacts
-          today="$(date -u +%F)"
+          today="${RECOVERY_RUN_DATE}"
           for file in \
             "script_${today}.txt" \
             "episode_audio/podcast_${today}.mp3" \
