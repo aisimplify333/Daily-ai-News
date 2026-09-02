@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "audience-proxy-calibrated-v7"
+      RECOVERY_BUILD_REVISION: "runtime-normalized-audience-proxy-v8"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -80,6 +80,7 @@ jobs:
       WORDS_PER_MINUTE: "145"
       RECOVERY_MIN_SCRIPT_WORDS: "3550"
       RECOVERY_MAX_SCRIPT_WORDS: "4350"
+      RECOVERY_TARGET_SCRIPT_WORDS: "4200"
       SEGMENT_ATTEMPTS: "5"
       FORWARDABLE_MIN_PER_EPISODE: "4"
 
