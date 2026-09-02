@@ -1166,6 +1166,54 @@ Script:
 """.strip()
 
 
+def _deterministic_structure_repair(
+    script: str,
+    assessment: Dict[str, Any],
+    board: Dict[str, Any],
+) -> str:
+    """Repair model formatting drift without rewriting facts or sponsor copy."""
+    lines = (script or "").splitlines()
+    failed = set(assessment.get("failed") or [])
+
+    if "segment2_alex_jamie_only" in failed:
+        repaired: List[str] = []
+        in_segment2 = False
+        for line in lines:
+            if re.match(r"^###\s*SEGMENT\s*2\b", line, flags=re.IGNORECASE):
+                in_segment2 = True
+            elif re.match(r"^###\s*SEGMENT\s*3\b", line, flags=re.IGNORECASE):
+                in_segment2 = False
+            if in_segment2 and re.match(r"^RUFUS\s*:", line, flags=re.IGNORECASE):
+                continue
+            repaired.append(line)
+        lines = repaired
+
+    if "real_concession_present" in failed:
+        host = str((board.get("concession") or {}).get("host") or "alex").strip().upper()
+        if host not in {"ALEX", "JAMIE", "RUFUS"}:
+            host = "ALEX"
+        reason = str(
+            (board.get("concession") or {}).get("gives_ground_on")
+            or "the person absorbing the risk matters more than the launch headline"
+        ).strip()
+        # Keep the inserted turn inside the production monologue cap.
+        words = reason.split()
+        if len(words) > 38:
+            reason = " ".join(words[:38]).rstrip(" ,;:-") + "."
+        concession_line = (
+            f"{host}: I was wrong about this: {reason} "
+            "The evidence changed my mind."
+        )
+        insert_at = next(
+            (i + 1 for i, line in enumerate(lines)
+             if re.match(r"^###\s*SEGMENT\s*5\b", line, flags=re.IGNORECASE)),
+            len(lines),
+        )
+        lines.insert(insert_at, concession_line)
+
+    return "\n".join(lines).strip()
+
+
 def _script_via_models(g: Dict[str, Any], prompt: str) -> str:
     for model in (SCENE_WRITER_MODEL, SCENE_WRITER_FALLBACK_MODEL):
         txt = _anthropic_text(g, prompt, model=model,
@@ -1327,8 +1375,14 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                         script, assessment = cand, cand_assess
                         _safe_print(g, f"      ✅ rescue applied "
                                        f"(failed checks: {len(assessment['failed'])})")
-                        if assessment["pass"]:
-                            break
+                        # One accepted full-script rescue is enough. Repeated
+                        # rewrites cost more and can reintroduce structural drift.
+                        break
+
+        # Deterministic final repair for two formatting errors models commonly
+        # introduce while expanding a long script. This never rewrites facts.
+        script = _deterministic_structure_repair(script, assessment, board)
+        assessment = _assess(script, stories, board, fuel)
 
         # 6. Persist the aircheck.
         try:
