@@ -886,7 +886,7 @@ NEVER use bracketed stage directions like [laughs] or [leans in] — TTS reads t
 
 NON-NEGOTIABLES:
 - Five segments. 24-30 minute target; 27 minutes is ideal and 30:00 is absolute.
-- HARD LENGTH CONTRACT: deliver 4,250-4,750 spoken words. Do not summarize early.
+- HARD LENGTH CONTRACT: deliver 3,800-4,050 spoken words. Do not summarize early.
   Allocate about 55-60% to the lead event and use the remaining stories as evidence.
 - Dialogue only. Exact labels ALEX:, JAMIE:, RUFUS:. Segment headers. Exactly one [MUSIC].
 - Segment 1 opens on the argument already in motion — no "welcome back".
@@ -976,6 +976,24 @@ def _clean_script(text: str) -> str:
     return cleaned
 
 
+def _normalize_primary_sponsor(script: str) -> str:
+    """Make the post-music house read singular, concise, and production-stable."""
+    sponsor_lines = (
+        "ALEX: Today’s AI story is exactly why raw headlines are not enough: the launch "
+        "is obvious, but the leverage shift is not. The Ledger turns the day’s AI noise "
+        "into five focused briefings for people making real decisions.\n"
+        "ALEX: If you need the consequence before the consensus catches up, subscribe "
+        "at T-H-E-L-E-D-G-R dot I-O."
+    )
+    pattern = re.compile(
+        r"(\[MUSIC\]\s*\n).*?(?=^###\s*SEGMENT\s*2\b)",
+        flags=re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    )
+    if pattern.search(script or ""):
+        return pattern.sub(lambda m: m.group(1) + sponsor_lines + "\n", script, count=1).strip()
+    return script
+
+
 # ----------------------------------------------------------------------------
 # ASSESSMENT — binary structural gate + non-authoritative telemetry (v3.3)
 # ----------------------------------------------------------------------------
@@ -986,8 +1004,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     title = str(board.get("published_title") or "")
     spoken = [ln for ln in full.splitlines() if SPEAKER_RE.match(ln)]
     words = _word_count(full)
-    min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "4200"))
-    max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "5000"))
+    min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3600"))
+    max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4200"))
 
     segments = len(re.findall(r"^###\s*SEGMENT\s+[1-5]\b", full, flags=re.MULTILINE | re.IGNORECASE))
     music = full.count("[MUSIC]")
@@ -1014,12 +1032,15 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     post_music = full[music_pos + len("[MUSIC]"):music_pos + len("[MUSIC]") + 1400] \
         if music_pos >= 0 else ""
     post_music_low = post_music.lower()
-    post_music_spoken = [
-        SPEAKER_RE.match(ln.strip()).group(2)
+    post_music_matches = [
+        SPEAKER_RE.match(ln.strip())
         for ln in post_music.splitlines()
         if SPEAKER_RE.match(ln.strip())
-    ][:3]
-    sponsor_window_words = _word_count(" ".join(post_music_spoken))
+    ][:2]
+    post_music_spoken = [m.group(2) for m in post_music_matches if m]
+    post_music_speakers = [m.group(1).upper() for m in post_music_matches if m]
+    sponsor_window_text = " ".join(post_music_spoken)
+    sponsor_window_words = _word_count(sponsor_window_text)
     legacy_sponsor_language = any(
         phrase in low for phrase in (
             "sponsor the ai edge", "sponsor this show", "aisimplify333@"
@@ -1033,10 +1054,15 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "one_music_marker": music == 1,
         "ledger_cta_spelled_url": "t-h-e-l-e-d-g-r dot i-o" in low,
         "sponsor_cta_immediately_after_music": (
-            "the ledger" in post_music_low
-            and "t-h-e-l-e-d-g-r dot i-o" in post_music_low
+            "the ledger" in sponsor_window_text.lower()
+            and "t-h-e-l-e-d-g-r dot i-o" in sponsor_window_text.lower()
         ),
-        "sponsor_read_not_bloated": 35 <= sponsor_window_words <= 110,
+        "sponsor_alex_two_line_read": (
+            len(post_music_speakers) == 2
+            and post_music_speakers == ["ALEX", "ALEX"]
+        ),
+        "sponsor_read_not_bloated": 45 <= sponsor_window_words <= 65,
+        "sponsor_cta_exactly_once": low.count("t-h-e-l-e-d-g-r dot i-o") == 1,
         "no_legacy_sponsor_language": not legacy_sponsor_language,
         "segment2_alex_jamie_only": seg2_speakers == {"ALEX", "JAMIE"},
         "min_six_receipts": numbers >= 6,
@@ -1145,7 +1171,7 @@ It also has these soft weaknesses to improve while you are in there:
 
 Hard requirements:
 - Exactly five segment headers and exactly one [MUSIC].
-- Return 4,250-4,750 spoken words; expand the argument with concrete evidence,
+- Return 3,800-4,050 spoken words; expand the argument with concrete evidence,
   counterarguments, human consequences, and tomorrow-watch items. Never pad with recap.
 - The Ledger CTA must spell the URL: T-H-E-L-E-D-G-R dot I-O.
 - At least six concrete receipts (numbers, dates, named institutions).
@@ -1347,7 +1373,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         if not script and callable(original_generate_episode_script):
             _safe_print(g, "   ⚠️ Writer unavailable; falling back to prior generator.")
             script = original_generate_episode_script(stories, sponsors, date_str)
-        script = _clean_script(script)
+        script = _normalize_primary_sponsor(_clean_script(script))
         assessment = _assess(script, stories, board, fuel)
 
         # 4. Optional punch-up — accept only if it does not lose a gate check.
@@ -1355,7 +1381,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             punched = _xai_text(g, _punchup_prompt(script, board, assessment),
                                 model=PUNCHUP_MODEL, max_tokens=6200)
             if punched:
-                cand = _clean_script(punched)
+                cand = _normalize_primary_sponsor(_clean_script(punched))
                 cand_assess = _assess(cand, stories, board, fuel)
                 if len(cand_assess["failed"]) <= len(assessment["failed"]):
                     script, assessment = cand, cand_assess
@@ -1369,7 +1395,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 repaired = _openai_text(g, _rescue_prompt(script, assessment, board, stories),
                                         model=model, max_tokens=9000, temperature=0.65)
                 if repaired:
-                    cand = _clean_script(repaired)
+                    cand = _normalize_primary_sponsor(_clean_script(repaired))
                     cand_assess = _assess(cand, stories, board, fuel)
                     if len(cand_assess["failed"]) <= len(assessment["failed"]):
                         script, assessment = cand, cand_assess
@@ -1381,7 +1407,9 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
         # Deterministic final repair for two formatting errors models commonly
         # introduce while expanding a long script. This never rewrites facts.
-        script = _deterministic_structure_repair(script, assessment, board)
+        script = _normalize_primary_sponsor(
+            _deterministic_structure_repair(script, assessment, board)
+        )
         assessment = _assess(script, stories, board, fuel)
 
         # 6. Persist the aircheck.
@@ -1461,8 +1489,27 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         return merged
 
     # ---- wire it in -------------------------------------------------------
+    def ensure_sponsor_delivery_v3_3(
+        script: str, sponsors: Optional[List[Dict[str, Any]]] = None
+    ) -> str:
+        return _normalize_primary_sponsor(script)
+
+    def ensure_theledgr_readout_v3_3(
+        script: str, stories: Optional[List[Dict[str, Any]]] = None, date_str: str = ""
+    ) -> str:
+        # The Ledger Readout is the editorial Segment 5, never a duplicate ad.
+        return re.sub(
+            r"^###\s*SEGMENT\s*5[^\n]*",
+            "### SEGMENT 5 — The Ledger Readout + Final Button",
+            script,
+            count=1,
+            flags=re.IGNORECASE | re.MULTILINE,
+        )
+
     g["pick_top_stories"] = pick_top_stories_v3_3
     g["generate_episode_script"] = generate_episode_script_v3_3
+    g["ensure_sponsor_delivery"] = ensure_sponsor_delivery_v3_3
+    g["ensure_theledgr_readout"] = ensure_theledgr_readout_v3_3
     g["generate_marketing_pack"] = generate_marketing_pack_v3_3
     g["build_episode_aircheck"] = build_episode_aircheck_v3_3
     # Guard-recognized alias: v3.2 name -> same v3.3 callable. Lets
