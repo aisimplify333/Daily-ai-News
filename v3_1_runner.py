@@ -63,25 +63,20 @@ def _set_default_env() -> None:
     os.environ.setdefault("ALLOW_DUPLICATE_DATE_REBUILD", "false")
     os.environ.setdefault("RECOVERY_ALLOW_DETERMINISTIC_SCRIPT", "true")
 
-    # Voice path. Jamie Gemini is the differentiator; Alex/Rufus stay on OpenAI for stability.
+    # Voice path. Jamie=Grok Ursa, Celeste voice fallback, OpenAI provider fallback.
     os.environ["AUDIO_BACKEND"] = "openai"
     os.environ["ELEVENLABS_ENABLED"] = "false"
     os.environ["ELEVEN_USE_DIALOGUE_SCENES"] = "false"
     os.environ.setdefault("ALEX_TTS_PROVIDER", "openai")
-    os.environ.setdefault("JAMIE_TTS_PROVIDER", "gemini")
+    os.environ.setdefault("JAMIE_TTS_PROVIDER", "grok")
     os.environ.setdefault("RUFUS_TTS_PROVIDER", "openai")
-    os.environ.setdefault("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview")
-    os.environ.setdefault("GEMINI_TTS_VOICE_JAMIE", "Sulafat")
-    os.environ.setdefault("GEMINI_TTS_MAX_RETRIES", "2")
-    os.environ.setdefault("GEMINI_TTS_CACHE", "true")
+    os.environ.setdefault("GROK_TTS_VOICE_JAMIE", "ursa")
+    os.environ.setdefault("GROK_TTS_VOICE_JAMIE_FALLBACK", "celeste")
+    os.environ.setdefault("GROK_TTS_MAX_RETRIES", "2")
+    os.environ.setdefault("GROK_TTS_CACHE", "true")
 
-    # Default: require Gemini proof so we do not claim a voice upgrade that did not happen.
-    # Emergency override: REQUIRE_GEMINI_JAMIE=false lets Jamie fall back to OpenAI to save a daily publish.
-    os.environ.setdefault("REQUIRE_GEMINI_JAMIE", "true")
-    if _truthy("REQUIRE_GEMINI_JAMIE", "true"):
-        os.environ["GEMINI_TTS_FALLBACK_PROVIDER"] = "none"
-    else:
-        os.environ.setdefault("GEMINI_TTS_FALLBACK_PROVIDER", "openai")
+    # Prove the chosen primary voice before expensive generation and Grok in the episode.
+    os.environ.setdefault("REQUIRE_JAMIE_PRIMARY", "true")
 
     # Keep the score gate realistic while the system stabilizes. The show target remains 88+.
     os.environ.setdefault("PRE_TTS_MIN_SCORE", "82")
@@ -116,47 +111,56 @@ def _install_tts_router(g: Dict[str, Any]) -> Any:
     import hybrid_tts_router_v3_1
 
     hybrid_tts_router_v3_1.install(g)
-    _safe_print(">> ✅ Installed Gemini Jamie / OpenAI host voice router")
+    _safe_print(">> ✅ Installed Grok Jamie / OpenAI host voice router")
     return hybrid_tts_router_v3_1
 
 
-def _run_jamie_gemini_smoke_test(router_module: Any) -> None:
-    if not _truthy("REQUIRE_GEMINI_JAMIE", "true"):
-        _safe_print(">> ℹ️ Gemini Jamie proof not required by env; skipping smoke test.")
+def _run_jamie_primary_smoke_test(router_module: Any) -> None:
+    if not _truthy("REQUIRE_JAMIE_PRIMARY", "true"):
+        _safe_print(">> ℹ️ Jamie primary proof disabled; skipping smoke test.")
         return
-    if os.getenv("JAMIE_TTS_PROVIDER", "gemini").strip().lower() != "gemini":
-        raise RuntimeError("REQUIRE_GEMINI_JAMIE=true but JAMIE_TTS_PROVIDER is not gemini.")
+    provider = os.getenv("JAMIE_TTS_PROVIDER", "grok").strip().lower()
+    if provider != "grok":
+        raise RuntimeError(
+            f"REQUIRE_JAMIE_PRIMARY=true but JAMIE_TTS_PROVIDER is {provider!r}, not 'grok'."
+        )
     if not hasattr(router_module, "smoke_test_jamie_voice"):
         raise RuntimeError("hybrid_tts_router_v3_1.py does not expose smoke_test_jamie_voice().")
     today = _dt.date.today().isoformat()
-    out_path = BASE_DIR / "episode_audio" / f"jamie_gemini_voice_proof_{today}.mp3"
+    out_path = BASE_DIR / "episode_audio" / f"jamie_grok_ursa_voice_proof_{today}.mp3"
     router_module.smoke_test_jamie_voice(out_path)
     if not out_path.exists() or out_path.stat().st_size < 1000:
-        raise RuntimeError("Gemini Jamie smoke test did not produce a usable MP3 proof file.")
-    _safe_print(f">> ✅ Gemini Jamie smoke proof created: {out_path}")
+        raise RuntimeError("Grok Ursa smoke test did not produce a usable MP3 proof file.")
+    _safe_print(f">> ✅ Jamie Grok Ursa smoke proof created: {out_path}")
 
 
-def _enforce_gemini_jamie_report() -> None:
-    if not _truthy("REQUIRE_GEMINI_JAMIE", "true"):
-        _safe_print(">> ℹ️ Gemini Jamie proof not required by env; skipping post-render gate.")
+def _enforce_jamie_primary_report() -> None:
+    if not _truthy("REQUIRE_JAMIE_PRIMARY", "true"):
+        _safe_print(">> ℹ️ Jamie primary proof disabled; skipping post-render gate.")
         return
     if not REPORT_PATH.exists():
-        raise RuntimeError("Gemini Jamie required, but hybrid_tts_report.json was not created.")
+        raise RuntimeError("Jamie Grok proof required, but hybrid_tts_report.json was not created.")
     try:
         report = json.loads(REPORT_PATH.read_text(encoding="utf-8"))
     except Exception as exc:
         raise RuntimeError(f"Could not read hybrid_tts_report.json: {exc}")
-    successes = int(report.get("jamie_gemini_successes") or 0)
+
+    episode_successes = int(report.get("jamie_grok_episode_successes") or 0)
+    primary_successes = int(report.get("jamie_grok_primary_successes") or 0)
+    approved_fallback_successes = int(report.get("jamie_grok_fallback_successes") or 0)
     chars = int(report.get("jamie_chars_requested") or 0)
-    fallbacks = report.get("fallbacks") or []
-    if successes <= 0 or chars <= 0:
+    if episode_successes <= 0 or chars <= 0:
         raise RuntimeError(
-            "Gemini Jamie was required but not proven in the episode. "
-            f"jamie_gemini_successes={successes}, jamie_chars_requested={chars}, fallbacks={fallbacks}"
+            "Grok Jamie was not proven in the rendered episode. "
+            f"episode_successes={episode_successes}, chars={chars}"
         )
-    if fallbacks and os.getenv("GEMINI_TTS_FALLBACK_PROVIDER", "none").strip().lower() == "none":
-        raise RuntimeError(f"Gemini Jamie fallback occurred while fallback is disabled: {fallbacks}")
-    _safe_print(f">> ✅ Gemini Jamie proven in episode: {successes} Gemini chunks, {chars} chars")
+    if primary_successes <= 0 and approved_fallback_successes <= 0:
+        raise RuntimeError("Neither Ursa nor Celeste produced Jamie audio.")
+    _safe_print(
+        ">> ✅ Jamie Grok proven in episode: "
+        f"{episode_successes} chunks, {chars} chars; "
+        f"Ursa={primary_successes}, Celeste fallback={approved_fallback_successes}"
+    )
 
 
 def main() -> None:
@@ -172,7 +176,7 @@ def main() -> None:
     g = _load_main_namespace()
     _install_writer_room(g)
     router = _install_tts_router(g)
-    _run_jamie_gemini_smoke_test(router)
+    _run_jamie_primary_smoke_test(router)
 
     produce_episode = g.get("produce_episode")
     if not callable(produce_episode):
@@ -180,7 +184,7 @@ def main() -> None:
 
     _safe_print(">> HANDOFF: running main.py produce_episode() under clean v3.3.5 overlays")
     produce_episode()
-    _enforce_gemini_jamie_report()
+    _enforce_jamie_primary_report()
     _safe_print(">> ✅ COMPLETE: The AI Edge v3.3.5 clean stable runner")
 
 
