@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "deterministic-structure-v5"
+      RECOVERY_BUILD_REVISION: "calibrated-single-sponsor-v6"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -68,7 +68,7 @@ jobs:
       OPENAI_CHEAP_MODEL: "gpt-5.4-mini"
       ENABLE_GROK_PUNCHUP: "true"
       ENABLE_OPENAI_RESCUE: "true"
-      ANTHROPIC_SCRIPT_MAX_TOKENS: "9000"
+      ANTHROPIC_SCRIPT_MAX_TOKENS: "8000"
       PRE_TTS_MIN_SCORE: "84"
       NO_REPEAT_TITLE_WINDOW: "14"
       TOP_EVENT_MIN_SCORE: "34"
@@ -77,9 +77,9 @@ jobs:
       MIN_MINUTES: "24"
       TARGET_MINUTES: "27"
       MAX_MINUTES: "30"
-      WORDS_PER_MINUTE: "170"
-      RECOVERY_MIN_SCRIPT_WORDS: "4200"
-      RECOVERY_MAX_SCRIPT_WORDS: "5000"
+      WORDS_PER_MINUTE: "145"
+      RECOVERY_MIN_SCRIPT_WORDS: "3600"
+      RECOVERY_MAX_SCRIPT_WORDS: "4200"
       SEGMENT_ATTEMPTS: "5"
       FORWARDABLE_MIN_PER_EPISODE: "4"
 
@@ -128,7 +128,7 @@ jobs:
           set -euo pipefail
           python -m py_compile main.py v3_1_runner.py writer_room_v3_1.py
           python -m py_compile hybrid_tts_router_v3_1.py grok_tts_v4.py
-          python -m py_compile recovery_acceptance.py
+          python -m py_compile recovery_acceptance.py post_render_recovery.py
           python preflight_guard_v3_1.py
 
       - name: Generate full recovery episode without publishing
@@ -153,6 +153,7 @@ jobs:
             "script_${today}.txt" \
             "episode_audio/podcast_${today}.mp3" \
             "episode_audio/podcast_${today}.json" \
+            "episode_audio/podcast_${today}_full_render.mp3" \
             "episode_audio/jamie_grok_ursa_voice_proof_${today}.mp3" \
             feed.xml \
             hybrid_tts_report.json \
@@ -160,6 +161,7 @@ jobs:
             script_aircheck.json \
             episode_aircheck.json \
             recovery_acceptance_report.json \
+            post_render_recovery_report.json \
             feed_sanitize_report.json \
             duplicate_guard_report.json; do
             if [[ -f "$file" ]]; then
