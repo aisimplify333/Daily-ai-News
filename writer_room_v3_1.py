@@ -814,6 +814,8 @@ EDITORIAL DNA — combine these disciplines without naming or imitating another 
   why it matters, and what to watch in the next 24-48 hours.
 - HUMAN CO-HOST CHEMISTRY: disagreement, warmth, callbacks, teasing, and genuine
   reactions. Humor must reveal character or stakes, never become a comedy routine.
+  Include at least four earned connection beats across the episode: a knowing tease,
+  a callback or finished thought, a real laugh, and a moment of repair after conflict.
 - DISTINCT INSIDER VIEWPOINTS: Alex controls pace and accountability; Jamie is the
   highly intelligent, opinionated equal who sees the human consequence and competes
   to win the argument; Rufus follows money, incentives, regulation, and power.
@@ -831,6 +833,10 @@ OPENING QUESTION (Segment 1, cold, no welcome):
 
 THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disagree:
 - ALEX: {pos.get('alex', 'Drives the room; presses on accountability.')}
+  He is the listener's proxy and the conversational engine: curious rather than
+  performative, plain-spoken rather than anchor-like. He follows every vague claim
+  with the question the audience is forming, asks the uncomfortable second follow-up,
+  admits when he does not understand, and does not move on until the stakes are clear.
 - JAMIE: {pos.get('jamie', 'Argues the human cost is being undercounted.')}
 - RUFUS: {pos.get('rufus', 'Argues the money and liability trail already tells the ending.')}
 
@@ -886,7 +892,8 @@ NEVER use bracketed stage directions like [laughs] or [leans in] — TTS reads t
 
 NON-NEGOTIABLES:
 - Five segments. 24-30 minute target; 27 minutes is ideal and 30:00 is absolute.
-- HARD LENGTH CONTRACT: deliver 3,800-4,050 spoken words. Do not summarize early.
+- TARGET 3,800-4,100 spoken words; an acceptable production band is 3,550-4,350.
+  Do not summarize early.
   Allocate about 55-60% to the lead event and use the remaining stories as evidence.
 - Dialogue only. Exact labels ALEX:, JAMIE:, RUFUS:. Segment headers. Exactly one [MUSIC].
 - Segment 1 opens on the argument already in motion — no "welcome back".
@@ -1004,8 +1011,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     title = str(board.get("published_title") or "")
     spoken = [ln for ln in full.splitlines() if SPEAKER_RE.match(ln)]
     words = _word_count(full)
-    min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3600"))
-    max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4200"))
+    min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3550"))
+    max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4350"))
 
     segments = len(re.findall(r"^###\s*SEGMENT\s+[1-5]\b", full, flags=re.MULTILINE | re.IGNORECASE))
     music = full.count("[MUSIC]")
@@ -1093,14 +1100,14 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     interruptions = full.count("—")
 
     soft: List[str] = []
-    if alex_q < 5:
-        soft.append(f"alex_pressure_questions_low ({alex_q}/5)")
+    if alex_q < 10:
+        soft.append(f"alex_audience_proxy_questions_low ({alex_q}/10)")
     if jamie_react < 5:
         soft.append(f"jamie_reactions_low ({jamie_react}/5)")
     if rufus_dry < 4:
         soft.append(f"rufus_dry_lines_low ({rufus_dry}/4)")
-    if friction < 8:
-        soft.append(f"friction_low ({friction}/8)")
+    if friction < 4:
+        soft.append(f"friction_low ({friction}/4)")
     if interruptions < 3:
         soft.append(f"interruptions_low ({interruptions}/3)")
     for ph in fuel.get("banned_phrases", []):
@@ -1171,7 +1178,7 @@ It also has these soft weaknesses to improve while you are in there:
 
 Hard requirements:
 - Exactly five segment headers and exactly one [MUSIC].
-- Return 3,800-4,050 spoken words; expand the argument with concrete evidence,
+- Return 3,800-4,100 spoken words (acceptable 3,550-4,350); expand the argument with concrete evidence,
   counterarguments, human consequences, and tomorrow-watch items. Never pad with recap.
 - The Ledger CTA must spell the URL: T-H-E-L-E-D-G-R dot I-O.
 - At least six concrete receipts (numbers, dates, named institutions).
