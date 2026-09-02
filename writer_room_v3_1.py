@@ -341,6 +341,11 @@ def _select_top_ai_events(intel_items: List[Dict[str, Any]], n: int = 5) -> List
         if not isinstance(raw, dict) or not _headline(raw):
             continue
         item = dict(raw)
+        max_age_hours = float(os.getenv("MAX_STORY_AGE_HOURS", "48"))
+        age_hours = _published_age_hours(item)
+        if age_hours is not None and age_hours > max_age_hours:
+            continue
+        item["story_age_hours"] = round(age_hours, 2) if age_hours is not None else None
         item["top_event_score"] = _top_event_score(item)
         ranked.append((float(item["top_event_score"]), item))
     ranked.sort(key=lambda x: x[0], reverse=True)
@@ -745,7 +750,35 @@ Return exactly this JSON:
 def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]],
                    date_str: str, board: Dict[str, Any], fuel: Dict[str, Any]) -> str:
     sponsor = sponsors[0] if sponsors else {}
+    sponsor_name = str(sponsor.get("name") or "TheLEDGR").strip()
+    sponsor_tagline = str(sponsor.get("tagline") or "").strip()
     sponsor_cta = sponsor.get("cta") or "Subscribe to The Ledger at T-H-E-L-E-D-G-R dot I-O."
+
+    # A second paid partner must be a genuinely different sponsor record. Duplicate
+    # house-ad variants never create fake inventory.
+    secondary = next(
+        (
+            s for s in sponsors[1:]
+            if str(s.get("name") or "").strip()
+            and str(s.get("name") or "").strip().lower() != sponsor_name.lower()
+        ),
+        {},
+    )
+    if secondary:
+        secondary_block = (
+            "PAID PARTNER MID-ROLL — REQUIRED immediately before Segment 4. "
+            f"Partner: {secondary.get('name')}. Benefit: {secondary.get('tagline')}. "
+            f"CTA: {secondary.get('cta')}. Write 40-60 spoken words across no more than "
+            "two host lines. Identify it clearly as a partner, connect it honestly to "
+            "today's listener problem, make one precise benefit claim, give one CTA, "
+            "then return directly to the argument. No host may pretend personal use "
+            "unless the supplied sponsor record explicitly proves it."
+        )
+    else:
+        secondary_block = (
+            "SECOND PAID SLOT — EMPTY TODAY. Do not invent a sponsor or add filler. "
+            "Leave clean editorial breathing room before Segment 4."
+        )
     pos = board.get("positions", {}) or {}
     conc = board.get("concession", {}) or {}
     callbacks = fuel.get("callbacks", [])
@@ -771,6 +804,19 @@ def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]]
 
 This is a hard, human, daily AI debate — three real people arguing, not a digest and
 not a lesson. Education happens INSIDE the argument. Data is the ammunition.
+
+EDITORIAL DNA — combine these disciplines without naming or imitating another show:
+- DAILY-BRIEF DISCIPLINE: identify the one AI development that actually matters today.
+  Give that lead event roughly 60 percent of the episode; use the other top events to
+  confirm, complicate, or break the main thesis. The listener must know what changed,
+  why it matters, and what to watch in the next 24-48 hours.
+- HUMAN CO-HOST CHEMISTRY: disagreement, warmth, callbacks, teasing, and genuine
+  reactions. Humor must reveal character or stakes, never become a comedy routine.
+- DISTINCT INSIDER VIEWPOINTS: Alex controls pace and accountability; Jamie is the
+  highly intelligent, opinionated equal who sees the human consequence and competes
+  to win the argument; Rufus follows money, incentives, regulation, and power.
+- CURIOSITY ENGINE: the cold-open question creates a loop that Segment 5 finally
+  closes. Do not answer the headline in the first two minutes.
 
 PUBLIC TITLE TO EARN:
 {board.get('published_title')}
@@ -809,9 +855,20 @@ FORWARDABLE TARGETS (aim for lines this sharp; do not quote them verbatim):
 
 {banned_block}
 
-SPONSOR — TheLEDGR. Spoken name "The Ledger". Spoken URL: T-H-E-L-E-D-G-R dot I-O.
-One short, native CTA right after [MUSIC]; one "Ledger Readout" near the end.
+PRIMARY HOST-READ — immediately after [MUSIC].
+Sponsor: {sponsor_name}. Benefit material: {sponsor_tagline}
 Raw CTA material: {sponsor_cta}
+Alex delivers 45-65 spoken words across no more than two lines. Use this sequence:
+(1) one natural observation tied to today's listener problem, (2) one precise benefit,
+(3) a confident editorial endorsement without an unverifiable personal-use claim,
+(4) the CTA exactly once. For TheLEDGR, say "The Ledger" and spell the URL exactly
+"T-H-E-L-E-D-G-R dot I-O." No "game-changer," "revolutionary," fake enthusiasm,
+or generic "brought to you by" copy. After the read, return directly to the argument.
+
+{secondary_block}
+
+The Segment 5 "Ledger Readout" is the show's editorial conclusion, not a second house ad.
+Do not repeat the primary CTA there.
 
 WRITE IT LIKE REAL SPEECH, NOT CLEAN PROSE — this is where the show stops sounding
 synthetic. You MUST include:
@@ -826,7 +883,7 @@ synthetic. You MUST include:
 NEVER use bracketed stage directions like [laughs] or [leans in] — TTS reads them aloud.
 
 NON-NEGOTIABLES:
-- Five segments. 20-26 minute target.
+- Five segments. 24-30 minute target; 27 minutes is ideal and 30:00 is absolute.
 - Dialogue only. Exact labels ALEX:, JAMIE:, RUFUS:. Segment headers. Exactly one [MUSIC].
 - Segment 1 opens on the argument already in motion — no "welcome back".
 - Exactly one [MUSIC] after the cold open, then Alex's short Ledger CTA.
@@ -842,12 +899,15 @@ STRUCTURE:
 ### SEGMENT 1 — Cold Open: The Fight
 Alex's opening question. Jamie reacts like a person. Rufus undercuts. [MUSIC]. Ledger CTA.
 
-### SEGMENT 2 — Receipts: What Actually Happened
-Hard facts on the lead event, each tied to a consequence. Alex challenges, Jamie translates,
-Rufus follows money/blame/permission.
+### SEGMENT 2 — Alex + Jamie: The Human Case and the Receipts
+ONLY Alex and Jamie appear. Deep-dive the lead event and Story 2. Alex presses the
+listener's blunt question; Jamie is his intellectual equal, highly opinionated,
+competitive, warm, and often right. She is not a translator, mascot, or scold.
 
-### SEGMENT 3 — The Argument: Who Wins, Who Is Exposed
-The real disagreement. No fake consensus. The concession can land here.
+### SEGMENT 3 — Rufus on the Money, Power, and Permission
+Rufus takes the desk/on-location role on Story 3: follow the money, liability,
+regulation, incentives, and geopolitical power. Alex may challenge him; Jamie may
+land one human consequence. No fake consensus. The concession can land here.
 
 ### SEGMENT 4 — The Pattern Across the Other Top AI Events
 Other events only where they prove or break the main argument. Fast, data-first.
@@ -933,11 +993,44 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         m = SPEAKER_RE.match(ln)
         max_turn = max(max_turn, _word_count(m.group(2) if m else ln))
 
+    seg2_match = re.search(
+        r"^###\s*SEGMENT\s*2\b(.*?)^###\s*SEGMENT\s*3\b",
+        full, flags=re.MULTILINE | re.IGNORECASE | re.DOTALL,
+    )
+    seg2_text = seg2_match.group(1) if seg2_match else ""
+    seg2_speakers = {
+        m.group(1).upper()
+        for m in (SPEAKER_RE.match(ln.strip()) for ln in seg2_text.splitlines())
+        if m
+    }
+    music_pos = full.find("[MUSIC]")
+    post_music = full[music_pos + len("[MUSIC]"):music_pos + len("[MUSIC]") + 1400] \
+        if music_pos >= 0 else ""
+    post_music_low = post_music.lower()
+    post_music_spoken = [
+        SPEAKER_RE.match(ln.strip()).group(2)
+        for ln in post_music.splitlines()
+        if SPEAKER_RE.match(ln.strip())
+    ][:3]
+    sponsor_window_words = _word_count(" ".join(post_music_spoken))
+    legacy_sponsor_language = any(
+        phrase in low for phrase in (
+            "sponsor the ai edge", "sponsor this show", "aisimplify333@"
+        )
+    )
+
     # ---- THE GATE: objective, binary, pass/fail. This is the real quality bar. ----
     gate: Dict[str, bool] = {
         "five_segments": segments == 5,
         "one_music_marker": music == 1,
         "ledger_cta_spelled_url": "t-h-e-l-e-d-g-r dot i-o" in low,
+        "sponsor_cta_immediately_after_music": (
+            "the ledger" in post_music_low
+            and "t-h-e-l-e-d-g-r dot i-o" in post_music_low
+        ),
+        "sponsor_read_not_bloated": 35 <= sponsor_window_words <= 110,
+        "no_legacy_sponsor_language": not legacy_sponsor_language,
+        "segment2_alex_jamie_only": seg2_speakers == {"ALEX", "JAMIE"},
         "min_six_receipts": numbers >= 6,
         "real_concession_present": concessions >= 1,
         "no_signal_room": not SIGNAL_ROOM_RE.search(full),
@@ -1020,7 +1113,9 @@ def _punchup_prompt(script: str, board: Dict[str, Any], assessment: Dict[str, An
 Sharpen the disagreement, add human texture (interruptions, false starts, real
 laughter in words — never bracketed directions), and make the concession land harder.
 Do not invent facts. Do not add Signal Room language. Do not make it a lecture.
-Keep exact speaker labels and exactly one [MUSIC]. Return the full script only.
+Keep exact speaker labels and exactly one [MUSIC]. Preserve the sponsor read's
+facts, CTA, placement, and word cap. Segment 2 must contain only Alex and Jamie.
+Return the full script only.
 
 Weak spots to fix: {json.dumps(assessment.get('soft_flags') or [], ensure_ascii=False)}
 
