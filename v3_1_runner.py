@@ -173,17 +173,41 @@ def main() -> None:
     _safe_print(">> ✅ No embedded code, no new modules, no main.py replacement")
 
     _install_growth_overlay()
-    g = _load_main_namespace()
-    _install_writer_room(g)
-    router = _install_tts_router(g)
-    _run_jamie_primary_smoke_test(router)
-
-    produce_episode = g.get("produce_episode")
+    loaded = _load_main_namespace()
+    produce_episode = loaded.get("produce_episode")
     if not callable(produce_episode):
         raise RuntimeError("main.py did not expose produce_episode(). Cannot run production build.")
 
-    _safe_print(">> HANDOFF: running main.py produce_episode() under clean v3.3.5 overlays")
-    produce_episode()
+    # runpy may return a namespace mapping that is not the same object used by
+    # functions created while executing main.py. Install every overlay into the
+    # function's actual globals so produce_episode resolves the patched writer,
+    # story selector, and TTS functions at call time.
+    g = produce_episode.__globals__
+    if g is loaded:
+        _safe_print(">> ✅ main.py live namespace is directly writable")
+    else:
+        _safe_print(">> ✅ Rebound overlays to main.py function globals (runpy namespace copy detected)")
+
+    original_writer = g.get("generate_episode_script")
+    _install_writer_room(g)
+    if g.get("generate_episode_script") is original_writer:
+        raise RuntimeError("Writer-room overlay did not replace main.py generate_episode_script().")
+    if not g.get("V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"):
+        raise RuntimeError("Writer-room overlay marker missing from main.py live globals.")
+
+    router = _install_tts_router(g)
+    if not g.get("HYBRID_TTS_ROUTER_V3_1_INSTALLED"):
+        raise RuntimeError("Hybrid TTS router marker missing from main.py live globals.")
+    _run_jamie_primary_smoke_test(router)
+
+    # Re-read from the live namespace after overlay installation. This assertion
+    # makes a silent fallback to the restored legacy generator impossible.
+    live_produce_episode = g.get("produce_episode")
+    if not callable(live_produce_episode):
+        raise RuntimeError("main.py live namespace lost produce_episode().")
+
+    _safe_print(">> HANDOFF: running main.py produce_episode() under verified v3.3.5 overlays")
+    live_produce_episode()
     _enforce_jamie_primary_report()
     _safe_print(">> ✅ COMPLETE: The AI Edge v3.3.5 clean stable runner")
 
