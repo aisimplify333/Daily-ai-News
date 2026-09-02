@@ -195,8 +195,11 @@ def main() -> None:
     if not g.get("V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"):
         raise RuntimeError("Writer-room overlay marker missing from main.py live globals.")
 
+    original_tts = g.get("tts_to_file")
     router = _install_tts_router(g)
-    if not g.get("HYBRID_TTS_ROUTER_V3_1_INSTALLED"):
+    if g.get("tts_to_file") is original_tts:
+        raise RuntimeError("Hybrid TTS router did not replace main.py tts_to_file().")
+    if not g.get("V3_3_MOOD_TTS_ROUTER_INSTALLED"):
         raise RuntimeError("Hybrid TTS router marker missing from main.py live globals.")
     _run_jamie_primary_smoke_test(router)
 
