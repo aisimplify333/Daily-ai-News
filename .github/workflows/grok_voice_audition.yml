@@ -26,8 +26,13 @@ jobs:
       GROK_JAMIE_VOICES: eve,sirius,iris,ursa,celeste
 
     steps:
-      - name: Check out recovery branch
+      - name: Check out audition code only
         uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            tools/grok_voice_audition.py
+          sparse-checkout-cone-mode: false
 
       - name: Set up Python
         uses: actions/setup-python@v5
