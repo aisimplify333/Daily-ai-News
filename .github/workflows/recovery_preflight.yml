@@ -12,6 +12,7 @@ on:
       - writer_room_v3_1.py
       - hybrid_tts_router_v3_1.py
       - grok_tts_v4.py
+      - recovery_acceptance.py
       - preflight_guard_v3_1.py
       - run_broadcast.py
 
@@ -41,6 +42,7 @@ jobs:
             growth_overlay_v3_1.py
             hybrid_tts_router_v3_1.py
             grok_tts_v4.py
+            recovery_acceptance.py
             preflight_guard_v3_1.py
             feed_sanitize_v3_1.py
             no_repeat_guard_v3_1.py
@@ -57,6 +59,7 @@ jobs:
           python -m py_compile writer_room_v3_1.py
           python -m py_compile hybrid_tts_router_v3_1.py
           python -m py_compile grok_tts_v4.py
+          python -m py_compile recovery_acceptance.py
           python -m py_compile preflight_guard_v3_1.py
           python -m py_compile run_broadcast.py
       - name: Run cost-safe structural guard
