@@ -1,0 +1,46 @@
+name: Recovery Preflight
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - recovery/september-2026
+    paths:
+      - .github/workflows/recovery_preflight.yml
+      - main.py
+      - v3_1_runner.py
+      - writer_room_v3_1.py
+      - hybrid_tts_router_v3_1.py
+      - preflight_guard_v3_1.py
+      - run_broadcast.py
+
+permissions:
+  contents: read
+
+jobs:
+  preflight:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      RUN_MARKETING_ASSETS: "false"
+      PUBLISH_SOCIAL: "false"
+      AUDIO_BACKEND: "openai"
+      ELEVENLABS_ENABLED: "false"
+      JAMIE_TTS_PROVIDER: "gemini"
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile production entry points
+        run: |
+          set -euo pipefail
+          python -m py_compile main.py
+          python -m py_compile v3_1_runner.py
+          python -m py_compile writer_room_v3_1.py
+          python -m py_compile hybrid_tts_router_v3_1.py
+          python -m py_compile preflight_guard_v3_1.py
+          python -m py_compile run_broadcast.py
+      - name: Run cost-safe structural guard
+        run: python preflight_guard_v3_1.py
