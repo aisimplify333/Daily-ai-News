@@ -155,9 +155,9 @@ jobs:
           VOICE_MODEL_RUFUS: "tts-1-hd"
           VOICE_RUFUS: "fable"
 
-          MIN_MINUTES: "19"
-          MAX_MINUTES: "26"
-          TARGET_MINUTES: "21"
+          MIN_MINUTES: "24"
+          MAX_MINUTES: "30"
+          TARGET_MINUTES: "27"
           WORDS_PER_MINUTE: "170"
           SEGMENT_ATTEMPTS: "5"
           FORWARDABLE_MIN_PER_EPISODE: "4"
@@ -204,6 +204,35 @@ jobs:
           set -euo pipefail
           python run_broadcast.py
 
+      - name: Stage current-run artifacts only
+        if: always()
+        run: |
+          set -euo pipefail
+          mkdir -p _run_artifacts
+          today="$(date -u +%F)"
+          for file in \
+            feed.xml \
+            preflight_report_v3_1.json \
+            feed_sanitize_report.json \
+            duplicate_guard_report.json \
+            hybrid_tts_report.json \
+            script_aircheck.json \
+            episode_aircheck.json \
+            story_slate_decision.json \
+            episode_metadata.json \
+            story_scores.json \
+            tracking_summary.json \
+            forwardable_moments.json \
+            listener_takeaways.json \
+            final_button.json \
+            "script_${today}.txt" \
+            "episode_audio/podcast_${today}.mp3" \
+            "episode_audio/podcast_${today}.json"; do
+            if [[ -f "$file" ]]; then
+              cp "$file" _run_artifacts/
+            fi
+          done
+
       - name: Upload production artifacts always
         if: always()
         uses: actions/upload-artifact@v4
@@ -211,23 +240,5 @@ jobs:
           name: the-ai-edge-v3-1-hybrid-tts-artifacts
           retention-days: 14
           if-no-files-found: ignore
-          path: |
-            feed.xml
-            preflight_report_v3_1.json
-            feed_sanitize_report.json
-            duplicate_guard_report.json
-            hybrid_tts_report.json
-            script_aircheck.json
-            episode_aircheck.json
-            story_slate_decision.json
-            episode_metadata.json
-            marketing_pack.json
-            marketing_blurb.txt
-            story_scores.json
-            tracking_summary.json
-            forwardable_moments.json
-            listener_takeaways.json
-            final_button.json
-            script_*.txt
-            episode_audio/podcast_*.mp3
-            episode_audio/podcast_*.json
+          path: _run_artifacts/
+          compression-level: 0
