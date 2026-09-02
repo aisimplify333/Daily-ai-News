@@ -29,7 +29,21 @@ jobs:
       JAMIE_TTS_PROVIDER: "gemini"
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out production code only
+        uses: actions/checkout@v4
+        with:
+          filter: blob:none
+          sparse-checkout: |
+            main.py
+            v3_1_runner.py
+            writer_room_v3_1.py
+            growth_overlay_v3_1.py
+            hybrid_tts_router_v3_1.py
+            preflight_guard_v3_1.py
+            feed_sanitize_v3_1.py
+            no_repeat_guard_v3_1.py
+            run_broadcast.py
+          sparse-checkout-cone-mode: false
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
