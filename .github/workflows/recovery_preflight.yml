@@ -11,6 +11,7 @@ on:
       - v3_1_runner.py
       - writer_room_v3_1.py
       - hybrid_tts_router_v3_1.py
+      - grok_tts_v4.py
       - preflight_guard_v3_1.py
       - run_broadcast.py
 
@@ -26,7 +27,7 @@ jobs:
       PUBLISH_SOCIAL: "false"
       AUDIO_BACKEND: "openai"
       ELEVENLABS_ENABLED: "false"
-      JAMIE_TTS_PROVIDER: "gemini"
+      JAMIE_TTS_PROVIDER: "grok"
 
     steps:
       - name: Check out production code only
@@ -39,6 +40,7 @@ jobs:
             writer_room_v3_1.py
             growth_overlay_v3_1.py
             hybrid_tts_router_v3_1.py
+            grok_tts_v4.py
             preflight_guard_v3_1.py
             feed_sanitize_v3_1.py
             no_repeat_guard_v3_1.py
@@ -54,6 +56,7 @@ jobs:
           python -m py_compile v3_1_runner.py
           python -m py_compile writer_room_v3_1.py
           python -m py_compile hybrid_tts_router_v3_1.py
+          python -m py_compile grok_tts_v4.py
           python -m py_compile preflight_guard_v3_1.py
           python -m py_compile run_broadcast.py
       - name: Run cost-safe structural guard
