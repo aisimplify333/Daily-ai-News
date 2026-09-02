@@ -1481,6 +1481,11 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             except Exception as e:
                 base = {"base_aircheck_error": str(e)}
         merged = dict(base) if isinstance(base, dict) else {}
+        # The restored base aircheck still carries a legacy display constant.
+        # Keep all user-facing and QA identity on The AI Edge.
+        merged["show"] = SHOW_TITLE
+        if isinstance(merged.get("lesson_card"), dict):
+            merged["lesson_card"]["show_name"] = SHOW_TITLE
         merged["v3_3_assessment"] = assessment
         merged["score"] = assessment["keyword_signal"]
         merged["pass"] = assessment["pass"]
