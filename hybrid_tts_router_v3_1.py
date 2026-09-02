@@ -68,13 +68,15 @@ _RT: Dict[str, Any] = {"openai_client": None, "original_tts": None}
 # Report / telemetry
 # ----------------------------------------------------------------------------
 STATS: Dict[str, Any] = {
-    "version": "v3.3-mood-aware-router",
+    "version": "v4-grok-jamie-mood-aware-router",
     "routing": {
         "ALEX": os.getenv("ALEX_TTS_PROVIDER", "openai"),
-        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "gemini"),
+        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "grok"),
         "RUFUS": os.getenv("RUFUS_TTS_PROVIDER", "openai"),
         "ELEVENLABS": "disabled",
     },
+    "grok_primary_voice": os.getenv("GROK_TTS_VOICE_JAMIE", "ursa"),
+    "grok_fallback_voice": os.getenv("GROK_TTS_VOICE_JAMIE_FALLBACK", "celeste"),
     "gemini_model": os.getenv("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview"),
     "openai_tts_model": os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts"),
     "installed": False,
@@ -90,6 +92,12 @@ STATS: Dict[str, Any] = {
     "openai_router_calls": 0,
     "openai_passthrough_calls": 0,
     "jamie_gemini_verified": False,
+    "jamie_grok_successes": 0,
+    "jamie_grok_failures": 0,
+    "jamie_grok_primary_successes": 0,
+    "jamie_grok_fallback_successes": 0,
+    "jamie_grok_cost_estimate_usd": 0.0,
+    "jamie_primary_verified": False,
 }
 
 
@@ -103,6 +111,10 @@ def _bool_env(name: str, default: str = "false") -> bool:
 
 def _write_report() -> None:
     STATS["jamie_gemini_verified"] = STATS["jamie_gemini_successes"] > 0
+    STATS["jamie_primary_verified"] = (
+        STATS.get("jamie_grok_successes", 0) > 0
+        or STATS.get("jamie_gemini_successes", 0) > 0
+    )
     try:
         REPORT_PATH.write_text(json.dumps(STATS, ensure_ascii=False, indent=2) + "\n",
                                encoding="utf-8")
@@ -547,7 +559,7 @@ def _provider_for(speaker: str) -> str:
     spk = (speaker or "").strip().upper()
     return {
         "ALEX": os.getenv("ALEX_TTS_PROVIDER", "openai"),
-        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "gemini"),
+        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "grok"),
         "RUFUS": os.getenv("RUFUS_TTS_PROVIDER", "openai"),
     }.get(spk, "openai").strip().lower()
 
@@ -557,15 +569,59 @@ def _note_mood(mood: str) -> None:
 
 
 def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
-    """Single entry for every spoken line. Infers mood, routes to a provider,
-    and always degrades gracefully — every fallback is logged, never silent."""
+    """Infer mood, route each host, and record every fallback and cost."""
     spk = (speaker or "").strip().upper()
     out = Path(out_path)
     mood = infer_mood(text, spk)
     _note_mood(mood)
     provider = _provider_for(spk)
 
-    # 1. Gemini route.
+    # 1. Jamie on Grok: Ursa primary, Celeste automatic voice fallback.
+    if provider == "grok":
+        try:
+            from grok_tts_v4 import render_jamie as _render_grok_jamie
+
+            result = _render_grok_jamie(text, mood, out)
+            STATS["jamie_chars_requested"] += int(result.get("characters") or 0)
+            STATS["jamie_grok_successes"] += 1
+            if result.get("primary_voice"):
+                STATS["jamie_grok_primary_successes"] += 1
+            else:
+                STATS["jamie_grok_fallback_successes"] += 1
+                STATS["fallbacks"].append({
+                    "speaker": spk, "mood": mood,
+                    "from": os.getenv("GROK_TTS_VOICE_JAMIE", "ursa"),
+                    "to": result.get("voice", "celeste"),
+                    "reason": "Grok primary voice failed; approved voice fallback used",
+                })
+            STATS["jamie_grok_cost_estimate_usd"] = round(
+                float(STATS.get("jamie_grok_cost_estimate_usd") or 0.0)
+                + float(result.get("estimated_cost_usd") or 0.0),
+                6,
+            )
+            STATS["calls"].append({
+                "speaker": spk,
+                "provider": "grok",
+                "voice": result.get("voice"),
+                "primary_voice": bool(result.get("primary_voice")),
+                "mood": mood,
+                "cache": bool(result.get("cache")),
+                "chars": int(result.get("characters") or 0),
+                "estimated_cost_usd": float(result.get("estimated_cost_usd") or 0.0),
+            })
+            _write_report()
+            return
+        except Exception as e:
+            STATS["jamie_grok_failures"] += 1
+            STATS["fallbacks"].append({
+                "speaker": spk, "mood": mood,
+                "from": "grok_ursa_celeste", "to": "openai",
+                "reason": str(e)[:500],
+            })
+            _write_report()
+            _safe_print(f"   ⚠️ {spk}: Grok Ursa/Celeste failed, falling back to OpenAI — {e}")
+
+    # 2. Gemini remains available as an explicit emergency route.
     if provider == "gemini":
         try:
             _gemini_tts_to_file(text, spk, mood, out)
@@ -577,7 +633,7 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
             _write_report()
             _safe_print(f"   ⚠️ {spk}: Gemini failed, falling back to OpenAI — {e}")
 
-    # 2. Router-owned OpenAI route (per-line directed) — unless disabled.
+    # 3. Router-owned OpenAI path for Alex/Rufus and final Jamie fallback.
     if _bool_env("ROUTER_OWN_OPENAI", "true"):
         try:
             _openai_tts_to_file(text, spk, mood, out)
@@ -589,7 +645,7 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
             _write_report()
             _safe_print(f"   ⚠️ {spk}: router OpenAI failed, using main.py path — {e}")
 
-    # 3. Passthrough to main.py's original tts_to_file (no mood direction).
+    # 4. Last-resort pass-through to the proven production spine.
     original = _RT.get("original_tts")
     if callable(original):
         STATS["openai_passthrough_calls"] += 1
@@ -606,28 +662,49 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
 # v3_1_runner.py calls this when REQUIRE_GEMINI_JAMIE=true.
 # ----------------------------------------------------------------------------
 def smoke_test_jamie_voice(out_path: Any) -> None:
-    """Render one short Jamie line through the real Gemini path and write it to
-    out_path. Raises if Gemini does not produce a usable MP3 — that is the point:
-    fail cheap, before the episode spends money, if the voice upgrade is broken.
-
-    This bypasses the OpenAI/passthrough fallback on purpose: a smoke test that
-    silently fell back would prove nothing."""
+    """Prove Jamie's configured primary provider before full-episode spend."""
     out = Path(out_path)
     out.parent.mkdir(parents=True, exist_ok=True)
-    line = ("JAMIE: Okay — quick voice check. If you can hear this clearly, "
-            "Jamie is rendering on Gemini, and we are good to record the show.")
-    mood = infer_mood(line, "JAMIE")
-    _safe_print(f"   🎙️  Jamie Gemini smoke test (mood: {mood}) ...")
-    _gemini_tts_to_file(line, "JAMIE", mood, out)   # raises on any Gemini failure
+    provider = _provider_for("JAMIE")
+    line = (
+        "JAMIE: Okay, quick voice check. If the boys are going to call risk "
+        "an efficiency gain, somebody in this room has to read the fine print."
+    )
+    mood = "amused"
+    _safe_print(f"   🎙️  Jamie {provider} smoke test (mood: {mood}) ...")
+
+    if provider == "grok":
+        from grok_tts_v4 import smoke_test as _smoke_test_grok
+
+        result = _smoke_test_grok(out)
+        STATS["jamie_grok_successes"] += 1
+        STATS["jamie_grok_primary_successes"] += 1
+        STATS["jamie_chars_requested"] += int(result.get("characters") or 0)
+        STATS["jamie_grok_cost_estimate_usd"] = round(
+            float(STATS.get("jamie_grok_cost_estimate_usd") or 0.0)
+            + float(result.get("estimated_cost_usd") or 0.0),
+            6,
+        )
+        STATS["calls"].append({
+            "speaker": "JAMIE", "provider": "grok_smoke",
+            "voice": result.get("voice"), "primary_voice": True,
+            "mood": mood, "chars": int(result.get("characters") or 0),
+        })
+    elif provider == "gemini":
+        _gemini_tts_to_file(line, "JAMIE", mood, out)
+    else:
+        raise RuntimeError(f"Jamie smoke test requires Grok or Gemini, got {provider!r}")
+
     if not out.exists() or out.stat().st_size < 1000:
-        raise RuntimeError("Jamie Gemini smoke test produced no usable MP3")
-    STATS["jamie_gemini_smoke_test"] = {
-        "passed": True,
-        "path": str(out),
-        "bytes": out.stat().st_size,
+        raise RuntimeError(f"Jamie {provider} smoke test produced no usable MP3")
+    STATS["jamie_primary_smoke_test"] = {
+        "passed": True, "provider": provider,
+        "voice": os.getenv("GROK_TTS_VOICE_JAMIE", "ursa") if provider == "grok" else
+                 os.getenv("GEMINI_TTS_VOICE_JAMIE", "Sulafat"),
+        "path": str(out), "bytes": out.stat().st_size,
     }
     _write_report()
-    _safe_print(f"   ✅ Jamie Gemini smoke test passed -> {out}")
+    _safe_print(f"   ✅ Jamie {provider} smoke test passed -> {out}")
 
 
 # ----------------------------------------------------------------------------
@@ -658,9 +735,13 @@ def install(g: Dict[str, Any]) -> None:
     os.environ["ELEVENLABS_ENABLED"] = "false"
     os.environ["ELEVEN_USE_DIALOGUE_SCENES"] = "false"
     os.environ.setdefault("ALEX_TTS_PROVIDER", "openai")
-    os.environ.setdefault("JAMIE_TTS_PROVIDER", "gemini")
+    os.environ.setdefault("JAMIE_TTS_PROVIDER", "grok")
     os.environ.setdefault("RUFUS_TTS_PROVIDER", "openai")
     os.environ.setdefault("ROUTER_OWN_OPENAI", "true")
+    os.environ.setdefault("GROK_TTS_VOICE_JAMIE", "ursa")
+    os.environ.setdefault("GROK_TTS_VOICE_JAMIE_FALLBACK", "celeste")
+    os.environ.setdefault("GROK_TTS_MAX_RETRIES", "2")
+    os.environ.setdefault("GROK_TTS_CACHE", "true")
     os.environ.setdefault("GEMINI_TTS_MODEL", "gemini-3.1-flash-tts-preview")
     os.environ.setdefault("GEMINI_TTS_VOICE_JAMIE", "Sulafat")
     os.environ.setdefault("OPENAI_TTS_MODEL", "gpt-4o-mini-tts")
