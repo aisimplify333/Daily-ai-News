@@ -93,6 +93,7 @@ STATS: Dict[str, Any] = {
     "openai_passthrough_calls": 0,
     "jamie_gemini_verified": False,
     "jamie_grok_successes": 0,
+    "jamie_grok_episode_successes": 0,
     "jamie_grok_failures": 0,
     "jamie_grok_primary_successes": 0,
     "jamie_grok_fallback_successes": 0,
@@ -584,6 +585,7 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
             result = _render_grok_jamie(text, mood, out)
             STATS["jamie_chars_requested"] += int(result.get("characters") or 0)
             STATS["jamie_grok_successes"] += 1
+            STATS["jamie_grok_episode_successes"] += 1
             if result.get("primary_voice"):
                 STATS["jamie_grok_primary_successes"] += 1
             else:
