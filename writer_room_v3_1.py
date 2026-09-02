@@ -1247,6 +1247,205 @@ def _deterministic_structure_repair(
     return "\n".join(lines).strip()
 
 
+
+def _runtime_distance(assessment: Dict[str, Any]) -> int:
+    """Word distance from the accepted runtime band; zero means in band."""
+    metrics = assessment.get("metrics") or {}
+    words = int(metrics.get("words") or 0)
+    band = metrics.get("runtime_word_band") or [3550, 4350]
+    try:
+        low, high = int(band[0]), int(band[1])
+    except Exception:
+        low, high = 3550, 4350
+    if words < low:
+        return low - words
+    if words > high:
+        return words - high
+    return 0
+
+
+def _candidate_is_better(candidate: Dict[str, Any], current: Dict[str, Any]) -> bool:
+    """Accept rewrites only when they improve without swapping in a new failure."""
+    candidate_failed = set(candidate.get("failed") or [])
+    current_failed = set(current.get("failed") or [])
+    if not candidate_failed.issubset(current_failed):
+        return False
+    if len(candidate_failed) < len(current_failed):
+        return True
+    candidate_distance = _runtime_distance(candidate)
+    current_distance = _runtime_distance(current)
+    if candidate_distance != current_distance:
+        return candidate_distance < current_distance
+    return len(candidate.get("soft_flags") or []) < len(current.get("soft_flags") or [])
+
+
+def _runtime_condense_prompt(
+    script: str,
+    current_words: int,
+    target_words: int,
+    board: Dict[str, Any],
+    assessment: Dict[str, Any],
+) -> str:
+    cut_words = max(1, current_words - target_words)
+    return f"""Tighten this complete podcast script from {current_words} words to
+{target_words - 100}-{target_words} words. DELETE roughly {cut_words} words of recap,
+repetition, throat-clearing, and duplicate explanation. Do not expand anything.
+
+This is an editorial compression pass, not a rewrite:
+- Preserve all five segment headers, their order, exactly one [MUSIC], every verified
+  receipt, the real concession, the ending question, and the exact two-line sponsor.
+- Preserve Alex as the listener's proxy and show driver: keep his blunt first question
+  and strongest second follow-ups.
+- Preserve the best Jamie reactions, competitive challenges, sarcastic humor, and
+  human-stakes arguments. Preserve Rufus's strongest money/power/liability lines.
+- Keep the trio's earned laugh, tease, callback, interruption, and repair after conflict.
+- Segment 2 remains Alex and Jamie only.
+- Exact speaker labels only. No stage directions. No new facts. No new CTA.
+- No line over 55 words. Return the full script only.
+
+Current soft weaknesses:
+{json.dumps(assessment.get('soft_flags') or [], ensure_ascii=False)}
+
+Episode argument:
+{json.dumps(board, ensure_ascii=False, indent=2)}
+
+SCRIPT:
+{script}
+""".strip()
+
+
+def _deterministic_trim_to_target(script: str, target_words: int) -> str:
+    """Last-resort pre-TTS trim that preserves structure, receipts, and chemistry."""
+    lines = (script or "").splitlines()
+    if _word_count(script) <= target_words:
+        return script
+
+    segment = 0
+    music_seen = False
+    segment_for: Dict[int, int] = {}
+    speaker_for: Dict[int, str] = {}
+    spoken_by_segment: Dict[int, List[int]] = {i: [] for i in range(1, 6)}
+    speaker_counts: Dict[Tuple[int, str], int] = {}
+    sponsor_lines: set[int] = set()
+
+    for idx, line in enumerate(lines):
+        seg_match = re.match(r"^###\s*SEGMENT\s*([1-5])\b", line, flags=re.IGNORECASE)
+        if seg_match:
+            segment = int(seg_match.group(1))
+        if line.strip().upper() == "[MUSIC]":
+            music_seen = True
+        match = SPEAKER_RE.match(line.strip())
+        if not match:
+            continue
+        speaker = match.group(1).upper()
+        segment_for[idx] = segment
+        speaker_for[idx] = speaker
+        if segment in spoken_by_segment:
+            spoken_by_segment[segment].append(idx)
+        speaker_counts[(segment, speaker)] = speaker_counts.get((segment, speaker), 0) + 1
+        if music_seen and segment == 1 and len(sponsor_lines) < 2:
+            sponsor_lines.add(idx)
+
+    essential: set[int] = set(sponsor_lines)
+    for seg, indices in spoken_by_segment.items():
+        essential.update(indices[:2])
+        essential.update(indices[-2:])
+
+    chemistry_re = re.compile(
+        r"\b(hah|funny|laugh|come on|wait|hold on|hang on|i disagree|not quite|"
+        r"you'?re right|you are right|i was wrong|callback|remember when|"
+        r"last week|yesterday|sorry|fair, actually)\b",
+        re.IGNORECASE,
+    )
+    for idx, line in enumerate(lines):
+        match = SPEAKER_RE.match(line.strip())
+        if not match:
+            continue
+        spoken = match.group(2)
+        if (
+            "T-H-E-L-E-D-G-R dot I-O" in spoken
+            or NUMERIC_RE.search(spoken)
+            or CONCESSION_RE.search(spoken)
+            or CALLBACK_RE.search(spoken)
+        ):
+            essential.add(idx)
+
+    desired_min = {
+        (1, "ALEX"): 3, (1, "JAMIE"): 1, (1, "RUFUS"): 1,
+        (2, "ALEX"): 5, (2, "JAMIE"): 5,
+        (3, "ALEX"): 2, (3, "JAMIE"): 1, (3, "RUFUS"): 5,
+        (4, "ALEX"): 3, (4, "JAMIE"): 3, (4, "RUFUS"): 3,
+        (5, "ALEX"): 2, (5, "JAMIE"): 1, (5, "RUFUS"): 1,
+    }
+    minimum_counts = {
+        key: min(value, speaker_counts.get(key, 0))
+        for key, value in desired_min.items()
+    }
+    segment_minimum = {1: 5, 2: 14, 3: 10, 4: 12, 5: 8}
+    segment_counts = {seg: len(indices) for seg, indices in spoken_by_segment.items()}
+    segment_priority = {4: 0, 2: 1, 3: 2, 1: 3, 5: 4}
+
+    candidates: List[Tuple[int, int, int]] = []
+    for idx, line in enumerate(lines):
+        if idx not in speaker_for or idx in essential:
+            continue
+        seg = segment_for[idx]
+        spoken = SPEAKER_RE.match(line.strip()).group(2)
+        penalty = segment_priority.get(seg, 5) * 100
+        if "?" in spoken:
+            penalty += 450
+        if chemistry_re.search(spoken):
+            penalty += 550
+        if "—" in spoken:
+            penalty += 350
+        if seg == 5 and re.search(r"\b(tomorrow|watch|predict|wins|exposed)\b", spoken, re.I):
+            penalty += 600
+        candidates.append((penalty, -_word_count(spoken), idx))
+
+    removed: set[int] = set()
+    for _, _, idx in sorted(candidates):
+        if _word_count("\n".join(line for i, line in enumerate(lines) if i not in removed)) <= target_words:
+            break
+        seg = segment_for[idx]
+        speaker = speaker_for[idx]
+        if segment_counts.get(seg, 0) <= segment_minimum.get(seg, 0):
+            continue
+        if speaker_counts.get((seg, speaker), 0) <= minimum_counts.get((seg, speaker), 0):
+            continue
+        removed.add(idx)
+        segment_counts[seg] -= 1
+        speaker_counts[(seg, speaker)] -= 1
+
+    # Emergency pass: still preserve headers, sponsor, concession, receipts, and
+    # each segment's ending, but guarantee a paid render is never started over max.
+    if _word_count("\n".join(line for i, line in enumerate(lines) if i not in removed)) > target_words:
+        emergency: List[Tuple[int, int, int]] = []
+        for idx, line in enumerate(lines):
+            if idx in removed or idx not in speaker_for or idx in essential:
+                continue
+            seg = segment_for[idx]
+            spoken = SPEAKER_RE.match(line.strip()).group(2)
+            penalty = segment_priority.get(seg, 5) * 100
+            if chemistry_re.search(spoken) or "?" in spoken or "—" in spoken:
+                penalty += 300
+            emergency.append((penalty, -_word_count(spoken), idx))
+        for _, _, idx in sorted(emergency):
+            current = "\n".join(line for i, line in enumerate(lines) if i not in removed)
+            if _word_count(current) <= target_words:
+                break
+            seg = segment_for[idx]
+            speaker = speaker_for[idx]
+            if segment_counts.get(seg, 0) <= segment_minimum.get(seg, 0):
+                continue
+            if speaker_counts.get((seg, speaker), 0) <= minimum_counts.get((seg, speaker), 0):
+                continue
+            removed.add(idx)
+            segment_counts[seg] -= 1
+            speaker_counts[(seg, speaker)] -= 1
+
+    return "\n".join(line for idx, line in enumerate(lines) if idx not in removed).strip()
+
+
 def _script_via_models(g: Dict[str, Any], prompt: str) -> str:
     for model in (SCENE_WRITER_MODEL, SCENE_WRITER_FALLBACK_MODEL):
         txt = _anthropic_text(g, prompt, model=model,
@@ -1390,10 +1589,47 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             if punched:
                 cand = _normalize_primary_sponsor(_clean_script(punched))
                 cand_assess = _assess(cand, stories, board, fuel)
-                if len(cand_assess["failed"]) <= len(assessment["failed"]):
+                if _candidate_is_better(cand_assess, assessment):
                     script, assessment = cand, cand_assess
                     _safe_print(g, f"      ✅ punch-up applied "
                                    f"(failed checks: {len(assessment['failed'])})")
+
+        # 5. If a model overshoots, make one focused editorial compression
+        # pass before any generic rescue. This is text-only and therefore happens
+        # before the expensive episode TTS stage.
+        max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4350"))
+        target_episode_words = min(
+            max_episode_words - 25,
+            int(os.getenv("RECOVERY_TARGET_SCRIPT_WORDS", "4200")),
+        )
+        if int((assessment.get("metrics") or {}).get("words") or 0) > max_episode_words:
+            before_words = int(assessment["metrics"]["words"])
+            _safe_print(
+                g,
+                f"      ✂️ runtime overshoot ({before_words} words); "
+                f"condensing toward {target_episode_words} before TTS",
+            )
+            compacted = _openai_text(
+                g,
+                _runtime_condense_prompt(
+                    script, before_words, target_episode_words, board, assessment
+                ),
+                model=OPENAI_CHEAP_MODEL,
+                max_tokens=8000,
+                temperature=0.30,
+            )
+            if compacted:
+                cand = _normalize_primary_sponsor(_clean_script(compacted))
+                cand_assess = _assess(cand, stories, board, fuel)
+                cand_words = int((cand_assess.get("metrics") or {}).get("words") or 0)
+                current_non_runtime = set(assessment.get("failed") or []) - {"runtime_word_band"}
+                candidate_non_runtime = set(cand_assess.get("failed") or []) - {"runtime_word_band"}
+                if (
+                    cand_words < before_words
+                    and candidate_non_runtime.issubset(current_non_runtime)
+                ):
+                    script, assessment = cand, cand_assess
+                    _safe_print(g, f"      ✅ editorial compression: {before_words} → {cand_words} words")
 
         # 5. Rescue — only if the binary gate actually failed.
         if ENABLE_OPENAI_RESCUE and not assessment["pass"]:
@@ -1404,7 +1640,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 if repaired:
                     cand = _normalize_primary_sponsor(_clean_script(repaired))
                     cand_assess = _assess(cand, stories, board, fuel)
-                    if len(cand_assess["failed"]) <= len(assessment["failed"]):
+                    if _candidate_is_better(cand_assess, assessment):
                         script, assessment = cand, cand_assess
                         _safe_print(g, f"      ✅ rescue applied "
                                        f"(failed checks: {len(assessment['failed'])})")
@@ -1412,8 +1648,56 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                         # rewrites cost more and can reintroduce structural drift.
                         break
 
-        # Deterministic final repair for two formatting errors models commonly
-        # introduce while expanding a long script. This never rewrites facts.
+        # Deterministic final repair for formatting errors models commonly
+        # introduce while expanding a long script.
+        script = _normalize_primary_sponsor(
+            _deterministic_structure_repair(script, assessment, board)
+        )
+        assessment = _assess(script, stories, board, fuel)
+
+        # Runtime is normalized deterministically before episode TTS. A modest
+        # under-run may use the restored main.py add-on writer; any over-run is
+        # trimmed around receipts, sponsor copy, the concession, and chemistry.
+        min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3550"))
+        max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4350"))
+        target_episode_words = min(
+            max_episode_words - 25,
+            int(os.getenv("RECOVERY_TARGET_SCRIPT_WORDS", "4200")),
+        )
+        final_words = int((assessment.get("metrics") or {}).get("words") or 0)
+        if final_words < min_episode_words:
+            pad = g.get("_pad_script_to_min_words")
+            if callable(pad):
+                _safe_print(
+                    g,
+                    f"      🧩 runtime underrun ({final_words} words); "
+                    "adding evidence before TTS",
+                )
+                padded = pad(
+                    script,
+                    min_words=min_episode_words + 100,
+                    stories=stories,
+                    date_str=date_str,
+                )
+                if padded:
+                    script = _normalize_primary_sponsor(_clean_script(padded))
+                    assessment = _assess(script, stories, board, fuel)
+                    final_words = int((assessment.get("metrics") or {}).get("words") or 0)
+
+        if final_words > max_episode_words:
+            before_words = final_words
+            script = _deterministic_trim_to_target(script, target_episode_words)
+            script = _normalize_primary_sponsor(_clean_script(script))
+            assessment = _assess(script, stories, board, fuel)
+            final_words = int((assessment.get("metrics") or {}).get("words") or 0)
+            _safe_print(
+                g,
+                f"      ✂️ deterministic runtime trim: {before_words} → "
+                f"{final_words} words before TTS",
+            )
+
+        # Re-run the narrow structural repair after runtime normalization, then
+        # take the authoritative pre-TTS measurement.
         script = _normalize_primary_sponsor(
             _deterministic_structure_repair(script, assessment, board)
         )
