@@ -265,7 +265,16 @@ def _authority_lift(story: Dict[str, Any]) -> float:
 
 def _source_tier(story: Dict[str, Any]) -> int:
     """3=primary/major newsroom, 2=strong specialist press, 1=other, 0=low-signal."""
-    text = f"{_publisher(story)} {_url(story)}".lower()
+    publisher = _publisher(story).lower().strip()
+    text = f"{publisher} {_url(story)}".lower()
+    if publisher in {
+        "reuters", "associated press", "ap news", "bloomberg",
+        "financial times", "wall street journal", "the new york times",
+        "the washington post", "openai", "anthropic", "google",
+        "google deepmind", "microsoft", "nvidia", "meta", "apple",
+        "amazon", "aws", "github", "cursor", "onekey",
+    }:
+        return 3
     tier3 = (
         "reuters", "associated press", "apnews.com", "bloomberg", "ft.com",
         "financial times", "wsj.com", "wall street journal", "nytimes.com",
@@ -1840,6 +1849,15 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         except Exception:
             pass
+        trusted_count = sum(
+            1 for story in selected if int(story.get("source_tier") or 0) >= 2
+        )
+        required_trusted = min(n, int(os.getenv("MIN_TRUSTED_STORIES", "3")))
+        if trusted_count < required_trusted:
+            raise RuntimeError(
+                f"Only {trusted_count} trusted-source stories survived selection; "
+                f"{required_trusted} required before script or episode TTS."
+            )
         return selected
 
     # ---- generate_episode_script -----------------------------------------
