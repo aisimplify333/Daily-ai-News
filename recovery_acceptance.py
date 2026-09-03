@@ -28,6 +28,21 @@ LEGACY_RITUAL_RE = re.compile(
     r"\b(today[’']s ai lesson|signal or static|ai signal room)\b",
     re.IGNORECASE,
 )
+
+
+def has_generic_panel_filler(script: str) -> bool:
+    """Reject stock panel filler without punishing an explicit joke about the cliché."""
+    for match in GENERIC_PANEL_RE.finditer(script):
+        context = script[max(0, match.start() - 80):match.end()]
+        if match.group(0).lower().replace(" ", "-") == "game-changer":
+            if re.search(
+                r"\b(?:not|never|resist(?:ing|ed)?\s+the\s+urge\s+to\s+call\s+(?:that|it)\s+a)\s+game[- ]changer$",
+                context,
+                re.IGNORECASE,
+            ):
+                continue
+        return True
+    return False
 MONTHS = {
     name.lower(): number for number, name in enumerate(
         ("January", "February", "March", "April", "May", "June",
@@ -180,7 +195,7 @@ def main() -> int:
         failures.append("legacy sponsor solicitation language appeared")
     if "ai signal room" in script.lower():
         failures.append("legacy AI Signal Room branding appeared in the script")
-    if GENERIC_PANEL_RE.search(script):
+    if has_generic_panel_filler(script):
         failures.append("generic panel filler appeared in the script")
     if LEGACY_RITUAL_RE.search(script):
         failures.append("legacy lesson/Signal-or-Static ritual appeared in the script")
@@ -281,7 +296,7 @@ def main() -> int:
             "sponsor_speakers": sponsor_speakers,
             "sponsor_cta_count": script.lower().count("t-h-e-l-e-d-g-r dot i-o"),
             "post_writer_word_delta": post_writer_word_delta,
-            "generic_panel_filler": bool(GENERIC_PANEL_RE.search(script)),
+            "generic_panel_filler": has_generic_panel_filler(script),
             "legacy_ritual": bool(LEGACY_RITUAL_RE.search(script)),
             "relative_date_errors": relative_date_errors,
             "writer_assessment_pass": (
