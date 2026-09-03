@@ -7,7 +7,7 @@ Paste this entire file as: preflight_guard_v3_1.py
 Cheap checks before any LLM/TTS spend:
 - Required files exist and compile.
 - An approved hard-debate/top-events writer room is installed (v3.2 OR v3.3).
-- Gemini Jamie router patches both tts_to_file and _render_spoken_chunk_to_file.
+- Grok Jamie router patches both tts_to_file and _render_spoken_chunk_to_file.
 - Legacy marketing and ElevenLabs are disabled.
 
 Why v3.2.2 exists:
@@ -40,6 +40,7 @@ REQUIRED = [
     "writer_room_v3_1.py",
     "growth_overlay_v3_1.py",
     "hybrid_tts_router_v3_1.py",
+    "grok_tts_v4.py",
     "feed_sanitize_v3_1.py",
     "no_repeat_guard_v3_1.py",
     "run_broadcast.py",
@@ -125,10 +126,10 @@ def main() -> None:
         fail("hybrid_tts_router_v3_1.py does not patch the production render path")
     if "tts_to_file" not in router or "hybrid_tts_to_file" not in router:
         fail("hybrid_tts_router_v3_1.py does not patch tts_to_file")
-    if "_speaker_audio_backend" not in router or "gemini" not in router.lower():
-        fail("hybrid_tts_router_v3_1.py does not force Jamie Gemini routing")
-    if "jamie_gemini_successes" not in router or "GEMINI_TTS_MODEL" not in router:
-        fail("hybrid_tts_router_v3_1.py does not expose Jamie Gemini report counters")
+    if "_speaker_audio_backend" not in router or "grok_tts_v4" not in router:
+        fail("hybrid_tts_router_v3_1.py does not route Jamie through Grok")
+    if "jamie_grok_episode_successes" not in router or "GROK_TTS_VOICE_JAMIE" not in router:
+        fail("hybrid_tts_router_v3_1.py does not expose Jamie Grok proof counters")
 
     if "top_event_heat" not in growth or "V3_2_TOP_EVENTS_OVERLAY_INSTALLED" not in growth:
         fail("growth_overlay_v3_1.py is not the v3.2 top-events scoring overlay")
@@ -140,15 +141,15 @@ def main() -> None:
         bad_env.append("AUDIO_BACKEND must not be eleven")
     if os.getenv("ELEVENLABS_ENABLED", "false").strip().lower() in ("true", "1", "yes"):
         bad_env.append("ELEVENLABS_ENABLED must be false")
-    if os.getenv("JAMIE_TTS_PROVIDER", "gemini").strip().lower() != "gemini":
-        bad_env.append("JAMIE_TTS_PROVIDER must be gemini")
+    if os.getenv("JAMIE_TTS_PROVIDER", "grok").strip().lower() != "grok":
+        bad_env.append("JAMIE_TTS_PROVIDER must be grok")
     if bad_env:
         fail("; ".join(bad_env))
 
     print(">> ✅ COST-SAFE PREFLIGHT PASSED", flush=True)
     print(">> ✅ Creative format: approved hard-debate human program (v3.2/v3.3)", flush=True)
     print(">> ✅ Story selection: top AI events, no forced sector quota", flush=True)
-    print(">> ✅ TTS routing: Jamie Gemini forced path + OpenAI fallback; Alex/Rufus OpenAI; ElevenLabs OFF", flush=True)
+    print(">> ✅ TTS routing: Jamie Grok Ursa + Celeste fallback + OpenAI provider fallback; Alex/Rufus OpenAI", flush=True)
     print(">> ✅ Preflight guard v3.2.2 — v3.3 connection-first lineage accepted", flush=True)
 
 

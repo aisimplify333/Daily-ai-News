@@ -9,7 +9,7 @@ This fixes the expensive failure mode:
 2. v3_1_runner generates only after preflight passes.
 3. Feed sanitizer cleans stale public copy before final guard.
 4. No-repeat guard remains as final public trust backstop.
-5. Commit/push only happens after all gates pass.
+5. A zero-cost delivery gate verifies title, SEO, subscriber CTA, RSS, and audio.\n6. Commit/push only happens after all gates pass.
 """
 
 from __future__ import annotations
