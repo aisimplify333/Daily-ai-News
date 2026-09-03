@@ -263,6 +263,35 @@ def _authority_lift(story: Dict[str, Any]) -> float:
         lift = max(lift, 22.0)
     return lift
 
+def _source_tier(story: Dict[str, Any]) -> int:
+    """3=primary/major newsroom, 2=strong specialist press, 1=other, 0=low-signal."""
+    text = f"{_publisher(story)} {_url(story)}".lower()
+    tier3 = (
+        "reuters", "associated press", "apnews.com", "bloomberg", "ft.com",
+        "financial times", "wsj.com", "wall street journal", "nytimes.com",
+        "washingtonpost.com", ".gov", ".edu", "blog.google", "openai.com",
+        "anthropic.com", "deepmind.google", "microsoft.com", "nvidia.com",
+        "meta.com", "apple.com", "amazon.com", "github.com", "cursor.com",
+        "onekey.com",
+    )
+    tier2 = (
+        "the verge", "theverge.com", "wired", "arstechnica", "techcrunch",
+        "axios", "cnbc", "fortune", "the information", "semianalysis",
+        "404 media", "platformer", "mit technology review",
+    )
+    low_signal = (
+        "mshale", "press release distribution", "sponsored", "guest post",
+        "youtube.com", "youtu.be",
+    )
+    if any(x in text for x in low_signal):
+        return 0
+    if any(x in text for x in tier3):
+        return 3
+    if any(x in text for x in tier2):
+        return 2
+    return 1
+
+
 
 def _word_count(text: str) -> int:
     return len(re.findall(r"\b[\w'-]+\b", text or ""))
@@ -312,6 +341,8 @@ def _top_event_score(story: Dict[str, Any]) -> float:
     score += min(30.0, _major_actor_count(story) * 8.0)
     score += min(24.0, _number_count(story) * 5.0)
     score += _authority_lift(story)
+    source_tier = _source_tier(story)
+    score += {3: 95.0, 2: 55.0, 1: 5.0, 0: -55.0}.get(source_tier, -25.0)
     age = _published_age_hours(story)
     if age is not None:
         if age <= 8:
@@ -326,6 +357,13 @@ def _top_event_score(story: Dict[str, Any]) -> float:
     for pat in LOW_VALUE_PATTERNS:
         if re.search(pat, h, flags=re.IGNORECASE):
             score -= 45
+    if re.search(r"\([a-z0-9_-]{8,}\)\s*$", h, flags=re.IGNORECASE):
+        score -= 85
+    if any(phrase in h for phrase in (
+        "from ai readiness to impact", "why a strong data foundation",
+        "determines success", "best practices", "thought leadership",
+    )):
+        score -= 75
     if "google news" in text and len(h) < 20:
         score -= 8
     if not any(a.lower() in text for a in MAJOR_AI_ACTORS) and not any(
@@ -346,6 +384,7 @@ def _select_top_ai_events(intel_items: List[Dict[str, Any]], n: int = 5) -> List
         if age_hours is not None and age_hours > max_age_hours:
             continue
         item["story_age_hours"] = round(age_hours, 2) if age_hours is not None else None
+        item["source_tier"] = _source_tier(item)
         item["top_event_score"] = _top_event_score(item)
         ranked.append((float(item["top_event_score"]), item))
     ranked.sort(key=lambda x: x[0], reverse=True)
@@ -354,15 +393,16 @@ def _select_top_ai_events(intel_items: List[Dict[str, Any]], n: int = 5) -> List
     used_keys: set[str] = set()
     families: List[str] = []
     min_score = float(os.getenv("TOP_EVENT_MIN_SCORE", "38"))
+    minimum_trusted = min(n, int(os.getenv("MIN_TRUSTED_STORIES", "3")))
 
-    for score, item in ranked:
+    def add_candidate(score: float, item: Dict[str, Any]) -> bool:
         if score < min_score and len(selected) >= max(3, n - 1):
-            continue
+            return False
         key, fam = _identity_key(item), _family_key(item)
         if key and key in used_keys:
-            continue
+            return False
         if fam and any(_token_overlap(fam, old) >= 0.72 for old in families):
-            continue
+            return False
         item["story_role"] = "top_ai_event"
         item["story_tier"] = "primary" if len(selected) < 3 else "supporting"
         item["bucket"] = item.get("bucket") or "top_ai_event"
@@ -371,6 +411,18 @@ def _select_top_ai_events(intel_items: List[Dict[str, Any]], n: int = 5) -> List
             used_keys.add(key)
         if fam:
             families.append(fam)
+        return True
+
+    # Establish the editorial spine with primary or major-newsroom reporting,
+    # then fill remaining slots by overall importance.
+    for score, item in ranked:
+        if int(item.get("source_tier") or 0) >= 2:
+            add_candidate(score, item)
+        if len(selected) >= minimum_trusted:
+            break
+
+    for score, item in ranked:
+        add_candidate(score, item)
         if len(selected) >= n:
             break
 
@@ -709,6 +761,16 @@ TODAY'S TOP AI EVENTS:
 PRIOR-EPISODE THREADS you may call back to (this is episode #{fuel.get('episode_number')}):
 {callbacks_txt}
 
+FACT FIREWALL:
+- Story 1 is the lead. Do not replace it with a lower-ranked theme.
+- Treat every story as an isolated source record. Never claim two companies, products,
+  models, hospitals, or regulators are connected unless one supplied summary explicitly
+  says so.
+- Never invent a deployment, customer, incident count, benchmark, legal exposure,
+  partnership, quote, or causal link.
+- mandatory_receipts must be short source-backed facts from the supplied summaries or
+  data points, never URLs and never plausible-sounding additions.
+
 Design a REAL argument. The three hosts must genuinely disagree, and ONE host must
 end the episode having genuinely changed position — not "good point", an actual
 concession. Pick whichever host the day's facts would most plausibly move.
@@ -850,8 +912,17 @@ WHO WINS: {board.get('who_wins')}
 WHO IS EXPOSED: {board.get('who_is_exposed')}
 NORMAL-PERSON PAYOFF: {board.get('normal_person_payoff')}
 
-TODAY'S TOP AI EVENTS — selected by importance, not sector quota:
+TODAY'S TOP AI EVENTS — Story 1 is the lead and must receive roughly 60 percent
+of the episode. Supporting stories may confirm or challenge it, but may not replace it:
 {_story_lines(stories)}
+
+FACT FIREWALL — a hard production rule:
+- Use ONLY details present in the story summaries, data points, and approved receipts above.
+- Do not infer that one product uses another model. Do not invent customers, deployments,
+  hospital incidents, regulator responses, insurance clauses, benchmark results, or counts.
+- Never use "reportedly" to smuggle in an unsupported connection.
+- When the source does not establish a detail, say what remains unknown or leave it out.
+- Dates must be internally possible relative to {date_str}.
 
 MANDATORY RECEIPTS:
 {json.dumps(board.get('mandatory_receipts') or [], ensure_ascii=False, indent=2)}
@@ -903,7 +974,10 @@ NON-NEGOTIABLES:
 - Explain every important number in plain terms.
 - At least 8 friction beats; at least 5 Jamie human-reaction moments; at least 5 Alex
   pressure questions; at least 4 Rufus dry lines — but vary the wording every time.
-- No "Exactly, Alex" filler. No lesson framing. No Signal Room language. No digest energy.
+- Ban generic panel filler: "Exactly, Alex," "Absolutely, Alex," "great question,"
+  "game-changer," "exciting time," "landscape is evolving," and "speaking of."
+- No lesson framing. Never say "today's AI lesson" or play "Signal or Static."
+  No Signal Room language. No digest energy.
 - Normal turns 8-38 words; hard maximum 55 words. Short turns are good.
 
 STRUCTURE:
@@ -1053,6 +1127,12 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
             "sponsor the ai edge", "sponsor this show", "aisimplify333@"
         )
     )
+    spoken_stage_direction = any(
+        bool(re.search(r"\[[^\]]+\]", match.group(2)))
+        for match in (SPEAKER_RE.match(line.strip()) for line in full.splitlines())
+        if match
+    )
+    episode_date = str(board.get("_episode_date") or "")
 
     # ---- THE GATE: objective, binary, pass/fail. This is the real quality bar. ----
     gate: Dict[str, bool] = {
@@ -1077,6 +1157,12 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "no_signal_room": not SIGNAL_ROOM_RE.search(full),
         "not_lesson_title": (not title.lower().startswith("today")) and ("lesson" not in title.lower()),
         "no_monologue_bloat": max_turn <= 60,
+        "no_generic_panel_filler": not GENERIC_PANEL_RE.search(full),
+        "no_legacy_lesson_ritual": not LEGACY_RITUAL_RE.search(full),
+        "no_spoken_stage_directions": not spoken_stage_direction,
+        "temporal_consistency": (
+            not episode_date or not _has_relative_date_contradiction(full, episode_date)
+        ),
     }
     if fuel.get("has_history"):
         # Only required once the show actually has a past to reach back into.
@@ -1246,6 +1332,180 @@ def _deterministic_structure_repair(
 
     return "\n".join(lines).strip()
 
+
+
+
+
+GENERIC_PANEL_RE = re.compile(
+    r"\b(exactly,\s*(?:alex|jamie|rufus)|absolutely,\s*(?:alex|jamie|rufus)|"
+    r"that'?s a great question|game[- ]changer|exciting time|hot month for ai|"
+    r"landscape is evolving|momentum continues|transformative era|"
+    r"it'?s a lot to take in|and speaking of|keep up with these changes)\b",
+    re.IGNORECASE,
+)
+LEGACY_RITUAL_RE = re.compile(
+    r"\b(today[’']s ai lesson|signal or static|ai signal room)\b",
+    re.IGNORECASE,
+)
+MONTH_NUMBER = {
+    name.lower(): number for number, name in enumerate(
+        ("January", "February", "March", "April", "May", "June",
+         "July", "August", "September", "October", "November", "December"),
+        start=1,
+    )
+}
+NUMBER_WORD = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+    "seven": 7, "eight": 8, "nine": 9, "ten": 10, "twelve": 12,
+}
+RELATIVE_DATE_RE = re.compile(
+    r"\b(?P<month>January|February|March|April|May|June|July|August|September|"
+    r"October|November|December)\s+(?P<year>20\d{2})\s*(?:—|-|,)\s*"
+    r"(?P<count>\d+|one|two|three|four|five|six|seven|eight|nine|ten|twelve)"
+    r"\s+months?\s+from\s+(?:today|now)\b",
+    re.IGNORECASE,
+)
+
+
+def _dialogue_addon_only(text: str) -> str:
+    lines: List[str] = []
+    for raw in (text or "").splitlines():
+        match = SPEAKER_RE.match(raw.strip())
+        if not match:
+            continue
+        spoken = re.sub(r"\[[^\]]*\]", "", match.group(2)).strip()
+        if spoken:
+            lines.append(f"{match.group(1).upper()}: {spoken}")
+    return "\n".join(lines).strip()
+
+
+def _segment_four(script: str) -> str:
+    match = re.search(
+        r"^###\s*SEGMENT\s*4\b(.*?)^###\s*SEGMENT\s*5\b",
+        script or "",
+        flags=re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    )
+    return match.group(1).strip() if match else ""
+
+
+def _native_expansion_prompt(
+    script: str,
+    stories: List[Dict[str, Any]],
+    date_str: str,
+    board: Dict[str, Any],
+    add_words: int,
+) -> str:
+    return f"""Write a {add_words - 75}-{add_words + 75} word dialogue ADD-ON for
+Segment 4 of {SHOW_TITLE} on {date_str}. Output only new ALEX:, JAMIE:, or RUFUS:
+lines. Do not output a segment header, music cue, sponsor, intro, recap, or signoff.
+
+The existing episode already established the lead argument. Deepen it using the strongest
+UNUSED source-backed facts or unresolved questions from Stories 4-5, and test whether they
+confirm or break the lead thesis. Do not repeat the existing Segment 4 below.
+
+Chemistry:
+- Alex drives with the blunt question a listener is forming, then asks the harder follow-up.
+- Jamie is an opinionated equal; give her a sharp human-stakes challenge and one earned,
+  understated sarcastic beat. She may win.
+- Rufus follows money, incentives, permission, or liability with one dry undercut.
+- Include two genuine challenges and one moment of connection. No stage directions.
+- Turns are 8-38 words, absolute maximum 55.
+
+FACT FIREWALL:
+- Use only details in the source records below. Stories are isolated records.
+- Never claim one product uses another model or serves healthcare unless the SAME supplied
+  source summary explicitly says so.
+- Invent no numbers, customers, deployments, incidents, quotes, benchmarks, regulations,
+  insurance terms, partnerships, or dates. If evidence is missing, frame it as an open question.
+- Ban: Exactly/Absolutely + host name, great question, game-changer, exciting time,
+  speaking of, landscape is evolving, lesson, Signal or Static, and generic optimism.
+
+EPISODE ARGUMENT:
+{json.dumps(board, ensure_ascii=False, indent=2)}
+
+SOURCE RECORDS:
+{_story_lines(stories)}
+
+EXISTING SEGMENT 4 — do not repeat:
+{_segment_four(script)}
+""".strip()
+
+
+def _expand_segment_four(
+    g: Dict[str, Any],
+    script: str,
+    stories: List[Dict[str, Any]],
+    date_str: str,
+    board: Dict[str, Any],
+    add_words: int,
+) -> str:
+    prompt = _native_expansion_prompt(script, stories, date_str, board, add_words)
+    attempts = [
+        ("anthropic", SCENE_WRITER_MODEL),
+        ("anthropic", SCENE_WRITER_FALLBACK_MODEL),
+        ("openai", OPENAI_CHEAP_MODEL),
+    ]
+    for provider, model in attempts:
+        if provider == "anthropic":
+            raw = _anthropic_text(g, prompt, model=model, max_tokens=2600)
+        else:
+            raw = _openai_text(g, prompt, model=model, max_tokens=2600, temperature=0.45)
+        addon = _dialogue_addon_only(raw)
+        if not addon:
+            continue
+        if GENERIC_PANEL_RE.search(addon) or LEGACY_RITUAL_RE.search(addon):
+            _safe_print(g, f"      ⚠️ rejected generic expansion from {model}")
+            continue
+        marker = re.search(
+            r"^###\s*SEGMENT\s*5\b",
+            script,
+            flags=re.IGNORECASE | re.MULTILINE,
+        )
+        if not marker:
+            continue
+        candidate = (
+            script[:marker.start()].rstrip() + "\n" + addon + "\n\n"
+            + script[marker.start():].lstrip()
+        ).strip()
+        if _word_count(candidate) > _word_count(script):
+            _safe_print(g, f"      ✅ focused Segment 4 expansion applied: {model}")
+            return candidate
+    return script
+
+
+def _repair_relative_dates(script: str, date_str: str) -> str:
+    """Repair explicit N-month predictions without touching historical dates."""
+    try:
+        episode_date = _dt.date.fromisoformat(date_str)
+    except Exception:
+        episode_date = _dt.date.today()
+    lines = (script or "").splitlines()
+    for idx, line in enumerate(list(lines)):
+        match = RELATIVE_DATE_RE.search(line)
+        if not match:
+            continue
+        raw_count = match.group("count").lower()
+        months = int(raw_count) if raw_count.isdigit() else NUMBER_WORD.get(raw_count, 0)
+        if months <= 0:
+            continue
+        total = episode_date.year * 12 + (episode_date.month - 1) + months
+        target_year, target_month_zero = divmod(total, 12)
+        target_month = target_month_zero + 1
+        target_label = f"{list(MONTH_NUMBER.keys())[target_month - 1].title()} {target_year}"
+        old_label = f"{match.group('month')} {match.group('year')}"
+        for follow in range(idx, min(len(lines), idx + 5)):
+            lines[follow] = re.sub(
+                rf"\b{re.escape(old_label)}\b",
+                target_label,
+                lines[follow],
+                flags=re.IGNORECASE,
+            )
+    return "\n".join(lines).strip()
+
+
+def _has_relative_date_contradiction(script: str, date_str: str) -> bool:
+    repaired = _repair_relative_dates(script, date_str)
+    return repaired != (script or "").strip()
 
 
 
@@ -1555,6 +1815,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
     last_board: Dict[str, Any] = {}
     last_selected: List[Dict[str, Any]] = []
+    last_fuel: Dict[str, Any] = {}
 
     # ---- pick_top_stories -------------------------------------------------
     def pick_top_stories_v3_3(intel_items: List[Dict[str, Any]], n: int = 5,
@@ -1573,6 +1834,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                     "rank": i + 1, "headline": _headline(s), "publisher": _publisher(s),
                     "top_event_score": s.get("top_event_score"),
                     "story_age_hours": s.get("story_age_hours"),
+                    "source_tier": s.get("source_tier"),
                     "bucket_original": s.get("bucket"), "source_url": _url(s),
                 } for i, s in enumerate(selected)],
             }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -1583,18 +1845,20 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     # ---- generate_episode_script -----------------------------------------
     def generate_episode_script_v3_3(stories: List[Dict[str, Any]],
                                      sponsors: List[Dict[str, Any]], date_str: str) -> str:
-        nonlocal last_board
+        nonlocal last_board, last_fuel
         _safe_print(g, "   >> ✍️  WRITING EPISODE — v3.3 connection-first")
 
         # 1. Load the show's memory.
         cont_root, episodes = _load_continuity(g)
         fuel = _continuity_fuel(episodes)
+        last_fuel = dict(fuel)
         _safe_print(g, f"      memory: episode #{fuel['episode_number']}, "
                        f"{len(fuel['callbacks'])} callback hooks, "
                        f"{len(fuel['banned_phrases'])} stale phrases banned")
 
         # 2. Design the argument before any dialogue exists.
         board = _preproduction(g, stories, date_str, fuel)
+        board["_episode_date"] = date_str
         last_board = board
         try:
             path = g.get("STORY_SLATE_DECISION_PATH") or Path("story_slate_decision.json")
@@ -1678,30 +1942,27 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         )
         final_words = int((assessment.get("metrics") or {}).get("words") or 0)
         if final_words < min_episode_words:
-            pad = g.get("_pad_script_to_min_words")
-            if callable(pad):
-                for pad_attempt in range(1, 4):
-                    if final_words >= min_episode_words:
-                        break
-                    _safe_print(
-                        g,
-                        f"      🧩 runtime underrun ({final_words} words); "
-                        f"adding evidence before TTS (pass {pad_attempt}/3)",
-                    )
-                    padded = pad(
-                        script,
-                        min_words=min_episode_words + 250,
-                        stories=stories,
-                        date_str=date_str,
-                    )
-                    if not padded or _word_count(padded) <= final_words:
-                        break
-                    script = _split_long_turns(
-                        _normalize_primary_sponsor(_clean_script(padded)),
-                        max_words=55,
-                    )
-                    assessment = _assess(script, stories, board, fuel)
-                    final_words = int((assessment.get("metrics") or {}).get("words") or 0)
+            for pad_attempt in range(1, 3):
+                if final_words >= min_episode_words:
+                    break
+                needed = min(850, max(300, min_episode_words + 125 - final_words))
+                _safe_print(
+                    g,
+                    f"      🧩 runtime underrun ({final_words} words); "
+                    f"deepening Segment 4 with sourced debate (pass {pad_attempt}/2)",
+                )
+                expanded = _expand_segment_four(
+                    g, script, stories, date_str, board, add_words=needed
+                )
+                if _word_count(expanded) <= final_words:
+                    break
+                script = _split_long_turns(
+                    _normalize_primary_sponsor(_clean_script(expanded)),
+                    max_words=55,
+                )
+                script = _repair_relative_dates(script, date_str)
+                assessment = _assess(script, stories, board, fuel)
+                final_words = int((assessment.get("metrics") or {}).get("words") or 0)
 
         if final_words > max_episode_words:
             before_words = final_words
@@ -1726,6 +1987,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             ),
             max_words=55,
         )
+        script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
 
         # Preserve the exact pre-TTS candidate even when a hard gate stops the
@@ -1798,7 +2060,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         board = last_board or _preproduction(
             g, stories, date_str or _dt.date.today().isoformat(),
             _continuity_fuel(_load_continuity(g)[1]))
-        assessment = _assess(script, stories, board, _continuity_fuel(_load_continuity(g)[1]))
+        assessment_fuel = last_fuel or _continuity_fuel(_load_continuity(g)[1])
+        assessment = _assess(script, stories, board, assessment_fuel)
         base: Dict[str, Any] = {}
         if callable(original_build_episode_aircheck):
             try:
@@ -1837,8 +2100,22 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             flags=re.IGNORECASE | re.MULTILINE,
         )
 
+    def preserve_rank_v3_3(stories: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        return list(stories or [])
+
+    def preserve_writer_script_v3_3(script: str, *args: Any, **kwargs: Any) -> str:
+        return script
+
+    def temporal_consistency_v3_3(script: str, date_str: str) -> str:
+        return _repair_relative_dates(script, date_str)
+
     g["pick_top_stories"] = pick_top_stories_v3_3
+    g["order_stories_for_episode"] = preserve_rank_v3_3
     g["generate_episode_script"] = generate_episode_script_v3_3
+    g["enforce_episode_numeric_density"] = preserve_writer_script_v3_3
+    g["_append_forwardable_fallbacks_if_needed"] = preserve_writer_script_v3_3
+    g["_append_teaching_arc_fallback_if_needed"] = preserve_writer_script_v3_3
+    g["enforce_temporal_consistency"] = temporal_consistency_v3_3
     g["ensure_sponsor_delivery"] = ensure_sponsor_delivery_v3_3
     g["ensure_theledgr_readout"] = ensure_theledgr_readout_v3_3
     g["generate_marketing_pack"] = generate_marketing_pack_v3_3
