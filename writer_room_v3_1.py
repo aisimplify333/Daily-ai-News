@@ -2025,33 +2025,40 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         try:
             from grounded_news_v1 import apply_fact_replacements, fact_check_script
 
-            first_fact_audit = fact_check_script(
-                script,
-                stories,
-                date_str,
-                model=GROUNDED_NEWS_MODEL,
-            )
-            corrected_script, applied = apply_fact_replacements(script, first_fact_audit)
-            final_fact_audit = first_fact_audit
-            if applied:
-                corrected_script = _split_long_turns(
-                    _normalize_primary_sponsor(_clean_script(corrected_script)),
-                    max_words=55,
-                )
-                corrected_script = _repair_relative_dates(corrected_script, date_str)
-                final_fact_audit = fact_check_script(
-                    corrected_script,
+            fact_audits: List[Dict[str, Any]] = []
+            total_applied = 0
+            for audit_pass in range(1, 4):
+                audit = fact_check_script(
+                    script,
                     stories,
                     date_str,
                     model=GROUNDED_NEWS_MODEL,
                 )
-                script = corrected_script
+                fact_audits.append(audit)
+                if audit.get("pass"):
+                    break
+                corrected_script, applied = apply_fact_replacements(script, audit)
+                if applied <= 0:
+                    break
+                total_applied += applied
+                script = _split_long_turns(
+                    _normalize_primary_sponsor(_clean_script(corrected_script)),
+                    max_words=55,
+                )
+                script = _repair_relative_dates(script, date_str)
                 assessment = _assess(script, stories, board, fuel)
+                _safe_print(
+                    g,
+                    f"      🧾 grounded fact repair pass {audit_pass}: {applied} line(s)",
+                )
+            first_fact_audit = fact_audits[0]
+            final_fact_audit = fact_audits[-1]
             fact_report = {
                 "version": "grounded-fact-firewall-v1",
                 "date": date_str,
                 "initial": first_fact_audit,
-                "replacements_applied": applied,
+                "audit_passes": fact_audits,
+                "replacements_applied": total_applied,
                 "final": final_fact_audit,
                 "pass": bool(final_fact_audit.get("pass")),
             }
@@ -2065,7 +2072,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 )
             _safe_print(
                 g,
-                f"      ✅ grounded fact audit passed; exact-line repairs={applied}",
+                f"      ✅ grounded fact audit passed; exact-line repairs={total_applied}",
             )
         except Exception as exc:
             if GROUNDING_REQUIRED or HARD_FAIL_PRE_TTS:
