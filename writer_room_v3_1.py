@@ -1927,6 +1927,16 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         script = _split_long_turns(script, max_words=55)
         assessment = _assess(script, stories, board, fuel)
 
+        # Use deterministic repairs for common formatting/concession defects
+        # before paying another model to rewrite a complete long script.
+        script = _split_long_turns(
+            _normalize_primary_sponsor(
+                _deterministic_structure_repair(script, assessment, board)
+            ),
+            max_words=55,
+        )
+        assessment = _assess(script, stories, board, fuel)
+
         # 5. Rescue — only if the binary gate actually failed.
         locally_repairable = {"runtime_word_band", "no_monologue_bloat"}
         remaining_failures = set(assessment.get("failed") or [])
