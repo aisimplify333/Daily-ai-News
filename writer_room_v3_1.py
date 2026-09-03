@@ -663,7 +663,9 @@ def _story_lines(stories: List[Dict[str, Any]]) -> str:
             f"   Publisher: {_publisher(s) or 'unknown'}\n"
             f"   Top-event score: {s.get('top_event_score', '')}\n"
             f"   Summary: {_summary(s)[:900]}\n"
+            f"   Confirmed facts: {', '.join(str(x) for x in (s.get('facts') or [])[:6])}\n"
             f"   Data points: {', '.join(str(x) for x in (s.get('data_points') or [])[:5])}\n"
+            f"   Limits/qualifiers: {', '.join(str(x) for x in (s.get('limitations_or_qualifiers') or [])[:5])}\n"
             f"   URL: {_url(s)}"
         )
     return "\n".join(rows)
@@ -924,6 +926,9 @@ FACT FIREWALL — a hard production rule:
   hospital incidents, regulator responses, insurance clauses, benchmark results, or counts.
 - Never use "reportedly" to smuggle in an unsupported connection.
 - When the source does not establish a detail, say what remains unknown or leave it out.
+- Hosts may form strong opinions and connect stories, but label the connection as analysis:
+  "my read," "I think," "could," or "if that is true." Never convert a forecast into
+  a signed commitment, a scheduled participant into an attendee, or correlation into causation.
 - Dates must be internally possible relative to {date_str}.
 
 MANDATORY RECEIPTS:
