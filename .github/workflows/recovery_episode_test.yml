@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "editorial-firewall-audience-proxy-v10"
+      RECOVERY_BUILD_REVISION: "grounded-mashup-production-v11"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -74,9 +74,11 @@ jobs:
       TOP_EVENT_MIN_SCORE: "34"
       MAX_STORY_AGE_HOURS: "48"
       MIN_TRUSTED_STORIES: "3"
+      GROUNDING_REQUIRED: "true"
+      GROUNDED_NEWS_MODEL: "gemini-3.1-flash-lite"
 
-      MIN_MINUTES: "24"
-      TARGET_MINUTES: "27"
+      MIN_MINUTES: "19"
+      TARGET_MINUTES: "25"
       MAX_MINUTES: "30"
       WORDS_PER_MINUTE: "145"
       RECOVERY_MIN_SCRIPT_WORDS: "3550"
@@ -124,6 +126,7 @@ jobs:
           sudo apt-get install -y ffmpeg
           python -m pip install --upgrade pip
           pip install -r requirements.txt
+          pip install google-genai
 
       - name: Pin recovery episode date
         run: echo "RECOVERY_RUN_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
@@ -133,7 +136,7 @@ jobs:
           set -euo pipefail
           python -m py_compile main.py v3_1_runner.py writer_room_v3_1.py
           python -m py_compile hybrid_tts_router_v3_1.py grok_tts_v4.py
-          python -m py_compile recovery_acceptance.py post_render_recovery.py
+          python -m py_compile recovery_acceptance.py post_render_recovery.py grounded_news_v1.py
           python preflight_guard_v3_1.py
 
       - name: Generate full recovery episode without publishing
@@ -179,6 +182,8 @@ jobs:
             hybrid_tts_report.json \
             story_slate_decision.json \
             story_scores.json \
+            grounded_story_slate.json \
+            grounded_fact_check.json \
             script_aircheck.json \
             episode_aircheck.json \
             recovery_acceptance_report.json \
