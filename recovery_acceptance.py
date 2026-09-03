@@ -17,6 +17,36 @@ ROOT = Path(__file__).parent
 SPEAKER_RE = re.compile(r"^(ALEX|JAMIE|RUFUS)\s*:\s*(.+)$", re.IGNORECASE)
 REPORT_PATH = ROOT / "recovery_acceptance_report.json"
 
+GENERIC_PANEL_RE = re.compile(
+    r"\b(exactly,\s*(?:alex|jamie|rufus)|absolutely,\s*(?:alex|jamie|rufus)|"
+    r"that'?s a great question|game[- ]changer|exciting time|hot month for ai|"
+    r"landscape is evolving|momentum continues|transformative era|"
+    r"it'?s a lot to take in|and speaking of|keep up with these changes)\b",
+    re.IGNORECASE,
+)
+LEGACY_RITUAL_RE = re.compile(
+    r"\b(today[’']s ai lesson|signal or static|ai signal room)\b",
+    re.IGNORECASE,
+)
+MONTHS = {
+    name.lower(): number for number, name in enumerate(
+        ("January", "February", "March", "April", "May", "June",
+         "July", "August", "September", "October", "November", "December"),
+        start=1,
+    )
+}
+NUMBER_WORD = {
+    "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6,
+    "seven": 7, "eight": 8, "nine": 9, "ten": 10, "twelve": 12,
+}
+RELATIVE_DATE_RE = re.compile(
+    r"\b(?P<month>January|February|March|April|May|June|July|August|September|"
+    r"October|November|December)\s+(?P<year>20\d{2})\s*(?:—|-|,)\s*"
+    r"(?P<count>\d+|one|two|three|four|five|six|seven|eight|nine|ten|twelve)"
+    r"\s+months?\s+from\s+(?:today|now)\b",
+    re.IGNORECASE,
+)
+
 
 def _read_json(path: Path) -> Dict[str, Any]:
     try:
@@ -28,6 +58,26 @@ def _read_json(path: Path) -> Dict[str, Any]:
 
 def _words(text: str) -> int:
     return len(re.findall(r"\b[\w'-]+\b", text or ""))
+
+
+def _relative_date_errors(script: str, date_str: str) -> List[str]:
+    try:
+        episode_date = dt.date.fromisoformat(date_str)
+    except Exception:
+        episode_date = dt.date.today()
+    errors: List[str] = []
+    for match in RELATIVE_DATE_RE.finditer(script or ""):
+        raw_count = match.group("count").lower()
+        months = int(raw_count) if raw_count.isdigit() else NUMBER_WORD.get(raw_count, 0)
+        if months <= 0:
+            continue
+        total = episode_date.year * 12 + (episode_date.month - 1) + months
+        expected_year, expected_month_zero = divmod(total, 12)
+        actual_month = MONTHS.get(match.group("month").lower())
+        actual_year = int(match.group("year"))
+        if (actual_year, actual_month) != (expected_year, expected_month_zero + 1):
+            errors.append(match.group(0))
+    return errors
 
 
 def main() -> int:
@@ -42,6 +92,22 @@ def main() -> int:
         script = ""
     else:
         script = script_path.read_text(encoding="utf-8", errors="replace")
+
+    pre_tts_path = ROOT / f"script_pre_tts_{today}.txt"
+    pre_tts_script = (
+        pre_tts_path.read_text(encoding="utf-8", errors="replace")
+        if pre_tts_path.exists() else ""
+    )
+    post_writer_word_delta = (
+        abs(_words(script) - _words(pre_tts_script))
+        if script and pre_tts_script else None
+    )
+    if post_writer_word_delta is None:
+        warnings.append("pre-TTS script snapshot missing; post-writer drift was not measured")
+    elif post_writer_word_delta > 80:
+        failures.append(
+            f"post-writer mutation changed script length by {post_writer_word_delta} words"
+        )
 
     if not audio_path.exists():
         failures.append(f"missing {audio_path}")
@@ -111,6 +177,31 @@ def main() -> int:
         failures.append("legacy sponsor solicitation language appeared")
     if "ai signal room" in script.lower():
         failures.append("legacy AI Signal Room branding appeared in the script")
+    if GENERIC_PANEL_RE.search(script):
+        failures.append("generic panel filler appeared in the script")
+    if LEGACY_RITUAL_RE.search(script):
+        failures.append("legacy lesson/Signal-or-Static ritual appeared in the script")
+    if any(
+        re.search(r"\[[^\]]+\]", match.group(2))
+        for line in script.splitlines()
+        if (match := SPEAKER_RE.match(line.strip()))
+    ):
+        failures.append("spoken stage direction appeared in the script")
+    relative_date_errors = _relative_date_errors(script, today)
+    if relative_date_errors:
+        failures.append(
+            f"{len(relative_date_errors)} internally impossible relative date(s) appeared"
+        )
+
+    episode_aircheck = _read_json(ROOT / "episode_aircheck.json")
+    writer_assessment = episode_aircheck.get("v3_3_assessment")
+    if not isinstance(writer_assessment, dict):
+        failures.append("writer assessment missing from episode aircheck")
+    elif not writer_assessment.get("pass"):
+        failures.append(
+            "writer assessment failed: "
+            + ", ".join(str(x) for x in (writer_assessment.get("failed") or []))
+        )
 
     tts = _read_json(ROOT / "hybrid_tts_report.json")
     episode_grok = int(tts.get("jamie_grok_episode_successes") or 0)
@@ -131,8 +222,20 @@ def main() -> int:
 
     slate = _read_json(ROOT / "story_slate_decision.json")
     selected = slate.get("selected") or []
-    if len(selected) < 3:
-        failures.append(f"only {len(selected)} stories selected")
+    if len(selected) != 5:
+        failures.append(f"expected 5 stories, found {len(selected)}")
+    trusted_count = sum(
+        1 for item in selected
+        if isinstance(item, dict) and int(item.get("source_tier") or 0) >= 2
+    )
+    lead_source_tier = (
+        int(selected[0].get("source_tier") or 0)
+        if selected and isinstance(selected[0], dict) else 0
+    )
+    if trusted_count < 3:
+        failures.append(f"only {trusted_count} of 5 stories came from trusted sources")
+    if lead_source_tier < 2:
+        failures.append("lead story did not come from a primary or trusted source")
     stale = [
         item for item in selected
         if isinstance(item, dict)
@@ -149,7 +252,7 @@ def main() -> int:
         warnings.append(f"{unknown_age} selected stories had no machine-readable timestamp")
 
     report = {
-        "version": "recovery-acceptance-v2",
+        "version": "recovery-acceptance-v3",
         "date": today,
         "pass": not failures,
         "human_listening_approval_required": True,
@@ -167,6 +270,14 @@ def main() -> int:
             "sponsor_window_words": sponsor_words,
             "sponsor_speakers": sponsor_speakers,
             "sponsor_cta_count": script.lower().count("t-h-e-l-e-d-g-r dot i-o"),
+            "post_writer_word_delta": post_writer_word_delta,
+            "generic_panel_filler": bool(GENERIC_PANEL_RE.search(script)),
+            "legacy_ritual": bool(LEGACY_RITUAL_RE.search(script)),
+            "relative_date_errors": relative_date_errors,
+            "writer_assessment_pass": (
+                writer_assessment.get("pass")
+                if isinstance(writer_assessment, dict) else None
+            ),
         },
         "voice": {
             "provider": "grok",
@@ -179,6 +290,8 @@ def main() -> int:
         },
         "stories": {
             "selected_count": len(selected),
+            "trusted_source_count": trusted_count,
+            "lead_source_tier": lead_source_tier,
             "older_than_48_hours": len(stale),
             "unknown_age": unknown_age,
         },
