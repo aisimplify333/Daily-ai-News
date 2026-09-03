@@ -116,6 +116,9 @@ def _install_tts_router(g: Dict[str, Any]) -> Any:
 
 
 def _run_jamie_primary_smoke_test(router_module: Any) -> None:
+    if not _truthy("RUN_JAMIE_SMOKE_TEST", "true"):
+        _safe_print(">> ℹ️ Jamie smoke test already proven; skipping repeated paid audition.")
+        return
     if not _truthy("REQUIRE_JAMIE_PRIMARY", "true"):
         _safe_print(">> ℹ️ Jamie primary proof disabled; skipping smoke test.")
         return
