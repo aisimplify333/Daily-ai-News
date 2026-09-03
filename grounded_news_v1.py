@@ -17,6 +17,7 @@ from google.genai import types
 
 
 DEFAULT_MODEL = os.getenv("GROUNDED_NEWS_MODEL", "gemini-3.1-flash-lite").strip()
+FALLBACK_MODEL = os.getenv("GROUNDED_NEWS_FALLBACK_MODEL", "gpt-5.4-mini").strip()
 MAX_AGE_HOURS = float(os.getenv("MAX_STORY_AGE_HOURS", "48"))
 MIN_TRUSTED_STORIES = int(os.getenv("MIN_TRUSTED_STORIES", "3"))
 
@@ -108,12 +109,41 @@ def _grounded_text(prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = 70
         max_output_tokens=max_tokens,
         tools=[grounding_tool],
     )
-    response = client.models.generate_content(
-        model=model,
-        contents=prompt,
-        config=config,
-    )
-    return str(getattr(response, "text", "") or "").strip()
+    try:
+        response = client.models.generate_content(
+            model=model,
+            contents=prompt,
+            config=config,
+        )
+        text = str(getattr(response, "text", "") or "").strip()
+        if text:
+            return text
+        raise RuntimeError("Gemini grounding returned empty text")
+    except Exception as gemini_error:
+        openai_key = os.getenv("OPENAI_API_KEY", "").strip()
+        if not openai_key:
+            raise RuntimeError(
+                f"Gemini grounding failed and OPENAI_API_KEY is unavailable: {gemini_error}"
+            ) from gemini_error
+        try:
+            from openai import OpenAI
+
+            openai_client = OpenAI(api_key=openai_key)
+            response = openai_client.responses.create(
+                model=FALLBACK_MODEL,
+                input=prompt,
+                tools=[{"type": "web_search"}],
+                max_output_tokens=max_tokens,
+            )
+            text = str(getattr(response, "output_text", "") or "").strip()
+            if not text:
+                raise RuntimeError("OpenAI Search grounding returned empty text")
+            return text
+        except Exception as openai_error:
+            raise RuntimeError(
+                "Both grounding providers failed. "
+                f"Gemini={gemini_error}; OpenAI={openai_error}"
+            ) from openai_error
 
 
 def _story_prompt(date_str: str, candidate_count: int) -> str:
