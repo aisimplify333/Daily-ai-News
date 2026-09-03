@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "targeted-repair-audience-proxy-v9"
+      RECOVERY_BUILD_REVISION: "editorial-firewall-audience-proxy-v10"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -73,6 +73,7 @@ jobs:
       NO_REPEAT_TITLE_WINDOW: "14"
       TOP_EVENT_MIN_SCORE: "34"
       MAX_STORY_AGE_HOURS: "48"
+      MIN_TRUSTED_STORIES: "3"
 
       MIN_MINUTES: "24"
       TARGET_MINUTES: "27"
@@ -145,7 +146,21 @@ jobs:
           python no_repeat_guard_v3_1.py --feed feed.xml --report duplicate_guard_report.json --window 14
 
       - name: Run objective recovery acceptance gate
+        id: acceptance
+        continue-on-error: true
         run: python recovery_acceptance.py
+
+      - name: Classify completed render
+        if: always()
+        run: |
+          if [[ -f recovery_acceptance_report.json ]] && jq -e '.pass == true' recovery_acceptance_report.json >/dev/null; then
+            echo "## Render complete — acceptance passed" >> "${GITHUB_STEP_SUMMARY}"
+          elif [[ -f "episode_audio/podcast_${RECOVERY_RUN_DATE}.mp3" ]]; then
+            echo "## Render complete — delivery held for review" >> "${GITHUB_STEP_SUMMARY}"
+            echo "The paid master is preserved in the artifact; inspect recovery_acceptance_report.json." >> "${GITHUB_STEP_SUMMARY}"
+          else
+            echo "## No completed episode master" >> "${GITHUB_STEP_SUMMARY}"
+          fi
 
       - name: Stage current test only
         if: always()
@@ -163,6 +178,7 @@ jobs:
             feed.xml \
             hybrid_tts_report.json \
             story_slate_decision.json \
+            story_scores.json \
             script_aircheck.json \
             episode_aircheck.json \
             recovery_acceptance_report.json \
