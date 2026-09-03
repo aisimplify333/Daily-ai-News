@@ -185,6 +185,8 @@ def main() -> int:
         )
     if "the ledger" not in sponsor_window_low:
         failures.append("primary sponsor was not named at the Segment 1 break")
+    if not re.search(r"today[’']s episode is brought to you by the ledger", sponsor_window, re.IGNORECASE):
+        failures.append("primary sponsor did not use the required brought-to-you opener")
     if "t-h-e-l-e-d-g-r dot i-o" not in sponsor_window_low:
         failures.append("primary sponsor CTA was not at the Segment 1 break")
     if script.lower().count("t-h-e-l-e-d-g-r dot i-o") != 1:
