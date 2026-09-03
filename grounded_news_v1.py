@@ -270,11 +270,15 @@ def build_grounded_story_slate(
         if len(normalized) >= n:
             break
     trusted = sum(1 for story in normalized if int(story["source_tier"]) >= 2)
-    if len(normalized) != n:
-        raise RuntimeError(f"Grounded search returned {len(normalized)} valid stories; {n} required")
+    minimum_story_count = min(n, max(1, MIN_TRUSTED_STORIES))
+    if len(normalized) < minimum_story_count:
+        raise RuntimeError(
+            f"Grounded search returned {len(normalized)} valid stories; "
+            f"at least {minimum_story_count} required"
+        )
     if int(normalized[0]["source_tier"]) < 2:
         raise RuntimeError("Grounded lead did not come from a primary or trusted source")
-    if trusted < min(n, MIN_TRUSTED_STORIES):
+    if trusted < min(len(normalized), MIN_TRUSTED_STORIES):
         raise RuntimeError(
             f"Grounded search returned only {trusted} trusted stories; "
             f"{MIN_TRUSTED_STORIES} required"
