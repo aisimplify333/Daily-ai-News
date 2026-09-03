@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "runtime-normalized-audience-proxy-v8"
+      RECOVERY_BUILD_REVISION: "targeted-repair-audience-proxy-v9"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -155,6 +155,7 @@ jobs:
           today="${RECOVERY_RUN_DATE}"
           for file in \
             "script_${today}.txt" \
+            "script_pre_tts_${today}.txt" \
             "episode_audio/podcast_${today}.mp3" \
             "episode_audio/podcast_${today}.json" \
             "episode_audio/podcast_${today}_full_render.mp3" \
