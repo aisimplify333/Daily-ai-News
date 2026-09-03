@@ -885,6 +885,10 @@ EDITORIAL DNA — combine these disciplines without naming or imitating another 
 - DISTINCT INSIDER VIEWPOINTS: Alex controls pace and accountability; Jamie is the
   highly intelligent, opinionated equal who sees the human consequence and competes
   to win the argument; Rufus follows money, incentives, regulation, and power.
+- RUFUS'S BRITISH IDENTITY: Give Rufus three to five natural British turns of phrase
+  across the full episode—such as "a bit rich," "rather convenient," "that won’t wash,"
+  "not terribly reassuring," or "a neat little arrangement." Keep them understated
+  and contemporary. Never turn him into a caricature and never repeat one phrase.
 - CURIOSITY ENGINE: Alex's opening question creates a loop that Segment 5 finally
   closes. Do not answer the headline in the first two minutes.
 
@@ -948,9 +952,10 @@ Raw CTA material: {sponsor_cta}
 Alex delivers 45-65 spoken words across no more than two lines. Use this sequence:
 (1) one natural observation tied to today's listener problem, (2) one precise benefit,
 (3) a confident editorial endorsement without an unverifiable personal-use claim,
-(4) the CTA exactly once. For TheLEDGR, say "The Ledger" and spell the URL exactly
-"T-H-E-L-E-D-G-R dot I-O." No "game-changer," "revolutionary," fake enthusiasm,
-or generic "brought to you by" copy. After the read, return directly to the argument.
+(4) the CTA exactly once. The first line MUST begin exactly: "Today’s episode is
+brought to you by The Ledger." Spell the URL exactly "T-H-E-L-E-D-G-R dot I-O."
+No "game-changer," "revolutionary," or fake enthusiasm. After the read, return
+directly to the argument.
 
 {secondary_block}
 
@@ -1081,11 +1086,12 @@ def _clean_script(text: str) -> str:
 def _normalize_primary_sponsor(script: str) -> str:
     """Place one concise house read at the first natural break before Segment 2."""
     sponsor_lines = (
-        "ALEX: Today’s AI story is exactly why raw headlines are not enough: the launch "
-        "is obvious, but the leverage shift is not. The Ledger turns the day’s AI noise "
-        "into five focused briefings for people making real decisions.\n"
-        "ALEX: If you need the consequence before the consensus catches up, subscribe "
-        "at T-H-E-L-E-D-G-R dot I-O."
+        "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this "
+        "fast, knowing what happened is not enough; you need to know what changes your "
+        "next decision.\n"
+        "ALEX: The Ledger turns the day’s noise into five focused briefings for people "
+        "who need the consequence before consensus catches up. Subscribe at "
+        "T-H-E-L-E-D-G-R dot I-O."
     )
     lines = (script or "").splitlines()
     cleaned: List[str] = []
@@ -1203,6 +1209,11 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
             "the ledger" in sponsor_window_text.lower()
             and "t-h-e-l-e-d-g-r dot i-o" in sponsor_window_text.lower()
         ),
+        "sponsor_opener_exact": bool(re.search(
+            r"today[’']s episode is brought to you by the ledger",
+            sponsor_window_text,
+            flags=re.IGNORECASE,
+        )),
         "sponsor_alex_two_line_read": (
             len(sponsor_speakers) == 2
             and sponsor_speakers == ["ALEX", "ALEX"]
@@ -1237,6 +1248,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "ledger_cta_spelled_url",
         "welcome_after_music",
         "sponsor_at_segment1_break",
+        "sponsor_opener_exact",
         "sponsor_alex_two_line_read",
         "sponsor_read_not_bloated",
         "sponsor_cta_exactly_once",
