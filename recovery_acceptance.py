@@ -151,24 +151,27 @@ def main() -> int:
         script, flags=re.IGNORECASE | re.MULTILINE | re.DOTALL,
     )
     sponsor_block = sponsor_block_match.group(1) if sponsor_block_match else ""
-    sponsor_matches = [
+    segment1_post_music_matches = [
         match
         for line in sponsor_block.splitlines()
         if (match := SPEAKER_RE.match(line.strip()))
     ]
+    sponsor_matches = segment1_post_music_matches[-2:]
     sponsor_lines = [match.group(2) for match in sponsor_matches]
     sponsor_speakers = [match.group(1).upper() for match in sponsor_matches]
     sponsor_window = " ".join(sponsor_lines)
     sponsor_window_low = sponsor_window.lower()
     sponsor_words = _words(sponsor_window)
+    if "welcome to the ai edge" not in sponsor_block.lower():
+        failures.append("Alex did not welcome listeners after the opening music")
     if sponsor_speakers != ["ALEX", "ALEX"]:
         failures.append(
             f"primary sponsor must be exactly two Alex lines; found {sponsor_speakers}"
         )
     if "the ledger" not in sponsor_window_low:
-        failures.append("primary sponsor was not named immediately after music")
+        failures.append("primary sponsor was not named at the Segment 1 break")
     if "t-h-e-l-e-d-g-r dot i-o" not in sponsor_window_low:
-        failures.append("primary sponsor CTA was not immediately after music")
+        failures.append("primary sponsor CTA was not at the Segment 1 break")
     if script.lower().count("t-h-e-l-e-d-g-r dot i-o") != 1:
         failures.append("The Ledger spoken CTA must appear exactly once")
     if not 45 <= sponsor_words <= 65:
