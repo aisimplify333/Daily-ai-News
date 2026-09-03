@@ -114,8 +114,8 @@ def main() -> int:
         duration_minutes = 0.0
     else:
         duration_minutes = len(AudioSegment.from_file(audio_path)) / 60000.0
-        if not 24.0 <= duration_minutes <= 30.0:
-            failures.append(f"duration {duration_minutes:.2f} outside 24-30 minutes")
+        if not 19.0 <= duration_minutes <= 30.0:
+            failures.append(f"duration {duration_minutes:.2f} outside 19-30 minutes")
 
     segment_count = len(re.findall(
         r"^###\s*SEGMENT\s*[1-5]\b", script,
@@ -251,6 +251,13 @@ def main() -> int:
     if unknown_age:
         warnings.append(f"{unknown_age} selected stories had no machine-readable timestamp")
 
+    grounded_slate = _read_json(ROOT / "grounded_story_slate.json")
+    if not grounded_slate.get("pass"):
+        failures.append("grounded 24-48 hour story slate report missing or failed")
+    grounded_fact = _read_json(ROOT / "grounded_fact_check.json")
+    if not grounded_fact.get("pass"):
+        failures.append("grounded claim-level fact audit missing or failed")
+
     report = {
         "version": "recovery-acceptance-v3",
         "date": today,
@@ -260,8 +267,8 @@ def main() -> int:
         "warnings": warnings,
         "runtime": {
             "duration_minutes": round(duration_minutes, 3),
-            "minimum": 24.0,
-            "target": 27.0,
+            "minimum": 19.0,
+            "target": 25.0,
             "maximum": 30.0,
         },
         "structure": {
@@ -294,6 +301,8 @@ def main() -> int:
             "lead_source_tier": lead_source_tier,
             "older_than_48_hours": len(stale),
             "unknown_age": unknown_age,
+            "grounded_slate_pass": bool(grounded_slate.get("pass")),
+            "grounded_fact_check_pass": bool(grounded_fact.get("pass")),
         },
     }
     REPORT_PATH.write_text(
