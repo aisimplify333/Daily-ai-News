@@ -1248,6 +1248,41 @@ def _deterministic_structure_repair(
 
 
 
+
+def _split_long_turns(script: str, max_words: int = 55) -> str:
+    """Split an overlong host turn without deleting or paraphrasing its content."""
+    output: List[str] = []
+    for line in (script or "").splitlines():
+        match = SPEAKER_RE.match(line.strip())
+        if not match or _word_count(match.group(2)) <= max_words:
+            output.append(line)
+            continue
+
+        speaker = match.group(1).upper()
+        remaining = match.group(2).strip()
+        while _word_count(remaining) > max_words:
+            tokens = remaining.split()
+            upper = min(max_words, len(tokens))
+            lower = min(upper, 28)
+            cut = upper
+            for pos in range(upper, lower - 1, -1):
+                if tokens[pos - 1].endswith((".", "?", "!", ";", ":", ",", "—")):
+                    cut = pos
+                    break
+            chunk = " ".join(tokens[:cut]).strip()
+            remaining = " ".join(tokens[cut:]).strip()
+            if chunk.endswith((",", ";", ":")):
+                chunk = chunk[:-1].rstrip() + " —"
+            elif chunk and not chunk.endswith((".", "?", "!", "—")):
+                chunk += " —"
+            if chunk:
+                output.append(f"{speaker}: {chunk}")
+        if remaining:
+            output.append(f"{speaker}: {remaining}")
+    return "\n".join(output).strip()
+
+
+
 def _runtime_distance(assessment: Dict[str, Any]) -> int:
     """Word distance from the accepted runtime band; zero means in band."""
     metrics = assessment.get("metrics") or {}
@@ -1594,45 +1629,19 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                     _safe_print(g, f"      ✅ punch-up applied "
                                    f"(failed checks: {len(assessment['failed'])})")
 
-        # 5. If a model overshoots, make one focused editorial compression
-        # pass before any generic rescue. This is text-only and therefore happens
-        # before the expensive episode TTS stage.
-        max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4350"))
-        target_episode_words = min(
-            max_episode_words - 25,
-            int(os.getenv("RECOVERY_TARGET_SCRIPT_WORDS", "4200")),
-        )
-        if int((assessment.get("metrics") or {}).get("words") or 0) > max_episode_words:
-            before_words = int(assessment["metrics"]["words"])
-            _safe_print(
-                g,
-                f"      ✂️ runtime overshoot ({before_words} words); "
-                f"condensing toward {target_episode_words} before TTS",
-            )
-            compacted = _openai_text(
-                g,
-                _runtime_condense_prompt(
-                    script, before_words, target_episode_words, board, assessment
-                ),
-                model=OPENAI_CHEAP_MODEL,
-                max_tokens=8000,
-                temperature=0.30,
-            )
-            if compacted:
-                cand = _normalize_primary_sponsor(_clean_script(compacted))
-                cand_assess = _assess(cand, stories, board, fuel)
-                cand_words = int((cand_assess.get("metrics") or {}).get("words") or 0)
-                current_non_runtime = set(assessment.get("failed") or []) - {"runtime_word_band"}
-                candidate_non_runtime = set(cand_assess.get("failed") or []) - {"runtime_word_band"}
-                if (
-                    cand_words < before_words
-                    and candidate_non_runtime.issubset(current_non_runtime)
-                ):
-                    script, assessment = cand, cand_assess
-                    _safe_print(g, f"      ✅ editorial compression: {before_words} → {cand_words} words")
+        # Repair line length locally. Runtime-only defects are normalized below;
+        # they never justify replacing a structurally sound full script.
+        script = _split_long_turns(script, max_words=55)
+        assessment = _assess(script, stories, board, fuel)
 
         # 5. Rescue — only if the binary gate actually failed.
-        if ENABLE_OPENAI_RESCUE and not assessment["pass"]:
+        locally_repairable = {"runtime_word_band", "no_monologue_bloat"}
+        remaining_failures = set(assessment.get("failed") or [])
+        if (
+            ENABLE_OPENAI_RESCUE
+            and not assessment["pass"]
+            and not remaining_failures.issubset(locally_repairable)
+        ):
             _safe_print(g, f"      ⚠️ gate failed: {assessment['failed']} — running rescue")
             for model in (RESCUE_MODEL, RESCUE_FALLBACK_MODEL, OPENAI_CHEAP_MODEL):
                 repaired = _openai_text(g, _rescue_prompt(script, assessment, board, stories),
@@ -1650,8 +1659,11 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
         # Deterministic final repair for formatting errors models commonly
         # introduce while expanding a long script.
-        script = _normalize_primary_sponsor(
-            _deterministic_structure_repair(script, assessment, board)
+        script = _split_long_turns(
+            _normalize_primary_sponsor(
+                _deterministic_structure_repair(script, assessment, board)
+            ),
+            max_words=55,
         )
         assessment = _assess(script, stories, board, fuel)
 
@@ -1668,26 +1680,36 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         if final_words < min_episode_words:
             pad = g.get("_pad_script_to_min_words")
             if callable(pad):
-                _safe_print(
-                    g,
-                    f"      🧩 runtime underrun ({final_words} words); "
-                    "adding evidence before TTS",
-                )
-                padded = pad(
-                    script,
-                    min_words=min_episode_words + 100,
-                    stories=stories,
-                    date_str=date_str,
-                )
-                if padded:
-                    script = _normalize_primary_sponsor(_clean_script(padded))
+                for pad_attempt in range(1, 4):
+                    if final_words >= min_episode_words:
+                        break
+                    _safe_print(
+                        g,
+                        f"      🧩 runtime underrun ({final_words} words); "
+                        f"adding evidence before TTS (pass {pad_attempt}/3)",
+                    )
+                    padded = pad(
+                        script,
+                        min_words=min_episode_words + 250,
+                        stories=stories,
+                        date_str=date_str,
+                    )
+                    if not padded or _word_count(padded) <= final_words:
+                        break
+                    script = _split_long_turns(
+                        _normalize_primary_sponsor(_clean_script(padded)),
+                        max_words=55,
+                    )
                     assessment = _assess(script, stories, board, fuel)
                     final_words = int((assessment.get("metrics") or {}).get("words") or 0)
 
         if final_words > max_episode_words:
             before_words = final_words
             script = _deterministic_trim_to_target(script, target_episode_words)
-            script = _normalize_primary_sponsor(_clean_script(script))
+            script = _split_long_turns(
+                _normalize_primary_sponsor(_clean_script(script)),
+                max_words=55,
+            )
             assessment = _assess(script, stories, board, fuel)
             final_words = int((assessment.get("metrics") or {}).get("words") or 0)
             _safe_print(
@@ -1698,10 +1720,23 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
         # Re-run the narrow structural repair after runtime normalization, then
         # take the authoritative pre-TTS measurement.
-        script = _normalize_primary_sponsor(
-            _deterministic_structure_repair(script, assessment, board)
+        script = _split_long_turns(
+            _normalize_primary_sponsor(
+                _deterministic_structure_repair(script, assessment, board)
+            ),
+            max_words=55,
         )
         assessment = _assess(script, stories, board, fuel)
+
+        # Preserve the exact pre-TTS candidate even when a hard gate stops the
+        # build; this makes failures inspectable without paying for episode audio.
+        try:
+            Path(f"script_pre_tts_{date_str}.txt").write_text(
+                script.rstrip() + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
 
         # 6. Persist the aircheck.
         try:
