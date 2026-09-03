@@ -27,7 +27,7 @@ jobs:
       XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
       PODCAST_SHOW_TITLE: "The AI Edge"
-      RECOVERY_BUILD_REVISION: "grounded-mashup-production-v12"
+      RECOVERY_BUILD_REVISION: "simple-autonomous-mashup-v13"
       SAVE_SCRIPT: "true"
       FORCE_REBUILD: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
@@ -46,6 +46,7 @@ jobs:
       GROK_TTS_MAX_RETRIES: "2"
       GROK_TTS_CACHE: "true"
       REQUIRE_JAMIE_PRIMARY: "true"
+      RUN_JAMIE_SMOKE_TEST: "false"
       OPENAI_TTS_MODEL: "gpt-4o-mini-tts"
       OPENAI_TTS_VOICE_ALEX: "onyx"
       OPENAI_TTS_VOICE_JAMIE: "marin"
@@ -66,8 +67,8 @@ jobs:
       RESCUE_MODEL: "gpt-5.5"
       RESCUE_FALLBACK_MODEL: "gpt-5.4-mini"
       OPENAI_CHEAP_MODEL: "gpt-5.4-mini"
-      ENABLE_GROK_PUNCHUP: "true"
-      ENABLE_OPENAI_RESCUE: "true"
+      ENABLE_GROK_PUNCHUP: "false"
+      ENABLE_OPENAI_RESCUE: "false"
       ANTHROPIC_SCRIPT_MAX_TOKENS: "8000"
       PRE_TTS_MIN_SCORE: "84"
       NO_REPEAT_TITLE_WINDOW: "14"
@@ -77,6 +78,7 @@ jobs:
       GROUNDING_REQUIRED: "true"
       GROUNDED_NEWS_MODEL: "gemini-3.1-flash-lite"
       GROUNDED_NEWS_FALLBACK_MODEL: "gpt-5.4-mini"
+      ENABLE_GROUNDED_FACT_AUDIT: "false"
 
       MIN_MINUTES: "19"
       TARGET_MINUTES: "25"
@@ -175,6 +177,7 @@ jobs:
           for file in \
             "script_${today}.txt" \
             "script_pre_tts_${today}.txt" \
+            "script_fact_candidate_${today}.txt" \
             "episode_audio/podcast_${today}.mp3" \
             "episode_audio/podcast_${today}.json" \
             "episode_audio/podcast_${today}_full_render.mp3" \
