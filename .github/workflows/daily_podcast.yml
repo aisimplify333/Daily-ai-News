@@ -4,11 +4,6 @@ on:
   schedule:
     - cron: '0 10 * * 1-5' # Mon-Fri ~2:00 AM Pacific / 10:00 UTC
   workflow_dispatch:
-  push:
-    branches:
-      - main
-    paths:
-      - .github/TONIGHT_PUBLISH
 
 permissions:
   contents: write
