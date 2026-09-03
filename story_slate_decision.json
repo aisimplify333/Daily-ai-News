@@ -1,247 +1,86 @@
 {
-  "date": "2026-05-22",
-  "model": "v2.25-arc-engine-receipts-board",
-  "fatigue_counts_last_7_titles": {
-    "google": 1
-  },
-  "demotions": [],
-  "selected_slate": [
+  "version": "v3.3-grounded-top-ai-events-no-sector-quota",
+  "date": "2026-09-03",
+  "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency; no forced sector coverage",
+  "selected": [
     {
       "rank": 1,
-      "headline": "Anthropic, Microsoft in talks for AI chip deal after $5 billion investment",
-      "bucket": "topline",
-      "entity": "microsoft",
-      "ai_heat": 65.74,
-      "routine_enterprise_update": false,
-      "lead_gate": "qualified",
-      "editorial_score": 134.51,
-      "growth_score": 87.98
+      "headline": "Google launches Fairwind Program for trusted partners to use advanced AI cyber defense tools",
+      "publisher": "Google",
+      "top_event_score": null,
+      "story_age_hours": 37.83,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://blog.google/innovation-and-ai/technology/safety-security/fairwind-program/"
     },
     {
       "rank": 2,
-      "headline": "1Password Teams With OpenAI to Stop AI Coding Agents From Leaking Credentials",
-      "bucket": "ai_code",
-      "entity": "openai",
-      "ai_heat": 35.3,
-      "routine_enterprise_update": false,
-      "lead_gate": "not-lead",
-      "editorial_score": 107.19,
-      "growth_score": 82.4
+      "headline": "New York City public schools temporarily ban generative AI for students through 8th grade",
+      "publisher": "Associated Press",
+      "top_event_score": null,
+      "story_age_hours": 20.93,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://apnews.com/article/647f6a968eea0399521b7934418b1aff"
     },
     {
       "rank": 3,
-      "headline": "Broadcom and Meta Trigger $125 Million AI Chip Race",
-      "bucket": "topline",
-      "entity": "google",
-      "ai_heat": 42.54,
-      "routine_enterprise_update": false,
-      "lead_gate": "not-lead",
-      "editorial_score": 107.1,
-      "growth_score": 61.92
+      "headline": "Trump administration backs OpenAI in New York Times copyright lawsuit over training data",
+      "publisher": "Associated Press",
+      "top_event_score": null,
+      "story_age_hours": 18.62,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://apnews.com/article/dbb22e8e02c660ee5a8644915dec39a4"
     },
     {
       "rank": 4,
-      "headline": "Precision Medicine in the Data Age: 10 Takeaways from Our WHA79 Roundtable on Health Data Governance, Trusted AI, and Equitable Access",
-      "bucket": "health_ai",
-      "entity": "google",
-      "ai_heat": 9.1,
-      "routine_enterprise_update": false,
-      "lead_gate": "not-lead",
-      "editorial_score": 85.71,
-      "growth_score": 51.96
+      "headline": "Nvidia says it will spend $13 billion on Hugging Face in major AI infrastructure move",
+      "publisher": "Associated Press",
+      "top_event_score": null,
+      "story_age_hours": 1.35,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://apnews.com/article/d96d50e037a2ade479dcdf81cdf2afcf"
     },
     {
       "rank": 5,
-      "headline": "The AI Token Pricing Crisis Behind OpenAI and Anthropic’s Revenue Race",
-      "bucket": "ai_tools",
-      "entity": "openai",
-      "ai_heat": 62.32,
-      "routine_enterprise_update": false,
-      "lead_gate": "not-lead",
-      "editorial_score": 74.49,
-      "growth_score": 42.94
+      "headline": "EPA proposal could make public comment harder on proposed AI data centers",
+      "publisher": "Associated Press",
+      "top_event_score": null,
+      "story_age_hours": 2.8,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://apnews.com/article/947eb927ae81162ad4cc3e828915c804"
     }
   ],
-  "candidate_snapshot": [
-    {
-      "headline": "Anthropic, Microsoft in talks for AI chip deal after $5 billion investment",
-      "publisher": "CNBC",
-      "bucket": "topline",
-      "entity": "microsoft",
-      "ai_heat": 65.74,
-      "routine_enterprise_update": false,
-      "competitive_score": 181.84
+  "v3_3_debate_board": {
+    "format": "hard_debate_hybrid",
+    "published_title": "The Great AI Infrastructure Land Grab",
+    "central_fight": "Is the consolidation of AI infrastructure—from Nvidia’s $13B Hugging Face acquisition to Google’s exclusive cyber-defense tools—a necessary stabilization of the industry or a dangerous enclosure of the digital commons?",
+    "opening_question": "If we’re handing the keys to our national cyber-defense and the open-source ecosystem to a handful of trillion-dollar companies, are we building a fortress or a monopoly?",
+    "listener_promise": "You will understand whether the current wave of AI infrastructure spending is securing our future or locking the public out of the tools that define it.",
+    "positions": {
+      "alex": "Argues that centralized, well-funded infrastructure is the only way to achieve the scale required for national security and rapid innovation.",
+      "jamie": "Argues that the NYC school ban and the EPA's move to limit public comment on data centers prove that we are sacrificing local agency and human development for corporate efficiency.",
+      "rufus": "Argues that the Trump administration's support for OpenAI in the copyright case signals a shift toward prioritizing AI commercial viability over legacy intellectual property rights, which is a net positive for market liquidity."
     },
-    {
-      "headline": "Nvidia Earnings, Anthropic-Microsoft Chip Talks Boost AI",
-      "publisher": "Gotrade",
-      "bucket": "topline",
-      "entity": "microsoft",
-      "ai_heat": 69.2,
-      "routine_enterprise_update": false,
-      "competitive_score": 150.03
+    "concession": {
+      "host": "alex",
+      "gives_ground_on": "He concedes that the EPA's proposal to limit public comment on data centers, paired with the sheer scale of Nvidia's $13B investment, creates a 'democratic deficit' that cannot be ignored in the name of efficiency."
     },
-    {
-      "headline": "Anthropic in talks to use Microsoft's AI chips, The Information reports",
-      "publisher": "Reuters",
-      "bucket": "topline",
-      "entity": "microsoft",
-      "ai_heat": 47.7,
-      "routine_enterprise_update": false,
-      "competitive_score": 139.55
-    },
-    {
-      "headline": "Weekly tech news: Musk lawsuit verdict, Anthropic acquisition, Meta layoffs and billions for quantum",
-      "publisher": "TechTarget",
-      "bucket": "topline",
-      "entity": "anthropic",
-      "ai_heat": 44.32,
-      "routine_enterprise_update": false,
-      "competitive_score": 153.56
-    },
-    {
-      "headline": "1Password Teams With OpenAI to Stop AI Coding Agents From Leaking Credentials",
-      "publisher": "SecurityWeek",
-      "bucket": "ai_code",
-      "entity": "openai",
-      "ai_heat": 35.3,
-      "routine_enterprise_update": false,
-      "competitive_score": 140.61
-    },
-    {
-      "headline": "Broadcom and Meta Trigger $125 Million AI Chip Race",
-      "publisher": "TradingView",
-      "bucket": "topline",
-      "entity": "google",
-      "ai_heat": 42.54,
-      "routine_enterprise_update": false,
-      "competitive_score": 137.73
-    },
-    {
-      "headline": "Microsoft’s GitHub was positioned to win the AI coding race. Outages got in the way",
-      "publisher": "CNBC",
-      "bucket": "ai_code",
-      "entity": "microsoft",
-      "ai_heat": 13.7,
-      "routine_enterprise_update": false,
-      "competitive_score": 89.26
-    },
-    {
-      "headline": "The AI Token Pricing Crisis Behind OpenAI and Anthropic’s Revenue Race",
-      "publisher": "Investing.com",
-      "bucket": "ai_tools",
-      "entity": "openai",
-      "ai_heat": 62.32,
-      "routine_enterprise_update": false,
-      "competitive_score": 119.36
-    },
-    {
-      "headline": "Kore.ai unveils AI-native platform for enterprise multiagent systems",
-      "publisher": "Help Net Security",
-      "bucket": "ai_agents",
-      "entity": "google",
-      "ai_heat": 11.4,
-      "routine_enterprise_update": false,
-      "competitive_score": 119.3
-    },
-    {
-      "headline": "Versa adds Zero Trust controls for AI agent actions",
-      "publisher": "SecurityBrief Asia",
-      "bucket": "ai_agents",
-      "entity": "google",
-      "ai_heat": 13.6,
-      "routine_enterprise_update": false,
-      "competitive_score": 114.17
-    },
-    {
-      "headline": "AI coding tools pose new supply chain security risks",
-      "publisher": "techgig.com",
-      "bucket": "ai_code",
-      "entity": "google",
-      "ai_heat": 14.9,
-      "routine_enterprise_update": false,
-      "competitive_score": 112.16
-    },
-    {
-      "headline": "Google’s AI Agent Ambitions Are Real — But Remain Locked Behind a $100 Monthly Paywall",
-      "publisher": "AI Insider",
-      "bucket": "ai_agents",
-      "entity": "google",
-      "ai_heat": 22.12,
-      "routine_enterprise_update": false,
-      "competitive_score": 111.72
-    },
-    {
-      "headline": "How Agentic AI and Automation Are Changing Cybersecurity",
-      "publisher": "KnowBe4 Blog",
-      "bucket": "ai_agents",
-      "entity": "google",
-      "ai_heat": 8.6,
-      "routine_enterprise_update": false,
-      "competitive_score": 106.1
-    },
-    {
-      "headline": "AI code security risk: The need for a smarter layer between detection and remediation",
-      "publisher": "TechRadar",
-      "bucket": "ai_code",
-      "entity": "google",
-      "ai_heat": 11.4,
-      "routine_enterprise_update": false,
-      "competitive_score": 103.46
-    },
-    {
-      "headline": "Precision Medicine in the Data Age: 10 Takeaways from Our WHA79 Roundtable on Health Data Governance, Trusted AI, and Equitable Access",
-      "publisher": "Access Partnership",
-      "bucket": "health_ai",
-      "entity": "google",
-      "ai_heat": 9.1,
-      "routine_enterprise_update": false,
-      "competitive_score": 100.26
-    },
-    {
-      "headline": "Sysdig moves cloud security into AI coding agents",
-      "publisher": "TechInformed",
-      "bucket": "ai_code",
-      "entity": "google",
-      "ai_heat": 7.9,
-      "routine_enterprise_update": false,
-      "competitive_score": 99.84
-    },
-    {
-      "headline": "7 identity security best practice for the Agentic AI era | perspective | SC Media",
-      "publisher": "SC Media",
-      "bucket": "ai_agents",
-      "entity": "google",
-      "ai_heat": 9.3,
-      "routine_enterprise_update": false,
-      "competitive_score": 98.41
-    },
-    {
-      "headline": "GitLab releases version 19.0 with broader use of AI agents",
-      "publisher": "Techzine Global",
-      "bucket": "ai_code",
-      "entity": "google",
-      "ai_heat": 0.0,
-      "routine_enterprise_update": false,
-      "competitive_score": 94.41
-    },
-    {
-      "headline": "AI Coding Assistants in 2026: Avoiding Pitfalls and Maximizing Value",
-      "publisher": "SD Times",
-      "bucket": "ai_code",
-      "entity": "google",
-      "ai_heat": 11.3,
-      "routine_enterprise_update": false,
-      "competitive_score": 94.11
-    },
-    {
-      "headline": "Norm Ai launches compliance agent for Microsoft 365",
-      "publisher": "FinTech Global",
-      "bucket": "ai_tools",
-      "entity": "microsoft",
-      "ai_heat": 0.0,
-      "routine_enterprise_update": true,
-      "competitive_score": 62.02
-    }
-  ]
+    "who_wins": "Jamie, for successfully linking the high-level infrastructure deals to the tangible loss of community oversight in schools and local environments.",
+    "who_is_exposed": "Rufus, for initially dismissing the EPA's data center policy as 'bureaucratic noise' before being forced to acknowledge its impact on local infrastructure transparency.",
+    "normal_person_payoff": "You'll know why your local school board and your local power grid are suddenly becoming the front lines of the AI wars.",
+    "mandatory_receipts": [
+      "Google's Fairwind Program provides advanced AI cyber defense tools to a limited group of government agencies and partners.",
+      "Nvidia is spending $13 billion on Hugging Face, which is currently home to over 18 million developers and 3 million models.",
+      "The NYC public school system has implemented a temporary ban on generative AI for students through 8th grade."
+    ],
+    "forwardable_targets": [
+      "When the government sides with the algorithm over the author, the copyright era is officially dead.",
+      "We are trading our public square for private data centers, and we aren't even allowed to comment on the construction."
+    ],
+    "_episode_date": "2026-09-03"
+  }
 }
