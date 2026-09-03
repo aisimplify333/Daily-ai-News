@@ -225,7 +225,7 @@ def main() -> None:
                 os.getenv("RECOVERY_RUN_DATE", "").strip()
                 or _dt.date.today().isoformat()
             ),
-            min_minutes=float(os.getenv("MIN_MINUTES", "24")),
+            min_minutes=float(os.getenv("MIN_MINUTES", "19")),
             max_minutes=float(os.getenv("MAX_MINUTES", "30")),
         )
         _safe_print(
