@@ -85,6 +85,8 @@ OPENAI_CHEAP_MODEL = os.getenv("OPENAI_CHEAP_MODEL", "gpt-5.4-mini").strip()
 ENABLE_GROK_PUNCHUP = os.getenv("ENABLE_GROK_PUNCHUP", "true").strip().lower() in ("1", "true", "yes")
 ENABLE_OPENAI_RESCUE = os.getenv("ENABLE_OPENAI_RESCUE", "true").strip().lower() in ("1", "true", "yes")
 HARD_FAIL_PRE_TTS = os.getenv("HARD_FAIL_PRE_TTS", "false").strip().lower() in ("1", "true", "yes")
+GROUNDING_REQUIRED = os.getenv("GROUNDING_REQUIRED", "true").strip().lower() in ("1", "true", "yes")
+GROUNDED_NEWS_MODEL = os.getenv("GROUNDED_NEWS_MODEL", "gemini-3.1-flash-lite").strip()
 
 # Continuity tuning
 SHOW_MEMORY_DEFAULT = "show_memory.json"
@@ -265,16 +267,7 @@ def _authority_lift(story: Dict[str, Any]) -> float:
 
 def _source_tier(story: Dict[str, Any]) -> int:
     """3=primary/major newsroom, 2=strong specialist press, 1=other, 0=low-signal."""
-    publisher = _publisher(story).lower().strip()
-    text = f"{publisher} {_url(story)}".lower()
-    if publisher in {
-        "reuters", "associated press", "ap news", "bloomberg",
-        "financial times", "wall street journal", "the new york times",
-        "the washington post", "openai", "anthropic", "google",
-        "google deepmind", "microsoft", "nvidia", "meta", "apple",
-        "amazon", "aws", "github", "cursor", "onekey",
-    }:
-        return 3
+    text = f"{_publisher(story)} {_url(story)}".lower()
     tier3 = (
         "reuters", "associated press", "apnews.com", "bloomberg", "ft.com",
         "financial times", "wsj.com", "wall street journal", "nytimes.com",
@@ -971,7 +964,8 @@ synthetic. You MUST include:
 NEVER use bracketed stage directions like [laughs] or [leans in] — TTS reads them aloud.
 
 NON-NEGOTIABLES:
-- Five segments. 24-30 minute target; 27 minutes is ideal and 30:00 is absolute.
+- Five segments. Normal production band is 19-26 minutes; 24-26 is ideal and
+  30:00 is an absolute ceiling when the story and sponsor inventory earn the time.
 - TARGET 3,800-4,100 spoken words; an acceptable production band is 3,550-4,350.
   Do not summarize early.
   Allocate about 55-60% to the lead event and use the remaining stories as evidence.
@@ -1830,13 +1824,39 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     def pick_top_stories_v3_3(intel_items: List[Dict[str, Any]], n: int = 5,
                               date_str: Optional[str] = None) -> List[Dict[str, Any]]:
         nonlocal last_selected
-        selected = _select_top_ai_events(intel_items, n=n)
+        episode_date = (
+            date_str
+            or os.getenv("RECOVERY_RUN_DATE", "").strip()
+            or _dt.date.today().isoformat()
+        )
+        try:
+            from grounded_news_v1 import (
+                build_grounded_story_slate,
+                write_grounded_slate_report,
+            )
+            selected = build_grounded_story_slate(
+                episode_date,
+                n=n,
+                model=GROUNDED_NEWS_MODEL,
+            )
+            write_grounded_slate_report(selected, episode_date)
+            _safe_print(
+                g,
+                f"   ✅ Google-grounded slate locked: {len(selected)} current stories",
+            )
+        except Exception as exc:
+            if GROUNDING_REQUIRED:
+                raise RuntimeError(
+                    f"Grounded 24-48 hour story slate failed before scripting: {exc}"
+                ) from exc
+            _safe_print(g, f"   ⚠️ grounded slate unavailable; RSS fallback enabled: {exc}")
+            selected = _select_top_ai_events(intel_items, n=n)
         last_selected = selected
         try:
             path = g.get("STORY_SLATE_DECISION_PATH") or Path("story_slate_decision.json")
             Path(path).write_text(json.dumps({
-                "version": "v3.3-top-ai-events-no-sector-quota",
-                "date": date_str or _dt.date.today().isoformat(),
+                "version": "v3.3-grounded-top-ai-events-no-sector-quota",
+                "date": episode_date,
                 "selection_rule": "rank all AI stories by importance, authority, receipts, "
                                   "conflict, human stakes, recency; no forced sector coverage",
                 "selected": [{
@@ -1849,15 +1869,6 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             }, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         except Exception:
             pass
-        trusted_count = sum(
-            1 for story in selected if int(story.get("source_tier") or 0) >= 2
-        )
-        required_trusted = min(n, int(os.getenv("MIN_TRUSTED_STORIES", "3")))
-        if trusted_count < required_trusted:
-            raise RuntimeError(
-                f"Only {trusted_count} trusted-source stories survived selection; "
-                f"{required_trusted} required before script or episode TTS."
-            )
         return selected
 
     # ---- generate_episode_script -----------------------------------------
@@ -2007,6 +2018,59 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         )
         script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
+
+        # Claim-level source audit is the final editorial firewall before any
+        # paid voice generation. Apply only exact-line corrections, then verify
+        # the corrected script once more against live Search grounding.
+        try:
+            from grounded_news_v1 import apply_fact_replacements, fact_check_script
+
+            first_fact_audit = fact_check_script(
+                script,
+                stories,
+                date_str,
+                model=GROUNDED_NEWS_MODEL,
+            )
+            corrected_script, applied = apply_fact_replacements(script, first_fact_audit)
+            final_fact_audit = first_fact_audit
+            if applied:
+                corrected_script = _split_long_turns(
+                    _normalize_primary_sponsor(_clean_script(corrected_script)),
+                    max_words=55,
+                )
+                corrected_script = _repair_relative_dates(corrected_script, date_str)
+                final_fact_audit = fact_check_script(
+                    corrected_script,
+                    stories,
+                    date_str,
+                    model=GROUNDED_NEWS_MODEL,
+                )
+                script = corrected_script
+                assessment = _assess(script, stories, board, fuel)
+            fact_report = {
+                "version": "grounded-fact-firewall-v1",
+                "date": date_str,
+                "initial": first_fact_audit,
+                "replacements_applied": applied,
+                "final": final_fact_audit,
+                "pass": bool(final_fact_audit.get("pass")),
+            }
+            Path("grounded_fact_check.json").write_text(
+                json.dumps(fact_report, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            if not fact_report["pass"]:
+                raise RuntimeError(
+                    "Grounded fact audit still found critical errors after exact-line repair"
+                )
+            _safe_print(
+                g,
+                f"      ✅ grounded fact audit passed; exact-line repairs={applied}",
+            )
+        except Exception as exc:
+            if GROUNDING_REQUIRED or HARD_FAIL_PRE_TTS:
+                raise RuntimeError(f"Grounded fact firewall failed before TTS: {exc}") from exc
+            _safe_print(g, f"      ⚠️ grounded fact audit unavailable: {exc}")
 
         # Preserve the exact pre-TTS candidate even when a hard gate stops the
         # build; this makes failures inspectable without paying for episode audio.
