@@ -1171,7 +1171,27 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         # Only required once the show actually has a past to reach back into.
         gate["continuity_callback"] = has_callback
 
-    failed = [k for k, ok in gate.items() if not ok]
+    # Reliability-first daily gate. These are the conditions that can make a
+    # finished episode structurally unusable. Debate craft and shareability
+    # remain measured below, but do not strand an otherwise deliverable master.
+    hard_gate_keys = {
+        "five_segments",
+        "runtime_word_band",
+        "one_music_marker",
+        "ledger_cta_spelled_url",
+        "sponsor_cta_immediately_after_music",
+        "sponsor_alex_two_line_read",
+        "sponsor_read_not_bloated",
+        "sponsor_cta_exactly_once",
+        "no_legacy_sponsor_language",
+        "segment2_alex_jamie_only",
+        "no_signal_room",
+        "not_lesson_title",
+        "no_monologue_bloat",
+        "no_spoken_stage_directions",
+        "temporal_consistency",
+    }
+    failed = [k for k, ok in gate.items() if k in hard_gate_keys and not ok]
 
     # ---- SOFT FLAGS: not blocking, but handed to the rescue pass to improve. ----
     alex_q = len(re.findall(r"^ALEX:.*\?", full, flags=re.IGNORECASE | re.MULTILINE))
@@ -1189,6 +1209,9 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     interruptions = full.count("—")
 
     soft: List[str] = []
+    for key, ok in gate.items():
+        if key not in hard_gate_keys and not ok:
+            soft.append(f"advisory_{key}")
     if alex_q < 10:
         soft.append(f"alex_audience_proxy_questions_low ({alex_q}/10)")
     if jamie_react < 5:
@@ -2028,6 +2051,16 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         )
         script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
+
+        # Preserve the generated candidate before external fact auditing so a
+        # blocked run can be diagnosed and repaired without paying to rewrite it.
+        try:
+            Path(f"script_fact_candidate_{date_str}.txt").write_text(
+                script.rstrip() + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
 
         # Claim-level source audit is the final editorial firewall before any
         # paid voice generation. Apply only exact-line corrections, then verify
