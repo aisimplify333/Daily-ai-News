@@ -499,9 +499,14 @@ def _gemini_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
 # OpenAI render path — router-owned, so Alex/Rufus get per-line direction
 # ----------------------------------------------------------------------------
 _OPENAI_VOICE_ENV = {
-    "ALEX": ("OPENAI_TTS_VOICE_ALEX", "ash"),
-    "JAMIE": ("OPENAI_TTS_VOICE_JAMIE", "coral"),
-    "RUFUS": ("OPENAI_TTS_VOICE_RUFUS", "onyx"),
+    "ALEX": ("OPENAI_TTS_VOICE_ALEX", "onyx"),
+    "JAMIE": ("OPENAI_TTS_VOICE_JAMIE", "marin"),
+    "RUFUS": ("OPENAI_TTS_VOICE_RUFUS", "fable"),
+}
+_OPENAI_MODEL_ENV = {
+    "ALEX": "VOICE_MODEL_ALEX",
+    "JAMIE": "VOICE_MODEL_JAMIE",
+    "RUFUS": "VOICE_MODEL_RUFUS",
 }
 
 
@@ -510,8 +515,10 @@ def _openai_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
     if client is None:
         raise RuntimeError("No OpenAI client available for router-owned OpenAI TTS")
     spk = (speaker or "").strip().upper()
-    model = os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts").strip()
-    env_name, default_voice = _OPENAI_VOICE_ENV.get(spk, ("OPENAI_TTS_VOICE_ALEX", "ash"))
+    fallback_model = os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts").strip()
+    model_env = _OPENAI_MODEL_ENV.get(spk, "OPENAI_TTS_MODEL")
+    model = os.getenv(model_env, fallback_model).strip()
+    env_name, default_voice = _OPENAI_VOICE_ENV.get(spk, ("OPENAI_TTS_VOICE_ALEX", "onyx"))
     voice = os.getenv(env_name, default_voice).strip()
 
     clean = _sanitize_spoken_text(text)
@@ -524,8 +531,15 @@ def _openai_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
     instructions = _openai_instructions(spk, mood)
     base = dict(model=model, voice=voice, input=clean, response_format="mp3")
 
-    # gpt-4o-mini-tts and newer accept `instructions`; older models/SDKs do not.
-    for kwargs in ({**base, "instructions": instructions}, base):
+    # The recovered Alex/Rufus voices use tts-1-hd, whose inherent character is
+    # stronger than per-line prompting. Only instruction-capable models get the
+    # mood overlay; this avoids an extra rejected request on every legacy-HD line.
+    candidates = (
+        ({**base, "instructions": instructions}, base)
+        if model.startswith("gpt-4o")
+        else (base,)
+    )
+    for kwargs in candidates:
         try:
             try:
                 with client.audio.speech.with_streaming_response.create(**kwargs) as resp:
