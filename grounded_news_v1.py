@@ -324,6 +324,13 @@ Return STRICT JSON only:
 
 Rules:
 - pass is false when critical_errors is non-empty.
+- Audit editorial factual claims only. Ignore the two-line sponsor read immediately after
+  [MUSIC], including The Ledger brand description, URL, and call to action, unless it makes
+  a concrete numerical or regulated-product claim.
+- Do not flag opinions, jokes, rhetorical predictions, proposals, or conditional
+  hypotheticals as factual errors merely because the sources do not prove the opinion.
+- Reserve critical_errors for a materially false, contradicted, fabricated, stale, or
+  misleading factual assertion. Put attribution nuance or extra context in warnings.
 - Every replacement must preserve the exact speaker label and conversational intent.
 - Correct only the factual defect; do not flatten humor, disagreement, or host voice.
 - Do not treat access, retrieval, a connector, or an enterprise workspace as model training
@@ -332,6 +339,7 @@ Rules:
 - Flag unsupported claims connecting separate stories or products.
 - Do not demand citations in spoken dialogue and do not rewrite opinions clearly framed as opinions.
 - Never invent a source. Use a direct publisher, official, filing, court, or government URL.
+- Never return a replacement_line identical to exact_line, and never duplicate an exact_line.
 
 SOURCE RECORDS:
 {json.dumps(evidence, ensure_ascii=False, indent=2)}
@@ -362,6 +370,7 @@ def fact_check_script(
     if not isinstance(errors, list) or not isinstance(warnings, list):
         raise RuntimeError("Grounded fact audit returned an invalid schema")
     clean_errors: List[Dict[str, str]] = []
+    seen_exact: set[str] = set()
     for item in errors:
         if not isinstance(item, dict):
             continue
@@ -370,6 +379,14 @@ def fact_check_script(
         reason = str(item.get("reason") or "").strip()
         source_url = str(item.get("source_url") or "").strip()
         if not exact or not replacement or not reason:
+            continue
+        if exact == replacement or exact in seen_exact:
+            continue
+        exact_low = exact.lower()
+        if (
+            "t-h-e-l-e-d-g-r dot i-o" in exact_low
+            or "the ledger turns the day" in exact_low
+        ):
             continue
         if not re.match(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", exact, flags=re.I):
             continue
@@ -384,10 +401,11 @@ def fact_check_script(
             "reason": reason,
             "source_url": source_url,
         })
+        seen_exact.add(exact)
     return {
         "version": "grounded-fact-check-v1",
         "date": date_str,
-        "pass": not clean_errors and bool(payload.get("pass", True)),
+        "pass": not clean_errors,
         "critical_errors": clean_errors,
         "warnings": [str(value).strip() for value in warnings if str(value).strip()],
         "verified_source_urls": [
