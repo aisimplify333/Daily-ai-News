@@ -781,7 +781,7 @@ Return exactly this JSON:
 {{
   "published_title": "urgent, human, debate-worthy; never starts with 'Today' and never the word 'lesson'",
   "central_fight": "the core disagreement in one sentence",
-  "opening_question": "the first hard question Alex asks, cold, no preamble",
+  "opening_question": "the first hard audience question Alex asks after the short welcome",
   "listener_promise": "what the listener knows by the end",
   "positions": {{
     "alex": "Alex's actual stance and the strongest version of his case",
@@ -883,7 +883,7 @@ EDITORIAL DNA — combine these disciplines without naming or imitating another 
 - DISTINCT INSIDER VIEWPOINTS: Alex controls pace and accountability; Jamie is the
   highly intelligent, opinionated equal who sees the human consequence and competes
   to win the argument; Rufus follows money, incentives, regulation, and power.
-- CURIOSITY ENGINE: the cold-open question creates a loop that Segment 5 finally
+- CURIOSITY ENGINE: Alex's opening question creates a loop that Segment 5 finally
   closes. Do not answer the headline in the first two minutes.
 
 PUBLIC TITLE TO EARN:
@@ -892,7 +892,7 @@ PUBLIC TITLE TO EARN:
 CENTRAL FIGHT:
 {board.get('central_fight')}
 
-OPENING QUESTION (Segment 1, cold, no welcome):
+OPENING QUESTION (Segment 1 cold hook; Alex asks this before the music):
 {board.get('opening_question')}
 
 THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disagree:
@@ -936,7 +936,8 @@ FORWARDABLE TARGETS (aim for lines this sharp; do not quote them verbatim):
 
 {banned_block}
 
-PRIMARY HOST-READ — immediately after [MUSIC].
+PRIMARY HOST-READ — at the end of Segment 1, after the music, welcome, cast
+introductions, hot-topic roadmap, and first short exchange.
 Sponsor: {sponsor_name}. Benefit material: {sponsor_tagline}
 Raw CTA material: {sponsor_cta}
 Alex delivers 45-65 spoken words across no more than two lines. Use this sequence:
@@ -970,8 +971,16 @@ NON-NEGOTIABLES:
   Do not summarize early.
   Allocate about 55-60% to the lead event and use the remaining stories as evidence.
 - Dialogue only. Exact labels ALEX:, JAMIE:, RUFUS:. Segment headers. Exactly one [MUSIC].
-- Segment 1 opens on the argument already in motion — no "welcome back".
-- Exactly one [MUSIC] after the cold open, then Alex's short Ledger CTA.
+- Segment 1 starts with a 20-30 second cold exchange: Alex asks the opening audience
+  question, Jamie pushes back, and Rufus lands one dry line. Then exactly one [MUSIC],
+  which triggers the show's existing full intro-music production layer—not a new sting.
+- After [MUSIC], Alex says "Welcome to The AI Edge," identifies himself, introduces
+  Jamie as the sharp, opinionated human-stakes voice and Rufus as the dry money-and-power
+  voice, and previews the day's hottest AI topics. Give Jamie and Rufus brief natural
+  responses so this feels like a real trio, not a roll call. Keep this welcome/roadmap
+  to 80-120 total spoken words.
+- Let the first discussion breathe briefly, then Alex delivers the two-line Ledger read
+  at the natural break immediately before Segment 2.
 - Every story becomes an argument: who wins, who loses, who is exposed, what changes tomorrow.
 - At least 6 concrete receipts (numbers, $, dates, named institutions, benchmarks).
 - Explain every important number in plain terms.
@@ -984,8 +993,12 @@ NON-NEGOTIABLES:
 - Normal turns 8-38 words; hard maximum 55 words. Short turns are good.
 
 STRUCTURE:
-### SEGMENT 1 — Cold Open: The Fight
-Alex's opening question. Jamie reacts like a person. Rufus undercuts. [MUSIC]. Ledger CTA.
+### SEGMENT 1 — Welcome, The Cast, and Today's Fight
+Cold hook first: Alex asks the question the audience is already thinking, Jamie reacts,
+and Rufus undercuts. [MUSIC]. Alex then welcomes the listener and introduces himself,
+Jamie, and Rufus with a short natural description of what each brings. Jamie and Rufus
+respond with personality. Alex previews the hot topics, starts the discussion, and lands
+the Ledger sponsor read at the first natural break before Segment 2.
 
 ### SEGMENT 2 — Alex + Jamie: The Human Case and the Receipts
 ONLY Alex and Jamie appear. Deep-dive the lead event and Story 2. Alex presses the
@@ -1061,7 +1074,7 @@ def _clean_script(text: str) -> str:
 
 
 def _normalize_primary_sponsor(script: str) -> str:
-    """Make the post-music house read singular, concise, and production-stable."""
+    """Place one concise house read at the first natural break before Segment 2."""
     sponsor_lines = (
         "ALEX: Today’s AI story is exactly why raw headlines are not enough: the launch "
         "is obvious, but the leverage shift is not. The Ledger turns the day’s AI noise "
@@ -1069,13 +1082,44 @@ def _normalize_primary_sponsor(script: str) -> str:
         "ALEX: If you need the consequence before the consensus catches up, subscribe "
         "at T-H-E-L-E-D-G-R dot I-O."
     )
-    pattern = re.compile(
-        r"(\[MUSIC\]\s*\n).*?(?=^###\s*SEGMENT\s*2\b)",
-        flags=re.IGNORECASE | re.MULTILINE | re.DOTALL,
+    lines = (script or "").splitlines()
+    cleaned: List[str] = []
+    after_music = False
+    before_segment2 = True
+    for line in lines:
+        if line.strip().upper() == "[MUSIC]":
+            after_music = True
+        if re.match(r"^###\s*SEGMENT\s*2\b", line, flags=re.IGNORECASE):
+            before_segment2 = False
+        match = SPEAKER_RE.match(line.strip())
+        spoken_low = match.group(2).lower() if match else ""
+        if (
+            after_music
+            and before_segment2
+            and match
+            and (
+                "the ledger" in spoken_low
+                or "t-h-e-l-e-d-g-r dot i-o" in spoken_low
+            )
+        ):
+            continue
+        cleaned.append(line)
+
+    rebuilt = "\n".join(cleaned).strip()
+    segment2 = re.search(
+        r"^###\s*SEGMENT\s*2\b",
+        rebuilt,
+        flags=re.IGNORECASE | re.MULTILINE,
     )
-    if pattern.search(script or ""):
-        return pattern.sub(lambda m: m.group(1) + sponsor_lines + "\n", script, count=1).strip()
-    return script
+    if not segment2:
+        return rebuilt
+    return (
+        rebuilt[:segment2.start()].rstrip()
+        + "\n"
+        + sponsor_lines
+        + "\n\n"
+        + rebuilt[segment2.start():].lstrip()
+    ).strip()
 
 
 # ----------------------------------------------------------------------------
@@ -1112,18 +1156,24 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         for m in (SPEAKER_RE.match(ln.strip()) for ln in seg2_text.splitlines())
         if m
     }
-    music_pos = full.find("[MUSIC]")
-    post_music = full[music_pos + len("[MUSIC]"):music_pos + len("[MUSIC]") + 1400] \
-        if music_pos >= 0 else ""
+    seg1_match = re.search(
+        r"^###\s*SEGMENT\s*1\b(.*?)^###\s*SEGMENT\s*2\b",
+        full,
+        flags=re.MULTILINE | re.IGNORECASE | re.DOTALL,
+    )
+    segment1_text = seg1_match.group(1) if seg1_match else ""
+    music_pos = segment1_text.find("[MUSIC]")
+    post_music = segment1_text[music_pos + len("[MUSIC]"):] if music_pos >= 0 else ""
     post_music_low = post_music.lower()
-    post_music_matches = [
+    segment1_matches = [
         SPEAKER_RE.match(ln.strip())
         for ln in post_music.splitlines()
         if SPEAKER_RE.match(ln.strip())
-    ][:2]
-    post_music_spoken = [m.group(2) for m in post_music_matches if m]
-    post_music_speakers = [m.group(1).upper() for m in post_music_matches if m]
-    sponsor_window_text = " ".join(post_music_spoken)
+    ]
+    sponsor_matches = segment1_matches[-2:]
+    sponsor_spoken = [m.group(2) for m in sponsor_matches if m]
+    sponsor_speakers = [m.group(1).upper() for m in sponsor_matches if m]
+    sponsor_window_text = " ".join(sponsor_spoken)
     sponsor_window_words = _word_count(sponsor_window_text)
     legacy_sponsor_language = any(
         phrase in low for phrase in (
@@ -1143,13 +1193,14 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "runtime_word_band": min_episode_words <= words <= max_episode_words,
         "one_music_marker": music == 1,
         "ledger_cta_spelled_url": "t-h-e-l-e-d-g-r dot i-o" in low,
-        "sponsor_cta_immediately_after_music": (
+        "welcome_after_music": "welcome to the ai edge" in post_music_low,
+        "sponsor_at_segment1_break": (
             "the ledger" in sponsor_window_text.lower()
             and "t-h-e-l-e-d-g-r dot i-o" in sponsor_window_text.lower()
         ),
         "sponsor_alex_two_line_read": (
-            len(post_music_speakers) == 2
-            and post_music_speakers == ["ALEX", "ALEX"]
+            len(sponsor_speakers) == 2
+            and sponsor_speakers == ["ALEX", "ALEX"]
         ),
         "sponsor_read_not_bloated": 45 <= sponsor_window_words <= 65,
         "sponsor_cta_exactly_once": low.count("t-h-e-l-e-d-g-r dot i-o") == 1,
@@ -1179,7 +1230,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "runtime_word_band",
         "one_music_marker",
         "ledger_cta_spelled_url",
-        "sponsor_cta_immediately_after_music",
+        "welcome_after_music",
+        "sponsor_at_segment1_break",
         "sponsor_alex_two_line_read",
         "sponsor_read_not_bloated",
         "sponsor_cta_exactly_once",
