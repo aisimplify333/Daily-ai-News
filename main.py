@@ -539,8 +539,10 @@ def _lead_silence_ms(a: AudioSegment, thresh_db: float) -> int:
 def trim_silence(seg: AudioSegment, leading_ms: int = 60, trailing_ms: int = 140, thresh_db: float = -45.0) -> AudioSegment:
     if len(seg) < 40:
         return seg
-    start = min(_lead_silence_ms(seg, thresh_db=thresh_db), leading_ms)
-    end = min(_lead_silence_ms(seg.reverse(), thresh_db=thresh_db), trailing_ms)
+    # Retain a small safety margin, rather than removing only that margin and
+    # leaving arbitrarily long provider-generated silence between speakers.
+    start = max(0, _lead_silence_ms(seg, thresh_db=thresh_db) - leading_ms)
+    end = max(0, _lead_silence_ms(seg.reverse(), thresh_db=thresh_db) - trailing_ms)
     if len(seg) <= (start + end + 10):
         return seg
     return seg[start:len(seg) - end]
@@ -3163,7 +3165,8 @@ def build_sponsor_delivery_report(script: str, stories: List[Dict[str, str]], da
         "main_read_speaker": "ALEX" if main_read_present else None,
         "rotating_end_tag_present": bool(end_tag_match),
         "rotating_end_tag_speaker": end_tag_match.group(1).upper() if end_tag_match else None,
-        "sponsor_bed_expected": main_read_present,
+        "sponsor_bed_expected": False,
+        "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
         "readout_answers": answers,
         "sponsor_tone_score": min(10, score),
         "strongest_story": stories[0].get("headline") if stories else "",
@@ -4302,6 +4305,10 @@ def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> No
 
 
 def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path: Path) -> bool:
+    # Sponsor copy is deliberately dry. Never place the old bell/chime bed
+    # beneath either the primary read or the short closing tag.
+    if any(marker in (text or "").lower() for marker in ("the ledger", "subscribe", "t-h-e-l-e-d-g-r")):
+        return False
     voice_seg = AudioSegment.from_file(voice_path)
     if len(voice_seg) < 1000:
         return False
@@ -6234,6 +6241,9 @@ def produce_episode() -> None:
 
             if sponsor_chunk:
                 concat_files.append(sponsor_pause_path)
+                # A sponsor at a segment boundary must not inherit another bed.
+                pending_intro_bed = False
+                pending_segment_bed = False
 
             speech_start_index = len(concat_files)
             if pending_intro_bed and intro_asset is not None:

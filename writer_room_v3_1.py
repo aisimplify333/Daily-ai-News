@@ -21,7 +21,7 @@ connection:
      This is the single biggest retention lever for a *daily* show.
 
   2. REAL ARGUMENT, GENERATED BEFORE DIALOGUE. A pre-production pass writes
-     each host's actual position brief and assigns a mandatory concession —
+     each host's actual position brief and an evidence-led outcome —
      a host who genuinely gives ground. Fake consensus is structurally hard
      to produce when the argument is designed first.
 
@@ -31,7 +31,7 @@ connection:
      has to be written in.
 
   4. A BINARY STRUCTURAL GATE replaces the self-graded 0-100 score. Checks are
-     objective pass/fail (segment count, receipts, a real concession, a
+     objective pass/fail (segment count, receipts, a
      continuity callback, CTA present, no monologue bloat). The old keyword
      score is kept ONLY as non-authoritative telemetry. The real quality
      signal lives in your Spotify/Apple retention data, not in this file.
@@ -873,8 +873,8 @@ def _title_matches_lead(title: str, stories: List[Dict[str, Any]]) -> bool:
 def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
                    date_str: str, fuel: Dict[str, Any]) -> Dict[str, Any]:
     """One Gemini JSON call that designs the episode: the title, the fight, and —
-    critically — each host's actual position plus a mandatory concession. The
-    argument is engineered here so the dialogue pass cannot drift into consensus."""
+    critically — each host's actual position without a compulsory concession.
+    The evidence, rather than a designated loser, drives the outcome."""
     default: Dict[str, Any] = {
         "format": "hard_debate_hybrid",
         "published_title": _hard_title(stories),
@@ -888,11 +888,7 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
             "jamie": "Argues the human cost is being treated as an acceptable rounding error.",
             "rufus": "Argues the money and liability trail already tells you how this ends.",
         },
-        "concession": {
-            "host": "alex",
-            "gives_ground_on": "concedes that the story he thought was about technology "
-                               "is really about who absorbs the risk.",
-        },
+        "concession": {},
         "who_wins": "whoever controls distribution, permissions, data, or trust",
         "who_is_exposed": "the operators, users, doctors, developers, or families who inherit "
                           "the risk without seeing the handoff",
@@ -934,9 +930,11 @@ FACT FIREWALL:
 - mandatory_receipts must be short source-backed facts from the supplied summaries or
   data points, never URLs and never plausible-sounding additions.
 
-Design a REAL argument. The three hosts must genuinely disagree, and ONE host must
-end the episode having genuinely changed position — not "good point", an actual
-concession. Pick whichever host the day's facts would most plausibly move.
+Design an evidence-led conversation, not a predetermined winner and loser.
+Hosts may hold their positions, refine a condition, agree on a practical next step,
+or leave an honest uncertainty unresolved. A concession is optional and only earned
+by supplied evidence. Never default to Alex conceding or rotate a designated loser.
+Use prior positions to avoid repeating yesterday's argument and outcome mechanically.
 
 Return exactly this JSON:
 {{
@@ -951,7 +949,7 @@ Return exactly this JSON:
     "jamie": "Jamie's actual stance and her strongest case",
     "rufus": "Rufus's actual stance and his strongest case"
   }},
-  "concession": {{"host": "alex|jamie|rufus", "gives_ground_on": "what this host concedes and why the facts force it"}},
+  "concession": {{"host": "optional: alex|jamie|rufus, or empty", "gives_ground_on": "optional source-backed reason; leave empty unless earned"}},
   "who_wins": "...",
   "who_is_exposed": "...",
   "normal_person_payoff": "...",
@@ -1110,18 +1108,21 @@ THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disag
   She is the comic catalyst, never just the laugh track. Give her 4–7 short,
   earned comic reactions spread through the episode: 1–2 proper surprised laughs,
   a softer snicker, dry chuckles, and a comeback that makes one of the boys crack.
-  She must also win arguments with evidence. Let Alex drive and Rufus play dry foil.
+  Give her substantive evidence, not a guaranteed win. Let Alex drive and Rufus
+  contribute his own independent case rather than automatically backing Jamie.
   Write a big reaction as "Hah!" or "Ha! Ha!", a small snicker as "Heh.", and
   quieter amusement as "Hah." The voice adapter performs these as native vocal
   expressions. Do not say "guffaw" or "snicker" aloud or write bracket directions.
   Never put laughter in sponsor copy or mock victims, illness, layoffs or tragedy.
 - RUFUS: {pos.get('rufus', 'Argues the money and liability trail already tells the ending.')}
 
-MANDATORY CONCESSION — NOT optional, NOT a polite "good point":
-{str(conc.get('host', 'alex')).upper()} must genuinely change position during Segment 3 or 5.
-What they concede: {conc.get('gives_ground_on', 'that the story is really about who absorbs the risk')}.
-Write the moment where they actually give ground and mean it. The other hosts should
-notice it land.
+EVIDENCE-LED OUTCOME — no compulsory concession or designated winner:
+Optional board suggestion, not a required performance: {json.dumps(conc, ensure_ascii=False)}.
+Any host may maintain a justified position, refine it, or acknowledge uncertainty.
+Alex leads by testing both colleagues, not by invariably surrendering to Jamie.
+Jamie and Rufus can challenge each other or agree for different, factual reasons.
+If the evidence genuinely changes a position, let the others notice naturally.
+Otherwise preserve the disagreement and explain what evidence would resolve it.
 
 WHO WINS: {board.get('who_wins')}
 WHO IS EXPOSED: {board.get('who_is_exposed')}
@@ -1238,6 +1239,17 @@ NON-NEGOTIABLES:
 - No lesson framing. Never say "today's AI lesson" or play "Signal or Static."
   No Signal Room language. No digest energy.
 - Normal turns 8-38 words; hard maximum 55 words. Short turns are good.
+- Opening: after the music, interleave the welcome and lead facts with substantive
+  responses. No consecutive Alex exposition totaling more than 45 words before a
+  colleague contributes; the complete sponsor read is the exception. State the
+  lead once, not again in a duplicate headline roll call.
+- Make handoffs answer the previous speaker's specific claim before introducing
+  another point. Avoid chains of "Go", "Say more", and generic agreement. Warmth
+  comes from attentive replies, an earned tease or a specific remembered position,
+  not flattery or compulsory laughter. Jamie is an equal, not the automatic winner.
+- Keep learning concrete: explain what each sourced figure measures, its timeframe,
+  and why it matters. Preserve announced versus completed, subsidy versus cash,
+  and proposal versus enacted distinctions. Never invent numbers to meet a quota.
 
 STRUCTURE:
 ### SEGMENT 1 — Welcome, The Cast, and Today's Fight
@@ -1255,17 +1267,21 @@ competitive, warm, and often right. She is not a translator, mascot, or scold.
 ### SEGMENT 3 — Rufus on the Money, Power, and Permission
 Rufus takes the desk/on-location role on Story 3: follow the money, liability,
 regulation, incentives, and geopolitical power. Alex may challenge him; Jamie may
-land one human consequence. No fake consensus. The concession can land here.
+land one human consequence. No fake consensus or mandatory reversal.
 
 ### SEGMENT 4 — The Pattern Across the Other Top AI Events
 Other events only where they prove or break the main argument. Fast, data-first. Build
 the primary 20–45 second shareable exchange here unless another moment clearly earns it.
+Make that exchange understandable without the preceding discussion: name the subject,
+give a specific challenge, and land a concise factual or witty payoff. Do not end the
+candidate on an unanswered setup question. Humor must illuminate the stakes, not
+replace the explanation. Never manufacture an audience submission for the setup.
 
 ### SEGMENT 5 — The Ledger Readout + Final Button
 Alex asks for the final positions naturally. Across a rapid closing exchange, Jamie and
 Rufus answer what changed, who wins, and what the listener should watch or do next. Alex
-synthesizes the remaining disagreement instead of merely recapping. If the
-concession did not land in Segment 3, land it here. End on a sticky, unresolved
+synthesizes the remaining disagreement instead of merely recapping. Do not force
+any host to change their mind. End on a sticky, unresolved
 question — and plant one specific, dated prediction for a future episode to revisit.
 Near the close Alex asks the supplied listener question and tells listeners to follow
 The AI Edge for tomorrow's answer. Keep the final editorial button after that CTA.
@@ -1733,7 +1749,6 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "no_legacy_sponsor_language": not legacy_sponsor_language,
         "segment2_alex_jamie_only": seg2_speakers == {"ALEX", "JAMIE"},
         "min_six_receipts": numbers >= 6,
-        "real_concession_present": concessions >= 1,
         "no_signal_room": not SIGNAL_ROOM_RE.search(full),
         "not_lesson_title": (not title.lower().startswith("today")) and ("lesson" not in title.lower()),
         "no_monologue_bloat": max_turn <= 60,
@@ -1864,7 +1879,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
 def _punchup_prompt(script: str, board: Dict[str, Any], assessment: Dict[str, Any]) -> str:
     return f"""Punch up this podcast script. Preserve every fact and the structure.
 Sharpen the disagreement, add human texture (interruptions, false starts, real
-laughter in words — never bracketed directions), and make the concession land harder.
+laughter in words — never bracketed directions), without forcing a concession.
 Do not invent facts. Do not add Signal Room language. Do not make it a lecture.
 Keep exact speaker labels and exactly one [MUSIC]. Preserve the sponsor read's
 facts, CTA, placement, and word cap. Segment 2 must contain only Alex and Jamie.
@@ -1893,7 +1908,7 @@ Hard requirements:
   counterarguments, human consequences, and tomorrow-watch items. Never pad with recap.
 - The Ledger CTA must spell the URL: T-H-E-L-E-D-G-R dot I-O.
 - At least six concrete receipts (numbers, dates, named institutions).
-- A REAL concession: one host genuinely changes position — not "good point".
+- Preserve evidence-led positions; a concession is optional, never manufactured.
 - If prior episodes exist, one natural callback to an earlier episode.
 - No monologues over ~55 words. No lesson title. No Signal Room language.
 - Preserve facts; invent nothing.
@@ -1931,29 +1946,6 @@ def _deterministic_structure_repair(
                 continue
             repaired.append(line)
         lines = repaired
-
-    if "real_concession_present" in failed:
-        host = str((board.get("concession") or {}).get("host") or "alex").strip().upper()
-        if host not in {"ALEX", "JAMIE", "RUFUS"}:
-            host = "ALEX"
-        reason = str(
-            (board.get("concession") or {}).get("gives_ground_on")
-            or "the person absorbing the risk matters more than the launch headline"
-        ).strip()
-        # Keep the inserted turn inside the production monologue cap.
-        words = reason.split()
-        if len(words) > 38:
-            reason = " ".join(words[:38]).rstrip(" ,;:-") + "."
-        concession_line = (
-            f"{host}: I was wrong about this: {reason} "
-            "The evidence changed my mind."
-        )
-        insert_at = next(
-            (i + 1 for i, line in enumerate(lines)
-             if re.match(r"^###\s*SEGMENT\s*5\b", line, flags=re.IGNORECASE)),
-            len(lines),
-        )
-        lines.insert(insert_at, concession_line)
 
     return "\n".join(lines).strip()
 
@@ -2213,7 +2205,7 @@ repetition, throat-clearing, and duplicate explanation. Do not expand anything.
 
 This is an editorial compression pass, not a rewrite:
 - Preserve all five segment headers, their order, exactly one [MUSIC], every verified
-  receipt, the real concession, the ending question, and the exact two-line sponsor.
+  receipt, the evidence-led positions, the ending question, and the exact two-line sponsor.
 - Preserve Alex as the listener's proxy and show driver: keep his blunt first question
   and strongest second follow-ups.
 - Preserve the best Jamie reactions, competitive challenges, sarcastic humor, and

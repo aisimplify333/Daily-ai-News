@@ -167,8 +167,8 @@ def main() -> None:
         'TRANSITION_EVERY_SEGMENT: "true"': "segment transitions are not enabled",
         'TRANSITION_SEGMENTS: "2,3,4,5"': "all four segment boundaries are not configured",
         'OUTRO_TARGET_DBFS: "-16.5"': "audible outro target is not configured",
-        'VOICE_MODEL_ALEX: "gpt-4o-mini-tts"': "Alex is not on the directed TTS path",
-        'VOICE_MODEL_RUFUS: "gpt-4o-mini-tts"': "Rufus is not on the directed TTS path",
+        'VOICE_MODEL_ALEX: "tts-1-hd"': "Alex is not on the restored HD voice model",
+        'VOICE_MODEL_RUFUS: "tts-1-hd"': "Rufus is not on the restored HD voice model",
         'GROK_TTS_VOICE_JAMIE: "ursa"': "Jamie Ursa primary is not configured",
         'GROK_TTS_VOICE_JAMIE_FALLBACK: "celeste"': "Jamie Celeste fallback is not configured",
     }

@@ -78,6 +78,39 @@ def final_script():
 
 
 class ProductionContractTests(unittest.TestCase):
+    def test_no_manufactured_concession_even_with_legacy_failed_check(self):
+        repaired = writer._deterministic_structure_repair(
+            SCRIPT, {"failed": ["real_concession_present"]}, BOARD
+        )
+        self.assertEqual(repaired, SCRIPT)
+        self.assertNotIn("The evidence changed my mind", repaired)
+
+    def test_restored_hd_voices_and_tighter_handoffs(self):
+        workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text()
+        for setting in ('VOICE_MODEL_ALEX: "tts-1-hd"', 'VOICE_MODEL_RUFUS: "tts-1-hd"',
+                        'TAIL_PAD_MS: "0"', 'REACTION_PAUSE_MS: "70"'):
+            self.assertIn(setting, workflow)
+
+    def test_silence_trim_retains_margins_and_sponsor_is_dry(self):
+        from pydub import AudioSegment
+        from pydub.generators import Sine
+        tree = ast.parse((ROOT / "main.py").read_text())
+        names = {"_lead_silence_ms", "trim_silence", "_mix_brand_bed_if_needed"}
+        funcs = [n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name in names]
+        module = ast.Module(body=[ast.ImportFrom(module="__future__", names=[ast.alias(name="annotations")], level=0), *funcs], type_ignores=[])
+        namespace = {"AudioSegment": AudioSegment}
+        exec(compile(ast.fix_missing_locations(module), "main.py", "exec"), namespace)
+        tone = Sine(440).to_audio_segment(duration=500)
+        clip = AudioSegment.silent(duration=400) + tone + AudioSegment.silent(duration=600)
+        trimmed = namespace["trim_silence"](clip, leading_ms=35, trailing_ms=60)
+        self.assertAlmostEqual(len(trimmed), 595, delta=20)
+        self.assertGreater(trimmed.max_dBFS, -2)
+        quiet = AudioSegment.silent(duration=500)
+        self.assertEqual(len(namespace["trim_silence"](quiet)), 500)
+        for copy in ("Today's episode is brought to you by The Ledger.", "Subscribe at T-H-E-L-E-D-G-R dot I-O."):
+            # Dry policy returns before even reading an audio file.
+            self.assertFalse(namespace["_mix_brand_bed_if_needed"](Path("missing.mp3"), copy, "ALEX", Path("out.mp3")))
+
     def test_schedule_avoids_hour_boundary_and_keeps_cost_safe_triggers(self):
         workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text(encoding="utf-8")
         self.assertEqual(re.findall(r"cron:\s*'([^']+)'", workflow), ["17 10 * * 1-5"])

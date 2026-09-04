@@ -548,7 +548,7 @@ def _openai_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
     spk = (speaker or "").strip().upper()
     fallback_model = os.getenv("OPENAI_TTS_MODEL", "gpt-4o-mini-tts").strip()
     model_env = _OPENAI_MODEL_ENV.get(spk, "OPENAI_TTS_MODEL")
-    model = os.getenv(model_env, fallback_model).strip()
+    model = os.getenv(model_env, "tts-1-hd" if spk in {"ALEX", "RUFUS"} else fallback_model).strip()
     env_name, default_voice = _OPENAI_VOICE_ENV.get(spk, ("OPENAI_TTS_VOICE_ALEX", "onyx"))
     voice = os.getenv(env_name, default_voice).strip()
 

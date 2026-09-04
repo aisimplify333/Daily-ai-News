@@ -2,6 +2,23 @@
 
 Release prepared September 3 Pacific / September 4 UTC, 2026.
 
+## September 4 listener-feedback revision
+
+- Alex and Rufus restored to `tts-1-hd` with onyx/fable, keeping speeds 1.01/0.99
+  and gains +3.5/+0.3 dB. Jamie stays Grok Ursa with Celeste fallback, speed 1.05.
+  HD does not accept per-line mood instructions; voice identity is the priority here.
+- Primary sponsor and end tag are dry voice; sponsor and inherited segment/intro
+  beds are suppressed under their copy. Existing music assets are unchanged.
+- Silence trimming now retains small boundary margins rather than leaving long
+  provider silences. No added tail padding; ordinary/reaction gaps are 100/70 ms.
+- Writer guidance shortens opening exposition, requires responsive substantive
+  handoffs, and preserves number/timeframe/announcement qualifiers. These are
+  editorial instructions, not proof of performance in an ungenerated episode.
+- Compulsory concessions and automatic fabricated Alex reversals removed. Natural
+  disagreement or evidence-earned changes of view remain welcome.
+- No replacement master or paid audition requested. Actual next-episode chemistry,
+  accent, sponsor clarity, and publication still require post-run verification.
+
 ## Implemented and offline-tested
 
 | Area | Implemented contract |
@@ -12,7 +29,7 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 | Jamie performance | Ursa/Celeste, distinct native laughs/chuckles/giggles; sponsor reads remain clean. Comic counts are advisory, not a laugh quota or a blocking gate. |
 | Relationship | Predictions, positions, disagreements, running bits, outcomes and questions retained in memory. Only supplied real poll results are acknowledged. |
 | Audience authenticity | Invented cast bits and clearly hypothetical questions are allowed. Invented fans, emails, reviews, vote totals and testimonials are not. |
-| Production | Existing cold open/intro/outro assets; four transitions; separated sponsor bed; alternating short end tag. |
+| Production | Existing cold open/intro/outro assets; four transitions; dry sponsor read; alternating short end tag. |
 | Closing | Final positions, synthesis, one audience question and one follow CTA. |
 | Delivery | 25-minute target; 19–26 preferred, 30 maximum; same-day paid audio reused. |
 | Metadata | Entity-led title, episode structure, listener promise, keywords, follow CTA and sponsor link. |
