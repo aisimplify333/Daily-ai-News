@@ -78,6 +78,21 @@ def final_script():
 
 
 class ProductionContractTests(unittest.TestCase):
+    def test_connection_direction_survives_writer_and_repairs(self):
+        prompts = [
+            writer._writer_prompt(STORIES, [], "2026-09-07", BOARD, {}),
+            writer._punchup_prompt(SCRIPT, BOARD, {}),
+            writer._rescue_prompt(SCRIPT, {}, BOARD, STORIES),
+            writer._native_expansion_prompt(SCRIPT, STORIES, "2026-09-07", BOARD, 300),
+            writer._runtime_condense_prompt(SCRIPT, 4300, 3900, BOARD, {}),
+        ]
+        for prompt in prompts:
+            self.assertIn(writer.CAST_CONNECTION_DIRECTION, prompt)
+            self.assertIn("NOT a mandatory repeated sequence", prompt)
+            self.assertIn("Leave sponsor copy clean and sincere", prompt)
+            self.assertNotIn("three to five natural British", prompt)
+            self.assertNotIn("Give her 4–7", prompt)
+
     def test_no_manufactured_concession_even_with_legacy_failed_check(self):
         repaired = writer._deterministic_structure_repair(
             SCRIPT, {"failed": ["real_concession_present"]}, BOARD

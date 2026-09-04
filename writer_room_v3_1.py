@@ -139,6 +139,34 @@ CALLBACK_RE = re.compile(
     re.IGNORECASE,
 )
 
+CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independent minds:
+- RUFUS: British character is a way of observing, not an accent plus filler words.
+  Use understated disbelief, affectionate mock politeness, or a precise British
+  turn of phrase when the actual exchange earns it, followed by a substantive point.
+  The producer recalls 'bless their little cotton socks' as a memorable example of
+  his tone, NOT a line to repeat or an audience statistic. Find fresh language.
+  No idiom quota, phonetic accent spelling, stock 'quite/lovely' padding, or caricature.
+- JAMIE: Start some of the wit and answer it back. Let Rufus tease her reasoning
+  occasionally; she can take the joke, return it warmly, and make a stronger case.
+  She is neither the permanent scold nor the automatic winner. Alex may join in.
+  Laughs and chuckles respond to a specific funny thought, not a reaction quota.
+- ALEX: Enjoy the room without abandoning the listener. After a brief playful
+  detour, pick up the concrete point and ask for a sourced fact, clarify a number,
+  or test what it means. Vary these returns; never mechanically say 'back to the
+  topic' after every joke. Leadership means steering, not a longer monologue.
+- Build compact exchanges in which one host's actual words provoke the next
+  reply: observation, affectionate challenge, comeback, useful clarification.
+  This is an available conversational shape, NOT a mandatory repeated sequence.
+  Change who initiates, answers, or supplies evidence as the story warrants.
+- Tease ideas, habits and positions, not victims or vulnerable people. No invented
+  listener mail, votes, audience reactions or testimonials. Use only supplied
+  history for callbacks and let an old bit acquire a new meaning, not repeat verbatim.
+- The memorable moment must still teach something: preserve the sourced fact,
+  its uncertainty and practical consequence. Banter should advance the story.
+  Leave sponsor copy clean and sincere; no teasing, laughter or comic interruption
+  inside the paid read. Do not add runtime, calls or gates to satisfy this direction.
+"""
+
 MAJOR_AI_ACTORS = [
     "OpenAI", "Anthropic", "Google", "Gemini", "DeepMind", "Microsoft", "NVIDIA", "Meta",
     "Apple", "Amazon", "AWS", "xAI", "Mistral", "Perplexity", "Tesla", "Oracle", "Salesforce",
@@ -1073,17 +1101,16 @@ EDITORIAL DNA — combine these disciplines without naming or imitating another 
   why it matters, and what to watch in the next 24-48 hours.
 - HUMAN CO-HOST CHEMISTRY: disagreement, warmth, callbacks, teasing, and genuine
   reactions. Humor must reveal character or stakes, never become a comedy routine.
-  Include at least four earned connection beats across the episode: a knowing tease,
-  a callback or finished thought, a real laugh, and a moment of repair after conflict.
+  Look for earned connection: a knowing tease, a callback or finished thought,
+  a real laugh, or a repair after actual conflict. Do not manufacture a ritual.
 - DISTINCT INSIDER VIEWPOINTS: Alex controls pace and accountability; Jamie is the
   highly intelligent, opinionated equal who sees the human consequence and competes
   to win the argument; Rufus follows money, incentives, regulation, and power.
-- RUFUS'S BRITISH IDENTITY: Give Rufus three to five natural British turns of phrase
-  across the full episode—such as "a bit rich," "rather convenient," "that won’t wash,"
-  "not terribly reassuring," or "a neat little arrangement." Keep them understated
-  and contemporary. Never turn him into a caricature and never repeat one phrase.
+- RUFUS'S BRITISH IDENTITY: Follow the character direction below, not a phrase quota.
 - CURIOSITY ENGINE: Alex's opening question creates a loop that Segment 5 finally
   closes. Do not answer the headline in the first two minutes.
+
+{CAST_CONNECTION_DIRECTION}
 
 PUBLIC TITLE TO EARN:
 {board.get('published_title')}
@@ -1105,9 +1132,9 @@ THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disag
   with the question the audience is forming, asks the uncomfortable second follow-up,
   admits when he does not understand, and does not move on until the stakes are clear.
 - JAMIE: {pos.get('jamie', 'Argues the human cost is being undercounted.')}
-  She is the comic catalyst, never just the laugh track. Give her 4–7 short,
-  earned comic reactions spread through the episode: 1–2 proper surprised laughs,
-  a softer snicker, dry chuckles, and a comeback that makes one of the boys crack.
+  She is the comic catalyst, never just the laugh track. Give her earned comic
+  reactions with varied intensity: a surprised laugh, softer snicker, dry chuckle,
+  or a comeback that catches a colleague off guard. Do not force a count.
   Give her substantive evidence, not a guaranteed win. Let Alex drive and Rufus
   contribute his own independent case rather than automatically backing Jamie.
   Write a big reaction as "Hah!" or "Ha! Ha!", a small snicker as "Heh.", and
@@ -1200,8 +1227,8 @@ synthetic. You MUST include:
   line on an em-dash, and another host takes over.
 - False starts and self-correction: "I— okay, here's the actual problem."
 - Short, sharp reactions on their own line: "Hah." / "Oh, come on." / "Wait. Wait."
-- At least two moments of genuine laughter, written into the words ("that's — sorry,
-  that's genuinely funny"), NEVER as a bracketed stage direction.
+- Genuine laughter when a specific exchange earns it, written into the words,
+  NEVER as a bracketed stage direction. Do not insert laughter to satisfy a count.
 - Hosts finishing each other's thoughts, and at least one moment where two hosts
   are briefly talking past each other before Alex pulls it back.
 NEVER use bracketed stage directions like [laughs] or [leans in] — TTS reads them aloud.
@@ -1232,8 +1259,9 @@ NON-NEGOTIABLES:
 - Every story becomes an argument: who wins, who loses, who is exposed, what changes tomorrow.
 - At least 6 concrete receipts (numbers, $, dates, named institutions, benchmarks).
 - Explain every important number in plain terms.
-- At least 8 friction beats; at least 5 Jamie human-reaction moments; at least 5 Alex
-  pressure questions; at least 4 Rufus dry lines — but vary the wording every time.
+- Keep the argument active with specific challenges, Jamie's human reactions,
+  Alex's pressure questions and Rufus's dry observations. Vary the balance with
+  the story; do not manufacture friction or jokes to satisfy detector counts.
 - Ban generic panel filler: "Exactly, Alex," "Absolutely, Alex," "great question,"
   "game-changer," "exciting time," "landscape is evolving," and "speaking of."
 - No lesson framing. Never say "today's AI lesson" or play "Signal or Static."
@@ -1887,6 +1915,8 @@ Return the full script only.
 
 Weak spots to fix: {json.dumps(assessment.get('soft_flags') or [], ensure_ascii=False)}
 
+{CAST_CONNECTION_DIRECTION}
+
 Board:
 {json.dumps(board, ensure_ascii=False, indent=2)}
 
@@ -1913,6 +1943,8 @@ Hard requirements:
 - No monologues over ~55 words. No lesson title. No Signal Room language.
 - Preserve facts; invent nothing.
 Return the full script only.
+
+{CAST_CONNECTION_DIRECTION}
 
 Board:
 {json.dumps(board, ensure_ascii=False, indent=2)}
@@ -2015,6 +2047,8 @@ def _native_expansion_prompt(
     return f"""Write a {add_words - 75}-{add_words + 75} word dialogue ADD-ON for
 Segment 4 of {SHOW_TITLE} on {date_str}. Output only new ALEX:, JAMIE:, or RUFUS:
 lines. Do not output a segment header, music cue, sponsor, intro, recap, or signoff.
+
+{CAST_CONNECTION_DIRECTION}
 
 The existing episode already established the lead argument. Deepen it using the strongest
 UNUSED source-backed facts or unresolved questions from Stories 4-5, and test whether they
@@ -2202,6 +2236,8 @@ def _runtime_condense_prompt(
     return f"""Tighten this complete podcast script from {current_words} words to
 {target_words - 100}-{target_words} words. DELETE roughly {cut_words} words of recap,
 repetition, throat-clearing, and duplicate explanation. Do not expand anything.
+
+{CAST_CONNECTION_DIRECTION}
 
 This is an editorial compression pass, not a rewrite:
 - Preserve all five segment headers, their order, exactly one [MUSIC], every verified

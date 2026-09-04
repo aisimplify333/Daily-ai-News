@@ -4,6 +4,13 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 ## September 4 listener-feedback revision
 
+- Follow-up character direction shared by writer, punch-up and rescue: Rufus's
+  understated British wit, reciprocal Jamie teasing, and Alex's varied returns
+  to facts and consequences. Removed fixed British-phrase and comic-reaction
+  quotas from the persona brief; counts elsewhere remain advisory, not proof of
+  artistic success. The remembered cotton-socks phrase is a tone reference, not
+  a recurring required line or a verified audience metric. No new paid calls.
+
 - Alex and Rufus restored to `tts-1-hd` with onyx/fable, keeping speeds 1.01/0.99
   and gains +3.5/+0.3 dB. Jamie stays Grok Ursa with Celeste fallback, speed 1.05.
   HD does not accept per-line mood instructions; voice identity is the priority here.
