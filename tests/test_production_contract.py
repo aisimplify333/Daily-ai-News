@@ -78,6 +78,16 @@ def final_script():
 
 
 class ProductionContractTests(unittest.TestCase):
+    def test_schedule_avoids_hour_boundary_and_keeps_cost_safe_triggers(self):
+        workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text(encoding="utf-8")
+        self.assertEqual(re.findall(r"cron:\s*'([^']+)'", workflow), ["17 10 * * 1-5"])
+        triggers = workflow.split("on:\n", 1)[1].split("\npermissions:", 1)[0]
+        self.assertIn("workflow_dispatch:", triggers)
+        self.assertNotRegex(triggers, r"(?m)^  (push|pull_request):")
+        self.assertIn("cancel-in-progress: false", workflow)
+        self.assertIn('FORCE_REBUILD: "false"', workflow)
+        self.assertIn('ALLOW_DUPLICATE_DATE_REBUILD: "false"', workflow)
+
     def test_measured_timeline_handles_speed_fit_and_pre_outro_padding(self):
         files = [Path("voice"), Path("transition"), Path("voice"), Path("outro")]
         markers = [{"kind": "segment", "segment": 1, "start_index": 0}, {"kind": "segment", "segment": 2, "start_index": 1}, {"kind": "outro", "start_index": 3, "end_index": 4}]

@@ -9,6 +9,12 @@ hours. The other top stories become evidence, complications or counterargumentsâ
 an unrelated headline dump. New episodes are produced automatically Monday through
 Friday and delivered to Spotify through the public RSS feed.
 
+The requested start is 10:17 UTC on weekdays (3:17 a.m. Pacific daylight time).
+The off-hour minute reduces GitHub's documented scheduling congestion risk;
+GitHub may still start a scheduled run late. Check Actions before manually
+starting a catch-up run. Existing same-date audio is reused, and ordinary code
+pushes do not trigger paid production.
+
 Alex leads and asks the listener's next question. Jamie is the quick, opinionated
 comic catalyst, using Grok Ursa with Celeste fallback. Rufus is the measured British
 foil. The cast may invent recurring bits and explicitly hypothetical questions,

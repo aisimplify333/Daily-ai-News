@@ -21,7 +21,7 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 | Trailer | One-time 60–90 second assembly from actual cold open, music, cast intro, exchange, promise and CTA; existing trailer preserved. If required beats do not fit, report a warning and retain the prepared trailer script. |
 | Reliability | Required audio/RSS checks remain; voice/creative/companion warnings do not discard paid audio. Artifacts retained for recovery. |
 | Testing | Offline tests include actual synthetic-audio clip, captioned video and trailer exports without TTS calls. |
-| Schedule | Monday–Friday at 10:00 UTC (03:00 Pacific daylight / 02:00 Pacific standard time). |
+| Schedule | Monday–Friday at 10:17 UTC (03:17 Pacific daylight / 02:17 Pacific standard time). Requested start, not an exact delivery guarantee. |
 
 ## Not equivalent to completion
 
@@ -39,3 +39,25 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 Do not regenerate a completed master for a packaging or subjective quality warning.
 Do not count a generated poll, clip or trailer as published without platform evidence.
+
+## September 4 scheduling incident
+
+The scheduled production run [33881752206](https://github.com/aisimplify333/Daily-ai-News/actions/runs/33881752206)
+started automatically at 14:05:46 UTC on the deployed `ba293b1` revision,
+4 hours 5 minutes after the former 10:00 UTC schedule. It was not a manual run.
+This proves the scheduler is active; it does not identify the reason for GitHub's delay.
+
+The automatic run generated and committed the September 4 episode at 14:22:29 UTC
+(`fa7d34e`): 24 minutes 26 seconds, all delivery checks passed, transcript and chapters
+present, intro/outro and four transitions confirmed by audio QA. Jamie used Ursa
+for all 48 Grok chunks with no fallback. These are production reports, not a
+subjective listening endorsement. Public deployment and Spotify ingestion must
+be checked separately. No duplicate production run was started.
+
+The schedule is moved to minute 17, following GitHub's
+[off-hour scheduling guidance](https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule).
+This mitigates a documented delay risk but cannot guarantee GitHub's start time.
+Manual dispatch remains available, push-triggered production remains disabled,
+and existing same-date audio is reused. Do not launch another run while the
+scheduled episode is still running. Deploy the schedule adjustment only after
+that run finishes, so its episode commit is not rejected by a concurrent push.

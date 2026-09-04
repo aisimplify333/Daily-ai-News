@@ -2,7 +2,9 @@ name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5' # Mon-Fri 3:00 AM Pacific daylight time / 10:00 UTC
+    # Avoid GitHub's documented top-of-hour schedule congestion. This is a
+    # requested start time, not an exact-time delivery guarantee.
+    - cron: '17 10 * * 1-5' # Mon-Fri 3:17 AM Pacific daylight time / 10:17 UTC
   workflow_dispatch:
 permissions:
   contents: write
