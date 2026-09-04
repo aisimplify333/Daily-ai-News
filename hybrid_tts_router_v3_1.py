@@ -84,6 +84,8 @@ STATS: Dict[str, Any] = {
     "calls": [],
     "fallbacks": [],
     "mood_distribution": {},
+    "jamie_expression_distribution": {},
+    "characters_by_speaker": {"ALEX": 0, "JAMIE": 0, "RUFUS": 0},
     "jamie_chars_requested": 0,
     "jamie_cache_hits": 0,
     "jamie_gemini_successes": 0,
@@ -116,6 +118,9 @@ def _write_report() -> None:
         STATS.get("jamie_grok_successes", 0) > 0
         or STATS.get("jamie_gemini_successes", 0) > 0
     )
+    STATS["total_characters_rendered"] = sum(
+        int(value or 0) for value in STATS.get("characters_by_speaker", {}).values()
+    )
     try:
         REPORT_PATH.write_text(json.dumps(STATS, ensure_ascii=False, indent=2) + "\n",
                                encoding="utf-8")
@@ -143,7 +148,7 @@ PUSHBACK_RE = re.compile(
     r"that is not|let me stop you|i don'?t buy)\b", re.IGNORECASE,
 )
 AMUSED_RE = re.compile(
-    r"\b(hah|ha\.|funny|ridiculous|absurd|you'?re kidding|i love that|genuinely funny|"
+    r"\b(hah|ha[.!]|heh|funny|ridiculous|absurd|you'?re kidding|i love that|genuinely funny|"
     r"that'?s great|oh, that'?s)\b", re.IGNORECASE,
 )
 CONCERN_RE = re.compile(
@@ -179,6 +184,10 @@ def infer_mood(text: str, speaker: str) -> str:
     spk = (speaker or "").strip().upper()
     if not body:
         return "neutral"
+    # An explicit written laugh survives a following "wait"/challenge. Without
+    # this, Jamie's best funny pushbacks were all flattened into one sharp mood.
+    if spk == "JAMIE" and re.match(r"^(?:ha|hah|heh)[.!]", body, re.I):
+        return "amused"
 
     # 1. Interruption — the line is cut off (or cuts in) on an em-dash.
     if body.endswith(("—", "–")) or body.startswith(("—", "–")):
@@ -215,10 +224,11 @@ def infer_mood(text: str, speaker: str) -> str:
 PERSONA = {
     "ALEX": ("Alex — the host and engine of the room. Curious, blunt, high-agency, "
              "energetic. Keeps the debate moving and presses the question others avoid."),
-    "JAMIE": ("Jamie — the heavy reactor. Warm, sharp, funny, emotionally present. "
+    "JAMIE": ("Jamie — the comic catalyst and equal debating partner. Warm, sharp, funny, emotionally present. "
               "Translates jargon into plain English and makes the stakes land for "
               "normal listeners. Modern and real; never robotic, never valley-girl, "
-              "never over-acted."),
+              "Lead the earned laughs, occasional surprised guffaw and sotto-voce snicker; "
+              "vary their intensity, then get straight back to the argument. Never a laugh track."),
     "RUFUS": ("Rufus — the dry British analyst. Calm, precise, quietly funny, "
               "unhurried. Tracks money, liability, and regulation. Understatement, "
               "never theatrics."),
@@ -330,10 +340,31 @@ biggest AI story. The room is fast and alive; you are responding in the moment.
 
 def _openai_instructions(speaker: str, mood: str) -> str:
     spk = (speaker or "").strip().upper()
-    base = PERSONA_SHORT.get(spk, "a podcast co-host")
+    performance = {
+        "ALEX": (
+            "You are Alex, the high-agency lead host. Use confident, lived-in podcast "
+            "timing: conversational swagger, varied pace, crisp pressure questions, and "
+            "brief pauses before the consequence. Drive the room without sounding like "
+            "a radio announcer or reading copy."
+        ),
+        "JAMIE": (
+            "You are Jamie, a highly intelligent, opinionated female co-host. Be quick, "
+            "warm, competitive, and emotionally alive. Be the trio's comic catalyst: "
+            "an earned laugh, surprised guffaw, small snicker or sarcastic chuckle, "
+            "with varied intensity. React to the other hosts and recover into the "
+            "point quickly. No canned laugh after every line; keep sponsor copy clear."
+        ),
+        "RUFUS": (
+            "You are Rufus, a precise British analyst. Keep a natural contemporary British "
+            "accent and unhurried cadence, with clean emphasis on money, liability, and "
+            "power. Land euphemisms and dry wit through restraint, never caricature."
+        ),
+    }.get(spk, f"You are {PERSONA_SHORT.get(spk, 'a podcast co-host')}.")
     overlay = MOOD_DIRECTION.get(mood, MOOD_DIRECTION["neutral"])[1]
-    return (f"You are {base} on a fast, premium daily AI debate podcast. {overlay} "
-            f"Sound like a real person mid-conversation, not a narrator.")
+    return (
+        f"{performance} You are mid-conversation on a premium daily AI debate podcast. "
+        f"{overlay} Sound responsive to the other two people in the room, not like a narrator."
+    )
 
 
 # ----------------------------------------------------------------------------
@@ -553,6 +584,9 @@ def _openai_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
                     resp.stream_to_file(str(out_path))  # legacy SDK
             if out_path.exists() and out_path.stat().st_size > 1000:
                 STATS["openai_router_calls"] += 1
+                STATS["characters_by_speaker"][spk] = (
+                    int(STATS["characters_by_speaker"].get(spk) or 0) + len(clean)
+                )
                 STATS["calls"].append({
                     "speaker": spk, "provider": "openai_router", "mood": mood,
                     "model": model, "voice": voice, "chars": len(clean),
@@ -597,7 +631,14 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
             from grok_tts_v4 import render_jamie as _render_grok_jamie
 
             result = _render_grok_jamie(text, mood, out)
+            for expression in result.get("expressions") or []:
+                counts = STATS["jamie_expression_distribution"]
+                counts[expression] = int(counts.get(expression) or 0) + 1
             STATS["jamie_chars_requested"] += int(result.get("characters") or 0)
+            STATS["characters_by_speaker"][spk] = (
+                int(STATS["characters_by_speaker"].get(spk) or 0)
+                + int(result.get("characters") or 0)
+            )
             STATS["jamie_grok_successes"] += 1
             STATS["jamie_grok_episode_successes"] += 1
             if result.get("primary_voice"):
@@ -622,6 +663,7 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
                 "primary_voice": bool(result.get("primary_voice")),
                 "mood": mood,
                 "cache": bool(result.get("cache")),
+                "expressions": list(result.get("expressions") or []),
                 "chars": int(result.get("characters") or 0),
                 "estimated_cost_usd": float(result.get("estimated_cost_usd") or 0.0),
             })
@@ -665,6 +707,10 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
     original = _RT.get("original_tts")
     if callable(original):
         STATS["openai_passthrough_calls"] += 1
+        STATS["characters_by_speaker"][spk] = (
+            int(STATS["characters_by_speaker"].get(spk) or 0)
+            + len(_sanitize_spoken_text(text))
+        )
         STATS["calls"].append({"speaker": spk, "provider": "openai_passthrough",
                                "mood": mood, "chars": len(_sanitize_spoken_text(text))})
         _write_report()
@@ -812,9 +858,6 @@ def install(g: Dict[str, Any]) -> None:
 # ----------------------------------------------------------------------------
 # NOTE ON A GENUINELY BRITISH RUFUS
 # ----------------------------------------------------------------------------
-# OpenAI TTS voices are American-English; the `instructions` parameter nudges
-# tone and pacing but cannot reliably produce a British accent. If a British
-# Rufus matters to the show's identity, set RUFUS_TTS_PROVIDER=gemini and choose
-# a Gemini voice that reads British to your ear (GEMINI_TTS_VOICE_RUFUS). The
-# router already supports this — it is one env var. Audition a few lines before
-# committing; voice choice is a by-ear decision, not a code decision.
+# The directed OpenAI path now explicitly preserves Rufus's contemporary British
+# delivery. Gemini remains an opt-in audition path, but it is not placed in the
+# autonomous production chain until a by-ear episode test proves continuity.

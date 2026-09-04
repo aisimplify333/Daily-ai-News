@@ -67,10 +67,14 @@ from typing import Any, Dict, List, Optional, Tuple
 # Config (env names preserved so the existing workflow needs no rewiring)
 # ----------------------------------------------------------------------------
 SHOW_TITLE = os.getenv("PODCAST_SHOW_TITLE", "The AI Edge").strip() or "The AI Edge"
+LISTENER_PROMISE = "What changed. Who wins. What you do next."
 SHOW_DESCRIPTION = os.getenv(
     "PODCAST_SHOW_DESCRIPTION",
-    "A hard-debate daily AI podcast where Alex, Jamie, and Rufus argue through "
-    "the AI story that changes who gets power, who gets blamed, and what matters tomorrow.",
+    "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
+    "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
+    "Each episode debates one lead story from the last 24–48 hours, using the other top "
+    "AI events as evidence, complications, or counterarguments. Follow The AI Edge for "
+    "new episodes Monday through Friday. What changed. Who wins. What you do next.",
 ).strip()
 
 STORY_BOARD_MODEL = os.getenv("STORY_BOARD_MODEL", "gemini-3.1-flash-lite").strip()
@@ -90,6 +94,8 @@ GROUNDED_NEWS_MODEL = os.getenv("GROUNDED_NEWS_MODEL", "gemini-3.1-flash-lite").
 
 # Continuity tuning
 SHOW_MEMORY_DEFAULT = "show_memory.json"
+POLL_RESULTS_DEFAULT = "listener_poll_results.json"
+SHAREABLE_EXCHANGE_DEFAULT = "shareable_exchange.json"
 CONTINUITY_KEY = "ai_edge_continuity"          # namespaced so we never clobber other data
 CONTINUITY_LOOKBACK = int(os.getenv("CONTINUITY_LOOKBACK", "12"))   # episodes of callback fuel
 PHRASE_BAN_LOOKBACK = int(os.getenv("PHRASE_BAN_LOOKBACK", "6"))    # episodes whose phrases are off-limits
@@ -128,6 +134,7 @@ CONCESSION_RE = re.compile(
 CALLBACK_RE = re.compile(
     r"\b(last week|last time|last month|yesterday|a few episodes ago|earlier this week|"
     r"we said|we called it|you predicted|you called this|remember when|two weeks ago|"
+    r"listeners? (?:asked|challenged|voted|chose)|the (?:listener )?poll|our poll|"
     r"on (?:monday|tuesday|wednesday|thursday|friday)'?s? (?:show|episode))\b",
     re.IGNORECASE,
 )
@@ -561,6 +568,43 @@ def _load_continuity(g: Dict[str, Any]) -> Tuple[Dict[str, Any], List[Dict[str, 
     return root, episodes
 
 
+def _load_poll_results(g: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Load Creator-dashboard poll results when they have been exported.
+
+    Spotify does not expose podcast-poll results through RSS. The production engine
+    therefore consumes a tiny checked-in handoff file rather than inventing a result.
+    Empty or malformed files are harmless; questions still remain in show memory.
+    """
+    path = Path(g.get("LISTENER_POLL_RESULTS_PATH") or POLL_RESULTS_DEFAULT)
+    try:
+        raw = json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    if isinstance(raw, dict):
+        raw = raw.get("results", [])
+    if not isinstance(raw, list):
+        return []
+    return [row for row in raw if isinstance(row, dict) and str(row.get("episode_date") or row.get("date") or "").strip()]
+
+
+def _merge_poll_results(
+    episodes: List[Dict[str, Any]], poll_results: List[Dict[str, Any]]
+) -> List[Dict[str, Any]]:
+    by_date = {
+        str(row.get("episode_date") or row.get("date") or "").strip(): dict(row)
+        for row in poll_results
+        if str(row.get("episode_date") or row.get("date") or "").strip()
+    }
+    merged: List[Dict[str, Any]] = []
+    for episode in episodes:
+        record = dict(episode) if isinstance(episode, dict) else {}
+        result = by_date.get(str(record.get("date") or "").strip())
+        if result:
+            record["poll_result"] = result
+        merged.append(record)
+    return merged
+
+
 def _save_continuity(g: Dict[str, Any], root: Dict[str, Any], episodes: List[Dict[str, Any]]) -> None:
     cont = root.get(CONTINUITY_KEY)
     if not isinstance(cont, dict):
@@ -577,21 +621,83 @@ def _save_continuity(g: Dict[str, Any], root: Dict[str, Any], episodes: List[Dic
         _safe_print(g, f" ⚠️ Could not write continuity to show_memory.json: {e}")
 
 
-def _continuity_fuel(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
+def _continuity_fuel(
+    episodes: List[Dict[str, Any]], root: Optional[Dict[str, Any]] = None
+) -> Dict[str, Any]:
     """Turn stored history into concrete writer inputs: callback opportunities
     and a banned-phrase list so the show stops repeating itself."""
+    root = root or {}
     recent = episodes[-CONTINUITY_LOOKBACK:]
     callbacks: List[str] = []
+    poll_callbacks: List[str] = []
     for ep in reversed(recent):
         date = ep.get("date", "")
+        poll_result = ep.get("poll_result") if isinstance(ep.get("poll_result"), dict) else {}
+        poll_question = str(
+            poll_result.get("question") or ep.get("listener_question") or ""
+        ).strip()
+        winner = str(
+            poll_result.get("winning_option") or poll_result.get("winner") or ""
+        ).strip()
+        share = poll_result.get("winning_percent")
+        votes = poll_result.get("total_votes") or poll_result.get("votes")
+        if winner:
+            result_line = f'Listener poll from {date}: "{poll_question}" — {winner} led'
+            if isinstance(share, (int, float)):
+                result_line += f" with {share:g}%"
+            if isinstance(votes, int) and votes >= 0:
+                result_line += f" of {votes} votes"
+            poll_callbacks.append(result_line + ".")
+        elif poll_question:
+            poll_callbacks.append(f'On {date}, listeners were asked: "{poll_question}"')
+
         for p in ep.get("predictions", []) or []:
             host = str(p.get("host", "")).title()
             claim = str(p.get("claim", "")).strip()
             if host and claim:
                 callbacks.append(f"On {date}, {host} predicted: {claim}")
+        for outcome in ep.get("outcomes_to_revisit", []) or []:
+            if isinstance(outcome, dict):
+                claim = str(outcome.get("claim") or outcome.get("outcome") or "").strip()
+                check_after = str(outcome.get("check_after") or "").strip()
+            else:
+                claim, check_after = str(outcome).strip(), ""
+            if claim:
+                callbacks.append(
+                    f"Outcome to revisit from {date}: {claim}"
+                    + (f" (check {check_after})" if check_after else "")
+                )
+        for disagreement in ep.get("strong_disagreements", []) or []:
+            if isinstance(disagreement, dict):
+                issue = str(disagreement.get("issue") or disagreement.get("claim") or "").strip()
+            else:
+                issue = str(disagreement).strip()
+            if issue:
+                callbacks.append(f"Unresolved argument from {date}: {issue}")
+        positions = ep.get("positions") if isinstance(ep.get("positions"), dict) else {}
+        for host in ("alex", "jamie", "rufus"):
+            stance = str(positions.get(host) or "").strip()
+            if stance:
+                callbacks.append(f"On {date}, {host.title()} argued: {stance}")
         thread = str(ep.get("central_fight", "")).strip()
         if thread:
             callbacks.append(f"On {date} the show argued: {thread}")
+
+    recurring_callbacks = [
+        f"Recurring show callback: {str(item).strip()}"
+        for item in (root.get("callbacks") or [])[:6]
+        if str(item).strip()
+    ]
+    running_jokes = [
+        str(item).strip()
+        for item in (root.get("running_bits") or [])[:6]
+        if str(item).strip()
+    ]
+    for ep in reversed(recent):
+        for item in ep.get("running_jokes", []) or []:
+            joke = str(item).strip()
+            if joke and joke not in running_jokes:
+                running_jokes.append(joke)
 
     banned: List[str] = []
     for ep in episodes[-PHRASE_BAN_LOOKBACK:]:
@@ -603,10 +709,18 @@ def _continuity_fuel(episodes: List[Dict[str, Any]]) -> Dict[str, Any]:
     return {
         "has_history": len(episodes) > 0,
         "episode_number": len(episodes) + 1,
-        "callbacks": callbacks[:10],
+        "callbacks": (poll_callbacks[:2] + callbacks + recurring_callbacks)[:14],
+        "poll_callbacks": poll_callbacks[:2],
+        "running_jokes": running_jokes[:8],
         "banned_phrases": banned[:24],
         "last_title": episodes[-1].get("title", "") if episodes else "",
     }
+
+
+def _continuity_fuel_from_disk(g: Dict[str, Any]) -> Dict[str, Any]:
+    root, episodes = _load_continuity(g)
+    episodes = _merge_poll_results(episodes, _load_poll_results(g))
+    return _continuity_fuel(episodes, root)
 
 
 def _extract_episode_memory(g: Dict[str, Any], script: str, stories: List[Dict[str, Any]],
@@ -620,6 +734,17 @@ def _extract_episode_memory(g: Dict[str, Any], script: str, stories: List[Dict[s
         "lead_headline": _headline(stories[0]) if stories else "",
         "topics": [_headline(s) for s in stories[:5] if _headline(s)],
         "predictions": [],
+        "positions": dict(board.get("positions") or {}),
+        "strong_disagreements": [{
+            "issue": str(board.get("central_fight") or ""),
+            "positions": dict(board.get("positions") or {}),
+            "concession": dict(board.get("concession") or {}),
+        }],
+        "running_jokes": [],
+        "listener_question": str(board.get("listener_question") or ""),
+        "poll_options": list(board.get("poll_options") or [])[:4],
+        "poll_result": {},
+        "outcomes_to_revisit": [],
         "signature_phrases": [],
         "forwardable_lines": list(board.get("forwardable_targets") or [])[:4],
     }
@@ -628,12 +753,17 @@ for future episodes of a daily show. Be precise and literal.
 
 {{
   "predictions": [{{"host": "Alex|Jamie|Rufus", "claim": "a specific forecast a host made, in one sentence"}}],
+  "strong_disagreements": [{{"issue": "the concrete unresolved issue", "between": ["Alex", "Jamie"]}}],
+  "running_jokes": ["a recurring joke or character bit worth revisiting; no generic banter"],
+  "outcomes_to_revisit": [{{"claim": "a concrete outcome the show should check later", "check_after": "a date or clear trigger if spoken"}}],
   "signature_phrases": ["distinctive 4-9 word phrases or images a host coined this episode; NOT generic filler"],
   "topics": ["the 3-6 concrete subjects argued"],
   "forwardable_lines": ["up to 4 single lines a listener would screenshot"]
 }}
 
-Rules: predictions must be real forecasts, not opinions. signature_phrases must be
+Rules: predictions must be real forecasts, not opinions. strong_disagreements must
+capture actual conflict, not ordinary pushback. running_jokes must be reusable and
+character-specific. outcomes_to_revisit must be checkable. signature_phrases must be
 distinctive enough that reusing them next week would feel repetitive — skip ordinary
 words. If a field has nothing, return an empty list.
 
@@ -644,7 +774,11 @@ SCRIPT:
         parsed = _extract_json(_gemini_text(g, prompt, model=model, max_tokens=1400), None)
         if isinstance(parsed, dict):
             rec = dict(fallback)
-            for k in ("predictions", "signature_phrases", "topics", "forwardable_lines"):
+            for k in (
+                "predictions", "strong_disagreements", "running_jokes",
+                "outcomes_to_revisit", "signature_phrases", "topics",
+                "forwardable_lines",
+            ):
                 v = parsed.get(k)
                 if isinstance(v, list) and v:
                     rec[k] = v
@@ -696,20 +830,44 @@ def _central_fight(stories: List[Dict[str, Any]]) -> str:
 
 def _hard_title(stories: List[Dict[str, Any]]) -> str:
     b = _lead_blob(stories)
-    entity = next((a for a in MAJOR_AI_ACTORS if a.lower() in b), "AI")
+    headline = _headline(stories[0]).lower() if stories else ""
+    entity = next(
+        (a for a in MAJOR_AI_ACTORS if a.lower() in headline),
+        next((a for a in MAJOR_AI_ACTORS if a.lower() in b), "AI"),
+    )
+    owner = f"{entity}'s" if entity != "AI" else "AI"
     if any(x in b for x in ["health", "clinical", "doctor", "patient", "hospital", "gates foundation"]):
-        return "AI Is Entering Healthcare. Who Gets Blamed When It Is Wrong?"
+        return f"{owner} Healthcare Move: Who Is Liable When It Is Wrong?"
     if any(x in b for x in ["security", "cyber", "breach", "vulnerability"]):
-        return "AI Agents Are Becoming a Security Problem"
+        return f"{owner} Security Move Changes Who Gets Access"
     if any(x in b for x in ["coding", "developer", "codebase", "github"]):
-        return "AI Coding Agents Just Put the Moat on Trial"
+        return f"{owner} Coding Move Puts the Moat on Trial"
     if any(x in b for x in ["lawsuit", "copyright", "court", "antitrust"]):
-        return "AI Just Ran Into the One Thing It Cannot Prompt Away"
+        return f"{owner} Fight Just Put the Lawyers in Charge"
+    if any(x in b for x in ["chip", "gpu", "nvidia", "compute", "data center", "datacenter", "acquisition", "deal"]):
+        return f"{owner} Deal Is an AI Infrastructure Power Grab"
     if any(x in b for x in ["china", "export", "white house", "government", "regulation"]):
-        return "The AI Race Has a Control Problem"
+        return f"{owner} AI Move Has a Control Problem"
     if any(x in b for x in ["agent", "agents", "workflow", "copilot"]):
-        return "AI Agents Are Getting More Power. Who Is Watching?"
-    return f"{entity}'s AI Move Has a Bigger Fight Behind It"
+        return f"{owner} Agents Are Getting More Power. Who Is Watching?"
+    return f"{owner} AI Move Has a Bigger Fight Behind It"
+
+
+def _lead_actor(stories: List[Dict[str, Any]]) -> str:
+    blob = _lead_blob(stories)
+    headline = _headline(stories[0]).lower() if stories else ""
+    return next(
+        (actor for actor in MAJOR_AI_ACTORS if actor.lower() in headline),
+        next((actor for actor in MAJOR_AI_ACTORS if actor.lower() in blob), ""),
+    )
+
+
+def _title_matches_lead(title: str, stories: List[Dict[str, Any]]) -> bool:
+    """Keep the public promise tied to Story 1, not a clever secondary theme."""
+    actor = _lead_actor(stories)
+    if not actor:
+        return True
+    return actor.lower() in (title or "").lower()
 
 
 def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
@@ -722,8 +880,9 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
         "published_title": _hard_title(stories),
         "central_fight": _central_fight(stories),
         "opening_question": _central_fight(stories),
-        "listener_promise": "By the end you will know what happened, why it matters, "
-                            "who wins, who is exposed, and what to watch tomorrow.",
+        "listener_question": _central_fight(stories),
+        "poll_options": ["Necessary progress", "Too much control", "Too early to tell"],
+        "listener_promise": LISTENER_PROMISE,
         "positions": {
             "alex": "Drives the room; presses for who is actually accountable.",
             "jamie": "Argues the human cost is being treated as an acceptable rounding error.",
@@ -781,9 +940,11 @@ concession. Pick whichever host the day's facts would most plausibly move.
 
 Return exactly this JSON:
 {{
-  "published_title": "urgent, human, debate-worthy; never starts with 'Today' and never the word 'lesson'",
+  "published_title": "6-14 words; name Story 1's primary company/person/product, its concrete action or number, and the consequence; never starts with 'Today' and never the word 'lesson'",
   "central_fight": "the core disagreement in one sentence",
   "opening_question": "the first hard audience question Alex asks after the short welcome",
+  "listener_question": "one answerable listener poll question, maximum 140 characters",
+  "poll_options": ["2-4 short, mutually distinct answers"],
   "listener_promise": "what the listener knows by the end",
   "positions": {{
     "alex": "Alex's actual stance and the strongest version of his case",
@@ -806,9 +967,28 @@ Return exactly this JSON:
                     default[k] = v
             break
 
-    title = str(default.get("published_title", ""))
-    if title.lower().startswith("today") or "lesson" in title.lower():
+    title = str(default.get("published_title", "")).strip()
+    title_words = _word_count(title)
+    if (
+        title.lower().startswith("today")
+        or "lesson" in title.lower()
+        or not 6 <= title_words <= 14
+        or not _title_matches_lead(title, stories)
+    ):
         default["published_title"] = _hard_title(stories)
+    question = re.sub(r"\s+", " ", str(default.get("listener_question") or "")).strip()
+    if not question:
+        question = str(default.get("central_fight") or _central_fight(stories)).strip()
+    question = question[:139].rstrip(" .") + ("?" if not question.endswith("?") else "")
+    default["listener_question"] = question[:140]
+    poll_options = [
+        re.sub(r"\s+", " ", str(option)).strip()[:60]
+        for option in (default.get("poll_options") or [])
+        if str(option).strip()
+    ]
+    if not 2 <= len(poll_options) <= 4:
+        poll_options = ["Necessary progress", "Too much control", "Too early to tell"]
+    default["poll_options"] = poll_options
     return default
 
 
@@ -850,16 +1030,28 @@ def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]]
     pos = board.get("positions", {}) or {}
     conc = board.get("concession", {}) or {}
     callbacks = fuel.get("callbacks", [])
+    running_jokes = fuel.get("running_jokes", [])
     banned = fuel.get("banned_phrases", [])
 
     callback_block = (
         "CONTINUITY — this is a daily show with a memory. Work at least ONE of these\n"
         "callbacks naturally into Segment 1 or Segment 5 (a host settling, revisiting, or\n"
-        "being reminded of an earlier take). Do not force more than two.\n"
+        "being reminded of an earlier take). If a listener-poll result is supplied, Alex\n"
+        "briefly acknowledges the real result in Segment 1. If only a prior question is\n"
+        "supplied, say what the show asked without inventing votes or percentages. Do not\n"
+        "force more than two callbacks.\n"
         + "\n".join(f"- {c}" for c in callbacks)
         if callbacks else
         "CONTINUITY — this is one of the show's first episodes. Plant one forward marker a\n"
         "future episode can call back to (a dated, specific host prediction)."
+    )
+    relationship_block = (
+        "RELATIONSHIP BITS — optionally revive ONE only when it fits naturally; evolve it\n"
+        "rather than repeating the same wording:\n"
+        + "\n".join(f"- {j}" for j in running_jokes)
+        if running_jokes else
+        "RELATIONSHIP BITS — no running joke is stored yet. Let one earned character-specific\n"
+        "bit emerge that tomorrow's episode could remember."
     )
     banned_block = (
         "DO NOT REUSE these phrases/images from recent episodes — they are now stale.\n"
@@ -874,6 +1066,9 @@ This is a hard, human, daily AI debate — three real people arguing, not a dige
 not a lesson. Education happens INSIDE the argument. Data is the ammunition.
 
 EDITORIAL DNA — combine these disciplines without naming or imitating another show:
+- PERMANENT LISTENER PROMISE: {LISTENER_PROMISE} The listener should be able to say,
+  "I listen to The AI Edge because Alex, Jamie and Rufus tell me what changed in AI,
+  who wins and what I should do next."
 - DAILY-BRIEF DISCIPLINE: identify the one AI development that actually matters today.
   Give that lead event roughly 60 percent of the episode; use the other top events to
   confirm, complicate, or break the main thesis. The listener must know what changed,
@@ -901,6 +1096,10 @@ CENTRAL FIGHT:
 OPENING QUESTION (Segment 1 cold hook; Alex asks this before the music):
 {board.get('opening_question')}
 
+LISTENER QUESTION (Alex asks this near the end; it also becomes the Spotify poll):
+{board.get('listener_question')}
+Poll answers: {json.dumps(board.get('poll_options') or [], ensure_ascii=False)}
+
 THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disagree:
 - ALEX: {pos.get('alex', 'Drives the room; presses on accountability.')}
   He is the listener's proxy and the conversational engine: curious rather than
@@ -908,6 +1107,14 @@ THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disag
   with the question the audience is forming, asks the uncomfortable second follow-up,
   admits when he does not understand, and does not move on until the stakes are clear.
 - JAMIE: {pos.get('jamie', 'Argues the human cost is being undercounted.')}
+  She is the comic catalyst, never just the laugh track. Give her 4–7 short,
+  earned comic reactions spread through the episode: 1–2 proper surprised laughs,
+  a softer snicker, dry chuckles, and a comeback that makes one of the boys crack.
+  She must also win arguments with evidence. Let Alex drive and Rufus play dry foil.
+  Write a big reaction as "Hah!" or "Ha! Ha!", a small snicker as "Heh.", and
+  quieter amusement as "Hah." The voice adapter performs these as native vocal
+  expressions. Do not say "guffaw" or "snicker" aloud or write bracket directions.
+  Never put laughter in sponsor copy or mock victims, illness, layoffs or tragedy.
 - RUFUS: {pos.get('rufus', 'Argues the money and liability trail already tells the ending.')}
 
 MANDATORY CONCESSION — NOT optional, NOT a polite "good point":
@@ -941,7 +1148,28 @@ MANDATORY RECEIPTS:
 FORWARDABLE TARGETS (aim for lines this sharp; do not quote them verbatim):
 {json.dumps(board.get('forwardable_targets') or [], ensure_ascii=False, indent=2)}
 
+PRIMARY SHAREABLE EXCHANGE — REQUIRED, preferably in Segment 4:
+- One continuous 20–45 second exchange, roughly 50–110 spoken words across 3–7 short turns.
+- At least two hosts must participate. It needs a sharp claim, a genuine challenge, a
+  counter or surprising receipt, and a payoff that makes sense outside the full episode.
+- It must be the exact exchange someone would send to a coworker: prediction, funny clash,
+  concise explanation, or "you are looking at this wrong" reversal. Do not label it as a clip.
+
 {callback_block}
+
+{relationship_block}
+
+HONEST AUDIENCE CONNECTION — essential while the audience is growing:
+- You may invent a funny cast bit or an explicitly hypothetical listener question.
+- Prefer Alex saying "Here's the question I'd be asking in your shoes" or Jamie
+  saying "Imagine you're the person who has to approve this". That is audience
+  advocacy, not a claimed submission.
+- Never invent named listeners, emails, reviews, comments, poll votes, percentages,
+  testimonials or audience size. Never present a producer-written question as fan mail.
+- Only acknowledge actual results in the supplied memory. When results are absent,
+  revisit the previous question without implying anybody voted or responded.
+- Cast memory refers to supplied prior episodes. New jokes can start today; do not
+  invent a past broadcast, a shared real-world outing or a listener success story.
 
 {banned_block}
 
@@ -956,6 +1184,9 @@ Alex delivers 45-65 spoken words across no more than two lines. Use this sequenc
 brought to you by The Ledger." Spell the URL exactly "T-H-E-L-E-D-G-R dot I-O."
 No "game-changer," "revolutionary," or fake enthusiasm. After the read, return
 directly to the argument.
+
+The production system adds one short rotating Jamie-or-Rufus sponsor reminder near
+the close. Do not write a second house ad, repeat the URL, or add another call to action.
 
 {secondary_block}
 
@@ -989,8 +1220,14 @@ NON-NEGOTIABLES:
   voice, and previews the day's hottest AI topics. Give Jamie and Rufus brief natural
   responses so this feels like a real trio, not a roll call. Keep this welcome/roadmap
   to 80-120 total spoken words.
+- Immediately after the cast welcome, Alex must say "Our lead story today is ..."
+  and name Story 1 plainly. Make it unmistakable that the other stories are evidence
+  that will confirm, complicate, or challenge this one lead—not three unrelated leads.
 - Let the first discussion breathe briefly, then Alex delivers the two-line Ledger read
   at the natural break immediately before Segment 2.
+- At the start of Segments 2-5, use one short spoken handoff that tells the listener
+  where the argument is going next. For supporting stories, explicitly call them a
+  supporting signal, a complication, or a counterexample to the lead.
 - Every story becomes an argument: who wins, who loses, who is exposed, what changes tomorrow.
 - At least 6 concrete receipts (numbers, $, dates, named institutions, benchmarks).
 - Explain every important number in plain terms.
@@ -1021,12 +1258,17 @@ regulation, incentives, and geopolitical power. Alex may challenge him; Jamie ma
 land one human consequence. No fake consensus. The concession can land here.
 
 ### SEGMENT 4 — The Pattern Across the Other Top AI Events
-Other events only where they prove or break the main argument. Fast, data-first.
+Other events only where they prove or break the main argument. Fast, data-first. Build
+the primary 20–45 second shareable exchange here unless another moment clearly earns it.
 
 ### SEGMENT 5 — The Ledger Readout + Final Button
-Answer: what changed, who wins, who is exposed, what to watch tomorrow. If the
+Alex asks for the final positions naturally. Across a rapid closing exchange, Jamie and
+Rufus answer what changed, who wins, and what the listener should watch or do next. Alex
+synthesizes the remaining disagreement instead of merely recapping. If the
 concession did not land in Segment 3, land it here. End on a sticky, unresolved
 question — and plant one specific, dated prediction for a future episode to revisit.
+Near the close Alex asks the supplied listener question and tells listeners to follow
+The AI Edge for tomorrow's answer. Keep the final editorial button after that CTA.
 
 OUTPUT ONLY THE SCRIPT.
 """.strip()
@@ -1133,6 +1375,211 @@ def _normalize_primary_sponsor(script: str) -> str:
     ).strip()
 
 
+def _short_chapter_label(value: str, max_chars: int = 72) -> str:
+    clean = re.sub(r"\s+", " ", value or "").strip(" .,:;—-")
+    if len(clean) <= max_chars:
+        return clean
+    words: List[str] = []
+    for word in clean.split():
+        if words and len(" ".join(words + [word])) > max_chars:
+            break
+        words.append(word)
+    return " ".join(words).rstrip(" .,:;—-")
+
+
+def _apply_topic_chapter_headers(
+    lines: List[str], stories: List[Dict[str, Any]]
+) -> List[str]:
+    lead = _short_chapter_label(_headline(stories[0]) if stories else "Today's AI Fight")
+    actor = _lead_actor(stories) or "The Lead Story"
+    story_three = _short_chapter_label(
+        _headline(stories[2]) if len(stories) > 2 else f"{actor}: Money, Power and Permission"
+    )
+    story_four = _short_chapter_label(
+        _headline(stories[3]) if len(stories) > 3 else "What the Other AI Stories Reveal"
+    )
+    labels = {
+        1: lead or "Today's AI Fight",
+        2: f"{actor}: Human Stakes and Receipts",
+        3: story_three or "Money, Power and Permission",
+        4: f"The Pattern: {story_four}" if story_four else "What the Other AI Stories Reveal",
+        5: "The Edge: What Changed and What Happens Next",
+    }
+    out: List[str] = []
+    for line in lines:
+        match = re.match(r"^(?:###\s*)?SEGMENT\s+([1-5])\b", line, flags=re.IGNORECASE)
+        if match:
+            number = int(match.group(1))
+            out.append(f"### SEGMENT {number} — {_short_chapter_label(labels[number])}")
+        else:
+            out.append(line)
+    return out
+
+
+def _ensure_connection_elements(
+    script: str,
+    stories: List[Dict[str, Any]],
+    board: Dict[str, Any],
+    date_str: str,
+) -> str:
+    """Deterministically preserve the lead signpost, listener loop, and light end tag.
+
+    These are packaging/connection lines rather than model-written facts, so a long-form
+    rewrite can never accidentally remove them. The paid sponsor URL remains exactly once.
+    """
+    lines = (script or "").splitlines()
+    deterministic_re = re.compile(
+        r"^(?:ALEX:\s*(?:Our lead story today is|Today[’']s question for you:|"
+        r"Follow The AI Edge now\.|What changed\. Who wins\. What you do next\.)|"
+        r"(?:JAMIE|RUFUS):\s*A quick final note: today[’']s "
+        r"episode was brought to you by The Ledger\b)",
+        re.IGNORECASE,
+    )
+    lines = [line for line in lines if not deterministic_re.match(line.strip())]
+    lines = _apply_topic_chapter_headers(lines, stories)
+
+    # Lead signpost: after the post-music cast exchange, before the first real deep dive.
+    lead = re.sub(r"\s+", " ", _headline(stories[0]) if stories else "today's biggest AI story").strip()
+    lead_words = lead.split()
+    if len(lead_words) > 24:
+        lead = " ".join(lead_words[:24]).rstrip(" ,;:-")
+    lead_line = (
+        f"ALEX: Our lead story today is {lead}. That is the spine of this episode; "
+        "the other stories will test it."
+    )
+    music_index = next((i for i, line in enumerate(lines) if line.strip().upper() == "[MUSIC]"), -1)
+    insertion = music_index + 1
+    post_music_turns = 0
+    for idx in range(music_index + 1, len(lines)):
+        if re.match(r"^###\s*SEGMENT\s*2\b", lines[idx], flags=re.IGNORECASE):
+            break
+        if SPEAKER_RE.match(lines[idx].strip()):
+            post_music_turns += 1
+            insertion = idx + 1
+            if post_music_turns >= 3:
+                break
+    lines.insert(max(0, insertion), lead_line)
+
+    # Closing connection loop. Alternate the house-tag voice by date so it stays fresh.
+    try:
+        day_number = _dt.date.fromisoformat(date_str).toordinal()
+    except Exception:
+        day_number = sum(ord(ch) for ch in date_str)
+    tag_speaker = "JAMIE" if day_number % 2 == 0 else "RUFUS"
+    question = re.sub(
+        r"\s+", " ", str(board.get("listener_question") or _central_fight(stories))
+    ).strip()
+    question = question[:139].rstrip(" .") + ("?" if not question.endswith("?") else "")
+    closing_lines = [
+        "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
+        f"{tag_speaker}: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
+        f"ALEX: Today’s question for you: {question[:140]}",
+        "ALEX: Follow The AI Edge now. Next episode, we’ll tell you which part of this story everyone missed.",
+    ]
+    segment5 = next(
+        (i for i, line in enumerate(lines) if re.match(r"^###\s*SEGMENT\s*5\b", line, flags=re.IGNORECASE)),
+        -1,
+    )
+    spoken_in_five = [
+        i for i in range(segment5 + 1, len(lines)) if SPEAKER_RE.match(lines[i].strip())
+    ] if segment5 >= 0 else []
+    close_at = spoken_in_five[-2] if len(spoken_in_five) >= 2 else len(lines)
+    lines[close_at:close_at] = closing_lines
+    return "\n".join(lines).strip()
+
+
+def _find_shareable_exchange(script: str) -> Dict[str, Any]:
+    """Find a candidate contiguous 20–45 second multi-host exchange.
+
+    This intentionally scores an exchange rather than a line. It is deterministic,
+    costs nothing, and gives the clipper the exact turns to use.
+    """
+    turns: List[Dict[str, Any]] = []
+    segment = 0
+    block = 0
+    for raw in (script or "").splitlines():
+        header = re.match(r"^(?:###\s*)?SEGMENT\s+([1-5])\b", raw.strip(), re.IGNORECASE)
+        if header:
+            segment = int(header.group(1))
+            block += 1
+            continue
+        if raw.strip() == "[MUSIC]":
+            block += 1
+            continue
+        match = SPEAKER_RE.match(raw.strip())
+        if match and segment:
+            spoken = match.group(2).strip()
+            if "the ledger" in spoken.lower() or "follow the ai edge" in spoken.lower():
+                block += 1
+                continue
+            turns.append({"segment": segment, "block": block, "speaker": match.group(1).upper(), "text": spoken})
+
+    candidates: List[Dict[str, Any]] = []
+    for start in range(len(turns)):
+        for size in range(3, 8):
+            window = turns[start:start + size]
+            if len(window) != size or len({row["block"] for row in window}) != 1:
+                continue
+            word_count = sum(_word_count(row["text"]) for row in window)
+            if not 49 <= word_count <= 108:
+                continue
+            speakers = {row["speaker"] for row in window}
+            if len(speakers) < 2:
+                continue
+            blob = " ".join(row["text"] for row in window)
+            low = blob.lower()
+            has_challenge = bool(re.search(
+                r"\b(wait|hold on|come on|no,|but|except|i disagree|you'?re missing|"
+                r"that won'?t wash|not quite|wrong|so you'?re saying)\b|\?",
+                low,
+            ))
+            has_payoff = bool(re.search(
+                r"\b(the real|this means|that means|which means|because|who wins|"
+                r"power|control|risk|liability|tomorrow|the point|the problem|the catch)\b",
+                low,
+            ))
+            has_receipt_or_reversal = bool(NUMERIC_RE.search(blob) or re.search(
+                r"\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|"
+                r"twelve|thirteen|fourteen|fifteen|twenty|thirty|forty|fifty|"
+                r"hundred)\b.{0,24}\b(?:percent|million|billion|trillion)\b|"
+                r"\b(not .{0,55} (?:but|the story|it is)|you are looking at|"
+                r"the opposite|counterintuitive|here'?s the catch|that'?s genuinely funny)\b",
+                low,
+            ))
+            if not (has_challenge and has_payoff and has_receipt_or_reversal):
+                continue
+            seconds = round(word_count * 60.0 / 145.0, 1)
+            score = (
+                (3 if window[0]["segment"] == 4 else 0)
+                + len(speakers)
+                + int(has_challenge)
+                + int(has_payoff)
+                + int(has_receipt_or_reversal)
+            )
+            candidates.append({
+                "passed": True,
+                "segment": window[0]["segment"],
+                "estimated_seconds": seconds,
+                "word_count": word_count,
+                "speakers": sorted(speakers),
+                "score": score,
+                "turns": window,
+                "test": "Would this exact exchange make sense and feel worth sending without the full episode?",
+            })
+    if not candidates:
+        return {
+            "passed": False,
+            "segment": None,
+            "estimated_seconds": 0.0,
+            "word_count": 0,
+            "speakers": [],
+            "turns": [],
+            "test": "Would this exact exchange make sense and feel worth sending without the full episode?",
+        }
+    candidates.sort(key=lambda row: (row["score"], len(row["speakers"]), row["word_count"]), reverse=True)
+    return candidates[0]
+
+
 # ----------------------------------------------------------------------------
 # ASSESSMENT — binary structural gate + non-authoritative telemetry (v3.3)
 # ----------------------------------------------------------------------------
@@ -1167,6 +1614,18 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         for m in (SPEAKER_RE.match(ln.strip()) for ln in seg2_text.splitlines())
         if m
     }
+    seg5_match = re.search(
+        r"^###\s*SEGMENT\s*5\b(.*)$",
+        full,
+        flags=re.MULTILINE | re.IGNORECASE | re.DOTALL,
+    )
+    seg5_text = seg5_match.group(1) if seg5_match else ""
+    seg5_low = seg5_text.lower()
+    seg5_speakers = {
+        match.group(1).upper()
+        for match in (SPEAKER_RE.match(line.strip()) for line in seg5_text.splitlines())
+        if match
+    }
     seg1_match = re.search(
         r"^###\s*SEGMENT\s*1\b(.*?)^###\s*SEGMENT\s*2\b",
         full,
@@ -1197,6 +1656,34 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         if match
     )
     episode_date = str(board.get("_episode_date") or "")
+    expected_end_tag_speaker = ""
+    if episode_date:
+        try:
+            expected_end_tag_speaker = (
+                "JAMIE" if _dt.date.fromisoformat(episode_date).toordinal() % 2 == 0 else "RUFUS"
+            )
+        except Exception:
+            pass
+    lead_actor = _lead_actor(stories)
+    shareable_exchange = _find_shareable_exchange(full)
+    show_follow_cta_count = len(re.findall(
+        r"^ALEX:\s*Follow The AI Edge now\.", full, re.IGNORECASE | re.MULTILINE
+    ))
+    competing_show_cta = bool(re.search(
+        r"\b(?:rate|review|share) (?:this|the|our) (?:show|podcast|episode)\b|"
+        r"\bsubscribe to The AI Edge\b|\bvisit (?:the|our) (?:site|website)\b",
+        full,
+        re.IGNORECASE,
+    ))
+    listener_memory_acknowledged = (
+        not fuel.get("poll_callbacks")
+        or bool(re.search(
+            r"\b(?:our poll|the poll|listeners? (?:asked|voted|chose|told us)|"
+            r"we asked (?:you|listeners)|yesterday(?:'s)? question)\b",
+            low,
+            re.IGNORECASE,
+        ))
+    )
 
     # ---- THE GATE: objective, binary, pass/fail. This is the real quality bar. ----
     gate: Dict[str, bool] = {
@@ -1205,6 +1692,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "one_music_marker": music == 1,
         "ledger_cta_spelled_url": "t-h-e-l-e-d-g-r dot i-o" in low,
         "welcome_after_music": "welcome to the ai edge" in post_music_low,
+        "lead_story_named": bool(re.search(r"^ALEX:\s*Our lead story today is\b", full, re.I | re.M)),
+        "title_matches_lead": _title_matches_lead(title, stories),
         "sponsor_at_segment1_break": (
             "the ledger" in sponsor_window_text.lower()
             and "t-h-e-l-e-d-g-r dot i-o" in sponsor_window_text.lower()
@@ -1220,6 +1709,27 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         ),
         "sponsor_read_not_bloated": 45 <= sponsor_window_words <= 65,
         "sponsor_cta_exactly_once": low.count("t-h-e-l-e-d-g-r dot i-o") == 1,
+        "rotating_sponsor_end_tag": bool(re.search(
+            rf"^{expected_end_tag_speaker}:\s*A quick final note: today[’']s episode was brought to you by The Ledger\b",
+            full,
+            flags=re.IGNORECASE | re.MULTILINE,
+        )) if expected_end_tag_speaker else True,
+        "listener_question_present": bool(re.search(
+            r"^ALEX:\s*Today[’']s question for you:", full, re.I | re.M
+        )),
+        "prior_listener_question_or_poll_acknowledged": listener_memory_acknowledged,
+        "show_follow_cta_present": bool(re.search(
+            r"^ALEX:\s*Follow The AI Edge now\.", full, re.I | re.M
+        )),
+        "single_show_cta": show_follow_cta_count == 1 and not competing_show_cta,
+        "listener_promise_present": LISTENER_PROMISE.lower() in low,
+        "closing_payoff_complete": (
+            {"ALEX", "JAMIE", "RUFUS"}.issubset(seg5_speakers)
+            and "what changed" in seg5_low
+            and "who wins" in seg5_low
+            and ("what you do next" in seg5_low or "what to watch" in seg5_low or "tomorrow" in seg5_low)
+        ),
+        "shareable_exchange_20_45s": bool(shareable_exchange.get("passed")),
         "no_legacy_sponsor_language": not legacy_sponsor_language,
         "segment2_alex_jamie_only": seg2_speakers == {"ALEX", "JAMIE"},
         "min_six_receipts": numbers >= 6,
@@ -1247,11 +1757,18 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "one_music_marker",
         "ledger_cta_spelled_url",
         "welcome_after_music",
+        "lead_story_named",
+        "title_matches_lead",
         "sponsor_at_segment1_break",
         "sponsor_opener_exact",
         "sponsor_alex_two_line_read",
         "sponsor_read_not_bloated",
         "sponsor_cta_exactly_once",
+        "rotating_sponsor_end_tag",
+        "listener_question_present",
+        "show_follow_cta_present",
+        "single_show_cta",
+        "listener_promise_present",
         "no_legacy_sponsor_language",
         "segment2_alex_jamie_only",
         "no_signal_room",
@@ -1281,6 +1798,13 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     for key, ok in gate.items():
         if key not in hard_gate_keys and not ok:
             soft.append(f"advisory_{key}")
+    jamie_comic_beats = len(re.findall(
+        r"^JAMIE:\s*(?:ha|hah|heh)[.!]", full, re.IGNORECASE | re.MULTILINE
+    ))
+    if jamie_comic_beats < 4:
+        soft.append(f"jamie_comic_reactions_low ({jamie_comic_beats}/4)")
+    elif jamie_comic_beats > 8:
+        soft.append(f"jamie_comic_reactions_excessive ({jamie_comic_beats}/8)")
     if alex_q < 10:
         soft.append(f"alex_audience_proxy_questions_low ({alex_q}/10)")
     if jamie_react < 5:
@@ -1317,13 +1841,19 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
             "receipts": numbers,
             "concessions": concessions,
             "callback_present": has_callback,
+            "show_follow_cta_count": show_follow_cta_count,
+            "competing_show_cta": competing_show_cta,
+            "listener_memory_acknowledged": listener_memory_acknowledged,
+            "shareable_exchange": shareable_exchange,
             "alex_questions": alex_q,
             "jamie_reactions": jamie_react,
+            "jamie_comic_beats": jamie_comic_beats,
             "rufus_dry_lines": rufus_dry,
             "friction_beats": friction,
             "interruptions": interruptions,
             "max_turn_words": max_turn,
             "title": title,
+            "lead_actor": lead_actor,
         },
     }
 
@@ -1866,27 +2396,50 @@ def _marketing_pack(stories: List[Dict[str, Any]], date_str: str, listen_url: st
     listen = tracking.get("listen", listen_url)
     subscribe = "https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge"
     hook = str(board.get("central_fight") or _central_fight(stories))
+    listener_question = str(board.get("listener_question") or _central_fight(stories)).strip()
+    entity_terms: List[str] = []
+    story_blob = " ".join(_blob(story) for story in stories[:5])
+    for actor in MAJOR_AI_ACTORS:
+        if actor.lower() in story_blob and actor.lower() not in {x.lower() for x in entity_terms}:
+            entity_terms.append(actor)
+    topic_terms: List[str] = []
+    for label, needles in (
+        ("AI agents", ("agent", "agents", "copilot")),
+        ("AI security", ("security", "cyber", "breach")),
+        ("AI regulation", ("regulation", "regulator", "policy", "court")),
+        ("AI infrastructure", ("nvidia", "chip", "gpu", "compute", "data center")),
+        ("AI jobs", ("job", "worker", "layoff")),
+        ("healthcare AI", ("health", "clinical", "patient", "hospital")),
+    ):
+        if any(needle in story_blob for needle in needles):
+            topic_terms.append(label)
+    seo_keywords = ["AI news", "artificial intelligence"] + entity_terms[:5] + topic_terms[:4]
     desc = (
         f"{hook}\n\n"
-        f"Alex, Jamie, and Rufus debate the top AI events of the day — not a headline "
-        f"list, but a fight over who wins, who is exposed, who gets blamed, and what "
-        f"changes tomorrow.\n\nTop AI events covered:\n{bullets}\n\n"
-        f"The Ledger Readout: what changed, who wins, who is exposed, what to watch next.\n\n"
+        f"Alex, Jamie, and Rufus debate the biggest artificial intelligence news from "
+        f"the last 24–48 hours—not a headline list, but one lead story tested against "
+        f"the other top AI events.\n\nWhat we covered:\n{bullets}\n\n"
+        f"{LISTENER_PROMISE}\n\n"
+        f"The Edge: what changed, who wins, who is exposed, and what to watch next.\n\n"
+        f"Listener question: {listener_question}\n\n"
+        f"Follow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\n"
         f"Subscribe to TheLEDGR for decision-grade AI signal: {subscribe}"
     )
     return {
         "title": title, "yt_title": title, "youtube_title": title, "spotify_title": title,
         "hook": hook, "show_notes_hook": hook,
         "description": desc, "show_notes": desc, "yt_description": desc[:1500],
-        "episode_blurb": "A hard human debate about the top AI events of the day: who wins, "
-                         "who is exposed, and what changes tomorrow.",
+        "listener_promise": LISTENER_PROMISE,
+        "profile_bio": "Daily AI news with Alex, Jamie and Rufus. What changed. Who wins. What you do next.",
+        "episode_blurb": "Alex, Jamie and Rufus tell you what changed in AI, who wins, and what you do next.",
         "tomorrow_tease": "Tomorrow: not which AI headline was loudest, but which one quietly "
                           "changed the rules.",
+        "listener_question": listener_question,
+        "poll_options": list(board.get("poll_options") or [])[:4],
         "tweet1": f"{title}\n\n{hook}\n\nListen: {listen}",
-        "tweet2": f"The headline is not the story. The fight underneath is.\n\n"
-                  f"Subscribe to TheLEDGR: {subscribe}\n\n#AI #TheAIEdge #AINews",
-        "seo_keywords": "AI news, artificial intelligence, AI agents, OpenAI, Anthropic, "
-                        "Google, Microsoft, NVIDIA, AI regulation, AI security",
+        "tweet2": f"{LISTENER_PROMISE}\n\nFollow The AI Edge: {listen}\n\n"
+                  f"#AI #TheAIEdge #AINews",
+        "seo_keywords": ", ".join(seo_keywords),
         "hashtags": "#AI #TheAIEdge #AINews #AIAgents #AISecurity #HealthAI",
         "title_candidates_v3_3": board,
     }
@@ -1971,7 +2524,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
         # 1. Load the show's memory.
         cont_root, episodes = _load_continuity(g)
-        fuel = _continuity_fuel(episodes)
+        episodes = _merge_poll_results(episodes, _load_poll_results(g))
+        fuel = _continuity_fuel(episodes, cont_root)
         last_fuel = dict(fuel)
         _safe_print(g, f"      memory: episode #{fuel['episode_number']}, "
                        f"{len(fuel['callbacks'])} callback hooks, "
@@ -1981,6 +2535,14 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         board = _preproduction(g, stories, date_str, fuel)
         board["_episode_date"] = date_str
         last_board = board
+
+        def stabilize(candidate: str) -> str:
+            return _ensure_connection_elements(
+                _normalize_primary_sponsor(_clean_script(candidate)),
+                stories,
+                board,
+                date_str,
+            )
         try:
             path = g.get("STORY_SLATE_DECISION_PATH") or Path("story_slate_decision.json")
             try:
@@ -1999,7 +2561,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         if not script and callable(original_generate_episode_script):
             _safe_print(g, "   ⚠️ Writer unavailable; falling back to prior generator.")
             script = original_generate_episode_script(stories, sponsors, date_str)
-        script = _normalize_primary_sponsor(_clean_script(script))
+        script = stabilize(script)
         assessment = _assess(script, stories, board, fuel)
 
         # 4. Optional punch-up — accept only if it does not lose a gate check.
@@ -2007,7 +2569,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             punched = _xai_text(g, _punchup_prompt(script, board, assessment),
                                 model=PUNCHUP_MODEL, max_tokens=6200)
             if punched:
-                cand = _normalize_primary_sponsor(_clean_script(punched))
+                cand = stabilize(punched)
                 cand_assess = _assess(cand, stories, board, fuel)
                 if _candidate_is_better(cand_assess, assessment):
                     script, assessment = cand, cand_assess
@@ -2016,17 +2578,14 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
         # Repair line length locally. Runtime-only defects are normalized below;
         # they never justify replacing a structurally sound full script.
-        script = _split_long_turns(script, max_words=55)
+        script = stabilize(_split_long_turns(script, max_words=55))
         assessment = _assess(script, stories, board, fuel)
 
         # Use deterministic repairs for common formatting/concession defects
         # before paying another model to rewrite a complete long script.
-        script = _split_long_turns(
-            _normalize_primary_sponsor(
-                _deterministic_structure_repair(script, assessment, board)
-            ),
-            max_words=55,
-        )
+        script = stabilize(_split_long_turns(
+            _deterministic_structure_repair(script, assessment, board), max_words=55
+        ))
         assessment = _assess(script, stories, board, fuel)
 
         # 5. Rescue — only if the binary gate actually failed.
@@ -2042,7 +2601,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 repaired = _openai_text(g, _rescue_prompt(script, assessment, board, stories),
                                         model=model, max_tokens=9000, temperature=0.65)
                 if repaired:
-                    cand = _normalize_primary_sponsor(_clean_script(repaired))
+                    cand = stabilize(repaired)
                     cand_assess = _assess(cand, stories, board, fuel)
                     if _candidate_is_better(cand_assess, assessment):
                         script, assessment = cand, cand_assess
@@ -2054,12 +2613,9 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
         # Deterministic final repair for formatting errors models commonly
         # introduce while expanding a long script.
-        script = _split_long_turns(
-            _normalize_primary_sponsor(
-                _deterministic_structure_repair(script, assessment, board)
-            ),
-            max_words=55,
-        )
+        script = stabilize(_split_long_turns(
+            _deterministic_structure_repair(script, assessment, board), max_words=55
+        ))
         assessment = _assess(script, stories, board, fuel)
 
         # Runtime is normalized deterministically before episode TTS. A modest
@@ -2087,10 +2643,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 )
                 if _word_count(expanded) <= final_words:
                     break
-                script = _split_long_turns(
-                    _normalize_primary_sponsor(_clean_script(expanded)),
-                    max_words=55,
-                )
+                script = stabilize(_split_long_turns(expanded, max_words=55))
                 script = _repair_relative_dates(script, date_str)
                 assessment = _assess(script, stories, board, fuel)
                 final_words = int((assessment.get("metrics") or {}).get("words") or 0)
@@ -2098,10 +2651,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         if final_words > max_episode_words:
             before_words = final_words
             script = _deterministic_trim_to_target(script, target_episode_words)
-            script = _split_long_turns(
-                _normalize_primary_sponsor(_clean_script(script)),
-                max_words=55,
-            )
+            script = stabilize(_split_long_turns(script, max_words=55))
             assessment = _assess(script, stories, board, fuel)
             final_words = int((assessment.get("metrics") or {}).get("words") or 0)
             _safe_print(
@@ -2112,12 +2662,9 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
         # Re-run the narrow structural repair after runtime normalization, then
         # take the authoritative pre-TTS measurement.
-        script = _split_long_turns(
-            _normalize_primary_sponsor(
-                _deterministic_structure_repair(script, assessment, board)
-            ),
-            max_words=55,
-        )
+        script = stabilize(_split_long_turns(
+            _deterministic_structure_repair(script, assessment, board), max_words=55
+        ))
         script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
 
@@ -2153,10 +2700,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 if applied <= 0:
                     break
                 total_applied += applied
-                script = _split_long_turns(
-                    _normalize_primary_sponsor(_clean_script(corrected_script)),
-                    max_words=55,
-                )
+                script = stabilize(_split_long_turns(corrected_script, max_words=55))
                 script = _repair_relative_dates(script, date_str)
                 assessment = _assess(script, stories, board, fuel)
                 _safe_print(
@@ -2191,6 +2735,12 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 raise RuntimeError(f"Grounded fact firewall failed before TTS: {exc}") from exc
             _safe_print(g, f"      ⚠️ grounded fact audit unavailable: {exc}")
 
+        # Fact correction may replace a full line. Reassert only the deterministic
+        # navigation/connection lines, then take the final authoritative reading.
+        script = stabilize(_split_long_turns(script, max_words=55))
+        script = _repair_relative_dates(script, date_str)
+        assessment = _assess(script, stories, board, fuel)
+
         # Preserve the exact pre-TTS candidate even when a hard gate stops the
         # build; this makes failures inspectable without paying for episode audio.
         try:
@@ -2208,11 +2758,47 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                                   encoding="utf-8")
         except Exception:
             pass
+        try:
+            exchange_path = g.get("SHAREABLE_EXCHANGE_PATH") or Path(SHAREABLE_EXCHANGE_DEFAULT)
+            Path(exchange_path).write_text(
+                json.dumps(
+                    (assessment.get("metrics") or {}).get("shareable_exchange") or {
+                        "passed": False,
+                        "turns": [],
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                ) + "\n",
+                encoding="utf-8",
+            )
+        except Exception as e:
+            _safe_print(g, f"      ⚠️ shareable exchange manifest skipped: {e}")
+
+        # Spotify polls are dashboard-native rather than RSS-native. Emit the exact
+        # daily payload so the question is consistent in audio, notes, and Creator UI.
+        try:
+            poll_payload = {
+                "version": "the-ai-edge-listener-poll-v1",
+                "date": date_str,
+                "episode_title": str(board.get("published_title") or ""),
+                "question": str(board.get("listener_question") or "").strip(),
+                "options": list(board.get("poll_options") or [])[:4],
+                "multiple_choice": False,
+                "status": "ready_for_spotify_creators",
+            }
+            poll_path = g.get("LISTENER_POLL_PATH") or Path("listener_poll.json")
+            Path(poll_path).write_text(
+                json.dumps(poll_payload, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        except Exception as e:
+            _safe_print(g, f"      ⚠️ listener poll payload skipped: {e}")
 
         # 7. Update the show's memory with what this episode planted.
         try:
             record = _extract_episode_memory(g, script, stories, board, date_str)
             record["gate_passed"] = assessment["pass"]
+            episodes = [episode for episode in episodes if episode.get("date") != date_str]
             episodes.append(record)
             _save_continuity(g, cont_root, episodes)
             _safe_print(g, f"      🧠 continuity updated: "
@@ -2238,7 +2824,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                                      listen_url: str, tracking: Optional[Dict[str, Any]] = None,
                                      experiments: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         board = last_board or _preproduction(
-            g, stories, episode_date, _continuity_fuel(_load_continuity(g)[1]))
+            g, stories, episode_date, _continuity_fuel_from_disk(g))
         pack = _marketing_pack(stories, episode_date, listen_url, board, tracking=tracking)
         if callable(original_generate_marketing_pack):
             try:
@@ -2260,8 +2846,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                                     date_str: str = "") -> Dict[str, Any]:
         board = last_board or _preproduction(
             g, stories, date_str or _dt.date.today().isoformat(),
-            _continuity_fuel(_load_continuity(g)[1]))
-        assessment_fuel = last_fuel or _continuity_fuel(_load_continuity(g)[1])
+            _continuity_fuel_from_disk(g))
+        assessment_fuel = last_fuel or _continuity_fuel_from_disk(g)
         assessment = _assess(script, stories, board, assessment_fuel)
         base: Dict[str, Any] = {}
         if callable(original_build_episode_aircheck):
@@ -2292,10 +2878,10 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     def ensure_theledgr_readout_v3_3(
         script: str, stories: Optional[List[Dict[str, Any]]] = None, date_str: str = ""
     ) -> str:
-        # The Ledger Readout is the editorial Segment 5, never a duplicate ad.
+        # Keep the editorial payoff distinct from the sponsor read.
         return re.sub(
             r"^###\s*SEGMENT\s*5[^\n]*",
-            "### SEGMENT 5 — The Ledger Readout + Final Button",
+            "### SEGMENT 5 — The Edge: What Changed and What Happens Next",
             script,
             count=1,
             flags=re.IGNORECASE | re.MULTILINE,

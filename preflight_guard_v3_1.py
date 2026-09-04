@@ -43,7 +43,16 @@ REQUIRED = [
     "grok_tts_v4.py",
     "feed_sanitize_v3_1.py",
     "no_repeat_guard_v3_1.py",
+    "production_delivery_gate.py",
+    "production_assets.py",
     "run_broadcast.py",
+]
+REQUIRED_DATA = [
+    "show_memory.json",
+    "listener_poll_results.json",
+    "show_trailer_script.txt",
+    "show_trailer_manifest.json",
+    "social_profile_bio.txt",
 ]
 
 # Approved writer lineages. Adding a future version means adding it here —
@@ -93,11 +102,15 @@ def main() -> None:
             py_compile.compile(str(p), doraise=True)
         except Exception as e:
             fail(f"compile failed for {name}: {e}")
+    for name in REQUIRED_DATA:
+        if not (ROOT / name).exists():
+            fail(f"missing relationship-engine asset: {name}")
 
     runner = _text("v3_1_runner.py")
     writer = _text("writer_room_v3_1.py")
     router = _text("hybrid_tts_router_v3_1.py")
     growth = _text("growth_overlay_v3_1.py")
+    workflow = _text(".github/workflows/daily_podcast.yml")
 
     if 'RUN_MARKETING_ASSETS"] = "false"' not in runner and "RUN_MARKETING_ASSETS\"] = \"false\"" not in runner:
         fail("v3_1_runner.py does not force RUN_MARKETING_ASSETS=false before main.py import")
@@ -122,6 +135,22 @@ def main() -> None:
     if _contains_active_lesson_first_generation(writer):
         fail("writer_room_v3_1.py appears to actively generate old lesson-first public packaging")
 
+    relationship_contract = {
+        "What changed. Who wins. What you do next.": "permanent listener promise is missing",
+        "strong_disagreements": "memory does not retain strong disagreements",
+        "running_jokes": "memory does not retain running jokes",
+        "listener_question": "memory does not retain the daily listener question",
+        "poll_result": "memory cannot ingest a real poll result",
+        "prior_listener_question_or_poll_acknowledged": "next-episode listener acknowledgement is missing",
+        "outcomes_to_revisit": "memory does not retain outcomes to revisit",
+        "_find_shareable_exchange": "20–45 second shareable-exchange validation is missing",
+        "single_show_cta": "single show-CTA validation is missing",
+        "closing_payoff_complete": "closing payoff validation is missing",
+    }
+    for marker, reason in relationship_contract.items():
+        if marker not in writer:
+            fail(reason)
+
     if "_render_spoken_chunk_to_file" not in router or "hybrid_render_spoken_chunk_to_file" not in router:
         fail("hybrid_tts_router_v3_1.py does not patch the production render path")
     if "tts_to_file" not in router or "hybrid_tts_to_file" not in router:
@@ -133,6 +162,19 @@ def main() -> None:
 
     if "top_event_heat" not in growth or "V3_2_TOP_EVENTS_OVERLAY_INSTALLED" not in growth:
         fail("growth_overlay_v3_1.py is not the v3.2 top-events scoring overlay")
+
+    production_contract = {
+        'TRANSITION_EVERY_SEGMENT: "true"': "segment transitions are not enabled",
+        'TRANSITION_SEGMENTS: "2,3,4,5"': "all four segment boundaries are not configured",
+        'OUTRO_TARGET_DBFS: "-16.5"': "audible outro target is not configured",
+        'VOICE_MODEL_ALEX: "gpt-4o-mini-tts"': "Alex is not on the directed TTS path",
+        'VOICE_MODEL_RUFUS: "gpt-4o-mini-tts"': "Rufus is not on the directed TTS path",
+        'GROK_TTS_VOICE_JAMIE: "ursa"': "Jamie Ursa primary is not configured",
+        'GROK_TTS_VOICE_JAMIE_FALLBACK: "celeste"': "Jamie Celeste fallback is not configured",
+    }
+    for marker, reason in production_contract.items():
+        if marker not in workflow:
+            fail(reason)
 
     bad_env = []
     if os.getenv("RUN_MARKETING_ASSETS", "false").strip().lower() not in ("false", "0", "no"):

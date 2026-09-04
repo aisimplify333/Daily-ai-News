@@ -40,15 +40,25 @@ def _clean_text(text: str) -> str:
 
 
 def _expressive_text(text: str, mood: str) -> str:
-    """Add restrained Grok-native direction without turning Jamie into a cartoon."""
+    """Give Jamie varied, earned comic reactions using documented Grok tags."""
     clean = _clean_text(text)
     mood = (mood or "neutral").strip().lower()
     if not clean:
         return clean
+    if re.search(r"\bthe\s*ledger\b|t-h-e-l-e-d-g-r|brought to you by", clean, re.I):
+        return clean
 
-    # Grok TTS understands these tags natively. Use at most one expression per line.
+    # Only documented tags. Laugh/guffaw and snicker are performances, not extra
+    # voices or paid sound-effect calls. Replace the written reaction with audio.
     if mood == "amused":
-        return f"[chuckle] {clean}"
+        if re.match(r"^(?:ha[!. ]+){2,}|^hah!", clean, re.I):
+            tag = "laugh"
+        elif re.match(r"^heh[.!]|^okay,? (?:that|you) got me", clean, re.I):
+            tag = "giggle"
+        else:
+            tag = "chuckle"
+        spoken = re.sub(r"^(?:(?:ha|hah|heh)[!. ]+)+", "", clean, flags=re.I).strip()
+        return f"[{tag}] {spoken}".strip()
     if mood == "concern":
         return f"[breath] {clean}"
     if mood in {"pushback", "interruption"} and not clean.lower().startswith(("wait", "hold on")):
@@ -60,7 +70,7 @@ def _expressive_text(text: str, mood: str) -> str:
 
 def _cache_key(text: str, voice: str, mood: str) -> str:
     raw = json.dumps(
-        {"text": text, "voice": voice, "mood": mood, "version": "grok-jamie-v1"},
+        {"text": text, "voice": voice, "mood": mood, "version": "grok-jamie-v2-comic-range"},
         sort_keys=True,
     )
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:32]
@@ -151,6 +161,7 @@ def render_jamie(
                 "bytes": out_path.stat().st_size,
                 "estimated_cost_usd": 0.0,
                 "mood": mood,
+                "expressions": re.findall(r"\[(laugh|chuckle|giggle)\]", expressive),
             }
 
         for attempt in range(1, retries + 1):
@@ -169,6 +180,7 @@ def render_jamie(
                         len(expressive) * COST_PER_MILLION_CHARS / 1_000_000, 6
                     ),
                     "mood": mood,
+                    "expressions": re.findall(r"\[(laugh|chuckle|giggle)\]", expressive),
                     "attempt": attempt,
                 }
             except Exception as exc:

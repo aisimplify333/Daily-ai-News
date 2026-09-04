@@ -53,9 +53,15 @@ load_dotenv()
 # CONFIG (RSS identity)
 # ----------------------------
 RSS_SETTINGS: Dict[str, str] = {
-    "title": "The AI Signal Room",
+    "title": "The AI Edge",
     "link": "https://github.com/aisimplify333/Daily-ai-News",
-    "description": "The daily AI show that makes you smarter before tomorrow — one concept, one laugh, one sharp takeaway.",
+    "description": (
+        "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
+        "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
+        "Each episode debates one lead story from the last 24–48 hours, using the other top "
+        "AI events as evidence, complications, or counterarguments. Follow The AI Edge for "
+        "new episodes Monday through Friday. What changed. Who wins. What you do next."
+    ),
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com",
     "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png",
@@ -88,6 +94,8 @@ FORWARDABLE_LINE_TARGETS_PATH = BASE_DIR / "forwardable_line_targets.json"
 SCRIPT_AIRCHECK_PATH = BASE_DIR / "script_aircheck.json"
 LISTENER_TAKEAWAYS_PATH = BASE_DIR / "listener_takeaways.json"
 FINAL_BUTTON_PATH = BASE_DIR / "final_button.json"
+LISTENER_POLL_PATH = BASE_DIR / "listener_poll.json"
+AUDIO_QA_REPORT_PATH = BASE_DIR / "audio_qa_report.json"
 
 AUDIO_BRANDKIT_DIR = BASE_DIR / "audio_brandkit"
 BRANDKIT_SFX_DIR = AUDIO_BRANDKIT_DIR / "sfx"
@@ -128,7 +136,7 @@ LISTEN_URL = os.getenv(
 
 PUBLIC_SUBSCRIBE_URL = os.getenv(
     "PUBLIC_SUBSCRIBE_URL",
-    "https://theledgr.io?utm_source=podcast",
+    "https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge",
 ).strip()
 
 PRIMARY_LLM = os.getenv("PRIMARY_LLM", "openai").strip().lower()  # gemini | openai
@@ -275,12 +283,13 @@ OUTRO_MS = int(os.getenv("OUTRO_MS", "12000"))
 TRANSITION_MS = int(os.getenv("TRANSITION_MS", "1600"))
 
 STINGER_TARGET_DBFS = float(os.getenv("STINGER_TARGET_DBFS", "-18.0"))
+OUTRO_TARGET_DBFS = float(os.getenv("OUTRO_TARGET_DBFS", "-16.5"))
 
 INTRO_FADE_IN_MS = int(os.getenv("INTRO_FADE_IN_MS", "120"))
 INTRO_FADE_OUT_MS = int(os.getenv("INTRO_FADE_OUT_MS", "900"))
 
-OUTRO_FADE_IN_MS = int(os.getenv("OUTRO_FADE_IN_MS", "800"))
-OUTRO_FADE_OUT_MS = int(os.getenv("OUTRO_FADE_OUT_MS", "1200"))
+OUTRO_FADE_IN_MS = int(os.getenv("OUTRO_FADE_IN_MS", "250"))
+OUTRO_FADE_OUT_MS = int(os.getenv("OUTRO_FADE_OUT_MS", "1800"))
 
 TRANSITION_FADE_IN_MS = int(os.getenv("TRANSITION_FADE_IN_MS", "120"))
 TRANSITION_FADE_OUT_MS = int(os.getenv("TRANSITION_FADE_OUT_MS", "350"))
@@ -289,6 +298,8 @@ CROSSFADE_MS = int(os.getenv("CROSSFADE_MS", "0"))  # 40–80 if desired
 
 # Ducking parameters
 MUSIC_TARGET_DBFS = float(os.getenv("MUSIC_TARGET_DBFS", "-27.0"))
+SPONSOR_BED_TARGET_DBFS = float(os.getenv("SPONSOR_BED_TARGET_DBFS", "-24.0"))
+SPONSOR_BED_DUCK_DB = float(os.getenv("SPONSOR_BED_DUCK_DB", "10.0"))
 DUCK_THRESHOLD_DBFS = float(os.getenv("DUCK_THRESHOLD_DBFS", "-34.0"))
 DUCK_AMOUNT_DB = float(os.getenv("DUCK_AMOUNT_DB", "14.0"))
 DUCK_WINDOW_MS = int(os.getenv("DUCK_WINDOW_MS", "40"))
@@ -554,11 +565,17 @@ def post_process_tts_mp3(path: Path) -> None:
 def master_final_audio_ffmpeg(in_path: Path, out_path: Path) -> None:
     if not _has_ffmpeg():
         raise RuntimeError("ffmpeg not found; required for final mastering.")
+    compressor_threshold = os.getenv("MASTER_COMPRESSOR_THRESHOLD", "-16dB")
+    compressor_ratio = os.getenv("MASTER_COMPRESSOR_RATIO", "2.2")
+    compressor_attack = os.getenv("MASTER_COMPRESSOR_ATTACK", "18")
+    compressor_release = os.getenv("MASTER_COMPRESSOR_RELEASE", "180")
+    compressor_makeup = os.getenv("MASTER_COMPRESSOR_MAKEUP", "2.5")
     cmd = [
         "ffmpeg", "-y",
         "-i", str(in_path),
         "-af",
-        "acompressor=threshold=-18dB:ratio=3:attack=10:release=120:makeup=4,"
+        f"acompressor=threshold={compressor_threshold}:ratio={compressor_ratio}:"
+        f"attack={compressor_attack}:release={compressor_release}:makeup={compressor_makeup},"
         "loudnorm=I=-16:TP=-1.5:LRA=11",
         "-c:a", "libmp3lame",
         "-b:a", "192k",
@@ -3115,6 +3132,16 @@ def build_sponsor_delivery_report(script: str, stories: List[Dict[str, str]], da
     has_name = bool(THELEDGR_NAME_RE.search(low))
     has_url = bool(THELEDGR_URL_RE.search(low))
     has_readout = "theledgr readout" in low or "the ledger readout" in low
+    main_read_present = bool(re.search(
+        r"^ALEX:\s*Today[’']s episode is brought to you by The Ledger\b",
+        script or "",
+        flags=re.IGNORECASE | re.MULTILINE,
+    ))
+    end_tag_match = re.search(
+        r"^(JAMIE|RUFUS):\s*A quick final note: today[’']s episode was brought to you by The Ledger\b",
+        script or "",
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
     answers = {
         "what_changed": "what changed" in low or any((_headline_title_core(s) if "_headline_title_core" in globals() else s.get("headline", "")).lower()[:20] in low for s in stories[:1]),
         "who_wins": "who wins" in low or "wins" in low,
@@ -3132,6 +3159,11 @@ def build_sponsor_delivery_report(script: str, stories: List[Dict[str, str]], da
         "brand_present": has_name,
         "spoken_url_present": has_url,
         "cta_present": bool(re.search(r"\b(subscribe|read|go to|visit)\b", low)),
+        "main_read_present": main_read_present,
+        "main_read_speaker": "ALEX" if main_read_present else None,
+        "rotating_end_tag_present": bool(end_tag_match),
+        "rotating_end_tag_speaker": end_tag_match.group(1).upper() if end_tag_match else None,
+        "sponsor_bed_expected": main_read_present,
         "readout_answers": answers,
         "sponsor_tone_score": min(10, score),
         "strongest_story": stories[0].get("headline") if stories else "",
@@ -3934,6 +3966,14 @@ def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 240
         candidate = ("\n".join(cur_txt) + "\n" + txt).strip()
         speaker_limit = _tts_merge_max_chars(spk)
         current_blob = " ".join(cur_txt)
+        sponsor_markers = ("the ledger", "t-h-e-l-e-d-g-r", "subscribe")
+        current_is_sponsor = any(marker in current_blob.lower() for marker in sponsor_markers)
+        next_is_sponsor = any(marker in (txt or "").lower() for marker in sponsor_markers)
+        if current_is_sponsor != next_is_sponsor:
+            flush()
+            cur_spk = spk
+            cur_txt = [txt]
+            continue
         force_break = (
             is_forwardable_line_text(txt)
             or is_forwardable_line_text(current_blob)
@@ -4289,12 +4329,15 @@ def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path
         loops = int(len(voice_seg) / max(1, len(bed))) + 1
         bed = bed * loops
     bed = bed[:len(voice_seg)]
-    bed = match_level(bed, target_dbfs=MUSIC_TARGET_DBFS - 4.0).fade_out(min(1500, max(380, int(len(voice_seg) * 0.22))))
+    sponsor_bed = "the ledger" in low or "subscribe" in low or "t-h-e-l-e-d-g-r" in low
+    bed_target = SPONSOR_BED_TARGET_DBFS if sponsor_bed else MUSIC_TARGET_DBFS - 4.0
+    bed_duck = SPONSOR_BED_DUCK_DB if sponsor_bed else DUCK_AMOUNT_DB + 8.0
+    bed = match_level(bed, target_dbfs=bed_target).fade_out(min(1500, max(380, int(len(voice_seg) * 0.22))))
     ducked = duck_music_under_voice(
         voice=voice_seg,
         music=bed,
         threshold_dbfs=DUCK_THRESHOLD_DBFS,
-        duck_db=DUCK_AMOUNT_DB + 8.0,
+        duck_db=bed_duck,
         window_ms=DUCK_WINDOW_MS,
     )
     ducked.export(out_path, format="mp3", bitrate="192k")
@@ -4714,17 +4757,29 @@ def build_episode_show_notes(
     cta_url = PUBLIC_SUBSCRIBE_URL
     story_bullets = "\n".join([f"• {_story_display_headline(s)}" for s in stories[:5]])
     tomorrow_tease = (pack.get("tomorrow_tease") or "Tomorrow's winners will be the operators who saw the second-order consequence first.").strip()
+    tomorrow_tease = re.sub(r"^Tomorrow(?:\s+tension)?\s*:\s*", "", tomorrow_tease, flags=re.IGNORECASE)
     episode_blurb = (pack.get("episode_blurb") or "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, where the real stakes are, and the lines you will want to send to somebody else.").strip()
     hook = (pack.get("show_notes_hook") or episode_blurb).strip()
+    public_title = (pack.get("spotify_title") or pack.get("title") or pack.get("yt_title") or "").strip()
+    discovery_open = f"{public_title}. {hook}" if public_title and public_title.lower() not in hook.lower() else hook
+    listener_question = (pack.get("listener_question") or "Which part of today's AI story changes your next decision?").strip()
     parts = [
-        hook,
+        discovery_open,
         "",
         "What we covered:",
         story_bullets,
         "",
-        f"Tomorrow tension: {tomorrow_tease}",
+        "One lead story. The other headlines are supporting evidence, complications, or counterexamples.",
+        "",
+        f"Listener question: {listener_question}",
+        "",
+        f"What to watch tomorrow: {tomorrow_tease}",
         "",
         episode_blurb,
+        "",
+        "What changed. Who wins. What you do next.",
+        "",
+        "Follow The AI Edge on Spotify for a new AI news and analysis episode every weekday.",
         "",
         "This episode is brought to you by TheLEDGR — decision-grade AI signal for people who cannot afford to be late.",
         f"Subscribe to TheLEDGR: {cta_url}",
@@ -4779,6 +4834,135 @@ def generate_marketing_pack(
 
 
 # ----------------------------
+# TRANSCRIPT, CHAPTERS + AUDIO QA
+# ----------------------------
+def _write_episode_companion_files(
+    script: str,
+    date_str: str,
+    title: str,
+    duration_seconds: int,
+    timeline: Optional[Dict[str, object]] = None,
+) -> Dict[str, str]:
+    """Create zero-cost, podcast-native accessibility and navigation assets."""
+    transcript_path = AUDIO_DIR / f"podcast_{date_str}.txt"
+    chapters_path = AUDIO_DIR / f"podcast_{date_str}.chapters.json"
+
+    transcript_lines = [title, date_str, ""]
+    for raw in (script or "").splitlines():
+        line = raw.strip()
+        if not line:
+            continue
+        if line.upper() == "[MUSIC]":
+            transcript_lines.append("[Intro music]")
+        elif SEGMENT_MARKER_RE.match(line):
+            transcript_lines.extend(["", re.sub(r"^###\s*", "", line).strip(), ""])
+        elif SPEAKER_RE.match(line):
+            transcript_lines.append(line)
+    transcript_path.write_text("\n".join(transcript_lines).strip() + "\n", encoding="utf-8")
+
+    segments: List[Dict[str, object]] = []
+    current: Optional[Dict[str, object]] = None
+    for raw in (script or "").splitlines():
+        line = raw.strip()
+        match = re.match(r"^###\s*SEGMENT\s*([1-5])\s*(?:[—:-]\s*)?(.*)$", line, re.IGNORECASE)
+        if match:
+            current = {
+                "number": int(match.group(1)),
+                "title": (match.group(2).strip() or f"Segment {match.group(1)}"),
+                "words": 0,
+            }
+            segments.append(current)
+            continue
+        spoken = SPEAKER_RE.match(line)
+        if current is not None and spoken:
+            current["words"] = int(current.get("words") or 0) + len(spoken.group(2).split())
+
+    total_words = sum(int(row.get("words") or 0) for row in segments) or 1
+    content_seconds = max(1.0, float(duration_seconds) - min(float(OUTRO_MS) / 1000.0, 20.0))
+    elapsed_words = 0
+    measured_starts = {
+        int(row["segment"]): float(row["start"])
+        for row in (timeline or {}).get("rows", []) if row["kind"] == "segment"
+    }
+    chapters: List[Dict[str, object]] = []
+    for row in segments:
+        start = 0.0 if not chapters else round(content_seconds * elapsed_words / total_words, 3)
+        start = measured_starts.get(int(row["number"]), start)
+        chapters.append({
+            "startTime": start,
+            "title": f"{row['number']}. {row['title']}",
+        })
+        elapsed_words += int(row.get("words") or 0)
+    if duration_seconds > 0:
+        outro_start = next((float(row["start"]) for row in (timeline or {}).get("rows", []) if row["kind"] == "outro"), content_seconds)
+        chapters.append({"startTime": round(outro_start, 3), "title": "Outro"})
+    chapters_path.write_text(
+        json.dumps({"version": "1.2.0", "chapters": chapters}, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return {
+        "transcript": transcript_path.name,
+        "chapters": chapters_path.name,
+    }
+
+
+def _write_audio_qa_report(
+    final_audio: AudioSegment,
+    script: str,
+    *,
+    intro_present: bool,
+    outro_present: bool,
+) -> Dict[str, object]:
+    """Verify the navigational audio layer without making another model/TTS call."""
+    music_markers = sum(1 for speaker, _ in iter_dialogue(script) if speaker == "MUSIC")
+    transition_count = max(0, music_markers - 1)
+    tail_ms = min(len(final_audio), max(4000, min(8000, OUTRO_MS)))
+    tail = final_audio[-tail_ms:] if tail_ms else AudioSegment.silent(duration=1)
+    tail_dbfs = round(float(tail.dBFS), 2) if tail.dBFS != float("-inf") else -120.0
+
+    windows = []
+    for offset in range(0, len(final_audio), 500):
+        level = final_audio[offset:offset + 500].dBFS
+        if level != float("-inf") and level > -55:
+            windows.append(float(level))
+    windows.sort()
+    if len(windows) >= 5:
+        low = windows[max(0, int(len(windows) * 0.10) - 1)]
+        high = windows[min(len(windows) - 1, int(len(windows) * 0.90))]
+        dynamic_range_db = round(high - low, 2)
+    else:
+        dynamic_range_db = 0.0
+
+    expected_transitions = min(
+        TRANSITION_MAX_PER_EPISODE,
+        len({2, 3, 4, 5}.intersection(TRANSITION_SEGMENTS)),
+    ) if TRANSITION_EVERY_SEGMENT else 0
+    passed = bool(
+        intro_present
+        and outro_present
+        and transition_count >= expected_transitions
+        and tail_dbfs >= -32.0
+    )
+    report: Dict[str, object] = {
+        "version": "the-ai-edge-audio-qa-v1",
+        "passed": passed,
+        "intro_present": intro_present,
+        "outro_present": outro_present,
+        "outro_tail_dbfs": tail_dbfs,
+        "outro_tail_minimum_dbfs": -32.0,
+        "transition_count": transition_count,
+        "expected_transition_count": expected_transitions,
+        "estimated_program_dynamic_range_db": dynamic_range_db,
+        "note": "Completed audio is preserved on failure; this report never triggers a second paid render.",
+    }
+    AUDIO_QA_REPORT_PATH.write_text(
+        json.dumps(report, ensure_ascii=False, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    return report
+
+
+# ----------------------------
 # RSS FEED WRITER
 # ----------------------------
 def _active_cover_image_url() -> str:
@@ -4800,9 +4984,11 @@ def update_feed_xml(meta: Dict) -> None:
 
     ITUNES_NS = "http://www.itunes.com/dtds/podcast-1.0.dtd"
     ATOM_NS = "http://www.w3.org/2005/Atom"
+    PODCAST_NS = "https://podcastindex.org/namespace/1.0"
 
     ET.register_namespace("itunes", ITUNES_NS)
     ET.register_namespace("atom", ATOM_NS)
+    ET.register_namespace("podcast", PODCAST_NS)
 
     def rfc2822_from_date(datestr: str) -> str:
         try:
@@ -4860,6 +5046,19 @@ def update_feed_xml(meta: Dict) -> None:
         ep_img = ET.SubElement(item, f"{{{ITUNES_NS}}}image")
         ep_img.set("href", cover_image_url)
         ET.SubElement(item, f"{{{ITUNES_NS}}}episodeType").text = "full"
+
+        stem = Path(audio_filename).stem
+        transcript_file = AUDIO_DIR / f"{stem}.txt"
+        chapters_file = AUDIO_DIR / f"{stem}.chapters.json"
+        if transcript_file.exists():
+            transcript = ET.SubElement(item, f"{{{PODCAST_NS}}}transcript")
+            transcript.set("url", safe_url_join(AUDIO_BASE_URL, transcript_file.name))
+            transcript.set("type", "text/plain")
+            transcript.set("language", "en")
+        if chapters_file.exists():
+            chapters = ET.SubElement(item, f"{{{PODCAST_NS}}}chapters")
+            chapters.set("url", safe_url_join(AUDIO_BASE_URL, chapters_file.name))
+            chapters.set("type", "application/json+chapters")
         return item
 
     rss = ET.Element("rss", {"version": "2.0"})
@@ -5849,13 +6048,17 @@ def produce_episode() -> None:
     run_tmp.mkdir(parents=True, exist_ok=True)
 
     concat_files: List[Path] = []
+    assembly_markers = [{"kind": "segment", "segment": 1, "start_index": 0}]
+    assembly_segment = 1
 
     silence_path = run_tmp / "silence_turn.mp3"
     reaction_pause_path = run_tmp / "silence_reaction.mp3"
     quote_pause_path = run_tmp / "silence_forwardable.mp3"
+    sponsor_pause_path = run_tmp / "silence_sponsor.mp3"
     AudioSegment.silent(duration=INTER_TURN_SILENCE_MS).export(silence_path, format="mp3", bitrate="192k")
     AudioSegment.silent(duration=REACTION_PAUSE_MS).export(reaction_pause_path, format="mp3", bitrate="192k")
     AudioSegment.silent(duration=FORWARDABLE_PAUSE_MS).export(quote_pause_path, format="mp3", bitrate="192k")
+    AudioSegment.silent(duration=320).export(sponsor_pause_path, format="mp3", bitrate="192k")
 
     intro_stinger_seg: Optional[AudioSegment] = None
     outro_seg: Optional[AudioSegment] = None
@@ -5875,7 +6078,7 @@ def produce_episode() -> None:
         outro_seg = load_stinger(
             outro_asset,
             ms=OUTRO_MS,
-            target_dbfs=STINGER_TARGET_DBFS,
+            target_dbfs=OUTRO_TARGET_DBFS,
             fade_in_ms=OUTRO_FADE_IN_MS,
             fade_out_ms=OUTRO_FADE_OUT_MS,
         )
@@ -5913,11 +6116,14 @@ def produce_episode() -> None:
                 if intro_stinger_seg is not None:
                     p = run_tmp / "intro_stinger.mp3"
                     intro_stinger_seg.export(p, format="mp3", bitrate="192k")
+                    assembly_markers.append({"kind": "intro", "start_index": len(concat_files), "end_index": len(concat_files) + 1})
                     concat_files.append(p)
                     concat_files.append(silence_path)
                 pending_intro_bed = True
                 intro_done = True
             else:
+                assembly_segment += 1
+                assembly_markers.append({"kind": "segment", "segment": assembly_segment, "start_index": len(concat_files)})
                 if transition_seg is not None:
                     p = run_tmp / f"transition_{uuid.uuid4().hex[:8]}.mp3"
                     transition_seg.export(p, format="mp3", bitrate="192k")
@@ -6019,9 +6225,17 @@ def produce_episode() -> None:
                 final_voice_path = gained_path
 
             mixed_voice_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_mix.mp3"
-            if _speaker_audio_backend(speaker) == "eleven" and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
+            sponsor_chunk = any(
+                marker in (chunk or "").lower()
+                for marker in ("the ledger", "t-h-e-l-e-d-g-r", "subscribe")
+            )
+            if sponsor_chunk and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
                 final_voice_path = mixed_voice_path
 
+            if sponsor_chunk:
+                concat_files.append(sponsor_pause_path)
+
+            speech_start_index = len(concat_files)
             if pending_intro_bed and intro_asset is not None:
                 pending_intro_bed = False
                 voice_seg = AudioSegment.from_file(final_voice_path)
@@ -6056,7 +6270,10 @@ def produce_episode() -> None:
             else:
                 concat_files.append(final_voice_path)
 
-            if is_forwardable_line_text(chunk):
+            assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "start_index": speech_start_index, "end_index": len(concat_files)})
+            if sponsor_chunk:
+                concat_files.append(sponsor_pause_path)
+            elif is_forwardable_line_text(chunk):
                 concat_files.append(quote_pause_path)
             elif INTERRUPTION_CUE_RE.search(chunk or "") or REACTION_CUE_RE.search(chunk or ""):
                 concat_files.append(reaction_pause_path)
@@ -6067,6 +6284,7 @@ def produce_episode() -> None:
         concat_files.append(silence_path)
         p = run_tmp / "outro.mp3"
         outro_seg.export(p, format="mp3", bitrate="192k")
+        assembly_markers.append({"kind": "outro", "start_index": len(concat_files), "end_index": len(concat_files) + 1})
         concat_files.append(p)
 
     _safe_print(f" >> 🎚️ STITCHING ({STITCH_METHOD})...")
@@ -6084,18 +6302,29 @@ def produce_episode() -> None:
 
     SHORTFALL_TOLERANCE_SECONDS = 30
     OVERAGE_TOLERANCE_SECONDS = 20
-    AUTO_TRIM_FADE_MS = 1200
+    assembly_padding_seconds = 0.0
 
     if minutes < MIN_MINUTES:
         shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
 
         if shortfall_seconds <= SHORTFALL_TOLERANCE_SECONDS:
+            assembly_padding_seconds = float(shortfall_seconds)
             _safe_print(
                 f" ⚠️ Episode short by {shortfall_seconds}s. "
                 f"Auto-padding to {MIN_MINUTES:.2f} minutes."
             )
 
-            padded_audio = final_audio + AudioSegment.silent(duration=shortfall_seconds * 1000)
+            # Preserve the outro as the final audible event. Any rare duration pad
+            # belongs before the music, never after it as a silent false ending.
+            outro_keep_ms = min(len(final_audio), OUTRO_MS if outro_seg is not None else 0)
+            if outro_keep_ms > 0:
+                padded_audio = (
+                    final_audio[:-outro_keep_ms]
+                    + AudioSegment.silent(duration=shortfall_seconds * 1000)
+                    + final_audio[-outro_keep_ms:]
+                )
+            else:
+                padded_audio = final_audio + AudioSegment.silent(duration=shortfall_seconds * 1000)
             padded_audio.export(final_mp3, format="mp3", bitrate="192k")
 
             final_audio = AudioSegment.from_mp3(final_mp3)
@@ -6117,30 +6346,34 @@ def produce_episode() -> None:
         if overage_seconds <= OVERAGE_TOLERANCE_SECONDS:
             _safe_print(
                 f" ⚠️ Episode over by {overage_seconds}s. "
-                f"Auto-trimming to {MAX_MINUTES:.2f} minutes."
+                f"Time-fitting to {MAX_MINUTES:.2f} minutes without cutting the close or outro."
             )
 
             target_ms = int(MAX_MINUTES * 60 * 1000)
-            trimmed_audio = final_audio[:target_ms]
-
-            fade_ms = min(AUTO_TRIM_FADE_MS, max(350, overage_seconds * 1000))
-            if len(trimmed_audio) > fade_ms + 200:
-                trimmed_audio = trimmed_audio.fade_out(fade_ms)
-
-            trimmed_audio.export(final_mp3, format="mp3", bitrate="192k")
+            fit_speed = max(1.001, len(final_audio) / max(1, target_ms))
+            fitted_path = run_tmp / f"{today}_time_fitted.mp3"
+            apply_speed_ffmpeg(final_mp3, fitted_path, fit_speed)
+            shutil.copyfile(fitted_path, final_mp3)
 
             final_audio = AudioSegment.from_mp3(final_mp3)
             duration_seconds = int(len(final_audio) / 1000)
             minutes = duration_seconds / 60.0
 
             _safe_print(
-                f" ✅ EPISODE TRIMMED: {final_mp3.name} ({minutes:.2f} minutes)"
+                f" ✅ EPISODE TIME-FITTED: {final_mp3.name} ({minutes:.2f} minutes)"
             )
         else:
             raise RuntimeError(
                 f"Episode length out of bounds ({minutes:.2f} min). "
                 f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
             )
+
+    audio_qa = _write_audio_qa_report(
+        final_audio,
+        script,
+        intro_present=intro_stinger_seg is not None,
+        outro_present=outro_seg is not None,
+    )
 
     provisional_tracking = build_episode_tracking_payload(
         date_str=today,
@@ -6159,6 +6392,22 @@ def produce_episode() -> None:
         experiments=experiments,
     )
     pack = generate_marketing_pack(stories, today, LISTEN_URL, tracking=tracking, experiments=experiments)
+
+    timeline = {}
+    try:
+        from production_assets import build_timeline
+        timeline = build_timeline(concat_files, assembly_markers, len(final_audio) / 1000.0, assembly_padding_seconds)
+        (AUDIO_DIR / f"podcast_{today}.timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    except Exception as exc:
+        _safe_print(f" ⚠️ Measured chapter timing unavailable; using word-share estimate: {exc}")
+
+    companion_files = _write_episode_companion_files(
+        script,
+        today,
+        feed_title,
+        duration_seconds,
+        timeline=timeline,
+    )
 
     TRACKING_SUMMARY_PATH.write_text(json.dumps(tracking, indent=2, ensure_ascii=False), encoding="utf-8")
 
@@ -6198,11 +6447,23 @@ def produce_episode() -> None:
         "learning_promise": json.loads(LEARNING_PROMISE_PATH.read_text(encoding="utf-8")) if LEARNING_PROMISE_PATH.exists() else build_episode_learning_promise(stories),
         "episode_aircheck": json.loads(EPISODE_AIRCHECK_PATH.read_text(encoding="utf-8")) if EPISODE_AIRCHECK_PATH.exists() else {},
         "sponsor_delivery_report": json.loads(SPONSOR_DELIVERY_REPORT_PATH.read_text(encoding="utf-8")) if SPONSOR_DELIVERY_REPORT_PATH.exists() else {},
+        "listener_poll": json.loads(LISTENER_POLL_PATH.read_text(encoding="utf-8")) if LISTENER_POLL_PATH.exists() else {},
+        "companion_files": companion_files,
+        "audio_qa": audio_qa,
     }
     (BASE_DIR / "episode_metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
 
     update_feed_xml(meta)
     run_marketing_pipeline()
+
+    if timeline:
+        try:
+            from production_assets import export_promo_assets
+            promo_report = export_promo_assets(final_mp3, timeline, today, BASE_DIR / "cover.png")
+            (BASE_DIR / "promo_assets_report.json").write_text(json.dumps(promo_report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            _safe_print(f" ✅ Promotional assets processed; new TTS calls=0; warnings={len(promo_report['warnings'])}")
+        except Exception as exc:
+            _safe_print(f" ⚠️ Promotional assets incomplete; episode remains publishable: {exc}")
 
     if CLEANUP_TEMP:
         shutil.rmtree(run_tmp, ignore_errors=True)

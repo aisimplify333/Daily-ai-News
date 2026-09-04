@@ -18,6 +18,7 @@ import os
 import subprocess
 import sys
 import time
+import datetime
 from pathlib import Path
 
 from pydub import AudioSegment
@@ -55,7 +56,10 @@ def configure_git_identity() -> None:
 
 def get_latest_mp3(audio_dir: str = "episode_audio") -> Path | None:
     audio_path = Path(audio_dir)
-    files = sorted(audio_path.glob("podcast_*.mp3"), key=lambda p: p.stat().st_mtime, reverse=True)
+    expected = audio_path / f"podcast_{datetime.datetime.now(datetime.timezone.utc).date().isoformat()}.mp3"
+    if expected.exists():
+        return expected
+    files = sorted(audio_path.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
     return files[0] if files else None
 
 
@@ -129,6 +133,15 @@ def main() -> None:
     except Exception as e:
         print(f">> ❌ QUALITY GATE FAILED: {e}", flush=True)
         sys.exit(1)
+
+    # Final package check is zero-cost. If it finds a metadata defect, the paid
+    # master remains on disk and the next run reuses it instead of calling TTS.
+    run_command(
+        f"python production_delivery_gate.py --feed feed.xml "
+        f"--min-minutes {MIN_MINUTES:g} --max-minutes {MAX_MINUTES:g}",
+        "1D. Zero-Cost Spotify Delivery Gate",
+        allow_fail=False,
+    )
 
     print("\n>> UPLOADING TO GITHUB...", flush=True)
     run_command("git add .", "Staging Files", allow_fail=False)

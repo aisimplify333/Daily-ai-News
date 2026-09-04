@@ -2,7 +2,7 @@ name: Daily Podcast & Socials
 
 on:
   schedule:
-    - cron: '0 10 * * 1-5' # Mon-Fri ~2:00 AM Pacific / 10:00 UTC
+    - cron: '0 10 * * 1-5' # Mon-Fri 3:00 AM Pacific daylight time / 10:00 UTC
   workflow_dispatch:
 permissions:
   contents: write
@@ -22,7 +22,7 @@ jobs:
     env:
       SAVE_SCRIPT: "true"
       PODCAST_SHOW_TITLE: "The AI Edge"
-      PODCAST_SHOW_DESCRIPTION: "The daily AI show that explains the one story today that could touch your work, money, health, privacy, family, school, safety, or trust."
+      PODCAST_SHOW_DESCRIPTION: "The AI Edge is the weekday artificial intelligence news and analysis podcast where Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. Each episode debates one lead story from the last 24–48 hours, using the other top AI events as evidence, complications, or counterarguments. Follow The AI Edge for new episodes Monday through Friday. What changed. Who wins. What you do next."
 
       # Cost-safe defaults. Do not let the old v3.0 marketing/social layer run inside main.py.
       RUN_MARKETING_ASSETS: "false"
@@ -89,6 +89,7 @@ jobs:
           python -m py_compile run_broadcast.py
           python -m tabnanny -v main.py
           python -m compileall -q .
+          python -m unittest discover -s tests -v
 
       - name: Cheap cost-safe preflight before generation
         env:
@@ -116,7 +117,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
-          # Voice stack: Alex=legacy HD onyx, Jamie=Grok Ursa, Rufus=legacy HD fable.
+          # Voice stack: directed OpenAI onyx, Grok Ursa/Celeste, directed OpenAI fable.
           AUDIO_BACKEND: "openai"
           TTS_ROUTER_MODE: "hybrid"
           ALEX_TTS_PROVIDER: "openai"
@@ -164,11 +165,11 @@ jobs:
 
           ALEX_USE_OPENAI: "true"
           OPENAI_TTS_MODEL: "gpt-4o-mini-tts"
-          VOICE_MODEL_ALEX: "tts-1-hd"
+          VOICE_MODEL_ALEX: "gpt-4o-mini-tts"
           VOICE_ALEX: "onyx"
           VOICE_MODEL_JAMIE: "gpt-4o-mini-tts"
           VOICE_JAMIE: "marin"
-          VOICE_MODEL_RUFUS: "tts-1-hd"
+          VOICE_MODEL_RUFUS: "gpt-4o-mini-tts"
           VOICE_RUFUS: "fable"
 
           MIN_MINUTES: "19"
@@ -185,9 +186,9 @@ jobs:
           ALEX_GAIN_DB: "3.5"
           JAMIE_GAIN_DB: "1.0"
           RUFUS_GAIN_DB: "0.3"
-          ALEX_SPEED: "0.98"
-          JAMIE_SPEED: "1.04"
-          RUFUS_SPEED: "1.00"
+          ALEX_SPEED: "1.01"
+          JAMIE_SPEED: "1.05"
+          RUFUS_SPEED: "0.99"
 
           INTER_TURN_SILENCE_MS: "120"
           REACTION_PAUSE_MS: "190"
@@ -198,19 +199,31 @@ jobs:
 
           AUTO_BUILD_AUDIO_BRANDKIT: "false"
           REBUILD_AUDIO_BRANDKIT: "false"
-          TRANSITION_EVERY_SEGMENT: "false"
-          TRANSITION_MAX_PER_EPISODE: "3"
-          TRANSITION_SEGMENTS: "2,4,5"
+          REQUIRE_TRANSITIONS: "true"
+          TRANSITION_EVERY_SEGMENT: "true"
+          TRANSITION_MAX_PER_EPISODE: "4"
+          TRANSITION_SEGMENTS: "2,3,4,5"
 
           INTRO_BED_MS: "7200"
           INTRO_BED_FADE_OUT_MS: "2200"
           SEGMENT_BED_MS: "2200"
           SEGMENT_BED_FADE_OUT_MS: "850"
           MUSIC_TARGET_DBFS: "-27.0"
+          SPONSOR_BED_TARGET_DBFS: "-24.0"
+          SPONSOR_BED_DUCK_DB: "10.0"
           DUCK_THRESHOLD_DBFS: "-34.0"
           DUCK_AMOUNT_DB: "15.5"
           DUCK_WINDOW_MS: "35"
           STINGER_TARGET_DBFS: "-18.0"
+          OUTRO_MS: "15000"
+          OUTRO_TARGET_DBFS: "-16.5"
+          OUTRO_FADE_IN_MS: "250"
+          OUTRO_FADE_OUT_MS: "1800"
+          MASTER_COMPRESSOR_THRESHOLD: "-16dB"
+          MASTER_COMPRESSOR_RATIO: "2.2"
+          MASTER_COMPRESSOR_ATTACK: "18"
+          MASTER_COMPRESSOR_RELEASE: "180"
+          MASTER_COMPRESSOR_MAKEUP: "2.5"
           SEGMENT_EXPORT_BITRATE: "192k"
 
           CLEANUP_TEMP: "true"
@@ -235,6 +248,8 @@ jobs:
             feed_sanitize_report.json \
             duplicate_guard_report.json \
             production_delivery_report.json \
+            audio_qa_report.json \
+            promo_assets_report.json \
             sponsor_delivery_report.json \
             hybrid_tts_report.json \
             script_aircheck.json \
@@ -244,11 +259,23 @@ jobs:
             story_scores.json \
             tracking_summary.json \
             forwardable_moments.json \
+            shareable_exchange.json \
             listener_takeaways.json \
             final_button.json \
+            listener_poll.json \
+            listener_poll_results.json \
+            show_trailer_script.txt \
+            show_trailer_manifest.json \
             "script_${today}.txt" \
             "episode_audio/podcast_${today}.mp3" \
-            "episode_audio/podcast_${today}.json"; do
+            "episode_audio/podcast_${today}.json" \
+            "episode_audio/podcast_${today}.txt" \
+            "episode_audio/podcast_${today}.timeline.json" \
+            "episode_audio/clip_${today}.mp3" \
+            "episode_audio/clip_${today}.mp4" \
+            "episode_audio/clip_${today}.vtt" \
+            "episode_audio/show_trailer.mp3" \
+            "episode_audio/podcast_${today}.chapters.json"; do
             if [[ -f "$file" ]]; then
               cp "$file" _run_artifacts/
             fi

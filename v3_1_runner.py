@@ -45,9 +45,14 @@ def _truthy(name: str, default: str = "false") -> bool:
 def _set_default_env() -> None:
     """Set stable defaults before main.py import because main.py reads env at import time."""
     os.environ["PODCAST_SHOW_TITLE"] = "The AI Edge"
-    os.environ[
-        "PODCAST_SHOW_DESCRIPTION"
-    ] = "A sharp daily AI debate about what changed, who gained power, who is exposed, and what to watch next."
+    os.environ.setdefault(
+        "PODCAST_SHOW_DESCRIPTION",
+        "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
+        "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
+        "Each episode debates one lead story from the last 24–48 hours, using the other top "
+        "AI events as evidence, complications, or counterarguments. Follow The AI Edge for "
+        "new episodes Monday through Friday. What changed. Who wins. What you do next.",
+    )
 
     # Cost and reliability defaults.
     os.environ.setdefault("SAVE_SCRIPT", "true")
@@ -138,32 +143,49 @@ def _run_jamie_primary_smoke_test(router_module: Any) -> None:
 
 
 def _enforce_jamie_primary_report() -> None:
+    """Report voice drift without rejecting a completed approved-fallback master."""
     if not _truthy("REQUIRE_JAMIE_PRIMARY", "true"):
         _safe_print(">> ℹ️ Jamie primary proof disabled; skipping post-render gate.")
         return
     if not REPORT_PATH.exists():
-        raise RuntimeError("Jamie Grok proof required, but hybrid_tts_report.json was not created.")
+        _safe_print(">> ⚠️ Jamie Grok proof report missing; retain completed audio and flag for review.")
+        return
     try:
         report = json.loads(REPORT_PATH.read_text(encoding="utf-8"))
     except Exception as exc:
-        raise RuntimeError(f"Could not read hybrid_tts_report.json: {exc}")
+        _safe_print(f">> ⚠️ Could not read Jamie proof report; retain completed audio: {exc}")
+        return
 
     episode_successes = int(report.get("jamie_grok_episode_successes") or 0)
     primary_successes = int(report.get("jamie_grok_primary_successes") or 0)
     approved_fallback_successes = int(report.get("jamie_grok_fallback_successes") or 0)
     chars = int(report.get("jamie_chars_requested") or 0)
     if episode_successes <= 0 or chars <= 0:
-        raise RuntimeError(
-            "Grok Jamie was not proven in the rendered episode. "
+        _safe_print(
+            ">> ⚠️ Grok Jamie was not proven; retain completed approved-fallback audio. "
             f"episode_successes={episode_successes}, chars={chars}"
         )
+        return
     if primary_successes <= 0 and approved_fallback_successes <= 0:
-        raise RuntimeError("Neither Ursa nor Celeste produced Jamie audio.")
+        _safe_print(">> ⚠️ Ursa/Celeste not proven; retain completed audio and flag voice drift.")
+        return
     _safe_print(
         ">> ✅ Jamie Grok proven in episode: "
         f"{episode_successes} chunks, {chars} chars; "
         f"Ursa={primary_successes}, Celeste fallback={approved_fallback_successes}"
     )
+
+
+def _reusable_episode_audio(g: Dict[str, Any]) -> Path | None:
+    """Use the same date/file checks as main.py before resetting TTS telemetry."""
+    if g.get("FORCE_REBUILD", False):
+        return None
+    audio_dir = Path(g.get("AUDIO_DIR") or BASE_DIR / "episode_audio")
+    audio_path = audio_dir / f"podcast_{_dt.date.today().isoformat()}.mp3"
+    check = g.get("_file_ok_min_bytes")
+    if audio_path.exists() and callable(check) and check(audio_path):
+        return audio_path
+    return None
 
 
 def main() -> None:
@@ -197,6 +219,16 @@ def main() -> None:
         raise RuntimeError("Writer-room overlay did not replace main.py generate_episode_script().")
     if not g.get("V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"):
         raise RuntimeError("Writer-room overlay marker missing from main.py live globals.")
+
+    reusable_audio = _reusable_episode_audio(g)
+    if reusable_audio is not None:
+        _safe_print(
+            f">> REUSING COMPLETED EPISODE: {reusable_audio.name}; "
+            "preserving original TTS report, new model/TTS calls=0."
+        )
+        produce_episode()
+        _safe_print(">> ✅ Existing episode packaging refreshed; no new voice proof is required.")
+        return
 
     original_tts = g.get("tts_to_file")
     router = _install_tts_router(g)

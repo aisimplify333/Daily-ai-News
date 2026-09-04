@@ -27,8 +27,13 @@ GENERIC_TITLE_RE = re.compile(
 DATE_RE = re.compile(r"\b20\d{2}[-/]\d{1,2}[-/]\d{1,2}\b")
 URL_RE = re.compile(r"https?://[^\s<]+", re.IGNORECASE)
 CTA_RE = re.compile(r"\b(?:subscribe|follow)\b", re.IGNORECASE)
+SHOW_FOLLOW_RE = re.compile(r"\bfollow\s+The\s+AI\s+Edge\b", re.IGNORECASE)
 AI_RE = re.compile(r"\b(?:AI|artificial intelligence|machine learning|LLM|model)\b", re.IGNORECASE)
-COVERAGE_RE = re.compile(r"\b(?:what we covered|in this episode|today(?:'s)? stories|inside this episode)\b", re.IGNORECASE)
+COVERAGE_RE = re.compile(
+    r"\b(?:what we covered|in this episode|today(?:'s)? stories|inside this episode|"
+    r"one lead debate|supporting signals)\b",
+    re.IGNORECASE,
+)
 OLD_BRAND_RE = re.compile(r"\b(?:The\s+AI\s+Signal\s+Room|AI\s+Signal\s+Room|Signal\s+Room)\b", re.IGNORECASE)
 TAG_RE = re.compile(r"<[^>]+>")
 
@@ -93,9 +98,26 @@ def main() -> int:
                 fail("rss_channel_missing")
             else:
                 channel_title = child_text(channel, "title")
+                channel_description = child_text(channel, "description")
                 items = [x for x in list(channel) if x.tag.rsplit("}", 1)[-1] == "item"]
                 if channel_title != "The AI Edge":
                     fail("wrong_channel_title", found=channel_title)
+                channel_low = channel_description.lower()
+                for label, present in (
+                    ("artificial_intelligence", "artificial intelligence" in channel_low),
+                    ("news_and_analysis", "news" in channel_low and "analysis" in channel_low),
+                    ("cast", all(name in channel_low for name in ("alex", "jamie", "rufus"))),
+                    ("cadence", "monday through friday" in channel_low),
+                    ("follow_cta", "follow the ai edge" in channel_low),
+                    (
+                        "listener_promise",
+                        all(phrase in channel_low for phrase in (
+                            "what changed", "who wins", "what you do next",
+                        )),
+                    ),
+                ):
+                    if not present:
+                        fail("show_description_missing_discovery_element", element=label)
                 if not items:
                     fail("rss_has_no_episode")
                 else:
@@ -138,6 +160,13 @@ def main() -> int:
                         fail("description_missing_ai_discovery_term")
                     if not CTA_RE.search(description):
                         fail("description_missing_subscriber_cta")
+                    if not SHOW_FOLLOW_RE.search(description):
+                        fail("description_missing_show_follow_cta")
+                    description_low = description.lower()
+                    if not all(phrase in description_low for phrase in (
+                        "what changed", "who wins", "what you do next",
+                    )):
+                        fail("description_missing_listener_promise")
                     if not URL_RE.search(description):
                         fail("description_missing_listener_url")
                     if OLD_BRAND_RE.search(title + " " + description + " " + summary):
@@ -152,6 +181,19 @@ def main() -> int:
                         fail("enclosure_url_missing")
                     if not enclosure_length.isdigit() or int(enclosure_length or 0) <= 0:
                         fail("enclosure_length_invalid", found=enclosure_length)
+
+                    transcript = next(
+                        (x for x in list(item) if x.tag.rsplit("}", 1)[-1] == "transcript"),
+                        None,
+                    )
+                    chapters = next(
+                        (x for x in list(item) if x.tag.rsplit("}", 1)[-1] == "chapters"),
+                        None,
+                    )
+                    if transcript is None or not transcript.attrib.get("url"):
+                        warn("podcast_transcript_missing")
+                    if chapters is None or not chapters.attrib.get("url"):
+                        warn("podcast_chapters_missing")
 
                     audio_name = enclosure_url.rsplit("/", 1)[-1] if enclosure_url else ""
                     candidate = Path("episode_audio") / audio_name
@@ -184,6 +226,61 @@ def main() -> int:
         if not report_says_passed(Path(required_report)):
             fail("required_gate_not_passed", report=required_report)
 
+    poll = load_json(Path("listener_poll.json"))
+    if not poll:
+        warn("listener_poll_payload_missing")
+    else:
+        question = clean(str(poll.get("question") or ""))
+        options = poll.get("options") if isinstance(poll.get("options"), list) else []
+        if not question or len(question) > 140:
+            warn("listener_poll_question_invalid", length=len(question))
+        if not 2 <= len(options) <= 4:
+            warn("listener_poll_options_invalid", found=len(options))
+
+    # This is a producer warning, never a reason to throw away paid audio. The
+    # writer identifies a candidate before TTS; this confirms the clip manifest
+    # survived packaging and remains usable by the social workflow.
+    shareable = load_json(Path("shareable_exchange.json"))
+    if not shareable:
+        warn("shareable_exchange_manifest_missing")
+    else:
+        seconds = shareable.get("estimated_seconds")
+        if not shareable.get("passed"):
+            warn("shareable_exchange_not_confirmed")
+        elif not isinstance(seconds, (int, float)) or not 18.0 <= float(seconds) <= 47.0:
+            warn("shareable_exchange_duration_unexpected", found=seconds)
+
+    audio_qa = load_json(Path("audio_qa_report.json"))
+    if not audio_qa:
+        warn("audio_qa_report_missing")
+    else:
+        if not audio_qa.get("passed"):
+            # Preserve the user's rule: a completed paid episode is never discarded
+            # or regenerated for a post-render mix warning. Surface it for repair.
+            warn("audio_qa_warning_completed_master_preserved", detail=audio_qa)
+        if int(audio_qa.get("transition_count") or 0) < 4:
+            warn("segment_transitions_below_target", found=audio_qa.get("transition_count"))
+        if not audio_qa.get("outro_present"):
+            warn("outro_not_confirmed")
+
+    tts_report = load_json(Path("hybrid_tts_report.json"))
+    if tts_report:
+        if int(tts_report.get("jamie_grok_episode_successes") or 0) <= 0:
+            warn("jamie_grok_voice_not_confirmed_completed_master_preserved")
+        moods = tts_report.get("mood_distribution") if isinstance(tts_report.get("mood_distribution"), dict) else {}
+        active_moods = sum(1 for count in moods.values() if int(count or 0) > 0)
+        if active_moods < 5:
+            warn("tts_dynamic_range_moods_low", active_moods=active_moods, distribution=moods)
+
+    cost_metrics = {
+        "tts_characters_total": int((tts_report or {}).get("total_characters_rendered") or 0),
+        "tts_characters_by_speaker": (tts_report or {}).get("characters_by_speaker") or {},
+        "grok_estimated_cost_usd": float((tts_report or {}).get("jamie_grok_cost_estimate_usd") or 0.0),
+        "grok_cache_hits": int((tts_report or {}).get("jamie_cache_hits") or 0),
+        "fallback_count": len((tts_report or {}).get("fallbacks") or []),
+        "provider_calls": len((tts_report or {}).get("calls") or []),
+    }
+
     report = {
         "version": "spotify-delivery-v1",
         "passed": not failures,
@@ -192,10 +289,14 @@ def main() -> int:
         "newest_episode": newest,
         "audio_path": str(audio_path) if audio_path else None,
         "duration_minutes": round(duration_minutes, 3) if duration_minutes is not None else None,
+        "cost_metrics": cost_metrics,
         "checks": {
             "stop_scroll_title": "passed" if not any(x["reason"].startswith(("title_", "generic_title", "date_in_title")) for x in failures) else "failed",
             "seo_and_episode_structure": "passed" if not any(x["reason"].startswith("description_") for x in failures) else "failed",
             "subscriber_cta": "passed" if not any(x["reason"] == "description_missing_subscriber_cta" for x in failures) else "failed",
+            "show_follow_cta": "passed" if not any(x["reason"] == "description_missing_show_follow_cta" for x in failures) else "failed",
+            "transcript_and_chapters": "warning" if any(x["reason"] in {"podcast_transcript_missing", "podcast_chapters_missing"} for x in warnings) else "passed",
+            "listener_poll_payload": "warning" if any(x["reason"].startswith("listener_poll_") for x in warnings) else "passed",
             "rss_metadata": "passed" if not any(x["reason"] in {
                 "feed_missing", "rss_channel_missing", "rss_has_no_episode", "feed_xml_invalid",
                 "guid_missing", "publication_date_missing", "enclosure_url_missing", "enclosure_length_invalid",
@@ -217,7 +318,9 @@ def main() -> int:
         print(">> Completed audio remains intact; fix metadata and rerun without TTS.", flush=True)
         return 2
 
-    print(">> READY: title, SEO, subscriber CTA, RSS, duplicate protection, and audio all passed.", flush=True)
+    print(">> READY: required publishing checks passed; companion/voice warnings never discard paid audio.", flush=True)
+    for row in warnings:
+        print(f"   - warning: {row['reason']}", flush=True)
     return 0
 
 
