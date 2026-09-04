@@ -1,0 +1,41 @@
+{
+  "version": "spotify-delivery-v1",
+  "passed": true,
+  "cost": "zero-model-calls",
+  "feed": "feed.xml",
+  "newest_episode": {
+    "title": "OpenAI Commits $1 Billion for Cyber Defense Amidst Rapid Industry Consolidation",
+    "description_chars": 1597,
+    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-04.mp3",
+    "pub_date": "Fri, 04 Sep 2026 12:00:00 -0000",
+    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-04.mp3"
+  },
+  "audio_path": "episode_audio/podcast_2026-09-04.mp3",
+  "duration_minutes": 24.446,
+  "cost_metrics": {
+    "tts_characters_total": 22202,
+    "tts_characters_by_speaker": {
+      "ALEX": 9637,
+      "JAMIE": 6830,
+      "RUFUS": 5735
+    },
+    "grok_estimated_cost_usd": 0.10245,
+    "grok_cache_hits": 0,
+    "fallback_count": 0,
+    "provider_calls": 151
+  },
+  "checks": {
+    "stop_scroll_title": "passed",
+    "seo_and_episode_structure": "passed",
+    "subscriber_cta": "passed",
+    "show_follow_cta": "passed",
+    "transcript_and_chapters": "passed",
+    "listener_poll_payload": "passed",
+    "rss_metadata": "passed",
+    "duplicate_protection": "passed",
+    "audio_window": "passed"
+  },
+  "failures": [],
+  "warnings": [],
+  "recovery": "Completed audio is preserved. Repair packaging and rerun this gate; do not regenerate TTS."
+}
