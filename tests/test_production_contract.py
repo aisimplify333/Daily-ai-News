@@ -128,7 +128,7 @@ class ProductionContractTests(unittest.TestCase):
 
     def test_schedule_avoids_hour_boundary_and_keeps_cost_safe_triggers(self):
         workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text(encoding="utf-8")
-        self.assertEqual(re.findall(r"cron:\s*'([^']+)'", workflow), ["17 10 * * 1-5"])
+        self.assertEqual(re.findall(r"cron:\s*'([^']+)'", workflow), ["17 6 * * 1-5"])
         triggers = workflow.split("on:\n", 1)[1].split("\npermissions:", 1)[0]
         self.assertIn("workflow_dispatch:", triggers)
         self.assertNotRegex(triggers, r"(?m)^  (push|pull_request):")
