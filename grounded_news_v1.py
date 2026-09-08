@@ -12,10 +12,6 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
 
-from google import genai
-from google.genai import types
-
-
 DEFAULT_MODEL = os.getenv("GROUNDED_NEWS_MODEL", "gemini-3.1-flash-lite").strip()
 FALLBACK_MODEL = os.getenv("GROUNDED_NEWS_FALLBACK_MODEL", "gpt-5.4-mini").strip()
 MAX_AGE_HOURS = float(os.getenv("MAX_STORY_AGE_HOURS", "48"))
@@ -99,6 +95,9 @@ def _parse_time(value: str) -> Optional[dt.datetime]:
 
 
 def _grounded_text(prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = 7000) -> str:
+    from google import genai
+    from google.genai import types
+
     api_key = os.getenv("GEMINI_API_KEY", "").strip()
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY is missing")
@@ -144,6 +143,40 @@ def _grounded_text(prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = 70
                 "Both grounding providers failed. "
                 f"Gemini={gemini_error}; OpenAI={openai_error}"
             ) from openai_error
+
+
+def _recovery_search(prompt: str) -> str:
+    """One explicit alternate-provider call; never recursively retry."""
+    from openai import OpenAI
+
+    response = OpenAI(api_key=os.environ["OPENAI_API_KEY"]).responses.create(
+        model=FALLBACK_MODEL, input=prompt,
+        tools=[{"type": "web_search"}], max_output_tokens=7000,
+    )
+    return str(getattr(response, "output_text", "") or "").strip()
+
+
+def _rejection_reason(raw: Any, now: dt.datetime) -> str:
+    if not isinstance(raw, dict):
+        return "malformed_item"
+    if not all(raw.get(k) for k in ("headline", "publisher", "source_url", "summary")):
+        return "missing_required_fields"
+    published = _parse_time(str(raw.get("published_at") or ""))
+    if published is None:
+        return "invalid_publication_time"
+    url = str(raw["source_url"])
+    if not url.startswith("https://") or not _domain(url) or "news.google.com" in url:
+        return "invalid_source_url"
+    age = (now - published).total_seconds() / 3600
+    if age < -6 or age > MAX_AGE_HOURS:
+        return "outside_freshness_window"
+    if len(str(raw["summary"]).strip()) < 90:
+        return "insufficient_summary"
+    if not isinstance(raw.get("facts"), list) or len([x for x in raw["facts"] if str(x).strip()]) < 2:
+        return "insufficient_facts"
+    if raw.get("original_publication_verified") is not True:
+        return "publication_not_verified"
+    return ""
 
 
 def _story_prompt(date_str: str, candidate_count: int) -> str:
@@ -249,28 +282,68 @@ def build_grounded_story_slate(
 ) -> List[Dict[str, Any]]:
     now = dt.datetime.now(dt.timezone.utc)
     candidate_count = max(n + 3, 8)
-    payload = _extract_json(
-        _grounded_text(_story_prompt(date_str, candidate_count), model=model),
-        {},
-    )
-    rows = payload.get("stories") if isinstance(payload, dict) else []
+    if n < 1:
+        raise ValueError("n must be positive")
+    prompt = _story_prompt(date_str, candidate_count)
+    prompt += f"\nCurrent UTC time: {now.isoformat()}. Exact oldest allowed publication: {(now - dt.timedelta(hours=MAX_AGE_HOURS)).isoformat()}."
     normalized: List[Dict[str, Any]] = []
     seen: set[str] = set()
-    for raw in rows or []:
-        if not isinstance(raw, dict):
-            continue
-        story = _normalize_story(raw, now)
-        if not story:
-            continue
-        key = re.sub(r"[^a-z0-9]+", " ", story["headline"].lower()).strip()
-        if key in seen:
-            continue
-        seen.add(key)
-        normalized.append(story)
-        if len(normalized) >= n:
-            break
-    trusted = sum(1 for story in normalized if int(story["source_tier"]) >= 2)
+    seen_urls: set[str] = set()
     minimum_story_count = min(n, max(1, MIN_TRUSTED_STORIES))
+    report: Dict[str, Any] = {"episode_date": date_str, "attempts": [], "status": "researching"}
+    for attempt in range(2):
+        entry: Dict[str, Any] = {"stage": "primary" if attempt == 0 else "alternate_refill", "rejections": {}}
+        report["attempts"].append(entry)
+        try:
+            if attempt == 0:
+                text = _grounded_text(prompt, model=model)
+            else:
+                refill = prompt + "\nRecovery: independently search model releases, legislation/courts, finance/banking/funding, chips/infrastructure, and AI security. Find distinct NEW events, not commentary. Retain all original factual standards. Do not repeat these accepted headlines: " + json.dumps([s["headline"] for s in normalized])
+                text = _recovery_search(refill)
+            payload = _extract_json(text, {})
+            rows = payload.get("stories", []) if isinstance(payload, dict) else []
+            if not isinstance(rows, list):
+                rows = []
+            entry["candidates"] = len(rows)
+            for raw in rows:
+                reason = _rejection_reason(raw, now)
+                story = None
+                if not reason:
+                    try:
+                        story = _normalize_story(raw, now)
+                    except (TypeError, ValueError):
+                        reason = "malformed_fields"
+                    if not story and not reason:
+                        reason = "normalization_failed"
+                if story:
+                    key = re.sub(r"[^a-z0-9]+", " ", story["headline"].lower()).strip()
+                    url = story["source_url"].split("?")[0].split("#")[0].rstrip("/")
+                    if key in seen or url in seen_urls:
+                        reason = "duplicate"
+                    else:
+                        seen.add(key)
+                        seen_urls.add(url)
+                        normalized.append(story)
+                if reason:
+                    entry["rejections"][reason] = entry["rejections"].get(reason, 0) + 1
+        except Exception as error:
+            # Never persist provider exception bodies, which can contain secrets.
+            entry["error_type"] = type(error).__name__
+        normalized.sort(key=lambda s: int(s["source_tier"]) < 2)
+        trusted = sum(int(s["source_tier"]) >= 2 for s in normalized)
+        entry["accepted_total"] = len(normalized)
+        entry["trusted_total"] = trusted
+        ready = len(normalized) >= minimum_story_count and trusted >= minimum_story_count
+        report["status"] = "ready" if ready else "insufficient"
+        try:
+            Path("grounded_research_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+        except OSError:
+            pass  # Diagnostic persistence must not block production.
+        print("[grounded-research] " + json.dumps(entry))
+        if ready:
+            break
+    normalized = normalized[:n]
+    trusted = sum(1 for story in normalized if int(story["source_tier"]) >= 2)
     if len(normalized) < minimum_story_count:
         raise RuntimeError(
             f"Grounded search returned {len(normalized)} valid stories; "

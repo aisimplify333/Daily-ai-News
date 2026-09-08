@@ -2,6 +2,24 @@
 
 Release prepared September 3 Pacific / September 4 UTC, 2026.
 
+## September 8 research recovery
+
+- Retain valid candidates and make one explicit OpenAI web-search refill when
+  the initial grounded result fails the minimum valid/trusted count. Search
+  across models, policy, finance, infrastructure and security; preserve freshness
+  and factual requirements. No cast, sponsor, music or publishing changes.
+- Bound: existing initial Gemini call with its one error fallback, plus at most
+  one alternate refill (at most three provider requests, excluding SDK retries).
+  No refill when the initial slate meets requirements. Research costs are not
+  zero; provider invoice totals remain unmeasured.
+- Save rejection counts and sanitized error types to grounded_research_report.json
+  and include it in always-uploaded production artifacts. Deduplicate canonical
+  URLs and headlines; prioritize trusted sources before truncation.
+- Offline regression tests cover sparse slates, no-extra-call success, stale and
+  unverified records, duplicates, provider failure, exhausted recovery and trusted
+  source selection. Live scheduled delivery and Spotify propagation still require
+  a successful run; this change alone does not establish consistent delivery.
+
 ## September 4 listener-feedback revision
 
 - Follow-up character direction shared by writer, punch-up and rescue: Rufus's
