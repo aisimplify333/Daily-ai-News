@@ -4,7 +4,9 @@ on:
   schedule:
     # Avoid GitHub's documented top-of-hour schedule congestion. This is a
     # requested start time, not an exact-time delivery guarantee.
-    - cron: '17 10 * * 1-5' # Mon-Fri 3:17 AM Pacific daylight time / 10:17 UTC
+    # Delivery target: BY 06:30 America/New_York, not a 06:30 start.
+    # 06:17 UTC = 02:17 EDT / 01:17 EST; keep extra winter buffer.
+    - cron: '17 6 * * 1-5'
   workflow_dispatch:
 permissions:
   contents: write

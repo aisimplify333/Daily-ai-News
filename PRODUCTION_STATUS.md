@@ -4,6 +4,18 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 ## September 8 research recovery
 
+- Follow-up: delivery target is BY 06:30 Eastern every weekday, using
+  America/New_York local time (daylight saving observed). Requested production
+  start moved to 06:17 UTC: 02:17 EDT / 01:17 EST, providing 4h13 / 5h13 of
+  start-to-delivery buffer. Early publication is allowed. GitHub delays and
+  Spotify ingestion remain outside this cron's control; this is not a guarantee
+  of precise arrival. No second paid full-production retry has been added.
+- Corrected the September 8 live-run mismatch: the research layer now requires
+  the requested n stories (five in production), while the trusted-source minimum
+  stays three. Three accepted stories now trigger the alternate refill rather
+  than being cached and returned to a caller requiring five. Exhaustion raises
+  before writing/TTS. Two regression tests cover the actual production contract.
+
 - Retain valid candidates and make one explicit OpenAI web-search refill when
   the initial grounded result fails the minimum valid/trusted count. Search
   across models, policy, finance, infrastructure and security; preserve freshness

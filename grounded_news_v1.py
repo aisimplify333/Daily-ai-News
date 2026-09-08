@@ -333,7 +333,7 @@ def build_grounded_story_slate(
         trusted = sum(int(s["source_tier"]) >= 2 for s in normalized)
         entry["accepted_total"] = len(normalized)
         entry["trusted_total"] = trusted
-        ready = len(normalized) >= minimum_story_count and trusted >= minimum_story_count
+        ready = len(normalized) >= n and trusted >= minimum_story_count
         report["status"] = "ready" if ready else "insufficient"
         try:
             Path("grounded_research_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
@@ -344,10 +344,10 @@ def build_grounded_story_slate(
             break
     normalized = normalized[:n]
     trusted = sum(1 for story in normalized if int(story["source_tier"]) >= 2)
-    if len(normalized) < minimum_story_count:
+    if len(normalized) < n:
         raise RuntimeError(
             f"Grounded search returned {len(normalized)} valid stories; "
-            f"at least {minimum_story_count} required"
+            f"at least {n} required"
         )
     if int(normalized[0]["source_tier"]) < 2:
         raise RuntimeError("Grounded lead did not come from a primary or trusted source")
