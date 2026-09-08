@@ -78,6 +78,37 @@ def final_script():
 
 
 class ProductionContractTests(unittest.TestCase):
+    def test_title_payoff_surface_check(self):
+        self.assertFalse(writer._title_has_payoff(
+            "OpenAI Commits $1 Billion for Cyber Defense Amidst Rapid Industry Consolidation"))
+        self.assertTrue(writer._title_has_payoff(
+            "OpenAI Cybersecurity: What Should Your Team Watch Next?"))
+
+    def test_announcement_title_falls_back_without_extra_calls(self):
+        announcement = "Google Expands AI Security Access Across Its Enterprise Platform"
+        with patch.object(writer, "_gemini_text", return_value=json.dumps({
+            "published_title": announcement,
+        })) as generate:
+            board = writer._preproduction({}, STORIES, "2026-09-08", {})
+        self.assertEqual(generate.call_count, 1)
+        self.assertNotEqual(board["published_title"], announcement)
+        self.assertTrue(writer._title_has_payoff(board["published_title"]))
+        self.assertIn("Google", board["published_title"])
+
+    def test_supported_payoff_title_is_preserved(self):
+        title = "Google AI Security: What Should Your Team Watch Next?"
+        with patch.object(writer, "_gemini_text", return_value=json.dumps({
+            "published_title": title,
+        })):
+            board = writer._preproduction({}, STORIES, "2026-09-08", {})
+        self.assertEqual(board["published_title"], title)
+
+    def test_writer_must_deliver_title_benefit(self):
+        board = dict(BOARD, listener_promise="Understand the security access tradeoff")
+        prompt = writer._writer_prompt(STORIES, [], "2026-09-08", board, {})
+        self.assertIn("Understand the security access tradeoff", prompt)
+        self.assertIn("answer the title's", prompt)
+
     def test_connection_direction_survives_writer_and_repairs(self):
         prompts = [
             writer._writer_prompt(STORIES, [], "2026-09-07", BOARD, {}),

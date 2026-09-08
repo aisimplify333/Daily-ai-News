@@ -865,20 +865,29 @@ def _hard_title(stories: List[Dict[str, Any]]) -> str:
     )
     owner = f"{entity}'s" if entity != "AI" else "AI"
     if any(x in b for x in ["health", "clinical", "doctor", "patient", "hospital", "gates foundation"]):
-        return f"{owner} Healthcare Move: Who Is Liable When It Is Wrong?"
+        return f"{owner} Healthcare Move: Who Carries Your Risk?"
     if any(x in b for x in ["security", "cyber", "breach", "vulnerability"]):
-        return f"{owner} Security Move Changes Who Gets Access"
+        return f"{owner} Security Move: What Changes for Your Team?"
     if any(x in b for x in ["coding", "developer", "codebase", "github"]):
-        return f"{owner} Coding Move Puts the Moat on Trial"
+        return f"{owner} Coding Move: What Should Developers Watch Next?"
     if any(x in b for x in ["lawsuit", "copyright", "court", "antitrust"]):
-        return f"{owner} Fight Just Put the Lawyers in Charge"
+        return f"{owner} Legal Fight: What Should AI Users Watch?"
     if any(x in b for x in ["chip", "gpu", "nvidia", "compute", "data center", "datacenter", "acquisition", "deal"]):
-        return f"{owner} Deal Is an AI Infrastructure Power Grab"
+        return f"{owner} Infrastructure Move: What Should AI Buyers Watch?"
     if any(x in b for x in ["china", "export", "white house", "government", "regulation"]):
-        return f"{owner} AI Move Has a Control Problem"
+        return f"{owner} AI Policy Shift: What Should Users Watch?"
     if any(x in b for x in ["agent", "agents", "workflow", "copilot"]):
-        return f"{owner} Agents Are Getting More Power. Who Is Watching?"
-    return f"{owner} AI Move Has a Bigger Fight Behind It"
+        return f"{owner} Agents: Who Is Watching Your AI Work?"
+    return f"{owner} AI News: What Changes for You?"
+
+
+def _title_has_payoff(title: str) -> bool:
+    """Surface check only, not proof of relevance or audience conversion."""
+    return bool(re.search(
+        r"\b(you|your|why|how|worth|should|means|risk|cost|protect|"
+        r"winners|losers|who wins|what changes|what to watch)\b",
+        title or "", re.IGNORECASE,
+    ))
 
 
 def _lead_actor(stories: List[Dict[str, Any]]) -> str:
@@ -964,9 +973,23 @@ or leave an honest uncertainty unresolved. A concession is optional and only ear
 by supplied evidence. Never default to Alex conceding or rotate a designated loser.
 Use prior positions to avoid repeating yesterday's argument and outcome mechanically.
 
+TITLE CONTRACT:
+- Sell one specific, evidence-backed listener payoff, not a corporate announcement.
+- Consider three distinct angles internally: a practical decision, a consequential
+  tradeoff, and a useful explanation. Return only the strongest supported title.
+- Name the lead entity and make clear what the listener will understand, decide,
+  avoid, or watch after listening. Use plain language, not 'industry consolidation'.
+- Include an explicit payoff cue such as why, how, worth, should, your, risk, cost,
+  who wins, or what changes. A cue alone is NOT a good title: make it story-specific.
+- No invented savings, deadlines, danger, certainty, or sensational claims. A
+  question must be genuinely explored; uncertainty is an acceptable earned answer.
+- Vary the angle across episodes. Do not mechanically append 'what it means for you'.
+- The listener_promise must explain the title's payoff and the opening and closing
+  must deliver it using supplied facts. Preserve the show's permanent promise too.
+
 Return exactly this JSON:
 {{
-  "published_title": "6-14 words; name Story 1's primary company/person/product, its concrete action or number, and the consequence; never starts with 'Today' and never the word 'lesson'",
+  "published_title": "6-14 words; lead entity plus specific listener benefit or decision, grounded in Story 1's action or number; follow TITLE CONTRACT; never starts with 'Today' and never the word 'lesson'",
   "central_fight": "the core disagreement in one sentence",
   "opening_question": "the first hard audience question Alex asks after the short welcome",
   "listener_question": "one answerable listener poll question, maximum 140 characters",
@@ -1000,6 +1023,7 @@ Return exactly this JSON:
         or "lesson" in title.lower()
         or not 6 <= title_words <= 14
         or not _title_matches_lead(title, stories)
+        or not _title_has_payoff(title)
     ):
         default["published_title"] = _hard_title(stories)
     question = re.sub(r"\s+", " ", str(default.get("listener_question") or "")).strip()
@@ -1087,6 +1111,12 @@ def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]]
     )
 
     return f"""Write the complete spoken script for {SHOW_TITLE} on {date_str}.
+
+TITLE PAYOFF TO DELIVER: {board.get('published_title')}
+EPISODE-SPECIFIC LISTENER BENEFIT: {board.get('listener_promise', LISTENER_PROMISE)}
+Make this benefit clear naturally in Alex's opening, then answer the title's
+question or decision in the closing using concrete evidence from the episode.
+Do not promise unsupported savings or certainty; say what remains unknown.
 
 This is a hard, human, daily AI debate — three real people arguing, not a digest and
 not a lesson. Education happens INSIDE the argument. Data is the ammunition.

@@ -4,6 +4,13 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 ## September 8 research recovery
 
+- Title follow-up: storyboard now requires an explicit, source-backed listener
+  payoff and considers decision/tradeoff/explanation angles in the existing call.
+  A lightweight payoff-cue check falls back without retries or a publishing gate.
+  Writer receives the episode-specific promise for opening and closing delivery.
+  This is not semantic proof, a listened audio review, or conversion evidence.
+  No paid audio or previously published episode was regenerated for this change.
+
 - Follow-up: delivery target is BY 06:30 Eastern every weekday, using
   America/New_York local time (daylight saving observed). Requested production
   start moved to 06:17 UTC: 02:17 EDT / 01:17 EST, providing 4h13 / 5h13 of
