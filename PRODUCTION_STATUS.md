@@ -4,6 +4,22 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 ## September 8 research recovery
 
+- Follow-up to failed run 34284168953: offline checks and preflight passed;
+  primary returned two usable stories and refill added one. Thirteen candidates
+  were outside 48 hours. No script or TTS generation ran.
+- Connected the previously ignored RSS pool to grounded discovery. Only fresh,
+  dated, deduplicated headlines (maximum 40) become search leads, never verified
+  facts. Original publication dates and article facts still require verification.
+- Replaced the inclusive calendar-date prompt with the exact rolling UTC window.
+  Recovery receives rejection reasons and reported dates. One final targeted pass
+  is allowed only with fresh discovery leads: maximum four provider requests
+  including primary fallback, excluding SDK retries; no added calls on success.
+- Removed the legacy fabricated TestWire item when RSS is empty. Grounded search
+  remains responsible for finding real stories. Empty research still stops before TTS.
+- Regression coverage reproduces the two-plus-one stale-result failure pattern and
+  exercises the installed writer selector through research using mocked providers.
+  Live provider search success, completed audio and Spotify arrival remain unproven.
+
 - Title follow-up: storyboard now requires an explicit, source-backed listener
   payoff and considers decision/tradeoff/explanation angles in the existing call.
   A lightweight payoff-cue check falls back without retries or a publishing gate.
@@ -82,7 +98,7 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 | Trailer | One-time 60–90 second assembly from actual cold open, music, cast intro, exchange, promise and CTA; existing trailer preserved. If required beats do not fit, report a warning and retain the prepared trailer script. |
 | Reliability | Required audio/RSS checks remain; voice/creative/companion warnings do not discard paid audio. Artifacts retained for recovery. |
 | Testing | Offline tests include actual synthetic-audio clip, captioned video and trailer exports without TTS calls. |
-| Schedule | Monday–Friday at 10:17 UTC (03:17 Pacific daylight / 02:17 Pacific standard time). Requested start, not an exact delivery guarantee. |
+| Schedule | Monday–Friday at 06:17 UTC, targeting delivery by 06:30 America/New_York. Requested start, not an exact delivery guarantee. |
 
 ## Not equivalent to completion
 

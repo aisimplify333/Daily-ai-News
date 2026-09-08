@@ -88,6 +88,58 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(second, 1)
         self.assertTrue(all(row["source_tier"] >= 2 for row in rows[:3]))
 
+    def test_live_stale_pattern_uses_targeted_discovery_recovery(self):
+        old = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=60)).isoformat()
+        primary = [story(1), story(2)] + [story(i, published_at=old) for i in range(10, 17)]
+        refill = [story(1), story(3)] + [story(i, published_at=old) for i in range(20, 26)]
+        seeds = json.dumps([{"title": "Fresh AI financial announcement",
+                             "published": story(1)["published_at"]}])
+        with patch.object(news, "_grounded_text", return_value=json.dumps({"stories": primary})), patch.object(news, "_recovery_search", side_effect=[
+            json.dumps({"stories": refill}), json.dumps({"stories": [story(4), story(5)]})
+        ]) as recover:
+            result = news.build_grounded_story_slate("2026-09-08", discovery_json=seeds)
+        self.assertEqual(len(result), 5)
+        self.assertEqual(recover.call_count, 2)
+        self.assertIn("Fresh AI financial announcement", recover.call_args.args[0])
+        self.assertIn("outside_freshness_window", recover.call_args.args[0])
+        self.assertIn(old, recover.call_args.args[0])
+
+    def test_discovery_never_substitutes_for_verified_stories(self):
+        seeds = json.dumps([{"title": "Unverified headline", "published": story(1)["published_at"]}])
+        with patch.object(news, "_grounded_text", return_value="{}"), patch.object(news, "_recovery_search", return_value="{}") as recover:
+            with self.assertRaisesRegex(RuntimeError, "at least 5 required"):
+                news.build_grounded_story_slate("2026-09-08", discovery_json=seeds)
+        self.assertEqual(recover.call_count, 2)
+
+    def test_discovery_filters_stale_future_and_malformed_items(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        rows = news._fresh_discovery_seeds([
+            None, {"title": "missing date"},
+            {"title": "old", "published": (now-dt.timedelta(hours=49)).isoformat()},
+            {"title": "future", "published": (now+dt.timedelta(hours=1)).isoformat()},
+            {"title": "fresh", "published": now.isoformat()},
+            {"title": "fresh", "published": now.isoformat()},
+        ], now)
+        self.assertEqual([x["headline"] for x in rows], ["fresh"])
+
+    def test_prompt_uses_exact_rolling_window(self):
+        now = dt.datetime(2026, 9, 8, 22, 9, tzinfo=dt.timezone.utc)
+        prompt = news._story_prompt("2026-09-08", 8, now)
+        self.assertIn("2026-09-06T22:09:00+00:00", prompt)
+        self.assertIn("2026-09-08T22:09:00+00:00", prompt)
+
+    def test_installed_production_selector_passes_rss_to_research(self):
+        import writer_room_v3_1 as writer
+        namespace = {}
+        writer.install_v3_1(namespace)
+        rss = [{"title": "Current AI announcement", "published": story(1)["published_at"]}]
+        with patch.object(news, "_grounded_text", return_value=json.dumps({
+            "stories": [story(i) for i in range(5)]
+        })) as search:
+            result = namespace["pick_top_stories"](rss, n=5, date_str="2026-09-08")
+        self.assertEqual(len(result), 5)
+        self.assertIn("Current AI announcement", search.call_args.args[0])
+
 
 if __name__ == "__main__":
     unittest.main()

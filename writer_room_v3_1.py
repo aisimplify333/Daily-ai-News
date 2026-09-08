@@ -2541,6 +2541,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 episode_date,
                 n=n,
                 model=GROUNDED_NEWS_MODEL,
+                discovery_json=json.dumps(intel_items, ensure_ascii=False),
             )
             write_grounded_slate_report(selected, episode_date)
             _safe_print(

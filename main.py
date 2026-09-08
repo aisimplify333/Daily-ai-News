@@ -5984,15 +5984,7 @@ def produce_episode() -> None:
     _safe_print(" >> 📰 GATHERING INTEL (RSS PRIMARY)...")
     intel = broaden_intel_pool()
     if not intel:
-        _safe_print("    ⚠️ RSS empty. Using test item.")
-        intel = [{
-            "bucket": "Test",
-            "title": "Test: AI model sparks market panic",
-            "publisher": "TestWire",
-            "published": today,
-            "link": "https://example.com",
-            "summary": "Simulation. $500M wiped. 24 hours. 3 regulators. 1 leak."
-        }]
+        _safe_print("    ⚠️ RSS empty. Grounded search must supply verified stories.")
 
     candidate_debug = select_story_candidates(intel, n=40, memory=load_show_memory(), bucket_cap=STORY_BUCKET_CAP)
     STORY_SCORES_PATH.write_text(
