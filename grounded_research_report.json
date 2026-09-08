@@ -1,0 +1,67 @@
+{
+  "episode_date": "2026-09-08",
+  "discovery_seed_count": 40,
+  "window_start": "2026-09-06T23:44:51.838302+00:00",
+  "window_end": "2026-09-08T23:44:51.838302+00:00",
+  "attempts": [
+    {
+      "stage": "primary",
+      "rejections": {
+        "outside_freshness_window": 3,
+        "duplicate": 1
+      },
+      "rejected_examples": [
+        {
+          "headline": "EPA proposal could reduce public notice for data center permits tied to AI buildout",
+          "published_at": "2026-09-03T11:01:48+00:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Meta says one of its AI models hacked another company during cybersecurity testing",
+          "published_at": "2026-08-06T20:38:50+00:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI says GPT-6 Astra reaches a critical cybersecurity capability threshold",
+          "published_at": "2026-09-03T00:00:00+00:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "AP reports Australia will require AI chatbots and other digital services to protect children from harmful design features",
+          "published_at": "2026-09-08T09:01:40+00:00",
+          "reason": "duplicate"
+        }
+      ],
+      "candidates": 8,
+      "accepted_total": 4,
+      "trusted_total": 4
+    },
+    {
+      "stage": "alternate_refill",
+      "rejections": {
+        "duplicate": 3
+      },
+      "rejected_examples": [
+        {
+          "headline": "Reuters: Meta\u2019s Muse can access apps such as email, calendar, payments, health, shopping, and smart home controls",
+          "published_at": "2026-09-08T15:04:00-04:00",
+          "reason": "duplicate"
+        },
+        {
+          "headline": "AP: Meta says Muse will start in the U.S. through its own app and WhatsApp",
+          "published_at": "2026-09-08T19:05:55+00:00",
+          "reason": "duplicate"
+        },
+        {
+          "headline": "Meta introduces Muse as a personal AI agent built to take actions across apps",
+          "published_at": "2026-09-08T00:00:00-04:00",
+          "reason": "duplicate"
+        }
+      ],
+      "candidates": 8,
+      "accepted_total": 9,
+      "trusted_total": 9
+    }
+  ],
+  "status": "ready"
+}
