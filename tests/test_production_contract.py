@@ -78,6 +78,27 @@ def final_script():
 
 
 class ProductionContractTests(unittest.TestCase):
+    def test_single_closing_loop_removes_model_poll_promise(self):
+        script = SCRIPT + "\nALEX: Here's the listener question, it's going on the Spotify poll today. Your options: yes or no.\nALEX: Follow The AI Edge on Spotify for tomorrow when we'll have your answers.\nRUFUS: The price deserves a harder conversation."
+        once = writer._ensure_connection_elements(script, STORIES, BOARD, "2026-09-08")
+        twice = writer._ensure_connection_elements(once, STORIES, BOARD, "2026-09-08")
+        self.assertEqual(once, twice)
+        self.assertEqual(once.lower().count("follow the ai edge"), 1)
+        self.assertEqual(once.count("Today’s question for you:"), 1)
+        self.assertNotIn("Spotify poll today", once)
+        self.assertNotIn("we'll have your answers", once)
+        self.assertIn("The price deserves a harder conversation", once)
+
+    def test_chapters_follow_segment_roles_not_story_array_positions(self):
+        lines = writer._apply_topic_chapter_headers(["### SEGMENT 3", "### SEGMENT 4"], STORIES)
+        self.assertIn("Google: Costs, Power and Tradeoffs", lines[0])
+        self.assertNotIn("Schools", lines[0])
+        self.assertIn("Testing the Lead Argument", lines[1])
+
+    def test_production_fact_audit_enabled(self):
+        workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text()
+        self.assertIn('ENABLE_GROUNDED_FACT_AUDIT: "true"', workflow)
+
     def test_title_payoff_surface_check(self):
         self.assertFalse(writer._title_has_payoff(
             "OpenAI Commits $1 Billion for Cyber Defense Amidst Rapid Industry Consolidation"))

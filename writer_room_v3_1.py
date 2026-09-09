@@ -140,6 +140,17 @@ CALLBACK_RE = re.compile(
 )
 
 CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independent minds:
+- Never use the 'Alex admitted he was wrong / mark the date / make it a holiday'
+  routine. A change of view is not a punchline or a required plot beat.
+- Each exchange must add a new fact, counterexample, decision criterion or consequence.
+  Do not restate the same premium-versus-practical argument to pad runtime.
+- Jamie initiates story-specific wit as well as reacting. Give her an earned
+  setup/comeback with Rufus; let Alex test the implication rather than explain it again.
+- Attribute corporate motives as interpretations, not facts. 'No controls exist'
+  or 'methodology is unknown' requires checking the linked documentation. Absence
+  from the short source summary is not evidence of absence. Do not infer clinical
+  reliability from a context-window size or a math benchmark. Distinguish input,
+  output and other charges when illustrating cost, and state hypothetical assumptions.
 - RUFUS: British character is a way of observing, not an accent plus filler words.
   Use understated disbelief, affectionate mock politeness, or a precise British
   turn of phrase when the actual exchange earns it, followed by a substantive point.
@@ -1341,8 +1352,10 @@ Rufus answer what changed, who wins, and what the listener should watch or do ne
 synthesizes the remaining disagreement instead of merely recapping. Do not force
 any host to change their mind. End on a sticky, unresolved
 question — and plant one specific, dated prediction for a future episode to revisit.
-Near the close Alex asks the supplied listener question and tells listeners to follow
-The AI Edge for tomorrow's answer. Keep the final editorial button after that CTA.
+Do NOT write a listener poll invitation, poll answer options, follow CTA, or sponsor
+end tag: assembly inserts the required connection elements. Write the editorial
+payoff and one final witty button only. Never promise a native Spotify poll,
+audience results tomorrow, or listener submissions not present in the evidence.
 
 OUTPUT ONLY THE SCRIPT.
 """.strip()
@@ -1475,8 +1488,8 @@ def _apply_topic_chapter_headers(
     labels = {
         1: lead or "Today's AI Fight",
         2: f"{actor}: Human Stakes and Receipts",
-        3: story_three or "Money, Power and Permission",
-        4: f"The Pattern: {story_four}" if story_four else "What the Other AI Stories Reveal",
+        3: f"{actor}: Costs, Power and Tradeoffs",
+        4: "The Other AI Stories: Testing the Lead Argument",
         5: "The Edge: What Changed and What Happens Next",
     }
     out: List[str] = []
@@ -1510,6 +1523,28 @@ def _ensure_connection_elements(
         re.IGNORECASE,
     )
     lines = [line for line in lines if not deterministic_re.match(line.strip())]
+    # Own the closing loop in one place, including model-written variants and
+    # continuation chunks containing poll answer options. Preserve editorial turns.
+    cleaned = []
+    in_closing = False
+    skip_speaker = None
+    for line in lines:
+        if re.match(r"^(?:###\s*)?SEGMENT\s+5\b", line, re.I):
+            in_closing = True
+        match = SPEAKER_RE.match(line.strip())
+        if match:
+            speaker, spoken = match.group(1).upper(), match.group(2)
+            if in_closing and re.search(
+                r"listener question|question for you|Spotify poll|your options|"
+                r"follow\s+The AI Edge|we.ll have your answers", spoken, re.I
+            ):
+                skip_speaker = speaker
+                continue
+            if skip_speaker == speaker:
+                continue
+            skip_speaker = None
+        cleaned.append(line)
+    lines = cleaned
     lines = _apply_topic_chapter_headers(lines, stories)
 
     # Lead signpost: after the post-music cast exchange, before the first real deep dive.
@@ -2745,7 +2780,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
 
             fact_audits: List[Dict[str, Any]] = []
             total_applied = 0
-            for audit_pass in range(1, 4):
+            for audit_pass in range(1, 3):
                 audit = fact_check_script(
                     script,
                     stories,

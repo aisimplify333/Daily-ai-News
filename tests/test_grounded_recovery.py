@@ -140,6 +140,23 @@ class RecoveryTests(unittest.TestCase):
         self.assertEqual(len(result), 5)
         self.assertIn("Current AI announcement", search.call_args.args[0])
 
+    def test_same_launch_different_outlets_requires_new_event(self):
+        rows, _, calls = self.run_slate([
+            story(1, headline="Meta launches Muse personal agent"),
+            story(2, headline="Meta says Muse uses a secure virtual machine"),
+            story(3, headline="Meta launches Muse for email and travel"),
+        ], [story(4), story(5)], n=3)
+        self.assertEqual(calls, 1)
+        self.assertEqual(len(rows), 3)
+        self.assertEqual(sum("Muse" in row["headline"] for row in rows), 1)
+
+    def test_event_key_and_distinct_product_handling(self):
+        self.assertTrue(news._same_news_event(
+            dict(headline="First title", event_key="launch-a"),
+            dict(headline="Different title", event_key="launch-a")))
+        self.assertFalse(news._same_news_event(
+            dict(headline="Meta launches Muse"), dict(headline="Meta announces Llama")))
+
 
 if __name__ == "__main__":
     unittest.main()

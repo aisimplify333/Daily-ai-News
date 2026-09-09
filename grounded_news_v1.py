@@ -216,6 +216,7 @@ Return STRICT JSON only:
   "stories": [
     {{
       "headline": "plain factual headline",
+      "event_key": "stable company-product-event key shared by coverage of the same announcement",
       "publisher": "original primary source or major newsroom",
       "published_at": "ISO-8601 timestamp from the source page",
       "source_url": "direct canonical article URL, never a search-results URL",
@@ -242,6 +243,9 @@ Rules:
 - Exclude SEO explainers, listicles, commentary presented as news, conference promotion,
   rumor without attribution, and routine content marketing.
 - One event per item. Do not combine unrelated stories into a thesis.
+- Multiple outlets covering one product launch count as ONE event. Architecture,
+  availability and pricing details of that launch belong in its facts, not separate
+  story slots. Return distinct events; use the same event_key for corroborating coverage.
 - Access/retrieval is not model training. For health, enterprise, workspace, or other
   connected data, explicitly include the vendor's current training/privacy/retention
   qualifiers from an official source. Never imply training when the source says no.
@@ -281,6 +285,7 @@ def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str
     if raw.get("original_publication_verified") is not True:
         return None
     return {
+        "event_key": str(raw.get("event_key") or "").strip().lower()[:160],
         "headline": headline,
         "title": headline,
         "publisher": publisher,
@@ -297,6 +302,22 @@ def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str
         "source_tier": _source_tier(publisher, source_url),
         "grounded": True,
     }
+
+
+def _same_news_event(left: Dict[str, Any], right: Dict[str, Any]) -> bool:
+    """Conservative corroboration clustering, beyond identical URLs/headlines.
+
+    Two shared named entities (e.g. Meta and Muse) describe one daily product
+    story for this slate. This is not a general semantic equivalence proof.
+    """
+    key = left.get("event_key")
+    if key and key == right.get("event_key"):
+        return True
+    excluded = {"AI", "The", "New", "US", "UK", "EU", "A", "An"}
+    def names(story):
+        return {word for word in re.findall(r"\b[A-Z][A-Za-z0-9-]*\b", story["headline"])
+                if word not in excluded}
+    return len(names(left) & names(right)) >= 2
 
 
 @lru_cache(maxsize=8)
@@ -357,6 +378,8 @@ def build_grounded_story_slate(
                     url = story["source_url"].split("?")[0].split("#")[0].rstrip("/")
                     if key in seen or url in seen_urls:
                         reason = "duplicate"
+                    elif any(_same_news_event(story, accepted) for accepted in normalized):
+                        reason = "duplicate_event"
                     else:
                         seen.add(key)
                         seen_urls.add(url)
@@ -452,6 +475,10 @@ Rules:
 - Reserve critical_errors for a materially false, contradicted, fabricated, stale, or
   misleading factual assertion. Put attribution nuance or extra context in warnings.
 - Every replacement must preserve the exact speaker label and conversational intent.
+- Verify claims that documentation, methodology, spend controls or independent
+  evidence do not exist by checking linked primary documentation. A short source
+  summary omitting something does not establish its absence. Correct overstatements
+  about clinical reliability and clearly distinguish input and output token charges.
 - Correct only the factual defect; do not flatten humor, disagreement, or host voice.
 - Do not treat access, retrieval, a connector, or an enterprise workspace as model training
   unless a current official source explicitly says the data is used to train the model.

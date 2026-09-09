@@ -2,6 +2,24 @@
 
 Release prepared September 3 Pacific / September 4 UTC, 2026.
 
+## September 9 editorial improvement
+
+- Following the September 8 transcript review: merge matching event keys and
+  matching named company/product pairs so corroborating Muse coverage cannot
+  fill three slots. This heuristic may merge separate same-product updates;
+  distinct-event live search success still needs verification.
+- One assembly-owned closing loop removes model-written poll invitations/options
+  and follow CTAs. No claims of native Spotify poll publication or future results.
+- Chapter 3 now describes lead-story costs/tradeoffs; chapter 4 describes supporting
+  stories, rather than assigning titles from unrelated story-array positions.
+- Shared writer/punch-up/rescue directions prohibit the Alex-concession holiday bit,
+  repetitive argument padding, unsupported motives and absence-of-evidence claims.
+- Enabled existing pre-TTS grounded fact audit, capped at two passes. Extra research
+  spend is intentional; unresolved critical factual errors stop before voices.
+  Creative warnings still do not discard a paid master. No voice/music changes.
+- This release does not establish an 8.5/10 listening score. Next generated audio,
+  actual factual corrections, editorial variety and publication must be reviewed.
+
 ## September 8 research recovery
 
 - Follow-up to failed run 34284168953: offline checks and preflight passed;
