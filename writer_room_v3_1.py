@@ -140,6 +140,12 @@ CALLBACK_RE = re.compile(
 )
 
 CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independent minds:
+- CREATIVE LICENSE: take strong positions and disagree openly. Jamie may call a
+  proposal absurd; Rufus may puncture its pretensions; Alex may defend the upside.
+  Use sharp opinion, rhetorical questions, clearly hypothetical scenarios and
+  predictions without timid hedging every sentence. Facts stay accurate; verdicts
+  need not converge. Earn drama through competing incentives and consequences.
+  Let a punchline stand without explaining it. Never fabricate real listener input.
 - PERFORMANCE ARC: build a meaningful Jamie–Rufus disagreement around a real
   consequence. Let them address each other directly for several short turns,
   typically 8–25 words, instead of routing every response through Alex. No fixed

@@ -457,6 +457,9 @@ Return STRICT JSON only:
     {{
       "exact_line": "the complete ALEX:, JAMIE:, or RUFUS: line exactly as written",
       "reason": "specific factual problem",
+      "claim_type": "factual_assertion",
+      "factual_claim": "the specific externally checkable assertion, not the host's opinion",
+      "evidence_quote": "short exact excerpt from the linked source supporting the correction",
       "replacement_line": "a complete corrected line, same speaker, no more than 55 words",
       "source_url": "direct verifying URL"
     }}
@@ -467,6 +470,16 @@ Return STRICT JSON only:
 
 Rules:
 - pass is false when critical_errors is non-empty.
+- EDITORIAL FREEDOM: this is an opinionated debate, not a neutral news bulletin.
+  Preserve strong judgments, sarcasm, British idioms, rhetorical exaggeration,
+  disagreement, predictions and clearly fictional/hypothetical scenes. Do not
+  require proof that an opinion is correct or make all hosts agree.
+- A critical correction MUST identify a concrete factual_claim and a direct
+  source_url with a short evidence_quote supporting the factual correction.
+  Put uncertain interpretation, missing context and speculative motives in warnings.
+  An opinion can contain a false fact: correct that fact only, preserving the
+  position, joke, speaker and conversational challenge. 'I think' is not immunity
+  for a wrong price, invented quote, false launch date or fictional real-world event.
 - Audit editorial factual claims only. Ignore the two-line sponsor read immediately after
   [MUSIC], including The Ledger brand description, URL, and call to action, unless it makes
   a concrete numerical or regulated-product claim.
@@ -494,6 +507,21 @@ SOURCE RECORDS:
 SCRIPT:
 {script}
 """.strip()
+
+
+def _has_factual_evidence(item: Dict[str, Any]) -> bool:
+    """Require a reviewable factual basis, not a generic creative objection.
+
+    This validates evidence fields, not the truth of the provider's quotation.
+    """
+    url = urlparse(str(item.get("source_url") or ""))
+    return (
+        item.get("claim_type") == "factual_assertion"
+        and bool(str(item.get("factual_claim") or "").strip())
+        and bool(str(item.get("evidence_quote") or "").strip())
+        and url.scheme == "https" and bool(url.hostname)
+        and bool(url.path.strip("/"))
+    )
 
 
 def fact_check_script(
@@ -534,6 +562,10 @@ def fact_check_script(
     for item in errors:
         if not isinstance(item, dict):
             continue
+        if not _has_factual_evidence(item):
+            warnings.append("Advisory only; no reviewable factual correction: " +
+                            str(item.get("reason") or "unclassified concern"))
+            continue
         exact = str(item.get("exact_line") or "").strip()
         replacement = str(item.get("replacement_line") or "").strip()
         reason = str(item.get("reason") or "").strip()
@@ -556,6 +588,9 @@ def fact_check_script(
         if len(re.findall(r"\b[\w'-]+\b", spoken)) > 55:
             continue
         clean_errors.append({
+            "claim_type": "factual_assertion",
+            "factual_claim": str(item["factual_claim"]).strip(),
+            "evidence_quote": str(item["evidence_quote"]).strip(),
             "exact_line": exact,
             "replacement_line": replacement,
             "reason": reason,

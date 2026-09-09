@@ -21,6 +21,35 @@ def story(index, **changes):
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_opinion_objection_is_not_actionable_fact_error(self):
+        self.assertFalse(news._has_factual_evidence({
+            "claim_type": "opinion", "reason": "Host calls the deal a land grab",
+            "source_url": "https://example.com/deal", "factual_claim": "land grab",
+            "evidence_quote": "Company announces deal"}))
+
+    def test_mixed_opinion_requires_evidence_for_factual_correction(self):
+        item = {"claim_type": "factual_assertion", "factual_claim": "Output tokens cost $5",
+                "source_url": "https://example.com/pricing", "evidence_quote": "$50 per million output tokens"}
+        self.assertTrue(news._has_factual_evidence(item))
+        self.assertFalse(news._has_factual_evidence(dict(item, evidence_quote="")))
+        self.assertFalse(news._has_factual_evidence(dict(item, source_url="https://example.com/")))
+
+    def test_checker_keeps_opinion_advisory_but_corrects_embedded_false_price(self):
+        price = {"claim_type": "factual_assertion", "factual_claim": "$5 output price",
+                 "evidence_quote": "$50 per million output tokens",
+                 "source_url": "https://example.com/pricing", "reason": "Incorrect price",
+                 "exact_line": "JAMIE: I think it is a ripoff at five dollars.",
+                 "replacement_line": "JAMIE: I think it is a ripoff at fifty dollars."}
+        opinion = {"claim_type": "opinion", "reason": "Ripoff is too opinionated"}
+        with patch.dict(os.environ, {"ENABLE_GROUNDED_FACT_AUDIT": "true"}), patch.object(
+            news, "_grounded_text", return_value=json.dumps({
+                "critical_errors": [opinion, price], "warnings": []})):
+            result = news.fact_check_script(price["exact_line"], [], "2026-09-09")
+        self.assertEqual(len(result["critical_errors"]), 1)
+        self.assertTrue(result["warnings"])
+        corrected, count = news.apply_fact_replacements(price["exact_line"], result)
+        self.assertEqual(count, 1)
+        self.assertIn("ripoff at fifty dollars", corrected)
     def test_second_fact_repair_is_verified_before_decision(self):
         from unittest.mock import Mock
         def defect(old, new):

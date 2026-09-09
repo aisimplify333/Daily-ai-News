@@ -4,6 +4,15 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 ## September 9 editorial improvement
 
+- Opinion-show calibration: a blocking fact correction must include classification
+  as a factual assertion, the specific claim, direct article URL and supporting
+  evidence excerpt. Other objections become advisory; opinions, predictions,
+  sarcasm and clearly hypothetical scenes remain editorially free. Evidence fields
+  are a reviewable record, not independent proof the quote is accurate.
+- Inspected failed run 34345922884's actual ZIP: it contains neither the fact
+  report nor candidate script. Its specific 14 corrections cannot be evaluated
+  retrospectively from that archive. The deployed artifact fix remedies this going forward.
+
 - September 9 scheduled run 34345922884 passed research and wrote a script, but
   failed before TTS after the second fact repair. The loop used the pre-repair
   negative verdict to reject the newly corrected script. Fixed by allowing two
