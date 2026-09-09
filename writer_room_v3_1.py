@@ -100,6 +100,7 @@ CONTINUITY_KEY = "ai_edge_continuity"          # namespaced so we never clobber 
 CONTINUITY_LOOKBACK = int(os.getenv("CONTINUITY_LOOKBACK", "12"))   # episodes of callback fuel
 PHRASE_BAN_LOOKBACK = int(os.getenv("PHRASE_BAN_LOOKBACK", "6"))    # episodes whose phrases are off-limits
 CONTINUITY_MAX_STORED = int(os.getenv("CONTINUITY_MAX_STORED", "150"))
+EDITORIAL_FRESHNESS_LOOKBACK = int(os.getenv("EDITORIAL_FRESHNESS_LOOKBACK", "7"))
 
 # Informational only — the gate below is binary, this is not a quality threshold.
 KEYWORD_SIGNAL_TARGET = int(os.getenv("PRE_TTS_MIN_SCORE", "84"))
@@ -207,6 +208,17 @@ MAJOR_AI_ACTORS = [
     "Adobe", "GitHub", "Cursor", "Databricks", "Snowflake", "Cohere", "Stability", "Hugging Face",
     "White House", "EU", "China", "FTC", "DOJ", "FDA", "SEC", "Gates Foundation",
 ]
+
+ANGLE_TERMS = {
+    "security": ("security", "cyber", "breach", "unauthorized", "vulnerability", "attack"),
+    "models": ("model", "benchmark", "reasoning", "token", "pricing", "launches gpt", "releases gpt"),
+    "money": ("funding", "raises", "valuation", "investment", "acquisition", "deal", "finance", "bank"),
+    "policy": ("law", "legislation", "regulation", "regulator", "court", "lawsuit", "ban", "government"),
+    "infrastructure": ("chip", "gpu", "compute", "data center", "datacenter", "power", "nuclear"),
+    "work": ("job", "jobs", "layoff", "workplace", "enterprise", "productivity", "workflow"),
+    "science": ("health", "clinical", "medical", "genome", "research", "science", "robot"),
+    "consumer": ("consumer", "assistant", "app", "email", "travel", "device", "phone"),
+}
 
 TOP_EVENT_TERMS = {
     "launch": 18, "launches": 18, "unveils": 18, "releases": 14, "announces": 10,
@@ -667,6 +679,105 @@ def _merge_poll_results(
     return merged
 
 
+def _editorial_actor(text: str) -> str:
+    low = str(text or "").lower()
+    return next((actor for actor in MAJOR_AI_ACTORS if actor.lower() in low), "")
+
+
+def _editorial_angle(text: str) -> str:
+    low = str(text or "").lower()
+    return next(
+        (angle for angle, terms in ANGLE_TERMS.items() if any(term in low for term in terms)),
+        "other",
+    )
+
+
+def _editorial_tokens(text: str) -> set[str]:
+    ignored = {"the", "and", "for", "with", "from", "that", "this", "what", "who",
+               "your", "into", "about", "over", "under", "amid", "after", "before", "ai"}
+    return {token for token in re.findall(r"[a-z0-9]+", str(text or "").lower())
+            if len(token) > 2 and token not in ignored}
+
+
+def _editorial_overlap(left: str, right: str) -> float:
+    a, b = _editorial_tokens(left), _editorial_tokens(right)
+    return len(a & b) / max(1, min(len(a), len(b))) if a and b else 0.0
+
+
+def _freshen_story_order(
+    stories: List[Dict[str, Any]], episodes: List[Dict[str, Any]]
+) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
+    """Choose a fresh daily lead while retaining the grounded top-five slate.
+
+    Search rank remains the starting value. A repeated lead actor, argument family,
+    or headline loses enough points for another major story to lead. The displaced
+    story remains in the episode as supporting evidence.
+    """
+    recent = [ep for ep in episodes[-EDITORIAL_FRESHNESS_LOOKBACK:] if isinstance(ep, dict)]
+    if not stories or not recent:
+        return list(stories), {"changed": False, "reason": "no comparable history"}
+
+    yesterday = recent[-1]
+    yesterday_actor = _editorial_actor(
+        f"{yesterday.get('lead_headline', '')} {yesterday.get('title', '')}"
+    )
+    yesterday_angle = _editorial_angle(
+        f"{yesterday.get('lead_headline', '')} {yesterday.get('central_fight', '')} "
+        f"{' '.join(str(x) for x in (yesterday.get('topics') or []))}"
+    )
+    actor_counts: Dict[str, int] = {}
+    angle_counts: Dict[str, int] = {}
+    prior_leads: List[str] = []
+    for ep in recent:
+        lead = f"{ep.get('lead_headline', '')} {ep.get('title', '')}".strip()
+        actor = _editorial_actor(lead)
+        angle = _editorial_angle(f"{lead} {ep.get('central_fight', '')}")
+        if actor:
+            actor_counts[actor] = actor_counts.get(actor, 0) + 1
+        angle_counts[angle] = angle_counts.get(angle, 0) + 1
+        prior_leads.append(lead)
+
+    scored = []
+    for index, story in enumerate(stories):
+        text = f"{_headline(story)} {_summary(story)} {story.get('why_it_matters', '')}"
+        actor, angle = _editorial_actor(text), _editorial_angle(text)
+        penalty = 0.0
+        reasons: List[str] = []
+        overlap = max((_editorial_overlap(_headline(story), old) for old in prior_leads), default=0.0)
+        if overlap >= 0.70:
+            penalty += 100.0
+            reasons.append("near-duplicate recent lead")
+        if actor and actor == yesterday_actor:
+            penalty += 42.0
+            reasons.append("same lead actor as previous episode")
+        if angle == yesterday_angle:
+            penalty += 18.0
+            reasons.append("same argument family as previous episode")
+        if actor:
+            penalty += max(0, actor_counts.get(actor, 0) - 1) * 9.0
+        penalty += max(0, angle_counts.get(angle, 0) - 2) * 4.0
+        rank_value = 100.0 - (index * 10.0)
+        scored.append((rank_value - penalty, index, story, actor, angle, reasons))
+
+    scored.sort(key=lambda row: (-row[0], row[1]))
+    ordered = [dict(row[2]) for row in scored]
+    for rank, story in enumerate(ordered, start=1):
+        story["rank"] = rank
+        story["story_tier"] = "primary" if rank <= 3 else "supporting"
+    old_head, new_head = _headline(stories[0]), _headline(ordered[0])
+    return ordered, {
+        "changed": old_head != new_head,
+        "lookback_episodes": len(recent),
+        "previous_lead_actor": yesterday_actor,
+        "previous_argument_family": yesterday_angle,
+        "original_lead": old_head,
+        "selected_lead": new_head,
+        "candidates": [{"headline": _headline(row[2]), "score": round(row[0], 1),
+                        "actor": row[3], "argument_family": row[4], "penalties": row[5]}
+                       for row in scored],
+    }
+
+
 def _save_continuity(g: Dict[str, Any], root: Dict[str, Any], episodes: List[Dict[str, Any]]) -> None:
     cont = root.get(CONTINUITY_KEY)
     if not isinstance(cont, dict):
@@ -776,6 +887,22 @@ def _continuity_fuel(
         "running_jokes": running_jokes[:8],
         "banned_phrases": banned[:24],
         "last_title": episodes[-1].get("title", "") if episodes else "",
+        "recent_editorial_patterns": [
+            {
+                "date": str(ep.get("date") or ""),
+                "title": str(ep.get("title") or ""),
+                "lead_actor": _editorial_actor(
+                    f"{ep.get('lead_headline', '')} {ep.get('title', '')}"
+                ),
+                "argument_family": _editorial_angle(
+                    f"{ep.get('lead_headline', '')} {ep.get('central_fight', '')}"
+                ),
+                "central_fight": str(ep.get("central_fight") or ""),
+                "positions": dict(ep.get("positions") or {}),
+            }
+            for ep in episodes[-EDITORIAL_FRESHNESS_LOOKBACK:]
+            if isinstance(ep, dict)
+        ],
     }
 
 
@@ -977,6 +1104,9 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
     }
 
     callbacks_txt = "\n".join(f"- {c}" for c in fuel.get("callbacks", [])) or "- (no prior episodes yet)"
+    recent_patterns = json.dumps(
+        fuel.get("recent_editorial_patterns", []), ensure_ascii=False, indent=2
+    )
     prompt = f"""Return STRICT JSON only. You are the showrunner for {SHOW_TITLE}, a daily
 AI debate podcast. Design today's episode. Do NOT write dialogue.
 
@@ -990,6 +1120,21 @@ TODAY'S TOP AI EVENTS:
 
 PRIOR-EPISODE THREADS you may call back to (this is episode #{fuel.get('episode_number')}):
 {callbacks_txt}
+
+LAST SEVEN EDITORIAL PATTERNS:
+{recent_patterns}
+
+FRESHNESS CONTRACT:
+- Give today's evidence its own conflict. Do not recycle a recent central fight with
+  company names changed.
+- Change the host alignment and dramatic movement. Never default to Alex defending
+  the company, Jamie prosecuting it, Rufus agreeing with Jamie, then Alex conceding.
+- A callback may occupy one short beat; it cannot turn the new episode into a sequel
+  unless today's event directly changes the earlier outcome.
+- Positions must arise from today's facts. Let any pair agree or clash, let Rufus or
+  Jamie defend a move when the evidence supports it, and let Alex end unconvinced.
+- Vary the listener action. Do not repeat permissions, governance or enterprise-risk
+  advice merely because the lead company appeared recently.
 
 FACT FIREWALL:
 - Story 1 is the lead. Do not replace it with a lower-ranked theme.
@@ -2601,10 +2746,13 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 model=GROUNDED_NEWS_MODEL,
                 discovery_json=json.dumps(intel_items, ensure_ascii=False),
             )
+            _, history = _load_continuity(g)
+            selected, freshness = _freshen_story_order(selected, history)
             write_grounded_slate_report(selected, episode_date)
             _safe_print(
                 g,
-                f"   ✅ Google-grounded slate locked: {len(selected)} current stories",
+                f"   ✅ Google-grounded slate locked: {len(selected)} current stories; "
+                f"fresh lead={'changed' if freshness.get('changed') else 'retained'}",
             )
         except Exception as exc:
             if GROUNDING_REQUIRED:
@@ -2613,6 +2761,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 ) from exc
             _safe_print(g, f"   ⚠️ grounded slate unavailable; RSS fallback enabled: {exc}")
             selected = _select_top_ai_events(intel_items, n=n)
+            _, history = _load_continuity(g)
+            selected, freshness = _freshen_story_order(selected, history)
         last_selected = selected
         try:
             path = g.get("STORY_SLATE_DECISION_PATH") or Path("story_slate_decision.json")
@@ -2620,7 +2770,9 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 "version": "v3.3-grounded-top-ai-events-no-sector-quota",
                 "date": episode_date,
                 "selection_rule": "rank all AI stories by importance, authority, receipts, "
-                                  "conflict, human stakes, recency; no forced sector coverage",
+                                  "conflict, human stakes, recency, and seven-episode editorial "
+                                  "freshness; repeated leads stay available as supporting stories",
+                "editorial_freshness": freshness,
                 "selected": [{
                     "rank": i + 1, "headline": _headline(s), "publisher": _publisher(s),
                     "top_event_score": s.get("top_event_score"),
