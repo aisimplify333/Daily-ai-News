@@ -140,6 +140,23 @@ CALLBACK_RE = re.compile(
 )
 
 CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independent minds:
+- PERFORMANCE ARC: build a meaningful Jamie–Rufus disagreement around a real
+  consequence. Let them address each other directly for several short turns,
+  typically 8–25 words, instead of routing every response through Alex. No fixed
+  speaker rotation. Give the exchange room to rise, then a quiet line that lands.
+- Alex then brings both positions together: name their actual disagreement, ask
+  for the deciding fact and explain what the listener can do. He is not a referee
+  saying 'calm down'; he enjoys their company and restores clarity without lecturing.
+- Contrast clipped incredulity with slower, sincere concern. Earn the emotional
+  stakes from facts; never invent a crisis, personal insult or shouting match.
+  After the sharpest exchange, change pace rather than immediately escalating again.
+- Rufus's English sarcasm should expose a specific absurdity through understatement
+  or mock courtesy; Jamie answers the substance and can top the joke. Use fresh
+  idiomatic phrasing, not phonetic spelling or a recycled catchphrase.
+- An occasional imaginary financial-desk scene is optional, never a daily quota.
+  Introduce it aloud as an imaginary scenario before the character speaks. Never
+  claim a host is physically at a bank, has interviewed staff or has inside access.
+  Return directly to verified analysis. Do not add travel effects or sponsor bells.
 - Never use the 'Alex admitted he was wrong / mark the date / make it a holiday'
   routine. A change of view is not a punchline or a required plot beat.
 - Each exchange must add a new fact, counterexample, decision criterion or consequence.
