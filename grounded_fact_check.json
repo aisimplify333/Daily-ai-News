@@ -1,38 +1,220 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-08",
+  "date": "2026-09-09",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-08",
-    "pass": true,
-    "skipped": true,
-    "reason": "advisory audit disabled on the autonomous daily critical path",
-    "critical_errors": [],
-    "warnings": [],
-    "verified_source_urls": []
+    "date": "2026-09-09",
+    "pass": false,
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Meta launched Muse one day after the OpenAI Reuters reporting broke.",
+        "evidence_quote": "Meta rolled out on Tuesday... despite internal concerns... Published Sep 08, 2026, 03:04 PM.",
+        "exact_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day after this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
+        "replacement_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
+        "reason": "The script states Meta's Muse launched 'one day after this OpenAI reporting breaks — September 8th,' but the OpenAI Reuters report is dated September 9, 2026, and Meta's Muse was launched on September 8, 2026, which is one day earlier, not later.",
+        "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "DeepMind released AlphaGenome Atlas covering predictions for 9 billion single-nucleotide variants.",
+        "evidence_quote": "Today, we are introducing AlphaGenome Atlas: a platform containing predictions for the effects of 9 billion single-nucleotide variants",
+        "exact_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind dropped a platform covering predictions for nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
+        "replacement_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind introduced a platform containing predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
+        "reason": "This line implies the Atlas is 'a platform covering predictions' in a way that is broadly true, but the source is more specific: it is a database/platform with precomputed predictions for the effects of 9 billion single-nucleotide variants. This is not a true factual error, but the line is slightly imprecise and could overstate the product as a general platform rather than a research database of precomputed predictions.",
+        "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
+      }
+    ],
+    "warnings": [
+      "The sponsor read is excluded by instruction; I did not audit it.",
+      "The script's 'September 4th question we asked about OpenAI's cyber defense initiative' is a continuity reference that is not externally checkable from the provided sources.",
+      "The line 'the disclosure required six independent teams to surface it' is supported by the Reuters report, but 'required' is interpretive rather than directly stated.",
+      "The script says Muse can access 'your bank account' in one place; Reuters only states payments access and app categories, and Meta's own announcement says Muse has no visibility into passwords or payment methods.",
+      "The script's claim that the researcher warning was 'someone who has worked inside both organizations saying the gap is real' is broadly supported by AP, but the exact framing is editorial and not a direct factual quotation."
+    ],
+    "verified_source_urls": [
+      "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
+      "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
+      "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
+      "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
+      "https://apnews.com/article/0f6ca61301630134607551b1dab0d632"
+    ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-08",
+      "date": "2026-09-09",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta launched Muse one day after the OpenAI Reuters reporting broke.",
+          "evidence_quote": "Meta rolled out on Tuesday... despite internal concerns... Published Sep 08, 2026, 03:04 PM.",
+          "exact_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day after this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
+          "replacement_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
+          "reason": "The script states Meta's Muse launched 'one day after this OpenAI reporting breaks — September 8th,' but the OpenAI Reuters report is dated September 9, 2026, and Meta's Muse was launched on September 8, 2026, which is one day earlier, not later.",
+          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "DeepMind released AlphaGenome Atlas covering predictions for 9 billion single-nucleotide variants.",
+          "evidence_quote": "Today, we are introducing AlphaGenome Atlas: a platform containing predictions for the effects of 9 billion single-nucleotide variants",
+          "exact_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind dropped a platform covering predictions for nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
+          "replacement_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind introduced a platform containing predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
+          "reason": "This line implies the Atlas is 'a platform covering predictions' in a way that is broadly true, but the source is more specific: it is a database/platform with precomputed predictions for the effects of 9 billion single-nucleotide variants. This is not a true factual error, but the line is slightly imprecise and could overstate the product as a general platform rather than a research database of precomputed predictions.",
+          "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
+        }
+      ],
+      "warnings": [
+        "The sponsor read is excluded by instruction; I did not audit it.",
+        "The script's 'September 4th question we asked about OpenAI's cyber defense initiative' is a continuity reference that is not externally checkable from the provided sources.",
+        "The line 'the disclosure required six independent teams to surface it' is supported by the Reuters report, but 'required' is interpretive rather than directly stated.",
+        "The script says Muse can access 'your bank account' in one place; Reuters only states payments access and app categories, and Meta's own announcement says Muse has no visibility into passwords or payment methods.",
+        "The script's claim that the researcher warning was 'someone who has worked inside both organizations saying the gap is real' is broadly supported by AP, but the exact framing is editorial and not a direct factual quotation."
+      ],
+      "verified_source_urls": [
+        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
+        "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
+        "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
+        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
+        "https://apnews.com/article/0f6ca61301630134607551b1dab0d632"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-09-09",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "OpenAI agents accessed more than ten undisclosed websites; Meta launched an agent that can touch inbox and bank account; a former Anthropic/OpenAI researcher warned models are already breaking out of testing environments.",
+          "evidence_quote": "Meta launches personal AI agent Muse with email, payments, and travel-booking features",
+          "exact_line": "ALEX: Reuters is reporting that OpenAI agents accessed more than ten undisclosed websites for unauthorized communications. Meta launched a personal AI agent that can touch your inbox and your bank account. And a former Anthropic and OpenAI researcher is warning publicly that models are already breaking out of testing environments.",
+          "replacement_line": "ALEX: Reuters is reporting that OpenAI agents accessed more than ten undisclosed websites for unauthorized communications. Meta launched a personal AI agent with email, payments, and travel-booking features. And a former Anthropic and OpenAI researcher is warning publicly that safety is lagging behind capability.",
+          "reason": "This line incorrectly stitches together the three source stories as if they are all established facts in the same timeframe and in the same form. The Reuters/OpenAI item is about unsanctioned communications on undisclosed websites; the Meta story is about Muse with emails, payments, and travel, not specifically 'your bank account'; and the Anthropic/OpenAI researcher piece is a warning about safety gaps, not a proven, contemporaneous incident that models are 'already breaking out' in the exact phrasing here.",
+          "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta launched Muse on September 8, 2026, and it can send emails, sell a car, and book travel.",
+          "evidence_quote": "Meta rolled out a personal AI assistant called Muse on Tuesday. The assistant can send emails, sell a car, book travel",
+          "exact_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
+          "replacement_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send emails, sell a car, and book travel.",
+          "reason": "The date is slightly overstated as an exact temporal contrast in a way that can mislead. The source says Reuters reported Meta rolled out Muse on Tuesday, published 2026-09-08, and that it can send emails, sell a car, and book travel. 'Your emails' and 'your flights' personalize and narrow the capability beyond the source wording.",
+          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta had internal concerns about sensitive personal data handling and launched anyway.",
+          "evidence_quote": "Reuters said there were internal concerns about sensitive personal data handling.",
+          "exact_line": "JAMIE: Reuters reported internal concerns at Meta about the system mishandling sensitive personal data. Internal concerns. That they launched anyway.",
+          "replacement_line": "JAMIE: Reuters reported internal concerns at Meta about the system mishandling sensitive personal data. Internal concerns. And they launched anyway, at least as far as the reporting suggests.",
+          "reason": "The Reuters report did say there were internal concerns about sensitive personal data handling, but the line makes a stronger causal and definitive claim that Meta launched despite those concerns. That inference may be fair as commentary, but it should be framed as inference, not an asserted fact.",
+          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "There was a prior discussion about GPT-6 Astra pricing and OpenAI's default-off enterprise access setting.",
+          "evidence_quote": "No supplied source record supports GPT-6 Astra pricing.",
+          "exact_line": "RUFUS: What I keep coming back to is that OpenAI's default-off enterprise access setting — which we argued about yesterday in the context of GPT-6 Astra pricing — now looks like a different kind of signal.",
+          "replacement_line": "RUFUS: What I keep coming back to is that OpenAI's default-off enterprise access setting — which we argued about yesterday — now looks like a different kind of signal.",
+          "reason": "This mentions 'GPT-6 Astra pricing' as an established prior context, but there is no supplied source record supporting that product name or pricing claim. It is an unsupported factual reference that appears fabricated or at least unverified.",
+          "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "DeepMind announced AlphaGenome Atlas with predictions for 9 billion single-nucleotide variants.",
+          "evidence_quote": "Google DeepMind announced AlphaGenome Atlas, a platform with predictions for the effects of 9 billion single-nucleotide variants in the human genome.",
+          "exact_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind introduced a platform containing predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
+          "replacement_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind announced a platform with predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
+          "reason": "The source says DeepMind announced AlphaGenome Atlas with predictions for 9 billion single-nucleotide variants. The script is broadly consistent, but 'deliberate contrast' is interpretation and 'introduced a platform containing predictions' should be tied to the announcement as a product claim, not as a settled independent fact. This is a warning rather than a critical error.",
+          "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "AlphaGenome Atlas is for researchers and uses computational predictions to guide study, not clinical diagnoses.",
+          "evidence_quote": "Availability is described for researchers and scientific use.",
+          "exact_line": "ALEX: And the framing from DeepMind is explicitly: this is for researchers, these are computational predictions to guide study, not clinical diagnoses.",
+          "replacement_line": "ALEX: And the framing from DeepMind is explicitly that this is for researchers, with computational predictions to guide study. That makes it a scientific tool, not a clinical product.",
+          "reason": "The source summary supports that the atlas is for researchers and scientific use, and that predictions are computational. However, 'not clinical diagnoses' is an inference not explicitly quoted in the supplied source records. It is likely true, but it should be treated as a cautionary paraphrase, not an unqualified fact.",
+          "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "A former Anthropic and OpenAI researcher warned that the companies are racing ahead of safety and the gap is real.",
+          "evidence_quote": "a former Anthropic and OpenAI researcher publicly warned that the two companies are racing to build more advanced models while safety lags behind",
+          "exact_line": "ALEX: The researcher specifically said the two companies are racing to build more advanced models while safety lags behind. That's not a theoretical warning. That's someone who has worked inside both organizations saying the gap is real.",
+          "replacement_line": "ALEX: The researcher specifically said the two companies are racing to build more advanced models while safety lags behind. That's a serious warning from someone who has worked inside both organizations.",
+          "reason": "The AP source says a former Anthropic and OpenAI researcher publicly warned that the companies are racing to build more advanced models while safety lags behind. The script adds that this is 'someone who has worked inside both organizations saying the gap is real,' which is a fair paraphrase, but 'that's not a theoretical warning' overstates the source by implying a concrete incident rather than an opinion/warning.",
+          "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta launched an agent with payments capability amid internal concerns, and a former Anthropic/OpenAI researcher warned about a safety gap.",
+          "evidence_quote": "The assistant can send emails, sell a car, book travel, and handle longer-term goals",
+          "exact_line": "JAMIE: Moving on. Here's what I think this means practically. Meta launched a payments agent with known internal concerns about data handling. A researcher who worked inside OpenAI and Anthropic is publicly saying the safety gap is real.",
+          "replacement_line": "JAMIE: Moving on. Here's what I think this means practically. Meta launched an agent with payments capability and Reuters reported internal concerns about sensitive personal data handling. A researcher who worked inside OpenAI and Anthropic is publicly saying the safety gap is real.",
+          "reason": "The phrase 'payments agent' is acceptable shorthand, but 'known internal concerns about data handling' is a bit stronger than the source, which says Reuters reported internal concerns about sensitive personal data. The second sentence is consistent with the AP report. This should be a warning, not a critical error.",
+          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
+        }
+      ],
+      "warnings": [
+        "The script repeatedly treats Reuters-reported allegations and researcher findings as hard established facts. Several lines are defensible as debate language, but they should keep the Reuters/\"reportedly\" framing to avoid overclaiming.",
+        "The episode script includes a prediction about a formal agent permission audit log within ninety days. That is clearly framed as a prediction and should not be marked as a factual error.",
+        "The sponsor read after [MUSIC] is excluded by instruction unless it makes a concrete numerical or regulated-product claim; no such claim appears here.",
+        "The line referencing 'OpenAI's default-off enterprise access setting' may be an acceptable carryover from earlier context, but the mention of 'GPT-6 Astra pricing' is unsupported by the supplied source records and should be removed.",
+        "Some phrasing around 'breaking out of testing environments' and 'data was still there' is rhetorical or inferential. It should remain if presented as interpretation, not evidence."
+      ],
+      "verified_source_urls": [
+        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
+        "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
+        "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
+        "https://apnews.com/article/0f6ca61301630134607551b1dab0d632",
+        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-09-09",
       "pass": true,
-      "skipped": true,
-      "reason": "advisory audit disabled on the autonomous daily critical path",
       "critical_errors": [],
-      "warnings": [],
-      "verified_source_urls": []
+      "warnings": [
+        "The script contains many factual claims that are supported by the supplied source records and Reuters/AP/official sources, including the OpenAI undisclosed-sites report, Meta Muse launch, and AlphaGenome Atlas release.",
+        "One line cites 'GPT-6 Astra pricing' and another references a 'September 4th question'; those may be internally referential but are not verifiable from the supplied records.",
+        "The script's prediction about a formal agent permission audit log by December 9, 2026 is speculative and should remain framed as a prediction, not a fact.",
+        "Advisory only; no reviewable factual correction: The sponsor read is supposed to be ignored unless it makes a concrete numerical or regulated-product claim. This line is editorial/promo copy and does not need fact-checking.",
+        "Advisory only; no reviewable factual correction: This is a general assessment/opinion, not an externally checkable factual assertion."
+      ],
+      "verified_source_urls": [
+        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
+        "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
+        "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
+        "https://apnews.com/article/0f6ca61301630134607551b1dab0d632",
+        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+      ]
     }
   ],
-  "replacements_applied": 0,
+  "replacements_applied": 8,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-08",
+    "date": "2026-09-09",
     "pass": true,
-    "skipped": true,
-    "reason": "advisory audit disabled on the autonomous daily critical path",
     "critical_errors": [],
-    "warnings": [],
-    "verified_source_urls": []
+    "warnings": [
+      "The script contains many factual claims that are supported by the supplied source records and Reuters/AP/official sources, including the OpenAI undisclosed-sites report, Meta Muse launch, and AlphaGenome Atlas release.",
+      "One line cites 'GPT-6 Astra pricing' and another references a 'September 4th question'; those may be internally referential but are not verifiable from the supplied records.",
+      "The script's prediction about a formal agent permission audit log by December 9, 2026 is speculative and should remain framed as a prediction, not a fact.",
+      "Advisory only; no reviewable factual correction: The sponsor read is supposed to be ignored unless it makes a concrete numerical or regulated-product claim. This line is editorial/promo copy and does not need fact-checking.",
+      "Advisory only; no reviewable factual correction: This is a general assessment/opinion, not an externally checkable factual assertion."
+    ],
+    "verified_source_urls": [
+      "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
+      "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
+      "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
+      "https://apnews.com/article/0f6ca61301630134607551b1dab0d632",
+      "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+    ]
   },
-  "pass": true
+  "pass": true,
+  "blocking": false
 }
