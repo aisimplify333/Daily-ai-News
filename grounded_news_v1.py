@@ -587,6 +587,32 @@ def apply_fact_replacements(script: str, report: Dict[str, Any]) -> tuple[str, i
     return updated, applied
 
 
+def audit_with_repairs(script, audit_fn, normalize_fn, checkpoint_path=None):
+    """Two repair rounds followed by verification of the actual final script.
+
+    The final pass is verification-only: never return a pre-repair verdict for
+    a newly changed script. No progress or unresolved final errors remain failures.
+    """
+    audits = []
+    applied_total = 0
+    for index in range(3):
+        audit = audit_fn(script)
+        audits.append(audit)
+        if audit.get("pass") or index == 2:
+            break
+        corrected, applied = apply_fact_replacements(script, audit)
+        if not applied:
+            break
+        corrected = normalize_fn(corrected)
+        if corrected == script:
+            break
+        script = corrected
+        applied_total += applied
+        if checkpoint_path:
+            Path(checkpoint_path).write_text(script.rstrip() + "\n", encoding="utf-8")
+    return script, audits, applied_total
+
+
 def write_grounded_slate_report(
     stories: List[Dict[str, Any]],
     date_str: str,

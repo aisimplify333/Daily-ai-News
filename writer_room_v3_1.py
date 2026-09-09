@@ -2793,31 +2793,19 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         # paid voice generation. Apply only exact-line corrections, then verify
         # the corrected script once more against live Search grounding.
         try:
-            from grounded_news_v1 import apply_fact_replacements, fact_check_script
+            from grounded_news_v1 import audit_with_repairs, fact_check_script
 
-            fact_audits: List[Dict[str, Any]] = []
-            total_applied = 0
-            for audit_pass in range(1, 3):
-                audit = fact_check_script(
-                    script,
-                    stories,
-                    date_str,
-                    model=GROUNDED_NEWS_MODEL,
-                )
-                fact_audits.append(audit)
-                if audit.get("pass"):
-                    break
-                corrected_script, applied = apply_fact_replacements(script, audit)
-                if applied <= 0:
-                    break
-                total_applied += applied
-                script = stabilize(_split_long_turns(corrected_script, max_words=55))
-                script = _repair_relative_dates(script, date_str)
-                assessment = _assess(script, stories, board, fuel)
-                _safe_print(
-                    g,
-                    f"      🧾 grounded fact repair pass {audit_pass}: {applied} line(s)",
-                )
+            script, fact_audits, total_applied = audit_with_repairs(
+                script,
+                lambda candidate: fact_check_script(
+                    candidate, stories, date_str, model=GROUNDED_NEWS_MODEL
+                ),
+                lambda candidate: _repair_relative_dates(
+                    stabilize(_split_long_turns(candidate, max_words=55)), date_str
+                ),
+                checkpoint_path=f"script_fact_repaired_{date_str}.txt",
+            )
+            assessment = _assess(script, stories, board, fuel)
             first_fact_audit = fact_audits[0]
             final_fact_audit = fact_audits[-1]
             fact_report = {

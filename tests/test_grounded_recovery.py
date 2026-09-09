@@ -21,6 +21,47 @@ def story(index, **changes):
 
 
 class RecoveryTests(unittest.TestCase):
+    def test_second_fact_repair_is_verified_before_decision(self):
+        from unittest.mock import Mock
+        def defect(old, new):
+            return {"pass": False, "critical_errors": [{"exact_line": old, "replacement_line": new}]}
+        auditor = Mock(side_effect=[defect("ALEX: Wrong", "ALEX: Better"),
+                                   defect("ALEX: Better", "ALEX: Correct"),
+                                   {"pass": True, "critical_errors": []}])
+        script, audits, count = news.audit_with_repairs(
+            "ALEX: Wrong", auditor, lambda value: value, "repaired.txt")
+        self.assertEqual(script, "ALEX: Correct")
+        self.assertTrue(audits[-1]["pass"])
+        self.assertEqual(count, 2)
+        self.assertEqual(auditor.call_args.args[0], script)
+        with open("repaired.txt") as handle:
+            self.assertEqual(handle.read().strip(), script)
+
+    def test_final_fact_pass_cannot_apply_unverified_correction(self):
+        from unittest.mock import Mock
+        auditor = Mock(side_effect=[
+            {"pass": False, "critical_errors": [{"exact_line": f"ALEX: {i}", "replacement_line": f"ALEX: {i+1}"}]}
+            for i in range(3)])
+        script, audits, count = news.audit_with_repairs("ALEX: 0", auditor, lambda x: x)
+        self.assertEqual(script, "ALEX: 2")
+        self.assertFalse(audits[-1]["pass"])
+        self.assertEqual((auditor.call_count, count), (3, 2))
+
+    def test_clean_fact_audit_has_no_extra_calls(self):
+        from unittest.mock import Mock
+        auditor = Mock(return_value={"pass": True, "critical_errors": []})
+        _, audits, count = news.audit_with_repairs("ALEX: Fine", auditor, lambda x: x)
+        self.assertEqual((auditor.call_count, count), (1, 0))
+
+    def test_unmatched_fact_correction_stops_without_false_pass(self):
+        from unittest.mock import Mock
+        auditor = Mock(return_value={"pass": False, "critical_errors": [
+            {"exact_line": "missing", "replacement_line": "replacement"}]})
+        script, audits, count = news.audit_with_repairs("ALEX: Original", auditor, lambda x: x)
+        self.assertEqual(script, "ALEX: Original")
+        self.assertFalse(audits[-1]["pass"])
+        self.assertEqual((auditor.call_count, count), (1, 0))
+
     def setUp(self):
         news.build_grounded_story_slate.cache_clear()
         self.cwd = os.getcwd()

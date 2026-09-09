@@ -4,6 +4,29 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 ## September 9 editorial improvement
 
+- September 9 scheduled run 34345922884 passed research and wrote a script, but
+  failed before TTS after the second fact repair. The loop used the pre-repair
+  negative verdict to reject the newly corrected script. Fixed by allowing two
+  repair rounds followed by a verification-only third audit. A clean first audit
+  still costs one call; unresolved errors and unmatched corrections still fail.
+- Save corrected-script checkpoints and upload original/repaired fact candidates,
+  the fact report and grounded slate even on failure. The previous workflow omitted
+  these artifacts, limiting recovery of its paid writing work.
+- PENDING DEPLOYMENT: user explicitly approved dynamic audio pacing, but automatic
+  approval review rejected main.py upload even after safer defaults were prepared.
+  The following remains local and is NOT active in this release: existing
+  pitch-preserving assembly applies mood speed multipliers of 0.97–1.05 and
+  level deltas of -0.3 to +0.4 dB to Alex/Rufus editorial chunks. Jamie and sponsor
+  chunks remain at baseline. Disable DYNAMIC_PERFORMANCE_ENABLED to revert.
+  Actual effects are logged in measured timeline markers. No extra TTS calls,
+  voice/model switches, ElevenLabs activation or new music. This is pacing/level
+  contrast, not native HD emotional direction or proof of a listening score.
+- Also local only: aligned standalone main.py defaults with the production workflow: OpenAI backend,
+  automatic brandkit generation off, ElevenLabs dialogue off. This removes legacy
+  opt-out defaults; enabling specialty generation still requires explicit settings.
+- Scheduler fired around 11:30 UTC despite requested 06:17 UTC. This code repair
+  addresses the fact-loop failure, not GitHub scheduler delays or Spotify timing.
+
 - Following the September 8 transcript review: merge matching event keys and
   matching named company/product pairs so corroborating Muse coverage cannot
   fill three slots. This heuristic may merge separate same-product updates;
