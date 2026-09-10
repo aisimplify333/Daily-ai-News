@@ -212,6 +212,22 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   reply: observation, affectionate challenge, comeback, useful clarification.
   This is an available conversational shape, NOT a mandatory repeated sequence.
   Change who initiates, answers, or supplies evidence as the story warrants.
+- Add a few LIVED-IN RESPONSE beats across the episode, especially after a bold
+  claim or dry joke. The next host first reacts to the exact phrase just used in
+  a brief human way, then questions, teases, sharpens or redirects it. Examples
+  of the shape, not reusable copy: "You say inevitable as if that's comforting,"
+  "That word is doing a lot of work," or a two-word laugh followed by the real
+  objection. Let the response change the next question rather than returning to
+  a prepared script. Use this selectively; most lines should still carry facts.
+- Warmth comes from familiarity: use a colleague's name when it adds feeling,
+  allow shared amusement, let somebody recognize a good point without surrendering,
+  and occasionally let a host finish or sharpen another host's thought. The cast
+  likes one another even when their values collide. Never manufacture private
+  history, pet names, hostility or constant agreement to prove the relationship.
+- Once or twice, let Alex visibly follow the conversation: drop the question he
+  appeared ready to ask, pick up Jamie's or Rufus's surprising phrase, and pursue
+  that thread. He still restores the listener's map, but the room is allowed to
+  alter his route. This keeps leadership responsive rather than pre-recorded.
 - Across Segments 2-4, write at least two sustained 3-7 turn exchanges where the
   next speaker answers the exact claim just made. Keep all three hosts available:
   Jamie may interrupt Rufus's financial framing; Rufus may expose a hole in Jamie's
