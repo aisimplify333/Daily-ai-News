@@ -177,6 +177,14 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   moves, funding, earnings, data centers, chips, energy, legislation and geopolitics
   that touch AI. Every price, percentage and market reaction needs a dated source.
   If no sourced stock move exists, discuss incentives and exposure without inventing one.
+- Prefer the largest verified AI-linked move from the previous trading session or the
+  clearest shift in capital, policy or risk. Scan the full AI value chain: model labs,
+  cloud platforms, semiconductors, networking, data centers, power and utilities,
+  industrial suppliers, banks and financing, plus legislation, antitrust, export
+  controls and compliance. State the dated move and exact number when the source
+  provides it, explain why it touches AI, and distinguish reported causation from
+  Rufus's analysis. A market desk without a defensible move becomes a capital or
+  policy desk; never invent a price simply to preserve the scene.
 - Dial Rufus up through substance: aim for four to six distinct dry observations across
   the episode, with at least two aimed directly at Jamie's argument. His wit comes from
   smug understatement, mock courtesy and the gap between public promises and financial
@@ -204,6 +212,12 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   occasionally; she can take the joke, return it warmly, and make a stronger case.
   She is neither the permanent scold nor the automatic winner. Alex may join in.
   Laughs and chuckles respond to a specific funny thought, not a reaction quota.
+  Give the voice engine a few earned performance openings across the full episode:
+  "Hah!" or "Ha! Ha!" for a real laugh, "Heh." for restrained amusement, and
+  sincere concern phrasing when a quiet breath should precede the line. A short
+  standalone aside after Rufus's barb can feel under her breath before she returns
+  with the substantive challenge. Never say "under my breath," "sigh," "guffaw"
+  or an emotion label aloud, and never write bracketed directions.
 - ALEX: Enjoy the room without abandoning the listener. After a brief playful
   detour, pick up the concrete point and ask for a sourced fact, clarify a number,
   or test what it means. Vary these returns; never mechanically say 'back to the

@@ -161,7 +161,7 @@ def render_jamie(
                 "bytes": out_path.stat().st_size,
                 "estimated_cost_usd": 0.0,
                 "mood": mood,
-                "expressions": re.findall(r"\[(laugh|chuckle|giggle)\]", expressive),
+                "expressions": re.findall(r"\[(laugh|chuckle|giggle|breath)\]", expressive),
             }
 
         for attempt in range(1, retries + 1):
@@ -180,7 +180,7 @@ def render_jamie(
                         len(expressive) * COST_PER_MILLION_CHARS / 1_000_000, 6
                     ),
                     "mood": mood,
-                    "expressions": re.findall(r"\[(laugh|chuckle|giggle)\]", expressive),
+                    "expressions": re.findall(r"\[(laugh|chuckle|giggle|breath)\]", expressive),
                     "attempt": attempt,
                 }
             except Exception as exc:
