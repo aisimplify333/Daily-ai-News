@@ -45,6 +45,8 @@ class EditorialFreshnessTests(unittest.TestCase):
         self.assertIn('Never speak production labels such as "shareable exchange,"', prompt)
         self.assertIn("RUFUS GLOBAL MARKETS DESK", prompt)
         self.assertIn("Jamie challenges one assumption", prompt)
+        self.assertIn("JAMIE–RUFUS VALUE COLLISION", prompt)
+        self.assertIn("four to six distinct dry observations", writer.CAST_CONNECTION_DIRECTION)
 
 
 if __name__ == "__main__":

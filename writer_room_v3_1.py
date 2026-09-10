@@ -177,6 +177,12 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   moves, funding, earnings, data centers, chips, energy, legislation and geopolitics
   that touch AI. Every price, percentage and market reaction needs a dated source.
   If no sourced stock move exists, discuss incentives and exposure without inventing one.
+- Dial Rufus up through substance: aim for four to six distinct dry observations across
+  the episode, with at least two aimed directly at Jamie's argument. His wit comes from
+  smug understatement, mock courtesy and the gap between public promises and financial
+  incentives. Jamie should bristle, laugh, interrupt or return the barb, then challenge
+  his values. Rufus answers the challenge rather than waiting for his next prepared turn.
+  Never stack British filler words or explain his joke afterward.
 - Never use the 'Alex admitted he was wrong / mark the date / make it a holiday'
   routine. A change of view is not a punchline or a required plot beat.
 - Each exchange must add a new fact, counterexample, decision criterion or consequence.
@@ -1110,6 +1116,11 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
                           "the risk without seeing the handoff",
         "normal_person_payoff": "AI matters when it touches work, money, health, privacy, "
                                 "family, safety, or trust — not when a press release says so.",
+        "jamie_rufus_value_conflict": {
+            "jamie_value": "human agency, fairness, access, work, family, safety or lived consequences",
+            "rufus_value": "capital allocation, market incentives, global competition, liability and what scales",
+            "point_of_collision": "the specific decision where today's facts make those values disagree",
+        },
         "rufus_global_markets_desk": {
             "market_or_region": "the market most directly affected by today's sourced events",
             "companies_or_assets": [],
@@ -1207,6 +1218,11 @@ Return exactly this JSON:
   "who_wins": "...",
   "who_is_exposed": "...",
   "normal_person_payoff": "...",
+  "jamie_rufus_value_conflict": {{
+    "jamie_value": "the specific human value Jamie protects today",
+    "rufus_value": "the specific market, capital or geopolitical value Rufus protects today",
+    "point_of_collision": "the concrete decision they disagree about; vary it from recent episodes"
+  }},
   "rufus_global_markets_desk": {{
     "market_or_region": "New York|London|Brussels|Asia|Gulf|other sourced location",
     "companies_or_assets": ["named public companies, indices, sectors or assets in the sources"],
@@ -1389,6 +1405,13 @@ must explain who gained or lost financial power, what moved, and what listeners 
 watch. Jamie challenges one assumption or human consequence; Rufus answers her directly.
 Treat the location as an editorial lens unless the evidence explicitly establishes a
 real location. Do not invent stock moves, live prices, trading reactions or access.
+
+JAMIE–RUFUS VALUE COLLISION:
+{json.dumps(board.get('jamie_rufus_value_conflict') or {}, ensure_ascii=False, indent=2)}
+Build two story-specific exchanges from this collision in different segments. Jamie
+must challenge what Rufus is optimizing for; Rufus must challenge what her preferred
+outcome costs, delays or exposes. Let either one land the stronger point. Alex follows
+the clash with the deciding audience question and a concrete receipt.
 
 EVIDENCE-LED OUTCOME — no compulsory concession or designated winner:
 Optional board suggestion, not a required performance: {json.dumps(conc, ensure_ascii=False)}.
@@ -2105,7 +2128,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         full, flags=re.IGNORECASE | re.MULTILINE))
     rufus_dry = len(re.findall(
         r"^RUFUS:.*\b(lovely|quite|rather|liability|invoice|permission|regulator|"
-        r"of course|convenient|splendid)\b",
+        r"of course|convenient|splendid|marvellous|charming|brilliant|tidy|"
+        r"impeccable|astonishing|mercifully)\b",
         full, flags=re.IGNORECASE | re.MULTILINE))
     friction = len(re.findall(
         r"\b(wait|hold on|hang on|come on|no,|not quite|i disagree|let me stop you|"
@@ -2147,8 +2171,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         soft.append(f"alex_audience_proxy_questions_low ({alex_q}/10)")
     if jamie_react < 5:
         soft.append(f"jamie_reactions_low ({jamie_react}/5)")
-    if rufus_dry < 4:
-        soft.append(f"rufus_dry_lines_low ({rufus_dry}/4)")
+    if rufus_dry < 6:
+        soft.append(f"rufus_dry_lines_low ({rufus_dry}/6)")
     if friction < 4:
         soft.append(f"friction_low ({friction}/4)")
     if interruptions < 3:
@@ -2908,7 +2932,17 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         assessment = _assess(script, stories, board, fuel)
 
         # 4. Optional punch-up — accept only if it does not lose a gate check.
-        if ENABLE_GROK_PUNCHUP:
+        punchup_flags = tuple(assessment.get("soft_flags") or [])
+        needs_connection_punchup = any(
+            marker in str(flag)
+            for flag in punchup_flags
+            for marker in (
+                "rufus_dry_lines_low", "jamie_rufus_direct_exchange_low",
+                "friction_low", "jamie_reactions_low", "jamie_comic_reactions_low",
+                "spoken_production_language", "shareable_exchange",
+            )
+        )
+        if ENABLE_GROK_PUNCHUP and needs_connection_punchup:
             punched = _xai_text(g, _punchup_prompt(script, board, assessment),
                                 model=PUNCHUP_MODEL, max_tokens=6200)
             if punched:
