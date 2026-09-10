@@ -1483,8 +1483,9 @@ brought to you by The Ledger." Spell the URL exactly "T-H-E-L-E-D-G-R dot I-O."
 No "game-changer," "revolutionary," or fake enthusiasm. After the read, return
 directly to the argument.
 
-The production system adds one short rotating Jamie-or-Rufus sponsor reminder near
-the close. Do not write a second house ad, repeat the URL, or add another call to action.
+The production system adds a rotating Jamie–Rufus commercial between Segments 3 and 4,
+plus the short closing sponsor reminder. Reserve about 90 words within the total
+episode budget for that mid-roll. Do not write those inserts yourself or repeat the URL.
 
 {secondary_block}
 
@@ -1644,6 +1645,40 @@ def _clean_script(text: str) -> str:
                     inserted = True
         cleaned = "\n".join(out)
     return cleaned
+
+
+MIDROLL_TREATMENTS = (
+    (
+        "JAMIE: A short sponsor break for The Ledger. Rufus, another hundred AI headlines before breakfast? People have actual work to do. How do they decide what deserves their attention?",
+        "RUFUS: With The Ledger, Jamie. A longer reading list is hardly a strategy. Five focused briefings help connect the news to decisions.",
+        "JAMIE: So The Ledger gives you a place to start asking better questions about your work and your team?",
+        "RUFUS: Precisely. The Ledger. Find the link in our show notes. Now, back to the discussion.",
+    ),
+    (
+        "RUFUS: A short sponsor break for The Ledger. Jamie, collecting AI headlines is becoming a full-time occupation. I rather suspect nobody budgeted for that department.",
+        "JAMIE: Which is where The Ledger comes in. Five focused briefings help you sort the news and consider what it means for your next decision.",
+        "RUFUS: The Ledger, then. Less collecting headlines, more asking what actually matters before the next meeting?",
+        "JAMIE: Exactly the idea. The Ledger link is in our show notes. Let's get back to the discussion.",
+    ),
+)
+
+
+def _normalize_midroll(script: str, date_str: str) -> str:
+    """Insert one rotating, dry-voice ad at the Segment 3/4 boundary."""
+    known_lines = {line for treatment in MIDROLL_TREATMENTS for line in treatment}
+    lines = [line for line in script.splitlines() if line.strip() not in known_lines]
+    try:
+        index = _dt.date.fromisoformat(date_str).toordinal() % len(MIDROLL_TREATMENTS)
+    except ValueError:
+        index = 0
+    boundary = next((i for i, line in enumerate(lines)
+                     if re.match(r"^###\s*SEGMENT\s*4\b", line, re.I)), None)
+    if boundary is not None:
+        while boundary > 0 and not lines[boundary - 1].strip():
+            del lines[boundary - 1]
+            boundary -= 1
+        lines[boundary:boundary] = [*MIDROLL_TREATMENTS[index], ""]
+    return "\n".join(lines).strip()
 
 
 def _normalize_primary_sponsor(script: str) -> str:
@@ -1828,7 +1863,7 @@ def _ensure_connection_elements(
     ] if segment5 >= 0 else []
     close_at = spoken_in_five[-2] if len(spoken_in_five) >= 2 else len(lines)
     lines[close_at:close_at] = closing_lines
-    return "\n".join(lines).strip()
+    return _normalize_midroll("\n".join(lines).strip(), date_str)
 
 
 def _find_shareable_exchange(script: str) -> Dict[str, Any]:
