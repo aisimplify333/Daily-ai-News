@@ -102,6 +102,11 @@ PHRASE_BAN_LOOKBACK = int(os.getenv("PHRASE_BAN_LOOKBACK", "6"))    # episodes w
 CONTINUITY_MAX_STORED = int(os.getenv("CONTINUITY_MAX_STORED", "150"))
 EDITORIAL_FRESHNESS_LOOKBACK = int(os.getenv("EDITORIAL_FRESHNESS_LOOKBACK", "7"))
 
+EDITORIAL_DISCOVERY_FEEDS = [
+    ("major_news", "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22)%20(source%3AReuters%20OR%20source%3ABloomberg%20OR%20source%3ACNBC%20OR%20source%3A%22The%20Wall%20Street%20Journal%22%20OR%20source%3A%22Financial%20Times%22%20OR%20source%3A%22Yahoo%20Finance%22)%20when%3A2d&hl=en-US&gl=US&ceid=US%3Aen"),
+    ("broad_news", "https://www.bing.com/news/search?q=%28AI+OR+%22artificial+intelligence%22%29+%28funding+OR+regulation+OR+chips+OR+jobs+OR+research+OR+security%29&format=rss"),
+]
+
 # Informational only — the gate below is binary, this is not a quality threshold.
 KEYWORD_SIGNAL_TARGET = int(os.getenv("PRE_TTS_MIN_SCORE", "84"))
 
@@ -193,6 +198,11 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   reply: observation, affectionate challenge, comeback, useful clarification.
   This is an available conversational shape, NOT a mandatory repeated sequence.
   Change who initiates, answers, or supplies evidence as the story warrants.
+- Across Segments 2-4, write at least two sustained 3-7 turn exchanges where the
+  next speaker answers the exact claim just made. Keep all three hosts available:
+  Jamie may interrupt Rufus's financial framing; Rufus may expose a hole in Jamie's
+  argument; Alex may join the joke before steering to a receipt. Do not isolate each
+  host into a personal report or alternate polished mini-monologues.
 - Tease ideas, habits and positions, not victims or vulnerable people. No invented
   listener mail, votes, audience reactions or testimonials. Use only supplied
   history for callbacks and let an old bit acquire a new meaning, not repeat verbatim.
@@ -1496,15 +1506,18 @@ Jamie, and Rufus with a short natural description of what each brings. Jamie and
 respond with personality. Alex previews the hot topics, starts the discussion, and lands
 the Ledger sponsor read at the first natural break before Segment 2.
 
-### SEGMENT 2 — Alex + Jamie: The Human Case and the Receipts
-ONLY Alex and Jamie appear. Deep-dive the lead event and Story 2. Alex presses the
-listener's blunt question; Jamie is his intellectual equal, highly opinionated,
-competitive, warm, and often right. She is not a translator, mascot, or scold.
+### SEGMENT 2 — The Human Case and the Receipts
+Alex and Jamie lead the deep-dive on the lead event and Story 2. Rufus enters for
+two or three compact challenges when their claims create a money, incentive or
+liability question. Jamie is Alex's intellectual equal, highly opinionated,
+competitive and warm. She may challenge Rufus directly and he must answer her.
 
 ### SEGMENT 3 — Rufus on the Money, Power, and Permission
 Rufus takes the desk/on-location role on Story 3: follow the money, liability,
-regulation, incentives, and geopolitical power. Alex may challenge him; Jamie may
-land one human consequence. No fake consensus or mandatory reversal.
+regulation, incentives, and geopolitical power. Alex challenges his assumptions;
+Jamie pushes the human consequence and gets at least two direct replies from Rufus.
+Let Rufus be smug, amused or mildly exasperated when earned, then make him support
+the line with a figure or incentive. No fake consensus or mandatory reversal.
 
 ### SEGMENT 4 — The Pattern Across the Other Top AI Events
 Other events only where they prove or break the main argument. Fast, data-first. Build
@@ -1513,6 +1526,8 @@ Make that exchange understandable without the preceding discussion: name the sub
 give a specific challenge, and land a concise factual or witty payoff. Do not end the
 candidate on an unanswered setup question. Humor must illuminate the stakes, not
 replace the explanation. Never manufacture an audience submission for the setup.
+Never speak production labels such as "shareable exchange," "clip moment," "viral
+moment," or "Segment Four." The listener should hear the moment, not its blueprint.
 
 ### SEGMENT 5 — The Ledger Readout + Final Button
 Alex asks for the final positions naturally. Across a rapid closing exchange, Jamie and
@@ -2008,7 +2023,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         ),
         "shareable_exchange_20_45s": bool(shareable_exchange.get("passed")),
         "no_legacy_sponsor_language": not legacy_sponsor_language,
-        "segment2_alex_jamie_only": seg2_speakers == {"ALEX", "JAMIE"},
+        "segment2_trio_present": {"ALEX", "JAMIE", "RUFUS"}.issubset(seg2_speakers),
         "min_six_receipts": numbers >= 6,
         "no_signal_room": not SIGNAL_ROOM_RE.search(full),
         "not_lesson_title": (not title.lower().startswith("today")) and ("lesson" not in title.lower()),
@@ -2046,7 +2061,6 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "single_show_cta",
         "listener_promise_present",
         "no_legacy_sponsor_language",
-        "segment2_alex_jamie_only",
         "no_signal_room",
         "not_lesson_title",
         "no_monologue_bloat",
@@ -2069,6 +2083,26 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         r"\b(wait|hold on|hang on|come on|no,|not quite|i disagree|let me stop you|"
         r"that'?s not)\b", low))
     interruptions = full.count("—")
+    current_segment = 0
+    previous_speaker = ""
+    jamie_rufus_exchange_segments: set[int] = set()
+    for line in full.splitlines():
+        segment_match = re.match(r"^###\s*SEGMENT\s*([1-5])\b", line, re.IGNORECASE)
+        if segment_match:
+            current_segment = int(segment_match.group(1))
+            previous_speaker = ""
+            continue
+        speaker_match = SPEAKER_RE.match(line.strip())
+        if not speaker_match:
+            continue
+        speaker = speaker_match.group(1).upper()
+        if current_segment in {2, 3, 4} and {speaker, previous_speaker} == {"JAMIE", "RUFUS"}:
+            jamie_rufus_exchange_segments.add(current_segment)
+        previous_speaker = speaker
+    spoken_production_language = bool(re.search(
+        r"^ALEX:.*\b(?:shareable exchange|clip moment|viral moment|segment four)\b",
+        full, re.IGNORECASE | re.MULTILINE,
+    ))
 
     soft: List[str] = []
     for key, ok in gate.items():
@@ -2091,6 +2125,12 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         soft.append(f"friction_low ({friction}/4)")
     if interruptions < 3:
         soft.append(f"interruptions_low ({interruptions}/3)")
+    if len(jamie_rufus_exchange_segments) < 2:
+        soft.append(
+            f"jamie_rufus_direct_exchange_low ({len(jamie_rufus_exchange_segments)}/2 segments)"
+        )
+    if spoken_production_language:
+        soft.append("spoken_production_language")
     for ph in fuel.get("banned_phrases", []):
         if ph and ph.lower() in low:
             soft.append(f"repeated_stale_phrase: {ph!r}")
@@ -2127,6 +2167,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
             "rufus_dry_lines": rufus_dry,
             "friction_beats": friction,
             "interruptions": interruptions,
+            "jamie_rufus_exchange_segments": sorted(jamie_rufus_exchange_segments),
+            "spoken_production_language": spoken_production_language,
             "max_turn_words": max_turn,
             "title": title,
             "lead_actor": lead_actor,
@@ -2143,7 +2185,7 @@ Sharpen the disagreement, add human texture (interruptions, false starts, real
 laughter in words — never bracketed directions), without forcing a concession.
 Do not invent facts. Do not add Signal Room language. Do not make it a lecture.
 Keep exact speaker labels and exactly one [MUSIC]. Preserve the sponsor read's
-facts, CTA, placement, and word cap. Segment 2 must contain only Alex and Jamie.
+facts, CTA, placement, and word cap. Let all three hosts challenge one another.
 Return the full script only.
 
 Weak spots to fix: {json.dumps(assessment.get('soft_flags') or [], ensure_ascii=False)}
@@ -2198,19 +2240,6 @@ def _deterministic_structure_repair(
     """Repair model formatting drift without rewriting facts or sponsor copy."""
     lines = (script or "").splitlines()
     failed = set(assessment.get("failed") or [])
-
-    if "segment2_alex_jamie_only" in failed:
-        repaired: List[str] = []
-        in_segment2 = False
-        for line in lines:
-            if re.match(r"^###\s*SEGMENT\s*2\b", line, flags=re.IGNORECASE):
-                in_segment2 = True
-            elif re.match(r"^###\s*SEGMENT\s*3\b", line, flags=re.IGNORECASE):
-                in_segment2 = False
-            if in_segment2 and re.match(r"^RUFUS\s*:", line, flags=re.IGNORECASE):
-                continue
-            repaired.append(line)
-        lines = repaired
 
     return "\n".join(lines).strip()
 
@@ -2717,6 +2746,16 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         rss["title"] = SHOW_TITLE
         rss["description"] = SHOW_DESCRIPTION
 
+    # Add broad publisher and Bing discovery without replacing the existing feeds.
+    # Headlines remain untrusted hints; grounded search verifies the final sources.
+    discovery_feeds = g.get("GOOGLE_NEWS_RSS")
+    if isinstance(discovery_feeds, list):
+        existing_urls = {str(row[1]) for row in discovery_feeds
+                         if isinstance(row, (list, tuple)) and len(row) > 1}
+        for label, url in EDITORIAL_DISCOVERY_FEEDS:
+            if url not in existing_urls:
+                discovery_feeds.append((label, url))
+
     original_pick_top_stories = g.get("pick_top_stories")
     original_generate_episode_script = g.get("generate_episode_script")
     original_generate_marketing_pack = g.get("generate_marketing_pack")
@@ -2740,13 +2779,20 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 build_grounded_story_slate,
                 write_grounded_slate_report,
             )
+            _, history = _load_continuity(g)
+            editorial_history = [{
+                "date": str(ep.get("date") or ""),
+                "title": str(ep.get("title") or ""),
+                "lead_headline": str(ep.get("lead_headline") or ""),
+                "central_fight": str(ep.get("central_fight") or ""),
+            } for ep in history[-EDITORIAL_FRESHNESS_LOOKBACK:] if isinstance(ep, dict)]
             selected = build_grounded_story_slate(
                 episode_date,
                 n=n,
                 model=GROUNDED_NEWS_MODEL,
                 discovery_json=json.dumps(intel_items, ensure_ascii=False),
+                editorial_history_json=json.dumps(editorial_history, ensure_ascii=False),
             )
-            _, history = _load_continuity(g)
             selected, freshness = _freshen_story_order(selected, history)
             write_grounded_slate_report(selected, episode_date)
             _safe_print(

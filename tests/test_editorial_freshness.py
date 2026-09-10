@@ -1,5 +1,6 @@
 import unittest
 
+import grounded_news_v1 as news
 import writer_room_v3_1 as writer
 
 
@@ -23,6 +24,23 @@ class EditorialFreshnessTests(unittest.TestCase):
         self.assertIn(stories[0]["headline"], [row["headline"] for row in ordered])
         self.assertTrue(report["changed"])
         self.assertEqual(report["lookback_episodes"], 1)
+
+    def test_grounded_search_receives_history_and_broad_news_desks(self):
+        prompt = news._story_prompt(
+            "2026-09-10", 8,
+            recent_editorial_history=[{"lead_headline": "OpenAI launches a model"}],
+        )
+        for source in ("Bloomberg", "CNBC", "Wall Street Journal", "Yahoo Finance"):
+            self.assertIn(source, prompt)
+        self.assertIn("OpenAI launches a model", prompt)
+        self.assertIn("strong alternatives", prompt)
+
+    def test_writer_keeps_all_three_hosts_in_the_deep_dive(self):
+        self.assertIn("Keep all three hosts available", writer.CAST_CONNECTION_DIRECTION)
+        self.assertNotIn("Segment 2 must contain only Alex and Jamie", writer._punchup_prompt("", {}, {}))
+        self.assertTrue(any("bing.com/news" in url for _, url in writer.EDITORIAL_DISCOVERY_FEEDS))
+        prompt = writer._writer_prompt([], [], "2026-09-10", {}, {})
+        self.assertIn('Never speak production labels such as "shareable exchange,"', prompt)
 
 
 if __name__ == "__main__":
