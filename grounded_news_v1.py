@@ -248,6 +248,10 @@ Rules:
 - At least five candidates must use a primary source or major newsroom.
 - Prioritize legal/policy moves, major model or product releases, safety/security
   events, material deals, compute/chip shifts, and changes affecting work or people.
+- Search for material AI-linked public-market moves worldwide: named stocks, earnings,
+  capex, financing, chips, data centers, utilities/power, sovereign investment and
+  legislation with a market consequence. Include price or percentage moves only when
+  a dated source states the move and timeframe; never infer a stock reaction.
 - Exclude SEO explainers, listicles, commentary presented as news, conference promotion,
   rumor without attribution, and routine content marketing.
 - One event per item. Do not combine unrelated stories into a thesis.

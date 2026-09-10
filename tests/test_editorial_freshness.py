@@ -32,6 +32,8 @@ class EditorialFreshnessTests(unittest.TestCase):
         )
         for source in ("Bloomberg", "CNBC", "Wall Street Journal", "Yahoo Finance"):
             self.assertIn(source, prompt)
+        self.assertIn("public-market moves worldwide", prompt)
+        self.assertIn("data centers", prompt)
         self.assertIn("OpenAI launches a model", prompt)
         self.assertIn("strong alternatives", prompt)
 
@@ -41,6 +43,8 @@ class EditorialFreshnessTests(unittest.TestCase):
         self.assertTrue(any("bing.com/news" in url for _, url in writer.EDITORIAL_DISCOVERY_FEEDS))
         prompt = writer._writer_prompt([], [], "2026-09-10", {}, {})
         self.assertIn('Never speak production labels such as "shareable exchange,"', prompt)
+        self.assertIn("RUFUS GLOBAL MARKETS DESK", prompt)
+        self.assertIn("Jamie challenges one assumption", prompt)
 
 
 if __name__ == "__main__":

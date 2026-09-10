@@ -169,6 +169,14 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   Introduce it aloud as an imaginary scenario before the character speaks. Never
   claim a host is physically at a bank, has interviewed staff or has inside access.
   Return directly to verified analysis. Do not add travel effects or sponsor bells.
+- Give Rufus one rotating GLOBAL MARKETS DESK lens every episode: New York equities,
+  London capital, Brussels regulation, Asian chips, Gulf sovereign investment, or
+  the region today's facts actually support. Alex may say, "Rufus, take us to London"
+  or the relevant market as a correspondent-style handoff. This names the market lens;
+  it does not claim Rufus is physically there. Rufus covers named stocks and market
+  moves, funding, earnings, data centers, chips, energy, legislation and geopolitics
+  that touch AI. Every price, percentage and market reaction needs a dated source.
+  If no sourced stock move exists, discuss incentives and exposure without inventing one.
 - Never use the 'Alex admitted he was wrong / mark the date / make it a holiday'
   routine. A change of view is not a punchline or a required plot beat.
 - Each exchange must add a new fact, counterexample, decision criterion or consequence.
@@ -1102,6 +1110,12 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
                           "the risk without seeing the handoff",
         "normal_person_payoff": "AI matters when it touches work, money, health, privacy, "
                                 "family, safety, or trust — not when a press release says so.",
+        "rufus_global_markets_desk": {
+            "market_or_region": "the market most directly affected by today's sourced events",
+            "companies_or_assets": [],
+            "capital_policy_or_infrastructure_move": "the sourced financial, policy, chip, power, or data-center consequence",
+            "dated_market_receipts": [],
+        },
         "mandatory_receipts": [
             "Use the lead story's concrete numbers and named institutions",
             "Use at least six specific figures, dates, or named bodies across the episode",
@@ -1193,6 +1207,12 @@ Return exactly this JSON:
   "who_wins": "...",
   "who_is_exposed": "...",
   "normal_person_payoff": "...",
+  "rufus_global_markets_desk": {{
+    "market_or_region": "New York|London|Brussels|Asia|Gulf|other sourced location",
+    "companies_or_assets": ["named public companies, indices, sectors or assets in the sources"],
+    "capital_policy_or_infrastructure_move": "the sourced stock, financing, legislation, chip, power or data-center move Rufus explains",
+    "dated_market_receipts": ["source-backed number and timeframe only; empty when none exists"]
+  }},
   "mandatory_receipts": ["...", "...", "..."],
   "forwardable_targets": ["one screenshot-worthy line", "another"]
 }}
@@ -1361,6 +1381,14 @@ THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disag
   expressions. Do not say "guffaw" or "snicker" aloud or write bracket directions.
   Never put laughter in sponsor copy or mock victims, illness, layoffs or tragedy.
 - RUFUS: {pos.get('rufus', 'Argues the money and liability trail already tells the ending.')}
+
+RUFUS GLOBAL MARKETS DESK:
+{json.dumps(board.get('rufus_global_markets_desk') or {}, ensure_ascii=False, indent=2)}
+Use a short correspondent-style handoff into the supported market or region. Rufus
+must explain who gained or lost financial power, what moved, and what listeners should
+watch. Jamie challenges one assumption or human consequence; Rufus answers her directly.
+Treat the location as an editorial lens unless the evidence explicitly establishes a
+real location. Do not invent stock moves, live prices, trading reactions or access.
 
 EVIDENCE-LED OUTCOME — no compulsory concession or designated winner:
 Optional board suggestion, not a required performance: {json.dumps(conc, ensure_ascii=False)}.
