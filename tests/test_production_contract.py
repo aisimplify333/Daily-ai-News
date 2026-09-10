@@ -78,6 +78,25 @@ def final_script():
 
 
 class ProductionContractTests(unittest.TestCase):
+    def test_live_validator_allows_trio_and_requires_segment_boundaries(self):
+        tree = ast.parse((ROOT / "main.py").read_text())
+        node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "validate_script")
+        module = ast.Module(body=[node], type_ignores=[])
+        namespace = {
+            "re": re, "Optional": __import__("typing").Optional,
+            "List": list, "Dict": dict,
+            "SPEAKER_RE": re.compile(r"^(ALEX|JAMIE|RUFUS):"),
+            "_script_targets": lambda: (0, 1000, 10000),
+            "_word_count": lambda text: len(text.split()),
+            "extract_forwardable_moments": lambda *a, **k: [1],
+            "FORWARDABLE_MIN_PER_EPISODE": 1,
+        }
+        exec(compile(ast.fix_missing_locations(module), "main.py", "exec"), namespace)
+        script = SCRIPT.replace("### SEGMENT 3", "RUFUS: But who pays for that, Jamie?\n### SEGMENT 3")
+        self.assertEqual(namespace["validate_script"](script), [])
+        missing = script.replace("### SEGMENT 3 — Money", "")
+        self.assertIn("Missing segment marker: ### SEGMENT 3", namespace["validate_script"](missing))
+
     def test_single_closing_loop_removes_model_poll_promise(self):
         script = SCRIPT + "\nALEX: Here's the listener question, it's going on the Spotify poll today. Your options: yes or no.\nALEX: Follow The AI Edge on Spotify for tomorrow when we'll have your answers.\nRUFUS: The price deserves a harder conversation."
         once = writer._ensure_connection_elements(script, STORIES, BOARD, "2026-09-08")

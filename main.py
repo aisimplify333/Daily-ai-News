@@ -2494,7 +2494,7 @@ def _segment_assignment(seg_num: int) -> str:
         )
     if seg_num == 2:
         return (
-            "ACT 2 — The Human/Operator Angle. ONLY Alex and Jamie. This is the approachable, smart, slightly playful explanation scene. "
+            "ACT 2 — The Human/Operator Angle. Alex, Jamie and Rufus may all participate. This is the approachable, smart, slightly playful explanation scene. "
             "Jamie should make the abstract story feel real: budgets, jobs, patients, developers, teams, compliance, or the person who gets blamed. "
             "Build one Kenny-and-Jillian-style learning beat: Alex asks the obvious question, Jamie explains it in plain English, Alex jokes or pushes back, Jamie corrects him with warmth and edge, and the listener learns a reusable AI concept."
         )
@@ -3285,7 +3285,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
         )
     elif seg_num == 2:
         extra += (
-            "IMPORTANT: This segment must contain ONLY ALEX and JAMIE lines. Do NOT output any RUFUS lines.\n"
+            "Alex, Jamie and Rufus may all participate; let Rufus challenge Jamie's human-impact argument when relevant.\n"
             "- Alex must open the segment with a clear setup or turn, then give Jamie room to make the case.\n"
             "- Jamie must not sound like a presenter. She must react to Alex in real time, cut in naturally, and help create banter.\n"
             "- Include at least two moments where Jamie interrupts, challenges, or reframes Alex in a warm but confident way.\n"
@@ -3413,9 +3413,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
             issues.append("Found non-labeled spoken line(s).")
             break
 
-    if seg_num == 2 and re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
-        issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
-
     wc = _word_count(seg_text)
     if wc < seg_words_min:
         issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
@@ -3490,7 +3487,7 @@ def _segment_repair_prompt(seg_num: int, seg_words_min: int, seg_words_target: i
     seg_specific = ""
     if seg_num == 2:
         seg_specific = (
-            "- SEGMENT 2 MUST contain ONLY ALEX and JAMIE lines.\n"
+            "- SEGMENT 2 allows ALEX, JAMIE and RUFUS to exchange views.\n"
             "- Delete ANY RUFUS lines and do NOT reintroduce RUFUS.\n"
         )
 
@@ -3673,14 +3670,6 @@ def validate_script(script: str, stories: Optional[List[Dict[str, str]]] = None)
         if not SPEAKER_RE.match(line):
             issues.append("Found non-labeled spoken line(s).")
             break
-
-    seg2_block = re.search(
-        r"^###\s*SEGMENT\s*2\b(.*?)(^###\s*SEGMENT\s*3\b|\Z)",
-        script,
-        flags=re.IGNORECASE | re.MULTILINE | re.DOTALL,
-    )
-    if seg2_block and re.search(r"^RUFUS\s*:", seg2_block.group(1), flags=re.IGNORECASE | re.MULTILINE):
-        issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
 
     min_words, _, max_words = _script_targets()
     wc = _word_count(script)
@@ -5532,7 +5521,7 @@ def _segment_assignment(seg_num: int) -> str:
         )
     if seg_num == 2:
         return (
-            "ACT 2 — Jamie’s Simple Version. ONLY Alex and Jamie. Alex keeps asking the obvious questions. "
+            "ACT 2 — Jamie’s Simple Version. All three hosts may participate. Alex keeps asking the obvious questions. "
             "Jamie explains the concept in plain English with an analogy, then makes the human/operator stakes feel real. "
             "This should feel like smart educational banter, not a lecture."
         )
@@ -5569,7 +5558,7 @@ def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, dat
             "- Do not say TheLEDGR in spoken dialogue.\n"
         )
     if seg_num == 2:
-        extra += "- ONLY ALEX and JAMIE may speak. This is the clearest educational scene of the episode.\n"
+        extra += "- ALEX, JAMIE and RUFUS may speak. This is the clearest educational scene of the episode.\n"
     if seg_num == 3:
         extra += "- Rufus must not lecture. He should be surgical, dry, and interrupted at least once.\n"
     if seg_num == 4:
@@ -5640,8 +5629,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
         issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
     if wc > seg_words_max:
         issues.append(f"Segment too long ({wc} words). Maximum is {seg_words_max}.")
-    if seg_num == 2 and re.search(r"^RUFUS\s*:", seg_text, flags=re.IGNORECASE | re.MULTILINE):
-        issues.append("SEGMENT 2 contains RUFUS lines; it must be ONLY ALEX + JAMIE.")
     if seg_num == 1 and "[MUSIC]" not in seg_text:
         issues.append("Segment 1 missing [MUSIC] marker after cold open.")
     if seg_num < 5 and EARLY_SIGNOFF_RE.search(seg_text or ""):
