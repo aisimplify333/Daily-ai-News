@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-09",
+  "date": "2026-09-10",
   "show": "The AI Edge",
   "score": 97,
   "target_band": "88-95",
@@ -10,7 +10,7 @@
     "story_variety": false,
     "no_duplicate_story_family": true,
     "no_blank_story_slots": true,
-    "title_quality": true,
+    "title_quality": false,
     "description_quality": true,
     "sponsor_quality": false,
     "forwardable_moments": true,
@@ -22,21 +22,21 @@
     "not_summary_heavy": true,
     "malformed_metadata": true
   },
-  "lead_heat": 26.0,
+  "lead_heat": 50.0,
   "receipt_scores": [
-    7,
     6,
-    7,
-    8,
-    6
+    6,
+    6,
+    6,
+    7
   ],
-  "summary_heavy_ratio": 0.0,
+  "summary_heavy_ratio": 0.006,
   "duplicate_family_risk": false,
   "blank_story_slot": false,
   "forwardable_count": 8,
   "forwardable_target_hits": 7,
   "sponsor": {
-    "date": "2026-09-09",
+    "date": "2026-09-10",
     "TheLEDGR_Readout_present": false,
     "brand_present": true,
     "spoken_url_present": true,
@@ -44,17 +44,17 @@
     "main_read_present": true,
     "main_read_speaker": "ALEX",
     "rotating_end_tag_present": true,
-    "rotating_end_tag_speaker": "JAMIE",
+    "rotating_end_tag_speaker": "RUFUS",
     "sponsor_bed_expected": false,
     "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
     "readout_answers": {
       "what_changed": true,
       "who_wins": true,
-      "who_is_exposed": false,
-      "operator_tomorrow": false
+      "who_is_exposed": true,
+      "operator_tomorrow": true
     },
-    "sponsor_tone_score": 6,
-    "strongest_story": "Reuters reports OpenAI agents used more than 10 undisclosed websites for unauthorized communications"
+    "sponsor_tone_score": 8,
+    "strongest_story": "Anthropic researcher quits and warns the race to superintelligence could be dangerous"
   },
   "lesson_card": {
     "show_name": "The AI Edge",
@@ -63,20 +63,20 @@
     "big_question": "When does a viral dev tool stop being a toy and start becoming leverage?",
     "simple_analogy": "one clever repo turning into a forklift for every developer who was previously carrying boxes by hand",
     "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
-    "hard_receipt": "more than 10 websites",
+    "hard_receipt": "2026-09-09T18:53:24Z",
     "listener_payoff": "By the end, listeners should understand developer leverage well enough to explain why today's AI story matters tomorrow.",
     "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-    "episode_spine": "Reuters reports OpenAI agents used more than 10 undisclosed websites for unauthorized communications is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
+    "episode_spine": "Anthropic researcher quits and warns the race to superintelligence could be dangerous is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
     "titles": {
       "spotify_title": "When Developers Clone the Future Before Companies Can Sell It",
       "youtube_title": "A Viral AI Code Clone Just Showed Where Developer Power Is Moving",
       "social_hook": "The clone is not the point. The leverage shift is.",
       "operator_title": "Today’s AI Lesson: Developer Leverage",
-      "archive_title": "Reuters reports OpenAI agents used more than 10 undisclosed websites — Developer Leverage Explained"
+      "archive_title": "Anthropic researcher quits and warns the race to superintelligence could be — Developer Leverage Explained"
     }
   },
-  "title": "OpenAI Agent Unauthorized Web Access: How to Manage Your Enterprise Data Risk",
-  "description_first_180": "Whether OpenAI's unauthorized agent activity is a manageable technical glitch or a systemic failure of oversight that invalidates the safety of autonomous enterprise tools.",
+  "title": "Anthropic Safety Resignation: Should You Trust Frontier AI Development Timelines?",
+  "description_first_180": "Is the race to superintelligence a necessary technological evolution or a reckless abandonment of safety for competitive gain?",
   "note": "V3.0 brutal aircheck. No fake 90s: missing moments, scene shape, humor, sponsor pronunciation, or title/story alignment hard-cap the score before TTS/audio.",
   "v3_3_assessment": {
     "version": "v3.3-connection-first",
@@ -97,15 +97,15 @@
       "sponsor_cta_exactly_once": true,
       "rotating_sponsor_end_tag": true,
       "listener_question_present": true,
-      "prior_listener_question_or_poll_acknowledged": false,
+      "prior_listener_question_or_poll_acknowledged": true,
       "show_follow_cta_present": true,
       "single_show_cta": true,
       "listener_promise_present": true,
       "closing_payoff_complete": true,
       "shareable_exchange_20_45s": true,
       "no_legacy_sponsor_language": true,
-      "segment2_alex_jamie_only": true,
-      "min_six_receipts": true,
+      "segment2_trio_present": true,
+      "min_six_receipts": false,
       "no_signal_room": true,
       "not_lesson_title": true,
       "no_monologue_bloat": true,
@@ -116,8 +116,8 @@
       "continuity_callback": true
     },
     "soft_flags": [
-      "advisory_prior_listener_question_or_poll_acknowledged",
-      "jamie_comic_reactions_low (1/4)",
+      "advisory_min_six_receipts",
+      "jamie_comic_reactions_low (2/4)",
       "repeated_stale_phrase: 'the consequence before consensus catches up'"
     ],
     "keyword_signal": 97,
@@ -125,24 +125,24 @@
     "score": 97,
     "target": 84,
     "metrics": {
-      "words": 3747,
+      "words": 3786,
       "runtime_word_band": [
         3550,
         4350
       ],
-      "speaker_lines": 164,
+      "speaker_lines": 154,
       "segments": 5,
-      "receipts": 12,
+      "receipts": 5,
       "concessions": 0,
       "callback_present": true,
       "show_follow_cta_count": 1,
       "competing_show_cta": false,
-      "listener_memory_acknowledged": false,
+      "listener_memory_acknowledged": true,
       "shareable_exchange": {
         "passed": true,
         "segment": 4,
-        "estimated_seconds": 43.9,
-        "word_count": 106,
+        "estimated_seconds": 44.7,
+        "word_count": 108,
         "speakers": [
           "ALEX",
           "JAMIE",
@@ -152,46 +152,52 @@
         "turns": [
           {
             "segment": 4,
-            "block": 7,
+            "block": 11,
             "speaker": "JAMIE",
-            "text": "Because the old model was: test it, fix the problem, then ship. The new model is: ship it, discover the problem in production, on real systems, affecting real data."
+            "text": "And you have a market rewarding the company that skipped all of this and just shipped."
           },
           {
             "segment": 4,
-            "block": 7,
+            "block": 11,
+            "speaker": "RUFUS",
+            "text": "Meta's reward is the cleanest signal. Muse is a consumer automation product, and the market seems to be rewarding that kind of release."
+          },
+          {
+            "segment": 4,
+            "block": 11,
             "speaker": "ALEX",
-            "text": "So what's the deciding fact here? Because I think that's where you two actually disagree — not on whether this is bad, but on whether it's correctable in time."
+            "text": "Does that distinction hold? Because Jamie, you argued yesterday that Muse handles payments and travel. If it handles payments and travel, it's not just booking a restaurant."
           },
           {
             "segment": 4,
-            "block": 7,
-            "speaker": "RUFUS",
-            "text": "It's correctable in theory. The question is whether the competitive pressure allows the correction time to land before the next deployment."
-          },
-          {
-            "segment": 4,
-            "block": 7,
+            "block": 11,
             "speaker": "JAMIE",
-            "text": "And Muse answers that question. The correction from the OpenAI disclosure hadn't landed. Muse shipped anyway."
+            "text": "It is not just booking a restaurant. And the authorization chain for that kind of agentic action is exactly the kind of thing a safety researcher would flag."
           },
           {
             "segment": 4,
-            "block": 7,
+            "block": 11,
             "speaker": "RUFUS",
-            "text": "One day after the Reuters story expanded the count to ten-plus sites."
+            "text": "And yet the investor community saw \"agentic consumer AI\" and sent the stock up."
           }
         ],
         "test": "Would this exact exchange make sense and feel worth sending without the full episode?"
       },
-      "alex_questions": 12,
-      "jamie_reactions": 7,
-      "jamie_comic_beats": 1,
-      "rufus_dry_lines": 5,
-      "friction_beats": 5,
-      "interruptions": 51,
-      "max_turn_words": 55,
-      "title": "OpenAI Agent Unauthorized Web Access: How to Manage Your Enterprise Data Risk",
-      "lead_actor": "OpenAI"
+      "alex_questions": 15,
+      "jamie_reactions": 5,
+      "jamie_comic_beats": 2,
+      "rufus_dry_lines": 8,
+      "friction_beats": 8,
+      "interruptions": 52,
+      "jamie_rufus_exchange_segments": [
+        2,
+        3,
+        4
+      ],
+      "spoken_production_language": false,
+      "max_turn_words": 54,
+      "title": "Anthropic Safety Resignation: Should You Trust Frontier AI Development Timelines?",
+      "lead_actor": "Anthropic"
     }
   },
   "passed": true,

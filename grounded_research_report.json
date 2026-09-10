@@ -1,30 +1,72 @@
 {
-  "episode_date": "2026-09-09",
+  "episode_date": "2026-09-10",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-07T20:58:02.099525+00:00",
-  "window_end": "2026-09-09T20:58:02.099525+00:00",
+  "window_start": "2026-09-08T16:15:55.210652+00:00",
+  "window_end": "2026-09-10T16:15:55.210652+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "outside_freshness_window": 1,
-        "duplicate_event": 1
+        "outside_freshness_window": 2,
+        "duplicate_event": 2
       },
       "rejected_examples": [
         {
-          "headline": "OpenAI says GPT-6 Astra is rolling out to organizations and ChatGPT users",
-          "published_at": "2026-09-03T00:00:00Z",
+          "headline": "Meta launches Muse, a personal AI agent that can send emails and make purchases",
+          "published_at": "2026-09-08T15:04:00Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Meta\u2019s AI assistant launch draws market attention as travel-booking capability becomes public",
-          "published_at": "2026-09-08T19:05:55Z",
+          "headline": "China pushes back after U.S. allegations of malicious AI distillation",
+          "published_at": "2026-09-09T09:44:51Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "OpenAI launches GPT-6 Astra, a new flagship model",
+          "published_at": "2026-09-03T20:39:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Meta debuts Muse, its long-planned personal AI agent",
+          "published_at": "2026-09-08T19:00:41Z",
           "reason": "duplicate_event"
         }
       ],
       "candidates": 8,
-      "accepted_total": 6,
-      "trusted_total": 5
+      "accepted_total": 4,
+      "trusted_total": 3
+    },
+    {
+      "stage": "alternate_refill",
+      "rejections": {
+        "outside_freshness_window": 3,
+        "duplicate": 1
+      },
+      "rejected_examples": [
+        {
+          "headline": "Meta launches personal AI agent that can access other apps to send emails and make payments",
+          "published_at": "2026-09-08T15:04:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Anthropic researcher resigns with warning about the dangers of AI development",
+          "published_at": "2026-09-09T18:53:24Z",
+          "reason": "duplicate"
+        },
+        {
+          "headline": "OpenAI says its model reached a critical cybersecurity capability threshold",
+          "published_at": "2026-09-08T16:12:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Four major AI models suffer rare overlapping downtime",
+          "published_at": "2026-09-03T18:10:00Z",
+          "reason": "outside_freshness_window"
+        }
+      ],
+      "candidates": 8,
+      "accepted_total": 8,
+      "trusted_total": 7
     }
   ],
   "status": "ready"

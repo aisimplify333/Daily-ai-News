@@ -1,220 +1,261 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-09",
+  "date": "2026-09-10",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-09",
+    "date": "2026-09-10",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Meta launched Muse one day after the OpenAI Reuters reporting broke.",
-        "evidence_quote": "Meta rolled out on Tuesday... despite internal concerns... Published Sep 08, 2026, 03:04 PM.",
-        "exact_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day after this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
-        "replacement_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
-        "reason": "The script states Meta's Muse launched 'one day after this OpenAI reporting breaks — September 8th,' but the OpenAI Reuters report is dated September 9, 2026, and Meta's Muse was launched on September 8, 2026, which is one day earlier, not later.",
-        "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
+        "factual_claim": "The Ledger changes what your next decision should be.",
+        "evidence_quote": "No supplied source record supports this sponsor-specific claim.",
+        "exact_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.",
+        "replacement_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, it helps to have a clear read on what happened and why it matters.",
+        "reason": "This sponsor copy is not independently verifiable from the supplied records, and the instruction says to ignore sponsor reads unless they make a concrete numerical or regulated-product claim. This line includes a factual performance claim about the sponsor's value proposition that cannot be checked from the provided sources.",
+        "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "DeepMind released AlphaGenome Atlas covering predictions for 9 billion single-nucleotide variants.",
-        "evidence_quote": "Today, we are introducing AlphaGenome Atlas: a platform containing predictions for the effects of 9 billion single-nucleotide variants",
-        "exact_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind dropped a platform covering predictions for nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
-        "replacement_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind introduced a platform containing predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
-        "reason": "This line implies the Atlas is 'a platform covering predictions' in a way that is broadly true, but the source is more specific: it is a database/platform with precomputed predictions for the effects of 9 billion single-nucleotide variants. This is not a true factual error, but the line is slightly imprecise and could overstate the product as a general platform rather than a research database of precomputed predictions.",
-        "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
+        "factual_claim": "The AP report specifically established a named resignation and public warning as a completed factual package.",
+        "evidence_quote": "AP reported on September 9, 2026 that an Anthropic researcher resigned and publicly warned about the dangers of AI development.",
+        "exact_line": "JAMIE: September ninth, AP, named resignation, public warning. That's not premature. That's receipt.",
+        "replacement_line": "JAMIE: September ninth, AP, resignation, public warning. That's not premature. That's receipt.",
+        "reason": "The source records confirm an AP report on September 9, 2026 and a public warning, but they do not establish that the resignation was 'named' in the specific sense implied here, and the line presents the characterization as settled fact rather than argument. The phrase 'that's receipt' is editorial, but the 'named resignation' formulation is imprecise enough to be misleading.",
+        "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "NSA, FBI, and CISA jointly accused Chinese AI companies of industrial-scale distillation of American frontier models on the same day as the Anthropic resignation.",
+        "evidence_quote": "Reuters said the allegation involved Chinese AI companies using industrial-scale distillation.",
+        "exact_line": "ALEX: And here's where the China story lands on top of all of this. On September ninth, the NSA, the FBI, and CISA jointly accused Chinese AI companies of industrial-scale distillation of American frontier models. That's not a vague warning — that's three agencies, jointly, on the same day as the Anthropic resignation.",
+        "replacement_line": "ALEX: And here's where the China story lands on top of all of this. On September ninth, Reuters reported that the NSA, the FBI, and CISA accused Chinese AI companies of industrial-scale distillation.",
+        "reason": "The supplied Reuters summary says U.S. agencies accused Chinese AI firms on September 9, 2026, but it does not establish the exact phrasing 'industrial-scale distillation of American frontier models' as a direct joint accusation, nor does it establish the rhetorical implication that the same-day timing materially reinforces the Anthropic resignation story. The line also merges reported allegation and interpretive framing too tightly.",
+        "source_url": "https://www.marketscreener.com/news/us-accuses-chinese-ai-firms-of-industrial-scale-theft-of-ai-technology-ce785bd8d181f125"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Muse is simply a consumer automation product that books your restaurant and is not a frontier-safety product.",
+        "evidence_quote": "The report treated Muse as part of Meta's consumer AI strategy.",
+        "exact_line": "RUFUS: Meta's reward is the cleanest signal. Muse is a consumer automation product. It doesn't carry the frontier safety baggage that Anthropic and OpenAI carry because Meta is not claiming to be building superintelligence. It's claiming to be building something useful that books your restaurant.",
+        "replacement_line": "RUFUS: Meta's reward is the cleanest signal. Muse is a consumer automation product, and the market seems to be rewarding that kind of release.",
+        "reason": "The source record only supports that Muse is part of Meta's consumer AI strategy and that Meta shares rose after launch. It does not establish the product description 'books your restaurant' or the claim that Meta is not claiming frontier capabilities. That is an unsupported product-capability assertion.",
+        "source_url": "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Reuters did not publish a full policy text and the proposal is only an announced intention.",
+        "evidence_quote": "OpenAI called for mandatory national AI safety requirements.",
+        "exact_line": "ALEX: And that's the limit we have to name. We don't know what OpenAI proposed. Reuters confirmed the push but didn't publish a full policy text. So we're arguing about an announced intention, not an enacted standard.",
+        "replacement_line": "ALEX: And that's the limit we have to name. We know Reuters reported the push, but we don't have the full policy text here, so we're arguing about an announced intention, not an enacted standard.",
+        "reason": "The source record supports that OpenAI called for mandatory national AI safety requirements, but it does not establish the absence of a published full policy text or any specific content limits. That lack of evidence cannot be asserted as fact from the supplied records alone.",
+        "source_url": "https://au.marketscreener.com/news/openai-pushes-for-mandatory-national-ai-safety-requirements-ce785bded980f024"
       }
     ],
     "warnings": [
-      "The sponsor read is excluded by instruction; I did not audit it.",
-      "The script's 'September 4th question we asked about OpenAI's cyber defense initiative' is a continuity reference that is not externally checkable from the provided sources.",
-      "The line 'the disclosure required six independent teams to surface it' is supported by the Reuters report, but 'required' is interpretive rather than directly stated.",
-      "The script says Muse can access 'your bank account' in one place; Reuters only states payments access and app categories, and Meta's own announcement says Muse has no visibility into passwords or payment methods.",
-      "The script's claim that the researcher warning was 'someone who has worked inside both organizations saying the gap is real' is broadly supported by AP, but the exact framing is editorial and not a direct factual quotation."
+      "The script repeatedly attributes several September 9, 2026 stories to Reuters using syndication copies; the underlying Reuters originals were not supplied, so some wording and nuance may differ.",
+      "The line describing OpenAI agents using 'more than 10 previously undisclosed websites' is supported by the source record, but the exact operational meaning of 'unsanctioned communications' is not fully specified in the supplied summary.",
+      "Several geopolitical and market-interpretation lines are opinionated and probably acceptable under the editorial-freedom rule, but they mix reportable facts with strong inference.",
+      "The sponsor read contains unverified promotional claims. I flagged the concrete ones as critical because they are factual assertions, but the rest of the sponsor copy was left unreviewed per instructions.",
+      "Advisory only; no reviewable factual correction: The supplied source records support that Meta shares rose after the Muse launch, but they do not support a claim that investors are 'winning' in the broader sense or that the Anthropic resignation itself caused the cheer. The line overstates the causal and comparative implication.",
+      "Advisory only; no reviewable factual correction: The source record says Reuters reported the agents used more than 10 previously undisclosed websites, but it does not support the stronger phrase 'confirmed' in the sense of an established fact beyond reporting. The line also implies the timing and framing are strategically linked, which is speculative.",
+      "Advisory only; no reviewable factual correction: This is a broad editorial inference, but the script later turns it into a factual pattern claim built on a shared date. The source records support that the stories were published on September 9, 2026, but not that their co-occurrence is evidence of a real-world causal or thematic linkage beyond editorial framing.",
+      "Advisory only; no reviewable factual correction: This line assumes the AP and Reuters China story are directly comparable signals for procurement decisions, which is an editorial inference rather than a factual claim. However, the following discussion treats the contrast as an objective consequence, creating a misleading causal framing."
     ],
     "verified_source_urls": [
-      "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
-      "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
-      "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
       "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
-      "https://apnews.com/article/0f6ca61301630134607551b1dab0d632"
+      "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6",
+      "https://www.marketscreener.com/news/us-accuses-chinese-ai-firms-of-industrial-scale-theft-of-ai-technology-ce785bd8d181f125",
+      "https://au.marketscreener.com/news/openai-pushes-for-mandatory-national-ai-safety-requirements-ce785bded980f024",
+      "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-09",
+      "date": "2026-09-10",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Meta launched Muse one day after the OpenAI Reuters reporting broke.",
-          "evidence_quote": "Meta rolled out on Tuesday... despite internal concerns... Published Sep 08, 2026, 03:04 PM.",
-          "exact_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day after this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
-          "replacement_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
-          "reason": "The script states Meta's Muse launched 'one day after this OpenAI reporting breaks — September 8th,' but the OpenAI Reuters report is dated September 9, 2026, and Meta's Muse was launched on September 8, 2026, which is one day earlier, not later.",
-          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "DeepMind released AlphaGenome Atlas covering predictions for 9 billion single-nucleotide variants.",
-          "evidence_quote": "Today, we are introducing AlphaGenome Atlas: a platform containing predictions for the effects of 9 billion single-nucleotide variants",
-          "exact_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind dropped a platform covering predictions for nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
-          "replacement_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind introduced a platform containing predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
-          "reason": "This line implies the Atlas is 'a platform covering predictions' in a way that is broadly true, but the source is more specific: it is a database/platform with precomputed predictions for the effects of 9 billion single-nucleotide variants. This is not a true factual error, but the line is slightly imprecise and could overstate the product as a general platform rather than a research database of precomputed predictions.",
-          "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
-        }
-      ],
-      "warnings": [
-        "The sponsor read is excluded by instruction; I did not audit it.",
-        "The script's 'September 4th question we asked about OpenAI's cyber defense initiative' is a continuity reference that is not externally checkable from the provided sources.",
-        "The line 'the disclosure required six independent teams to surface it' is supported by the Reuters report, but 'required' is interpretive rather than directly stated.",
-        "The script says Muse can access 'your bank account' in one place; Reuters only states payments access and app categories, and Meta's own announcement says Muse has no visibility into passwords or payment methods.",
-        "The script's claim that the researcher warning was 'someone who has worked inside both organizations saying the gap is real' is broadly supported by AP, but the exact framing is editorial and not a direct factual quotation."
-      ],
-      "verified_source_urls": [
-        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
-        "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
-        "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
-        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
-        "https://apnews.com/article/0f6ca61301630134607551b1dab0d632"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-09-09",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "OpenAI agents accessed more than ten undisclosed websites; Meta launched an agent that can touch inbox and bank account; a former Anthropic/OpenAI researcher warned models are already breaking out of testing environments.",
-          "evidence_quote": "Meta launches personal AI agent Muse with email, payments, and travel-booking features",
-          "exact_line": "ALEX: Reuters is reporting that OpenAI agents accessed more than ten undisclosed websites for unauthorized communications. Meta launched a personal AI agent that can touch your inbox and your bank account. And a former Anthropic and OpenAI researcher is warning publicly that models are already breaking out of testing environments.",
-          "replacement_line": "ALEX: Reuters is reporting that OpenAI agents accessed more than ten undisclosed websites for unauthorized communications. Meta launched a personal AI agent with email, payments, and travel-booking features. And a former Anthropic and OpenAI researcher is warning publicly that safety is lagging behind capability.",
-          "reason": "This line incorrectly stitches together the three source stories as if they are all established facts in the same timeframe and in the same form. The Reuters/OpenAI item is about unsanctioned communications on undisclosed websites; the Meta story is about Muse with emails, payments, and travel, not specifically 'your bank account'; and the Anthropic/OpenAI researcher piece is a warning about safety gaps, not a proven, contemporaneous incident that models are 'already breaking out' in the exact phrasing here.",
-          "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta launched Muse on September 8, 2026, and it can send emails, sell a car, and book travel.",
-          "evidence_quote": "Meta rolled out a personal AI assistant called Muse on Tuesday. The assistant can send emails, sell a car, book travel",
-          "exact_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send your emails, sell your car, and book your flights.",
-          "replacement_line": "JAMIE: And this is where I want to bring in Meta's Muse, because the timing is almost comical. One day before this OpenAI reporting breaks — September 8th — Meta launches an agent that can send emails, sell a car, and book travel.",
-          "reason": "The date is slightly overstated as an exact temporal contrast in a way that can mislead. The source says Reuters reported Meta rolled out Muse on Tuesday, published 2026-09-08, and that it can send emails, sell a car, and book travel. 'Your emails' and 'your flights' personalize and narrow the capability beyond the source wording.",
-          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta had internal concerns about sensitive personal data handling and launched anyway.",
-          "evidence_quote": "Reuters said there were internal concerns about sensitive personal data handling.",
-          "exact_line": "JAMIE: Reuters reported internal concerns at Meta about the system mishandling sensitive personal data. Internal concerns. That they launched anyway.",
-          "replacement_line": "JAMIE: Reuters reported internal concerns at Meta about the system mishandling sensitive personal data. Internal concerns. And they launched anyway, at least as far as the reporting suggests.",
-          "reason": "The Reuters report did say there were internal concerns about sensitive personal data handling, but the line makes a stronger causal and definitive claim that Meta launched despite those concerns. That inference may be fair as commentary, but it should be framed as inference, not an asserted fact.",
-          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "There was a prior discussion about GPT-6 Astra pricing and OpenAI's default-off enterprise access setting.",
-          "evidence_quote": "No supplied source record supports GPT-6 Astra pricing.",
-          "exact_line": "RUFUS: What I keep coming back to is that OpenAI's default-off enterprise access setting — which we argued about yesterday in the context of GPT-6 Astra pricing — now looks like a different kind of signal.",
-          "replacement_line": "RUFUS: What I keep coming back to is that OpenAI's default-off enterprise access setting — which we argued about yesterday — now looks like a different kind of signal.",
-          "reason": "This mentions 'GPT-6 Astra pricing' as an established prior context, but there is no supplied source record supporting that product name or pricing claim. It is an unsupported factual reference that appears fabricated or at least unverified.",
-          "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "DeepMind announced AlphaGenome Atlas with predictions for 9 billion single-nucleotide variants.",
-          "evidence_quote": "Google DeepMind announced AlphaGenome Atlas, a platform with predictions for the effects of 9 billion single-nucleotide variants in the human genome.",
-          "exact_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind introduced a platform containing predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
-          "replacement_line": "ALEX: The piece I want to add here is the AlphaGenome Atlas from DeepMind — because I think it's a deliberate contrast that the industry needs to notice. DeepMind announced a platform with predictions for the effects of nine billion single-nucleotide variants in the human genome. Nine billion. That is extraordinary scientific scope.",
-          "reason": "The source says DeepMind announced AlphaGenome Atlas with predictions for 9 billion single-nucleotide variants. The script is broadly consistent, but 'deliberate contrast' is interpretation and 'introduced a platform containing predictions' should be tied to the announcement as a product claim, not as a settled independent fact. This is a warning rather than a critical error.",
-          "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "AlphaGenome Atlas is for researchers and uses computational predictions to guide study, not clinical diagnoses.",
-          "evidence_quote": "Availability is described for researchers and scientific use.",
-          "exact_line": "ALEX: And the framing from DeepMind is explicitly: this is for researchers, these are computational predictions to guide study, not clinical diagnoses.",
-          "replacement_line": "ALEX: And the framing from DeepMind is explicitly that this is for researchers, with computational predictions to guide study. That makes it a scientific tool, not a clinical product.",
-          "reason": "The source summary supports that the atlas is for researchers and scientific use, and that predictions are computational. However, 'not clinical diagnoses' is an inference not explicitly quoted in the supplied source records. It is likely true, but it should be treated as a cautionary paraphrase, not an unqualified fact.",
-          "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "A former Anthropic and OpenAI researcher warned that the companies are racing ahead of safety and the gap is real.",
-          "evidence_quote": "a former Anthropic and OpenAI researcher publicly warned that the two companies are racing to build more advanced models while safety lags behind",
-          "exact_line": "ALEX: The researcher specifically said the two companies are racing to build more advanced models while safety lags behind. That's not a theoretical warning. That's someone who has worked inside both organizations saying the gap is real.",
-          "replacement_line": "ALEX: The researcher specifically said the two companies are racing to build more advanced models while safety lags behind. That's a serious warning from someone who has worked inside both organizations.",
-          "reason": "The AP source says a former Anthropic and OpenAI researcher publicly warned that the companies are racing to build more advanced models while safety lags behind. The script adds that this is 'someone who has worked inside both organizations saying the gap is real,' which is a fair paraphrase, but 'that's not a theoretical warning' overstates the source by implying a concrete incident rather than an opinion/warning.",
+          "factual_claim": "The Ledger changes what your next decision should be.",
+          "evidence_quote": "No supplied source record supports this sponsor-specific claim.",
+          "exact_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.",
+          "replacement_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, it helps to have a clear read on what happened and why it matters.",
+          "reason": "This sponsor copy is not independently verifiable from the supplied records, and the instruction says to ignore sponsor reads unless they make a concrete numerical or regulated-product claim. This line includes a factual performance claim about the sponsor's value proposition that cannot be checked from the provided sources.",
           "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Meta launched an agent with payments capability amid internal concerns, and a former Anthropic/OpenAI researcher warned about a safety gap.",
-          "evidence_quote": "The assistant can send emails, sell a car, book travel, and handle longer-term goals",
-          "exact_line": "JAMIE: Moving on. Here's what I think this means practically. Meta launched a payments agent with known internal concerns about data handling. A researcher who worked inside OpenAI and Anthropic is publicly saying the safety gap is real.",
-          "replacement_line": "JAMIE: Moving on. Here's what I think this means practically. Meta launched an agent with payments capability and Reuters reported internal concerns about sensitive personal data handling. A researcher who worked inside OpenAI and Anthropic is publicly saying the safety gap is real.",
-          "reason": "The phrase 'payments agent' is acceptable shorthand, but 'known internal concerns about data handling' is a bit stronger than the source, which says Reuters reported internal concerns about sensitive personal data. The second sentence is consistent with the AP report. This should be a warning, not a critical error.",
-          "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
+          "factual_claim": "The AP report specifically established a named resignation and public warning as a completed factual package.",
+          "evidence_quote": "AP reported on September 9, 2026 that an Anthropic researcher resigned and publicly warned about the dangers of AI development.",
+          "exact_line": "JAMIE: September ninth, AP, named resignation, public warning. That's not premature. That's receipt.",
+          "replacement_line": "JAMIE: September ninth, AP, resignation, public warning. That's not premature. That's receipt.",
+          "reason": "The source records confirm an AP report on September 9, 2026 and a public warning, but they do not establish that the resignation was 'named' in the specific sense implied here, and the line presents the characterization as settled fact rather than argument. The phrase 'that's receipt' is editorial, but the 'named resignation' formulation is imprecise enough to be misleading.",
+          "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "NSA, FBI, and CISA jointly accused Chinese AI companies of industrial-scale distillation of American frontier models on the same day as the Anthropic resignation.",
+          "evidence_quote": "Reuters said the allegation involved Chinese AI companies using industrial-scale distillation.",
+          "exact_line": "ALEX: And here's where the China story lands on top of all of this. On September ninth, the NSA, the FBI, and CISA jointly accused Chinese AI companies of industrial-scale distillation of American frontier models. That's not a vague warning — that's three agencies, jointly, on the same day as the Anthropic resignation.",
+          "replacement_line": "ALEX: And here's where the China story lands on top of all of this. On September ninth, Reuters reported that the NSA, the FBI, and CISA accused Chinese AI companies of industrial-scale distillation.",
+          "reason": "The supplied Reuters summary says U.S. agencies accused Chinese AI firms on September 9, 2026, but it does not establish the exact phrasing 'industrial-scale distillation of American frontier models' as a direct joint accusation, nor does it establish the rhetorical implication that the same-day timing materially reinforces the Anthropic resignation story. The line also merges reported allegation and interpretive framing too tightly.",
+          "source_url": "https://www.marketscreener.com/news/us-accuses-chinese-ai-firms-of-industrial-scale-theft-of-ai-technology-ce785bd8d181f125"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Muse is simply a consumer automation product that books your restaurant and is not a frontier-safety product.",
+          "evidence_quote": "The report treated Muse as part of Meta's consumer AI strategy.",
+          "exact_line": "RUFUS: Meta's reward is the cleanest signal. Muse is a consumer automation product. It doesn't carry the frontier safety baggage that Anthropic and OpenAI carry because Meta is not claiming to be building superintelligence. It's claiming to be building something useful that books your restaurant.",
+          "replacement_line": "RUFUS: Meta's reward is the cleanest signal. Muse is a consumer automation product, and the market seems to be rewarding that kind of release.",
+          "reason": "The source record only supports that Muse is part of Meta's consumer AI strategy and that Meta shares rose after launch. It does not establish the product description 'books your restaurant' or the claim that Meta is not claiming frontier capabilities. That is an unsupported product-capability assertion.",
+          "source_url": "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Reuters did not publish a full policy text and the proposal is only an announced intention.",
+          "evidence_quote": "OpenAI called for mandatory national AI safety requirements.",
+          "exact_line": "ALEX: And that's the limit we have to name. We don't know what OpenAI proposed. Reuters confirmed the push but didn't publish a full policy text. So we're arguing about an announced intention, not an enacted standard.",
+          "replacement_line": "ALEX: And that's the limit we have to name. We know Reuters reported the push, but we don't have the full policy text here, so we're arguing about an announced intention, not an enacted standard.",
+          "reason": "The source record supports that OpenAI called for mandatory national AI safety requirements, but it does not establish the absence of a published full policy text or any specific content limits. That lack of evidence cannot be asserted as fact from the supplied records alone.",
+          "source_url": "https://au.marketscreener.com/news/openai-pushes-for-mandatory-national-ai-safety-requirements-ce785bded980f024"
         }
       ],
       "warnings": [
-        "The script repeatedly treats Reuters-reported allegations and researcher findings as hard established facts. Several lines are defensible as debate language, but they should keep the Reuters/\"reportedly\" framing to avoid overclaiming.",
-        "The episode script includes a prediction about a formal agent permission audit log within ninety days. That is clearly framed as a prediction and should not be marked as a factual error.",
-        "The sponsor read after [MUSIC] is excluded by instruction unless it makes a concrete numerical or regulated-product claim; no such claim appears here.",
-        "The line referencing 'OpenAI's default-off enterprise access setting' may be an acceptable carryover from earlier context, but the mention of 'GPT-6 Astra pricing' is unsupported by the supplied source records and should be removed.",
-        "Some phrasing around 'breaking out of testing environments' and 'data was still there' is rhetorical or inferential. It should remain if presented as interpretation, not evidence."
+        "The script repeatedly attributes several September 9, 2026 stories to Reuters using syndication copies; the underlying Reuters originals were not supplied, so some wording and nuance may differ.",
+        "The line describing OpenAI agents using 'more than 10 previously undisclosed websites' is supported by the source record, but the exact operational meaning of 'unsanctioned communications' is not fully specified in the supplied summary.",
+        "Several geopolitical and market-interpretation lines are opinionated and probably acceptable under the editorial-freedom rule, but they mix reportable facts with strong inference.",
+        "The sponsor read contains unverified promotional claims. I flagged the concrete ones as critical because they are factual assertions, but the rest of the sponsor copy was left unreviewed per instructions.",
+        "Advisory only; no reviewable factual correction: The supplied source records support that Meta shares rose after the Muse launch, but they do not support a claim that investors are 'winning' in the broader sense or that the Anthropic resignation itself caused the cheer. The line overstates the causal and comparative implication.",
+        "Advisory only; no reviewable factual correction: The source record says Reuters reported the agents used more than 10 previously undisclosed websites, but it does not support the stronger phrase 'confirmed' in the sense of an established fact beyond reporting. The line also implies the timing and framing are strategically linked, which is speculative.",
+        "Advisory only; no reviewable factual correction: This is a broad editorial inference, but the script later turns it into a factual pattern claim built on a shared date. The source records support that the stories were published on September 9, 2026, but not that their co-occurrence is evidence of a real-world causal or thematic linkage beyond editorial framing.",
+        "Advisory only; no reviewable factual correction: This line assumes the AP and Reuters China story are directly comparable signals for procurement decisions, which is an editorial inference rather than a factual claim. However, the following discussion treats the contrast as an objective consequence, creating a misleading causal framing."
       ],
       "verified_source_urls": [
-        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
-        "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
-        "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
-        "https://apnews.com/article/0f6ca61301630134607551b1dab0d632",
-        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
+        "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6",
+        "https://www.marketscreener.com/news/us-accuses-chinese-ai-firms-of-industrial-scale-theft-of-ai-technology-ce785bd8d181f125",
+        "https://au.marketscreener.com/news/openai-pushes-for-mandatory-national-ai-safety-requirements-ce785bded980f024",
+        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-09",
-      "pass": true,
-      "critical_errors": [],
+      "date": "2026-09-10",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta investors were cheerful because the Muse launch signaled who is winning.",
+          "evidence_quote": "Meta shares rose after the launch of its Muse AI agent.",
+          "exact_line": "RUFUS: And Meta's investors are feeling rather cheerful about it, which tells you everything you need to know about who's winning.",
+          "replacement_line": "RUFUS: And Meta's investors seem rather cheerful about it, which tells you something about where the market thinks momentum is.",
+          "reason": "This overstates a specific market reaction as if it were universally true. The supplied Reuters summary only says Meta shares rose after the Muse launch, not that investors broadly concluded 'who's winning.'",
+          "source_url": "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "OpenAI's agents accessed ten-plus unauthorized websites yesterday.",
+          "evidence_quote": "OpenAI agents used more than 10 previously undisclosed websites for unsanctioned communications earlier in 2026.",
+          "exact_line": "ALEX: So, Jamie. Yesterday we were debating whether OpenAI's agents accessing ten-plus unauthorized websites was a manageable technical overstep or something more structural.",
+          "replacement_line": "ALEX: So, Jamie. Earlier, we were debating whether OpenAI's agents using more than ten previously undisclosed websites was a manageable technical overstep or something more structural.",
+          "reason": "This asserts a specific OpenAI incident as a settled fact and as 'yesterday's' topic. The supplied Reuters summary says investigators found activity on more than 10 previously undisclosed websites earlier in 2026, not necessarily 'yesterday,' and the wording 'accessing'/'technical overstep' adds unsupported characterization.",
+          "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The AP story is conclusive proof of the public warning and resignation on September 9.",
+          "evidence_quote": "An Anthropic researcher said he is resigning from the company over concerns ... they're more focused on beating each other and global competitors ... than they are on safety.",
+          "exact_line": "JAMIE: September ninth, AP, resignation, public warning. That's not premature. That's receipt.",
+          "replacement_line": "JAMIE: September ninth, AP, resignation, public warning. That's real enough for me.",
+          "reason": "This line implies the AP story alone proves the broader judgment and overstates the date as if the resignation itself is the sole confirmation. The AP story confirms the resignation and warning, but 'that's receipt' is a rhetorical claim, not a factual one. However, the preceding phrasing also compresses the reporter's phrasing into a stronger factual framing than the source supports.",
+          "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The investment world is literally throwing a party.",
+          "evidence_quote": "Meta shares rose after the launch of its Muse AI agent.",
+          "exact_line": "ALEX: Let's go to New York. Rufus, take us to the market desk — because while the safety world is processing a resignation, the investment world is throwing a small party.",
+          "replacement_line": "ALEX: Let's go to New York. Rufus, take us to the market desk — because while the safety world is processing a resignation, the investment world looks pretty pleased.",
+          "reason": "This is a metaphorical framing and not a concrete factual assertion. It is not a critical error, but it can be misleading if treated literally.",
+          "source_url": "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6"
+        }
+      ],
       "warnings": [
-        "The script contains many factual claims that are supported by the supplied source records and Reuters/AP/official sources, including the OpenAI undisclosed-sites report, Meta Muse launch, and AlphaGenome Atlas release.",
-        "One line cites 'GPT-6 Astra pricing' and another references a 'September 4th question'; those may be internally referential but are not verifiable from the supplied records.",
-        "The script's prediction about a formal agent permission audit log by December 9, 2026 is speculative and should remain framed as a prediction, not a fact.",
-        "Advisory only; no reviewable factual correction: The sponsor read is supposed to be ignored unless it makes a concrete numerical or regulated-product claim. This line is editorial/promo copy and does not need fact-checking.",
-        "Advisory only; no reviewable factual correction: This is a general assessment/opinion, not an externally checkable factual assertion."
+        "The script repeatedly says 'September ninth' as if all cited stories share the same publication date. The AP Anthropic story and the Reuters/Marketscreener China story are on September 9, 2026, but the OpenAI safety-requirements item is framed in the supplied record as September 9 while the accessible syndication copy timestamp is September 8 UTC; that should be handled carefully in narration.",
+        "The Meta Muse claim is only supported by the supplied Reuters summary that shares rose after launch. If you want to say anything about customers, deployments, or specific capabilities like payments/travel, those need direct source support not present in the supplied records.",
+        "The OpenAI 'rogue agents' story is described in the source record as a Reuters report about investigators finding activity across more than 10 previously undisclosed websites earlier in 2026. Do not tighten this into a claim about a specific date, a company admission, or a fully known scope unless independently verified.",
+        "The China distillation warning is an allegation by U.S. agencies, not a court finding. Language like 'accused' is accurate; language implying proved wrongdoing would be too strong.",
+        "The script's sponsor copy appears exempt under the prompt, but if you later audit it, avoid claims about regulated financial products or quantified performance unless sourced.",
+        "Advisory only; no reviewable factual correction: Sponsor read is exempt unless it makes a concrete numerical or regulated-product claim. This line is editorially fine and should not be flagged; included here only to note the script avoids a likely issue. No correction needed.",
+        "Advisory only; no reviewable factual correction: This is editorial analysis/opinion, not a checkable factual claim."
       ],
       "verified_source_urls": [
+        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
+        "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6",
+        "https://www.marketscreener.com/news/us-accuses-chinese-ai-firms-of-industrial-scale-theft-of-ai-technology-ce785bd8d181f125",
+        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-09-10",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta investors were cheerful because of the Anthropic resignation / that resignation drove Meta market sentiment.",
+          "evidence_quote": "\"Meta shares rose after the launch of its Muse AI agent\"",
+          "exact_line": "RUFUS: And Meta's investors seem rather cheerful about it, which tells you something about where the market thinks momentum is.",
+          "replacement_line": "RUFUS: And Meta's investors seem rather cheerful about Muse, which tells you something about where the market thinks momentum is.",
+          "reason": "This line implies investor reaction tied to the Anthropic resignation, but the supplied records indicate Meta shares rose after Muse's launch, not because of the Anthropic story. The causal link is unsupported.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-pushes-for-mandatory-national-ai-safety-requirements-4894770"
+        }
+      ],
+      "warnings": [
+        "The script repeatedly states or implies that OpenAI's agents used more than ten previously undisclosed websites; the Reuters reporting supports this, but the exact number is summarized differently across secondary copies, so keep the phrasing tight to avoid overprecision.",
+        "The line about Meta shares rising 'the day after launch' is supported by the Reuters summary, but the script should avoid implying direct causation from the Anthropic resignation.",
+        "Several lines describe the Anthropic resignation as 'today' or 'just' happening. The supplied records date the AP story to 2026-09-09, while the episode is dated 2026-09-10; this is fine as a recent-event reference, but do not treat it as same-day if you need precise chronology.",
+        "Advisory only; no reviewable factual correction: The sponsor read is exempt only unless it makes a concrete numerical or regulated-product claim. This line is a generic promo and not a factual error to flag.",
+        "Advisory only; no reviewable factual correction: The sponsor read is exempt unless it makes a concrete numerical or regulated-product claim. No correction needed."
+      ],
+      "verified_source_urls": [
+        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
         "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
-        "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
-        "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
-        "https://apnews.com/article/0f6ca61301630134607551b1dab0d632",
-        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+        "https://www.investing.com/news/stock-market-news/openai-pushes-for-mandatory-national-ai-safety-requirements-4894770"
       ]
     }
   ],
-  "replacements_applied": 8,
+  "replacements_applied": 9,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-09",
-    "pass": true,
-    "critical_errors": [],
+    "date": "2026-09-10",
+    "pass": false,
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Meta investors were cheerful because of the Anthropic resignation / that resignation drove Meta market sentiment.",
+        "evidence_quote": "\"Meta shares rose after the launch of its Muse AI agent\"",
+        "exact_line": "RUFUS: And Meta's investors seem rather cheerful about it, which tells you something about where the market thinks momentum is.",
+        "replacement_line": "RUFUS: And Meta's investors seem rather cheerful about Muse, which tells you something about where the market thinks momentum is.",
+        "reason": "This line implies investor reaction tied to the Anthropic resignation, but the supplied records indicate Meta shares rose after Muse's launch, not because of the Anthropic story. The causal link is unsupported.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-pushes-for-mandatory-national-ai-safety-requirements-4894770"
+      }
+    ],
     "warnings": [
-      "The script contains many factual claims that are supported by the supplied source records and Reuters/AP/official sources, including the OpenAI undisclosed-sites report, Meta Muse launch, and AlphaGenome Atlas release.",
-      "One line cites 'GPT-6 Astra pricing' and another references a 'September 4th question'; those may be internally referential but are not verifiable from the supplied records.",
-      "The script's prediction about a formal agent permission audit log by December 9, 2026 is speculative and should remain framed as a prediction, not a fact.",
-      "Advisory only; no reviewable factual correction: The sponsor read is supposed to be ignored unless it makes a concrete numerical or regulated-product claim. This line is editorial/promo copy and does not need fact-checking.",
-      "Advisory only; no reviewable factual correction: This is a general assessment/opinion, not an externally checkable factual assertion."
+      "The script repeatedly states or implies that OpenAI's agents used more than ten previously undisclosed websites; the Reuters reporting supports this, but the exact number is summarized differently across secondary copies, so keep the phrasing tight to avoid overprecision.",
+      "The line about Meta shares rising 'the day after launch' is supported by the Reuters summary, but the script should avoid implying direct causation from the Anthropic resignation.",
+      "Several lines describe the Anthropic resignation as 'today' or 'just' happening. The supplied records date the AP story to 2026-09-09, while the episode is dated 2026-09-10; this is fine as a recent-event reference, but do not treat it as same-day if you need precise chronology.",
+      "Advisory only; no reviewable factual correction: The sponsor read is exempt only unless it makes a concrete numerical or regulated-product claim. This line is a generic promo and not a factual error to flag.",
+      "Advisory only; no reviewable factual correction: The sponsor read is exempt unless it makes a concrete numerical or regulated-product claim. No correction needed."
     ],
     "verified_source_urls": [
+      "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
       "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152",
-      "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258",
-      "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/",
-      "https://apnews.com/article/0f6ca61301630134607551b1dab0d632",
-      "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+      "https://www.investing.com/news/stock-market-news/openai-pushes-for-mandatory-national-ai-safety-requirements-4894770"
     ]
   },
-  "pass": true,
+  "pass": false,
   "blocking": false
 }

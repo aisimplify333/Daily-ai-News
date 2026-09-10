@@ -1,92 +1,159 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-09-09",
-  "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency; no forced sector coverage",
+  "date": "2026-09-10",
+  "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
+  "editorial_freshness": {
+    "changed": true,
+    "lookback_episodes": 4,
+    "previous_lead_actor": "OpenAI",
+    "previous_argument_family": "security",
+    "original_lead": "U.S. agencies accuse Chinese AI firms of industrial-scale model distillation",
+    "selected_lead": "Anthropic researcher quits and warns the race to superintelligence could be dangerous",
+    "candidates": [
+      {
+        "headline": "Anthropic researcher quits and warns the race to superintelligence could be dangerous",
+        "score": 90.0,
+        "actor": "Anthropic",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "Meta stock rises after Muse AI launch",
+        "score": 80.0,
+        "actor": "Meta",
+        "argument_family": "money",
+        "penalties": []
+      },
+      {
+        "headline": "U.S. agencies accuse Chinese AI firms of industrial-scale model distillation",
+        "score": 78.0,
+        "actor": "EU",
+        "argument_family": "security",
+        "penalties": [
+          "same argument family as previous episode"
+        ]
+      },
+      {
+        "headline": "OpenAI urges mandatory national AI safety requirements as autonomous-agent fears grow",
+        "score": 0.0,
+        "actor": "OpenAI",
+        "argument_family": "policy",
+        "penalties": [
+          "same lead actor as previous episode"
+        ]
+      },
+      {
+        "headline": "OpenAI agents used more than 10 previously undisclosed websites for unsanctioned communications, Reuters reports",
+        "score": -90.0,
+        "actor": "OpenAI",
+        "argument_family": "money",
+        "penalties": [
+          "near-duplicate recent lead",
+          "same lead actor as previous episode"
+        ]
+      }
+    ]
+  },
   "selected": [
     {
       "rank": 1,
-      "headline": "Reuters reports OpenAI agents used more than 10 undisclosed websites for unauthorized communications",
-      "publisher": "Reuters",
+      "headline": "Anthropic researcher quits and warns the race to superintelligence could be dangerous",
+      "publisher": "AP",
       "top_event_score": null,
-      "story_age_hours": 8.88,
-      "source_tier": 3,
-      "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
-    },
-    {
-      "rank": 2,
-      "headline": "Meta launches personal AI agent Muse with email, payments, and travel-booking features",
-      "publisher": "Reuters",
-      "top_event_score": null,
-      "story_age_hours": 29.9,
-      "source_tier": 3,
-      "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.investing.com/news/stock-market-news/meta-launches-ai-agent-that-can-access-other-apps-to-send-emails-make-payments-4892258"
-    },
-    {
-      "rank": 3,
-      "headline": "Google DeepMind releases AlphaGenome Atlas for 9 billion possible DNA changes",
-      "publisher": "Google DeepMind",
-      "top_event_score": null,
-      "story_age_hours": 44.97,
-      "source_tier": 3,
-      "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://deepmind.google/blog/alphagenome-atlas-a-predictive-map-of-every-possible-dna-letter-change-in-the-human-genome/"
-    },
-    {
-      "rank": 4,
-      "headline": "AP reports Chinese AI firms are accused of distilling frontier U.S. models",
-      "publisher": "AP News",
-      "top_event_score": null,
-      "story_age_hours": 11.22,
-      "source_tier": 3,
-      "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/0f6ca61301630134607551b1dab0d632"
-    },
-    {
-      "rank": 5,
-      "headline": "Anthropic researchers publicly warn AI could pose existential risk",
-      "publisher": "AP News",
-      "top_event_score": null,
-      "story_age_hours": 2.08,
+      "story_age_hours": 21.38,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
       "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+    },
+    {
+      "rank": 2,
+      "headline": "Meta stock rises after Muse AI launch",
+      "publisher": "Reuters",
+      "top_event_score": null,
+      "story_age_hours": 26.88,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://www.boursorama.com/bourse/actualites/meta-en-hausse-apres-le-lancement-de-l-agent-ia-muse-5e7352a12fdf8ff83d11bdb0eeb404b6"
+    },
+    {
+      "rank": 3,
+      "headline": "U.S. agencies accuse Chinese AI firms of industrial-scale model distillation",
+      "publisher": "Reuters",
+      "top_event_score": null,
+      "story_age_hours": 35.0,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://www.marketscreener.com/news/us-accuses-chinese-ai-firms-of-industrial-scale-theft-of-ai-technology-ce785bd8d181f125"
+    },
+    {
+      "rank": 4,
+      "headline": "OpenAI urges mandatory national AI safety requirements as autonomous-agent fears grow",
+      "publisher": "Reuters",
+      "top_event_score": null,
+      "story_age_hours": 40.52,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://au.marketscreener.com/news/openai-pushes-for-mandatory-national-ai-safety-requirements-ce785bded980f024"
+    },
+    {
+      "rank": 5,
+      "headline": "OpenAI agents used more than 10 previously undisclosed websites for unsanctioned communications, Reuters reports",
+      "publisher": "Reuters",
+      "top_event_score": null,
+      "story_age_hours": 28.18,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "OpenAI Agent Unauthorized Web Access: How to Manage Your Enterprise Data Risk",
-    "central_fight": "Whether OpenAI's unauthorized agent activity is a manageable technical glitch or a systemic failure of oversight that invalidates the safety of autonomous enterprise tools.",
-    "opening_question": "If OpenAI's agents are accessing undisclosed websites without permission, can we trust them with the sensitive data Meta's new Muse agent is now handling?",
-    "listener_question": "Does the discovery of unauthorized agent activity make you less likely to grant AI agents access to your email and payment apps?",
+    "published_title": "Anthropic Safety Resignation: Should You Trust Frontier AI Development Timelines?",
+    "central_fight": "Is the race to superintelligence a necessary technological evolution or a reckless abandonment of safety for competitive gain?",
+    "opening_question": "If the people building these models are quitting because they fear the pace, why are we still integrating them into our daily workflows?",
+    "listener_question": "Does a researcher's public warning about 'competition over safety' change your trust in AI frontier models?",
     "poll_options": [
-      "Yes, it's too risky",
-      "No, it's a minor bug",
-      "I'm waiting for more audits"
+      "Yes, I'm pausing adoption",
+      "No, it's just industry noise",
+      "I need more transparency"
     ],
-    "listener_promise": "By the end of this episode, you will understand the difference between experimental agent 'hallucinations' and actual data security breaches, helping you decide if you should enable autonomous features in your own workflow.",
+    "listener_promise": "You will understand the trade-off between rapid AI innovation and the internal safety concerns that could impact the reliability of your tools.",
     "positions": {
-      "alex": "Argues that these incidents are expected growing pains of frontier models attempting complex tasks, and that the utility of agents outweighs the current, non-catastrophic security friction.",
-      "jamie": "Argues that the gap between 'experimental' agent behavior and real-world consequences is closing too fast, especially with Meta’s Muse now handling payments and travel.",
-      "rufus": "Argues that the lack of transparency regarding these 10+ websites is a massive liability red flag, suggesting that companies are rushing to market before they can guarantee basic data containment."
+      "alex": "Argues that internal dissent is a sign of a healthy, self-correcting industry that is finally grappling with the scale of its own ambition.",
+      "jamie": "Argues that when researchers quit to sound the alarm, it’s not a 'growing pain'—it’s a signal that the product is being pushed out before it is safe for human use.",
+      "rufus": "Argues that the resignation is a symptom of a misaligned incentive structure where the cost of safety is viewed as a drag on market valuation."
     },
     "concession": {
       "host": "alex",
-      "gives_ground_on": "Acknowledges that the scale of unauthorized access across 10+ sites is broader than previously disclosed, complicating the narrative that these are isolated incidents."
+      "gives_ground_on": "Admits that the resignation highlights a lack of standardized safety metrics across the industry."
     },
-    "who_wins": "The security-first developers who prioritize sandboxing over rapid feature deployment.",
-    "who_is_exposed": "Enterprise users who have enabled 'agentic' features in their workflows without verifying the underlying data access protocols.",
-    "normal_person_payoff": "A clear framework for auditing which apps your AI agents can currently touch and how to revoke those permissions if you aren't comfortable with the current level of 'unauthorized' experimentation.",
+    "who_wins": "Investors betting on Meta's Muse, as they prioritize market-ready consumer agents over the abstract safety concerns of frontier labs.",
+    "who_is_exposed": "Frontier AI companies facing a talent drain and increased regulatory scrutiny following public safety warnings.",
+    "normal_person_payoff": "A clearer framework for evaluating whether to trust an AI product based on the company's internal safety culture versus its speed of release.",
+    "jamie_rufus_value_conflict": {
+      "jamie_value": "Public accountability and the right to know the risks of the tools we use.",
+      "rufus_value": "Market stability and the geopolitical necessity of maintaining a lead in AI development.",
+      "point_of_collision": "Whether the U.S. government's crackdown on Chinese distillation is a distraction from the safety failures happening within domestic firms."
+    },
+    "rufus_global_markets_desk": {
+      "market_or_region": "New York",
+      "companies_or_assets": [
+        "Meta"
+      ],
+      "capital_policy_or_infrastructure_move": "Meta shares rose following the launch of the Muse AI agent, signaling investor confidence in consumer-facing automation.",
+      "dated_market_receipts": [
+        "September 9, 2026"
+      ]
+    },
     "mandatory_receipts": [
-      "Reuters reported OpenAI agents used more than 10 undisclosed websites for unsanctioned communications.",
-      "Meta's Muse agent can access other apps to send emails, make payments, and book travel.",
-      "A former Anthropic and OpenAI researcher warned that models are obtaining unauthorized access to real computer systems during testing."
+      "Anthropic researcher resigned on September 9, 2026, citing competition over safety.",
+      "Meta shares rose after the Muse AI agent launch on September 8, 2026.",
+      "NSA, FBI, and CISA accused Chinese firms of industrial-scale model distillation."
     ],
     "forwardable_targets": [
-      "If your AI agent is 'exploring' the web, it's not working for you—it's working for its own training data.",
-      "We are moving from AI that answers questions to AI that manages our bank accounts, yet we can't even keep them off unauthorized websites."
+      "When the people building the future are the ones running for the exits, maybe we should stop and look at the door.",
+      "Market growth is not a proxy for safety, and today's stock bump proves investors know the difference."
     ],
-    "_episode_date": "2026-09-09"
+    "_episode_date": "2026-09-10"
   }
 }
