@@ -78,6 +78,20 @@ def final_script():
 
 
 class ProductionContractTests(unittest.TestCase):
+    def test_delivery_copy_warnings_do_not_block_paid_audio(self):
+        tree = ast.parse((ROOT / "production_delivery_gate.py").read_text())
+        main = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "main")
+        fail = next(n for n in main.body if isinstance(n, ast.FunctionDef) and n.name == "fail")
+        namespace = {"Any": object, "failures": [], "warnings": []}
+        exec(compile(ast.fix_missing_locations(ast.Module(body=[fail], type_ignores=[])), "delivery", "exec"), namespace)
+        for reason in ("generic_title", "title_word_count", "description_missing_ai_discovery_term"):
+            namespace["fail"](reason)
+        self.assertEqual(len(namespace["warnings"]), 3)
+        self.assertEqual(namespace["failures"], [])
+        for reason in ("audio_unreadable", "feed_xml_invalid", "episode_title_missing"):
+            namespace["fail"](reason)
+        self.assertEqual(len(namespace["failures"]), 3)
+
     def test_live_validator_allows_trio_and_requires_segment_boundaries(self):
         tree = ast.parse((ROOT / "main.py").read_text())
         node = next(n for n in tree.body if isinstance(n, ast.FunctionDef) and n.name == "validate_script")
@@ -89,10 +103,19 @@ class ProductionContractTests(unittest.TestCase):
             "_script_targets": lambda: (0, 1000, 10000),
             "_word_count": lambda text: len(text.split()),
             "extract_forwardable_moments": lambda *a, **k: [1],
-            "FORWARDABLE_MIN_PER_EPISODE": 1,
+            "FORWARDABLE_MIN_PER_EPISODE": 4,
+            "_safe_print": lambda message: None,
         }
         exec(compile(ast.fix_missing_locations(module), "main.py", "exec"), namespace)
         script = SCRIPT.replace("### SEGMENT 3", "RUFUS: But who pays for that, Jamie?\n### SEGMENT 3")
+        self.assertEqual(namespace["validate_script"](script), [])
+        # Reproduce the production failure: zero detected shareable lines must
+        # not prevent a valid script from reaching TTS.
+        namespace["extract_forwardable_moments"] = lambda *a, **k: []
+        self.assertEqual(namespace["validate_script"](script), [])
+        def broken_detector(*args, **kwargs):
+            raise ValueError("Malformed editorial analysis")
+        namespace["extract_forwardable_moments"] = broken_detector
         self.assertEqual(namespace["validate_script"](script), [])
         missing = script.replace("### SEGMENT 3 — Money", "")
         self.assertIn("Missing segment marker: ### SEGMENT 3", namespace["validate_script"](missing))

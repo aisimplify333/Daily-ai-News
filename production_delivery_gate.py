@@ -78,6 +78,13 @@ def main() -> int:
     warnings: list[dict[str, Any]] = []
 
     def fail(reason: str, **detail: Any) -> None:
+        # Discovery/copy heuristics are producer feedback, not grounds for
+        # withholding a completed paid episode. Transport checks remain fatal.
+        if reason.startswith(("title_", "description_")) or reason in {
+            "generic_title", "date_in_title",
+        }:
+            warnings.append({"reason": reason, **detail})
+            return
         failures.append({"reason": reason, **detail})
 
     def warn(reason: str, **detail: Any) -> None:
@@ -142,6 +149,8 @@ def main() -> int:
                     }
 
                     words = re.findall(r"[A-Za-z0-9][A-Za-z0-9'’-]*", title)
+                    if not title.strip():
+                        fail("episode_title_missing")
                     if not 3 <= len(words) <= 14:
                         fail("title_word_count", found=len(words), expected="3-14")
                     if GENERIC_TITLE_RE.search(title):
