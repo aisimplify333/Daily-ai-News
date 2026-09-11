@@ -1,72 +1,71 @@
 {
-  "episode_date": "2026-09-10",
+  "episode_date": "2026-09-11",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-08T16:15:55.210652+00:00",
-  "window_end": "2026-09-10T16:15:55.210652+00:00",
+  "window_start": "2026-09-09T11:31:11.767435+00:00",
+  "window_end": "2026-09-11T11:31:11.767435+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "outside_freshness_window": 2,
-        "duplicate_event": 2
+        "outside_freshness_window": 4
       },
       "rejected_examples": [
         {
-          "headline": "Meta launches Muse, a personal AI agent that can send emails and make purchases",
-          "published_at": "2026-09-08T15:04:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "China pushes back after U.S. allegations of malicious AI distillation",
-          "published_at": "2026-09-09T09:44:51Z",
-          "reason": "duplicate_event"
-        },
-        {
-          "headline": "OpenAI launches GPT-6 Astra, a new flagship model",
-          "published_at": "2026-09-03T20:39:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Meta debuts Muse, its long-planned personal AI agent",
+          "headline": "Meta launches Muse, a personal AI agent with safety and privacy controls",
           "published_at": "2026-09-08T19:00:41Z",
-          "reason": "duplicate_event"
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI unveils GPT-6 Astra and says it is rolling out to paid users and via cloud partners",
+          "published_at": "2026-09-03T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Qualcomm and Amazon strike long-term AI chip partnership worth up to $60 billion in chips and related products",
+          "published_at": "2026-09-08T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Reuters reports OpenAI\u2019s rogue agents had previously undisclosed communication activity on a German website",
+          "published_at": "2026-09-04T06:05:00Z",
+          "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
       "accepted_total": 4,
-      "trusted_total": 3
+      "trusted_total": 4
     },
     {
       "stage": "alternate_refill",
       "rejections": {
-        "outside_freshness_window": 3,
-        "duplicate": 1
+        "duplicate": 1,
+        "outside_freshness_window": 3
       },
       "rejected_examples": [
         {
-          "headline": "Meta launches personal AI agent that can access other apps to send emails and make payments",
-          "published_at": "2026-09-08T15:04:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Anthropic researcher resigns with warning about the dangers of AI development",
-          "published_at": "2026-09-09T18:53:24Z",
+          "headline": "Anthropic says it blocked misuse of its AI that could have supported biological weapons",
+          "published_at": "2026-09-10T20:50:37Z",
           "reason": "duplicate"
         },
         {
-          "headline": "OpenAI says its model reached a critical cybersecurity capability threshold",
-          "published_at": "2026-09-08T16:12:00Z",
+          "headline": "China hits back at US claims of 'malicious' AI distillation ahead of planned Trump-Xi talks",
+          "published_at": "2026-09-09T09:44:51Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Four major AI models suffer rare overlapping downtime",
-          "published_at": "2026-09-03T18:10:00Z",
+          "headline": "Mistral raises \u20ac3B as sovereign AI becomes big business",
+          "published_at": "2026-09-08T07:17:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI launches Astra, its powerful (and controversial) new model",
+          "published_at": "2026-09-03T11:01:00Z",
           "reason": "outside_freshness_window"
         }
       ],
-      "candidates": 8,
-      "accepted_total": 8,
-      "trusted_total": 7
+      "candidates": 9,
+      "accepted_total": 9,
+      "trusted_total": 9
     }
   ],
   "status": "ready"
