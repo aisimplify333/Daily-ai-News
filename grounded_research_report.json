@@ -1,33 +1,35 @@
 {
-  "episode_date": "2026-09-11",
+  "episode_date": "2026-09-14",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-09T11:31:11.767435+00:00",
-  "window_end": "2026-09-11T11:31:11.767435+00:00",
+  "window_start": "2026-09-12T12:59:35.905893+00:00",
+  "window_end": "2026-09-14T12:59:35.905893+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "outside_freshness_window": 4
+        "duplicate_event": 1,
+        "duplicate": 1,
+        "outside_freshness_window": 2
       },
       "rejected_examples": [
         {
-          "headline": "Meta launches Muse, a personal AI agent with safety and privacy controls",
-          "published_at": "2026-09-08T19:00:41Z",
+          "headline": "AP reports U.S. futures fall as AI backlash weighs on tech stocks",
+          "published_at": "2026-09-14T05:09:37Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "AP says Trump rejects tighter AI oversight despite industry safety warnings",
+          "published_at": "2026-09-13T17:44:22Z",
+          "reason": "duplicate"
+        },
+        {
+          "headline": "AP reports California already signed AI-chatbot and social-media child protection laws just before the window",
+          "published_at": "2026-09-10T20:42:28Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI unveils GPT-6 Astra and says it is rolling out to paid users and via cloud partners",
-          "published_at": "2026-09-03T00:00:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Qualcomm and Amazon strike long-term AI chip partnership worth up to $60 billion in chips and related products",
-          "published_at": "2026-09-08T00:00:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Reuters reports OpenAI\u2019s rogue agents had previously undisclosed communication activity on a German website",
-          "published_at": "2026-09-04T06:05:00Z",
+          "headline": "AP reports Anthropic research resignation adds to safety concerns in AI competition",
+          "published_at": "2026-09-09T18:53:24Z",
           "reason": "outside_freshness_window"
         }
       ],
@@ -38,34 +40,49 @@
     {
       "stage": "alternate_refill",
       "rejections": {
-        "duplicate": 1,
-        "outside_freshness_window": 3
+        "duplicate": 2,
+        "outside_freshness_window": 5
       },
       "rejected_examples": [
         {
-          "headline": "Anthropic says it blocked misuse of its AI that could have supported biological weapons",
-          "published_at": "2026-09-10T20:50:37Z",
+          "headline": "Anthropic CEO says AI industry needs to give safety measures time to catch up",
+          "published_at": "2026-09-12T16:37:39Z",
           "reason": "duplicate"
         },
         {
-          "headline": "China hits back at US claims of 'malicious' AI distillation ahead of planned Trump-Xi talks",
-          "published_at": "2026-09-09T09:44:51Z",
+          "headline": "OpenAI CEO backs slower AI development in weekend safety debate",
+          "published_at": "2026-09-14T04:09:36Z",
+          "reason": "duplicate"
+        },
+        {
+          "headline": "OpenAI researchers question as senators press company over Hugging Face breach",
+          "published_at": "2026-09-10T21:35:00Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Mistral raises \u20ac3B as sovereign AI becomes big business",
+          "headline": "Nvidia confirms acquisition of Hugging Face for $12.93 billion",
+          "published_at": "2026-09-03T05:42:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Meta launches personal AI agent Muse with safety and privacy emphasis",
+          "published_at": "2026-09-08T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Anthropic details AI distillation campaigns tied to Alibaba, Moonshot AI, and DeepSeek",
+          "published_at": "2026-09-10T13:57:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Mistral raises \u20ac3 billion as sovereign AI demand grows",
           "published_at": "2026-09-08T07:17:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "OpenAI launches Astra, its powerful (and controversial) new model",
-          "published_at": "2026-09-03T11:01:00Z",
           "reason": "outside_freshness_window"
         }
       ],
-      "candidates": 9,
-      "accepted_total": 9,
-      "trusted_total": 9
+      "candidates": 8,
+      "accepted_total": 5,
+      "trusted_total": 5
     }
   ],
   "status": "ready"

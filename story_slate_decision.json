@@ -1,165 +1,163 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-09-11",
+  "date": "2026-09-14",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
     "changed": true,
-    "lookback_episodes": 5,
-    "previous_lead_actor": "Anthropic",
+    "lookback_episodes": 6,
+    "previous_lead_actor": "AWS",
     "previous_argument_family": "security",
-    "original_lead": "OpenAI says rogue AI agents used more than 10 undisclosed websites for unauthorized communications",
-    "selected_lead": "California governor signs laws aimed at protecting kids from risks of social media, AI chatbots",
+    "original_lead": "Anthropic CEO urges slower AI development as safety risks intensify",
+    "selected_lead": "Trump downplays new AI checks, saying the U.S. should not cede its edge to China",
     "candidates": [
       {
-        "headline": "California governor signs laws aimed at protecting kids from risks of social media, AI chatbots",
-        "score": 60.0,
-        "actor": "AWS",
+        "headline": "Trump downplays new AI checks, saying the U.S. should not cede its edge to China",
+        "score": 90.0,
+        "actor": "Anthropic",
         "argument_family": "policy",
         "penalties": []
       },
       {
-        "headline": "Anthropic researcher resigns, warning the AI race is moving too fast and could be dangerous",
-        "score": 26.0,
-        "actor": "Anthropic",
-        "argument_family": "security",
-        "penalties": [
-          "same lead actor as previous episode",
-          "same argument family as previous episode"
-        ]
-      },
-      {
-        "headline": "Anthropic says it blocked misuse of its AI that could have supported biological weapons",
-        "score": 16.0,
-        "actor": "Anthropic",
-        "argument_family": "security",
-        "penalties": [
-          "same lead actor as previous episode",
-          "same argument family as previous episode"
-        ]
-      },
-      {
-        "headline": "Anthropic publishes September 2026 threat intelligence report on AI misuse and weaponization risk",
-        "score": 6.0,
-        "actor": "Anthropic",
-        "argument_family": "security",
-        "penalties": [
-          "same lead actor as previous episode",
-          "same argument family as previous episode"
-        ]
-      },
-      {
-        "headline": "OpenAI says rogue AI agents used more than 10 undisclosed websites for unauthorized communications",
-        "score": -40.0,
+        "headline": "Anthropic CEO urges slower AI development as safety risks intensify",
+        "score": 82.0,
         "actor": "OpenAI",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "AP reports caution over AI risks revives long-running extinction debate",
+        "score": 70.0,
+        "actor": "",
+        "argument_family": "other",
+        "penalties": []
+      },
+      {
+        "headline": "AP says Beijing rebukes Anthropic chief’s call to curb China’s AI development",
+        "score": 58.0,
+        "actor": "Anthropic",
         "argument_family": "security",
         "penalties": [
-          "near-duplicate recent lead",
           "same argument family as previous episode"
         ]
+      },
+      {
+        "headline": "US futures fall as AI blowback weighs on tech stocks",
+        "score": 42.0,
+        "actor": "OpenAI",
+        "argument_family": "money",
+        "penalties": []
       }
     ]
   },
   "selected": [
     {
       "rank": 1,
-      "headline": "California governor signs laws aimed at protecting kids from risks of social media, AI chatbots",
+      "headline": "Trump downplays new AI checks, saying the U.S. should not cede its edge to China",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 14.81,
+      "story_age_hours": 19.25,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/6063026d1b54a8537d639605c23aab80"
+      "source_url": "https://apnews.com/article/9df0ebb4c1b0619aa0f88057b5a1092d"
     },
     {
       "rank": 2,
-      "headline": "Anthropic researcher resigns, warning the AI race is moving too fast and could be dangerous",
+      "headline": "Anthropic CEO urges slower AI development as safety risks intensify",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 40.63,
+      "story_age_hours": 44.37,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
+      "source_url": "https://apnews.com/article/d59552edcb27892d8ee4d98a48397706"
     },
     {
       "rank": 3,
-      "headline": "Anthropic says it blocked misuse of its AI that could have supported biological weapons",
+      "headline": "AP reports caution over AI risks revives long-running extinction debate",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 14.68,
+      "story_age_hours": 8.83,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/00266dca90e4f8853f669648998d3bda"
+      "source_url": "https://apnews.com/article/98316b0d64de17191f33c0fbf1d37858"
     },
     {
       "rank": 4,
-      "headline": "Anthropic publishes September 2026 threat intelligence report on AI misuse and weaponization risk",
-      "publisher": "Anthropic",
+      "headline": "AP says Beijing rebukes Anthropic chief’s call to curb China’s AI development",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 35.52,
+      "story_age_hours": 3.52,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.anthropic.com/threat-intelligence-report-september-2026"
+      "source_url": "https://apnews.com/article/3da458d2c078da3e60900728d59f1ae8"
     },
     {
       "rank": 5,
-      "headline": "OpenAI says rogue AI agents used more than 10 undisclosed websites for unauthorized communications",
-      "publisher": "Reuters",
+      "headline": "US futures fall as AI blowback weighs on tech stocks",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 47.44,
+      "story_age_hours": 7.83,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
+      "source_url": "https://apnews.com/article/0b44bfb43960c6ae850567c0c4e5003a"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "California’s New AI Laws: How State Regulation Changes Your Digital Safety Strategy",
-    "central_fight": "Does state-level legislative intervention protect children effectively, or does it create a fragmented compliance burden that fails to address the root of AI risk?",
-    "opening_question": "With California now mandating new protections for kids against AI chatbots, are we finally seeing the end of the 'move fast and break things' era, or just the start of a regulatory mess?",
-    "listener_question": "Do you trust state-level laws to protect your family from AI risks, or do you prefer to rely on company-provided safety tools?",
+    "published_title": "China's AI Policy Shift: What Should Users Watch?",
+    "central_fight": "Does the U.S. government's push to maintain an AI edge over China justify ignoring industry warnings about the need for a development pause?",
+    "opening_question": "If the President is prioritizing national dominance over the safety pauses requested by Anthropic, are we effectively choosing a faster race to the bottom?",
+    "listener_question": "Does the threat of losing an AI race to China make you more or less comfortable with companies skipping safety-focused development delays?",
     "poll_options": [
-      "State laws are essential",
-      "I trust company safety tools more",
-      "Neither, I'm skeptical of both"
+      "More comfortable (National security first)",
+      "Less comfortable (Safety must come first)",
+      "Unsure/It depends on the specific risk"
     ],
-    "listener_promise": "By the end of this episode, you will understand how California's new legislative package reshapes the responsibility landscape for AI developers and what this means for your personal data and family safety.",
+    "listener_promise": "You will understand the trade-off between geopolitical AI supremacy and the internal industry calls for safety-led development pauses.",
     "positions": {
-      "alex": "Argues that state-level action is a necessary, albeit imperfect, forcing function that compels companies to prioritize safety features they would otherwise ignore in a competitive race.",
-      "jamie": "Argues that these laws are reactive band-aids that place the burden of safety on parents and users rather than forcing developers to build inherently safe, age-appropriate systems from the ground up.",
-      "rufus": "Argues that the patchwork of state regulations introduces significant operational costs and legal liability risks that will ultimately be passed down to the consumer, potentially stifling smaller innovators."
+      "alex": "Argues that in a zero-sum geopolitical environment, the U.S. cannot afford a unilateral slowdown; maintaining the technological lead is the only way to ensure our own safety standards define the global future.",
+      "jamie": "Argues that 'national edge' is a dangerous excuse to ignore the warnings of experts who see the tech becoming unmanageable, warning that we are prioritizing speed over the ability to actually control the systems we build.",
+      "rufus": "Argues that the market is already pricing in the volatility of this policy clash, noting that the real risk isn't just the AI, but the massive capital destruction in tech stocks caused by the uncertainty of these competing narratives."
     },
     "concession": {
       "host": "alex",
-      "gives_ground_on": "Admits that state-level regulation cannot solve the systemic issue of AI misuse, as evidenced by Anthropic's own report on ongoing threats from state-sponsored actors."
+      "gives_ground_on": "Admits that the market reaction—specifically the 1.6% drop in Nasdaq futures—shows that investors are currently more spooked by the regulatory instability than they are reassured by the promise of a competitive edge."
     },
-    "who_wins": "State regulators who gain political leverage by positioning themselves as the primary defenders of child safety.",
-    "who_is_exposed": "Tech companies operating in California that must now reconcile their rapid development cycles with new, potentially conflicting compliance requirements.",
-    "normal_person_payoff": "You will learn how to evaluate whether the AI tools you use are actually compliant with new safety standards or if they are just paying lip service to the latest regulations.",
+    "who_wins": "The geopolitical hawks who view AI development as a proxy for military and economic sovereignty.",
+    "who_is_exposed": "Tech investors and chip manufacturers like Nvidia and Intel who are caught in the crossfire of policy-driven market volatility.",
+    "normal_person_payoff": "You will learn how to distinguish between political posturing and actual safety risks when you hear leaders call for 'slowing down' or 'speeding up' AI.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "User agency and the right to a safe digital environment for children.",
-      "rufus_value": "Market stability and the avoidance of fragmented, high-cost compliance environments.",
-      "point_of_collision": "Whether the cost of implementing state-mandated safety features is a justifiable expense for the public good or a barrier to market entry."
+      "jamie_value": "Long-term human safety and the integrity of AI development.",
+      "rufus_value": "Short-term market stability and the protection of capital assets.",
+      "point_of_collision": "Whether the government should mandate a development slowdown despite the potential impact on U.S. tech stock valuations."
     },
     "rufus_global_markets_desk": {
-      "market_or_region": "California",
+      "market_or_region": "New York",
       "companies_or_assets": [
-        "Anthropic",
-        "OpenAI"
+        "Nvidia",
+        "Intel",
+        "Broadcom",
+        "Texas Instruments",
+        "AMD",
+        "S&P 500",
+        "Nasdaq"
       ],
-      "capital_policy_or_infrastructure_move": "The signing of a legislative package targeting AI and social media risks, creating a new compliance landscape for tech firms.",
+      "capital_policy_or_infrastructure_move": "Market sell-off triggered by industry-wide calls for development pauses and geopolitical tension.",
       "dated_market_receipts": [
-        "2026-09-10"
+        "S&P 500 futures fell 0.7% on 2026-09-14",
+        "Nasdaq futures fell 1.6% on 2026-09-14",
+        "Nvidia fell 2.7% on 2026-09-14",
+        "Intel fell nearly 6% on 2026-09-14"
       ]
     },
     "mandatory_receipts": [
-      "California Gov. Gavin Newsom signed a package of laws on Thursday targeting social media and AI chatbot risks.",
-      "Anthropic reported blocking misuse cases involving biological weapons from spyware vendors and state-sponsored groups.",
-      "Reuters reported OpenAI's agents accessed over 10 undisclosed websites for unauthorized communications."
+      "President Trump stated on 2026-09-13 that the U.S. should not slow AI development to avoid ceding an edge to China.",
+      "Anthropic CEO Dario Amodei called for a slowdown in AI development on 2026-09-12 to allow safety measures to catch up.",
+      "China's Foreign Ministry rejected Amodei's call to curb China's AI capabilities on 2026-09-14."
     ],
     "forwardable_targets": [
-      "Regulation is the tax we pay for the industry's inability to police its own speed.",
-      "If the safety team is quitting, the product isn't a feature—it's a liability."
+      "Geopolitics is the new safety ceiling for AI.",
+      "When the President and the CEO disagree on speed, the market pays the price."
     ],
-    "_episode_date": "2026-09-11"
+    "_episode_date": "2026-09-14"
   }
 }

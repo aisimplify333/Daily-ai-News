@@ -1,358 +1,127 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-11",
+  "date": "2026-09-14",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-11",
+    "date": "2026-09-14",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "California now mandates new protections for kids against AI chatbots.",
-        "evidence_quote": "“Creating the strongest companion chatbot regulations in the nation... requires robust protections around companion chatbots for children, including crisis protocols... parental controls, and notifications should a child disable safety settings.”",
-        "exact_line": "ALEX: With California now mandating new protections for kids against AI chatbots, are we finally seeing the end of the 'move fast and break things' era — or just the start of a very expensive regulatory mess?",
-        "replacement_line": "ALEX: With California now mandating new protections for kids in companion chatbots, are we finally seeing the end of the 'move fast and break things' era — or just the start of a very expensive regulatory mess?",
-        "reason": "Overstates the newly signed laws as mandating broad protections against AI chatbots without grounding the claim in the actual law. The official California release specifies chatbot safety requirements for companion chatbots, including crisis protocols, parental controls, and notifications when safety settings are disabled; it is narrower than the line suggests.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
+        "factual_claim": "China's Foreign Ministry rejected the whole premise of being told to slow down.",
+        "evidence_quote": "Beijing hits back at Anthropic CEO’s call to curb China's AI development",
+        "exact_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the opposite on Saturday. And this morning, China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.",
+        "replacement_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the industry should slow down on Saturday for safety. And this morning, China's Foreign Ministry pushed back on Amodei's call to curb China's AI development.",
+        "reason": "This line misstates the AP reporting by collapsing two separate claims into one and by attributing an unsupported 'reject the whole premise' formulation to China's Foreign Ministry. AP says Trump played down checks and worried about ceding America's edge; Amodei said the industry should slow development for safety; AP's China story says Beijing hit back at Amodei's call to curb China's AI development, not that it rejected a generalized 'slow down' premise in those exact terms.",
+        "source_url": "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The laws do something that was not already happening.",
-        "evidence_quote": "“Today’s signings follow other landmark legislation to protect children from social media addiction, strong privacy requirements, and nation-leading transparency measures.”",
-        "exact_line": "ALEX: So let's get into it. Newsom signs this package September tenth. The laws target social media and AI chatbot risks specifically aimed at children. Jamie, you've been on this beat. What does this actually do that wasn't already happening?",
-        "replacement_line": "ALEX: So let's get into it. Newsom signs this package September tenth. The laws target social media and AI chatbot risks specifically aimed at children. Jamie, you've been on this beat. What new obligations do these laws actually add?",
-        "reason": "Mostly accurate, but 'what does this actually do that wasn't already happening?' implies the laws are wholly new in effect. The official release says the package adds stronger child-safety rules including chatbot protections, warning labels, age-verification signals, and addictive-feed prohibitions; some underlying requirements already existed in California law.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "These laws say the obligation sits with the developer.",
-        "evidence_quote": "“Adam’s Law requires robust protections around companion chatbots for children, including crisis protocols... parental controls, and notifications should a child disable safety settings.”",
-        "exact_line": "JAMIE: That's exactly the right question, because the honest answer is: it forces companies to treat child safety as a design constraint rather than a customer-service problem. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws say no, the obligation sits with the developer.",
-        "replacement_line": "JAMIE: That's exactly the right question, because the honest answer is: it forces companies to treat child safety as a design constraint rather than a customer-service problem. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws put the obligation on covered companies.",
-        "reason": "The first sentence is commentary. The last sentence overstates the law's scope as a general obligation for all developers; the California release describes specific obligations for companion chatbot operators and social media platforms, not all AI developers. The replacement preserves the intent while narrowing the claim.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
+        "factual_claim": "Nasdaq futures fell because of the China/AI race story.",
+        "evidence_quote": "U.S. futures fell as calls grow louder for a slowdown in artificial intelligence development",
+        "exact_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to answer: does the threat of losing an AI race to China make it rational to skip the safety checks — or is that the most expensive shortcut in history?",
+        "replacement_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to test is whether the threat of losing an AI race to China makes people more willing to skip safety checks — or whether that becomes the most expensive shortcut in history.",
+        "reason": "The 1.6% Nasdaq futures move is supported, but the causal framing that the market move was driven by the China/AI race story should be treated carefully because AP only says futures fell as calls grew louder for a slowdown in AI development and does not establish direct causation from Trump's remarks alone.",
+        "source_url": "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
       }
     ],
     "warnings": [
-      "The line 'All three stories are connected, and we are going to prove it' is rhetorically useful but the supplied sources do not establish a direct factual connection between the California laws, Coxon's resignation, and Anthropic's threat report beyond timing and broad AI-safety themes.",
-      "The script repeatedly says 'Newsom just agreed with me' / 'same argument' / 'the lead story is the spine of this episode'; these are opinionated framing statements and do not require fact-checking.",
-      "The script's references to 'the AP summary' lacking technical obligations are plausible, but the official California release and legislative analyses do provide more detail than the AP summary. If the podcast wants precision, it should say the AP summary did not reproduce the full technical text.",
-      "The claim that California 'just signed a new package of AI laws targeting child safety' is broadly true, but some measures also cover social media, privacy, and transparency rather than only AI chatbots.",
-      "The statement that Anthropic's report was 'the same day' as Newsom's signing is true in the source records, but the report page is dated Sep 10, 2026 while the AP story on Coxon is Sep 9, 2026; the chronology should be kept exact in narration.",
-      "The Reuters/OpenAI section mentions 'Eighteen previously undisclosed sites' based on the Reuters report summary in the source records; that number is supported by the supplied record, but the linked Reuters content itself is behind an Investing.com mirror rather than Reuters direct.",
-      "Advisory only; no reviewable factual correction: The first two factual clauses are supportable, but 'All three stories are connected' asserts a causal/structural connection not established by the supplied sources. The third story is a threat report about misuse; the resignation is separate reporting, and the California laws are a separate legislative action.",
-      "Advisory only; no reviewable factual correction: This is sponsor copy and should be ignored under the instructions, unless it contains regulated-product or numerical claims. It does not need factual verification and should not be treated as an editorial claim.",
-      "Advisory only; no reviewable factual correction: Sponsor copy must be ignored per instructions; however, the script treats it as part of the episode. No editorial correction needed."
+      "The sponsor read is excluded per instructions, but the script repeats sponsor copy later in the episode; that later mention was not fact-checked here.",
+      "The line 'Trump said on Sunday that America should not slow its AI development to avoid losing ground to China' is a paraphrase of AP reporting, but AP's article also includes Trump's own words about guardrails and 'whoever wins AI wins'; if you want maximum precision, consider tightening the paraphrase.",
+      "The script says the AP story 'notes that Anthropic and OpenAI are both preparing for potential public-market debuts.' AP does say they are preparing for possible debuts on the stock market, but OpenAI's Sam Altman also said the company would not IPO this year. The line is broadly accurate but compresses nuance.",
+      "The script says 'China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.' The supporting AP article is specifically about Beijing hitting back at Amodei's call to curb China's AI development; the broader rhetorical generalization is stronger than the source.",
+      "The script's repeated references to 'extinction debate' and 'escape human control' are supported by AP's framing story, but any stronger causal or predictive statements about actual extinction risk should be treated as opinion rather than fact.",
+      "Advisory only; no reviewable factual correction: The AP headline and article say Trump downplayed the need to check AI development and said he doesn't want to cede the edge to China. 'New AI checks' is an interpretive paraphrase, but the second clause is accurate enough; no critical error here."
     ],
     "verified_source_urls": [
-      "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/",
-      "https://apnews.com/article/6063026d1b54a8537d639605c23aab80",
-      "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
-      "https://apnews.com/article/00266dca90e4f8853f669648998d3bda",
-      "https://www.anthropic.com/threat-intelligence-report-september-2026",
-      "https://www.anthropic.com/threat-intelligence",
-      "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
+      "https://apnews.com/article/trump-artificial-intelligence-guardrails-china-midterms-congress-9df0ebb4c1b0619aa0f88057b5a1092d",
+      "https://apnews.com/article/anthropic-ai-dario-amodei-d59552edcb27892d8ee4d98a48397706",
+      "https://apnews.com/article/artificial-intelligence-threats-humanity-anthropic-openai-98316b0d64de17191f33c0fbf1d37858",
+      "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8",
+      "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-11",
+      "date": "2026-09-14",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "California now mandates new protections for kids against AI chatbots.",
-          "evidence_quote": "“Creating the strongest companion chatbot regulations in the nation... requires robust protections around companion chatbots for children, including crisis protocols... parental controls, and notifications should a child disable safety settings.”",
-          "exact_line": "ALEX: With California now mandating new protections for kids against AI chatbots, are we finally seeing the end of the 'move fast and break things' era — or just the start of a very expensive regulatory mess?",
-          "replacement_line": "ALEX: With California now mandating new protections for kids in companion chatbots, are we finally seeing the end of the 'move fast and break things' era — or just the start of a very expensive regulatory mess?",
-          "reason": "Overstates the newly signed laws as mandating broad protections against AI chatbots without grounding the claim in the actual law. The official California release specifies chatbot safety requirements for companion chatbots, including crisis protocols, parental controls, and notifications when safety settings are disabled; it is narrower than the line suggests.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
+          "factual_claim": "China's Foreign Ministry rejected the whole premise of being told to slow down.",
+          "evidence_quote": "Beijing hits back at Anthropic CEO’s call to curb China's AI development",
+          "exact_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the opposite on Saturday. And this morning, China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.",
+          "replacement_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the industry should slow down on Saturday for safety. And this morning, China's Foreign Ministry pushed back on Amodei's call to curb China's AI development.",
+          "reason": "This line misstates the AP reporting by collapsing two separate claims into one and by attributing an unsupported 'reject the whole premise' formulation to China's Foreign Ministry. AP says Trump played down checks and worried about ceding America's edge; Amodei said the industry should slow development for safety; AP's China story says Beijing hit back at Amodei's call to curb China's AI development, not that it rejected a generalized 'slow down' premise in those exact terms.",
+          "source_url": "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The laws do something that was not already happening.",
-          "evidence_quote": "“Today’s signings follow other landmark legislation to protect children from social media addiction, strong privacy requirements, and nation-leading transparency measures.”",
-          "exact_line": "ALEX: So let's get into it. Newsom signs this package September tenth. The laws target social media and AI chatbot risks specifically aimed at children. Jamie, you've been on this beat. What does this actually do that wasn't already happening?",
-          "replacement_line": "ALEX: So let's get into it. Newsom signs this package September tenth. The laws target social media and AI chatbot risks specifically aimed at children. Jamie, you've been on this beat. What new obligations do these laws actually add?",
-          "reason": "Mostly accurate, but 'what does this actually do that wasn't already happening?' implies the laws are wholly new in effect. The official release says the package adds stronger child-safety rules including chatbot protections, warning labels, age-verification signals, and addictive-feed prohibitions; some underlying requirements already existed in California law.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "These laws say the obligation sits with the developer.",
-          "evidence_quote": "“Adam’s Law requires robust protections around companion chatbots for children, including crisis protocols... parental controls, and notifications should a child disable safety settings.”",
-          "exact_line": "JAMIE: That's exactly the right question, because the honest answer is: it forces companies to treat child safety as a design constraint rather than a customer-service problem. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws say no, the obligation sits with the developer.",
-          "replacement_line": "JAMIE: That's exactly the right question, because the honest answer is: it forces companies to treat child safety as a design constraint rather than a customer-service problem. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws put the obligation on covered companies.",
-          "reason": "The first sentence is commentary. The last sentence overstates the law's scope as a general obligation for all developers; the California release describes specific obligations for companion chatbot operators and social media platforms, not all AI developers. The replacement preserves the intent while narrowing the claim.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
+          "factual_claim": "Nasdaq futures fell because of the China/AI race story.",
+          "evidence_quote": "U.S. futures fell as calls grow louder for a slowdown in artificial intelligence development",
+          "exact_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to answer: does the threat of losing an AI race to China make it rational to skip the safety checks — or is that the most expensive shortcut in history?",
+          "replacement_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to test is whether the threat of losing an AI race to China makes people more willing to skip safety checks — or whether that becomes the most expensive shortcut in history.",
+          "reason": "The 1.6% Nasdaq futures move is supported, but the causal framing that the market move was driven by the China/AI race story should be treated carefully because AP only says futures fell as calls grew louder for a slowdown in AI development and does not establish direct causation from Trump's remarks alone.",
+          "source_url": "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
         }
       ],
       "warnings": [
-        "The line 'All three stories are connected, and we are going to prove it' is rhetorically useful but the supplied sources do not establish a direct factual connection between the California laws, Coxon's resignation, and Anthropic's threat report beyond timing and broad AI-safety themes.",
-        "The script repeatedly says 'Newsom just agreed with me' / 'same argument' / 'the lead story is the spine of this episode'; these are opinionated framing statements and do not require fact-checking.",
-        "The script's references to 'the AP summary' lacking technical obligations are plausible, but the official California release and legislative analyses do provide more detail than the AP summary. If the podcast wants precision, it should say the AP summary did not reproduce the full technical text.",
-        "The claim that California 'just signed a new package of AI laws targeting child safety' is broadly true, but some measures also cover social media, privacy, and transparency rather than only AI chatbots.",
-        "The statement that Anthropic's report was 'the same day' as Newsom's signing is true in the source records, but the report page is dated Sep 10, 2026 while the AP story on Coxon is Sep 9, 2026; the chronology should be kept exact in narration.",
-        "The Reuters/OpenAI section mentions 'Eighteen previously undisclosed sites' based on the Reuters report summary in the source records; that number is supported by the supplied record, but the linked Reuters content itself is behind an Investing.com mirror rather than Reuters direct.",
-        "Advisory only; no reviewable factual correction: The first two factual clauses are supportable, but 'All three stories are connected' asserts a causal/structural connection not established by the supplied sources. The third story is a threat report about misuse; the resignation is separate reporting, and the California laws are a separate legislative action.",
-        "Advisory only; no reviewable factual correction: This is sponsor copy and should be ignored under the instructions, unless it contains regulated-product or numerical claims. It does not need factual verification and should not be treated as an editorial claim.",
-        "Advisory only; no reviewable factual correction: Sponsor copy must be ignored per instructions; however, the script treats it as part of the episode. No editorial correction needed."
+        "The sponsor read is excluded per instructions, but the script repeats sponsor copy later in the episode; that later mention was not fact-checked here.",
+        "The line 'Trump said on Sunday that America should not slow its AI development to avoid losing ground to China' is a paraphrase of AP reporting, but AP's article also includes Trump's own words about guardrails and 'whoever wins AI wins'; if you want maximum precision, consider tightening the paraphrase.",
+        "The script says the AP story 'notes that Anthropic and OpenAI are both preparing for potential public-market debuts.' AP does say they are preparing for possible debuts on the stock market, but OpenAI's Sam Altman also said the company would not IPO this year. The line is broadly accurate but compresses nuance.",
+        "The script says 'China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.' The supporting AP article is specifically about Beijing hitting back at Amodei's call to curb China's AI development; the broader rhetorical generalization is stronger than the source.",
+        "The script's repeated references to 'extinction debate' and 'escape human control' are supported by AP's framing story, but any stronger causal or predictive statements about actual extinction risk should be treated as opinion rather than fact.",
+        "Advisory only; no reviewable factual correction: The AP headline and article say Trump downplayed the need to check AI development and said he doesn't want to cede the edge to China. 'New AI checks' is an interpretive paraphrase, but the second clause is accurate enough; no critical error here."
       ],
       "verified_source_urls": [
-        "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/",
-        "https://apnews.com/article/6063026d1b54a8537d639605c23aab80",
-        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
-        "https://apnews.com/article/00266dca90e4f8853f669648998d3bda",
-        "https://www.anthropic.com/threat-intelligence-report-september-2026",
-        "https://www.anthropic.com/threat-intelligence",
-        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
+        "https://apnews.com/article/trump-artificial-intelligence-guardrails-china-midterms-congress-9df0ebb4c1b0619aa0f88057b5a1092d",
+        "https://apnews.com/article/anthropic-ai-dario-amodei-d59552edcb27892d8ee4d98a48397706",
+        "https://apnews.com/article/artificial-intelligence-threats-humanity-anthropic-openai-98316b0d64de17191f33c0fbf1d37858",
+        "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8",
+        "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-11",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "California is already mandating new protections for kids in companion chatbots.",
-          "evidence_quote": "Governor Gavin Newsom signed new legislation strengthening California’s nation-leading protections for children online... The new laws strengthen safeguards for companion chatbots...",
-          "exact_line": "ALEX: With California now mandating new protections for kids in companion chatbots, are we finally seeing the end of the 'move fast and break things' era — or just the start of a very expensive regulatory mess?",
-          "replacement_line": "ALEX: With California having just signed new protections for kids in companion chatbots, are we finally seeing the end of the 'move fast and break things' era — or just the start of a very expensive regulatory mess?",
-          "reason": "The source says California signed new legislation strengthening safeguards for companion chatbots, but the line overstates this as already 'mandating' protections in force and implies a completed regulatory regime rather than newly signed laws with implementation details still to come.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The California laws, Coxon resignation, and Anthropic threat report are factually connected in the way the host claims.",
-          "evidence_quote": "These are separate stories, but they all speak to the same safety debate.",
-          "exact_line": "ALEX: California just signed a new package of AI laws targeting child safety. An Anthropic researcher has resigned with a public warning. And Anthropic's own threat report says it blocked misuse that could have supported biological weapons. All three stories are connected, and we are going to prove it.",
-          "replacement_line": "ALEX: California just signed a new package of AI laws targeting child safety. An Anthropic researcher has resigned with a public warning. And Anthropic's own threat report says it blocked misuse that could have supported biological weapons. These are separate stories, but they all speak to the same safety debate.",
-          "reason": "The first three clauses are supported, but the claim that the stories are connected, and that the episode will 'prove it,' is not established by the sources. The sources show related AI-safety stories, not a verified factual connection among them.",
-          "source_url": "https://www.apnews.com/article/anthropic-ai-safety-jacob-coxon-2ed549e07f2f941600a135070487d83d"
-        }
-      ],
+      "date": "2026-09-14",
+      "pass": true,
+      "critical_errors": [],
       "warnings": [
-        "The script repeatedly treats newly signed California laws as immediately operative; the supplied sources support signing and content, but not every effective date or enforcement mechanism.",
-        "'California's forty million residents' is a rough population claim that is not verified in the supplied records.",
-        "The claim that California has 'the strongest' chatbot rules is from California's own press release; treat it as the state's assertion, not independent confirmation.",
-        "The repeated linkage between child-safety laws, Anthropic's threat report, and OpenAI agent misconduct is editorially coherent but not a directly verified causal chain.",
-        "Reuters' story says investigators found 'more than 10' sites, while one researcher tallied 18 previously undisclosed sites; both can be true, but do not present 18 as the Reuters headline number."
+        "The sponsor read is ignored per instructions, but the later non-sponsor references to The Ledger are editorially fine only if the script is treating it as an ad; if it is intended as a factual product claim, it is unsupported by the supplied sources.",
+        "The script says 'this morning' and 'today' in multiple places. Given the episode date is 2026-09-14, that is consistent, but if this were republished later those deictics would become stale.",
+        "The line 'On September eleventh, Rufus, you argued...' is a cross-episode callback and cannot be verified from the supplied records; it is not necessarily false, just unverified here.",
+        "The claim that the AP cybersecurity advisory 'warn[s] about Chinese efforts to extract capabilities from leading U.S. AI models' is supported only in the supplied summary, not directly quoted in the opened AP excerpts; it appears plausible but should be treated as lightly sourced unless you have the underlying advisory."
       ],
       "verified_source_urls": [
-        "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/",
-        "https://www.anthropic.com/threat-intelligence",
-        "https://www.anthropic.com/threat-intelligence-report-september-2026",
-        "https://apnews.com/article/anthropic-ai-safety-jacob-coxon-2ed549e07f2f941600a135070487d83d",
-        "https://www.investing.com/news/economy-news/exclusiveopenais-rogue-agents-used-at-least-10-more-sites-for-unauthorized-comms-researchers-say-4894152"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-09-11",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The AP summary confirms the specific obligations of the new California laws.",
-          "evidence_quote": "The AP item is a legislative summary and does not by itself provide the full text of each law in the article snippet.",
-          "exact_line": "ALEX: So let's get into it. Newsom signs this package September tenth.",
-          "replacement_line": "ALEX: So let's get into it. Newsom signed this package on September tenth.",
-          "reason": "This is incomplete/misleading as stated. The California governor announcement says Newsom signed the child-safety chatbot and social-media laws on September 10, 2026, but the script later treats the package as if its full technical obligations are known from the AP summary. The line itself is fine on date, but the episode then overstates what the summary confirms about the package. The actionable factual issue is in the next line pair.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "These laws broadly force companies to treat child safety as a design constraint rather than a customer-service problem.",
-          "evidence_quote": "Creating the strongest companion chatbot regulations in the nation — Named after Adam Raine, “Adam’s Law” requires robust protections around companion chatbots for children, including crisis protocols in the case of suicidal ideation, parental controls, and notifications should a child disable safety settings.",
-          "exact_line": "JAMIE: That's exactly the right question, because the honest answer is: it forces companies to treat child safety as a design constraint rather than a customer-service problem. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws put the obligation on covered companies.",
-          "replacement_line": "JAMIE: That's exactly the right question, because the honest answer is: these laws put child safety requirements directly into the product rules, not just the support queue. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws put the obligation on covered companies.",
-          "reason": "The source record supports that California created stronger chatbot rules, including crisis protocols, parental controls, independent child safety audits, and annual risk assessments. It does not support the blanket claim that the laws broadly 'force companies to treat child safety as a design constraint' in the exact way phrased, nor the implied comparison to all AI products. This overstates the scope and specificity of the confirmed obligations.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The episode's lead story is only about social media and AI chatbots.",
-          "evidence_quote": "The new laws strengthen safeguards for companion chatbots, prohibit social media platforms from offering addictive features to users under 16, and expand privacy protections for children.",
-          "exact_line": "ALEX: Our lead story today is California governor signs laws aimed at protecting kids from risks of social media, AI chatbots. That is the spine of this episode; the other stories will test it.",
-          "replacement_line": "ALEX: Our lead story today is California governor signs laws aimed at protecting kids from risks of social media, AI chatbots, and related privacy harms. That is the spine of this episode; the other stories will test it.",
-          "reason": "The headline is accurate, but the script later treats the California story as if it only concerns chatbots and social media, omitting that the governor announcement also included stronger privacy protections for kids and independent child safety audits. That omission matters because it narrows the actual package and risks misleading listeners about the scope.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The specific technical obligations of the laws are not yet known from the available reporting.",
-          "evidence_quote": "Named after Adam Raine, “Adam’s Law” requires robust protections around companion chatbots for children, including crisis protocols in the case of suicidal ideation, parental controls, and notifications should a child disable safety settings. ... The bill is also the first in the country to require companies to conduct independent child safety audits and annual risk assessments.",
-          "exact_line": "JAMIE: That's what we don't fully know yet. The AP reporting confirms the laws target chatbot risks for children. What the specific technical obligations are — that's in the full text, which wasn't fully reproduced in the summary. So the honest answer is: the ambition is there, but the implementation detail matters enormously.",
-          "replacement_line": "JAMIE: That's what we don't fully know yet. The reporting confirms concrete obligations like crisis protocols, parental controls, notifications, independent child safety audits, and annual risk assessments. So the honest answer is: the ambition is there, but the implementation detail still matters enormously.",
-          "reason": "This understates what is already available in the governor's announcement. The California source explicitly lists concrete obligations, including crisis protocols, parental controls, notifications, independent child safety audits, annual risk assessments, and addictive-feature bans for under-16 users. Saying the specific technical obligations are not known is false.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Coxon spent three years at Anthropic and OpenAI.",
-          "evidence_quote": "Jacob Coxon said he was leaving Anthropic after three years of research work at Anthropic and OpenAI.",
-          "exact_line": "ALEX: Now — and this is where I want to connect the threads — we are having this conversation the same week that Jacob Coxon, a researcher who spent three years at Anthropic and OpenAI, resigned publicly and said the industry is focused on beating rivals rather than improving safety. That's a separate story —",
-          "replacement_line": "ALEX: Now — and this is where I want to connect the threads — we are having this conversation the same week that Jacob Coxon, a researcher who spent three years doing research work at Anthropic and OpenAI, resigned publicly and said the industry is focused on beating rivals rather than improving safety. That's a separate story —",
-          "reason": "The source record says Jacob Coxon said he was leaving Anthropic after three years of research work at Anthropic and OpenAI. The script's wording is broadly consistent, but it turns the AP description into a definitive career-history claim without noting that the three years were research work split across the two companies, not three years at each. This is a precision issue rather than a wholesale falsehood.",
-          "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Anthropic threat report is evidence base for California's child-safety laws.",
-          "evidence_quote": "This report covers activity we disrupted between December 2025 and August 2026 across seven harm areas: cyber operations, influence operations, surveillance, scams and fraud, biological misuse, conventional weapons development, and distillation.",
-          "exact_line": "ALEX: The supporting stories today are not separate from the lead — they are the lead's evidence base. And I want to go to the Anthropic threat report specifically, because this is the moment where the California argument either gets reinforced or falls apart.",
-          "replacement_line": "ALEX: The supporting stories today are not separate from the lead — they are the lead's broader safety context. And I want to go to the Anthropic threat report specifically, because this is the moment where the California argument either gets reinforced or falls apart.",
-          "reason": "This is editorial framing and not a factual error by itself. No correction needed, but the script later implies the Anthropic report is direct evidence for California's chatbot laws. That causal link is rhetorical, not established by the sources.",
-          "source_url": "https://www.anthropic.com/threat-intelligence-report-september-2026"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Compliance is minimal and enforcement is unproven.",
-          "evidence_quote": "Created the strongest companion chatbot regulations in the nation ... requires companies to conduct independent child safety audits and annual risk assessments.",
-          "exact_line": "ALEX: And that is the exact argument for why California's laws — even if they're imperfect, even if compliance is minimal and enforcement is unproven — represent a higher floor than what existed yesterday.",
-          "replacement_line": "ALEX: And that is the exact argument for why California's laws — even if they're imperfect and even if the enforcement picture is still developing — represent a higher floor than what existed yesterday.",
-          "reason": "The source records show the laws were signed and include named obligations, but they do not establish that compliance is minimal or that enforcement is unproven. Those are judgments/speculation, not verified facts. The line is partly opinion, but the factual sub-claims need softening.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "California attached legal obligations to a product category that had none.",
-          "evidence_quote": "Today’s signings follow other landmark legislation to protect children from social media addiction, strong privacy requirements, and nation-leading transparency measures.",
-          "exact_line": "JAMIE: What changed: California attached legal obligations to a product category that had none. That matters even if enforcement is weak, because it changes the legal landscape for every civil suit filed after today.",
-          "replacement_line": "JAMIE: What changed: California attached additional legal obligations to a product category that already had some guardrails. That matters even if enforcement is weak, because it changes the legal landscape for every civil suit filed after today.",
-          "reason": "The governor's announcement and state-law summaries show California already had some child online safety protections and privacy requirements before this package. So 'a product category that had none' is false or at least materially misleading. The new laws strengthen and expand obligations; they do not create the first obligations from nothing.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "At least one major AI company will publish a dedicated compliance report within ninety days.",
-          "evidence_quote": "N/A",
-          "exact_line": "ALEX: Here is the one prediction I want on record for a future episode to come back to: within ninety days, at least one major AI company operating in California will publish a dedicated compliance report for this legislative package. Whether it describes real architectural changes or rebranded existing features — that is the test.",
-          "replacement_line": "ALEX: Here is the one prediction I want on record for a future episode to come back to: within ninety days, at least one major AI company operating in California will probably publish some kind of compliance statement for this legislative package. Whether it describes real architectural changes or rebranded existing features — that is the test.",
-          "reason": "This is a prediction, which should not be fact-checked as false. However, the phrase 'dedicated compliance report' may imply a specific document type that is not established by the sources. It's acceptable as speculation, but should be treated as a forecast rather than a factual claim.",
-          "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-        }
-      ],
-      "warnings": [
-        "The script repeatedly collapses several distinct California measures into a single 'AI laws' package. The governor announcement says the package includes chatbot protections, addictive-feature bans for under-16 users, expanded privacy protections, and AI-generated sexual-conduct provisions.",
-        "The line about 'California's forty million residents' is close enough to be a rough population shorthand, but it is not sourced in the provided records and could drift with census updates.",
-        "The Reuters/OpenAI story is represented accurately in broad terms, but the script adds 'ongoing' review and 'minor' asides not supported by the supplied source records.",
-        "Several enforcement comments are speculative opinions. They are allowed, but should not be read as sourced findings."
-      ],
-      "verified_source_urls": [
-        "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/",
-        "https://www.anthropic.com/threat-intelligence-report-september-2026",
-        "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
-        "https://www.gov.ca.gov/2025/12/31/new-in-2026-california-laws-taking-effect-in-the-new-year/",
-        "https://www.gov.ca.gov/2024/09/29/governor-newsom-announces-new-initiatives-to-advance-safe-and-responsible-ai-protect-californians/"
+        "https://apnews.com/article/9df0ebb4c1b0619aa0f88057b5a1092d",
+        "https://apnews.com/article/d59552edcb27892d8ee4d98a48397706",
+        "https://apnews.com/article/98316b0d64de17191f33c0fbf1d37858",
+        "https://apnews.com/article/3da458d2c078da3e60900728d59f1ae8",
+        "https://apnews.com/article/0b44bfb43960c6ae850567c0c4e5003a"
       ]
     }
   ],
-  "replacements_applied": 5,
+  "replacements_applied": 2,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-11",
-    "pass": false,
-    "critical_errors": [
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The AP summary confirms the specific obligations of the new California laws.",
-        "evidence_quote": "The AP item is a legislative summary and does not by itself provide the full text of each law in the article snippet.",
-        "exact_line": "ALEX: So let's get into it. Newsom signs this package September tenth.",
-        "replacement_line": "ALEX: So let's get into it. Newsom signed this package on September tenth.",
-        "reason": "This is incomplete/misleading as stated. The California governor announcement says Newsom signed the child-safety chatbot and social-media laws on September 10, 2026, but the script later treats the package as if its full technical obligations are known from the AP summary. The line itself is fine on date, but the episode then overstates what the summary confirms about the package. The actionable factual issue is in the next line pair.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "These laws broadly force companies to treat child safety as a design constraint rather than a customer-service problem.",
-        "evidence_quote": "Creating the strongest companion chatbot regulations in the nation — Named after Adam Raine, “Adam’s Law” requires robust protections around companion chatbots for children, including crisis protocols in the case of suicidal ideation, parental controls, and notifications should a child disable safety settings.",
-        "exact_line": "JAMIE: That's exactly the right question, because the honest answer is: it forces companies to treat child safety as a design constraint rather than a customer-service problem. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws put the obligation on covered companies.",
-        "replacement_line": "JAMIE: That's exactly the right question, because the honest answer is: these laws put child safety requirements directly into the product rules, not just the support queue. Right now, the default is — build it, ship it, and let parents figure out the parental controls. These laws put the obligation on covered companies.",
-        "reason": "The source record supports that California created stronger chatbot rules, including crisis protocols, parental controls, independent child safety audits, and annual risk assessments. It does not support the blanket claim that the laws broadly 'force companies to treat child safety as a design constraint' in the exact way phrased, nor the implied comparison to all AI products. This overstates the scope and specificity of the confirmed obligations.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The episode's lead story is only about social media and AI chatbots.",
-        "evidence_quote": "The new laws strengthen safeguards for companion chatbots, prohibit social media platforms from offering addictive features to users under 16, and expand privacy protections for children.",
-        "exact_line": "ALEX: Our lead story today is California governor signs laws aimed at protecting kids from risks of social media, AI chatbots. That is the spine of this episode; the other stories will test it.",
-        "replacement_line": "ALEX: Our lead story today is California governor signs laws aimed at protecting kids from risks of social media, AI chatbots, and related privacy harms. That is the spine of this episode; the other stories will test it.",
-        "reason": "The headline is accurate, but the script later treats the California story as if it only concerns chatbots and social media, omitting that the governor announcement also included stronger privacy protections for kids and independent child safety audits. That omission matters because it narrows the actual package and risks misleading listeners about the scope.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The specific technical obligations of the laws are not yet known from the available reporting.",
-        "evidence_quote": "Named after Adam Raine, “Adam’s Law” requires robust protections around companion chatbots for children, including crisis protocols in the case of suicidal ideation, parental controls, and notifications should a child disable safety settings. ... The bill is also the first in the country to require companies to conduct independent child safety audits and annual risk assessments.",
-        "exact_line": "JAMIE: That's what we don't fully know yet. The AP reporting confirms the laws target chatbot risks for children. What the specific technical obligations are — that's in the full text, which wasn't fully reproduced in the summary. So the honest answer is: the ambition is there, but the implementation detail matters enormously.",
-        "replacement_line": "JAMIE: That's what we don't fully know yet. The reporting confirms concrete obligations like crisis protocols, parental controls, notifications, independent child safety audits, and annual risk assessments. So the honest answer is: the ambition is there, but the implementation detail still matters enormously.",
-        "reason": "This understates what is already available in the governor's announcement. The California source explicitly lists concrete obligations, including crisis protocols, parental controls, notifications, independent child safety audits, annual risk assessments, and addictive-feature bans for under-16 users. Saying the specific technical obligations are not known is false.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Coxon spent three years at Anthropic and OpenAI.",
-        "evidence_quote": "Jacob Coxon said he was leaving Anthropic after three years of research work at Anthropic and OpenAI.",
-        "exact_line": "ALEX: Now — and this is where I want to connect the threads — we are having this conversation the same week that Jacob Coxon, a researcher who spent three years at Anthropic and OpenAI, resigned publicly and said the industry is focused on beating rivals rather than improving safety. That's a separate story —",
-        "replacement_line": "ALEX: Now — and this is where I want to connect the threads — we are having this conversation the same week that Jacob Coxon, a researcher who spent three years doing research work at Anthropic and OpenAI, resigned publicly and said the industry is focused on beating rivals rather than improving safety. That's a separate story —",
-        "reason": "The source record says Jacob Coxon said he was leaving Anthropic after three years of research work at Anthropic and OpenAI. The script's wording is broadly consistent, but it turns the AP description into a definitive career-history claim without noting that the three years were research work split across the two companies, not three years at each. This is a precision issue rather than a wholesale falsehood.",
-        "source_url": "https://apnews.com/article/2ed549e07f2f941600a135070487d83d"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The Anthropic threat report is evidence base for California's child-safety laws.",
-        "evidence_quote": "This report covers activity we disrupted between December 2025 and August 2026 across seven harm areas: cyber operations, influence operations, surveillance, scams and fraud, biological misuse, conventional weapons development, and distillation.",
-        "exact_line": "ALEX: The supporting stories today are not separate from the lead — they are the lead's evidence base. And I want to go to the Anthropic threat report specifically, because this is the moment where the California argument either gets reinforced or falls apart.",
-        "replacement_line": "ALEX: The supporting stories today are not separate from the lead — they are the lead's broader safety context. And I want to go to the Anthropic threat report specifically, because this is the moment where the California argument either gets reinforced or falls apart.",
-        "reason": "This is editorial framing and not a factual error by itself. No correction needed, but the script later implies the Anthropic report is direct evidence for California's chatbot laws. That causal link is rhetorical, not established by the sources.",
-        "source_url": "https://www.anthropic.com/threat-intelligence-report-september-2026"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Compliance is minimal and enforcement is unproven.",
-        "evidence_quote": "Created the strongest companion chatbot regulations in the nation ... requires companies to conduct independent child safety audits and annual risk assessments.",
-        "exact_line": "ALEX: And that is the exact argument for why California's laws — even if they're imperfect, even if compliance is minimal and enforcement is unproven — represent a higher floor than what existed yesterday.",
-        "replacement_line": "ALEX: And that is the exact argument for why California's laws — even if they're imperfect and even if the enforcement picture is still developing — represent a higher floor than what existed yesterday.",
-        "reason": "The source records show the laws were signed and include named obligations, but they do not establish that compliance is minimal or that enforcement is unproven. Those are judgments/speculation, not verified facts. The line is partly opinion, but the factual sub-claims need softening.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "California attached legal obligations to a product category that had none.",
-        "evidence_quote": "Today’s signings follow other landmark legislation to protect children from social media addiction, strong privacy requirements, and nation-leading transparency measures.",
-        "exact_line": "JAMIE: What changed: California attached legal obligations to a product category that had none. That matters even if enforcement is weak, because it changes the legal landscape for every civil suit filed after today.",
-        "replacement_line": "JAMIE: What changed: California attached additional legal obligations to a product category that already had some guardrails. That matters even if enforcement is weak, because it changes the legal landscape for every civil suit filed after today.",
-        "reason": "The governor's announcement and state-law summaries show California already had some child online safety protections and privacy requirements before this package. So 'a product category that had none' is false or at least materially misleading. The new laws strengthen and expand obligations; they do not create the first obligations from nothing.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "At least one major AI company will publish a dedicated compliance report within ninety days.",
-        "evidence_quote": "N/A",
-        "exact_line": "ALEX: Here is the one prediction I want on record for a future episode to come back to: within ninety days, at least one major AI company operating in California will publish a dedicated compliance report for this legislative package. Whether it describes real architectural changes or rebranded existing features — that is the test.",
-        "replacement_line": "ALEX: Here is the one prediction I want on record for a future episode to come back to: within ninety days, at least one major AI company operating in California will probably publish some kind of compliance statement for this legislative package. Whether it describes real architectural changes or rebranded existing features — that is the test.",
-        "reason": "This is a prediction, which should not be fact-checked as false. However, the phrase 'dedicated compliance report' may imply a specific document type that is not established by the sources. It's acceptable as speculation, but should be treated as a forecast rather than a factual claim.",
-        "source_url": "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/"
-      }
-    ],
+    "date": "2026-09-14",
+    "pass": true,
+    "critical_errors": [],
     "warnings": [
-      "The script repeatedly collapses several distinct California measures into a single 'AI laws' package. The governor announcement says the package includes chatbot protections, addictive-feature bans for under-16 users, expanded privacy protections, and AI-generated sexual-conduct provisions.",
-      "The line about 'California's forty million residents' is close enough to be a rough population shorthand, but it is not sourced in the provided records and could drift with census updates.",
-      "The Reuters/OpenAI story is represented accurately in broad terms, but the script adds 'ongoing' review and 'minor' asides not supported by the supplied source records.",
-      "Several enforcement comments are speculative opinions. They are allowed, but should not be read as sourced findings."
+      "The sponsor read is ignored per instructions, but the later non-sponsor references to The Ledger are editorially fine only if the script is treating it as an ad; if it is intended as a factual product claim, it is unsupported by the supplied sources.",
+      "The script says 'this morning' and 'today' in multiple places. Given the episode date is 2026-09-14, that is consistent, but if this were republished later those deictics would become stale.",
+      "The line 'On September eleventh, Rufus, you argued...' is a cross-episode callback and cannot be verified from the supplied records; it is not necessarily false, just unverified here.",
+      "The claim that the AP cybersecurity advisory 'warn[s] about Chinese efforts to extract capabilities from leading U.S. AI models' is supported only in the supplied summary, not directly quoted in the opened AP excerpts; it appears plausible but should be treated as lightly sourced unless you have the underlying advisory."
     ],
     "verified_source_urls": [
-      "https://www.gov.ca.gov/2026/09/10/governor-newsom-signs-the-strongest-child-safety-chatbot-and-social-media-laws-in-the-nation/",
-      "https://www.anthropic.com/threat-intelligence-report-september-2026",
-      "https://apnews.com/article/2ed549e07f2f941600a135070487d83d",
-      "https://www.gov.ca.gov/2025/12/31/new-in-2026-california-laws-taking-effect-in-the-new-year/",
-      "https://www.gov.ca.gov/2024/09/29/governor-newsom-announces-new-initiatives-to-advance-safe-and-responsible-ai-protect-californians/"
+      "https://apnews.com/article/9df0ebb4c1b0619aa0f88057b5a1092d",
+      "https://apnews.com/article/d59552edcb27892d8ee4d98a48397706",
+      "https://apnews.com/article/98316b0d64de17191f33c0fbf1d37858",
+      "https://apnews.com/article/3da458d2c078da3e60900728d59f1ae8",
+      "https://apnews.com/article/0b44bfb43960c6ae850567c0c4e5003a"
     ]
   },
-  "pass": false,
+  "pass": true,
   "blocking": false
 }
