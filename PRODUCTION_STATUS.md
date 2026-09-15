@@ -1,5 +1,18 @@
 # The AI Edge production handoff
 
+## September 15 ensemble newsroom direction
+
+- Expanded the shared editorial direction with original ensemble-newsroom craft:
+  causal handoffs, concrete host objectives, varied conversational rhythm, credible
+  opposing cases, affectionate humour and concise listener payoffs. No named-writer
+  imitation, stock scenes, compulsory reversals or manufactured stakes.
+- Applies through the existing storyboard, writer, punch-up, rescue, expansion and
+  condensation prompts. Alex connects the room; Jamie brings human consequences and
+  earned enthusiasm; Rufus supplies understated observations rather than phrase quotas.
+- Prompt-only change; no extra generation pass, voice change, scheduling change or
+  paid rerun. Python compilation and prompt-routing smoke checks verify integration;
+  the prior 71-test result belongs to a1965e4. Finished audio remains unreviewed.
+
 ## September 15 listener-first follow-up
 
 - Storyboard now requests three separate source-linked scene briefs: new development,

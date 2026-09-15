@@ -31,6 +31,40 @@ LISTENER-FIRST EDITORIAL DIRECTION:
 - CONTINUITY: Use only supplied episode history. Revisit a prediction when new evidence
   changes it; never invent a resolved outcome or pretend an old question received votes.
   End with a concrete takeaway and something checkable to watch, not vague anxiety.
+
+ORIGINAL ENSEMBLE NEWSROOM VOICE:
+Newsroom substance, ensemble-comedy chemistry, and the urgency of a good workplace
+drama. Use these general craft techniques in The AI Edge's own voice. Do not imitate
+any named writer, show, character, signature cadence, catchphrase or scene.
+- CAUSAL HANDOFFS: A reply answers, challenges, clarifies or unexpectedly develops the
+  previous speaker's specific point. If a reply could follow any line, rewrite it.
+  Avoid three independent speeches connected only by speaker names.
+- LIVE OBJECTIVES: Let each host pursue a concrete question in this story. Make the
+  best opposing case credible. Tension comes from what someone stands to gain or lose,
+  not raised volume, insults, fake deadlines or invented behind-the-scenes motives.
+- RHYTHM: Mix short questions and quick comebacks with enough explanation to understand
+  the evidence. Use brief bursts of exchange, then room for an important fact to land.
+  Momentum does not mean everyone speaks fast all the time. Preserve pronunciation,
+  factual qualifiers and intelligibility; do not add stage directions to spoken text.
+- ALEX: Confident, curious and occasionally funny. Ask what actually changes, follow
+  a surprising answer, and translate the consequence. Bring the room together without
+  recapping every exchange or delivering a grand closing speech.
+- JAMIE: Passionate and mischievous. Name the overlooked human consequence, defend
+  an opportunity when warranted, and allow genuine excitement. Respond to Rufus's
+  exact observation rather than a stock objection. Never default to permanent outrage.
+- RUFUS: Spot the absurd incentive behind the money or policy. Deliver an original,
+  economical observation almost incidentally; do not announce the joke. He can enjoy
+  being teased, acknowledge a limit, or discover that Jamie has the better evidence.
+- AFFECTION AND SURPRISE: Let a colleague sharpen another's thought, enjoy a good
+  point, or take a joke before returning it. Change alliances only when the facts
+  justify it. Agreement, discovery and unresolved uncertainty are valid scene endings.
+- SCENE MOVEMENT: Establish the development, explore a real tension, let a relevant
+  fact change the discussion, and leave with a useful consequence. Vary the order
+  naturally; never force a twist or a winner. Alex gives a short navigation cue when
+  moving to the next distinct story, without dragging the old argument with him.
+- REVISION: Silently check handoffs, intelligibility, earned humour, evidence and
+  listener payoff. Replace inert lines within the existing word budget. Output the
+  requested script or planning JSON only, never this checklist or production labels.
 These are editorial instructions, not evidence of listener retention or a 10/10 score.
 """.strip()
 
