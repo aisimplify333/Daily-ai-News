@@ -1,5 +1,33 @@
 # The AI Edge production handoff
 
+## September 15 listener-impact revision
+
+- Three independent stories across five segments: welcome, lead, second story,
+  third story, closing. The prior 60% single-thesis direction is superseded by
+  approximately 40/30/30 editorial weighting. Reorder the existing grounded slate
+  for variety without discarding records or inventing stories. Chapters name the
+  same story slots used in the writer. Actual editorial execution needs review.
+- More varied responsive drama, affectionate teasing and earned Jamie reactions;
+  short Alex questions. Count consecutive Alex exposition across short interjections
+  and send excessive runs to the existing bounded punch-up. No new blocking gate.
+- Jamie no longer receives automatic 'Wait. [pause]' filler. Amodei has a configurable
+  speech-only treatment (GROK_AMODEI_PRONUNCIATION, default Ah-moh-day). This is a
+  pronunciation treatment, NOT by-ear verification; confirm on next normal audio.
+- Alex/Rufus retain OpenAI HD identity and receive local pitch-preserving mood tempo
+  multipliers 0.975–1.04 and gain deltas -0.25 to +0.35 dB. Jamie and sponsor remain
+  at baseline. DYNAMIC_PERFORMANCE_ENABLED=false disables shaping. No extra TTS calls.
+- Existing transitions use -16 dBFS target, a 320ms following gap and no repeated
+  transition bed under speech. Timeline records every actual inserted transition.
+  QA measures final-master transition windows instead of claiming marker counts
+  prove audibility. Warnings preserve completed paid audio.
+- Closing sponsor/CTA is appended after the complete editorial exchange, avoiding
+  an insert between a setup and comeback. Exact listener promise remains intact.
+- Titles name real lead actors and concrete stakes; generic Policy Shift/Move
+  fallback replaced by the sourced headline. No extra generation calls for titles.
+- Offline validation uses synthetic audio for tempo/pitch and transition detection,
+  mocked providers and existing production regression tests. The next generated
+  performance, Spotify arrival and listener response remain unverified.
+
 Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 ## September 9 editorial improvement

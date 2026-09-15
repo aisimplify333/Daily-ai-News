@@ -131,11 +131,10 @@ class ProductionContractTests(unittest.TestCase):
         self.assertNotIn("we'll have your answers", once)
         self.assertIn("The price deserves a harder conversation", once)
 
-    def test_chapters_follow_segment_roles_not_story_array_positions(self):
+    def test_chapters_name_the_independent_second_and_third_stories(self):
         lines = writer._apply_topic_chapter_headers(["### SEGMENT 3", "### SEGMENT 4"], STORIES)
-        self.assertIn("Google: Costs, Power and Tradeoffs", lines[0])
-        self.assertNotIn("Schools", lines[0])
-        self.assertIn("Testing the Lead Argument", lines[1])
+        self.assertIn("Story 2: Nvidia faces infrastructure questions", lines[0])
+        self.assertIn("Story 3: Schools debate AI restrictions", lines[1])
 
     def test_production_fact_audit_enabled(self):
         workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text()
@@ -155,7 +154,7 @@ class ProductionContractTests(unittest.TestCase):
             board = writer._preproduction({}, STORIES, "2026-09-08", {})
         self.assertEqual(generate.call_count, 1)
         self.assertNotEqual(board["published_title"], announcement)
-        self.assertTrue(writer._title_has_payoff(board["published_title"]))
+        self.assertEqual(board["published_title"], STORIES[0]["headline"])
         self.assertIn("Google", board["published_title"])
 
     def test_supported_payoff_title_is_preserved(self):

@@ -72,8 +72,8 @@ SHOW_DESCRIPTION = os.getenv(
     "PODCAST_SHOW_DESCRIPTION",
     "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
     "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
-    "Each episode debates one lead story from the last 24–48 hours, using the other top "
-    "AI events as evidence, complications, or counterarguments. Follow The AI Edge for "
+    "Each episode debates three distinct AI stories from the last 24–48 hours, with "
+    "clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for "
     "new episodes Monday through Friday. What changed. Who wins. What you do next.",
 ).strip()
 
@@ -238,6 +238,15 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   and occasionally let a host finish or sharpen another host's thought. The cast
   likes one another even when their values collide. Never manufacture private
   history, pet names, hostility or constant agreement to prove the relationship.
+- DRAMATIC MOVEMENT: across the three stories, use different dynamics. One can
+  escalate from a pointed disagreement into a sharp comeback and Alex's evidence
+  question; another can surprise the pair into agreement; another can leave an
+  unresolved tradeoff. React to the actual previous words. No assigned daily loser.
+- Jamie may laugh in disbelief, snicker at Rufus's euphemism, or express brief
+  exasperation, then explain her objection. Rufus may take mock offence and answer
+  with a dry British turn of phrase. Keep affection underneath; no personal cruelty.
+- Avoid verbal tics: never default to 'Wait', 'Wait. Wait', 'Precisely', or 'Welcome
+  to Monday'. Do not announce that a funny or shareable exchange is about to happen.
 - Once or twice, let Alex visibly follow the conversation: drop the question he
   appeared ready to ask, pick up Jamie's or Rufus's surprising phrase, and pursue
   that thread. He still restores the listener's map, but the room is allowed to
@@ -758,6 +767,28 @@ def _editorial_overlap(left: str, right: str) -> float:
     return len(a & b) / max(1, min(len(a), len(b))) if a and b else 0.0
 
 
+def _three_story_order(stories):
+    """Prefer distinct events for the three desks without dropping grounded items."""
+    if not stories:
+        return []
+    chosen, remaining = [dict(stories[0])], [dict(s) for s in stories[1:]]
+    while remaining and len(chosen) < 3:
+        def score(pair):
+            index, story = pair
+            headline = _headline(story)
+            overlap = max(_editorial_overlap(headline, _headline(s)) for s in chosen)
+            angle_repeat = any(_editorial_angle(headline) == _editorial_angle(_headline(s)) for s in chosen)
+            return index + 8 * overlap + 3 * int(angle_repeat)
+        index, story = min(enumerate(remaining), key=score)
+        chosen.append(story)
+        remaining.pop(index)
+    result = chosen + remaining
+    for index, story in enumerate(result, 1):
+        story["rank"] = index
+        story["story_tier"] = "primary" if index <= 3 else "supporting"
+    return result
+
+
 def _freshen_story_order(
     stories: List[Dict[str, Any]], episodes: List[Dict[str, Any]]
 ) -> Tuple[List[Dict[str, Any]], Dict[str, Any]]:
@@ -1072,28 +1103,23 @@ def _central_fight(stories: List[Dict[str, Any]]) -> str:
 
 
 def _hard_title(stories: List[Dict[str, Any]]) -> str:
-    b = _lead_blob(stories)
-    headline = _headline(stories[0]).lower() if stories else ""
-    entity = next(
-        (a for a in MAJOR_AI_ACTORS if a.lower() in headline),
-        next((a for a in MAJOR_AI_ACTORS if a.lower() in b), "AI"),
-    )
-    owner = f"{entity}'s" if entity != "AI" else "AI"
-    if any(x in b for x in ["health", "clinical", "doctor", "patient", "hospital", "gates foundation"]):
-        return f"{owner} Healthcare Move: Who Carries Your Risk?"
-    if any(x in b for x in ["security", "cyber", "breach", "vulnerability"]):
-        return f"{owner} Security Move: What Changes for Your Team?"
-    if any(x in b for x in ["coding", "developer", "codebase", "github"]):
-        return f"{owner} Coding Move: What Should Developers Watch Next?"
-    if any(x in b for x in ["lawsuit", "copyright", "court", "antitrust"]):
-        return f"{owner} Legal Fight: What Should AI Users Watch?"
-    if any(x in b for x in ["chip", "gpu", "nvidia", "compute", "data center", "datacenter", "acquisition", "deal"]):
-        return f"{owner} Infrastructure Move: What Should AI Buyers Watch?"
-    if any(x in b for x in ["china", "export", "white house", "government", "regulation"]):
-        return f"{owner} AI Policy Shift: What Should Users Watch?"
-    if any(x in b for x in ["agent", "agents", "workflow", "copilot"]):
-        return f"{owner} Agents: Who Is Watching Your AI Work?"
-    return f"{owner} AI News: What Changes for You?"
+    """Keep the sourced event when model packaging fails; never invent stakes."""
+    headline = _headline(stories[0]).strip() if stories else ""
+    if not headline:
+        return "The AI Edge: What Changed in Artificial Intelligence"
+    headline = re.sub(r"\s+", " ", headline).strip()
+    # Preserve the full event rather than truncating a claim or manufacturing
+    # a generic Policy Shift / Infrastructure Move title.
+    return headline
+
+
+def _title_is_generic(title: str) -> bool:
+    return bool(re.search(
+        r"\b(what should (?:users|developers|ai buyers) watch(?: next)?|"
+        r"what changes for (?:you|your team)|ai policy shift|"
+        r"(?:healthcare|security|coding|infrastructure) move)\b",
+        title or "", re.IGNORECASE,
+    ))
 
 
 def _title_has_payoff(title: str) -> bool:
@@ -1119,7 +1145,16 @@ def _title_matches_lead(title: str, stories: List[Dict[str, Any]]) -> bool:
     actor = _lead_actor(stories)
     if not actor:
         return True
-    return actor.lower() in (title or "").lower()
+    if actor.lower() in (title or "").lower():
+        return True
+    # An actual named lead participant may be more salient than the actor-list
+    # keyword (e.g. Trump versus a headline that also mentions China).
+    headline = _headline(stories[0]) if stories else ""
+    names = re.findall(r"\b[A-Z][A-Za-z0-9-]{2,}\b", headline)
+    excluded = {"The", "How", "Why", "What", "When", "New", "Says", "Should"}
+    return any(name not in excluded and re.search(
+        r"\b" + re.escape(name) + r"\b", title or "", re.IGNORECASE
+    ) for name in names)
 
 
 def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
@@ -1174,6 +1209,9 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
     )
     prompt = f"""Return STRICT JSON only. You are the showrunner for {SHOW_TITLE}, a daily
 AI debate podcast. Design today's episode. Do NOT write dialogue.
+Plan three distinct stories: Story 1 leads Segment 2, Story 2 owns Segment 3,
+and Story 3 owns Segment 4. Each needs its own stakes and takeaway. Allocate
+editorial discussion roughly 40/30/30; do not subordinate all three to one thesis.
 
 This show has three hosts who are PEOPLE, not functions:
 - ALEX drives, but can be wrong and can change his mind.
@@ -1218,6 +1256,11 @@ by supplied evidence. Never default to Alex conceding or rotate a designated los
 Use prior positions to avoid repeating yesterday's argument and outcome mechanically.
 
 TITLE CONTRACT:
+- Name the actual lead actors and their sourced action or disagreement. A broad
+  country keyword must not displace the people driving the story. Use specific
+  listener stakes such as cost, jobs, access or security, only if this episode
+  explains them. Reject 'AI Policy Shift: What Should Users Watch?' packaging.
+  Never invent urgency, market causation or financial losses to sell a title.
 - Sell one specific, evidence-backed listener payoff, not a corporate announcement.
 - Consider three distinct angles internally: a practical decision, a consequential
   tradeoff, and a useful explanation. Return only the strongest supported title.
@@ -1279,6 +1322,7 @@ Return exactly this JSON:
         or not 6 <= title_words <= 14
         or not _title_matches_lead(title, stories)
         or not _title_has_payoff(title)
+        or _title_is_generic(title)
     ):
         default["published_title"] = _hard_title(stories)
     question = re.sub(r"\s+", " ", str(default.get("listener_question") or "")).strip()
@@ -1380,9 +1424,9 @@ EDITORIAL DNA — combine these disciplines without naming or imitating another 
 - PERMANENT LISTENER PROMISE: {LISTENER_PROMISE} The listener should be able to say,
   "I listen to The AI Edge because Alex, Jamie and Rufus tell me what changed in AI,
   who wins and what I should do next."
-- DAILY-BRIEF DISCIPLINE: identify the one AI development that actually matters today.
-  Give that lead event roughly 60 percent of the episode; use the other top events to
-  confirm, complicate, or break the main thesis. The listener must know what changed,
+- DAILY-BRIEF DISCIPLINE: cover three distinct AI events with independent takeaways.
+  Give the lead about 40 percent of editorial time and the other two about 30 percent
+  each. The listener must know what changed in EACH story,
   why it matters, and what to watch in the next 24-48 hours.
 - HUMAN CO-HOST CHEMISTRY: disagreement, warmth, callbacks, teasing, and genuine
   reactions. Humor must reveal character or stakes, never become a comedy routine.
@@ -1455,8 +1499,8 @@ WHO WINS: {board.get('who_wins')}
 WHO IS EXPOSED: {board.get('who_is_exposed')}
 NORMAL-PERSON PAYOFF: {board.get('normal_person_payoff')}
 
-TODAY'S TOP AI EVENTS — Story 1 is the lead and must receive roughly 60 percent
-of the episode. Supporting stories may confirm or challenge it, but may not replace it:
+TODAY'S TOP AI EVENTS — Stories 1, 2 and 3 each get a dedicated discussion.
+Stories 4-5 are optional receipts, not reasons to repeat the lead argument:
 {_story_lines(stories)}
 
 FACT FIREWALL — a hard production rule:
@@ -1527,7 +1571,7 @@ synthetic. You MUST include:
 - Interruptions: at least 3 places where a host is cut off mid-sentence, ending the
   line on an em-dash, and another host takes over.
 - False starts and self-correction: "I— okay, here's the actual problem."
-- Short, sharp reactions on their own line: "Hah." / "Oh, come on." / "Wait. Wait."
+- Short, sharp reactions on their own line, earned by what the colleague just said.
 - Genuine laughter when a specific exchange earns it, written into the words,
   NEVER as a bracketed stage direction. Do not insert laughter to satisfy a count.
 - Hosts finishing each other's thoughts, and at least one moment where two hosts
@@ -1539,7 +1583,9 @@ NON-NEGOTIABLES:
   30:00 is an absolute ceiling when the story and sponsor inventory earn the time.
 - TARGET 3,800-4,100 spoken words; an acceptable production band is 3,550-4,350.
   Do not summarize early.
-  Allocate about 55-60% to the lead event and use the remaining stories as evidence.
+  Allocate editorial discussion roughly 40/30/30 across three distinct stories.
+  Segment 2: 1,150-1,300 words. Segments 3 and 4: 850-1,000 words each.
+  Opening and closing share the remaining budget. Do not pad Segment 4 to reach runtime.
 - Dialogue only. Exact labels ALEX:, JAMIE:, RUFUS:. Segment headers. Exactly one [MUSIC].
 - Segment 1 starts with a 20-30 second cold exchange: Alex asks the opening audience
   question, Jamie pushes back, and Rufus lands one dry line. Then exactly one [MUSIC],
@@ -1550,13 +1596,13 @@ NON-NEGOTIABLES:
   responses so this feels like a real trio, not a roll call. Keep this welcome/roadmap
   to 80-120 total spoken words.
 - Immediately after the cast welcome, Alex must say "Our lead story today is ..."
-  and name Story 1 plainly. Make it unmistakable that the other stories are evidence
-  that will confirm, complicate, or challenge this one lead—not three unrelated leads.
+  and name Story 1 plainly. Jamie and Rufus briefly name the other two independent
+  stories. Do not read the same headline again in Alex's next turn.
 - Let the first discussion breathe briefly, then Alex delivers the two-line Ledger read
   at the natural break immediately before Segment 2.
 - At the start of Segments 2-5, use one short spoken handoff that tells the listener
-  where the argument is going next. For supporting stories, explicitly call them a
-  supporting signal, a complication, or a counterexample to the lead.
+  what the next discussion covers. Segments 3 and 4 open with 'Our second story' and
+  'Our third story' respectively, naming the company/event and its new development.
 - Every story becomes an argument: who wins, who loses, who is exposed, what changes tomorrow.
 - At least 6 concrete receipts (numbers, $, dates, named institutions, benchmarks).
 - Explain every important number in plain terms.
@@ -1567,7 +1613,10 @@ NON-NEGOTIABLES:
   "game-changer," "exciting time," "landscape is evolving," and "speaking of."
 - No lesson framing. Never say "today's AI lesson" or play "Signal or Static."
   No Signal Room language. No digest energy.
-- Normal turns 8-38 words; hard maximum 55 words. Short turns are good.
+- Normal turns 8-30 words; hard maximum 55 words. Alex's editorial setups and
+  questions should be 8-25 words, never a long explanation followed by 'thoughts?'.
+  Give Jamie and Rufus the explanatory facts. A short acknowledgment does not reset
+  Alex's airtime budget: require a substantive colleague response before he resumes.
 - Opening: after the music, interleave the welcome and lead facts with substantive
   responses. No consecutive Alex exposition totaling more than 45 words before a
   colleague contributes; the complete sponsor read is the exception. State the
@@ -1588,21 +1637,22 @@ Jamie, and Rufus with a short natural description of what each brings. Jamie and
 respond with personality. Alex previews the hot topics, starts the discussion, and lands
 the Ledger sponsor read at the first natural break before Segment 2.
 
-### SEGMENT 2 — The Human Case and the Receipts
-Alex and Jamie lead the deep-dive on the lead event and Story 2. Rufus enters for
+### SEGMENT 2 — Story One: The Lead Event
+Alex and Jamie lead the deep-dive on Story 1 only. Rufus enters for
 two or three compact challenges when their claims create a money, incentive or
 liability question. Jamie is Alex's intellectual equal, highly opinionated,
 competitive and warm. She may challenge Rufus directly and he must answer her.
 
-### SEGMENT 3 — Rufus on the Money, Power, and Permission
-Rufus takes the desk/on-location role on Story 3: follow the money, liability,
+### SEGMENT 3 — Story Two: Rufus on Money, Power, and People
+Rufus takes the desk/on-location role on Story 2: follow the money, liability,
 regulation, incentives, and geopolitical power. Alex challenges his assumptions;
 Jamie pushes the human consequence and gets at least two direct replies from Rufus.
 Let Rufus be smug, amused or mildly exasperated when earned, then make him support
 the line with a figure or incentive. No fake consensus or mandatory reversal.
 
-### SEGMENT 4 — The Pattern Across the Other Top AI Events
-Other events only where they prove or break the main argument. Fast, data-first. Build
+### SEGMENT 4 — Story Three: A New Development and Its Consequences
+Discuss Story 3 independently, with its own facts, disagreement and listener takeaway.
+Stories 4-5 may add fresh evidence if directly relevant. No return to the lead debate. Build
 the primary 20–45 second shareable exchange here unless another moment clearly earns it.
 Make that exchange understandable without the preceding discussion: name the subject,
 give a specific challenge, and land a concise factual or witty payoff. Do not end the
@@ -1779,16 +1829,16 @@ def _apply_topic_chapter_headers(
     lead = _short_chapter_label(_headline(stories[0]) if stories else "Today's AI Fight")
     actor = _lead_actor(stories) or "The Lead Story"
     story_three = _short_chapter_label(
-        _headline(stories[2]) if len(stories) > 2 else f"{actor}: Money, Power and Permission"
+        _headline(stories[1]) if len(stories) > 1 else "Second AI Story"
     )
     story_four = _short_chapter_label(
-        _headline(stories[3]) if len(stories) > 3 else "What the Other AI Stories Reveal"
+        _headline(stories[2]) if len(stories) > 2 else "Third AI Story"
     )
     labels = {
         1: lead or "Today's AI Fight",
-        2: f"{actor}: Human Stakes and Receipts",
-        3: f"{actor}: Costs, Power and Tradeoffs",
-        4: "The Other AI Stories: Testing the Lead Argument",
+        2: f"Story 1: {lead}",
+        3: f"Story 2: {story_three}",
+        4: f"Story 3: {story_four}",
         5: "The Edge: What Changed and What Happens Next",
     }
     out: List[str] = []
@@ -1852,8 +1902,7 @@ def _ensure_connection_elements(
     if len(lead_words) > 24:
         lead = " ".join(lead_words[:24]).rstrip(" ,;:-")
     lead_line = (
-        f"ALEX: Our lead story today is {lead}. That is the spine of this episode; "
-        "the other stories will test it."
+        f"ALEX: Our lead story today is {lead}."
     )
     music_index = next((i for i, line in enumerate(lines) if line.strip().upper() == "[MUSIC]"), -1)
     insertion = music_index + 1
@@ -1891,7 +1940,8 @@ def _ensure_connection_elements(
     spoken_in_five = [
         i for i in range(segment5 + 1, len(lines)) if SPEAKER_RE.match(lines[i].strip())
     ] if segment5 >= 0 else []
-    close_at = spoken_in_five[-2] if len(spoken_in_five) >= 2 else len(lines)
+    # Never split a written setup/comeback with the sponsor or follow CTA.
+    close_at = len(lines)
     lines[close_at:close_at] = closing_lines
     return _normalize_midroll("\n".join(lines).strip(), date_str)
 
@@ -2008,9 +2058,20 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     has_callback = bool(CALLBACK_RE.search(low))
 
     max_turn = 0
+    alex_run = 0
+    max_alex_run = 0
     for ln in spoken:
         m = SPEAKER_RE.match(ln)
         max_turn = max(max_turn, _word_count(m.group(2) if m else ln))
+        if m:
+            body = m.group(2)
+            if re.search(r"the ledger|t-h-e-l-e-d-g-r|subscribe", body, re.I):
+                alex_run = 0
+            elif m.group(1).upper() == "ALEX":
+                alex_run += _word_count(body)
+                max_alex_run = max(max_alex_run, alex_run)
+            elif _word_count(body) >= 8:
+                alex_run = 0
 
     seg2_match = re.search(
         r"^###\s*SEGMENT\s*2\b(.*?)^###\s*SEGMENT\s*3\b",
@@ -2222,6 +2283,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     ))
 
     soft: List[str] = []
+    if max_alex_run > 45:
+        soft.append(f"alex_extended_exposition ({max_alex_run} words before substantive reply)")
     for key, ok in gate.items():
         if key not in hard_gate_keys and not ok:
             soft.append(f"advisory_{key}")
@@ -2287,6 +2350,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
             "jamie_rufus_exchange_segments": sorted(jamie_rufus_exchange_segments),
             "spoken_production_language": spoken_production_language,
             "max_turn_words": max_turn,
+            "max_alex_exposition_words": max_alex_run,
             "title": title,
             "lead_actor": lead_actor,
         },
@@ -2304,6 +2368,9 @@ Do not invent facts. Do not add Signal Room language. Do not make it a lecture.
 Keep exact speaker labels and exactly one [MUSIC]. Preserve the sponsor read's
 facts, CTA, placement, and word cap. Let all three hosts challenge one another.
 Return the full script only.
+Repair extended Alex exposition by giving a fact or counterargument to Jamie or
+Rufus and letting Alex ask a short follow-up. Do not split his monologue into
+multiple ALEX labels and call that a conversation. Preserve three separate stories.
 
 Weak spots to fix: {json.dumps(assessment.get('soft_flags') or [], ensure_ascii=False)}
 
@@ -2429,9 +2496,9 @@ lines. Do not output a segment header, music cue, sponsor, intro, recap, or sign
 
 {CAST_CONNECTION_DIRECTION}
 
-The existing episode already established the lead argument. Deepen it using the strongest
-UNUSED source-backed facts or unresolved questions from Stories 4-5, and test whether they
-confirm or break the lead thesis. Do not repeat the existing Segment 4 below.
+Deepen Story 3 with UNUSED source-backed facts, an understandable example or unresolved
+question. Stories 4-5 may contribute only directly relevant evidence. Do not return to
+the lead debate or repeat the existing Segment 4 below. No argument padding.
 
 Chemistry:
 - Alex drives with the blunt question a listener is forming, then asks the harder follow-up.
@@ -2824,8 +2891,8 @@ def _marketing_pack(stories: List[Dict[str, Any]], date_str: str, listen_url: st
     desc = (
         f"{hook}\n\n"
         f"Alex, Jamie, and Rufus debate the biggest artificial intelligence news from "
-        f"the last 24–48 hours—not a headline list, but one lead story tested against "
-        f"the other top AI events.\n\nWhat we covered:\n{bullets}\n\n"
+        f"the last 24–48 hours, with three distinct stories, competing perspectives "
+        f"and practical takeaways.\n\nWhat we covered:\n{bullets}\n\n"
         f"{LISTENER_PROMISE}\n\n"
         f"The Edge: what changed, who wins, who is exposed, and what to watch next.\n\n"
         f"Listener question: {listener_question}\n\n"
@@ -2911,6 +2978,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 editorial_history_json=json.dumps(editorial_history, ensure_ascii=False),
             )
             selected, freshness = _freshen_story_order(selected, history)
+            selected = _three_story_order(selected)
             write_grounded_slate_report(selected, episode_date)
             _safe_print(
                 g,
@@ -2926,6 +2994,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             selected = _select_top_ai_events(intel_items, n=n)
             _, history = _load_continuity(g)
             selected, freshness = _freshen_story_order(selected, history)
+            selected = _three_story_order(selected)
         last_selected = selected
         try:
             path = g.get("STORY_SLATE_DECISION_PATH") or Path("story_slate_decision.json")
@@ -3005,6 +3074,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 "rufus_dry_lines_low", "jamie_rufus_direct_exchange_low",
                 "friction_low", "jamie_reactions_low", "jamie_comic_reactions_low",
                 "spoken_production_language", "shareable_exchange",
+                "alex_extended_exposition",
             )
         )
         if ENABLE_GROK_PUNCHUP and needs_connection_punchup:

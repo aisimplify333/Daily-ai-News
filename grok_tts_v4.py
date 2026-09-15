@@ -39,9 +39,16 @@ def _clean_text(text: str) -> str:
     return value
 
 
+def _pronunciation_text(text: str) -> str:
+    # Speech-only spelling. Keep names unchanged in the script/RSS/timeline.
+    # This configurable treatment needs a by-ear check on the next normal run.
+    spoken = os.getenv("GROK_AMODEI_PRONUNCIATION", "Ah-moh-day").strip()
+    return re.sub(r"\bAmodei\b", lambda _: spoken, text, flags=re.I) if spoken else text
+
+
 def _expressive_text(text: str, mood: str) -> str:
     """Give Jamie varied, earned comic reactions using documented Grok tags."""
-    clean = _clean_text(text)
+    clean = _pronunciation_text(_clean_text(text))
     mood = (mood or "neutral").strip().lower()
     if not clean:
         return clean
@@ -61,8 +68,7 @@ def _expressive_text(text: str, mood: str) -> str:
         return f"[{tag}] {spoken}".strip()
     if mood == "concern":
         return f"[breath] {clean}"
-    if mood in {"pushback", "interruption"} and not clean.lower().startswith(("wait", "hold on")):
-        return f"Wait. [pause] {clean}"
+    # Never invent spoken fillers. The writer owns every interruption and reply.
     if mood == "concession":
         return f"[pause] {clean}"
     return clean
@@ -70,7 +76,7 @@ def _expressive_text(text: str, mood: str) -> str:
 
 def _cache_key(text: str, voice: str, mood: str) -> str:
     raw = json.dumps(
-        {"text": text, "voice": voice, "mood": mood, "version": "grok-jamie-v2-comic-range"},
+        {"text": text, "voice": voice, "mood": mood, "version": "grok-jamie-v3-pronunciation"},
         sort_keys=True,
     )
     return hashlib.sha256(raw.encode("utf-8")).hexdigest()[:32]

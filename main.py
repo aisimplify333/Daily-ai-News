@@ -32,6 +32,7 @@ from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from openai import OpenAI
 from pydub import AudioSegment
+from broadcast_performance import performance_settings, measured_transition_checks
 
 from growth_engine import (
     MODEL_VERSION,
@@ -4917,10 +4918,12 @@ def _write_audio_qa_report(
     *,
     intro_present: bool,
     outro_present: bool,
+    timeline: Optional[Dict[str, object]] = None,
 ) -> Dict[str, object]:
     """Verify the navigational audio layer without making another model/TTS call."""
     music_markers = sum(1 for speaker, _ in iter_dialogue(script) if speaker == "MUSIC")
-    transition_count = max(0, music_markers - 1)
+    transition_measurements = measured_transition_checks(final_audio, timeline or {})
+    transition_count = sum(row["audible_level"] for row in transition_measurements)
     tail_ms = min(len(final_audio), max(4000, min(8000, OUTRO_MS)))
     tail = final_audio[-tail_ms:] if tail_ms else AudioSegment.silent(duration=1)
     tail_dbfs = round(float(tail.dBFS), 2) if tail.dBFS != float("-inf") else -120.0
@@ -4956,6 +4959,8 @@ def _write_audio_qa_report(
         "outro_tail_dbfs": tail_dbfs,
         "outro_tail_minimum_dbfs": -32.0,
         "transition_count": transition_count,
+        "script_transition_markers": max(0, music_markers - 1),
+        "transition_measurements": transition_measurements,
         "expected_transition_count": expected_transitions,
         "estimated_program_dynamic_range_db": dynamic_range_db,
         "note": "Completed audio is preserved on failure; this report never triggers a second paid render.",
@@ -6082,7 +6087,7 @@ def produce_episode() -> None:
         transition_seg = load_stinger(
             transition_asset,
             ms=TRANSITION_MS,
-            target_dbfs=STINGER_TARGET_DBFS,
+            target_dbfs=float(os.getenv("TRANSITION_TARGET_DBFS", "-16.0")),
             fade_in_ms=TRANSITION_FADE_IN_MS,
             fade_out_ms=TRANSITION_FADE_OUT_MS,
         )
@@ -6122,9 +6127,10 @@ def produce_episode() -> None:
                 if transition_seg is not None:
                     p = run_tmp / f"transition_{uuid.uuid4().hex[:8]}.mp3"
                     transition_seg.export(p, format="mp3", bitrate="192k")
+                    assembly_markers.append({"kind": "transition", "segment": assembly_segment, "start_index": len(concat_files), "end_index": len(concat_files) + 1})
                     concat_files.append(p)
-                    concat_files.append(silence_path)
-                    pending_segment_bed = True
+                    concat_files.append(sponsor_pause_path)
+                    pending_segment_bed = False
                 else:
                     concat_files.append(silence_path)
             continue
@@ -6205,14 +6211,17 @@ def produce_episode() -> None:
             post_process_tts_mp3(raw_path)
 
             final_voice_path = raw_path
-            speaker_speed = _voice_speed(speaker)
+            from hybrid_tts_router_v3_1 import infer_mood
+            performance_mood = infer_mood(chunk, speaker)
+            tempo_factor, level_delta = performance_settings(chunk, speaker, performance_mood)
+            speaker_speed = _voice_speed(speaker) * tempo_factor
             if abs(speaker_speed - 1.0) > 1e-6:
                 sped_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_spd.mp3"
                 apply_speed_ffmpeg(raw_path, sped_path, speaker_speed)
                 post_process_tts_mp3(sped_path)
                 final_voice_path = sped_path
 
-            gain_db = _voice_gain_db(speaker)
+            gain_db = _voice_gain_db(speaker) + level_delta
             if abs(gain_db) > 0.01:
                 gained_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_gain.mp3"
                 voice_seg = AudioSegment.from_file(final_voice_path).apply_gain(gain_db)
@@ -6268,7 +6277,7 @@ def produce_episode() -> None:
             else:
                 concat_files.append(final_voice_path)
 
-            assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "start_index": speech_start_index, "end_index": len(concat_files)})
+            assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "performance_mood": performance_mood, "tempo_factor": tempo_factor, "speed": speaker_speed, "level_delta_db": level_delta, "start_index": speech_start_index, "end_index": len(concat_files)})
             if sponsor_chunk:
                 concat_files.append(sponsor_pause_path)
             elif is_forwardable_line_text(chunk):
@@ -6366,13 +6375,6 @@ def produce_episode() -> None:
                 f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
             )
 
-    audio_qa = _write_audio_qa_report(
-        final_audio,
-        script,
-        intro_present=intro_stinger_seg is not None,
-        outro_present=outro_seg is not None,
-    )
-
     provisional_tracking = build_episode_tracking_payload(
         date_str=today,
         episode_title=stories[0].get("headline", RSS_SETTINGS["title"]),
@@ -6405,6 +6407,11 @@ def produce_episode() -> None:
         feed_title,
         duration_seconds,
         timeline=timeline,
+    )
+
+    audio_qa = _write_audio_qa_report(
+        final_audio, script, intro_present=intro_stinger_seg is not None,
+        outro_present=outro_seg is not None, timeline=timeline,
     )
 
     TRACKING_SUMMARY_PATH.write_text(json.dumps(tracking, indent=2, ensure_ascii=False), encoding="utf-8")
