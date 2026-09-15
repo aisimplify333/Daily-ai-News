@@ -1,5 +1,38 @@
 # The AI Edge production handoff
 
+## September 15 listener-first follow-up
+
+- Storyboard now requests three separate source-linked scene briefs: new development,
+  why today, competing interpretations, receipt, unknown, listener payoff and exchange
+  premise. Writer, punch-up, rescue and runtime repair share a listener-first direction.
+  These are prompts, not proof that the generated claims or performances are correct.
+- Explain the headline early instead of withholding the answer. Rufus's comedy is
+  based on observations and incentives; Jamie's drama comes from a specific challenge;
+  Alex connects the evidence to the listener. Remove canned fallback punchlines and
+  predetermined negative cast stances.
+- Removed low laugh/phrase/question-count requests from punch-up selection. Counts
+  remain non-authoritative telemetry. Exact repeated substantial sentences and severe
+  story imbalance now inform the existing bounded punch-up, without new blocking gates.
+- Runtime recovery selects the most underweight existing story using 40/30/30 weights,
+  rather than always extending Segment 4. It uses that story's source record, rejects
+  exact recycled lines and oversized add-ons, and preserves sponsor placement. Existing
+  model fallback and two-expansion-pass bounds remain. Additional prompt tokens may
+  change writing cost; this is not a claim of zero additional provider cost.
+- Removed the clip selector's unconditional Segment 4 bonus. Candidates still need
+  measured-audio verification and editorial listening; heuristic selection does not
+  establish that a clip makes sense alone or will be shared.
+- Offline checks cover balanced recovery, source isolation, sponsor boundaries,
+  repeated dialogue, nonblocking diagnostics and clip-location neutrality alongside
+  the existing production suite. No paid episode or ElevenLabs audition generated.
+- Read-only live check: main was 3241223 and its Pages run 35022758881 succeeded.
+  Latest scheduled production 34965515139 used earlier code and completed September 15
+  at 12:11 UTC / 08:11 Eastern, missing the 06:30 target. Cron remains 06:17 UTC;
+  scheduler lateness is not fixed by this editorial release.
+- Next normal episode, voice call logs, listening, Spotify arrival and audience
+  response still require verification. No 10/10 rating is established. ElevenLabs
+  balance and specialty performance auditions remain unverified; main cast routing
+  and production activation settings are preserved.
+
 ## September 15 listener-impact revision
 
 - Three independent stories across five segments: welcome, lead, second story,

@@ -63,6 +63,8 @@ import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from listener_editorial import EDITORIAL_DIRECTION, editorial_diagnostics, expansion_segment
+
 # ----------------------------------------------------------------------------
 # Config (env names preserved so the existing workflow needs no rewiring)
 # ----------------------------------------------------------------------------
@@ -1171,9 +1173,9 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
         "poll_options": ["Necessary progress", "Too much control", "Too early to tell"],
         "listener_promise": LISTENER_PROMISE,
         "positions": {
-            "alex": "Drives the room; presses for who is actually accountable.",
-            "jamie": "Argues the human cost is being treated as an acceptable rounding error.",
-            "rufus": "Argues the money and liability trail already tells you how this ends.",
+            "alex": "Asks what changed and what the evidence means for the listener.",
+            "jamie": "Tests the strongest claim against concrete human benefits and costs.",
+            "rufus": "Examines incentives and uncertainty; never assumes the outcome is known.",
         },
         "concession": {},
         "who_wins": "whoever controls distribution, permissions, data, or trust",
@@ -1197,10 +1199,8 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
             "Use at least six specific figures, dates, or named bodies across the episode",
             "Explain why each number changes someone's incentives",
         ],
-        "forwardable_targets": [
-            "The demo is not the story. The blame chain is the story.",
-            "If nobody owns the outcome, the AI is not ready for the workflow.",
-        ],
+        "forwardable_targets": [],
+        "story_scenes": [],
     }
 
     callbacks_txt = "\n".join(f"- {c}" for c in fuel.get("callbacks", [])) or "- (no prior episodes yet)"
@@ -1212,6 +1212,16 @@ AI debate podcast. Design today's episode. Do NOT write dialogue.
 Plan three distinct stories: Story 1 leads Segment 2, Story 2 owns Segment 3,
 and Story 3 owns Segment 4. Each needs its own stakes and takeaway. Allocate
 editorial discussion roughly 40/30/30; do not subordinate all three to one thesis.
+
+{EDITORIAL_DIRECTION}
+
+For each of the first three source records, prepare a concise story_scene with its
+source index and URL, what is NEW today, why it deserves airtime, competing readings,
+one specific sourced detail, what remains unknown, a listener consequence and a
+self-contained exchange premise. These are planning notes, never invented facts.
+A returning company needs a materially new development, not yesterday's argument.
+Do not reorder source records or fabricate additional reporting in this planning call.
+Keep each story scene under 70 words; keep other JSON fields concise.
 
 This show has three hosts who are PEOPLE, not functions:
 - ALEX drives, but can be wrong and can change his mind.
@@ -1277,7 +1287,14 @@ TITLE CONTRACT:
 Return exactly this JSON:
 {{
   "published_title": "6-14 words; lead entity plus specific listener benefit or decision, grounded in Story 1's action or number; follow TITLE CONTRACT; never starts with 'Today' and never the word 'lesson'",
-  "central_fight": "the core disagreement in one sentence",
+  "story_scenes": [{{"story_index": 1, "source_url": "exact supplied URL",
+    "new_development": "one sourced sentence", "why_today": "material change",
+    "question": "specific question", "competing_readings": ["strong case", "strong countercase"],
+    "receipt": "detail from this source", "unknown": "evidence limitation",
+    "listener_payoff": "practical consequence", "exchange_premise": "setup and useful payoff"}},
+    {{"story_index": 2, "instruction": "same fields for Story 2"}},
+    {{"story_index": 3, "instruction": "same fields for Story 3"}}],
+  "central_fight": "the lead disagreement in one sentence, not the thesis for every story",
   "opening_question": "the first hard audience question Alex asks after the short welcome",
   "listener_question": "one answerable listener poll question, maximum 140 characters",
   "poll_options": ["2-4 short, mutually distinct answers"],
@@ -1411,6 +1428,9 @@ def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]]
 
     return f"""Write the complete spoken script for {SHOW_TITLE} on {date_str}.
 
+STORY-SPECIFIC SCENES (planning only; source records remain authoritative):
+{json.dumps(board.get('story_scenes') or [], ensure_ascii=False, indent=2)}
+
 TITLE PAYOFF TO DELIVER: {board.get('published_title')}
 EPISODE-SPECIFIC LISTENER BENEFIT: {board.get('listener_promise', LISTENER_PROMISE)}
 Make this benefit clear naturally in Alex's opening, then answer the title's
@@ -1436,10 +1456,13 @@ EDITORIAL DNA — combine these disciplines without naming or imitating another 
   highly intelligent, opinionated equal who sees the human consequence and competes
   to win the argument; Rufus follows money, incentives, regulation, and power.
 - RUFUS'S BRITISH IDENTITY: Follow the character direction below, not a phrase quota.
-- CURIOSITY ENGINE: Alex's opening question creates a loop that Segment 5 finally
-  closes. Do not answer the headline in the first two minutes.
+- CURIOSITY ENGINE: Explain the headline early. Alex's opening question raises a
+  consequential uncertainty that later evidence explores; the closing delivers the
+  useful answer or makes the remaining uncertainty clear. No artificial withholding.
 
 {CAST_CONNECTION_DIRECTION}
+
+{EDITORIAL_DIRECTION}
 
 PUBLIC TITLE TO EARN:
 {board.get('published_title')}
@@ -2008,8 +2031,7 @@ def _find_shareable_exchange(script: str) -> Dict[str, Any]:
                 continue
             seconds = round(word_count * 60.0 / 145.0, 1)
             score = (
-                (3 if window[0]["segment"] == 4 else 0)
-                + len(speakers)
+                len(speakers)
                 + int(has_challenge)
                 + int(has_payoff)
                 + int(has_receipt_or_reversal)
@@ -2282,7 +2304,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         full, re.IGNORECASE | re.MULTILINE,
     ))
 
-    soft: List[str] = []
+    editorial = editorial_diagnostics(full)
+    soft: List[str] = list(editorial["flags"])
     if max_alex_run > 45:
         soft.append(f"alex_extended_exposition ({max_alex_run} words before substantive reply)")
     for key, ok in gate.items():
@@ -2291,20 +2314,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     jamie_comic_beats = len(re.findall(
         r"^JAMIE:\s*(?:ha|hah|heh)[.!]", full, re.IGNORECASE | re.MULTILINE
     ))
-    if jamie_comic_beats < 4:
-        soft.append(f"jamie_comic_reactions_low ({jamie_comic_beats}/4)")
-    elif jamie_comic_beats > 8:
+    if jamie_comic_beats > 8:
         soft.append(f"jamie_comic_reactions_excessive ({jamie_comic_beats}/8)")
-    if alex_q < 10:
-        soft.append(f"alex_audience_proxy_questions_low ({alex_q}/10)")
-    if jamie_react < 5:
-        soft.append(f"jamie_reactions_low ({jamie_react}/5)")
-    if rufus_dry < 6:
-        soft.append(f"rufus_dry_lines_low ({rufus_dry}/6)")
-    if friction < 4:
-        soft.append(f"friction_low ({friction}/4)")
-    if interruptions < 3:
-        soft.append(f"interruptions_low ({interruptions}/3)")
     if len(jamie_rufus_exchange_segments) < 2:
         soft.append(
             f"jamie_rufus_direct_exchange_low ({len(jamie_rufus_exchange_segments)}/2 segments)"
@@ -2330,6 +2341,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "score": signal,            # kept for backward-compat with build_episode_aircheck
         "target": KEYWORD_SIGNAL_TARGET,
         "metrics": {
+            "editorial_diagnostics": editorial,
             "words": words,
             "runtime_word_band": [min_episode_words, max_episode_words],
             "speaker_lines": len(spoken),
@@ -2376,6 +2388,8 @@ Weak spots to fix: {json.dumps(assessment.get('soft_flags') or [], ensure_ascii=
 
 {CAST_CONNECTION_DIRECTION}
 
+{EDITORIAL_DIRECTION}
+
 Board:
 {json.dumps(board, ensure_ascii=False, indent=2)}
 
@@ -2404,6 +2418,8 @@ Hard requirements:
 Return the full script only.
 
 {CAST_CONNECTION_DIRECTION}
+
+{EDITORIAL_DIRECTION}
 
 Board:
 {json.dumps(board, ensure_ascii=False, indent=2)}
@@ -2489,16 +2505,28 @@ def _native_expansion_prompt(
     date_str: str,
     board: Dict[str, Any],
     add_words: int,
+    segment: Optional[int] = None,
 ) -> str:
-    return f"""Write a {add_words - 75}-{add_words + 75} word dialogue ADD-ON for
-Segment 4 of {SHOW_TITLE} on {date_str}. Output only new ALEX:, JAMIE:, or RUFUS:
+    segment = segment or expansion_segment(script) or 4
+    story_index = segment - 2
+    source = stories[story_index:story_index + 1]
+    excerpt = re.search(
+        rf"^###\s*SEGMENT\s*{segment}\b(.*?)^###\s*SEGMENT\s*{segment + 1}\b",
+        script, re.I | re.M | re.S,
+    )
+    existing = excerpt.group(1).strip() if excerpt else ""
+    return f"""Write a {max(50, add_words - 75)}-{add_words + 75} word dialogue ADD-ON for
+Segment {segment} of {SHOW_TITLE} on {date_str}. Output only new ALEX:, JAMIE:, or RUFUS:
 lines. Do not output a segment header, music cue, sponsor, intro, recap, or signoff.
 
 {CAST_CONNECTION_DIRECTION}
 
-Deepen Story 3 with UNUSED source-backed facts, an understandable example or unresolved
-question. Stories 4-5 may contribute only directly relevant evidence. Do not return to
-the lead debate or repeat the existing Segment 4 below. No argument padding.
+{EDITORIAL_DIRECTION}
+
+Deepen Story {segment - 1} with UNUSED source-backed facts, an understandable example
+or an unresolved question. Stay within this story's source record. Do not repeat the
+existing episode or transfer another story's facts into this discussion. No padding.
+If no useful new material is supported, return no dialogue.
 
 Chemistry:
 - Alex drives with the blunt question a listener is forming, then asks the harder follow-up.
@@ -2520,11 +2548,14 @@ FACT FIREWALL:
 EPISODE ARGUMENT:
 {json.dumps(board, ensure_ascii=False, indent=2)}
 
-SOURCE RECORDS:
-{_story_lines(stories)}
+SOURCE RECORD FOR THIS STORY ONLY:
+{_story_lines(source)}
 
-EXISTING SEGMENT 4 — do not repeat:
-{_segment_four(script)}
+EXISTING SEGMENT {segment} — do not repeat:
+{existing}
+
+FULL EPISODE FOR REPETITION CHECK ONLY, NOT ADDITIONAL EVIDENCE:
+{script}
 """.strip()
 
 
@@ -2536,7 +2567,10 @@ def _expand_segment_four(
     board: Dict[str, Any],
     add_words: int,
 ) -> str:
-    prompt = _native_expansion_prompt(script, stories, date_str, board, add_words)
+    segment = expansion_segment(script)
+    if segment is None or len(stories) < segment - 1:
+        return script
+    prompt = _native_expansion_prompt(script, stories, date_str, board, add_words, segment)
     attempts = [
         ("anthropic", SCENE_WRITER_MODEL),
         ("anthropic", SCENE_WRITER_FALLBACK_MODEL),
@@ -2550,22 +2584,38 @@ def _expand_segment_four(
         addon = _dialogue_addon_only(raw)
         if not addon:
             continue
+        # A local check prevents literal recycled filler and runaway add-ons.
+        # Semantic factual/entertainment review remains separate.
+        existing_lines = {line.strip().casefold() for line in script.splitlines() if SPEAKER_RE.match(line.strip())}
+        if any(line.strip().casefold() in existing_lines for line in addon.splitlines()):
+            continue
+        if _word_count(addon) > add_words + 75:
+            continue
         if GENERIC_PANEL_RE.search(addon) or LEGACY_RITUAL_RE.search(addon):
             _safe_print(g, f"      ⚠️ rejected generic expansion from {model}")
             continue
         marker = re.search(
-            r"^###\s*SEGMENT\s*5\b",
+            rf"^###\s*SEGMENT\s*{segment + 1}\b",
             script,
             flags=re.IGNORECASE | re.MULTILINE,
         )
         if not marker:
             continue
+        insertion = marker.start()
+        # Keep an existing sponsor block at the story boundary, after new editorial
+        # dialogue. The normalizer later reasserts the rotating house midroll.
+        section_start = list(re.finditer(rf"^###\s*SEGMENT\s*{segment}\b", script, re.I | re.M))
+        if section_start:
+            ad = re.search(r"^(?:ALEX|JAMIE|RUFUS):.*(?:sponsor break|paid partner|brought to you by)",
+                           script[section_start[-1].end():insertion], re.I | re.M)
+            if ad:
+                insertion = section_start[-1].end() + ad.start()
         candidate = (
-            script[:marker.start()].rstrip() + "\n" + addon + "\n\n"
-            + script[marker.start():].lstrip()
+            script[:insertion].rstrip() + "\n" + addon + "\n\n"
+            + script[insertion:].lstrip()
         ).strip()
         if _word_count(candidate) > _word_count(script):
-            _safe_print(g, f"      ✅ focused Segment 4 expansion applied: {model}")
+            _safe_print(g, f"      ✅ focused Segment {segment} expansion applied: {model}")
             return candidate
     return script
 
@@ -2684,6 +2734,8 @@ def _runtime_condense_prompt(
 repetition, throat-clearing, and duplicate explanation. Do not expand anything.
 
 {CAST_CONNECTION_DIRECTION}
+
+{EDITORIAL_DIRECTION}
 
 This is an editorial compression pass, not a rewrite:
 - Preserve all five segment headers, their order, exactly one [MUSIC], every verified
@@ -3074,7 +3126,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 "rufus_dry_lines_low", "jamie_rufus_direct_exchange_low",
                 "friction_low", "jamie_reactions_low", "jamie_comic_reactions_low",
                 "spoken_production_language", "shareable_exchange",
-                "alex_extended_exposition",
+                "alex_extended_exposition", "story_pacing_", "recycled_dialogue",
+                "repeated_stale_phrase", "jamie_comic_reactions_excessive",
             )
         )
         if ENABLE_GROK_PUNCHUP and needs_connection_punchup:
@@ -3148,7 +3201,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 _safe_print(
                     g,
                     f"      🧩 runtime underrun ({final_words} words); "
-                    f"deepening Segment 4 with sourced debate (pass {pad_attempt}/2)",
+                    f"deepening the underweight story with sourced debate (pass {pad_attempt}/2)",
                 )
                 expanded = _expand_segment_four(
                     g, script, stories, date_str, board, add_words=needed
