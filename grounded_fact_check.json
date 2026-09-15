@@ -1,125 +1,73 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-14",
+  "date": "2026-09-15",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-14",
-    "pass": false,
-    "critical_errors": [
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "China's Foreign Ministry rejected the whole premise of being told to slow down.",
-        "evidence_quote": "Beijing hits back at Anthropic CEO’s call to curb China's AI development",
-        "exact_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the opposite on Saturday. And this morning, China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.",
-        "replacement_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the industry should slow down on Saturday for safety. And this morning, China's Foreign Ministry pushed back on Amodei's call to curb China's AI development.",
-        "reason": "This line misstates the AP reporting by collapsing two separate claims into one and by attributing an unsupported 'reject the whole premise' formulation to China's Foreign Ministry. AP says Trump played down checks and worried about ceding America's edge; Amodei said the industry should slow development for safety; AP's China story says Beijing hit back at Amodei's call to curb China's AI development, not that it rejected a generalized 'slow down' premise in those exact terms.",
-        "source_url": "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Nasdaq futures fell because of the China/AI race story.",
-        "evidence_quote": "U.S. futures fell as calls grow louder for a slowdown in artificial intelligence development",
-        "exact_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to answer: does the threat of losing an AI race to China make it rational to skip the safety checks — or is that the most expensive shortcut in history?",
-        "replacement_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to test is whether the threat of losing an AI race to China makes people more willing to skip safety checks — or whether that becomes the most expensive shortcut in history.",
-        "reason": "The 1.6% Nasdaq futures move is supported, but the causal framing that the market move was driven by the China/AI race story should be treated carefully because AP only says futures fell as calls grew louder for a slowdown in AI development and does not establish direct causation from Trump's remarks alone.",
-        "source_url": "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
-      }
-    ],
+    "date": "2026-09-15",
+    "pass": true,
+    "critical_errors": [],
     "warnings": [
-      "The sponsor read is excluded per instructions, but the script repeats sponsor copy later in the episode; that later mention was not fact-checked here.",
-      "The line 'Trump said on Sunday that America should not slow its AI development to avoid losing ground to China' is a paraphrase of AP reporting, but AP's article also includes Trump's own words about guardrails and 'whoever wins AI wins'; if you want maximum precision, consider tightening the paraphrase.",
-      "The script says the AP story 'notes that Anthropic and OpenAI are both preparing for potential public-market debuts.' AP does say they are preparing for possible debuts on the stock market, but OpenAI's Sam Altman also said the company would not IPO this year. The line is broadly accurate but compresses nuance.",
-      "The script says 'China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.' The supporting AP article is specifically about Beijing hitting back at Amodei's call to curb China's AI development; the broader rhetorical generalization is stronger than the source.",
-      "The script's repeated references to 'extinction debate' and 'escape human control' are supported by AP's framing story, but any stronger causal or predictive statements about actual extinction risk should be treated as opinion rather than fact.",
-      "Advisory only; no reviewable factual correction: The AP headline and article say Trump downplayed the need to check AI development and said he doesn't want to cede the edge to China. 'New AI checks' is an interpretive paraphrase, but the second clause is accurate enough; no critical error here."
+      "The line about New York City and Los Angeles pausing student AI use for 'a year' is supported by AP, but AP’s framing is a one-year moratorium / pause while they study the technology; your script’s wording is acceptable, though slightly compressed.",
+      "The statement that Microsoft’s student privacy rules have 'legal standing attached to them' is directionally supported by Microsoft’s own announcement and AP’s reporting on a 'National AI Safety & Privacy Standard' with legally enforceable protections, but that still does not mean every implementation detail is externally audited.",
+      "The script’s causal language linking market softness to Microsoft’s internal code of conduct is editorially defensible as inference, but the source reporting supports only that AI stocks fell after industry leaders called for a slowdown, not that Microsoft’s code itself moved markets.",
+      "Several claims about the federal posture, Congressional timing, and the absence of external enforcement are argumentatively framed and not directly stated in the sources; they should be treated as opinion unless separately verified.",
+      "Advisory only; no reviewable factual correction: This sponsor-read line is outside the editorial-audit scope you provided, so it should not be checked or corrected in this task."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/trump-artificial-intelligence-guardrails-china-midterms-congress-9df0ebb4c1b0619aa0f88057b5a1092d",
-      "https://apnews.com/article/anthropic-ai-dario-amodei-d59552edcb27892d8ee4d98a48397706",
-      "https://apnews.com/article/artificial-intelligence-threats-humanity-anthropic-openai-98316b0d64de17191f33c0fbf1d37858",
-      "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8",
-      "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
+      "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
+      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28",
+      "https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9",
+      "https://apnews.com/article/123ddc2d8ba06c324cbbd899f7eeebd2",
+      "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
+      "https://microsoft.ai/news/mai-code-of-conduct/",
+      "https://news.microsoft.com/source/2026/09/09/aft-uft-and-microsoft-announce-national-ai-safety-privacy-standard-for-schools-to-protect-students-families-and-educators/"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-14",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "China's Foreign Ministry rejected the whole premise of being told to slow down.",
-          "evidence_quote": "Beijing hits back at Anthropic CEO’s call to curb China's AI development",
-          "exact_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the opposite on Saturday. And this morning, China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.",
-          "replacement_line": "ALEX: Here's what we're fighting about today. Trump said on Sunday that America should not slow its AI development to avoid losing ground to China. Dario Amodei said the industry should slow down on Saturday for safety. And this morning, China's Foreign Ministry pushed back on Amodei's call to curb China's AI development.",
-          "reason": "This line misstates the AP reporting by collapsing two separate claims into one and by attributing an unsupported 'reject the whole premise' formulation to China's Foreign Ministry. AP says Trump played down checks and worried about ceding America's edge; Amodei said the industry should slow development for safety; AP's China story says Beijing hit back at Amodei's call to curb China's AI development, not that it rejected a generalized 'slow down' premise in those exact terms.",
-          "source_url": "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Nasdaq futures fell because of the China/AI race story.",
-          "evidence_quote": "U.S. futures fell as calls grow louder for a slowdown in artificial intelligence development",
-          "exact_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to answer: does the threat of losing an AI race to China make it rational to skip the safety checks — or is that the most expensive shortcut in history?",
-          "replacement_line": "ALEX: Markets opened ugly — Nasdaq futures down one point six percent. The question the whole episode is going to test is whether the threat of losing an AI race to China makes people more willing to skip safety checks — or whether that becomes the most expensive shortcut in history.",
-          "reason": "The 1.6% Nasdaq futures move is supported, but the causal framing that the market move was driven by the China/AI race story should be treated carefully because AP only says futures fell as calls grew louder for a slowdown in AI development and does not establish direct causation from Trump's remarks alone.",
-          "source_url": "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
-        }
-      ],
-      "warnings": [
-        "The sponsor read is excluded per instructions, but the script repeats sponsor copy later in the episode; that later mention was not fact-checked here.",
-        "The line 'Trump said on Sunday that America should not slow its AI development to avoid losing ground to China' is a paraphrase of AP reporting, but AP's article also includes Trump's own words about guardrails and 'whoever wins AI wins'; if you want maximum precision, consider tightening the paraphrase.",
-        "The script says the AP story 'notes that Anthropic and OpenAI are both preparing for potential public-market debuts.' AP does say they are preparing for possible debuts on the stock market, but OpenAI's Sam Altman also said the company would not IPO this year. The line is broadly accurate but compresses nuance.",
-        "The script says 'China's Foreign Ministry weighed in to say they reject the whole premise of being told to slow down.' The supporting AP article is specifically about Beijing hitting back at Amodei's call to curb China's AI development; the broader rhetorical generalization is stronger than the source.",
-        "The script's repeated references to 'extinction debate' and 'escape human control' are supported by AP's framing story, but any stronger causal or predictive statements about actual extinction risk should be treated as opinion rather than fact.",
-        "Advisory only; no reviewable factual correction: The AP headline and article say Trump downplayed the need to check AI development and said he doesn't want to cede the edge to China. 'New AI checks' is an interpretive paraphrase, but the second clause is accurate enough; no critical error here."
-      ],
-      "verified_source_urls": [
-        "https://apnews.com/article/trump-artificial-intelligence-guardrails-china-midterms-congress-9df0ebb4c1b0619aa0f88057b5a1092d",
-        "https://apnews.com/article/anthropic-ai-dario-amodei-d59552edcb27892d8ee4d98a48397706",
-        "https://apnews.com/article/artificial-intelligence-threats-humanity-anthropic-openai-98316b0d64de17191f33c0fbf1d37858",
-        "https://apnews.com/article/china-anthropic-ai-us-amodei-3da458d2c078da3e60900728d59f1ae8",
-        "https://apnews.com/article/stocks-markets-oil-ai-rates-0b44bfb43960c6ae850567c0c4e5003a"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-09-14",
+      "date": "2026-09-15",
       "pass": true,
       "critical_errors": [],
       "warnings": [
-        "The sponsor read is ignored per instructions, but the later non-sponsor references to The Ledger are editorially fine only if the script is treating it as an ad; if it is intended as a factual product claim, it is unsupported by the supplied sources.",
-        "The script says 'this morning' and 'today' in multiple places. Given the episode date is 2026-09-14, that is consistent, but if this were republished later those deictics would become stale.",
-        "The line 'On September eleventh, Rufus, you argued...' is a cross-episode callback and cannot be verified from the supplied records; it is not necessarily false, just unverified here.",
-        "The claim that the AP cybersecurity advisory 'warn[s] about Chinese efforts to extract capabilities from leading U.S. AI models' is supported only in the supplied summary, not directly quoted in the opened AP excerpts; it appears plausible but should be treated as lightly sourced unless you have the underlying advisory."
+        "The line about New York City and Los Angeles pausing student AI use for 'a year' is supported by AP, but AP’s framing is a one-year moratorium / pause while they study the technology; your script’s wording is acceptable, though slightly compressed.",
+        "The statement that Microsoft’s student privacy rules have 'legal standing attached to them' is directionally supported by Microsoft’s own announcement and AP’s reporting on a 'National AI Safety & Privacy Standard' with legally enforceable protections, but that still does not mean every implementation detail is externally audited.",
+        "The script’s causal language linking market softness to Microsoft’s internal code of conduct is editorially defensible as inference, but the source reporting supports only that AI stocks fell after industry leaders called for a slowdown, not that Microsoft’s code itself moved markets.",
+        "Several claims about the federal posture, Congressional timing, and the absence of external enforcement are argumentatively framed and not directly stated in the sources; they should be treated as opinion unless separately verified.",
+        "Advisory only; no reviewable factual correction: This sponsor-read line is outside the editorial-audit scope you provided, so it should not be checked or corrected in this task."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/9df0ebb4c1b0619aa0f88057b5a1092d",
-        "https://apnews.com/article/d59552edcb27892d8ee4d98a48397706",
-        "https://apnews.com/article/98316b0d64de17191f33c0fbf1d37858",
-        "https://apnews.com/article/3da458d2c078da3e60900728d59f1ae8",
-        "https://apnews.com/article/0b44bfb43960c6ae850567c0c4e5003a"
+        "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
+        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28",
+        "https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9",
+        "https://apnews.com/article/123ddc2d8ba06c324cbbd899f7eeebd2",
+        "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
+        "https://microsoft.ai/news/mai-code-of-conduct/",
+        "https://news.microsoft.com/source/2026/09/09/aft-uft-and-microsoft-announce-national-ai-safety-privacy-standard-for-schools-to-protect-students-families-and-educators/"
       ]
     }
   ],
-  "replacements_applied": 2,
+  "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-14",
+    "date": "2026-09-15",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The sponsor read is ignored per instructions, but the later non-sponsor references to The Ledger are editorially fine only if the script is treating it as an ad; if it is intended as a factual product claim, it is unsupported by the supplied sources.",
-      "The script says 'this morning' and 'today' in multiple places. Given the episode date is 2026-09-14, that is consistent, but if this were republished later those deictics would become stale.",
-      "The line 'On September eleventh, Rufus, you argued...' is a cross-episode callback and cannot be verified from the supplied records; it is not necessarily false, just unverified here.",
-      "The claim that the AP cybersecurity advisory 'warn[s] about Chinese efforts to extract capabilities from leading U.S. AI models' is supported only in the supplied summary, not directly quoted in the opened AP excerpts; it appears plausible but should be treated as lightly sourced unless you have the underlying advisory."
+      "The line about New York City and Los Angeles pausing student AI use for 'a year' is supported by AP, but AP’s framing is a one-year moratorium / pause while they study the technology; your script’s wording is acceptable, though slightly compressed.",
+      "The statement that Microsoft’s student privacy rules have 'legal standing attached to them' is directionally supported by Microsoft’s own announcement and AP’s reporting on a 'National AI Safety & Privacy Standard' with legally enforceable protections, but that still does not mean every implementation detail is externally audited.",
+      "The script’s causal language linking market softness to Microsoft’s internal code of conduct is editorially defensible as inference, but the source reporting supports only that AI stocks fell after industry leaders called for a slowdown, not that Microsoft’s code itself moved markets.",
+      "Several claims about the federal posture, Congressional timing, and the absence of external enforcement are argumentatively framed and not directly stated in the sources; they should be treated as opinion unless separately verified.",
+      "Advisory only; no reviewable factual correction: This sponsor-read line is outside the editorial-audit scope you provided, so it should not be checked or corrected in this task."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/9df0ebb4c1b0619aa0f88057b5a1092d",
-      "https://apnews.com/article/d59552edcb27892d8ee4d98a48397706",
-      "https://apnews.com/article/98316b0d64de17191f33c0fbf1d37858",
-      "https://apnews.com/article/3da458d2c078da3e60900728d59f1ae8",
-      "https://apnews.com/article/0b44bfb43960c6ae850567c0c4e5003a"
+      "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
+      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28",
+      "https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9",
+      "https://apnews.com/article/123ddc2d8ba06c324cbbd899f7eeebd2",
+      "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
+      "https://microsoft.ai/news/mai-code-of-conduct/",
+      "https://news.microsoft.com/source/2026/09/09/aft-uft-and-microsoft-announce-national-ai-safety-privacy-standard-for-schools-to-protect-students-families-and-educators/"
     ]
   },
   "pass": true,

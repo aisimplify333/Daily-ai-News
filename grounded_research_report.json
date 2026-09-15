@@ -1,87 +1,33 @@
 {
-  "episode_date": "2026-09-14",
+  "episode_date": "2026-09-15",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-12T12:59:35.905893+00:00",
-  "window_end": "2026-09-14T12:59:35.905893+00:00",
+  "window_start": "2026-09-13T11:53:44.835530+00:00",
+  "window_end": "2026-09-15T11:53:44.835530+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "duplicate_event": 1,
-        "duplicate": 1,
-        "outside_freshness_window": 2
+        "outside_freshness_window": 3
       },
       "rejected_examples": [
         {
-          "headline": "AP reports U.S. futures fall as AI backlash weighs on tech stocks",
-          "published_at": "2026-09-14T05:09:37Z",
-          "reason": "duplicate_event"
-        },
-        {
-          "headline": "AP says Trump rejects tighter AI oversight despite industry safety warnings",
-          "published_at": "2026-09-13T17:44:22Z",
-          "reason": "duplicate"
-        },
-        {
-          "headline": "AP reports California already signed AI-chatbot and social-media child protection laws just before the window",
-          "published_at": "2026-09-10T20:42:28Z",
+          "headline": "OpenAI says it will not go public in 2026, citing AI safety concerns",
+          "published_at": "2026-09-12T19:50:44-04:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "AP reports Anthropic research resignation adds to safety concerns in AI competition",
-          "published_at": "2026-09-09T18:53:24Z",
+          "headline": "Microsoft, teachers\u2019 unions announce national AI safety and privacy standard for schools",
+          "published_at": "2026-09-09T00:00:00-04:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Apple says Siri AI is delayed in the EU on iOS 27 and iPadOS 27 because of the DMA",
+          "published_at": "2026-06-08T00:00:00+00:00",
           "reason": "outside_freshness_window"
         }
       ],
-      "candidates": 8,
-      "accepted_total": 4,
-      "trusted_total": 4
-    },
-    {
-      "stage": "alternate_refill",
-      "rejections": {
-        "duplicate": 2,
-        "outside_freshness_window": 5
-      },
-      "rejected_examples": [
-        {
-          "headline": "Anthropic CEO says AI industry needs to give safety measures time to catch up",
-          "published_at": "2026-09-12T16:37:39Z",
-          "reason": "duplicate"
-        },
-        {
-          "headline": "OpenAI CEO backs slower AI development in weekend safety debate",
-          "published_at": "2026-09-14T04:09:36Z",
-          "reason": "duplicate"
-        },
-        {
-          "headline": "OpenAI researchers question as senators press company over Hugging Face breach",
-          "published_at": "2026-09-10T21:35:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Nvidia confirms acquisition of Hugging Face for $12.93 billion",
-          "published_at": "2026-09-03T05:42:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Meta launches personal AI agent Muse with safety and privacy emphasis",
-          "published_at": "2026-09-08T00:00:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Anthropic details AI distillation campaigns tied to Alibaba, Moonshot AI, and DeepSeek",
-          "published_at": "2026-09-10T13:57:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Mistral raises \u20ac3 billion as sovereign AI demand grows",
-          "published_at": "2026-09-08T07:17:00Z",
-          "reason": "outside_freshness_window"
-        }
-      ],
-      "candidates": 8,
-      "accepted_total": 5,
+      "candidates": 9,
+      "accepted_total": 6,
       "trusted_total": 5
     }
   ],

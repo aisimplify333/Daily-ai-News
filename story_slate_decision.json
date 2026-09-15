@@ -1,49 +1,47 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-09-14",
+  "date": "2026-09-15",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
-    "changed": true,
-    "lookback_episodes": 6,
-    "previous_lead_actor": "AWS",
-    "previous_argument_family": "security",
-    "original_lead": "Anthropic CEO urges slower AI development as safety risks intensify",
-    "selected_lead": "Trump downplays new AI checks, saying the U.S. should not cede its edge to China",
+    "changed": false,
+    "lookback_episodes": 7,
+    "previous_lead_actor": "China",
+    "previous_argument_family": "policy",
+    "original_lead": "Microsoft unveils draft AI code of conduct to keep systems under human control",
+    "selected_lead": "Microsoft unveils draft AI code of conduct to keep systems under human control",
     "candidates": [
       {
-        "headline": "Trump downplays new AI checks, saying the U.S. should not cede its edge to China",
-        "score": 90.0,
-        "actor": "Anthropic",
-        "argument_family": "policy",
+        "headline": "Microsoft unveils draft AI code of conduct to keep systems under human control",
+        "score": 100.0,
+        "actor": "Microsoft",
+        "argument_family": "infrastructure",
         "penalties": []
       },
       {
-        "headline": "Anthropic CEO urges slower AI development as safety risks intensify",
-        "score": 82.0,
-        "actor": "OpenAI",
-        "argument_family": "models",
+        "headline": "AP reports Trump dismissed AI risk warnings as a 'hoax' and attack on data centers",
+        "score": 86.0,
+        "actor": "White House",
+        "argument_family": "security",
         "penalties": []
       },
       {
-        "headline": "AP reports caution over AI risks revives long-running extinction debate",
+        "headline": "AP reports Microsoft committed to sweeping AI privacy rules for students",
         "score": 70.0,
-        "actor": "",
+        "actor": "Microsoft",
         "argument_family": "other",
         "penalties": []
       },
       {
-        "headline": "AP says Beijing rebukes Anthropic chief’s call to curb China’s AI development",
-        "score": 58.0,
-        "actor": "Anthropic",
-        "argument_family": "security",
-        "penalties": [
-          "same argument family as previous episode"
-        ]
+        "headline": "AP says AI-linked stocks fell after industry leaders called for slowing development",
+        "score": 62.0,
+        "actor": "OpenAI",
+        "argument_family": "money",
+        "penalties": []
       },
       {
-        "headline": "US futures fall as AI blowback weighs on tech stocks",
-        "score": 42.0,
-        "actor": "OpenAI",
+        "headline": "AP reports the Gates Foundation pledged $1 billion to expand AI access while warning about inequality",
+        "score": 60.0,
+        "actor": "SEC",
         "argument_family": "money",
         "penalties": []
       }
@@ -52,112 +50,105 @@
   "selected": [
     {
       "rank": 1,
-      "headline": "Trump downplays new AI checks, saying the U.S. should not cede its edge to China",
-      "publisher": "Associated Press",
+      "headline": "Microsoft unveils draft AI code of conduct to keep systems under human control",
+      "publisher": "Reuters",
       "top_event_score": null,
-      "story_age_hours": 19.25,
+      "story_age_hours": 22.8,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/9df0ebb4c1b0619aa0f88057b5a1092d"
+      "source_url": "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/"
     },
     {
       "rank": 2,
-      "headline": "Anthropic CEO urges slower AI development as safety risks intensify",
+      "headline": "AP reports Trump dismissed AI risk warnings as a 'hoax' and attack on data centers",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 44.37,
+      "story_age_hours": 21.65,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/d59552edcb27892d8ee4d98a48397706"
+      "source_url": "https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9"
     },
     {
       "rank": 3,
-      "headline": "AP reports caution over AI risks revives long-running extinction debate",
+      "headline": "AP reports Microsoft committed to sweeping AI privacy rules for students",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 8.83,
+      "story_age_hours": 7.85,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/98316b0d64de17191f33c0fbf1d37858"
+      "source_url": "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
     },
     {
       "rank": 4,
-      "headline": "AP says Beijing rebukes Anthropic chief’s call to curb China’s AI development",
+      "headline": "AP says AI-linked stocks fell after industry leaders called for slowing development",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 3.52,
+      "story_age_hours": 8.91,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/3da458d2c078da3e60900728d59f1ae8"
+      "source_url": "https://apnews.com/article/123ddc2d8ba06c324cbbd899f7eeebd2"
     },
     {
       "rank": 5,
-      "headline": "US futures fall as AI blowback weighs on tech stocks",
+      "headline": "AP reports the Gates Foundation pledged $1 billion to expand AI access while warning about inequality",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 7.83,
+      "story_age_hours": 7.87,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/0b44bfb43960c6ae850567c0c4e5003a"
+      "source_url": "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "China's AI Policy Shift: What Should Users Watch?",
-    "central_fight": "Does the U.S. government's push to maintain an AI edge over China justify ignoring industry warnings about the need for a development pause?",
-    "opening_question": "If the President is prioritizing national dominance over the safety pauses requested by Anthropic, are we effectively choosing a faster race to the bottom?",
-    "listener_question": "Does the threat of losing an AI race to China make you more or less comfortable with companies skipping safety-focused development delays?",
+    "published_title": "Microsoft’s New Internal AI Code: Why Your Control Matters More Than Theirs",
+    "central_fight": "Does Microsoft’s internal code of conduct represent a meaningful safeguard for human oversight or merely a PR shield to deflect from broader industry-wide regulatory pressure?",
+    "opening_question": "Is Microsoft’s new internal code of conduct a genuine commitment to keeping AI under human control, or just a way to preempt external regulation?",
+    "listener_question": "Do you trust internal corporate codes of conduct to keep AI under human control, or do you only trust government-enforced regulations?",
     "poll_options": [
-      "More comfortable (National security first)",
-      "Less comfortable (Safety must come first)",
-      "Unsure/It depends on the specific risk"
+      "Trust internal company codes",
+      "Trust government regulation only",
+      "Trust neither"
     ],
-    "listener_promise": "You will understand the trade-off between geopolitical AI supremacy and the internal industry calls for safety-led development pauses.",
+    "listener_promise": "By the end of this episode, you will understand whether Microsoft's internal governance policy offers real protection or if it's a strategic move to avoid stricter external oversight.",
     "positions": {
-      "alex": "Argues that in a zero-sum geopolitical environment, the U.S. cannot afford a unilateral slowdown; maintaining the technological lead is the only way to ensure our own safety standards define the global future.",
-      "jamie": "Argues that 'national edge' is a dangerous excuse to ignore the warnings of experts who see the tech becoming unmanageable, warning that we are prioritizing speed over the ability to actually control the systems we build.",
-      "rufus": "Argues that the market is already pricing in the volatility of this policy clash, noting that the real risk isn't just the AI, but the massive capital destruction in tech stocks caused by the uncertainty of these competing narratives."
+      "alex": "Argues that Microsoft's internal code is a vital, proactive step that sets a necessary standard for the industry, proving that companies can self-regulate effectively before government intervention becomes stifling.",
+      "jamie": "Argues that internal codes are inherently toothless because they lack independent enforcement, serving as a 'safety theater' that distracts from the real need for public, transparent oversight.",
+      "rufus": "Argues that the policy is a calculated move to manage liability and satisfy institutional investors concerned about the volatility of AI-related risks, rather than a genuine shift in safety philosophy."
     },
     "concession": {
       "host": "alex",
-      "gives_ground_on": "Admits that the market reaction—specifically the 1.6% drop in Nasdaq futures—shows that investors are currently more spooked by the regulatory instability than they are reassured by the promise of a competitive edge."
+      "gives_ground_on": "Admits that internal policies lack the legal teeth of the student privacy rules Microsoft recently committed to, acknowledging that 'governance' is not the same as 'compliance'."
     },
-    "who_wins": "The geopolitical hawks who view AI development as a proxy for military and economic sovereignty.",
-    "who_is_exposed": "Tech investors and chip manufacturers like Nvidia and Intel who are caught in the crossfire of policy-driven market volatility.",
-    "normal_person_payoff": "You will learn how to distinguish between political posturing and actual safety risks when you hear leaders call for 'slowing down' or 'speeding up' AI.",
+    "who_wins": "The legal and compliance departments at Microsoft, who now have a documented framework to mitigate future litigation risks.",
+    "who_is_exposed": "The average user who might mistake a company's internal policy for a legally binding safety guarantee.",
+    "normal_person_payoff": "You will learn to distinguish between 'internal governance'—which is company-controlled—and 'regulatory compliance,' which is the only thing that actually protects your data.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "Long-term human safety and the integrity of AI development.",
-      "rufus_value": "Short-term market stability and the protection of capital assets.",
-      "point_of_collision": "Whether the government should mandate a development slowdown despite the potential impact on U.S. tech stock valuations."
+      "jamie_value": "Public accountability and the right to transparent, enforceable safety standards.",
+      "rufus_value": "Operational efficiency and the reduction of legal liability for large-scale tech enterprises.",
+      "point_of_collision": "Whether Microsoft should be allowed to define its own safety parameters for internal AI while simultaneously lobbying against broader, more restrictive government oversight."
     },
     "rufus_global_markets_desk": {
       "market_or_region": "New York",
       "companies_or_assets": [
-        "Nvidia",
-        "Intel",
-        "Broadcom",
-        "Texas Instruments",
-        "AMD",
-        "S&P 500",
-        "Nasdaq"
+        "Microsoft",
+        "AI-linked stocks"
       ],
-      "capital_policy_or_infrastructure_move": "Market sell-off triggered by industry-wide calls for development pauses and geopolitical tension.",
+      "capital_policy_or_infrastructure_move": "The cooling of AI-linked stocks following industry calls for development slowdowns, contrasted with Microsoft's internal governance push.",
       "dated_market_receipts": [
-        "S&P 500 futures fell 0.7% on 2026-09-14",
-        "Nasdaq futures fell 1.6% on 2026-09-14",
-        "Nvidia fell 2.7% on 2026-09-14",
-        "Intel fell nearly 6% on 2026-09-14"
+        "2026-09-14",
+        "2026-09-15"
       ]
     },
     "mandatory_receipts": [
-      "President Trump stated on 2026-09-13 that the U.S. should not slow AI development to avoid ceding an edge to China.",
-      "Anthropic CEO Dario Amodei called for a slowdown in AI development on 2026-09-12 to allow safety measures to catch up.",
-      "China's Foreign Ministry rejected Amodei's call to curb China's AI capabilities on 2026-09-14."
+      "Microsoft published a draft code of conduct for its in-house AI on September 14, 2026.",
+      "AP reported that Microsoft committed to sweeping AI privacy rules for students.",
+      "Global shares traded lower on September 15, 2026, following industry calls to slow AI development."
     ],
     "forwardable_targets": [
-      "Geopolitics is the new safety ceiling for AI.",
-      "When the President and the CEO disagree on speed, the market pays the price."
+      "Internal codes are not safety guarantees; they are liability management tools.",
+      "If the company writes the rules, the company can rewrite them when the profit motive shifts."
     ],
-    "_episode_date": "2026-09-14"
+    "_episode_date": "2026-09-15"
   }
 }
