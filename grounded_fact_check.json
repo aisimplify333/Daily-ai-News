@@ -1,75 +1,320 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-15",
+  "date": "2026-09-16",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-15",
-    "pass": true,
-    "critical_errors": [],
+    "date": "2026-09-16",
+    "pass": false,
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Mark Zuckerberg said the industry doesn't need anyone's help staying safe.",
+        "evidence_quote": "competition and liability give AI companies enough reason to act safely",
+        "exact_line": "ALEX: Mark Zuckerberg says the industry doesn't need anyone's help staying safe. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
+        "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
+        "reason": "This line conflates two separate stories and overstates Zuckerberg's Reuters remarks. Reuters reported that Zuckerberg said competition and liability give AI companies enough reason to act safely; it did not say he claimed the industry does not need anyone's help staying safe. The ByteDance fundraising claim is supported, but the Zuckerberg clause is materially misstated.",
+        "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "AI industry leaders have agreed development needs to slow down for safety reasons.",
+        "evidence_quote": "AI industry's leaders have recently agreed that AI development needs to slow down for safety reasons.",
+        "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have agreed development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
+        "replacement_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
+        "reason": "The AP record says leaders have recently said development needs to slow down, but 'have agreed' overstates consensus and commitment. The line also paraphrases the report accurately on implementation difficulty and Washington lag, but the first clause is too strong and implies a formal shared agreement.",
+        "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+      }
+    ],
     "warnings": [
-      "The line about New York City and Los Angeles pausing student AI use for 'a year' is supported by AP, but AP’s framing is a one-year moratorium / pause while they study the technology; your script’s wording is acceptable, though slightly compressed.",
-      "The statement that Microsoft’s student privacy rules have 'legal standing attached to them' is directionally supported by Microsoft’s own announcement and AP’s reporting on a 'National AI Safety & Privacy Standard' with legally enforceable protections, but that still does not mean every implementation detail is externally audited.",
-      "The script’s causal language linking market softness to Microsoft’s internal code of conduct is editorially defensible as inference, but the source reporting supports only that AI stocks fell after industry leaders called for a slowdown, not that Microsoft’s code itself moved markets.",
-      "Several claims about the federal posture, Congressional timing, and the absence of external enforcement are argumentatively framed and not directly stated in the sources; they should be treated as opinion unless separately verified.",
-      "Advisory only; no reviewable factual correction: This sponsor-read line is outside the editorial-audit scope you provided, so it should not be checked or corrected in this task."
+      "The ByteDance valuation of $1.5 billion appears only in the supplied source record summary, not in the directly cited Reuters excerpt available from the search result; treat that figure as less fully verified unless you have the underlying Reuters text.",
+      "Several lines paraphrase the AP story as if it were a formal industry consensus. The sourced record supports a recent convergence on safety, but not a binding agreement or unanimous position.",
+      "The script repeatedly asserts or implies that Washington, Trump, or Congress are not moving quickly. That is supported by the AP source in general, but those are live political judgments rather than fixed facts.",
+      "Advisory only; no reviewable factual correction: Sponsor read is excluded from audit unless it makes a concrete numerical or regulated-product claim."
     ],
     "verified_source_urls": [
-      "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
-      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28",
-      "https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9",
-      "https://apnews.com/article/123ddc2d8ba06c324cbbd899f7eeebd2",
-      "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
-      "https://microsoft.ai/news/mai-code-of-conduct/",
-      "https://news.microsoft.com/source/2026/09/09/aft-uft-and-microsoft-announce-national-ai-safety-privacy-standard-for-schools-to-protect-students-families-and-educators/"
+      "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
+      "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
+      "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
+      "https://apnews.com/article/d2d1bac8e8666c681937665596a4f603",
+      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-15",
-      "pass": true,
-      "critical_errors": [],
+      "date": "2026-09-16",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Mark Zuckerberg said the industry doesn't need anyone's help staying safe.",
+          "evidence_quote": "competition and liability give AI companies enough reason to act safely",
+          "exact_line": "ALEX: Mark Zuckerberg says the industry doesn't need anyone's help staying safe. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
+          "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
+          "reason": "This line conflates two separate stories and overstates Zuckerberg's Reuters remarks. Reuters reported that Zuckerberg said competition and liability give AI companies enough reason to act safely; it did not say he claimed the industry does not need anyone's help staying safe. The ByteDance fundraising claim is supported, but the Zuckerberg clause is materially misstated.",
+          "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "AI industry leaders have agreed development needs to slow down for safety reasons.",
+          "evidence_quote": "AI industry's leaders have recently agreed that AI development needs to slow down for safety reasons.",
+          "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have agreed development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
+          "replacement_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
+          "reason": "The AP record says leaders have recently said development needs to slow down, but 'have agreed' overstates consensus and commitment. The line also paraphrases the report accurately on implementation difficulty and Washington lag, but the first clause is too strong and implies a formal shared agreement.",
+          "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+        }
+      ],
       "warnings": [
-        "The line about New York City and Los Angeles pausing student AI use for 'a year' is supported by AP, but AP’s framing is a one-year moratorium / pause while they study the technology; your script’s wording is acceptable, though slightly compressed.",
-        "The statement that Microsoft’s student privacy rules have 'legal standing attached to them' is directionally supported by Microsoft’s own announcement and AP’s reporting on a 'National AI Safety & Privacy Standard' with legally enforceable protections, but that still does not mean every implementation detail is externally audited.",
-        "The script’s causal language linking market softness to Microsoft’s internal code of conduct is editorially defensible as inference, but the source reporting supports only that AI stocks fell after industry leaders called for a slowdown, not that Microsoft’s code itself moved markets.",
-        "Several claims about the federal posture, Congressional timing, and the absence of external enforcement are argumentatively framed and not directly stated in the sources; they should be treated as opinion unless separately verified.",
-        "Advisory only; no reviewable factual correction: This sponsor-read line is outside the editorial-audit scope you provided, so it should not be checked or corrected in this task."
+        "The ByteDance valuation of $1.5 billion appears only in the supplied source record summary, not in the directly cited Reuters excerpt available from the search result; treat that figure as less fully verified unless you have the underlying Reuters text.",
+        "Several lines paraphrase the AP story as if it were a formal industry consensus. The sourced record supports a recent convergence on safety, but not a binding agreement or unanimous position.",
+        "The script repeatedly asserts or implies that Washington, Trump, or Congress are not moving quickly. That is supported by the AP source in general, but those are live political judgments rather than fixed facts.",
+        "Advisory only; no reviewable factual correction: Sponsor read is excluded from audit unless it makes a concrete numerical or regulated-product claim."
       ],
       "verified_source_urls": [
-        "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
-        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28",
-        "https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9",
-        "https://apnews.com/article/123ddc2d8ba06c324cbbd899f7eeebd2",
-        "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
-        "https://microsoft.ai/news/mai-code-of-conduct/",
-        "https://news.microsoft.com/source/2026/09/09/aft-uft-and-microsoft-announce-national-ai-safety-privacy-standard-for-schools-to-protect-students-families-and-educators/"
+        "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
+        "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
+        "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
+        "https://apnews.com/article/d2d1bac8e8666c681937665596a4f603",
+        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-09-16",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Reuters reported the fundraise on September 16, with people familiar with the matter putting the valuation at $1.5 billion.",
+          "evidence_quote": "Reuters reported the fundraising amount as $290 million. Reuters-related coverage put the unit's valuation at $1.5 billion.",
+          "exact_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, with people familiar with the matter putting the valuation at one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
+          "replacement_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
+          "reason": "This episode line says the fundraise happened on September 16 and that Reuters reported a $1.5 billion valuation, but the supplied source record only supports Reuters reporting the $290 million fundraise on September 16 and says the $1.5 billion valuation came from related coverage, not necessarily the same Reuters item cited here. The line compresses and overstates the sourcing.",
+          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The people inheriting the risk are the clinical trial participants and eventually the patients — not the investors.",
+          "evidence_quote": "there are existing FDA frameworks for drug approvals that apply regardless of whether AI is involved in the discovery process",
+          "exact_line": "ALEX: Right. Because that means the people inheriting the risk are the clinical trial participants and eventually the patients — not the investors who funded the model that generated the candidate.",
+          "replacement_line": "ALEX: Right. Because that means the clinical-trial and patient risk still sits downstream of the AI discovery process, while the investors are funding a candidate pipeline that still has to clear existing FDA oversight.",
+          "reason": "This is an overbroad causal claim. The sourced record only says existing FDA frameworks apply to drug approvals regardless of AI in discovery, and that the AI layer is largely unregulated; it does not support the assertion that investors do not inherit risk or that risk is borne only by trial participants and patients.",
+          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        }
+      ],
+      "warnings": [
+        "The script repeatedly attributes precise motives to executives and investors, which are interpretive rather than directly verifiable; these are acceptable as opinionated commentary but should be treated cautiously.",
+        "The line 'AP was clear: this remains a live policy debate, not a binding regulatory outcome' is supported by the source record, but it is a paraphrase of the AP summary rather than a direct quote.",
+        "The Microsoft-school privacy discussion is not directly sourced in the provided records beyond the AP summary; if kept, ensure it matches the exact Microsoft announcement and AP framing if you later verify it against source material."
+      ],
+      "verified_source_urls": [
+        "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
+        "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
+        "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
+        "https://apnews.com/article/d2d1bac8e8666c681937665596a4f603",
+        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-09-16",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "ByteDance's AI drug unit just spun off and raised $290 million.",
+          "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
+          "exact_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
+          "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And Reuters reported ByteDance's AI drug unit completed a $290 million fundraising after a spin-off.",
+          "reason": "This line combines two supported claims, but the ByteDance fundraising is not attributable to an AP/Reuters primary source in the supplied records. The script also presents the fundraising as current fact without the source qualifier that Reuters-related coverage and records provide.",
+          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "AP reported that AI industry leaders said development needs to slow down for safety reasons and that Washington's response is lagging.",
+          "evidence_quote": "The leading AI industry voices rarely agree - so when they do, it's no wonder it captures attention. ... The consensus came after ... [they] said in recent days that AI's development needs to slow down. ... obstacles including domestic and global competition ... and pushback from President Donald Trump all stand in the way.",
+          "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
+          "replacement_line": "RUFUS: To be precise, AP reported that several leading AI voices have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been lagging.",
+          "reason": "The AP source supports the broad idea, but this line overstates 'development needs to slow down' as AP's direct reported conclusion and compresses multiple separate AP points into a stronger, more categorical claim than the record supports.",
+          "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Reuters reported Zuckerberg saying competition and liability already give AI companies enough reason to act safely.",
+          "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
+          "exact_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying competition and liability already give AI companies enough reason to act safely. We'll dig into that collision in a moment. But first —",
+          "replacement_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying AI companies already have enough incentive to build safely. We'll dig into that collision in a moment. But first —",
+          "reason": "The date is correct, but the line implies Reuters reported the exact phrasing as a direct quote rather than a reported position. The source records say Zuckerberg said AI labs already have enough incentive to build safely.",
+          "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Zuckerberg said AI labs already have enough incentive to build safely.",
+          "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
+          "exact_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI labs already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
+          "replacement_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI companies already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
+          "reason": "This is broadly supported, but 'AI labs already have enough incentive to build safely' should be tied to Reuters' report of Zuckerberg's view, and the script later treats it as a direct factual finding about the industry rather than his stated opinion.",
+          "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Related coverage put the unit's valuation around $1.1 billion.",
+          "evidence_quote": "Reuters-related coverage put the unit's valuation at $1.5 billion.",
+          "exact_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-one billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
+          "replacement_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
+          "reason": "The valuation is wrong in this line. The source record says related coverage put the valuation at $1.5 billion, not $1.1 billion.",
+          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The fundraising is a serious signal of investor appetite.",
+          "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
+          "exact_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a serious signal of appetite.",
+          "replacement_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a big vote of confidence.",
+          "reason": "The valuation amount is correct, but this line asserts investor intent and market meaning as fact. The source records only support that funding occurred and the valuation was reported; they do not establish investors' motives or a confirmed 'signal of appetite.'",
+          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "There is no verified track record from ByteDance's unit specifically, and the funding does not show clinical progress.",
+          "evidence_quote": "The report was based on people with knowledge of the matter, not a company press release.",
+          "exact_line": "JAMIE: And that premise is compelling and also largely unproven at scale. We don't have a verified track record from ByteDance's unit specifically. Reuters cited sources, not a company announcement. So we know the capital moved. We don't know what it bought in terms of actual clinical progress.",
+          "replacement_line": "JAMIE: And that premise is compelling and also largely unproven at scale. Reuters cited sources, not a company announcement, so we know the capital moved, but not what it bought in terms of actual clinical progress.",
+          "reason": "The first sentence is an opinion, but the line also states as fact that there is no verified track record and no clinical progress information. The source records do not establish either absence.",
+          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The funded candidate pipeline must clear existing FDA oversight, and clinical-trial/patient risk sits downstream of AI discovery.",
+          "evidence_quote": "there are existing FDA frameworks for drug approvals that apply regardless of whether AI is involved in the discovery process.",
+          "exact_line": "ALEX: Right. Because that means the clinical-trial and patient risk still sits downstream of the AI discovery process, while the investors are funding a candidate pipeline that still has to clear existing FDA oversight.",
+          "replacement_line": "ALEX: Right. Because existing FDA frameworks still apply to the drug approval process, even if the AI system helped with discovery. The investor money is backing a pipeline that still has to get through that oversight.",
+          "reason": "This line implies a concrete regulatory structure specific to the AI discovery pipeline beyond what the source records establish. The supplied record only supports that existing FDA frameworks apply to drug approvals regardless of AI involvement, not this broader 'candidate pipeline' description.",
+          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Microsoft agreed not to train on student data, with a narrow safety exception.",
+          "evidence_quote": "Microsoft says it will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students.",
+          "exact_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student data, with a narrow safety exception. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
+          "replacement_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student or educator data, with a narrow exception for data that could help protect students. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
+          "reason": "The source record says Microsoft will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students. The line omits educator data and slightly narrows the exception, which is a factual inaccuracy.",
+          "source_url": "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+        }
+      ],
+      "warnings": [
+        "The sponsor read was not audited per instructions.",
+        "Several lines make causal or predictive claims about future regulatory backlash, competitive dynamics, or investor behavior; these are framed as analysis and were not marked unless they asserted unsupported concrete facts.",
+        "The script repeatedly treats AP/Reuters reporting as if it were direct confirmation of motives or future outcomes; these are mostly editorial judgments and not necessarily factual errors."
+      ],
+      "verified_source_urls": [
+        "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
+        "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
+        "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
+        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
       ]
     }
   ],
-  "replacements_applied": 0,
+  "replacements_applied": 4,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-15",
-    "pass": true,
-    "critical_errors": [],
+    "date": "2026-09-16",
+    "pass": false,
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "ByteDance's AI drug unit just spun off and raised $290 million.",
+        "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
+        "exact_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
+        "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And Reuters reported ByteDance's AI drug unit completed a $290 million fundraising after a spin-off.",
+        "reason": "This line combines two supported claims, but the ByteDance fundraising is not attributable to an AP/Reuters primary source in the supplied records. The script also presents the fundraising as current fact without the source qualifier that Reuters-related coverage and records provide.",
+        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "AP reported that AI industry leaders said development needs to slow down for safety reasons and that Washington's response is lagging.",
+        "evidence_quote": "The leading AI industry voices rarely agree - so when they do, it's no wonder it captures attention. ... The consensus came after ... [they] said in recent days that AI's development needs to slow down. ... obstacles including domestic and global competition ... and pushback from President Donald Trump all stand in the way.",
+        "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
+        "replacement_line": "RUFUS: To be precise, AP reported that several leading AI voices have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been lagging.",
+        "reason": "The AP source supports the broad idea, but this line overstates 'development needs to slow down' as AP's direct reported conclusion and compresses multiple separate AP points into a stronger, more categorical claim than the record supports.",
+        "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Reuters reported Zuckerberg saying competition and liability already give AI companies enough reason to act safely.",
+        "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
+        "exact_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying competition and liability already give AI companies enough reason to act safely. We'll dig into that collision in a moment. But first —",
+        "replacement_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying AI companies already have enough incentive to build safely. We'll dig into that collision in a moment. But first —",
+        "reason": "The date is correct, but the line implies Reuters reported the exact phrasing as a direct quote rather than a reported position. The source records say Zuckerberg said AI labs already have enough incentive to build safely.",
+        "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Zuckerberg said AI labs already have enough incentive to build safely.",
+        "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
+        "exact_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI labs already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
+        "replacement_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI companies already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
+        "reason": "This is broadly supported, but 'AI labs already have enough incentive to build safely' should be tied to Reuters' report of Zuckerberg's view, and the script later treats it as a direct factual finding about the industry rather than his stated opinion.",
+        "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Related coverage put the unit's valuation around $1.1 billion.",
+        "evidence_quote": "Reuters-related coverage put the unit's valuation at $1.5 billion.",
+        "exact_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-one billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
+        "replacement_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
+        "reason": "The valuation is wrong in this line. The source record says related coverage put the valuation at $1.5 billion, not $1.1 billion.",
+        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The fundraising is a serious signal of investor appetite.",
+        "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
+        "exact_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a serious signal of appetite.",
+        "replacement_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a big vote of confidence.",
+        "reason": "The valuation amount is correct, but this line asserts investor intent and market meaning as fact. The source records only support that funding occurred and the valuation was reported; they do not establish investors' motives or a confirmed 'signal of appetite.'",
+        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "There is no verified track record from ByteDance's unit specifically, and the funding does not show clinical progress.",
+        "evidence_quote": "The report was based on people with knowledge of the matter, not a company press release.",
+        "exact_line": "JAMIE: And that premise is compelling and also largely unproven at scale. We don't have a verified track record from ByteDance's unit specifically. Reuters cited sources, not a company announcement. So we know the capital moved. We don't know what it bought in terms of actual clinical progress.",
+        "replacement_line": "JAMIE: And that premise is compelling and also largely unproven at scale. Reuters cited sources, not a company announcement, so we know the capital moved, but not what it bought in terms of actual clinical progress.",
+        "reason": "The first sentence is an opinion, but the line also states as fact that there is no verified track record and no clinical progress information. The source records do not establish either absence.",
+        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The funded candidate pipeline must clear existing FDA oversight, and clinical-trial/patient risk sits downstream of AI discovery.",
+        "evidence_quote": "there are existing FDA frameworks for drug approvals that apply regardless of whether AI is involved in the discovery process.",
+        "exact_line": "ALEX: Right. Because that means the clinical-trial and patient risk still sits downstream of the AI discovery process, while the investors are funding a candidate pipeline that still has to clear existing FDA oversight.",
+        "replacement_line": "ALEX: Right. Because existing FDA frameworks still apply to the drug approval process, even if the AI system helped with discovery. The investor money is backing a pipeline that still has to get through that oversight.",
+        "reason": "This line implies a concrete regulatory structure specific to the AI discovery pipeline beyond what the source records establish. The supplied record only supports that existing FDA frameworks apply to drug approvals regardless of AI involvement, not this broader 'candidate pipeline' description.",
+        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Microsoft agreed not to train on student data, with a narrow safety exception.",
+        "evidence_quote": "Microsoft says it will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students.",
+        "exact_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student data, with a narrow safety exception. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
+        "replacement_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student or educator data, with a narrow exception for data that could help protect students. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
+        "reason": "The source record says Microsoft will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students. The line omits educator data and slightly narrows the exception, which is a factual inaccuracy.",
+        "source_url": "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+      }
+    ],
     "warnings": [
-      "The line about New York City and Los Angeles pausing student AI use for 'a year' is supported by AP, but AP’s framing is a one-year moratorium / pause while they study the technology; your script’s wording is acceptable, though slightly compressed.",
-      "The statement that Microsoft’s student privacy rules have 'legal standing attached to them' is directionally supported by Microsoft’s own announcement and AP’s reporting on a 'National AI Safety & Privacy Standard' with legally enforceable protections, but that still does not mean every implementation detail is externally audited.",
-      "The script’s causal language linking market softness to Microsoft’s internal code of conduct is editorially defensible as inference, but the source reporting supports only that AI stocks fell after industry leaders called for a slowdown, not that Microsoft’s code itself moved markets.",
-      "Several claims about the federal posture, Congressional timing, and the absence of external enforcement are argumentatively framed and not directly stated in the sources; they should be treated as opinion unless separately verified.",
-      "Advisory only; no reviewable factual correction: This sponsor-read line is outside the editorial-audit scope you provided, so it should not be checked or corrected in this task."
+      "The sponsor read was not audited per instructions.",
+      "Several lines make causal or predictive claims about future regulatory backlash, competitive dynamics, or investor behavior; these are framed as analysis and were not marked unless they asserted unsupported concrete facts.",
+      "The script repeatedly treats AP/Reuters reporting as if it were direct confirmation of motives or future outcomes; these are mostly editorial judgments and not necessarily factual errors."
     ],
     "verified_source_urls": [
-      "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
-      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28",
-      "https://apnews.com/article/b85df16775ff7e9611a456b061a0e4b9",
-      "https://apnews.com/article/123ddc2d8ba06c324cbbd899f7eeebd2",
-      "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
-      "https://microsoft.ai/news/mai-code-of-conduct/",
-      "https://news.microsoft.com/source/2026/09/09/aft-uft-and-microsoft-announce-national-ai-safety-privacy-standard-for-schools-to-protect-students-families-and-educators/"
+      "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
+      "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
+      "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
+      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
     ]
   },
-  "pass": true,
+  "pass": false,
   "blocking": false
 }

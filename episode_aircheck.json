@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-15",
+  "date": "2026-09-16",
   "show": "The AI Edge",
   "score": 97,
   "target_band": "88-95",
@@ -11,13 +11,13 @@
     "no_duplicate_story_family": true,
     "no_blank_story_slots": true,
     "title_quality": true,
-    "description_quality": true,
+    "description_quality": false,
     "sponsor_quality": false,
     "forwardable_moments": true,
     "learning_arc": false,
     "scene_shape": false,
     "signal_or_static": false,
-    "real_humor_or_banter": false,
+    "real_humor_or_banter": true,
     "no_monologue": false,
     "not_summary_heavy": true,
     "malformed_metadata": true
@@ -25,18 +25,18 @@
   "lead_heat": 8.0,
   "receipt_scores": [
     6,
-    8,
-    7,
     6,
-    7
+    8,
+    4,
+    6
   ],
-  "summary_heavy_ratio": 0.027,
+  "summary_heavy_ratio": 0.0,
   "duplicate_family_risk": false,
   "blank_story_slot": false,
-  "forwardable_count": 7,
-  "forwardable_target_hits": 6,
+  "forwardable_count": 5,
+  "forwardable_target_hits": 4,
   "sponsor": {
-    "date": "2026-09-15",
+    "date": "2026-09-16",
     "TheLEDGR_Readout_present": false,
     "brand_present": true,
     "spoken_url_present": true,
@@ -44,17 +44,17 @@
     "main_read_present": true,
     "main_read_speaker": "ALEX",
     "rotating_end_tag_present": true,
-    "rotating_end_tag_speaker": "JAMIE",
+    "rotating_end_tag_speaker": "RUFUS",
     "sponsor_bed_expected": false,
     "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
     "readout_answers": {
       "what_changed": true,
       "who_wins": true,
-      "who_is_exposed": false,
-      "operator_tomorrow": false
+      "who_is_exposed": true,
+      "operator_tomorrow": true
     },
-    "sponsor_tone_score": 6,
-    "strongest_story": "Microsoft unveils draft AI code of conduct to keep systems under human control"
+    "sponsor_tone_score": 8,
+    "strongest_story": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules"
   },
   "lesson_card": {
     "show_name": "The AI Edge",
@@ -63,20 +63,20 @@
     "big_question": "When does a viral dev tool stop being a toy and start becoming leverage?",
     "simple_analogy": "one clever repo turning into a forklift for every developer who was previously carrying boxes by hand",
     "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
-    "hard_receipt": "2026-09-14T09:06:00-04:00",
+    "hard_receipt": "2026-09-16T04:14:35+00:00",
     "listener_payoff": "By the end, listeners should understand developer leverage well enough to explain why today's AI story matters tomorrow.",
     "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-    "episode_spine": "Microsoft unveils draft AI code of conduct to keep systems under human control is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
+    "episode_spine": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
     "titles": {
       "spotify_title": "When Developers Clone the Future Before Companies Can Sell It",
       "youtube_title": "A Viral AI Code Clone Just Showed Where Developer Power Is Moving",
       "social_hook": "The clone is not the point. The leverage shift is.",
       "operator_title": "Today’s AI Lesson: Developer Leverage",
-      "archive_title": "Microsoft unveils draft AI code of conduct to keep systems under human control — Developer Leverage Explained"
+      "archive_title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while — Developer Leverage Explained"
     }
   },
-  "title": "Microsoft’s New Internal AI Code: Why Your Control Matters More Than Theirs",
-  "description_first_180": "Does Microsoft’s internal code of conduct represent a meaningful safeguard for human oversight or merely a PR shield to deflect from broader industry-wide regulatory pressure?",
+  "title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
+  "description_first_180": "What changed in AI today, who gained power, and who is exposed tomorrow?",
   "note": "V3.0 brutal aircheck. No fake 90s: missing moments, scene shape, humor, sponsor pronunciation, or title/story alignment hard-cap the score before TTS/audio.",
   "v3_3_assessment": {
     "version": "v3.3-connection-first",
@@ -116,9 +116,8 @@
       "continuity_callback": true
     },
     "soft_flags": [
+      "alex_extended_exposition (89 words before substantive reply)",
       "advisory_prior_listener_question_or_poll_acknowledged",
-      "jamie_comic_reactions_low (2/4)",
-      "alex_audience_proxy_questions_low (8/10)",
       "repeated_stale_phrase: 'the consequence before consensus catches up'",
       "repeated_stale_phrase: 'consequence before consensus catches up'"
     ],
@@ -127,15 +126,31 @@
     "score": 97,
     "target": 84,
     "metrics": {
-      "words": 3596,
+      "editorial_diagnostics": {
+        "basis": "transcript heuristics only; no listening or audience measurement",
+        "blocking": false,
+        "story_words": {
+          "2": 896,
+          "3": 907,
+          "4": 773
+        },
+        "story_word_shares": {
+          "2": 0.348,
+          "3": 0.352,
+          "4": 0.3
+        },
+        "repeated_sentences": [],
+        "flags": []
+      },
+      "words": 3726,
       "runtime_word_band": [
         3550,
         4350
       ],
-      "speaker_lines": 147,
+      "speaker_lines": 136,
       "segments": 5,
-      "receipts": 7,
-      "concessions": 1,
+      "receipts": 9,
+      "concessions": 0,
       "callback_present": true,
       "show_follow_cta_count": 1,
       "competing_show_cta": false,
@@ -143,63 +158,64 @@
       "shareable_exchange": {
         "passed": true,
         "segment": 4,
-        "estimated_seconds": 43.4,
-        "word_count": 105,
+        "estimated_seconds": 41.4,
+        "word_count": 100,
         "speakers": [
           "ALEX",
           "JAMIE",
           "RUFUS"
         ],
-        "score": 9,
+        "score": 6,
         "turns": [
           {
             "segment": 4,
             "block": 11,
-            "speaker": "JAMIE",
-            "text": "Right? Either Microsoft is genuinely worried, or they read the political weather and decided a self-authored code looks better than a regulation they can't author."
-          },
-          {
-            "segment": 4,
-            "block": 11,
             "speaker": "RUFUS",
-            "text": "Those options are not mutually exclusive, Jamie."
+            "text": "Which doesn't make them wrong. It makes them the most credible available reporting. The two-hundred-and-ninety-million figure and the one-point-five billion valuation are what we have."
           },
           {
             "segment": 4,
             "block": 11,
             "speaker": "JAMIE",
-            "text": "No, but the motive changes what the document is worth."
+            "text": "My question is who's in that two-hundred-and-ninety million. Because biotech AI investment has attracted a mix of genuinely long-horizon investors and people chasing the category regardless of the underlying science."
           },
           {
             "segment": 4,
             "block": 11,
             "speaker": "RUFUS",
-            "text": "Let me take us to New York for a moment, because the market told us something this morning. AP reported global shares lower on September 15th after AI stocks fell on Wall Street. The catalyst, per AP, was Sam Altman and other industry leaders publicly floating the idea of slowing AI development."
+            "text": "Reuters doesn't specify the investor composition."
+          },
+          {
+            "segment": 4,
+            "block": 11,
+            "speaker": "JAMIE",
+            "text": "Which is a detail that matters enormously for whether this unit ends up with the patience it needs to actually do drug discovery, versus the pressure to show near-term returns."
           },
           {
             "segment": 4,
             "block": 11,
             "speaker": "ALEX",
-            "text": "Industry leaders calling for a slowdown moved markets. That's the sentence."
+            "text": "Is there a geopolitical angle here that isn't just —"
           }
         ],
         "test": "Would this exact exchange make sense and feel worth sending without the full episode?"
       },
-      "alex_questions": 8,
-      "jamie_reactions": 7,
-      "jamie_comic_beats": 2,
-      "rufus_dry_lines": 6,
-      "friction_beats": 5,
-      "interruptions": 66,
+      "alex_questions": 16,
+      "jamie_reactions": 5,
+      "jamie_comic_beats": 1,
+      "rufus_dry_lines": 14,
+      "friction_beats": 4,
+      "interruptions": 52,
       "jamie_rufus_exchange_segments": [
         2,
         3,
         4
       ],
       "spoken_production_language": false,
-      "max_turn_words": 55,
-      "title": "Microsoft’s New Internal AI Code: Why Your Control Matters More Than Theirs",
-      "lead_actor": "Microsoft"
+      "max_turn_words": 56,
+      "max_alex_exposition_words": 89,
+      "title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
+      "lead_actor": ""
     }
   },
   "passed": true,

@@ -4,25 +4,25 @@
   "cost": "zero-model-calls",
   "feed": "feed.xml",
   "newest_episode": {
-    "title": "Microsoft’s New Internal AI Code: Why Your Control Matters More Than Theirs",
-    "description_chars": 1701,
-    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-15.mp3",
-    "pub_date": "Tue, 15 Sep 2026 12:00:00 -0000",
-    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-15.mp3"
+    "title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new",
+    "description_chars": 1592,
+    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-16.mp3",
+    "pub_date": "Wed, 16 Sep 2026 12:00:00 -0000",
+    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-16.mp3"
   },
-  "audio_path": "episode_audio/podcast_2026-09-15.mp3",
-  "duration_minutes": 22.099,
+  "audio_path": "episode_audio/podcast_2026-09-16.mp3",
+  "duration_minutes": 22.559,
   "cost_metrics": {
-    "tts_characters_total": 21206,
+    "tts_characters_total": 21969,
     "tts_characters_by_speaker": {
-      "ALEX": 8125,
-      "JAMIE": 6057,
-      "RUFUS": 7024
+      "ALEX": 7327,
+      "JAMIE": 6456,
+      "RUFUS": 8186
     },
-    "grok_estimated_cost_usd": 0.08484,
+    "grok_estimated_cost_usd": 0.09684,
     "grok_cache_hits": 0,
     "fallback_count": 0,
-    "provider_calls": 132
+    "provider_calls": 128
   },
   "checks": {
     "stop_scroll_title": "passed",
@@ -36,6 +36,12 @@
     "audio_window": "passed"
   },
   "failures": [],
-  "warnings": [],
+  "warnings": [
+    {
+      "reason": "title_word_count",
+      "found": 17,
+      "expected": "3-14"
+    }
+  ],
   "recovery": "Completed audio is preserved. Repair packaging and rerun this gate; do not regenerate TTS."
 }
