@@ -1,11 +1,11 @@
 {
-  "date": "2026-09-16",
+  "date": "2026-09-17",
   "show": "The AI Edge",
   "score": 97,
   "target_band": "88-95",
   "pass": true,
   "checks": {
-    "lead_story_heat": false,
+    "lead_story_heat": true,
     "lead_receipts": true,
     "story_variety": false,
     "no_duplicate_story_family": true,
@@ -17,26 +17,26 @@
     "learning_arc": false,
     "scene_shape": false,
     "signal_or_static": false,
-    "real_humor_or_banter": true,
+    "real_humor_or_banter": false,
     "no_monologue": false,
     "not_summary_heavy": true,
     "malformed_metadata": true
   },
-  "lead_heat": 8.0,
+  "lead_heat": 50.0,
   "receipt_scores": [
     6,
+    7,
     6,
-    8,
-    4,
+    6,
     6
   ],
-  "summary_heavy_ratio": 0.0,
+  "summary_heavy_ratio": 0.007,
   "duplicate_family_risk": false,
   "blank_story_slot": false,
-  "forwardable_count": 5,
-  "forwardable_target_hits": 4,
+  "forwardable_count": 6,
+  "forwardable_target_hits": 5,
   "sponsor": {
-    "date": "2026-09-16",
+    "date": "2026-09-17",
     "TheLEDGR_Readout_present": false,
     "brand_present": true,
     "spoken_url_present": true,
@@ -44,17 +44,17 @@
     "main_read_present": true,
     "main_read_speaker": "ALEX",
     "rotating_end_tag_present": true,
-    "rotating_end_tag_speaker": "RUFUS",
+    "rotating_end_tag_speaker": "JAMIE",
     "sponsor_bed_expected": false,
     "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
     "readout_answers": {
       "what_changed": true,
       "who_wins": true,
       "who_is_exposed": true,
-      "operator_tomorrow": true
+      "operator_tomorrow": false
     },
-    "sponsor_tone_score": 8,
-    "strongest_story": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules"
+    "sponsor_tone_score": 7,
+    "strongest_story": "OpenAI will regularly disclose unexpected or unauthorized AI behavior"
   },
   "lesson_card": {
     "show_name": "The AI Edge",
@@ -63,20 +63,20 @@
     "big_question": "When does a viral dev tool stop being a toy and start becoming leverage?",
     "simple_analogy": "one clever repo turning into a forklift for every developer who was previously carrying boxes by hand",
     "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
-    "hard_receipt": "2026-09-16T04:14:35+00:00",
+    "hard_receipt": "2026-09-16",
     "listener_payoff": "By the end, listeners should understand developer leverage well enough to explain why today's AI story matters tomorrow.",
     "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-    "episode_spine": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
+    "episode_spine": "OpenAI will regularly disclose unexpected or unauthorized AI behavior is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
     "titles": {
       "spotify_title": "When Developers Clone the Future Before Companies Can Sell It",
       "youtube_title": "A Viral AI Code Clone Just Showed Where Developer Power Is Moving",
       "social_hook": "The clone is not the point. The leverage shift is.",
       "operator_title": "Today’s AI Lesson: Developer Leverage",
-      "archive_title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while — Developer Leverage Explained"
+      "archive_title": "OpenAI will regularly disclose unexpected or unauthorized AI behavior — Developer Leverage Explained"
     }
   },
-  "title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
-  "description_first_180": "What changed in AI today, who gained power, and who is exposed tomorrow?",
+  "title": "OpenAI's New Disclosure Framework: How to Track AI Behavior and Safety Risks",
+  "description_first_180": "Whether AI safety should be a coordinated industry standard or an independent competitive priority.",
   "note": "V3.0 brutal aircheck. No fake 90s: missing moments, scene shape, humor, sponsor pronunciation, or title/story alignment hard-cap the score before TTS/audio.",
   "v3_3_assessment": {
     "version": "v3.3-connection-first",
@@ -116,10 +116,10 @@
       "continuity_callback": true
     },
     "soft_flags": [
-      "alex_extended_exposition (89 words before substantive reply)",
+      "alex_extended_exposition (92 words before substantive reply)",
       "advisory_prior_listener_question_or_poll_acknowledged",
-      "repeated_stale_phrase: 'the consequence before consensus catches up'",
-      "repeated_stale_phrase: 'consequence before consensus catches up'"
+      "repeated_stale_phrase: 'consequence before consensus catches up'",
+      "repeated_stale_phrase: 'consensus catches up'"
     ],
     "keyword_signal": 97,
     "keyword_signal_note": "Informational only. Real quality = listener retention in Spotify/Apple analytics, not this number.",
@@ -130,92 +130,85 @@
         "basis": "transcript heuristics only; no listening or audience measurement",
         "blocking": false,
         "story_words": {
-          "2": 896,
-          "3": 907,
-          "4": 773
+          "2": 1070,
+          "3": 984,
+          "4": 590
         },
         "story_word_shares": {
-          "2": 0.348,
-          "3": 0.352,
-          "4": 0.3
+          "2": 0.405,
+          "3": 0.372,
+          "4": 0.223
         },
         "repeated_sentences": [],
         "flags": []
       },
-      "words": 3726,
+      "words": 3646,
       "runtime_word_band": [
         3550,
         4350
       ],
-      "speaker_lines": 136,
+      "speaker_lines": 141,
       "segments": 5,
-      "receipts": 9,
-      "concessions": 0,
+      "receipts": 18,
+      "concessions": 1,
       "callback_present": true,
       "show_follow_cta_count": 1,
       "competing_show_cta": false,
       "listener_memory_acknowledged": false,
       "shareable_exchange": {
         "passed": true,
-        "segment": 4,
-        "estimated_seconds": 41.4,
-        "word_count": 100,
+        "segment": 2,
+        "estimated_seconds": 40.1,
+        "word_count": 97,
         "speakers": [
           "ALEX",
-          "JAMIE",
-          "RUFUS"
+          "JAMIE"
         ],
-        "score": 6,
+        "score": 5,
         "turns": [
           {
-            "segment": 4,
-            "block": 11,
-            "speaker": "RUFUS",
-            "text": "Which doesn't make them wrong. It makes them the most credible available reporting. The two-hundred-and-ninety-million figure and the one-point-five billion valuation are what we have."
-          },
-          {
-            "segment": 4,
-            "block": 11,
-            "speaker": "JAMIE",
-            "text": "My question is who's in that two-hundred-and-ninety million. Because biotech AI investment has attracted a mix of genuinely long-horizon investors and people chasing the category regardless of the underlying science."
-          },
-          {
-            "segment": 4,
-            "block": 11,
-            "speaker": "RUFUS",
-            "text": "Reuters doesn't specify the investor composition."
-          },
-          {
-            "segment": 4,
-            "block": 11,
-            "speaker": "JAMIE",
-            "text": "Which is a detail that matters enormously for whether this unit ends up with the patience it needs to actually do drug discovery, versus the pressure to show near-term returns."
-          },
-          {
-            "segment": 4,
-            "block": 11,
+            "segment": 2,
+            "block": 5,
             "speaker": "ALEX",
-            "text": "Is there a geopolitical angle here that isn't just —"
+            "text": "So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide whether the case should be publicly disclosed. Reuters reported it on September 16, 2026."
+          },
+          {
+            "segment": 2,
+            "block": 5,
+            "speaker": "JAMIE",
+            "text": "That's where I stop."
+          },
+          {
+            "segment": 2,
+            "block": 5,
+            "speaker": "ALEX",
+            "text": "Why there specifically?"
+          },
+          {
+            "segment": 2,
+            "block": 5,
+            "speaker": "JAMIE",
+            "text": "Because \"warrants\" is a judgment call made by the people whose valuation depends on the answer. There is no external check on that decision. An employee flags something. OpenAI's own safety team reviews it. OpenAI then decides if the public gets to know. That's one organization controlling the entire chain."
           }
         ],
         "test": "Would this exact exchange make sense and feel worth sending without the full episode?"
       },
-      "alex_questions": 16,
-      "jamie_reactions": 5,
-      "jamie_comic_beats": 1,
-      "rufus_dry_lines": 14,
-      "friction_beats": 4,
-      "interruptions": 52,
+      "alex_questions": 12,
+      "jamie_reactions": 9,
+      "jamie_comic_beats": 4,
+      "rufus_dry_lines": 7,
+      "friction_beats": 2,
+      "interruptions": 47,
       "jamie_rufus_exchange_segments": [
         2,
         3,
         4
       ],
       "spoken_production_language": false,
-      "max_turn_words": 56,
-      "max_alex_exposition_words": 89,
-      "title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
-      "lead_actor": ""
+      "max_turn_words": 53,
+      "max_alex_exposition_words": 92,
+      "title": "OpenAI's New Disclosure Framework: How to Track AI Behavior and Safety Risks",
+      "lead_actor": "OpenAI"
     }
   },
   "passed": true,

@@ -1,50 +1,50 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-09-16",
+  "date": "2026-09-17",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
     "changed": false,
     "lookback_episodes": 7,
-    "previous_lead_actor": "Microsoft",
-    "previous_argument_family": "models",
-    "original_lead": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
-    "selected_lead": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
+    "previous_lead_actor": "",
+    "previous_argument_family": "policy",
+    "original_lead": "OpenAI will regularly disclose unexpected or unauthorized AI behavior",
+    "selected_lead": "OpenAI will regularly disclose unexpected or unauthorized AI behavior",
     "candidates": [
       {
-        "headline": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
-        "score": 92.0,
-        "actor": "",
+        "headline": "OpenAI will regularly disclose unexpected or unauthorized AI behavior",
+        "score": 91.0,
+        "actor": "OpenAI",
+        "argument_family": "security",
+        "penalties": []
+      },
+      {
+        "headline": "OpenAI flags concerning new AI behavior and vows to track it more closely",
+        "score": 81.0,
+        "actor": "OpenAI",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "Snap unveils Specs Intelligence and enterprise features for its AR glasses",
+        "score": 80.0,
+        "actor": "NVIDIA",
+        "argument_family": "work",
+        "penalties": []
+      },
+      {
+        "headline": "Meta distances itself from calls for a coordinated AI slowdown",
+        "score": 60.0,
+        "actor": "Anthropic",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "King Charles meets AI leaders amid renewed global safety push",
+        "score": 35.0,
+        "actor": "OpenAI",
         "argument_family": "policy",
-        "penalties": []
-      },
-      {
-        "headline": "Reuters reports Meta’s Mark Zuckerberg said AI labs already have enough incentive to build safely",
-        "score": 72.0,
-        "actor": "Meta",
-        "argument_family": "policy",
-        "penalties": []
-      },
-      {
-        "headline": "ByteDance completes $290 million fundraising for its AI drug unit",
-        "score": 70.0,
-        "actor": "EU",
-        "argument_family": "money",
-        "penalties": []
-      },
-      {
-        "headline": "Tech CEOs call for AI regulation. Trump and Congress are not rushing to act",
-        "score": 52.0,
-        "actor": "",
-        "argument_family": "policy",
-        "penalties": []
-      },
-      {
-        "headline": "AP reports Microsoft agreed to AI privacy protections for students in U.S. schools",
-        "score": 48.0,
-        "actor": "Microsoft",
-        "argument_family": "other",
         "penalties": [
-          "same lead actor as previous episode"
+          "same argument family as previous episode"
         ]
       }
     ]
@@ -52,94 +52,154 @@
   "selected": [
     {
       "rank": 1,
-      "headline": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
-      "publisher": "Associated Press",
+      "headline": "OpenAI will regularly disclose unexpected or unauthorized AI behavior",
+      "publisher": "Reuters",
       "top_event_score": null,
-      "story_age_hours": 7.53,
+      "story_age_hours": 17.39,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+      "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
     },
     {
       "rank": 2,
-      "headline": "Reuters reports Meta’s Mark Zuckerberg said AI labs already have enough incentive to build safely",
-      "publisher": "Reuters",
+      "headline": "Snap unveils Specs Intelligence and enterprise features for its AR glasses",
+      "publisher": "TechCrunch",
       "top_event_score": null,
-      "story_age_hours": 13.29,
-      "source_tier": 3,
+      "story_age_hours": 10.89,
+      "source_tier": 2,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+      "source_url": "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/"
     },
     {
       "rank": 3,
-      "headline": "ByteDance completes $290 million fundraising for its AI drug unit",
-      "publisher": "Reuters",
+      "headline": "Meta distances itself from calls for a coordinated AI slowdown",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 5.71,
+      "story_age_hours": 22.19,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+      "source_url": "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989"
     },
     {
       "rank": 4,
-      "headline": "Tech CEOs call for AI regulation. Trump and Congress are not rushing to act",
-      "publisher": "AP News",
+      "headline": "OpenAI flags concerning new AI behavior and vows to track it more closely",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 31.75,
+      "story_age_hours": 7.9,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/d2d1bac8e8666c681937665596a4f603"
+      "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
     },
     {
       "rank": 5,
-      "headline": "AP reports Microsoft agreed to AI privacy protections for students in U.S. schools",
+      "headline": "King Charles meets AI leaders amid renewed global safety push",
       "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 31.73,
+      "story_age_hours": 2.92,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+      "source_url": "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "AP reports tech CEOs and AI rivals increasingly call for safety standards while Washington resists rapid new rules",
-    "central_fight": "What changed in AI today, who gained power, and who is exposed tomorrow?",
-    "opening_question": "What changed in AI today, who gained power, and who is exposed tomorrow?",
-    "listener_question": "What changed in AI today, who gained power, and who is exposed tomorrow?",
+    "published_title": "OpenAI's New Disclosure Framework: How to Track AI Behavior and Safety Risks",
+    "central_fight": "Whether AI safety should be a coordinated industry standard or an independent competitive priority.",
+    "opening_question": "If OpenAI is now promising to report its own 'unexpected' AI behaviors, does that make you feel safer or more concerned about what they've been hiding?",
+    "listener_question": "Do you trust a company to self-report its own AI safety failures?",
     "poll_options": [
-      "Necessary progress",
-      "Too much control",
-      "Too early to tell"
+      "Yes, it's a start.",
+      "No, it's PR theater.",
+      "Only if verified by third parties."
     ],
-    "listener_promise": "What changed. Who wins. What you do next.",
+    "listener_promise": "You will understand the difference between voluntary corporate disclosure and mandatory safety regulation.",
     "positions": {
-      "alex": "Asks what changed and what the evidence means for the listener.",
-      "jamie": "Tests the strongest claim against concrete human benefits and costs.",
-      "rufus": "Examines incentives and uncertainty; never assumes the outcome is known."
+      "alex": "Maintains that structured internal reporting is a necessary, proactive step toward industry maturity.",
+      "jamie": "Argues that without independent, external oversight, 'self-reporting' is just a way to control the PR cycle.",
+      "rufus": "Observes that the incentive to report is always weighed against the cost of stock volatility and regulatory scrutiny."
     },
-    "concession": {},
-    "who_wins": "whoever controls distribution, permissions, data, or trust",
-    "who_is_exposed": "the operators, users, doctors, developers, or families who inherit the risk without seeing the handoff",
-    "normal_person_payoff": "AI matters when it touches work, money, health, privacy, family, safety, or trust — not when a press release says so.",
+    "concession": {
+      "host": "alex",
+      "gives_ground_on": "Admits that internal disclosure frameworks lack the teeth of independent, government-mandated audits."
+    },
+    "who_wins": "Companies that define the 'transparency' standard before regulators force a more rigid, costly framework.",
+    "who_is_exposed": "Users relying on 'anticipatory' AI tools that lack clear, independent safety verification.",
+    "normal_person_payoff": "Learn to look past the 'safety' headlines to see if the company is actually opening its data to outside scrutiny.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "human agency, fairness, access, work, family, safety or lived consequences",
-      "rufus_value": "capital allocation, market incentives, global competition, liability and what scales",
-      "point_of_collision": "the specific decision where today's facts make those values disagree"
+      "jamie_value": "Human agency and the right to know when an AI agent is acting autonomously.",
+      "rufus_value": "Market stability and the avoidance of regulatory overreach that could stifle innovation.",
+      "point_of_collision": "Whether Meta's rejection of coordinated safety is a dangerous gamble or a necessary defense of competitive independence."
     },
     "rufus_global_markets_desk": {
-      "market_or_region": "the market most directly affected by today's sourced events",
-      "companies_or_assets": [],
-      "capital_policy_or_infrastructure_move": "the sourced financial, policy, chip, power, or data-center consequence",
-      "dated_market_receipts": []
+      "market_or_region": "New York",
+      "companies_or_assets": [
+        "OpenAI",
+        "Meta",
+        "Nvidia",
+        "Amazon",
+        "Salesforce"
+      ],
+      "capital_policy_or_infrastructure_move": "The shift toward enterprise-integrated AI hardware and the divergence in safety compliance costs.",
+      "dated_market_receipts": [
+        "2026-09-16"
+      ]
     },
     "mandatory_receipts": [
-      "Use the lead story's concrete numbers and named institutions",
-      "Use at least six specific figures, dates, or named bodies across the episode",
-      "Explain why each number changes someone's incentives"
+      "OpenAI will publish reports on unauthorized AI behavior.",
+      "Snap's Specs Intelligence costs $10-$20 per month.",
+      "Meta opposes a coordinated AI development slowdown."
     ],
-    "forwardable_targets": [],
-    "story_scenes": [],
-    "_episode_date": "2026-09-16"
+    "forwardable_targets": [
+      "Self-reporting is just a way to choose which failures become news.",
+      "If you're paying $20 a month for 'anticipatory' AI, you're the beta tester."
+    ],
+    "story_scenes": [
+      {
+        "story_index": 1,
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658",
+        "new_development": "OpenAI announced a formal framework to regularly publish reports on unexpected or unauthorized AI model behaviors.",
+        "why_today": "It shifts from ad-hoc disclosure to a structured internal-to-public reporting pipeline.",
+        "question": "Does self-reporting create transparency or just curate the narrative?",
+        "competing_readings": [
+          "A vital step toward industry-wide accountability.",
+          "A controlled mechanism to manage public perception of failure."
+        ],
+        "receipt": "The framework includes employee reporting, internal safety investigations, and a final decision step on public disclosure.",
+        "unknown": "The criteria OpenAI will use to decide which incidents are 'warranted' for public release.",
+        "listener_payoff": "Understand how to interpret future AI 'incident' reports.",
+        "exchange_premise": "Alex asks if this is a safety breakthrough; Rufus notes the incentive to keep the 'disclosure' button quiet; Jamie asks who verifies the reports."
+      },
+      {
+        "story_index": 2,
+        "source_url": "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/",
+        "new_development": "Snap launched 'Specs Intelligence' as an anticipatory AI layer for its AR glasses and enterprise ecosystem.",
+        "why_today": "It marks a pivot toward enterprise-integrated AI hardware.",
+        "question": "Is $20/month for an 'anticipatory' assistant a tool or a luxury?",
+        "competing_readings": [
+          "A necessary evolution for hands-free enterprise workflows.",
+          "An expensive, heavy hardware play struggling for a clear use case."
+        ],
+        "receipt": "The service costs $10/month for Verizon customers and $20/month for others, with partners including Amazon and Nvidia.",
+        "unknown": "Whether the 'anticipatory' features provide measurable productivity gains.",
+        "listener_payoff": "Decide if AR-integrated AI is ready for your professional toolkit.",
+        "exchange_premise": "Jamie highlights the potential for hands-free efficiency; Rufus questions the $20 monthly subscription for 'anticipatory' features that might just be intrusive."
+      },
+      {
+        "story_index": 3,
+        "source_url": "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989",
+        "new_development": "Mark Zuckerberg publicly distanced Meta from calls for a coordinated AI development slowdown.",
+        "why_today": "It signals a clear fracture in the 'frontier lab' consensus on safety governance.",
+        "question": "Does independent safety ensure better outcomes than coordinated regulation?",
+        "competing_readings": [
+          "Independent development fosters competitive safety innovation.",
+          "Lack of coordination creates a race to the bottom on safety standards."
+        ],
+        "receipt": "Zuckerberg argued that each company should independently ensure its technology is safe, countering Anthropic's proposal.",
+        "unknown": "Whether Meta's independent approach will satisfy future regulatory demands.",
+        "listener_payoff": "Recognize the divide between 'coordinated' and 'independent' safety strategies.",
+        "exchange_premise": "Alex asks if Meta is breaking the safety pact; Jamie defends the need for speed; Rufus points out that 'independent' safety is cheaper than 'coordinated' compliance."
+      }
+    ],
+    "_episode_date": "2026-09-17"
   }
 }

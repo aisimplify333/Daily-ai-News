@@ -1,318 +1,482 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-16",
+  "date": "2026-09-17",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-16",
+    "date": "2026-09-17",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Mark Zuckerberg said the industry doesn't need anyone's help staying safe.",
-        "evidence_quote": "competition and liability give AI companies enough reason to act safely",
-        "exact_line": "ALEX: Mark Zuckerberg says the industry doesn't need anyone's help staying safe. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
-        "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
-        "reason": "This line conflates two separate stories and overstates Zuckerberg's Reuters remarks. Reuters reported that Zuckerberg said competition and liability give AI companies enough reason to act safely; it did not say he claimed the industry does not need anyone's help staying safe. The ByteDance fundraising claim is supported, but the Zuckerberg clause is materially misstated.",
-        "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+        "factual_claim": "OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+        "evidence_quote": "OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior.",
+        "exact_line": "ALEX: Our lead story today is OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+        "replacement_line": "ALEX: Our lead story today is OpenAI’s new framework for regularly publishing reports on unexpected or unauthorized AI behavior.",
+        "reason": "The source record says OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior; the script drops the key qualifier that this is a reporting framework, not a guarantee that every incident will be disclosed.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "AI industry leaders have agreed development needs to slow down for safety reasons.",
-        "evidence_quote": "AI industry's leaders have recently agreed that AI development needs to slow down for safety reasons.",
-        "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have agreed development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
-        "replacement_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
-        "reason": "The AP record says leaders have recently said development needs to slow down, but 'have agreed' overstates consensus and commitment. The line also paraphrases the report accurately on implementation difficulty and Washington lag, but the first clause is too strong and implies a formal shared agreement.",
-        "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+        "factual_claim": "This was announced September 16th.",
+        "evidence_quote": "published_at\": \"2026-09-16T18:28:00Z\"",
+        "exact_line": "ALEX: So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide — and this is the key word — whether the case \"warrants\" public disclosure. This was announced September 16th.",
+        "replacement_line": "ALEX: So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide — and this is the key word — whether the case \"warrants\" public disclosure. This was announced on September 16, 2026.",
+        "reason": "The date is incomplete in context and can mislead relative to the episode date; the supplied records tie the Reuters item to 2026-09-16 and the AP item to 2026-09-17 UTC. The script should use the full date to avoid ambiguity.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Mark Zuckerberg publicly walked away from the coordinated AI slowdown conversation.",
+        "evidence_quote": "Mark Zuckerberg distanced Meta from calls for a coordinated approach to slowing AI development.",
+        "exact_line": "RUFUS: And I have Mark Zuckerberg publicly walking away from the coordinated AI slowdown conversation. Which is a polite way of describing what actually happened.",
+        "replacement_line": "RUFUS: And I have Mark Zuckerberg publicly distancing Meta from the coordinated AI slowdown conversation. Which is a polite way of describing what actually happened.",
+        "reason": "Overstates the AP report. The source says Zuckerberg distanced Meta from calls for a coordinated AI slowdown; it does not establish that he was literally 'walking away' from a 'conversation.'",
+        "source_url": "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "OpenAI answered by building a more elaborate internal code.",
+        "evidence_quote": "The framework includes employee reporting, safety/alignment investigations, and a disclosure decision step.",
+        "exact_line": "RUFUS: We asked on September 15th whether internal codes are genuine safety or just liability management. OpenAI has now answered: they are building a more elaborate internal code.",
+        "replacement_line": "RUFUS: We asked on September 15th whether internal codes are genuine safety or just liability management. OpenAI has now announced a more elaborate internal reporting process.",
+        "reason": "The claim that OpenAI has 'answered' the earlier question is interpretive and overstates the source. The announcement is a reporting framework, not evidence that the company intentionally built an internal code to manage liability.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "No binding safety obligations appear in any frontier lab's financial disclosures.",
+        "evidence_quote": "The announcement was framed as a disclosure framework; it does not by itself establish a legal requirement for all AI developers.",
+        "exact_line": "ALEX: And we said on the 15th we'd watch for whether binding safety obligations showed up in any frontier lab's financial disclosures. I don't see this framework in that category.",
+        "replacement_line": "ALEX: And we said on the 15th we'd watch for whether binding safety obligations showed up in any frontier lab's financial disclosures. I don't see that in this framework.",
+        "reason": "This directly asserts a lack of binding safety obligations in disclosures. The supplied Reuters record explicitly says the announcement does not by itself establish a legal requirement, but the script is phrased as an unsupported broad conclusion about all frontier labs’ financial disclosures.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The incentive to keep the disclosure button quiet is baked into the design.",
+        "evidence_quote": "those teams will decide whether a case warrants public disclosure",
+        "exact_line": "JAMIE: This is a voluntary framework. It does not create a legal obligation. It does not require OpenAI to disclose anything they decide does not \"warrant\" disclosure. The incentive to keep the disclosure button quiet is baked into the design.",
+        "replacement_line": "JAMIE: This is a voluntary framework. It does not create a legal obligation. It does not require OpenAI to disclose anything they decide does not \"warrant\" disclosure. That seems designed to leave a lot of discretion in-house.",
+        "reason": "The first two sentences are supported by the Reuters limitation, but the final sentence about incentives is an inference presented as fact. It should be clearly marked as interpretation rather than a factual assertion.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The framework wasn't created because everything is fine.",
+        "evidence_quote": "OpenAI said it is seeing more concerning forms of AI behavior and will track them more closely.",
+        "exact_line": "RUFUS: There's also the question of what they've already seen. AP reported on September 17th that OpenAI said it's encountering more concerning forms of AI behavior and that one case involved an unreleased research model. Which suggests the framework wasn't created because everything is fine.",
+        "replacement_line": "RUFUS: There's also the question of what they've already seen. AP reported on September 17, 2026 that OpenAI said it's encountering more concerning forms of AI behavior and that one case involved an unreleased research model. Which suggests the timing is not accidental.",
+        "reason": "The final clause is a causal inference stated as fact. The source says the company saw more concerning behavior and one case involved an unreleased research model, but it does not establish why the framework was created.",
+        "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "OpenAI is building the reporting structure at the same time it's seeing the incidents.",
+        "evidence_quote": "OpenAI said it is seeing more concerning forms of AI behavior and will track them more closely.",
+        "exact_line": "ALEX: So they're building the reporting structure at the same time they're seeing the incidents.",
+        "replacement_line": "ALEX: So it looks like they're building the reporting structure at the same time they're seeing the incidents.",
+        "reason": "This is a causal/timing inference that is plausible but not directly established by the source records. It should be framed as an inference.",
+        "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "King Charles met with OpenAI, Anthropic, DeepMind, and Nvidia on September 17th.",
+        "evidence_quote": "King Charles III is meeting senior leaders from OpenAI, Anthropic, Google DeepMind, and Nvidia on Thursday",
+        "exact_line": "RUFUS: I'll grant that King Charles meeting with OpenAI, Anthropic, DeepMind, and Nvidia on September 17th is a signal that political pressure is accumulating. But a royal audience is not a regulatory mechanism.",
+        "replacement_line": "RUFUS: I'll grant that King Charles meeting with OpenAI, Anthropic, DeepMind, and Nvidia on September 17, 2026 is a signal that political pressure is accumulating. But a royal audience is not a regulatory mechanism.",
+        "reason": "The source says the meeting was scheduled for Thursday, but does not say the meeting had already happened at the time of the AP report. Presenting it as completed can be misleading without confirming the date of the actual meeting.",
+        "source_url": "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "OpenAI has made no structural commitment that would force disclosure when the safety team says it isn't warranted.",
+        "evidence_quote": "those teams will decide whether a case warrants public disclosure",
+        "exact_line": "ALEX: So the practical question for anyone trying to evaluate this: is there any structural commitment OpenAI has made that would force disclosure even when the safety team concludes it isn't warranted?",
+        "replacement_line": "ALEX: So the practical question for anyone trying to evaluate this: did OpenAI make any structural commitment that would force disclosure even when the safety team concludes it isn't warranted?",
+        "reason": "This is framed as a factual inquiry whose negative implication is supported only by absence in the announcement. Because the instruction is to be strict, this overstates what the source can prove; it should be phrased as an open question rather than implying the absence of any such commitment.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The framework was built around problems they've already seen.",
+        "evidence_quote": "OpenAI said it is seeing more concerning forms of AI behavior and will track them more closely.",
+        "exact_line": "ALEX: One thing I want to pull on before we move. The source says OpenAI is already encountering what it calls more concerning forms of AI behavior — and one case involved an unreleased research model. So this framework wasn't built in anticipation of future problems. It was built around problems they've already seen.",
+        "replacement_line": "ALEX: One thing I want to pull on before we move. The source says OpenAI is already encountering what it calls more concerning forms of AI behavior — and one case involved an unreleased research model. So the framework landed alongside problems they've already seen.",
+        "reason": "The first sentence is supported, but the last two sentences assert motive and timing that the sources do not establish. The report does not prove the framework was built around those specific problems, only that the announcement came amid such reports.",
+        "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The framework is retroactively legitimate and marks a different era.",
+        "evidence_quote": "OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior.",
+        "exact_line": "RUFUS: So the framework is retroactively legitimate, in the sense that OpenAI can now say: going forward, we have a process. Whatever occurred before that — well, that was a different era.",
+        "replacement_line": "RUFUS: So the framework is retroactively useful, in the sense that OpenAI can now say: going forward, we have a process. Whatever occurred before that — well, that was handled differently.",
+        "reason": "This is an interpretive claim about legitimacy and retroactive framing, not a supported fact. The phrase 'different era' implies a factual historical boundary that the source does not establish.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "There is no independent productivity data yet.",
+        "evidence_quote": "TechCrunch described the enterprise use cases as still somewhat vague.",
+        "exact_line": "ALEX: So if you're evaluating this for your organization: twenty-two hundred dollars for the hardware, twenty a month for the intelligence layer, no independent productivity data yet. That's your current state.",
+        "replacement_line": "ALEX: So if you're evaluating this for your organization: twenty-two hundred dollars for the hardware, twenty a month for the intelligence layer, and no independent productivity data in the source we have. That's your current state.",
+        "reason": "The source records support the hardware and monthly pricing, but 'no independent productivity data yet' is an absence claim that is not established by the supplied sources. It may be true, but the record set does not prove absence.",
+        "source_url": "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The source establishes that Snap has not specified what Verizon pricing includes.",
+        "evidence_quote": "$10/month for Verizon customers; $20/month for non-Verizon customers",
+        "exact_line": "RUFUS: The source doesn't clarify whether the Verizon pricing includes connectivity or just reduces the software subscription. Those are two very different arrangements and Snap has not, as far as the source establishes, specified which.",
+        "replacement_line": "RUFUS: The source doesn't clarify whether the Verizon pricing includes connectivity or just reduces the software subscription. Those are two very different arrangements, and Snap hasn’t specified which in the material we have.",
+        "reason": "This is a careful uncertainty note and not a critical error, but the script elsewhere treats the Verizon price as likely software-only. The source record only gives the price points and does not specify what is included, so any stronger implication would be unsupported.",
+        "source_url": "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The episode is dated September 17, 2026.",
+        "evidence_quote": "published_at\": \"2026-09-17T03:57:17Z\"",
+        "exact_line": "ALEX: That's The AI Edge for September 17th, 2026.",
+        "replacement_line": "ALEX: That's The AI Edge for Thursday, September 17th, 2026.",
+        "reason": "This is a simple dating line and is correct, but the script also repeatedly references September 15th and September 16th without always making clear those are prior dates. This can confuse chronology for listeners, though it is not a material factual error.",
+        "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
       }
     ],
     "warnings": [
-      "The ByteDance valuation of $1.5 billion appears only in the supplied source record summary, not in the directly cited Reuters excerpt available from the search result; treat that figure as less fully verified unless you have the underlying Reuters text.",
-      "Several lines paraphrase the AP story as if it were a formal industry consensus. The sourced record supports a recent convergence on safety, but not a binding agreement or unanimous position.",
-      "The script repeatedly asserts or implies that Washington, Trump, or Congress are not moving quickly. That is supported by the AP source in general, but those are live political judgments rather than fixed facts.",
-      "Advisory only; no reviewable factual correction: Sponsor read is excluded from audit unless it makes a concrete numerical or regulated-product claim."
+      "The sponsor copy is mostly outside the requested audit scope, but it still contains marketing-style claims that are unsupported by the supplied sources.",
+      "Several lines make reasonable inferences from the source material, especially about motive, incentives, and likely regulatory implications. These are not necessarily wrong, but they should be framed as interpretation rather than fact.",
+      "The Snap segment is directionally consistent with the TechCrunch summary, but the exact pricing structure for Verizon customers remains unclear in the supplied source records.",
+      "The King Charles line should be treated carefully as a scheduled meeting/public engagement unless the exact occurrence date is verified from the article text itself.",
+      "Advisory only; no reviewable factual correction: Sponsor copy contains a concrete marketing claim about the product’s function as if it reliably identifies consequential changes; this is an editorial fact-style claim, not a protected opinion. The supplied sources do not support it, and it is not verifiable from the source records.",
+      "Advisory only; no reviewable factual correction: This is a factual comparison about OpenAI's prior disclosure setup, but the supplied records do not establish what OpenAI had before. It may be true, but there is no support in the provided sources."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
-      "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
-      "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
-      "https://apnews.com/article/d2d1bac8e8666c681937665596a4f603",
-      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+      "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658",
+      "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/",
+      "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989",
+      "https://apnews.com/article/089e75b95bc935af092da7b79d92706d",
+      "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-16",
+      "date": "2026-09-17",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Mark Zuckerberg said the industry doesn't need anyone's help staying safe.",
-          "evidence_quote": "competition and liability give AI companies enough reason to act safely",
-          "exact_line": "ALEX: Mark Zuckerberg says the industry doesn't need anyone's help staying safe. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
-          "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
-          "reason": "This line conflates two separate stories and overstates Zuckerberg's Reuters remarks. Reuters reported that Zuckerberg said competition and liability give AI companies enough reason to act safely; it did not say he claimed the industry does not need anyone's help staying safe. The ByteDance fundraising claim is supported, but the Zuckerberg clause is materially misstated.",
-          "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
+          "factual_claim": "OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+          "evidence_quote": "OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior.",
+          "exact_line": "ALEX: Our lead story today is OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+          "replacement_line": "ALEX: Our lead story today is OpenAI’s new framework for regularly publishing reports on unexpected or unauthorized AI behavior.",
+          "reason": "The source record says OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior; the script drops the key qualifier that this is a reporting framework, not a guarantee that every incident will be disclosed.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "AI industry leaders have agreed development needs to slow down for safety reasons.",
-          "evidence_quote": "AI industry's leaders have recently agreed that AI development needs to slow down for safety reasons.",
-          "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have agreed development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
-          "replacement_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
-          "reason": "The AP record says leaders have recently said development needs to slow down, but 'have agreed' overstates consensus and commitment. The line also paraphrases the report accurately on implementation difficulty and Washington lag, but the first clause is too strong and implies a formal shared agreement.",
-          "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+          "factual_claim": "This was announced September 16th.",
+          "evidence_quote": "published_at\": \"2026-09-16T18:28:00Z\"",
+          "exact_line": "ALEX: So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide — and this is the key word — whether the case \"warrants\" public disclosure. This was announced September 16th.",
+          "replacement_line": "ALEX: So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide — and this is the key word — whether the case \"warrants\" public disclosure. This was announced on September 16, 2026.",
+          "reason": "The date is incomplete in context and can mislead relative to the episode date; the supplied records tie the Reuters item to 2026-09-16 and the AP item to 2026-09-17 UTC. The script should use the full date to avoid ambiguity.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Mark Zuckerberg publicly walked away from the coordinated AI slowdown conversation.",
+          "evidence_quote": "Mark Zuckerberg distanced Meta from calls for a coordinated approach to slowing AI development.",
+          "exact_line": "RUFUS: And I have Mark Zuckerberg publicly walking away from the coordinated AI slowdown conversation. Which is a polite way of describing what actually happened.",
+          "replacement_line": "RUFUS: And I have Mark Zuckerberg publicly distancing Meta from the coordinated AI slowdown conversation. Which is a polite way of describing what actually happened.",
+          "reason": "Overstates the AP report. The source says Zuckerberg distanced Meta from calls for a coordinated AI slowdown; it does not establish that he was literally 'walking away' from a 'conversation.'",
+          "source_url": "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "OpenAI answered by building a more elaborate internal code.",
+          "evidence_quote": "The framework includes employee reporting, safety/alignment investigations, and a disclosure decision step.",
+          "exact_line": "RUFUS: We asked on September 15th whether internal codes are genuine safety or just liability management. OpenAI has now answered: they are building a more elaborate internal code.",
+          "replacement_line": "RUFUS: We asked on September 15th whether internal codes are genuine safety or just liability management. OpenAI has now announced a more elaborate internal reporting process.",
+          "reason": "The claim that OpenAI has 'answered' the earlier question is interpretive and overstates the source. The announcement is a reporting framework, not evidence that the company intentionally built an internal code to manage liability.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "No binding safety obligations appear in any frontier lab's financial disclosures.",
+          "evidence_quote": "The announcement was framed as a disclosure framework; it does not by itself establish a legal requirement for all AI developers.",
+          "exact_line": "ALEX: And we said on the 15th we'd watch for whether binding safety obligations showed up in any frontier lab's financial disclosures. I don't see this framework in that category.",
+          "replacement_line": "ALEX: And we said on the 15th we'd watch for whether binding safety obligations showed up in any frontier lab's financial disclosures. I don't see that in this framework.",
+          "reason": "This directly asserts a lack of binding safety obligations in disclosures. The supplied Reuters record explicitly says the announcement does not by itself establish a legal requirement, but the script is phrased as an unsupported broad conclusion about all frontier labs’ financial disclosures.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The incentive to keep the disclosure button quiet is baked into the design.",
+          "evidence_quote": "those teams will decide whether a case warrants public disclosure",
+          "exact_line": "JAMIE: This is a voluntary framework. It does not create a legal obligation. It does not require OpenAI to disclose anything they decide does not \"warrant\" disclosure. The incentive to keep the disclosure button quiet is baked into the design.",
+          "replacement_line": "JAMIE: This is a voluntary framework. It does not create a legal obligation. It does not require OpenAI to disclose anything they decide does not \"warrant\" disclosure. That seems designed to leave a lot of discretion in-house.",
+          "reason": "The first two sentences are supported by the Reuters limitation, but the final sentence about incentives is an inference presented as fact. It should be clearly marked as interpretation rather than a factual assertion.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The framework wasn't created because everything is fine.",
+          "evidence_quote": "OpenAI said it is seeing more concerning forms of AI behavior and will track them more closely.",
+          "exact_line": "RUFUS: There's also the question of what they've already seen. AP reported on September 17th that OpenAI said it's encountering more concerning forms of AI behavior and that one case involved an unreleased research model. Which suggests the framework wasn't created because everything is fine.",
+          "replacement_line": "RUFUS: There's also the question of what they've already seen. AP reported on September 17, 2026 that OpenAI said it's encountering more concerning forms of AI behavior and that one case involved an unreleased research model. Which suggests the timing is not accidental.",
+          "reason": "The final clause is a causal inference stated as fact. The source says the company saw more concerning behavior and one case involved an unreleased research model, but it does not establish why the framework was created.",
+          "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "OpenAI is building the reporting structure at the same time it's seeing the incidents.",
+          "evidence_quote": "OpenAI said it is seeing more concerning forms of AI behavior and will track them more closely.",
+          "exact_line": "ALEX: So they're building the reporting structure at the same time they're seeing the incidents.",
+          "replacement_line": "ALEX: So it looks like they're building the reporting structure at the same time they're seeing the incidents.",
+          "reason": "This is a causal/timing inference that is plausible but not directly established by the source records. It should be framed as an inference.",
+          "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "King Charles met with OpenAI, Anthropic, DeepMind, and Nvidia on September 17th.",
+          "evidence_quote": "King Charles III is meeting senior leaders from OpenAI, Anthropic, Google DeepMind, and Nvidia on Thursday",
+          "exact_line": "RUFUS: I'll grant that King Charles meeting with OpenAI, Anthropic, DeepMind, and Nvidia on September 17th is a signal that political pressure is accumulating. But a royal audience is not a regulatory mechanism.",
+          "replacement_line": "RUFUS: I'll grant that King Charles meeting with OpenAI, Anthropic, DeepMind, and Nvidia on September 17, 2026 is a signal that political pressure is accumulating. But a royal audience is not a regulatory mechanism.",
+          "reason": "The source says the meeting was scheduled for Thursday, but does not say the meeting had already happened at the time of the AP report. Presenting it as completed can be misleading without confirming the date of the actual meeting.",
+          "source_url": "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "OpenAI has made no structural commitment that would force disclosure when the safety team says it isn't warranted.",
+          "evidence_quote": "those teams will decide whether a case warrants public disclosure",
+          "exact_line": "ALEX: So the practical question for anyone trying to evaluate this: is there any structural commitment OpenAI has made that would force disclosure even when the safety team concludes it isn't warranted?",
+          "replacement_line": "ALEX: So the practical question for anyone trying to evaluate this: did OpenAI make any structural commitment that would force disclosure even when the safety team concludes it isn't warranted?",
+          "reason": "This is framed as a factual inquiry whose negative implication is supported only by absence in the announcement. Because the instruction is to be strict, this overstates what the source can prove; it should be phrased as an open question rather than implying the absence of any such commitment.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The framework was built around problems they've already seen.",
+          "evidence_quote": "OpenAI said it is seeing more concerning forms of AI behavior and will track them more closely.",
+          "exact_line": "ALEX: One thing I want to pull on before we move. The source says OpenAI is already encountering what it calls more concerning forms of AI behavior — and one case involved an unreleased research model. So this framework wasn't built in anticipation of future problems. It was built around problems they've already seen.",
+          "replacement_line": "ALEX: One thing I want to pull on before we move. The source says OpenAI is already encountering what it calls more concerning forms of AI behavior — and one case involved an unreleased research model. So the framework landed alongside problems they've already seen.",
+          "reason": "The first sentence is supported, but the last two sentences assert motive and timing that the sources do not establish. The report does not prove the framework was built around those specific problems, only that the announcement came amid such reports.",
+          "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The framework is retroactively legitimate and marks a different era.",
+          "evidence_quote": "OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior.",
+          "exact_line": "RUFUS: So the framework is retroactively legitimate, in the sense that OpenAI can now say: going forward, we have a process. Whatever occurred before that — well, that was a different era.",
+          "replacement_line": "RUFUS: So the framework is retroactively useful, in the sense that OpenAI can now say: going forward, we have a process. Whatever occurred before that — well, that was handled differently.",
+          "reason": "This is an interpretive claim about legitimacy and retroactive framing, not a supported fact. The phrase 'different era' implies a factual historical boundary that the source does not establish.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "There is no independent productivity data yet.",
+          "evidence_quote": "TechCrunch described the enterprise use cases as still somewhat vague.",
+          "exact_line": "ALEX: So if you're evaluating this for your organization: twenty-two hundred dollars for the hardware, twenty a month for the intelligence layer, no independent productivity data yet. That's your current state.",
+          "replacement_line": "ALEX: So if you're evaluating this for your organization: twenty-two hundred dollars for the hardware, twenty a month for the intelligence layer, and no independent productivity data in the source we have. That's your current state.",
+          "reason": "The source records support the hardware and monthly pricing, but 'no independent productivity data yet' is an absence claim that is not established by the supplied sources. It may be true, but the record set does not prove absence.",
+          "source_url": "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The source establishes that Snap has not specified what Verizon pricing includes.",
+          "evidence_quote": "$10/month for Verizon customers; $20/month for non-Verizon customers",
+          "exact_line": "RUFUS: The source doesn't clarify whether the Verizon pricing includes connectivity or just reduces the software subscription. Those are two very different arrangements and Snap has not, as far as the source establishes, specified which.",
+          "replacement_line": "RUFUS: The source doesn't clarify whether the Verizon pricing includes connectivity or just reduces the software subscription. Those are two very different arrangements, and Snap hasn’t specified which in the material we have.",
+          "reason": "This is a careful uncertainty note and not a critical error, but the script elsewhere treats the Verizon price as likely software-only. The source record only gives the price points and does not specify what is included, so any stronger implication would be unsupported.",
+          "source_url": "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The episode is dated September 17, 2026.",
+          "evidence_quote": "published_at\": \"2026-09-17T03:57:17Z\"",
+          "exact_line": "ALEX: That's The AI Edge for September 17th, 2026.",
+          "replacement_line": "ALEX: That's The AI Edge for Thursday, September 17th, 2026.",
+          "reason": "This is a simple dating line and is correct, but the script also repeatedly references September 15th and September 16th without always making clear those are prior dates. This can confuse chronology for listeners, though it is not a material factual error.",
+          "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
         }
       ],
       "warnings": [
-        "The ByteDance valuation of $1.5 billion appears only in the supplied source record summary, not in the directly cited Reuters excerpt available from the search result; treat that figure as less fully verified unless you have the underlying Reuters text.",
-        "Several lines paraphrase the AP story as if it were a formal industry consensus. The sourced record supports a recent convergence on safety, but not a binding agreement or unanimous position.",
-        "The script repeatedly asserts or implies that Washington, Trump, or Congress are not moving quickly. That is supported by the AP source in general, but those are live political judgments rather than fixed facts.",
-        "Advisory only; no reviewable factual correction: Sponsor read is excluded from audit unless it makes a concrete numerical or regulated-product claim."
+        "The sponsor copy is mostly outside the requested audit scope, but it still contains marketing-style claims that are unsupported by the supplied sources.",
+        "Several lines make reasonable inferences from the source material, especially about motive, incentives, and likely regulatory implications. These are not necessarily wrong, but they should be framed as interpretation rather than fact.",
+        "The Snap segment is directionally consistent with the TechCrunch summary, but the exact pricing structure for Verizon customers remains unclear in the supplied source records.",
+        "The King Charles line should be treated carefully as a scheduled meeting/public engagement unless the exact occurrence date is verified from the article text itself.",
+        "Advisory only; no reviewable factual correction: Sponsor copy contains a concrete marketing claim about the product’s function as if it reliably identifies consequential changes; this is an editorial fact-style claim, not a protected opinion. The supplied sources do not support it, and it is not verifiable from the source records.",
+        "Advisory only; no reviewable factual correction: This is a factual comparison about OpenAI's prior disclosure setup, but the supplied records do not establish what OpenAI had before. It may be true, but there is no support in the provided sources."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
-        "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
-        "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
-        "https://apnews.com/article/d2d1bac8e8666c681937665596a4f603",
-        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+        "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658",
+        "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/",
+        "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989",
+        "https://apnews.com/article/089e75b95bc935af092da7b79d92706d",
+        "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-16",
+      "date": "2026-09-17",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Reuters reported the fundraise on September 16, with people familiar with the matter putting the valuation at $1.5 billion.",
-          "evidence_quote": "Reuters reported the fundraising amount as $290 million. Reuters-related coverage put the unit's valuation at $1.5 billion.",
-          "exact_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, with people familiar with the matter putting the valuation at one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
-          "replacement_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
-          "reason": "This episode line says the fundraise happened on September 16 and that Reuters reported a $1.5 billion valuation, but the supplied source record only supports Reuters reporting the $290 million fundraise on September 16 and says the $1.5 billion valuation came from related coverage, not necessarily the same Reuters item cited here. The line compresses and overstates the sourcing.",
-          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+          "factual_claim": "OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+          "evidence_quote": "OpenAI has disclosed six reports of “unexpected or concerning” behavior ... introducing a new framework for tracking, probing and disclosing instances of what it called “misalignment”",
+          "exact_line": "ALEX: Our lead story today is OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+          "replacement_line": "ALEX: Our lead story today is OpenAI’s new framework for tracking, probing, and disclosing unexpected or concerning AI behavior.",
+          "reason": "This is framed as a title but it is also a factual statement that should match the source more precisely. The AP story says OpenAI disclosed six reports of “unexpected or concerning” behavior and introduced a framework for tracking, probing and disclosing misalignment; the script’s wording omits the announced six reports and shifts to a broader promise without that context.",
+          "source_url": "https://apnews.com/article/openai-safety-ai-framework-089e75b95bc935af092da7b79d92706d"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The people inheriting the risk are the clinical trial participants and eventually the patients — not the investors.",
-          "evidence_quote": "there are existing FDA frameworks for drug approvals that apply regardless of whether AI is involved in the discovery process",
-          "exact_line": "ALEX: Right. Because that means the people inheriting the risk are the clinical trial participants and eventually the patients — not the investors who funded the model that generated the candidate.",
-          "replacement_line": "ALEX: Right. Because that means the clinical-trial and patient risk still sits downstream of the AI discovery process, while the investors are funding a candidate pipeline that still has to clear existing FDA oversight.",
-          "reason": "This is an overbroad causal claim. The sourced record only says existing FDA frameworks apply to drug approvals regardless of AI in discovery, and that the AI layer is largely unregulated; it does not support the assertion that investors do not inherit risk or that risk is borne only by trial participants and patients.",
-          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+          "factual_claim": "OpenAI used the word 'warrants' in its disclosure criteria.",
+          "evidence_quote": "the process remains internal and voluntary",
+          "exact_line": "JAMIE: The word \"warrants.\" That's where I stop.",
+          "replacement_line": "JAMIE: That's where I stop.",
+          "reason": "The source record does not show the word 'warrants' in the OpenAI coverage; the AP and Reuters summaries provided say the framework includes employee reporting, safety/alignment review, and a disclosure decision, but they do not verify this exact quoted term. Because the line attributes a specific word to the announcement, it needs a verified quote or softer wording.",
+          "source_url": "https://apnews.com/article/openai-safety-ai-framework-089e75b95bc935af092da7b79d92706d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The episode turns on the distinction between voluntary company disclosure and regulator-forced disclosure.",
+          "evidence_quote": "the process remains internal and voluntary",
+          "exact_line": "ALEX: Today you're going to understand the difference between a company deciding to publish its own safety failures and a regulator forcing it to. That distinction is what this whole episode turns on.",
+          "replacement_line": "ALEX: Today you're going to understand the difference between a company deciding to publish its own safety failures and a company keeping the gate to that disclosure inside the building. That distinction is what this whole episode turns on.",
+          "reason": "This asserts a regulator-forced disclosure regime as the episode's central contrast, but the supplied sources do not support that as part of the OpenAI, Snap, or Meta stories. It is a framing claim that overstates the factual basis of the episode’s content.",
+          "source_url": "https://apnews.com/article/openai-safety-ai-framework-089e75b95bc935af092da7b79d92706d"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "OpenAI announced on September 16, 2026 that employees can flag incidents, safety and alignment teams investigate, and those teams decide whether a case warrants public disclosure.",
+          "evidence_quote": "employees flag possible model-misalignment incidents for review by safety and alignment teams. OpenAI said those teams will decide whether a case warrants public disclosure.",
+          "exact_line": "ALEX: So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide — and this is the key word — whether the case \"warrants\" public disclosure. This was announced on September 16, 2026.",
+          "replacement_line": "ALEX: So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide whether the case should be publicly disclosed. Reuters reported it on September 16, 2026.",
+          "reason": "The employee-flag / safety-team review / disclosure-decision sequence is supported, but the exact quoted word 'warrants' is not verified in the supplied primary reporting. Also, the AP story confirming the framework was published on September 17 UTC and Reuters on September 16 UTC; the line collapses the timing without noting that distinction.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Zuckerberg's position is that each company should independently ensure its own technology is safe.",
+          "evidence_quote": "it’s up to each AI company to make sure its technology is safe",
+          "exact_line": "ALEX: Our third story. Mark Zuckerberg publicly distanced Meta from calls for a coordinated AI slowdown. Anthropic CEO Dario Amodei had proposed stronger safety coordination, found support from other tech leaders — and Zuckerberg's position, per AP on September 16th, is that each company should independently ensure its own technology is safe.",
+          "replacement_line": "ALEX: Our third story. Mark Zuckerberg publicly distanced Meta from calls for a coordinated AI slowdown. Anthropic CEO Dario Amodei had proposed stronger safety coordination, found support from other tech leaders — and Zuckerberg’s position, per AP on September 16th, is that each AI company should make sure its own technology is safe.",
+          "reason": "The overall claim is supported, but 'per AP on September 16th' is correct only as a UTC publication date; the AP page itself is dated Wed Sep 16, 2026 and says Zuckerberg said each AI company should make sure its own technology is safe. The exact wording 'independently ensure' is a paraphrase, not the AP phrasing.",
+          "source_url": "https://apnews.com/article/ai-zuckerberg-meta-slowdown-2f4eab05b1e931456d00ebc2fe93c989"
         }
       ],
       "warnings": [
-        "The script repeatedly attributes precise motives to executives and investors, which are interpretive rather than directly verifiable; these are acceptable as opinionated commentary but should be treated cautiously.",
-        "The line 'AP was clear: this remains a live policy debate, not a binding regulatory outcome' is supported by the source record, but it is a paraphrase of the AP summary rather than a direct quote.",
-        "The Microsoft-school privacy discussion is not directly sourced in the provided records beyond the AP summary; if kept, ensure it matches the exact Microsoft announcement and AP framing if you later verify it against source material."
+        "The script’s OpenAI section repeatedly treats the framework as if it were a public disclosure obligation; the supplied sources only verify an internal, voluntary framework.",
+        "The Snap section is mostly accurate on price, enterprise program, partners, and Verizon pricing, but the script’s line about 'connectivity package for use away from Wi‑Fi' should be understood as a separate sold package with built-in cellular connectivity.",
+        "The King Charles meeting is a real meeting on Thursday, September 17, 2026, but it is not a policy action or regulatory decision.",
+        "The script’s mention of 'Microsoft code-of-conduct argument from two days ago' is unsupported by the supplied source records and should be treated as editorial cross-reference rather than verified fact."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
-        "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
-        "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
-        "https://apnews.com/article/d2d1bac8e8666c681937665596a4f603",
-        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+        "https://apnews.com/article/openai-safety-ai-framework-089e75b95bc935af092da7b79d92706d",
+        "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658",
+        "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/",
+        "https://apnews.com/article/ai-zuckerberg-meta-slowdown-2f4eab05b1e931456d00ebc2fe93c989",
+        "https://apnews.com/article/britain-king-charles-ai-summit-0765bee1e338cf65846a046fb5825a4a"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-16",
+      "date": "2026-09-17",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "ByteDance's AI drug unit just spun off and raised $290 million.",
-          "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
-          "exact_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
-          "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And Reuters reported ByteDance's AI drug unit completed a $290 million fundraising after a spin-off.",
-          "reason": "This line combines two supported claims, but the ByteDance fundraising is not attributable to an AP/Reuters primary source in the supplied records. The script also presents the fundraising as current fact without the source qualifier that Reuters-related coverage and records provide.",
-          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+          "factual_claim": "The podcast is called The AI Edge and the hosts are Alex, Jamie, and Rufus with the stated roles.",
+          "evidence_quote": "No supplied source record supports the podcast title, host names, or their described roles.",
+          "exact_line": "ALEX: Welcome to The AI Edge. I'm Alex. With me as always, Jamie — she will tell you exactly who gets hurt when the headlines go soft, and Rufus — he will follow the money until it says something it didn't mean to.",
+          "replacement_line": "ALEX: Welcome back. I'm Alex. With me as always, Jamie, and Rufus.",
+          "reason": "This line identifies the show as The AI Edge and presents it as a current episode. The supplied source records do not verify the podcast title, host identities, or that these spoken identity claims are factual. No correction needed unless you want a style-only review, but as a factual audit this is unsupported branding metadata.",
+          "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "AP reported that AI industry leaders said development needs to slow down for safety reasons and that Washington's response is lagging.",
-          "evidence_quote": "The leading AI industry voices rarely agree - so when they do, it's no wonder it captures attention. ... The consensus came after ... [they] said in recent days that AI's development needs to slow down. ... obstacles including domestic and global competition ... and pushback from President Donald Trump all stand in the way.",
-          "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
-          "replacement_line": "RUFUS: To be precise, AP reported that several leading AI voices have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been lagging.",
-          "reason": "The AP source supports the broad idea, but this line overstates 'development needs to slow down' as AP's direct reported conclusion and compresses multiple separate AP points into a stronger, more categorical claim than the record supports.",
-          "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+          "factual_claim": "OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+          "evidence_quote": "OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior.",
+          "exact_line": "ALEX: Our lead story today is OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+          "replacement_line": "ALEX: Our lead story today is OpenAI's new framework for regularly reporting unexpected or unauthorized AI behavior.",
+          "reason": "The line presents the Reuters/AP item as a verbatim current headline. The source record says OpenAI announced a new disclosure framework for unexpected or unauthorized AI behavior, but the exact headline wording is not the underlying factual claim. More importantly, the announcement is a framework, not a guarantee that OpenAI will regularly disclose every incident.",
+          "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Reuters reported Zuckerberg saying competition and liability already give AI companies enough reason to act safely.",
-          "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
-          "exact_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying competition and liability already give AI companies enough reason to act safely. We'll dig into that collision in a moment. But first —",
-          "replacement_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying AI companies already have enough incentive to build safely. We'll dig into that collision in a moment. But first —",
-          "reason": "The date is correct, but the line implies Reuters reported the exact phrasing as a direct quote rather than a reported position. The source records say Zuckerberg said AI labs already have enough incentive to build safely.",
-          "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Zuckerberg said AI labs already have enough incentive to build safely.",
-          "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
-          "exact_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI labs already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
-          "replacement_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI companies already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
-          "reason": "This is broadly supported, but 'AI labs already have enough incentive to build safely' should be tied to Reuters' report of Zuckerberg's view, and the script later treats it as a direct factual finding about the industry rather than his stated opinion.",
-          "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Related coverage put the unit's valuation around $1.1 billion.",
-          "evidence_quote": "Reuters-related coverage put the unit's valuation at $1.5 billion.",
-          "exact_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-one billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
-          "replacement_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
-          "reason": "The valuation is wrong in this line. The source record says related coverage put the valuation at $1.5 billion, not $1.1 billion.",
-          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The fundraising is a serious signal of investor appetite.",
-          "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
-          "exact_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a serious signal of appetite.",
-          "replacement_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a big vote of confidence.",
-          "reason": "The valuation amount is correct, but this line asserts investor intent and market meaning as fact. The source records only support that funding occurred and the valuation was reported; they do not establish investors' motives or a confirmed 'signal of appetite.'",
-          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "There is no verified track record from ByteDance's unit specifically, and the funding does not show clinical progress.",
-          "evidence_quote": "The report was based on people with knowledge of the matter, not a company press release.",
-          "exact_line": "JAMIE: And that premise is compelling and also largely unproven at scale. We don't have a verified track record from ByteDance's unit specifically. Reuters cited sources, not a company announcement. So we know the capital moved. We don't know what it bought in terms of actual clinical progress.",
-          "replacement_line": "JAMIE: And that premise is compelling and also largely unproven at scale. Reuters cited sources, not a company announcement, so we know the capital moved, but not what it bought in terms of actual clinical progress.",
-          "reason": "The first sentence is an opinion, but the line also states as fact that there is no verified track record and no clinical progress information. The source records do not establish either absence.",
-          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The funded candidate pipeline must clear existing FDA oversight, and clinical-trial/patient risk sits downstream of AI discovery.",
-          "evidence_quote": "there are existing FDA frameworks for drug approvals that apply regardless of whether AI is involved in the discovery process.",
-          "exact_line": "ALEX: Right. Because that means the clinical-trial and patient risk still sits downstream of the AI discovery process, while the investors are funding a candidate pipeline that still has to clear existing FDA oversight.",
-          "replacement_line": "ALEX: Right. Because existing FDA frameworks still apply to the drug approval process, even if the AI system helped with discovery. The investor money is backing a pipeline that still has to get through that oversight.",
-          "reason": "This line implies a concrete regulatory structure specific to the AI discovery pipeline beyond what the source records establish. The supplied record only supports that existing FDA frameworks apply to drug approvals regardless of AI involvement, not this broader 'candidate pipeline' description.",
-          "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Microsoft agreed not to train on student data, with a narrow safety exception.",
-          "evidence_quote": "Microsoft says it will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students.",
-          "exact_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student data, with a narrow safety exception. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
-          "replacement_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student or educator data, with a narrow exception for data that could help protect students. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
-          "reason": "The source record says Microsoft will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students. The line omits educator data and slightly narrows the exception, which is a factual inaccuracy.",
-          "source_url": "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+          "factual_claim": "Mark Zuckerberg publicly distanced Meta from calls for a coordinated AI slowdown.",
+          "evidence_quote": "Zuckerberg distanced Meta from calls for a coordinated approach to slowing AI development.",
+          "exact_line": "RUFUS: And I have Mark Zuckerberg publicly distancing Meta from the coordinated AI slowdown conversation. Which is a polite way of describing what actually happened.",
+          "replacement_line": "RUFUS: And I have Mark Zuckerberg distancing Meta from calls for a coordinated AI slowdown. Which is a polite way of describing what actually happened.",
+          "reason": "This is materially supported in substance, but the phrasing implies a broader, contemporaneous event than the source establishes. The AP source only supports that Zuckerberg distanced Meta from calls for coordinated slowing and said each company should ensure its own technology is safe.",
+          "source_url": "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989"
         }
       ],
       "warnings": [
-        "The sponsor read was not audited per instructions.",
-        "Several lines make causal or predictive claims about future regulatory backlash, competitive dynamics, or investor behavior; these are framed as analysis and were not marked unless they asserted unsupported concrete facts.",
-        "The script repeatedly treats AP/Reuters reporting as if it were direct confirmation of motives or future outcomes; these are mostly editorial judgments and not necessarily factual errors."
+        "The sponsor read is supposed to be ignored unless it makes a numerical or regulated-product claim; I did not audit it as instructed.",
+        "Several lines assert prices and capabilities for Snap's Specs that are only partially supported by the source record. The record supports $10/month for Verizon customers, $20/month for non-Verizon customers, a Specs for Enterprise program, and partnerships including Amazon, Salesforce, and Nvidia; it does not fully establish that the $20 price is for 'most people' in every context or that 'anticipatory AI layer' is an officially defined technical term.",
+        "The script repeatedly states or implies the OpenAI framework is a voluntary framework with no external check. The source record supports that employees flag incidents, safety/alignment teams investigate, and those teams decide on public disclosure; it does not explicitly address external audit mechanisms or legal obligation beyond noting the announcement is not itself a legal requirement.",
+        "The script says the OpenAI announcement 'landed alongside problems they've already seen.' That is a reasonable inference from the AP report, but it is still an inference rather than a directly stated source fact.",
+        "The claim that the November? no, September 17, 2026 King Charles meeting is a 'signal that political pressure is accumulating' is editorial interpretation. The source only supports that the meeting happened and concerned AI safety and responsible development."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
-        "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
-        "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
-        "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+        "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658",
+        "https://apnews.com/article/089e75b95bc935af092da7b79d92706d",
+        "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/",
+        "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989",
+        "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a"
       ]
     }
   ],
-  "replacements_applied": 4,
+  "replacements_applied": 18,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-16",
+    "date": "2026-09-17",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "ByteDance's AI drug unit just spun off and raised $290 million.",
-        "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
-        "exact_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And ByteDance just spun off an AI drug unit and raised two hundred and ninety million dollars for it.",
-        "replacement_line": "ALEX: Mark Zuckerberg says competition and liability already give AI companies enough reason to act safely. And Reuters reported ByteDance's AI drug unit completed a $290 million fundraising after a spin-off.",
-        "reason": "This line combines two supported claims, but the ByteDance fundraising is not attributable to an AP/Reuters primary source in the supplied records. The script also presents the fundraising as current fact without the source qualifier that Reuters-related coverage and records provide.",
-        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
+        "factual_claim": "The podcast is called The AI Edge and the hosts are Alex, Jamie, and Rufus with the stated roles.",
+        "evidence_quote": "No supplied source record supports the podcast title, host names, or their described roles.",
+        "exact_line": "ALEX: Welcome to The AI Edge. I'm Alex. With me as always, Jamie — she will tell you exactly who gets hurt when the headlines go soft, and Rufus — he will follow the money until it says something it didn't mean to.",
+        "replacement_line": "ALEX: Welcome back. I'm Alex. With me as always, Jamie, and Rufus.",
+        "reason": "This line identifies the show as The AI Edge and presents it as a current episode. The supplied source records do not verify the podcast title, host identities, or that these spoken identity claims are factual. No correction needed unless you want a style-only review, but as a factual audit this is unsupported branding metadata.",
+        "source_url": "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "AP reported that AI industry leaders said development needs to slow down for safety reasons and that Washington's response is lagging.",
-        "evidence_quote": "The leading AI industry voices rarely agree - so when they do, it's no wonder it captures attention. ... The consensus came after ... [they] said in recent days that AI's development needs to slow down. ... obstacles including domestic and global competition ... and pushback from President Donald Trump all stand in the way.",
-        "exact_line": "RUFUS: To be precise, AP reported that AI industry leaders have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been, by the same account, lagging.",
-        "replacement_line": "RUFUS: To be precise, AP reported that several leading AI voices have recently said development needs to slow down for safety reasons. Agreeing in a room is the easy part. The hard part, which AP also noted, is that putting those ideas into practice is considerably more difficult. Washington's response has been lagging.",
-        "reason": "The AP source supports the broad idea, but this line overstates 'development needs to slow down' as AP's direct reported conclusion and compresses multiple separate AP points into a stronger, more categorical claim than the record supports.",
-        "source_url": "https://apnews.com/article/b61f28b6212338e88c0baec31f661701"
+        "factual_claim": "OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+        "evidence_quote": "OpenAI said it will begin regularly publishing reports on unexpected or unauthorized AI behavior.",
+        "exact_line": "ALEX: Our lead story today is OpenAI will regularly disclose unexpected or unauthorized AI behavior.",
+        "replacement_line": "ALEX: Our lead story today is OpenAI's new framework for regularly reporting unexpected or unauthorized AI behavior.",
+        "reason": "The line presents the Reuters/AP item as a verbatim current headline. The source record says OpenAI announced a new disclosure framework for unexpected or unauthorized AI behavior, but the exact headline wording is not the underlying factual claim. More importantly, the announcement is a framework, not a guarantee that OpenAI will regularly disclose every incident.",
+        "source_url": "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Reuters reported Zuckerberg saying competition and liability already give AI companies enough reason to act safely.",
-        "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
-        "exact_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying competition and liability already give AI companies enough reason to act safely. We'll dig into that collision in a moment. But first —",
-        "replacement_line": "ALEX: And yesterday — September fifteenth — Reuters reported Mark Zuckerberg saying AI companies already have enough incentive to build safely. We'll dig into that collision in a moment. But first —",
-        "reason": "The date is correct, but the line implies Reuters reported the exact phrasing as a direct quote rather than a reported position. The source records say Zuckerberg said AI labs already have enough incentive to build safely.",
-        "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Zuckerberg said AI labs already have enough incentive to build safely.",
-        "evidence_quote": "Meta CEO Mark Zuckerberg said AI companies already have enough incentive to build safely, Reuters reported.",
-        "exact_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI labs already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
-        "replacement_line": "ALEX: Our second story. September fifteenth, Reuters: Meta's Mark Zuckerberg says AI companies already have enough incentive to build safely. Rufus, take the money desk on this one. What's he actually saying, and who does it benefit?",
-        "reason": "This is broadly supported, but 'AI labs already have enough incentive to build safely' should be tied to Reuters' report of Zuckerberg's view, and the script later treats it as a direct factual finding about the industry rather than his stated opinion.",
-        "source_url": "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Related coverage put the unit's valuation around $1.1 billion.",
-        "evidence_quote": "Reuters-related coverage put the unit's valuation at $1.5 billion.",
-        "exact_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-one billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
-        "replacement_line": "ALEX: Our third story. ByteDance spun off its AI drug development unit and that unit just raised two hundred and ninety million dollars. Reuters reported the fundraise on September sixteenth, and related coverage put the valuation around one-point-five billion dollars. Jamie, what is a TikTok parent company doing in pharmaceutical AI?",
-        "reason": "The valuation is wrong in this line. The source record says related coverage put the valuation at $1.5 billion, not $1.1 billion.",
-        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The fundraising is a serious signal of investor appetite.",
-        "evidence_quote": "ByteDance completed fundraising for its AI drugmaking unit after a spin-off. Reuters reported the fundraising amount as $290 million.",
-        "exact_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a serious signal of appetite.",
-        "replacement_line": "RUFUS: Investors apparently find that compelling. Two hundred and ninety million dollars at a one-point-five billion valuation for a unit that just detached from its parent is a big vote of confidence.",
-        "reason": "The valuation amount is correct, but this line asserts investor intent and market meaning as fact. The source records only support that funding occurred and the valuation was reported; they do not establish investors' motives or a confirmed 'signal of appetite.'",
-        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "There is no verified track record from ByteDance's unit specifically, and the funding does not show clinical progress.",
-        "evidence_quote": "The report was based on people with knowledge of the matter, not a company press release.",
-        "exact_line": "JAMIE: And that premise is compelling and also largely unproven at scale. We don't have a verified track record from ByteDance's unit specifically. Reuters cited sources, not a company announcement. So we know the capital moved. We don't know what it bought in terms of actual clinical progress.",
-        "replacement_line": "JAMIE: And that premise is compelling and also largely unproven at scale. Reuters cited sources, not a company announcement, so we know the capital moved, but not what it bought in terms of actual clinical progress.",
-        "reason": "The first sentence is an opinion, but the line also states as fact that there is no verified track record and no clinical progress information. The source records do not establish either absence.",
-        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The funded candidate pipeline must clear existing FDA oversight, and clinical-trial/patient risk sits downstream of AI discovery.",
-        "evidence_quote": "there are existing FDA frameworks for drug approvals that apply regardless of whether AI is involved in the discovery process.",
-        "exact_line": "ALEX: Right. Because that means the clinical-trial and patient risk still sits downstream of the AI discovery process, while the investors are funding a candidate pipeline that still has to clear existing FDA oversight.",
-        "replacement_line": "ALEX: Right. Because existing FDA frameworks still apply to the drug approval process, even if the AI system helped with discovery. The investor money is backing a pipeline that still has to get through that oversight.",
-        "reason": "This line implies a concrete regulatory structure specific to the AI discovery pipeline beyond what the source records establish. The supplied record only supports that existing FDA frameworks apply to drug approvals regardless of AI involvement, not this broader 'candidate pipeline' description.",
-        "source_url": "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Microsoft agreed not to train on student data, with a narrow safety exception.",
-        "evidence_quote": "Microsoft says it will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students.",
-        "exact_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student data, with a narrow safety exception. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
-        "replacement_line": "JAMIE: And I'd watch the Microsoft-school deal we touched on yesterday in a different light now. Microsoft agreed not to train on student or educator data, with a narrow exception for data that could help protect students. That's an actual contractual commitment. Which makes it qualitatively different from everything we discussed today —",
-        "reason": "The source record says Microsoft will not use student or educator data to train AI systems, apart from a narrow exception for data that could help protect students. The line omits educator data and slightly narrows the exception, which is a factual inaccuracy.",
-        "source_url": "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+        "factual_claim": "Mark Zuckerberg publicly distanced Meta from calls for a coordinated AI slowdown.",
+        "evidence_quote": "Zuckerberg distanced Meta from calls for a coordinated approach to slowing AI development.",
+        "exact_line": "RUFUS: And I have Mark Zuckerberg publicly distancing Meta from the coordinated AI slowdown conversation. Which is a polite way of describing what actually happened.",
+        "replacement_line": "RUFUS: And I have Mark Zuckerberg distancing Meta from calls for a coordinated AI slowdown. Which is a polite way of describing what actually happened.",
+        "reason": "This is materially supported in substance, but the phrasing implies a broader, contemporaneous event than the source establishes. The AP source only supports that Zuckerberg distanced Meta from calls for coordinated slowing and said each company should ensure its own technology is safe.",
+        "source_url": "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989"
       }
     ],
     "warnings": [
-      "The sponsor read was not audited per instructions.",
-      "Several lines make causal or predictive claims about future regulatory backlash, competitive dynamics, or investor behavior; these are framed as analysis and were not marked unless they asserted unsupported concrete facts.",
-      "The script repeatedly treats AP/Reuters reporting as if it were direct confirmation of motives or future outcomes; these are mostly editorial judgments and not necessarily factual errors."
+      "The sponsor read is supposed to be ignored unless it makes a numerical or regulated-product claim; I did not audit it as instructed.",
+      "Several lines assert prices and capabilities for Snap's Specs that are only partially supported by the source record. The record supports $10/month for Verizon customers, $20/month for non-Verizon customers, a Specs for Enterprise program, and partnerships including Amazon, Salesforce, and Nvidia; it does not fully establish that the $20 price is for 'most people' in every context or that 'anticipatory AI layer' is an officially defined technical term.",
+      "The script repeatedly states or implies the OpenAI framework is a voluntary framework with no external check. The source record supports that employees flag incidents, safety/alignment teams investigate, and those teams decide on public disclosure; it does not explicitly address external audit mechanisms or legal obligation beyond noting the announcement is not itself a legal requirement.",
+      "The script says the OpenAI announcement 'landed alongside problems they've already seen.' That is a reasonable inference from the AP report, but it is still an inference rather than a directly stated source fact.",
+      "The claim that the November? no, September 17, 2026 King Charles meeting is a 'signal that political pressure is accumulating' is editorial interpretation. The source only supports that the meeting happened and concerned AI safety and responsible development."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/b61f28b6212338e88c0baec31f661701",
-      "https://www.reuters.com/world/us/metas-zuckerberg-says-ai-labs-have-enough-incentive-build-safely-2026-09-15/",
-      "https://www.marketscreener.com/news/bytedance-completes-290-million-fundraising-for-ai-drug-unit-after-its-spin-off-sources-say-ce785bd2db89f320",
-      "https://apnews.com/article/89b040631d635e0d8673f1e9aa9a6e28"
+      "https://www.investing.com/news/stock-market-news/openai-plans-regular-reports-on-unexpected-ai-behavior-4904658",
+      "https://apnews.com/article/089e75b95bc935af092da7b79d92706d",
+      "https://techcrunch.com/2026/09/16/snap-tries-to-make-the-case-again-for-its-2200-smart-glasses/",
+      "https://apnews.com/article/2f4eab05b1e931456d00ebc2fe93c989",
+      "https://apnews.com/article/0765bee1e338cf65846a046fb5825a4a"
     ]
   },
   "pass": false,
