@@ -1,17 +1,17 @@
 {
-  "date": "2026-09-17",
+  "date": "2026-09-18",
   "show": "The AI Edge",
-  "score": 97,
+  "score": 100,
   "target_band": "88-95",
   "pass": true,
   "checks": {
-    "lead_story_heat": true,
+    "lead_story_heat": false,
     "lead_receipts": true,
     "story_variety": false,
     "no_duplicate_story_family": true,
     "no_blank_story_slots": true,
     "title_quality": true,
-    "description_quality": false,
+    "description_quality": true,
     "sponsor_quality": false,
     "forwardable_moments": true,
     "learning_arc": false,
@@ -22,21 +22,21 @@
     "not_summary_heavy": true,
     "malformed_metadata": true
   },
-  "lead_heat": 50.0,
+  "lead_heat": 8.0,
   "receipt_scores": [
     6,
     7,
     6,
-    6,
-    6
+    5,
+    2
   ],
-  "summary_heavy_ratio": 0.007,
+  "summary_heavy_ratio": 0.039,
   "duplicate_family_risk": false,
   "blank_story_slot": false,
-  "forwardable_count": 6,
+  "forwardable_count": 8,
   "forwardable_target_hits": 5,
   "sponsor": {
-    "date": "2026-09-17",
+    "date": "2026-09-18",
     "TheLEDGR_Readout_present": false,
     "brand_present": true,
     "spoken_url_present": true,
@@ -44,7 +44,7 @@
     "main_read_present": true,
     "main_read_speaker": "ALEX",
     "rotating_end_tag_present": true,
-    "rotating_end_tag_speaker": "JAMIE",
+    "rotating_end_tag_speaker": "RUFUS",
     "sponsor_bed_expected": false,
     "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
     "readout_answers": {
@@ -54,29 +54,29 @@
       "operator_tomorrow": false
     },
     "sponsor_tone_score": 7,
-    "strongest_story": "OpenAI will regularly disclose unexpected or unauthorized AI behavior"
+    "strongest_story": "House passes bill aimed at making data centers cover more of their energy costs"
   },
   "lesson_card": {
     "show_name": "The AI Edge",
-    "concept": "developer leverage",
-    "plain_english": "when a small tool or clone changes what builders can ship, copy, automate, or replace",
-    "big_question": "When does a viral dev tool stop being a toy and start becoming leverage?",
-    "simple_analogy": "one clever repo turning into a forklift for every developer who was previously carrying boxes by hand",
+    "concept": "compute bottleneck",
+    "plain_english": "the constraint created when demand for intelligence outruns chips, power, data centers, or inference economics",
+    "big_question": "What happens when demand for AI outruns the infrastructure underneath it?",
+    "simple_analogy": "a brilliant restaurant with one stove, a mile-long queue, and customers ordering more every minute",
     "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
-    "hard_receipt": "2026-09-16",
-    "listener_payoff": "By the end, listeners should understand developer leverage well enough to explain why today's AI story matters tomorrow.",
+    "hard_receipt": "417-3 vote",
+    "listener_payoff": "By the end, listeners should understand compute bottleneck well enough to explain why today's AI story matters tomorrow.",
     "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-    "episode_spine": "OpenAI will regularly disclose unexpected or unauthorized AI behavior is a developer-leverage story: who can build, copy, and ship faster than the market can price in.",
+    "episode_spine": "Today’s stories are not five separate headlines; they are evidence of one AI leverage shift.",
     "titles": {
-      "spotify_title": "When Developers Clone the Future Before Companies Can Sell It",
-      "youtube_title": "A Viral AI Code Clone Just Showed Where Developer Power Is Moving",
-      "social_hook": "The clone is not the point. The leverage shift is.",
-      "operator_title": "Today’s AI Lesson: Developer Leverage",
-      "archive_title": "OpenAI will regularly disclose unexpected or unauthorized AI behavior — Developer Leverage Explained"
+      "spotify_title": "The Bottleneck Behind the AI Boom",
+      "youtube_title": "The AI Race Is Becoming a Fight Over Who Can Afford the Next Answer",
+      "social_hook": "The next AI winner may be the company that can afford the next answer.",
+      "operator_title": "Today’s AI Lesson: Compute Bottleneck",
+      "archive_title": "House passes bill aimed at making data centers cover more of their energy costs — Compute Bottleneck Explained"
     }
   },
-  "title": "OpenAI's New Disclosure Framework: How to Track AI Behavior and Safety Risks",
-  "description_first_180": "Whether AI safety should be a coordinated industry standard or an independent competitive priority.",
+  "title": "House Data Center Energy Bill: Who Pays for Your Rising Utility Costs?",
+  "description_first_180": "Whether the rapid scaling of AI infrastructure and development is being adequately checked by public policy and internal transparency.",
   "note": "V3.0 brutal aircheck. No fake 90s: missing moments, scene shape, humor, sponsor pronunciation, or title/story alignment hard-cap the score before TTS/audio.",
   "v3_3_assessment": {
     "version": "v3.3-connection-first",
@@ -97,7 +97,7 @@
       "sponsor_cta_exactly_once": true,
       "rotating_sponsor_end_tag": true,
       "listener_question_present": true,
-      "prior_listener_question_or_poll_acknowledged": false,
+      "prior_listener_question_or_poll_acknowledged": true,
       "show_follow_cta_present": true,
       "single_show_cta": true,
       "listener_promise_present": true,
@@ -116,99 +116,99 @@
       "continuity_callback": true
     },
     "soft_flags": [
-      "alex_extended_exposition (92 words before substantive reply)",
-      "advisory_prior_listener_question_or_poll_acknowledged",
+      "alex_extended_exposition (100 words before substantive reply)",
       "repeated_stale_phrase: 'consequence before consensus catches up'",
       "repeated_stale_phrase: 'consensus catches up'"
     ],
-    "keyword_signal": 97,
+    "keyword_signal": 100,
     "keyword_signal_note": "Informational only. Real quality = listener retention in Spotify/Apple analytics, not this number.",
-    "score": 97,
+    "score": 100,
     "target": 84,
     "metrics": {
       "editorial_diagnostics": {
         "basis": "transcript heuristics only; no listening or audience measurement",
         "blocking": false,
         "story_words": {
-          "2": 1070,
-          "3": 984,
-          "4": 590
+          "2": 1012,
+          "3": 940,
+          "4": 727
         },
         "story_word_shares": {
-          "2": 0.405,
-          "3": 0.372,
-          "4": 0.223
+          "2": 0.378,
+          "3": 0.351,
+          "4": 0.271
         },
         "repeated_sentences": [],
         "flags": []
       },
-      "words": 3646,
+      "words": 3688,
       "runtime_word_band": [
         3550,
         4350
       ],
-      "speaker_lines": 141,
+      "speaker_lines": 128,
       "segments": 5,
-      "receipts": 18,
-      "concessions": 1,
+      "receipts": 35,
+      "concessions": 0,
       "callback_present": true,
       "show_follow_cta_count": 1,
       "competing_show_cta": false,
-      "listener_memory_acknowledged": false,
+      "listener_memory_acknowledged": true,
       "shareable_exchange": {
         "passed": true,
         "segment": 2,
-        "estimated_seconds": 40.1,
-        "word_count": 97,
+        "estimated_seconds": 42.2,
+        "word_count": 102,
         "speakers": [
           "ALEX",
-          "JAMIE"
+          "JAMIE",
+          "RUFUS"
         ],
-        "score": 5,
+        "score": 6,
         "turns": [
           {
             "segment": 2,
             "block": 5,
-            "speaker": "ALEX",
-            "text": "So here is what OpenAI actually announced. Employees can flag possible model-misalignment incidents. Those go to safety and alignment teams for investigation. Those teams then decide whether the case should be publicly disclosed. Reuters reported it on September 16, 2026."
+            "speaker": "JAMIE",
+            "text": "That's a litigation shift, not a rate shift. Different timelines entirely."
+          },
+          {
+            "segment": 2,
+            "block": 5,
+            "speaker": "RUFUS",
+            "text": "Litigation involving utility commissions, state legislatures, and hyperscaler legal teams. We're talking about a resolution horizon that comfortably outlasts several election cycles."
           },
           {
             "segment": 2,
             "block": 5,
             "speaker": "JAMIE",
-            "text": "That's where I stop."
+            "text": "Which means ratepayers in high-growth data center states are paying the premium while the legal question gets resolved. That's not hypothetical — that's the current baseline continuing."
           },
           {
             "segment": 2,
             "block": 5,
             "speaker": "ALEX",
-            "text": "Why there specifically?"
-          },
-          {
-            "segment": 2,
-            "block": 5,
-            "speaker": "JAMIE",
-            "text": "Because \"warrants\" is a judgment call made by the people whose valuation depends on the answer. There is no external check on that decision. An employee flags something. OpenAI's own safety team reviews it. OpenAI then decides if the public gets to know. That's one organization controlling the entire chain."
+            "text": "And the bill's supporters called it a first step, not a solution. So here's the question the AP piece leaves open that I want answered: is there a second step already drafted, or did 417 members vote for a principle and go home?"
           }
         ],
         "test": "Would this exact exchange make sense and feel worth sending without the full episode?"
       },
-      "alex_questions": 12,
-      "jamie_reactions": 9,
-      "jamie_comic_beats": 4,
-      "rufus_dry_lines": 7,
-      "friction_beats": 2,
-      "interruptions": 47,
+      "alex_questions": 16,
+      "jamie_reactions": 3,
+      "jamie_comic_beats": 2,
+      "rufus_dry_lines": 6,
+      "friction_beats": 4,
+      "interruptions": 52,
       "jamie_rufus_exchange_segments": [
         2,
         3,
         4
       ],
       "spoken_production_language": false,
-      "max_turn_words": 53,
-      "max_alex_exposition_words": 92,
-      "title": "OpenAI's New Disclosure Framework: How to Track AI Behavior and Safety Risks",
-      "lead_actor": "OpenAI"
+      "max_turn_words": 55,
+      "max_alex_exposition_words": 100,
+      "title": "House Data Center Energy Bill: Who Pays for Your Rising Utility Costs?",
+      "lead_actor": ""
     }
   },
   "passed": true,
