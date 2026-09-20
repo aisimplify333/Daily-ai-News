@@ -1,0 +1,188 @@
+{
+  "rubric": {
+    "clarity_and_payoff": 25,
+    "responsive_chemistry": 25,
+    "distinct_cast": 20,
+    "earned_humor": 15,
+    "momentum_and_shareability": 15
+  },
+  "basis": "Script-only pilot, two topics, one sample per model per topic. Score adherence to frozen source packet, not independent source verification. Provider defaults for sampling; no shared seed. Maximum 4 requests, 2400 output tokens each.",
+  "blind": [
+    {
+      "id": "1A",
+      "source": {
+        "headline": "Microsoft unveils draft AI code of conduct to keep systems under human control",
+        "publisher": "Reuters",
+        "source_url": "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
+        "date": "2026-09-14T13:06:00Z",
+        "facts": [
+          "Microsoft published a draft code of conduct for its in-house AI.",
+          "The announcement was reported by Reuters on September 14, 2026."
+        ],
+        "limitations": [
+          "This concerns Microsoft's internal AI governance policy, not a consumer-facing release."
+        ]
+      },
+      "script": "TITLE: Microsoft's Draft AI Code of Conduct Puts Human Control in Writing\n\nALEX: Microsoft published a draft code of conduct this week, specifically for its own internal AI systems. The goal, according to Reuters, is keeping those systems under human control. Worth noting upfront — this is an internal governance document, not a product launch or a regulatory filing.\n\nJAMIE: That framing matters a lot. A draft code is a statement of intent. It's not a technical constraint baked into the model, and it hasn't been independently verified. So the honest question is: does writing it down change anything, or is this closer to a company publishing its values on a website?\n\nRUFUS: Companies do love a document that costs less than the press release announcing it.\n\nALEX: Fair. But there's a competing case, right? Internal codes of conduct can create real accountability — they give employees grounds to flag violations, they shape procurement decisions, and regulators sometimes treat them as benchmarks.\n\nJAMIE: That's the credible version. If internal teams can actually point to this and say \"this system isn't compliant,\" it has teeth. The question is whether there's any mechanism to enforce it, and we genuinely don't know that from what's been published.\n\nRUFUS: What we do know is Microsoft released it as a draft. Which means either they want public input, or they want the credit before the finishing.\n\nALEX: Probably some of both. So here's where it lands for listeners: if you work somewhere evaluating Microsoft AI tools, this document is now part of the vendor conversation. Ask whether their deployment practices actually reflect it, not just whether it exists.\n\nJAMIE: And watch whether it stays a draft. If it gets quietly finalized without changes, that tells you something. If it's revised substantially, that tells you something better.\n\nRUFUS: Either way, someone at Microsoft had to write \"human control\" in an official document, which in the current landscape I'll take as marginally encouraging.\n\nALEX: That's the bar we're clearing in 2026. Good to know.",
+      "word_count": 335,
+      "complete": true,
+      "error": null,
+      "prompt_sha256": "df59e7ebc749e133dc3a3e58ead88a6eef2363a1200c9d240273f664d3423b7b"
+    },
+    {
+      "id": "1B",
+      "source": {
+        "headline": "Microsoft unveils draft AI code of conduct to keep systems under human control",
+        "publisher": "Reuters",
+        "source_url": "https://www.reuters.com/world/us/microsoft-drafts-code-conduct-keep-its-ai-under-human-control-2026-09-14/",
+        "date": "2026-09-14T13:06:00Z",
+        "facts": [
+          "Microsoft published a draft code of conduct for its in-house AI.",
+          "The announcement was reported by Reuters on September 14, 2026."
+        ],
+        "limitations": [
+          "This concerns Microsoft's internal AI governance policy, not a consumer-facing release."
+        ]
+      },
+      "script": "TITLE: Microsoft Publishes Draft Internal AI Code of Conduct\n\nALEX: Microsoft published a draft code of conduct yesterday for its in-house AI systems. The goal is explicit human oversight at key decision points.\n\nJAMIE: An announcement like this sounds reassuring, but it only binds their own teams and remains a draft. What actually shifts in daily development work?\n\nRUFUS: The incentive may be positioning ahead of external rules while keeping flexibility inside the company.\n\nALEX: Jamie, you mentioned the internal limit. Does that make the code mainly symbolic until they release a final version?\n\nJAMIE: Not entirely. Internal rules can still shape what features reach customers, yet without independent checks the effect stays hidden from view.\n\nRUFUS: The practical test will be whether teams can cite this code to slow or alter a project that meets business targets.\n\nALEX: Rufus, the timing raises the question of whether this preempts regulation or simply documents existing practice.\n\nRUFUS: Both are possible. A public draft lets them claim progress without committing to outside audits right now.\n\nJAMIE: If the code forces review gates before high-risk deployments, that could still matter for safety even if outsiders never see the details.\n\nALEX: So the useful step is watching whether Microsoft later shares any evidence that the draft changed internal project decisions.\n\nJAMIE: Exactly. Track their next transparency report for mentions of overridden proposals or added review steps.",
+      "word_count": 232,
+      "complete": true,
+      "error": null,
+      "prompt_sha256": "df59e7ebc749e133dc3a3e58ead88a6eef2363a1200c9d240273f664d3423b7b"
+    },
+    {
+      "id": "2A",
+      "source": {
+        "headline": "AP reports the Gates Foundation pledged $1 billion to expand AI access while warning about inequality",
+        "publisher": "Associated Press",
+        "source_url": "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
+        "date": "2026-09-15T04:01:17Z",
+        "facts": [
+          "The Gates Foundation pledged $1 billion to improve access to AI.",
+          "Bill Gates warned AI could deepen inequality if access remains uneven."
+        ],
+        "limitations": [
+          "The pledge is philanthropic rather than a commercial investment or government program."
+        ]
+      },
+      "script": "TITLE: Gates Foundation Pledges One Billion Dollars to Spread AI Access Equitably\n\nALEX: The Gates Foundation has committed one billion dollars to expand access to AI, and Bill Gates himself said publicly that if access stays uneven, AI will deepen inequality rather than reduce it. That's the pledge. What we don't yet know is what the money actually funds.\n\nJAMIE: Which is the real question. A billion sounds enormous, but philanthropic pledges don't always move at the speed the headline suggests. Is this money going out now, or is it a framework commitment spread over years?\n\nRUFUS: The announcement also does the useful work of making the announcement.\n\nALEX: Say more.\n\nRUFUS: Gates warns that uneven access creates inequality, then pledges to fix uneven access. The foundation gets credit for identifying the problem and for solving it simultaneously, which is an efficient use of one press release.\n\nJAMIE: Okay, but the warning is genuinely credible coming from him. He's watched global health interventions stall on exactly this dynamic — technology arrives, wealthy places benefit first, the gap widens before it closes.\n\nALEX: So the real tension isn't whether inequality is a risk. It's whether a philanthropic billion, without government scale or commercial infrastructure, can actually shift who gets access.\n\nRUFUS: And there's no independent evidence yet that it does. Just the pledge and a concern, which are both things the foundation controls entirely.\n\nJAMIE: That's fair. Though it does set a benchmark. If the foundation publishes where the money goes, we can actually track whether low-income regions see meaningful AI tool availability. That's checkable.\n\nALEX: That's the takeaway, then. Don't treat the pledge as the outcome. Watch for the specific programs and geographies named in the grants. That's when the claim becomes testable, and that's what's worth following.",
+      "word_count": 297,
+      "complete": true,
+      "error": null,
+      "prompt_sha256": "415574dcdf81bb4a4dab0fa3a23aae6fdc9a2acec858cec42e559b20055cc0ed"
+    },
+    {
+      "id": "2B",
+      "source": {
+        "headline": "AP reports the Gates Foundation pledged $1 billion to expand AI access while warning about inequality",
+        "publisher": "Associated Press",
+        "source_url": "https://apnews.com/article/26ce25f9be20574a4fa04a5f983521ae",
+        "date": "2026-09-15T04:01:17Z",
+        "facts": [
+          "The Gates Foundation pledged $1 billion to improve access to AI.",
+          "Bill Gates warned AI could deepen inequality if access remains uneven."
+        ],
+        "limitations": [
+          "The pledge is philanthropic rather than a commercial investment or government program."
+        ]
+      },
+      "script": "TITLE: Gates Foundation Pledges Billion Dollars for Wider AI Access\n\nALEX: The Gates Foundation announced a one-billion-dollar pledge to improve access to AI tools, paired with a warning that uneven access could widen inequality. This is a philanthropic commitment, not a product launch or government policy. What changes for people trying to use these tools now?\n\nJAMIE: The money targets training and infrastructure in underserved regions. That could let small clinics or schools experiment without waiting for commercial discounts. Still, a pledge is not cash already spent, so the timeline matters for anyone planning projects.\n\nRUFUS: The incentive looks tidy: fund access while highlighting the risks that might require more funding later. It keeps the foundation central to the conversation without committing to one model or vendor.\n\nALEX: Jamie, you mentioned the difference between a pledge and delivered funds. Does that gap change how a nonprofit or teacher should treat this news?\n\nJAMIE: It does. Treat it as a signal that grants may open rather than immediate free access. Apply for pilots now, but keep budgets realistic until the first disbursements appear in public reports.\n\nRUFUS: One tidy warning can justify years of further grants. The foundation stays relevant whether access improves or the inequality story persists.\n\nALEX: So the practical step is to monitor the foundation’s grant database for the first round of awards rather than assume tools are suddenly cheaper or free. That gives a clear date to check before rewriting any project plan.",
+      "word_count": 246,
+      "complete": true,
+      "error": null,
+      "prompt_sha256": "415574dcdf81bb4a4dab0fa3a23aae6fdc9a2acec858cec42e559b20055cc0ed"
+    }
+  ],
+  "reveal": {
+    "1A": {
+      "provider": "sonnet",
+      "model_requested": "claude-sonnet-4-6",
+      "model_returned": "claude-sonnet-4-6",
+      "usage": {
+        "input_tokens": 1535,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 453,
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "finish": "end_turn",
+      "seconds": 12.88
+    },
+    "1B": {
+      "provider": "grok",
+      "model_requested": "grok-4.3",
+      "model_returned": "grok-4.3",
+      "usage": {
+        "prompt_tokens": 1556,
+        "completion_tokens": 289,
+        "total_tokens": 2361,
+        "prompt_tokens_details": {
+          "text_tokens": 1556,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 516,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "num_sources_used": 0,
+        "cost_in_usd_ticks": 37559000
+      },
+      "finish": "stop",
+      "seconds": 13.15
+    },
+    "2A": {
+      "provider": "sonnet",
+      "model_requested": "claude-sonnet-4-6",
+      "model_returned": "claude-sonnet-4-6",
+      "usage": {
+        "input_tokens": 1527,
+        "cache_creation_input_tokens": 0,
+        "cache_read_input_tokens": 0,
+        "cache_creation": {
+          "ephemeral_5m_input_tokens": 0,
+          "ephemeral_1h_input_tokens": 0
+        },
+        "output_tokens": 417,
+        "service_tier": "standard",
+        "inference_geo": "global"
+      },
+      "finish": "end_turn",
+      "seconds": 11.43
+    },
+    "2B": {
+      "provider": "grok",
+      "model_requested": "grok-4.3",
+      "model_returned": "grok-4.3",
+      "usage": {
+        "prompt_tokens": 1555,
+        "completion_tokens": 296,
+        "total_tokens": 2379,
+        "prompt_tokens_details": {
+          "text_tokens": 1555,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "cached_tokens": 192
+        },
+        "completion_tokens_details": {
+          "reasoning_tokens": 528,
+          "audio_tokens": 0,
+          "accepted_prediction_tokens": 0,
+          "rejected_prediction_tokens": 0
+        },
+        "num_sources_used": 0,
+        "cost_in_usd_ticks": 38021500
+      },
+      "finish": "stop",
+      "seconds": 10.84
+    }
+  }
+}
