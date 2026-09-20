@@ -1,0 +1,30 @@
+name: Controlled writer audition
+on:
+  push:
+    branches: [audition/writers-20260920]
+    paths: ['auditions/RUN_ONCE']
+permissions:
+  contents: read
+concurrency:
+  group: controlled-writer-audition
+  cancel-in-progress: false
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Four bounded text calls, no production publication
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
+        run: python auditions/compare_writers.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: controlled-writer-audition
+          path: audition_results/
+          if-no-files-found: warn
