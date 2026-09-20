@@ -246,6 +246,14 @@ Rules:
   TechCrunch, The Verge, Wired and Ars Technica; use the original report rather than
   a syndicated Yahoo copy when the original is available.
 - At least five candidates must use a primary source or major newsroom.
+- Build usable reporting packets, not two-fact headlines. When evidence permits,
+  supply 6-8 distinct facts: what changed, previous state, a concrete documented use,
+  who benefits, actual access/cost/timing, a measurable result and its strongest limit.
+  Attribute vendor claims. Fewer verified facts are better than invented detail.
+  State when a point is not established; absence from an article is not proof of absence.
+- Actively search consequential advances in science, accessibility, education,
+  creativity and useful everyday tools as well as risk stories. Rank by significance,
+  freshness and evidence, not emotional negativity. No compulsory good-news quota.
 - Prioritize legal/policy moves, major model or product releases, safety/security
   events, material deals, compute/chip shifts, and changes affecting work or people.
 - Search for material AI-linked public-market moves worldwide: named stocks, earnings,

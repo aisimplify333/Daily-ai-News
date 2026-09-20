@@ -78,12 +78,12 @@ def check_episode_length_or_fail() -> tuple[Path, float]:
     print(f">> File: {latest.name}", flush=True)
     print(f">> ⏱️ Duration: {duration_min:.2f} minutes", flush=True)
 
-    if duration_min < MIN_MINUTES:
-        raise RuntimeError(f"Episode too short ({duration_min:.2f} min < {MIN_MINUTES:.0f} min).")
+    if duration_min < MIN_MINUTES - 0.5:
+        raise RuntimeError(f"Episode too short ({duration_min:.2f} min; minimum with grace {MIN_MINUTES - 0.5:.2f} min).")
     if duration_min > MAX_MINUTES:
         raise RuntimeError(f"Episode too long ({duration_min:.2f} min > {MAX_MINUTES:.0f} min).")
 
-    print(f">> ✅ GREEN LIGHT: Episode inside {MIN_MINUTES:.0f}-{MAX_MINUTES:.0f} minute window.", flush=True)
+    print(f">> ✅ GREEN LIGHT: Episode inside {MIN_MINUTES - 0.5:.2f}-{MAX_MINUTES:.0f} minute delivery window (30-second shortfall grace).", flush=True)
     return latest, duration_min
 
 

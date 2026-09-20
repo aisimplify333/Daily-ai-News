@@ -4304,50 +4304,9 @@ def _eleven_dialogue_to_file(scene: List[Tuple[str, str]], out_path: Path) -> No
 
 
 def _mix_brand_bed_if_needed(voice_path: Path, text: str, speaker: str, out_path: Path) -> bool:
-    # Sponsor copy is deliberately dry. Never place the old bell/chime bed
-    # beneath either the primary read or the short closing tag.
-    if any(marker in (text or "").lower() for marker in ("the ledger", "subscribe", "t-h-e-l-e-d-g-r")):
-        return False
-    voice_seg = AudioSegment.from_file(voice_path)
-    if len(voice_seg) < 1000:
-        return False
-    low = (text or "").lower()
-
-    bed_path: Optional[Path] = None
-    if "the ledger" in low or "subscribe" in low or "t-h-e-l-e-d-g-r" in low:
-        candidate = BRANDKIT_BEDS_DIR / "sponsor_bed_loop.mp3"
-        if candidate.exists():
-            bed_path = candidate
-    elif any(k in low for k in ["patient", "mental health", "nurse", "hospital", "people", "human", "care"]):
-        candidate = BRANDKIT_BEDS_DIR / "human_concern_bed_loop.mp3"
-        if candidate.exists():
-            bed_path = candidate
-    elif any(k in low for k in ["lawsuit", "regulation", "ban", "security", "risk", "china", "export", "market", "revenue", "funding"]):
-        candidate = BRANDKIT_BEDS_DIR / "suspense_bed_loop.mp3"
-        if candidate.exists():
-            bed_path = candidate
-
-    if bed_path is None:
-        return False
-
-    bed = AudioSegment.from_file(bed_path)
-    if len(bed) < len(voice_seg):
-        loops = int(len(voice_seg) / max(1, len(bed))) + 1
-        bed = bed * loops
-    bed = bed[:len(voice_seg)]
-    sponsor_bed = "the ledger" in low or "subscribe" in low or "t-h-e-l-e-d-g-r" in low
-    bed_target = SPONSOR_BED_TARGET_DBFS if sponsor_bed else MUSIC_TARGET_DBFS - 4.0
-    bed_duck = SPONSOR_BED_DUCK_DB if sponsor_bed else DUCK_AMOUNT_DB + 8.0
-    bed = match_level(bed, target_dbfs=bed_target).fade_out(min(1500, max(380, int(len(voice_seg) * 0.22))))
-    ducked = duck_music_under_voice(
-        voice=voice_seg,
-        music=bed,
-        threshold_dbfs=DUCK_THRESHOLD_DBFS,
-        duck_db=bed_duck,
-        window_ms=DUCK_WINDOW_MS,
-    )
-    ducked.export(out_path, format="mp3", bitrate="192k")
-    return True
+    # Editorial speech and sponsor reads stay dry. Topic keywords are not a
+    # sound-design brief; they must not turn ordinary news into suspense.
+    return False
 
 def _eleven_tts_to_file(text: str, speaker: str, out_path: Path) -> None:
     voice_id = _eleven_voice_id(speaker)
@@ -4775,7 +4734,7 @@ def build_episode_show_notes(
         "What we covered:",
         story_bullets,
         "",
-        "One lead story. The other headlines are supporting evidence, complications, or counterexamples.",
+        "Three distinct AI stories, with lively debate, useful discoveries and practical takeaways.",
         "",
         f"Listener question: {listener_question}",
         "",
@@ -6092,15 +6051,7 @@ def produce_episode() -> None:
             fade_out_ms=TRANSITION_FADE_OUT_MS,
         )
 
-    danger_asset = _resolve_audio_asset(BRANDKIT_SFX_DIR / "danger_sting_brand.mp3")
-    if danger_asset is not None:
-        danger_sting_seg = load_stinger(
-            danger_asset,
-            ms=1000,
-            target_dbfs=STINGER_TARGET_DBFS - 1.0,
-            fade_in_ms=40,
-            fade_out_ms=280,
-        )
+    # No automatic danger stings based on news keywords.
 
     _safe_print(" >> 🎙️ RECORDING (TTS + assembly)...")
 
@@ -6315,31 +6266,9 @@ def produce_episode() -> None:
         shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
 
         if shortfall_seconds <= SHORTFALL_TOLERANCE_SECONDS:
-            assembly_padding_seconds = float(shortfall_seconds)
             _safe_print(
                 f" ⚠️ Episode short by {shortfall_seconds}s. "
-                f"Auto-padding to {MIN_MINUTES:.2f} minutes."
-            )
-
-            # Preserve the outro as the final audible event. Any rare duration pad
-            # belongs before the music, never after it as a silent false ending.
-            outro_keep_ms = min(len(final_audio), OUTRO_MS if outro_seg is not None else 0)
-            if outro_keep_ms > 0:
-                padded_audio = (
-                    final_audio[:-outro_keep_ms]
-                    + AudioSegment.silent(duration=shortfall_seconds * 1000)
-                    + final_audio[-outro_keep_ms:]
-                )
-            else:
-                padded_audio = final_audio + AudioSegment.silent(duration=shortfall_seconds * 1000)
-            padded_audio.export(final_mp3, format="mp3", bitrate="192k")
-
-            final_audio = AudioSegment.from_mp3(final_mp3)
-            duration_seconds = int(len(final_audio) / 1000)
-            minutes = duration_seconds / 60.0
-
-            _safe_print(
-                f" ✅ EPISODE PADDED: {final_mp3.name} ({minutes:.2f} minutes)"
+                "Preserving the complete conversation without silent runtime padding."
             )
         else:
             raise RuntimeError(
@@ -6374,6 +6303,12 @@ def produce_episode() -> None:
                 f"Episode length out of bounds ({minutes:.2f} min). "
                 f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
             )
+
+    try:
+        from audio_engineering import write_engineering_report
+        write_engineering_report(final_mp3, Path("audio_engineering_report.json"))
+    except Exception as exc:
+        _safe_print(f" ⚠️ Engineering report unavailable; paid master preserved: {type(exc).__name__}")
 
     provisional_tracking = build_episode_tracking_payload(
         date_str=today,

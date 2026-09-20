@@ -1,5 +1,28 @@
 # The AI Edge production handoff
 
+## September 20 weekend warmth and engineering upgrade
+
+- Implemented: richer grounded research instructions; original newsroom
+  conversation with discovery, enthusiasm, affection and useful agency. Removed the
+  writer's compulsory argument framing and cynical keyword-based fallback questions.
+- Removed legacy topic-keyword suspense beds and danger-sting loading. Existing
+  intro/outro, measured transitions, voice identities and dry sponsors remain.
+- Final encoded-master engineering report measures integrated loudness, true peak
+  and quiet spans; it explicitly states no listening took place. Measurement failures
+  are advisory and preserve paid audio. Existing mastering settings are unchanged.
+- Removed silent runtime padding. Existing 30-second shortfall allowance is represented
+  honestly in delivery checks (18:30 tolerance; 19–26 preferred, 30 maximum).
+- Corrected public show-note structure to three stories. No completed episode regenerated.
+- Baseline verified: main 5b560e0, Pages run 35486124193 succeeded. Latest scheduled
+  run 35339356477 succeeded September 18, starting 11:23 UTC, so morning delivery
+  reliability is still unresolved.
+- Validation: Python compilation and all 76 offline tests passed September 20, including
+  a synthetic encoded-audio scan, master-preservation failure handling and both runtime
+  boundary checks. No model or TTS calls made. Actual performance remains unlistened.
+- This release contains the validated changes for the next normal production run.
+  See WEEKEND_PRODUCTION_UPGRADE.md for the full treatment and remaining listening,
+  distribution and ElevenLabs checks.
+
 ## September 20 title and description follow-up
 
 - The existing storyboard call now returns three title angles and chooses one grounded
@@ -10,8 +33,9 @@
   a short invitation. No extra provider call or paid episode regeneration.
 - A separate audition/writers-20260920 branch runs a bounded four-call, text-only
   Sonnet/Grok comparison on two frozen September 15 source packets. It does not change
-  production model routing, run TTS or publish an episode. Model preference remains
-  unproven until blind scripts are scored and their identities revealed.
+  production model routing, run TTS or publish an episode. The completed script-only blind review favored Sonnet on both small source packets;
+  both providers had weaknesses. This does not establish audio quality or Grok punch-up efficacy.
+  Results are on the audition branch in auditions/RESULTS.md.
 
 ## September 15 ensemble newsroom direction
 
@@ -220,7 +244,7 @@ Release prepared September 3 Pacific / September 4 UTC, 2026.
 
 | Area | Implemented contract |
 |---|---|
-| Editorial | Top AI stories from 24–48 hours; one lead debate and supporting evidence across five segments. |
+| Editorial | Top AI stories from 24–48 hours; three distinct discussions across five segments. |
 | Positioning | What changed. Who wins. What you do next. |
 | Cast | Alex leads; Jamie is the fast, opinionated comic catalyst; Rufus is measured and British. |
 | Jamie performance | Ursa/Celeste, distinct native laughs/chuckles/giggles; sponsor reads remain clean. Comic counts are advisory, not a laugh quota or a blocking gate. |

@@ -66,6 +66,11 @@ def report_says_passed(path: Path) -> bool:
     return bool(data and data.get("passed") is True)
 
 
+def duration_in_window(minutes: float, minimum: float, maximum: float) -> bool:
+    """Preserve the existing 30-second shortfall allowance without adding silence."""
+    return minimum - 0.5 <= minutes <= maximum
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--feed", default="feed.xml")
@@ -222,7 +227,7 @@ def main() -> int:
     if audio_path is not None:
         try:
             duration_minutes = len(AudioSegment.from_mp3(audio_path)) / 60000.0
-            if duration_minutes < args.min_minutes or duration_minutes > args.max_minutes:
+            if not duration_in_window(duration_minutes, args.min_minutes, args.max_minutes):
                 fail(
                     "duration_outside_publish_window",
                     found=round(duration_minutes, 3),
@@ -312,7 +317,7 @@ def main() -> int:
                 "enclosure_does_not_match_local_audio",
             } for x in failures) else "failed",
             "duplicate_protection": "passed" if report_says_passed(Path("duplicate_guard_report.json")) else "failed",
-            "audio_window": "passed" if duration_minutes is not None and args.min_minutes <= duration_minutes <= args.max_minutes else "failed",
+            "audio_window": "passed" if duration_minutes is not None and duration_in_window(duration_minutes, args.min_minutes, args.max_minutes) else "failed",
         },
         "failures": failures,
         "warnings": warnings,

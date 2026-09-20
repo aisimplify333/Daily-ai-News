@@ -1086,22 +1086,8 @@ def _lead_blob(stories: List[Dict[str, Any]]) -> str:
 
 
 def _central_fight(stories: List[Dict[str, Any]]) -> str:
-    b = _lead_blob(stories)
-    if any(x in b for x in ["health", "clinical", "doctor", "patient", "hospital", "gates foundation"]):
-        return "If AI moves into care, who gets blamed when the answer is wrong?"
-    if any(x in b for x in ["security", "cyber", "breach", "vulnerability", "benchmark"]):
-        return "Are AI agents productivity tools, or a new attack surface with a nicer logo?"
-    if any(x in b for x in ["coding", "developer", "codebase", "github"]):
-        return "If AI can code this fast, what is still a moat — skill, taste, security, or distribution?"
-    if any(x in b for x in ["lawsuit", "copyright", "court", "antitrust"]):
-        return "Did AI just hit the part of the market where the lawyers set the roadmap?"
-    if any(x in b for x in ["chip", "gpu", "nvidia", "compute", "data center", "datacenter"]):
-        return "Is the AI race a model race, or a power bill with better PR?"
-    if any(x in b for x in ["china", "export", "white house", "government", "regulation"]):
-        return "Who controls the AI race when policy, compute, and money collide?"
-    if any(x in b for x in ["agent", "agents", "workflow", "copilot"]):
-        return "If your AI agent can act for you, who decided where its authority stops?"
-    return "What changed in AI today, who gained power, and who is exposed tomorrow?"
+    lead = _headline(stories[0]).strip() if stories else "today's AI developments"
+    return f"{lead}: what actually changes, who benefits, and what remains uncertain?"
 
 
 def _hard_title(stories: List[Dict[str, Any]]) -> str:
@@ -1282,8 +1268,8 @@ TITLE CONTRACT:
   explains them. Reject 'AI Policy Shift: What Should Users Watch?' packaging.
   Never invent urgency, market causation or financial losses to sell a title.
 - Sell one specific, evidence-backed listener payoff, not a corporate announcement.
-- Consider three distinct angles internally: a practical decision, a consequential
-  tradeoff, and a useful explanation. Return only the strongest supported title.
+- Consider a practical decision, a consequential tradeoff, and a useful explanation.
+  Return three candidates and select one supported published_title.
 - Name the lead entity and make clear what the listener will understand, decide,
   avoid, or watch after listening. Use plain language, not 'industry consolidation'.
 - Include an explicit payoff cue such as why, how, worth, should, your, risk, cost,
@@ -1449,8 +1435,9 @@ Make this benefit clear naturally in Alex's opening, then answer the title's
 question or decision in the closing using concrete evidence from the episode.
 Do not promise unsupported savings or certainty; say what remains unknown.
 
-This is a hard, human, daily AI debate — three real people arguing, not a digest and
-not a lesson. Education happens INSIDE the argument. Data is the ammunition.
+This is a lively, human daily AI conversation: three distinct cast personalities
+making sense of real developments together. Discovery, earned excitement, disagreement
+and warmth all carry the show. Evidence changes the conversation; conflict is optional.
 
 EDITORIAL DNA — combine these disciplines without naming or imitating another show:
 - PERMANENT LISTENER PROMISE: {LISTENER_PROMISE} The listener should be able to say,
@@ -1465,8 +1452,8 @@ EDITORIAL DNA — combine these disciplines without naming or imitating another 
   Look for earned connection: a knowing tease, a callback or finished thought,
   a real laugh, or a repair after actual conflict. Do not manufacture a ritual.
 - DISTINCT INSIDER VIEWPOINTS: Alex controls pace and accountability; Jamie is the
-  highly intelligent, opinionated equal who sees the human consequence and competes
-  to win the argument; Rufus follows money, incentives, regulation, and power.
+  highly intelligent, opinionated equal who sees the human consequence and enjoys
+  discovering something useful; Rufus follows money, incentives, regulation, and power.
 - RUFUS'S BRITISH IDENTITY: Follow the character direction below, not a phrase quota.
 - CURIOSITY ENGINE: Explain the headline early. Alex's opening question raises a
   consequential uncertainty that later evidence explores; the closing delivers the

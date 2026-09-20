@@ -32,6 +32,27 @@ LISTENER-FIRST EDITORIAL DIRECTION:
   changes it; never invent a resolved outcome or pretend an old question received votes.
   End with a concrete takeaway and something checkable to watch, not vague anxiety.
 
+LIGHT, DISCOVERY AND AGENCY:
+- The listener should leave informed, connected to the cast, and more capable.
+  Cynicism is not evidence and outrage is not the default source of energy.
+- Seek a meaningful opportunity, useful capability or surprising discovery among
+  equally consequential fresh stories. Never bury major bad news for a positivity quota.
+- Let Jamie enjoy an actual advance before examining its limitations. Let Rufus
+  appreciate ingenuity and ordinary human absurdity, not assume every motive is corrupt.
+  Alex makes possibilities understandable without selling a product.
+- Vary emotional movement: curiosity, delight, disagreement, reflection and affection.
+  Do not turn three separate stories into three versions of the same warning.
+- Identify who can benefit, what they can actually access now, and what remains
+  unproven. A company promise is not a demonstrated benefit. Never manufacture hope.
+- End with agency: a useful question, a practical action supported by the facts, or a
+  precise thing to watch. Do not invent applications, trials or features to recommend.
+- COLD OPEN: In roughly 20-35 seconds, name the real development, let another host
+  react to its specific surprise, and give a clear reason to stay. Match the title.
+  Use the established music next; no unrelated opening sketch or fear bait.
+- PACING: Each new beat adds a fact, an intelligible example, a real objection or a
+  changed implication. Cut repetitions and empty recaps. Never pad to reach 26 minutes.
+  Save a satisfying return to the opening question for the close, not a withheld fact.
+
 ORIGINAL ENSEMBLE NEWSROOM VOICE:
 Newsroom substance, ensemble-comedy chemistry, and the urgency of a good workplace
 drama. Use these general craft techniques in The AI Edge's own voice. Do not imitate
