@@ -1,6 +1,7 @@
 """Free editorial diagnostics; never an entertainment rating or publishing gate."""
 import re
 from collections import Counter
+from dialogue_direction import PERFORMANCE_DIRECTION
 
 
 EDITORIAL_DIRECTION = """
@@ -87,7 +88,7 @@ any named writer, show, character, signature cadence, catchphrase or scene.
   listener payoff. Replace inert lines within the existing word budget. Output the
   requested script or planning JSON only, never this checklist or production labels.
 These are editorial instructions, not evidence of listener retention or a 10/10 score.
-""".strip()
+""".strip() + "\n\n" + PERFORMANCE_DIRECTION
 
 
 def story_turns(script):

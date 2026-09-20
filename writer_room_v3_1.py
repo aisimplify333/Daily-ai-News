@@ -154,8 +154,8 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   predictions without timid hedging every sentence. Facts stay accurate; verdicts
   need not converge. Earn drama through competing incentives and consequences.
   Let a punchline stand without explaining it. Never fabricate real listener input.
-- PERFORMANCE ARC: build a meaningful Jamie–Rufus disagreement around a real
-  consequence. Let them address each other directly for several short turns,
+- PERFORMANCE ARC: build a meaningful Jamie–Rufus exchange around a real discovery,
+  consequence or disagreement. Let them address each other directly for short turns,
   typically 8–25 words, instead of routing every response through Alex. No fixed
   speaker rotation. Give the exchange room to rise, then a quiet line that lands.
 - Alex then brings both positions together: name their actual disagreement, ask
@@ -187,11 +187,11 @@ CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independ
   provides it, explain why it touches AI, and distinguish reported causation from
   Rufus's analysis. A market desk without a defensible move becomes a capital or
   policy desk; never invent a price simply to preserve the scene.
-- Dial Rufus up through substance: aim for four to six distinct dry observations across
-  the episode, with at least two aimed directly at Jamie's argument. His wit comes from
-  smug understatement, mock courtesy and the gap between public promises and financial
-  incentives. Jamie should bristle, laugh, interrupt or return the barb, then challenge
-  his values. Rufus answers the challenge rather than waiting for his next prepared turn.
+- Dial Rufus up through substance: find fresh observations worth hearing, without a
+  joke count or a required target. His wit comes from understatement, mock courtesy
+  and precise incongruity, including his own habits. Jamie can return the barb,
+  appreciate the insight or change its implication. Rufus responds to what she says
+  rather than waiting for his next prepared turn. Warm discovery is as valid as conflict.
   Never stack British filler words or explain his joke afterward.
 - Never use the 'Alex admitted he was wrong / mark the date / make it a holiday'
   routine. A change of view is not a punchline or a required plot beat.
@@ -1482,7 +1482,7 @@ THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disag
   performative, plain-spoken rather than anchor-like. He follows every vague claim
   with the question the audience is forming, asks the uncomfortable second follow-up,
   admits when he does not understand, and does not move on until the stakes are clear.
-- JAMIE: {pos.get('jamie', 'Argues the human cost is being undercounted.')}
+- JAMIE: {pos.get('jamie', 'Tests what people gain and what the evidence leaves uncertain.')}
   She is the comic catalyst, never just the laugh track. Give her earned comic
   reactions with varied intensity: a surprised laugh, softer snicker, dry chuckle,
   or a comeback that catches a colleague off guard. Do not force a count.
@@ -1492,7 +1492,7 @@ THE HOSTS AND THEIR ACTUAL POSITIONS TODAY — play these as written; they disag
   quieter amusement as "Hah." The voice adapter performs these as native vocal
   expressions. Do not say "guffaw" or "snicker" aloud or write bracket directions.
   Never put laughter in sponsor copy or mock victims, illness, layoffs or tragedy.
-- RUFUS: {pos.get('rufus', 'Argues the money and liability trail already tells the ending.')}
+- RUFUS: {pos.get('rufus', 'Examines incentives, opportunities and uncertainty with understated wit.')}
 
 RUFUS GLOBAL MARKETS DESK:
 {json.dumps(board.get('rufus_global_markets_desk') or {}, ensure_ascii=False, indent=2)}
@@ -2373,8 +2373,10 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
 # ----------------------------------------------------------------------------
 def _punchup_prompt(script: str, board: Dict[str, Any], assessment: Dict[str, Any]) -> str:
     return f"""Punch up this podcast script. Preserve every fact and the structure.
-Sharpen the disagreement, add human texture (interruptions, false starts, real
-laughter in words — never bracketed directions), without forcing a concession.
+Edit the exchanges for responsive chemistry, precise observations and varied rhythm.
+Keep earned disagreement and delight. Tighten setups, end a joke at its strongest
+word and cut the explanation afterwards. Add an interruption or laugh only when
+the actual exchange earns it; never insert these to meet a quota. No bracket cues.
 Do not invent facts. Do not add Signal Room language. Do not make it a lecture.
 Keep exact speaker labels and exactly one [MUSIC]. Preserve the sponsor read's
 facts, CTA, placement, and word cap. Let all three hosts challenge one another.
@@ -3132,7 +3134,27 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 "repeated_stale_phrase", "jamie_comic_reactions_excessive",
             )
         )
-        if ENABLE_GROK_PUNCHUP and needs_connection_punchup:
+        if os.getenv("ENABLE_DIALOGUE_EDITOR", "true").lower() == "true":
+            from dialogue_editor import edit_dialogue
+            editor_model = os.getenv("DIALOGUE_EDITOR_MODEL", "claude-sonnet-4-6")
+            script, assessment, editor_report = edit_dialogue(
+                script, assessment,
+                request=lambda: _anthropic_text(
+                    g, _punchup_prompt(script, board, assessment)
+                    + "\n\nAUTHORITATIVE SOURCE RECORDS:\n" + _story_lines(stories)
+                    + "\nEdit within the current length; retain all numeric receipts and their qualifiers. No new reporting.",
+                    model=editor_model, max_tokens=8000),
+                normalize=stabilize,
+                assess=lambda candidate: _assess(candidate, stories, board, fuel),
+                runtime_distance=_runtime_distance,
+            )
+            editor_report["model"] = editor_model
+            try:
+                Path("dialogue_editor_report.json").write_text(json.dumps(editor_report, indent=2) + "\n", encoding="utf-8")
+            except OSError:
+                pass
+            _safe_print(g, f"      Dialogue edit: {editor_report['reason']}")
+        elif ENABLE_GROK_PUNCHUP and needs_connection_punchup:
             punched = _xai_text(g, _punchup_prompt(script, board, assessment),
                                 model=PUNCHUP_MODEL, max_tokens=6200)
             if punched:

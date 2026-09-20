@@ -46,7 +46,8 @@ class EditorialFreshnessTests(unittest.TestCase):
         self.assertIn("RUFUS GLOBAL MARKETS DESK", prompt)
         self.assertIn("Jamie challenges one assumption", prompt)
         self.assertIn("JAMIE–RUFUS VALUE COLLISION", prompt)
-        self.assertIn("four to six distinct dry observations", writer.CAST_CONNECTION_DIRECTION)
+        self.assertNotIn("four to six distinct dry observations", writer.CAST_CONNECTION_DIRECTION)
+        self.assertIn("without a\n  joke count", writer.CAST_CONNECTION_DIRECTION)
 
 
 if __name__ == "__main__":

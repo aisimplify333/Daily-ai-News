@@ -1,5 +1,31 @@
 # The AI Edge production handoff
 
+## September 20 performance direction and dialogue edit
+
+- Shared performance direction now specifies original English understatement,
+  precise incongruity, affectionate teasing, responsive replies and punchline endings.
+  Removed the older compulsory Jamie–Rufus disagreement and Rufus joke quota.
+- One source-aware Sonnet dialogue-edit request replaces the optional Grok pass.
+  Numeric, structural, runtime and warning regressions keep the original draft;
+  failures remain advisory. Existing fact auditing follows. Numeric checks are not
+  semantic proof. An edit with unchanged structural scores can now be retained.
+- Contextual gaps consider both speakers: short answer, written interruption,
+  reflective response and space after a brief Rufus observation. No overlapped
+  speech, clipped words, extra laughter tracks or main-voice substitutions.
+  Requested gap and reason are recorded alongside measured assembly timings.
+- Twelve-take audition completed in run 35528244403: identical paid recordings
+  reused in fixed-gap and contextual versions (57.034 / 57.129 seconds). Both
+  versions are in the workflow artifact; see auditions/PERFORMANCE_RESULTS.md.
+  Direct download into this environment returned 403. No listening judgment made.
+- Python compilation and 83 offline tests passed. The audition itself ran 80 earlier
+  tests successfully. Full paid episodes were preserved; no full rerun launched.
+- Daily editor may cost more than the old optional punch-up. SDK retries may occur;
+  this is one application-level editor request, not a guarantee of one HTTP attempt.
+- ENABLE_DIALOGUE_EDITOR=false restores conditional Grok editing.
+  DIALOGUE_DIRECTION_ENABLED=false selects configured fixed gaps.
+- Actual next-episode performance and the live Sonnet revision still require review.
+
+
 ## September 20 weekend warmth and engineering upgrade
 
 - Implemented: richer grounded research instructions; original newsroom

@@ -155,6 +155,10 @@ jobs:
 
           PRE_TTS_MIN_SCORE: "84"
           ENABLE_GROK_PUNCHUP: "true"
+          # One dedicated Sonnet dialogue edit replaces the optional Grok pass.
+          ENABLE_DIALOGUE_EDITOR: "true"
+          DIALOGUE_EDITOR_MODEL: "claude-sonnet-4-6"
+          DIALOGUE_DIRECTION_ENABLED: "true"
           ENABLE_OPENAI_RESCUE: "false"
           ANTHROPIC_SCRIPT_MAX_TOKENS: "8000"
           TOP_EVENT_MIN_SCORE: "34"
@@ -255,6 +259,7 @@ jobs:
             production_delivery_report.json \
             audio_qa_report.json \
             audio_engineering_report.json \
+            dialogue_editor_report.json \
             promo_assets_report.json \
             sponsor_delivery_report.json \
             hybrid_tts_report.json \
