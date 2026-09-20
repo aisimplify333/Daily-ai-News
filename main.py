@@ -6060,7 +6060,9 @@ def produce_episode() -> None:
     pending_intro_bed = False
     pending_segment_bed = False
 
-    for speaker, text in render_items:
+    from dialogue_direction import boundary_pause
+    pause_assets = {}
+    for render_index, (speaker, text) in enumerate(render_items):
         if speaker == "MUSIC":
             if not intro_done:
                 # Guaranteed audible intro stinger
@@ -6155,7 +6157,7 @@ def produce_episode() -> None:
 
         chunks = chunk_text(text, max_chars=_tts_chunk_max_chars(speaker))
 
-        for chunk in chunks:
+        for chunk_index, chunk in enumerate(chunks):
             seg_idx += 1
             raw_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_raw.mp3"
             _render_spoken_chunk_to_file(chunk, speaker, raw_path)
@@ -6228,15 +6230,21 @@ def produce_episode() -> None:
             else:
                 concat_files.append(final_voice_path)
 
-            assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "performance_mood": performance_mood, "tempo_factor": tempo_factor, "speed": speaker_speed, "level_delta_db": level_delta, "start_index": speech_start_index, "end_index": len(concat_files)})
+            next_speaker, next_text = render_items[render_index + 1] if render_index + 1 < len(render_items) else ("", "")
+            continuing = chunk_index + 1 < len(chunks)
+            if continuing:
+                next_speaker, next_text = speaker, chunks[chunk_index + 1]
+            edit = boundary_pause(chunk, speaker, str(next_text), next_speaker,
+                                  performance_mood, INTER_TURN_SILENCE_MS, continuing)
+            assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "performance_mood": performance_mood, "tempo_factor": tempo_factor, "speed": speaker_speed, "level_delta_db": level_delta, "pause_requested_ms": edit["milliseconds"], "pause_reason": edit["reason"], "start_index": speech_start_index, "end_index": len(concat_files)})
             if sponsor_chunk:
                 concat_files.append(sponsor_pause_path)
-            elif is_forwardable_line_text(chunk):
-                concat_files.append(quote_pause_path)
-            elif INTERRUPTION_CUE_RE.search(chunk or "") or REACTION_CUE_RE.search(chunk or ""):
-                concat_files.append(reaction_pause_path)
             else:
-                concat_files.append(silence_path)
+                pause_ms = edit["milliseconds"]
+                if pause_ms not in pause_assets:
+                    pause_assets[pause_ms] = run_tmp / f"dialogue_pause_{pause_ms}.mp3"
+                    AudioSegment.silent(duration=pause_ms).export(pause_assets[pause_ms], format="mp3", bitrate="192k")
+                concat_files.append(pause_assets[pause_ms])
 
     if outro_seg is not None:
         concat_files.append(silence_path)

@@ -2373,8 +2373,10 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
 # ----------------------------------------------------------------------------
 def _punchup_prompt(script: str, board: Dict[str, Any], assessment: Dict[str, Any]) -> str:
     return f"""Punch up this podcast script. Preserve every fact and the structure.
-Sharpen the disagreement, add human texture (interruptions, false starts, real
-laughter in words — never bracketed directions), without forcing a concession.
+Edit the exchanges for responsive chemistry, precise observations and varied rhythm.
+Keep earned disagreement and delight. Tighten setups, end a joke at its strongest
+word and cut the explanation afterwards. Add an interruption or laugh only when
+the actual exchange earns it; never insert these to meet a quota. No bracket cues.
 Do not invent facts. Do not add Signal Room language. Do not make it a lecture.
 Keep exact speaker labels and exactly one [MUSIC]. Preserve the sponsor read's
 facts, CTA, placement, and word cap. Let all three hosts challenge one another.
