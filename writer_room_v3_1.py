@@ -1266,6 +1266,16 @@ by supplied evidence. Never default to Alex conceding or rotate a designated los
 Use prior positions to avoid repeating yesterday's argument and outcome mechanically.
 
 TITLE CONTRACT:
+- ATTENTION WITH TRUST: Write for an AI-curious commuter, colleague or family member,
+  not a policy filing. Put the concrete development, recognizable actor or personal
+  stake in the first few words. Avoid administrative noun stacks such as 'House Data
+  Center Energy Bill'. Use plain language and a tension the episode actually resolves.
+- Return three genuinely different title candidates in this same call: consequence,
+  surprising sourced development, and a specific question. Select the strongest as
+  published_title. Never trade accuracy for outrage or imply a proposal is enacted.
+- The hook must be a complete, conversational one- or two-sentence invitation that
+  names what changed and why listening helps. Do not start with 'Whether the', or
+  use abstract policy language. It must stand alone without the title.
 - Name the actual lead actors and their sourced action or disagreement. A broad
   country keyword must not displace the people driving the story. Use specific
   listener stakes such as cost, jobs, access or security, only if this episode
@@ -1287,6 +1297,8 @@ TITLE CONTRACT:
 Return exactly this JSON:
 {{
   "published_title": "6-14 words; lead entity plus specific listener benefit or decision, grounded in Story 1's action or number; follow TITLE CONTRACT; never starts with 'Today' and never the word 'lesson'",
+  "title_candidates": ["consequence angle", "surprising sourced development angle", "specific question angle"],
+  "episode_hook": "complete conversational invitation; concrete development and listener payoff; no invented stakes",
   "story_scenes": [{{"story_index": 1, "source_url": "exact supplied URL",
     "new_development": "one sourced sentence", "why_today": "material change",
     "question": "specific question", "competing_readings": ["strong case", "strong countercase"],
@@ -2921,7 +2933,10 @@ def _marketing_pack(stories: List[Dict[str, Any]], date_str: str, listen_url: st
     bullets = "\n".join(f"• {_headline(s)}" for s in stories[:5] if _headline(s))
     listen = tracking.get("listen", listen_url)
     subscribe = "https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge"
-    hook = str(board.get("central_fight") or _central_fight(stories))
+    hook = str(board.get("episode_hook") or "").strip()
+    if not hook:
+        headline = _headline(stories[0]).rstrip(" .?!") if stories else "The latest AI developments"
+        hook = f"{headline}. Alex, Jamie and Rufus explain what changes and what to watch next."
     listener_question = str(board.get("listener_question") or _central_fight(stories)).strip()
     entity_terms: List[str] = []
     story_blob = " ".join(_blob(story) for story in stories[:5])

@@ -1,5 +1,18 @@
 # The AI Edge production handoff
 
+## September 20 title and description follow-up
+
+- The existing storyboard call now returns three title angles and chooses one grounded
+  in the lead story. Front-load recognizable developments or listener stakes; avoid
+  administrative noun stacks and unsupported urgency. Existing title checks remain.
+- Marketing uses an explicit conversational episode hook instead of the abstract
+  central-fight planning sentence. If absent, fall back to the supplied headline and
+  a short invitation. No extra provider call or paid episode regeneration.
+- A separate audition/writers-20260920 branch runs a bounded four-call, text-only
+  Sonnet/Grok comparison on two frozen September 15 source packets. It does not change
+  production model routing, run TTS or publish an episode. Model preference remains
+  unproven until blind scripts are scored and their identities revealed.
+
 ## September 15 ensemble newsroom direction
 
 - Expanded the shared editorial direction with original ensemble-newsroom craft:
