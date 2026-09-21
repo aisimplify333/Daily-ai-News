@@ -1,60 +1,96 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-18",
+  "date": "2026-09-21",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-18",
-    "pass": true,
-    "critical_errors": [],
+    "date": "2026-09-21",
+    "pass": false,
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The U.S. proposed an AI incident notification mechanism that could affect national security during weekend talks ahead of Trump-Xi meetings this week.",
+        "evidence_quote": "the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents that could affect national security",
+        "exact_line": "ALEX: Our lead story today is Bessent says the U.S. proposed an AI incident alert system in China talks.",
+        "replacement_line": "ALEX: Our lead story today is Bessent says the U.S. proposed a notification mechanism for AI incidents that could affect national security in China talks.",
+        "reason": "This overstates the reported mechanism. The AP says the U.S. proposed a new 'notification mechanism' for AI incidents that could affect national security; 'incident alert system' is a paraphrase, but the line presents it as the specific reported formulation and misses the national-security qualifier.",
+        "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+      }
+    ],
     "warnings": [
-      "The script’s quote-like paraphrases of the AP items are broadly consistent, but some lines add interpretation beyond the supplied records (for example, claims about immediate state behavior, market consolidation, or the precise meaning of 'leads' and 'collaboration'). Those are editorial inferences rather than directly verified facts.",
-      "The sponsor read is excluded per instructions; I did not fact-check The Ledger branding, URL, or CTA.",
-      "The line 'Virginia has the largest data center corridor in the world' is plausible but not supported by the supplied records; if you want absolute strictness, treat it as unverified.",
-      "The line describing Anthropic’s disclosure as 'this week' is acceptable for an episode dated 2026-09-18, but the underlying AP item is explicitly dated Sep. 18, 2026 and says the announcement was made Thursday."
+      "The script repeatedly says the Security Council meeting is on 'Wednesday' / 'Wednesday afternoon'; that matches the AP summary, but the episode date is 2026-09-21 so the exact calendar date should be made explicit if you want maximum clarity.",
+      "The Bloomberg AI czar / AI Force claim is supported only by the supplied Bloomberg record and a search result snippet; I could not access the full Bloomberg article directly because of robots restrictions, so the wording should be treated as verified only at the headline/snippet level.",
+      "The lawsuit claims about Anthropic, OpenAI, SpaceXAI, and Google are allegations, not established facts; the script correctly frames them as allegations.",
+      "The script states 'The AP does not establish the claims as true' and 'No court has ruled on the merits,' which is consistent with the supplied record.",
+      "The phrase 'AI getting out of human control' is a paraphrase of AP framing about runaway AI threatening humanity; it is not a verbatim quote from the supplied record."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/f073380caa61b720fa424590b5bc7c87",
-      "https://apnews.com/article/4d3a7430f57cbc7c39e1c5f2b7d7e132",
-      "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+      "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd",
+      "https://apnews.com/article/960af4308161eaf4ed13c383b0ce1c1b",
+      "https://apnews.com/article/c4727651b9030d6e7f81c0457a33440b",
+      "https://bloomberg.com/news/articles/2026-09-19/trump-to-name-ai-czar-while-rejecting-safety-risks-as-a-hoax"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-18",
-      "pass": true,
-      "critical_errors": [],
+      "date": "2026-09-21",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The U.S. proposed an AI incident notification mechanism that could affect national security during weekend talks ahead of Trump-Xi meetings this week.",
+          "evidence_quote": "the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents that could affect national security",
+          "exact_line": "ALEX: Our lead story today is Bessent says the U.S. proposed an AI incident alert system in China talks.",
+          "replacement_line": "ALEX: Our lead story today is Bessent says the U.S. proposed a notification mechanism for AI incidents that could affect national security in China talks.",
+          "reason": "This overstates the reported mechanism. The AP says the U.S. proposed a new 'notification mechanism' for AI incidents that could affect national security; 'incident alert system' is a paraphrase, but the line presents it as the specific reported formulation and misses the national-security qualifier.",
+          "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+        }
+      ],
       "warnings": [
-        "The script’s quote-like paraphrases of the AP items are broadly consistent, but some lines add interpretation beyond the supplied records (for example, claims about immediate state behavior, market consolidation, or the precise meaning of 'leads' and 'collaboration'). Those are editorial inferences rather than directly verified facts.",
-        "The sponsor read is excluded per instructions; I did not fact-check The Ledger branding, URL, or CTA.",
-        "The line 'Virginia has the largest data center corridor in the world' is plausible but not supported by the supplied records; if you want absolute strictness, treat it as unverified.",
-        "The line describing Anthropic’s disclosure as 'this week' is acceptable for an episode dated 2026-09-18, but the underlying AP item is explicitly dated Sep. 18, 2026 and says the announcement was made Thursday."
+        "The script repeatedly says the Security Council meeting is on 'Wednesday' / 'Wednesday afternoon'; that matches the AP summary, but the episode date is 2026-09-21 so the exact calendar date should be made explicit if you want maximum clarity.",
+        "The Bloomberg AI czar / AI Force claim is supported only by the supplied Bloomberg record and a search result snippet; I could not access the full Bloomberg article directly because of robots restrictions, so the wording should be treated as verified only at the headline/snippet level.",
+        "The lawsuit claims about Anthropic, OpenAI, SpaceXAI, and Google are allegations, not established facts; the script correctly frames them as allegations.",
+        "The script states 'The AP does not establish the claims as true' and 'No court has ruled on the merits,' which is consistent with the supplied record.",
+        "The phrase 'AI getting out of human control' is a paraphrase of AP framing about runaway AI threatening humanity; it is not a verbatim quote from the supplied record."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/f073380caa61b720fa424590b5bc7c87",
-        "https://apnews.com/article/4d3a7430f57cbc7c39e1c5f2b7d7e132",
-        "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+        "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd",
+        "https://apnews.com/article/960af4308161eaf4ed13c383b0ce1c1b",
+        "https://apnews.com/article/c4727651b9030d6e7f81c0457a33440b",
+        "https://bloomberg.com/news/articles/2026-09-19/trump-to-name-ai-czar-while-rejecting-safety-risks-as-a-hoax"
       ]
     }
   ],
   "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-18",
-    "pass": true,
-    "critical_errors": [],
+    "date": "2026-09-21",
+    "pass": false,
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The U.S. proposed an AI incident notification mechanism that could affect national security during weekend talks ahead of Trump-Xi meetings this week.",
+        "evidence_quote": "the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents that could affect national security",
+        "exact_line": "ALEX: Our lead story today is Bessent says the U.S. proposed an AI incident alert system in China talks.",
+        "replacement_line": "ALEX: Our lead story today is Bessent says the U.S. proposed a notification mechanism for AI incidents that could affect national security in China talks.",
+        "reason": "This overstates the reported mechanism. The AP says the U.S. proposed a new 'notification mechanism' for AI incidents that could affect national security; 'incident alert system' is a paraphrase, but the line presents it as the specific reported formulation and misses the national-security qualifier.",
+        "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+      }
+    ],
     "warnings": [
-      "The script’s quote-like paraphrases of the AP items are broadly consistent, but some lines add interpretation beyond the supplied records (for example, claims about immediate state behavior, market consolidation, or the precise meaning of 'leads' and 'collaboration'). Those are editorial inferences rather than directly verified facts.",
-      "The sponsor read is excluded per instructions; I did not fact-check The Ledger branding, URL, or CTA.",
-      "The line 'Virginia has the largest data center corridor in the world' is plausible but not supported by the supplied records; if you want absolute strictness, treat it as unverified.",
-      "The line describing Anthropic’s disclosure as 'this week' is acceptable for an episode dated 2026-09-18, but the underlying AP item is explicitly dated Sep. 18, 2026 and says the announcement was made Thursday."
+      "The script repeatedly says the Security Council meeting is on 'Wednesday' / 'Wednesday afternoon'; that matches the AP summary, but the episode date is 2026-09-21 so the exact calendar date should be made explicit if you want maximum clarity.",
+      "The Bloomberg AI czar / AI Force claim is supported only by the supplied Bloomberg record and a search result snippet; I could not access the full Bloomberg article directly because of robots restrictions, so the wording should be treated as verified only at the headline/snippet level.",
+      "The lawsuit claims about Anthropic, OpenAI, SpaceXAI, and Google are allegations, not established facts; the script correctly frames them as allegations.",
+      "The script states 'The AP does not establish the claims as true' and 'No court has ruled on the merits,' which is consistent with the supplied record.",
+      "The phrase 'AI getting out of human control' is a paraphrase of AP framing about runaway AI threatening humanity; it is not a verbatim quote from the supplied record."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/f073380caa61b720fa424590b5bc7c87",
-      "https://apnews.com/article/4d3a7430f57cbc7c39e1c5f2b7d7e132",
-      "https://apnews.com/article/089e75b95bc935af092da7b79d92706d"
+      "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd",
+      "https://apnews.com/article/960af4308161eaf4ed13c383b0ce1c1b",
+      "https://apnews.com/article/c4727651b9030d6e7f81c0457a33440b",
+      "https://bloomberg.com/news/articles/2026-09-19/trump-to-name-ai-czar-while-rejecting-safety-risks-as-a-hoax"
     ]
   },
-  "pass": true,
+  "pass": false,
   "blocking": false
 }

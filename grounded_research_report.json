@@ -1,24 +1,93 @@
 {
-  "episode_date": "2026-09-18",
+  "episode_date": "2026-09-21",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-16T11:25:43.293250+00:00",
-  "window_end": "2026-09-18T11:25:43.293250+00:00",
+  "window_start": "2026-09-19T12:59:01.482707+00:00",
+  "window_end": "2026-09-21T12:59:01.482707+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "outside_freshness_window": 1
+        "outside_freshness_window": 5,
+        "duplicate_event": 1
       },
       "rejected_examples": [
         {
-          "headline": "AP reports the EU chief proposed bloc-wide limits on social media use for children under 13",
-          "published_at": "2026-09-16T08:25:51Z",
+          "headline": "OpenAI says it is working with Anthropic and Google DeepMind on AI safety measures",
+          "published_at": "2026-09-15T14:18:00-04:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI discloses six concerning model-behavior incidents and says it will track them more closely",
+          "published_at": "2026-09-17T03:57:17Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Meta launches personal AI agent Muse that can access apps, send emails and make payments",
+          "published_at": "2026-09-08T19:05:55Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Anthropic says Moonshot secretly routed user requests through Claude",
+          "published_at": "2026-09-10T13:00:00-04:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Crusoe raises $3.9 billion to build AI data centers and modular AI factories",
+          "published_at": "2026-09-17T16:25:00-07:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Trump and Xi are expected to meet as AP says AI safety concerns bridge the U.S.-China rivalry",
+          "published_at": "2026-09-21T04:32:25Z",
+          "reason": "duplicate_event"
+        }
+      ],
+      "candidates": 9,
+      "accepted_total": 3,
+      "trusted_total": 2
+    },
+    {
+      "stage": "alternate_refill",
+      "rejections": {
+        "duplicate": 1,
+        "duplicate_event": 1,
+        "outside_freshness_window": 4
+      },
+      "rejected_examples": [
+        {
+          "headline": "U.S. proposes AI incident alert system in China talks",
+          "published_at": "2026-09-21T01:49:24Z",
+          "reason": "duplicate"
+        },
+        {
+          "headline": "AP says a U.S.-China summit is expected to put AI safety concerns on the agenda",
+          "published_at": "2026-09-21T04:32:25Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "TechCrunch reports Meta\u2019s Muse AI agent reached Mac, expanding access to computer actions",
+          "published_at": "2026-09-18T15:22:00-07:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "TechCrunch reports Meta expanded WhatsApp Business automation with a new MCP server",
+          "published_at": "2026-09-15T00:00:00-07:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "TechCrunch says Meta\u2019s Muse agent added calling and trusted-network features",
+          "published_at": "2026-09-17T06:46:00-07:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "TechCrunch reports Crusoe raised $3.9 billion to build AI data centers and modular AI factories",
+          "published_at": "2026-09-17T16:25:00-07:00",
           "reason": "outside_freshness_window"
         }
       ],
-      "candidates": 8,
-      "accepted_total": 7,
-      "trusted_total": 7
+      "candidates": 9,
+      "accepted_total": 6,
+      "trusted_total": 5
     }
   ],
   "status": "ready"
