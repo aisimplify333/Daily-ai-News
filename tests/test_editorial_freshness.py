@@ -44,8 +44,8 @@ class EditorialFreshnessTests(unittest.TestCase):
         prompt = writer._writer_prompt([], [], "2026-09-10", {}, {})
         self.assertIn('Never speak production labels such as "shareable exchange,"', prompt)
         self.assertIn("RUFUS GLOBAL MARKETS DESK", prompt)
-        self.assertIn("Jamie challenges one assumption", prompt)
-        self.assertIn("JAMIE–RUFUS VALUE COLLISION", prompt)
+        self.assertIn("No prescribed winner", prompt)
+        self.assertNotIn("JAMIE–RUFUS VALUE COLLISION", prompt)
         self.assertNotIn("four to six distinct dry observations", writer.CAST_CONNECTION_DIRECTION)
         self.assertIn("without a\n  joke count", writer.CAST_CONNECTION_DIRECTION)
 

@@ -1,3 +1,18 @@
+## September 21, 2026 — focused editorial upgrade
+
+Prepared on main after today's production commit `347e4d7`. **91 offline tests pass** and changed Python modules compile. This entry describes code changes, not a newly listened episode.
+
+- Diagnosed today's 2:50 opening, governance-heavy slate, two failed Gemini planning calls, and rejected Sonnet dialogue revision.
+- Added bounded cross-provider storyboard recovery, subject-variety selection/refill and research-note rejection.
+- Replaced the oversized writer brief; earlier lead, warmer responsive cast, source-qualified stakes and no prescribed argument winner.
+- Preserved original/candidate dialogue scripts and runtime diagnostics; 3,300-word planning floor, 3,800 target, actual audio duration remains decisive.
+- Added a nonblocking review report that explicitly withholds entertainment ratings without listening.
+- Existing voices, mixing, sponsors and paid episode remain intact; no paid rerun.
+- See [full change record](FINAL_EDITORIAL_UPGRADE.md) and [original/revised scene](auditions/SEPT21_EDITORIAL_COMPARISON.md).
+- Pending: first autonomous production using this release and honest listening verification. No 10/10 or audience-growth claim.
+
+---
+
 # The AI Edge production handoff
 
 ## September 20 performance direction and dialogue edit

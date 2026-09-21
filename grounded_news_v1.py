@@ -161,6 +161,8 @@ def _rejection_reason(raw: Any, now: dt.datetime) -> str:
         return "malformed_item"
     if not all(raw.get(k) for k in ("headline", "publisher", "source_url", "summary")):
         return "missing_required_fields"
+    if re.search(r"no verified .*result|no .*result found|reuters-style|unable to verify|no verified .*in.window", str(raw["headline"]), re.I):
+        return "research_note_not_news"
     published = _parse_time(str(raw.get("published_at") or ""))
     if published is None:
         return "invalid_publication_time"
@@ -384,7 +386,7 @@ def build_grounded_story_slate(
             if attempt == 0:
                 text = _grounded_text(prompt, model=model)
             else:
-                refill = prompt + "\nRecovery: independently search model releases, legislation/courts, finance/banking/funding, chips/infrastructure, and AI security. Find distinct NEW events, not commentary. Retain all original factual standards. Do not repeat these accepted headlines: " + json.dumps([s["headline"] for s in normalized])
+                refill = prompt + "\nRecovery: independently search model releases, legislation/courts, finance/banking/funding, chips/infrastructure, and AI security. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these accepted headlines: " + json.dumps([s["headline"] for s in normalized])
                 refill += "\nPrevious validation results (do not resubmit rejected old stories or change their dates): " + json.dumps(report["attempts"][:-1])
                 if attempt == 2:
                     refill += "\nTARGETED FINAL PASS: search individual discovery headlines, open their original articles, and fill the missing slots only. Prefer current model releases, financial deals and policy filings. If a date is unknown, omit the item; never guess a timestamp."
@@ -437,9 +439,19 @@ def build_grounded_story_slate(
         except OSError:
             pass  # Diagnostic persistence must not block production.
         print("[grounded-research] " + json.dumps(entry))
-        if ready:
+        from editorial_selection import balanced_story_order, concentrated, topic_family
+        provisional = balanced_story_order(normalized)
+        report["topic_families"] = [topic_family(s) for s in provisional[:3]]
+        report["concentrated_slate"] = concentrated(provisional)
+        if ready and not (attempt == 0 and concentrated(provisional)):
             break
-    normalized = normalized[:n]
+    from editorial_selection import balanced_story_order
+    normalized = balanced_story_order(normalized)[:n]
+    report["status"] = "ready" if len(normalized) >= n else "insufficient"
+    try:
+        Path("grounded_research_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
+    except OSError:
+        pass
     trusted = sum(1 for story in normalized if int(story["source_tier"]) >= 2)
     if len(normalized) < n:
         raise RuntimeError(

@@ -5,89 +5,25 @@ from dialogue_direction import PERFORMANCE_DIRECTION
 
 
 EDITORIAL_DIRECTION = """
-LISTENER-FIRST EDITORIAL DIRECTION:
-- NEWS EDITOR: Explain the actual new development early. Distinguish an announcement
-  from availability, a company claim from independent evidence, and a forecast from
-  an observed result. State the useful answer now; curiosity comes from consequences,
-  not withholding basic news. Importance beats outrage and name recognition.
-- SCENE WRITER: Each story has its own question, strongest competing interpretations,
-  revealing evidence and useful payoff. Do not carry the lead's argument into every
-  story. Let one story be discovery or delighted curiosity when facts warrant it.
-- RELATIONSHIP EDITOR: Alex asks the audience's question and connects the answer to
-  life or work. Jamie challenges a specific claim, with a reason and warmth underneath.
-  Rufus finds the absurd incentive and lands a concise, understated British observation.
-  His humour needs an original thought, not inserted British vocabulary. Let others
-  tease him back. No assigned villain, loser or compulsory change of mind.
-- EARNED COMEDY: Setup from the news or another host's actual words, then an unexpected
-  but intelligible response. Let a good punchline land; do not explain it or stack
-  three jokes on it. Do not force a joke into tragic news. Never add Ha/Wait/Precisely
-  to satisfy counters. Warm agreement and honest uncertainty can also be entertaining.
-- EXECUTIVE PRODUCER: Cut any exchange that repeats a settled point without new
-  evidence, a stronger objection or a changed consequence. Replace repetition rather
-  than adding runtime. Budget the three discussions near 40/30/30, not one long finale.
-- SHARE EDITOR: Within each story, aim for one natural 3-6 turn exchange that names
-  the subject, explains a surprising sourced detail, and lands a useful or funny payoff.
-  It should make sense to a colleague or friend without the intro. No invented quote,
-  statistic, audience reaction, or sensational hook. Do not say 'shareable moment'.
-- CONTINUITY: Use only supplied episode history. Revisit a prediction when new evidence
-  changes it; never invent a resolved outcome or pretend an old question received votes.
-  End with a concrete takeaway and something checkable to watch, not vague anxiety.
-
-LIGHT, DISCOVERY AND AGENCY:
-- The listener should leave informed, connected to the cast, and more capable.
-  Cynicism is not evidence and outrage is not the default source of energy.
-- Seek a meaningful opportunity, useful capability or surprising discovery among
-  equally consequential fresh stories. Never bury major bad news for a positivity quota.
-- Let Jamie enjoy an actual advance before examining its limitations. Let Rufus
-  appreciate ingenuity and ordinary human absurdity, not assume every motive is corrupt.
-  Alex makes possibilities understandable without selling a product.
-- Vary emotional movement: curiosity, delight, disagreement, reflection and affection.
-  Do not turn three separate stories into three versions of the same warning.
-- Identify who can benefit, what they can actually access now, and what remains
-  unproven. A company promise is not a demonstrated benefit. Never manufacture hope.
-- End with agency: a useful question, a practical action supported by the facts, or a
-  precise thing to watch. Do not invent applications, trials or features to recommend.
-- COLD OPEN: In roughly 20-35 seconds, name the real development, let another host
-  react to its specific surprise, and give a clear reason to stay. Match the title.
-  Use the established music next; no unrelated opening sketch or fear bait.
-- PACING: Each new beat adds a fact, an intelligible example, a real objection or a
-  changed implication. Cut repetitions and empty recaps. Never pad to reach 26 minutes.
-  Save a satisfying return to the opening question for the close, not a withheld fact.
-
-ORIGINAL ENSEMBLE NEWSROOM VOICE:
-Newsroom substance, ensemble-comedy chemistry, and the urgency of a good workplace
-drama. Use these general craft techniques in The AI Edge's own voice. Do not imitate
-any named writer, show, character, signature cadence, catchphrase or scene.
-- CAUSAL HANDOFFS: A reply answers, challenges, clarifies or unexpectedly develops the
-  previous speaker's specific point. If a reply could follow any line, rewrite it.
-  Avoid three independent speeches connected only by speaker names.
-- LIVE OBJECTIVES: Let each host pursue a concrete question in this story. Make the
-  best opposing case credible. Tension comes from what someone stands to gain or lose,
-  not raised volume, insults, fake deadlines or invented behind-the-scenes motives.
-- RHYTHM: Mix short questions and quick comebacks with enough explanation to understand
-  the evidence. Use brief bursts of exchange, then room for an important fact to land.
-  Momentum does not mean everyone speaks fast all the time. Preserve pronunciation,
-  factual qualifiers and intelligibility; do not add stage directions to spoken text.
-- ALEX: Confident, curious and occasionally funny. Ask what actually changes, follow
-  a surprising answer, and translate the consequence. Bring the room together without
-  recapping every exchange or delivering a grand closing speech.
-- JAMIE: Passionate and mischievous. Name the overlooked human consequence, defend
-  an opportunity when warranted, and allow genuine excitement. Respond to Rufus's
-  exact observation rather than a stock objection. Never default to permanent outrage.
-- RUFUS: Spot the absurd incentive behind the money or policy. Deliver an original,
-  economical observation almost incidentally; do not announce the joke. He can enjoy
-  being teased, acknowledge a limit, or discover that Jamie has the better evidence.
-- AFFECTION AND SURPRISE: Let a colleague sharpen another's thought, enjoy a good
-  point, or take a joke before returning it. Change alliances only when the facts
-  justify it. Agreement, discovery and unresolved uncertainty are valid scene endings.
-- SCENE MOVEMENT: Establish the development, explore a real tension, let a relevant
-  fact change the discussion, and leave with a useful consequence. Vary the order
-  naturally; never force a twist or a winner. Alex gives a short navigation cue when
-  moving to the next distinct story, without dragging the old argument with him.
-- REVISION: Silently check handoffs, intelligibility, earned humour, evidence and
-  listener payoff. Replace inert lines within the existing word budget. Output the
-  requested script or planning JSON only, never this checklist or production labels.
-These are editorial instructions, not evidence of listener retention or a 10/10 score.
+EDITORIAL BRIEF — The AI Edge:
+1. Explain consequential AI developments from the last 24-48 hours. Newsworthiness
+   and source quality come first. Three stories need separate questions and payoffs.
+   Identify what changed, who benefits and what the listener can do or watch.
+2. Curiosity, delight, disagreement and affection can all move a scene. Seek actual
+   useful progress without a positivity quota. Never manufacture danger or hope.
+   No permanent villains, designated loser or required change of mind.
+3. Every exchange adds evidence, a revealing example, a genuine objection or a changed
+   implication. If it repeats a settled point, cut it. Do not force one thesis across
+   all stories or pad the runtime. Target roughly 40/30/30 discussion time.
+4. Preserve source qualifications. Proposals are not agreements; allegations are not
+   findings. A vendor claim is not independent proof. Missing from a short summary
+   does not mean nonexistent. Never invent listener submissions, votes or testimonials.
+5. Include a natural self-contained exchange a listener could send to a friend:
+   name the subject, explain the surprising fact, then land a useful or funny payoff.
+   Never announce a 'shareable moment'. Use supplied history only; retire stale bits.
+6. Explain the headline early and end with a specific answer or honest uncertainty.
+   Keep the opening brief, give each story audible navigation, and leave the listener
+   more capable. Instructions and automated checks are not entertainment ratings.
 """.strip() + "\n\n" + PERFORMANCE_DIRECTION
 
 

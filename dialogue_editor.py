@@ -1,19 +1,29 @@
 """One bounded dialogue revision; always retain the original on regression/error."""
 import hashlib
 import re
+from pathlib import Path
 
 
-def edit_dialogue(script, assessment, request, normalize, assess, runtime_distance):
+def edit_dialogue(script, assessment, request, normalize, assess, runtime_distance, snapshot_dir=None):
     report = {"provider": "anthropic", "role": "dialogue_editor", "requested_calls": 1,
               "accepted": False, "listened": False,
               "input_sha256": hashlib.sha256(script.encode()).hexdigest()}
+    report["input_words"] = assessment.get("metrics", {}).get("words", len(script.split()))
+    report["input_runtime_distance"] = runtime_distance(assessment)
     try:
+        if snapshot_dir is not None:
+            Path(snapshot_dir, "dialogue_editor_original.txt").write_text(script, encoding="utf-8")
         response = request()
         if not response:
             report["reason"] = "empty_response_original_preserved"
             return script, assessment, report
         candidate = normalize(response)
         candidate_assessment = assess(candidate)
+        report["candidate_words"] = candidate_assessment.get("metrics", {}).get("words", len(candidate.split()))
+        report["candidate_runtime_distance"] = runtime_distance(candidate_assessment)
+        report["candidate_failed"] = candidate_assessment.get("failed", [])
+        if snapshot_dir is not None:
+            Path(snapshot_dir, "dialogue_editor_candidate.txt").write_text(candidate, encoding="utf-8")
         report["candidate_sha256"] = hashlib.sha256(candidate.encode()).hexdigest()
         # These are regression checks, not semantic proof or an entertainment score.
         original_numbers = set(re.findall(r"\b\d[\d,.%]*", script))

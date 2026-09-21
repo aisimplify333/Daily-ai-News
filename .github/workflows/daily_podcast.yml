@@ -184,9 +184,9 @@ jobs:
           MAX_MINUTES: "30"
           TARGET_MINUTES: "25"
           WORDS_PER_MINUTE: "145"
-          RECOVERY_MIN_SCRIPT_WORDS: "3550"
+          RECOVERY_MIN_SCRIPT_WORDS: "3300"
           RECOVERY_MAX_SCRIPT_WORDS: "4350"
-          RECOVERY_TARGET_SCRIPT_WORDS: "4200"
+          RECOVERY_TARGET_SCRIPT_WORDS: "3800"
           SEGMENT_ATTEMPTS: "5"
           FORWARDABLE_MIN_PER_EPISODE: "4"
           STORY_BUCKET_CAP: "6"
@@ -260,6 +260,10 @@ jobs:
             audio_qa_report.json \
             audio_engineering_report.json \
             dialogue_editor_report.json \
+            dialogue_editor_original.txt \
+            dialogue_editor_candidate.txt \
+            storyboard_report.json \
+            listener_review_report.json \
             promo_assets_report.json \
             sponsor_delivery_report.json \
             hybrid_tts_report.json \

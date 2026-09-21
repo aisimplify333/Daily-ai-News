@@ -6357,6 +6357,12 @@ def produce_episode() -> None:
         outro_present=outro_seg is not None, timeline=timeline,
     )
 
+    try:
+        from production_review import write_review
+        write_review(stories, timeline)
+    except Exception as exc:
+        _safe_print(f"Review report unavailable; completed audio preserved: {type(exc).__name__}")
+
     TRACKING_SUMMARY_PATH.write_text(json.dumps(tracking, indent=2, ensure_ascii=False), encoding="utf-8")
 
     forwardable_moments = extract_forwardable_moments(script, stories=stories, max_items=4)
