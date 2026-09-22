@@ -22,7 +22,6 @@ jobs:
 
     env:
       SAVE_SCRIPT: "true"
-      EPISODE_RECOVERY_DIR: "/tmp/ai-edge-episode-recovery"
       PODCAST_SHOW_TITLE: "The AI Edge"
       PODCAST_SHOW_DESCRIPTION: "The AI Edge is the weekday artificial intelligence news and analysis podcast where Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. Each episode debates three distinct AI stories from the last 24–48 hours, with clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for new episodes Monday through Friday. What changed. Who wins. What you do next."
 
@@ -61,7 +60,7 @@ jobs:
           name: the-ai-edge-v3-1-hybrid-tts-artifacts
           run-id: 35723240924
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          path: ${{ env.EPISODE_RECOVERY_DIR }}
+          path: /tmp/ai-edge-episode-recovery
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -122,6 +121,7 @@ jobs:
 
       - name: Run The AI Edge v3.1 Cost-Safe Hybrid Broadcast
         env:
+          EPISODE_RECOVERY_DIR: "/tmp/ai-edge-episode-recovery"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
