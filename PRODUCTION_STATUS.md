@@ -1,3 +1,15 @@
+## September 22, 2026 — listener-first story selection
+
+- Research brief now explicitly ranks new developments by significance, human consequence, evidence and explanatory/practical value; publisher prestige is not sufficient reason to lead.
+- Search across news desks before choosing; seek three distinct listener questions without replacing essential news with trivial variety.
+- Research returns an editorial case for each candidate: new development, affected listener, why today, distinct question, new since prior coverage and practical payoff.
+- Preserve that analysis separately from verified facts, pass it to the writer, and retain the first three cases in grounded_research_report.json. Missing cases remain nonblocking.
+- Writer leads with the event/consequence and retains attribution where needed. A new outlet covering yesterday's event is not new news.
+- Existing freshness, source validation, event deduplication, history and subject-diversity mechanisms remain. No extra model pass or paid audio rerun.
+- **92 offline tests passed.** These instructions and diagnostics do not guarantee best-in-market selection; next production slate and audio still require review.
+
+---
+
 ## September 21, 2026 — focused editorial upgrade
 
 Prepared on main after today's production commit `347e4d7`. **91 offline tests pass** and changed Python modules compile. This entry describes code changes, not a newly listened episode.

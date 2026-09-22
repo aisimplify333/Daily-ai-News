@@ -953,6 +953,7 @@ def _story_lines(stories: List[Dict[str, Any]]) -> str:
             f"   Confirmed facts: {', '.join(str(x) for x in (s.get('facts') or [])[:6])}\n"
             f"   Data points: {', '.join(str(x) for x in (s.get('data_points') or [])[:5])}\n"
             f"   Limits/qualifiers: {', '.join(str(x) for x in (s.get('limitations_or_qualifiers') or [])[:5])}\n"
+            f"   Editorial analysis, NOT additional source facts: {json.dumps(s.get('editorial_case') or {}, ensure_ascii=False)}\n"
             f"   URL: {_url(s)}"
         )
     return "\n".join(rows)
@@ -1263,6 +1264,14 @@ PUBLIC TITLE: {board.get('published_title', _hard_title(stories))}
 LISTENER BENEFIT: {board.get('listener_promise', LISTENER_PROMISE)}
 Explain the actual headline immediately; answer the title's question in the closing.
 Promise only what the supplied evidence supports. Permanent promise: {LISTENER_PROMISE}
+Lead with the development and its consequence, not 'Reuters said' or 'AP reports'.
+Keep necessary attribution near disputed claims, exclusive reporting and vendor claims;
+do not remove sourcing. Explain unfamiliar developments in plain language.
+Each story must give a different answer to: what changed, who is affected, and what
+to do or watch next. Use its distinct_question and practical_payoff as editorial
+guidance only, never as additional verified facts. Do not recycle yesterday's argument
+because another outlet has written about it. No fabricated personal action on policy
+stories: a concrete development to watch is a legitimate payoff.
 
 {CAST_CONNECTION_DIRECTION}
 {EDITORIAL_DIRECTION}

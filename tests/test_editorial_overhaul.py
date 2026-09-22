@@ -13,6 +13,23 @@ from production_review import review_episode
 
 
 class EditorialOverhaulTests(unittest.TestCase):
+    def test_editorial_case_stays_separate_from_verified_facts(self):
+        now = dt.datetime.now(dt.timezone.utc)
+        row = {"headline": "New accessibility tool launches", "publisher": "AP",
+               "source_url": "https://apnews.com/article/example", "published_at": now.isoformat(),
+               "summary": "A source-backed description. " * 5,
+               "facts": ["Confirmed fact one", "Confirmed fact two"],
+               "original_publication_verified": True,
+               "editorial_case": {"distinct_question": "Who can use it?",
+                                  "practical_payoff": "Check announced availability.",
+                                  "unsupported_field": "Do not carry this forward"}}
+        result = news._normalize_story(row, now)
+        self.assertEqual(result["facts"], row["facts"])
+        self.assertEqual(set(result["editorial_case"]), {"distinct_question", "practical_payoff"})
+        self.assertIn("NOT additional source facts", writer._story_lines([result]))
+        row["editorial_case"] = ["malformed provider output"]
+        self.assertEqual(news._normalize_story(row, now)["editorial_case"], {})
+
     def test_three_governance_stories_are_recognized_and_diversified(self):
         rows = [{"headline": h, "source_tier": 3} for h in (
             "US proposes AI incident alerts in China talks", "Labs face antitrust lawsuit",

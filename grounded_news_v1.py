@@ -232,6 +232,14 @@ Return STRICT JSON only:
       "data_points": ["exact number/date/benchmark only when the source gives it"],
       "limitations_or_qualifiers": ["privacy, availability, geography, access, or safety qualifier"],
       "why_it_matters": "one clearly labeled analytical sentence",
+      "editorial_case": {{
+        "new_development": "what changed within this reporting window",
+        "affected_listener": "who is affected and how, without invented reach",
+        "why_today": "why this deserves airtime compared with other candidates",
+        "distinct_question": "the listener question this story alone answers",
+        "new_since_prior_coverage": "material new fact versus supplied history, or no prior match",
+        "practical_payoff": "a supported action, opportunity or specific thing to watch"
+      }},
       "original_publication_verified": true
     }}
   ]
@@ -239,6 +247,18 @@ Return STRICT JSON only:
 
 Return {candidate_count} ranked candidates so validation can retain the best five.
 Rules:
+- Rank by the significance of the NEW development, the consequence for people,
+  evidence strength and practical or explanatory value. Publisher prestige is a
+  credibility signal, never the news event or sufficient reason to lead.
+- Search across products/models, work/everyday use, science/accessibility,
+  business/infrastructure and policy/security before choosing. Seek the strongest
+  developments, not one obligatory item from each desk or the first results returned.
+- The top three must answer different listener questions. Three different institutions
+  debating the same concern are not enough variety. Prefer comparably important,
+  well-supported alternatives; do not displace an essential major event for trivia.
+- Complete editorial_case for every candidate as explicitly editorial analysis,
+  grounded in its facts. If returning to yesterday's event, name the material new
+  development. A new article, quote or publisher alone does not make it new news.
 - Verify the ORIGINAL publication date on the source page. Reject an old announcement
   merely resurfaced or republished in the last 48 hours.
 - Prefer Reuters/AP/Bloomberg/FT/WSJ/Washington Post/New York Times, respected
@@ -327,6 +347,12 @@ def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str
         "data_points": data_points[:8],
         "limitations_or_qualifiers": qualifiers[:8],
         "why_it_matters": str(raw.get("why_it_matters") or "").strip(),
+        "editorial_case": {
+            key: str(value).strip()[:600]
+            for key, value in (raw.get("editorial_case") if isinstance(raw.get("editorial_case"), dict) else {}).items()
+            if key in {"new_development", "affected_listener", "why_today", "distinct_question",
+                       "new_since_prior_coverage", "practical_payoff"} and isinstance(value, str)
+        },
         "story_age_hours": round(max(0.0, age_hours), 2),
         "source_tier": _source_tier(publisher, source_url),
         "grounded": True,
@@ -447,6 +473,11 @@ def build_grounded_story_slate(
             break
     from editorial_selection import balanced_story_order
     normalized = balanced_story_order(normalized)[:n]
+    report["selected_editorial_cases"] = [
+        {"headline": s["headline"], "source_url": s["source_url"],
+         "editorial_analysis_not_verified_facts": s.get("editorial_case", {})}
+        for s in normalized[:3]
+    ]
     report["status"] = "ready" if len(normalized) >= n else "insufficient"
     try:
         Path("grounded_research_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
