@@ -1,3 +1,17 @@
+## September 22 — failed production diagnosis and recovery repair
+
+Run 35723240924 failed before TTS. Saved script: 3,177 words against 3,300 minimum; cast introduction lacked the required welcome phrase; model midroll duplicated the spoken sponsor URL. The deterministic structure repair was a no-op and midroll normalization removed only known house variants, leaving the model-written ad.
+
+- Repair welcome identification without replacing the cast introduction; replace model-written editorial-segment Ledger ads with the existing rotating midroll.
+- Add a third bounded sourced expansion only when at most 300 words remain below minimum after two attempts. Keep existing runtime and structural checks.
+- Explicit same-day recovery reads the saved research, board and fact-repaired script; validates matching date and source freshness, skips original research/writing/edit calls, and retains subsequent fact audit and normal production QA.
+- Save final pre-TTS checkpoint in workflow artifacts.
+- **95 offline tests passed**, including synthetic regression coverage for the observed defects, idempotent repair and dated recovery checks. The actual saved script was also checked locally.
+- Recovery will read the existing Actions artifact on its runner, without committing unpublished drafts or source packets. No episode audio existed in the failed-run artifact. Old audio reports describe earlier production, not September 22.
+- Manual recovery production still pending at this commit. Scheduled start was late; this repair does not fix GitHub scheduling delays.
+
+---
+
 ## September 22, 2026 — listener-first story selection
 
 - Research brief now explicitly ranks new developments by significance, human consequence, evidence and explanatory/practical value; publisher prestige is not sufficient reason to lead.

@@ -1406,7 +1406,21 @@ MIDROLL_TREATMENTS = (
 def _normalize_midroll(script: str, date_str: str) -> str:
     """Insert one rotating, dry-voice ad at the Segment 3/4 boundary."""
     known_lines = {line for treatment in MIDROLL_TREATMENTS for line in treatment}
-    lines = [line for line in script.splitlines() if line.strip() not in known_lines]
+    lines = []
+    segment = 0
+    for line in script.splitlines():
+        header = re.match(r"^###\s*SEGMENT\s*([1-5])\b", line, re.I)
+        if header:
+            segment = int(header.group(1))
+        if line.strip() in known_lines:
+            continue
+        # Model-written house ads are replaced by the assembly-owned midroll.
+        # Preserve the opening and closing sponsor placements.
+        if segment in (2, 3, 4) and SPEAKER_RE.match(line.strip()) and re.search(
+            r"\bthe ledger\b|t-h-e-l-e-d-g-r dot i-o", line, re.I
+        ):
+            continue
+        lines.append(line)
     try:
         index = _dt.date.fromisoformat(date_str).toordinal() % len(MIDROLL_TREATMENTS)
     except ValueError:
@@ -2077,7 +2091,12 @@ def _deterministic_structure_repair(
     """Repair model formatting drift without rewriting facts or sponsor copy."""
     lines = (script or "").splitlines()
     failed = set(assessment.get("failed") or [])
-
+    post_music = script.split("[MUSIC]", 1)[-1].lower() if "[MUSIC]" in script else ""
+    if "[MUSIC]" in script and "welcome to the ai edge" not in post_music:
+        music = next((i for i, line in enumerate(lines) if line.strip() == "[MUSIC]"), None)
+        if music is not None:
+            # Keep the cast introduction; add only the missing show identification.
+            lines.insert(music + 1, "ALEX: Welcome to The AI Edge.")
     return "\n".join(lines).strip()
 
 
@@ -2650,6 +2669,12 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             or os.getenv("RECOVERY_RUN_DATE", "").strip()
             or _dt.date.today().isoformat()
         )
+        from episode_recovery import load_recovery
+        recovery = load_recovery(episode_date)
+        if recovery:
+            last_selected = recovery["stories"]
+            _safe_print(g, "   ✅ Reusing today's saved research; no new research call.")
+            return last_selected
         try:
             from grounded_news_v1 import (
                 build_grounded_story_slate,
@@ -2725,13 +2750,16 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                        f"{len(fuel['banned_phrases'])} stale phrases banned")
 
         # 2. Design the argument before any dialogue exists.
-        board = _preproduction(g, stories, date_str, fuel)
+        from episode_recovery import load_recovery
+        recovery = load_recovery(date_str)
+        board = recovery["board"] if recovery else _preproduction(g, stories, date_str, fuel)
         board["_episode_date"] = date_str
         last_board = board
 
         def stabilize(candidate: str) -> str:
             return _ensure_connection_elements(
-                _normalize_primary_sponsor(_clean_script(candidate)),
+                _normalize_primary_sponsor(_deterministic_structure_repair(
+                    _clean_script(candidate), {}, board)),
                 stories,
                 board,
                 date_str,
@@ -2750,7 +2778,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             pass
 
         # 3. Write the dialogue.
-        script = _script_via_models(g, _writer_prompt(stories, sponsors, date_str, board, fuel))
+        script = recovery["script"] if recovery else _script_via_models(g, _writer_prompt(stories, sponsors, date_str, board, fuel))
         if not script and callable(original_generate_episode_script):
             _safe_print(g, "   ⚠️ Writer unavailable; falling back to prior generator.")
             script = original_generate_episode_script(stories, sponsors, date_str)
@@ -2770,7 +2798,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 "repeated_stale_phrase", "jamie_comic_reactions_excessive",
             )
         )
-        if os.getenv("ENABLE_DIALOGUE_EDITOR", "true").lower() == "true":
+        if not recovery and os.getenv("ENABLE_DIALOGUE_EDITOR", "true").lower() == "true":
             from dialogue_editor import edit_dialogue
             editor_model = os.getenv("DIALOGUE_EDITOR_MODEL", "claude-sonnet-4-6")
             script, assessment, editor_report = edit_dialogue(
@@ -2790,7 +2818,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             except OSError:
                 pass
             _safe_print(g, f"      Dialogue edit: {editor_report['reason']}")
-        elif ENABLE_GROK_PUNCHUP and needs_connection_punchup:
+        elif not recovery and ENABLE_GROK_PUNCHUP and needs_connection_punchup:
             punched = _xai_text(g, _punchup_prompt(script, board, assessment),
                                 model=PUNCHUP_MODEL, max_tokens=6200)
             if punched:
@@ -2854,14 +2882,17 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         )
         final_words = int((assessment.get("metrics") or {}).get("words") or 0)
         if final_words < min_episode_words:
-            for pad_attempt in range(1, 3):
+            for pad_attempt in range(1, 4):
                 if final_words >= min_episode_words:
+                    break
+                # A final bounded repair is only for a modest remaining deficit.
+                if pad_attempt == 3 and min_episode_words - final_words > 300:
                     break
                 needed = min(850, max(300, min_episode_words + 125 - final_words))
                 _safe_print(
                     g,
                     f"      🧩 runtime underrun ({final_words} words); "
-                    f"deepening the underweight story with sourced debate (pass {pad_attempt}/2)",
+                    f"deepening the underweight story with sourced debate (pass {pad_attempt}/3)",
                 )
                 expanded = _expand_segment_four(
                     g, script, stories, date_str, board, add_words=needed
