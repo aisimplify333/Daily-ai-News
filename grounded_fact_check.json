@@ -1,94 +1,290 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-21",
+  "date": "2026-09-22",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-21",
+    "date": "2026-09-22",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The U.S. proposed an AI incident notification mechanism that could affect national security during weekend talks ahead of Trump-Xi meetings this week.",
-        "evidence_quote": "the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents that could affect national security",
-        "exact_line": "ALEX: Our lead story today is Bessent says the U.S. proposed an AI incident alert system in China talks.",
-        "replacement_line": "ALEX: Our lead story today is Bessent says the U.S. proposed a notification mechanism for AI incidents that could affect national security in China talks.",
-        "reason": "This overstates the reported mechanism. The AP says the U.S. proposed a new 'notification mechanism' for AI incidents that could affect national security; 'incident alert system' is a paraphrase, but the line presents it as the specific reported formulation and misses the national-security qualifier.",
-        "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+        "factual_claim": "Gates spoke at Goalkeepers on September 21, 2026 and urged the smart use of AI alongside increased generosity to fight inequality and support lifesaving innovations.",
+        "evidence_quote": "Bill Gates told his foundation's Goalkeepers gathering that \"increased generosity\" and \"the smart use of AI\" together could accelerate the fight against inequality.",
+        "exact_line": "ALEX: Our third story is a different kind of development. At a Goalkeepers event yesterday, Bill Gates made the case for what he called the \"smart use of AI\" — specifically to accelerate work on inequality and global health.",
+        "replacement_line": "ALEX: Our third story is a different kind of development. At a Goalkeepers event on Monday, Bill Gates made the case for what he called the \"smart use of AI\" — alongside increased generosity — to accelerate work on inequality and lifesaving innovation.",
+        "reason": "This is a materially inaccurate date/context claim. The AP source says Gates spoke at the Goalkeepers gathering on Monday, September 21, 2026, and the quote is about \"the smart use of AI\" alongside \"increased generosity\"; the script's \"yesterday\" is only correct if the episode date is September 22, but the line should still be checked against the source's exact timing and framing. More importantly, the line compresses the speech into a single claim without the source's emphasis on inequality and lifesaving innovations.",
+        "source_url": "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The AP story explicitly frames AI as an access and translation tool rather than only a frontier-model competition.",
+        "evidence_quote": "The Gates Foundation also touted its new coalition of Anthropic, Google, OpenAI Foundation and dozens of other organizations working to make AI more accessible in underrepresented languages.",
+        "exact_line": "ALEX: The AP story notes this framing: AI as an access and translation tool rather than only a frontier-model competition. Is that a meaningful reframe?",
+        "replacement_line": "ALEX: The AP story notes this access-and-language angle: AI being used to make services more accessible in underrepresented languages. Is that a meaningful reframe?",
+        "reason": "The source does support the existence of the language-access coalition, but it does not explicitly make the broader comparative claim that AI is being framed 'rather than only a frontier-model competition.' That is the hosts' interpretation, not a source-backed factual assertion.",
+        "source_url": "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "As of the recording, there was no update on whether AI would appear in a Trump-Xi joint statement.",
+        "evidence_quote": "The announcement landed days before a Trump-Xi meeting expected to focus in part on AI competition.",
+        "exact_line": "ALEX: One quick continuity note — we've been watching the Trump-Xi AI question since Sunday. We're looking for whether AI comes up in any joint statement, if there is one. No update yet as of this recording. Still watching.",
+        "replacement_line": "ALEX: One quick continuity note — we've been watching the Trump-Xi AI question since Sunday. We're looking to see whether AI comes up in any joint statement, if there is one.",
+        "reason": "This line introduces a live-status claim ('No update yet as of this recording') that is not supported by the supplied source records and is time-sensitive. The source record only says the Alibaba announcement landed days before a Trump-Xi meeting expected to focus on AI competition; it does not support the show's claim about monitoring a joint statement or that there has been no update.",
+        "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
       }
     ],
     "warnings": [
-      "The script repeatedly says the Security Council meeting is on 'Wednesday' / 'Wednesday afternoon'; that matches the AP summary, but the episode date is 2026-09-21 so the exact calendar date should be made explicit if you want maximum clarity.",
-      "The Bloomberg AI czar / AI Force claim is supported only by the supplied Bloomberg record and a search result snippet; I could not access the full Bloomberg article directly because of robots restrictions, so the wording should be treated as verified only at the headline/snippet level.",
-      "The lawsuit claims about Anthropic, OpenAI, SpaceXAI, and Google are allegations, not established facts; the script correctly frames them as allegations.",
-      "The script states 'The AP does not establish the claims as true' and 'No court has ruled on the merits,' which is consistent with the supplied record.",
-      "The phrase 'AI getting out of human control' is a paraphrase of AP framing about runaway AI threatening humanity; it is not a verbatim quote from the supplied record."
+      "The script treats Googlebook as a 'Chromebook successor' and says Android is 'a shift from ChromeOS'; the source says Googlebooks run on Android OS with a desktop version of Chrome and are meant to offer a step up from traditional Chromebooks. This is broadly supported, but 'successor' is stronger than the cited wording.",
+      "The line 'Google is essentially asking buyers to pay a premium for AI integration that isn't independently benchmarked yet' is an inference from the source's preorder status and lack of third-party performance data, not an explicit source fact.",
+      "The Amazon/Muse segment largely matches the source, including the error-message wording and the report's uncertainty about permanence, but claims about why Amazon acted are speculative and should remain framed as host opinion.",
+      "The Gates coalition segment is broadly supported, but the script's statements about workflow, budget, and governance are extrapolations beyond the AP report.",
+      "The Alibaba segment should not overstate external validation of Alibaba's 3x performance claim; the AP report presents it as Alibaba's own claim, not independently benchmarked evidence.",
+      "Advisory only; no reviewable factual correction: Sponsor read is excluded from fact-checking unless it contains concrete numerical or regulated-product claims; this line is promotional opinion and is not a critical error. Kept here only as a warning that it should not be treated as verified factual content."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd",
-      "https://apnews.com/article/960af4308161eaf4ed13c383b0ce1c1b",
-      "https://apnews.com/article/c4727651b9030d6e7f81c0457a33440b",
-      "https://bloomberg.com/news/articles/2026-09-19/trump-to-name-ai-czar-while-rejecting-safety-risks-as-a-hoax"
+      "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/",
+      "https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/",
+      "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0",
+      "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-21",
+      "date": "2026-09-22",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The U.S. proposed an AI incident notification mechanism that could affect national security during weekend talks ahead of Trump-Xi meetings this week.",
-          "evidence_quote": "the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents that could affect national security",
-          "exact_line": "ALEX: Our lead story today is Bessent says the U.S. proposed an AI incident alert system in China talks.",
-          "replacement_line": "ALEX: Our lead story today is Bessent says the U.S. proposed a notification mechanism for AI incidents that could affect national security in China talks.",
-          "reason": "This overstates the reported mechanism. The AP says the U.S. proposed a new 'notification mechanism' for AI incidents that could affect national security; 'incident alert system' is a paraphrase, but the line presents it as the specific reported formulation and misses the national-security qualifier.",
-          "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+          "factual_claim": "Gates spoke at Goalkeepers on September 21, 2026 and urged the smart use of AI alongside increased generosity to fight inequality and support lifesaving innovations.",
+          "evidence_quote": "Bill Gates told his foundation's Goalkeepers gathering that \"increased generosity\" and \"the smart use of AI\" together could accelerate the fight against inequality.",
+          "exact_line": "ALEX: Our third story is a different kind of development. At a Goalkeepers event yesterday, Bill Gates made the case for what he called the \"smart use of AI\" — specifically to accelerate work on inequality and global health.",
+          "replacement_line": "ALEX: Our third story is a different kind of development. At a Goalkeepers event on Monday, Bill Gates made the case for what he called the \"smart use of AI\" — alongside increased generosity — to accelerate work on inequality and lifesaving innovation.",
+          "reason": "This is a materially inaccurate date/context claim. The AP source says Gates spoke at the Goalkeepers gathering on Monday, September 21, 2026, and the quote is about \"the smart use of AI\" alongside \"increased generosity\"; the script's \"yesterday\" is only correct if the episode date is September 22, but the line should still be checked against the source's exact timing and framing. More importantly, the line compresses the speech into a single claim without the source's emphasis on inequality and lifesaving innovations.",
+          "source_url": "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The AP story explicitly frames AI as an access and translation tool rather than only a frontier-model competition.",
+          "evidence_quote": "The Gates Foundation also touted its new coalition of Anthropic, Google, OpenAI Foundation and dozens of other organizations working to make AI more accessible in underrepresented languages.",
+          "exact_line": "ALEX: The AP story notes this framing: AI as an access and translation tool rather than only a frontier-model competition. Is that a meaningful reframe?",
+          "replacement_line": "ALEX: The AP story notes this access-and-language angle: AI being used to make services more accessible in underrepresented languages. Is that a meaningful reframe?",
+          "reason": "The source does support the existence of the language-access coalition, but it does not explicitly make the broader comparative claim that AI is being framed 'rather than only a frontier-model competition.' That is the hosts' interpretation, not a source-backed factual assertion.",
+          "source_url": "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "As of the recording, there was no update on whether AI would appear in a Trump-Xi joint statement.",
+          "evidence_quote": "The announcement landed days before a Trump-Xi meeting expected to focus in part on AI competition.",
+          "exact_line": "ALEX: One quick continuity note — we've been watching the Trump-Xi AI question since Sunday. We're looking for whether AI comes up in any joint statement, if there is one. No update yet as of this recording. Still watching.",
+          "replacement_line": "ALEX: One quick continuity note — we've been watching the Trump-Xi AI question since Sunday. We're looking to see whether AI comes up in any joint statement, if there is one.",
+          "reason": "This line introduces a live-status claim ('No update yet as of this recording') that is not supported by the supplied source records and is time-sensitive. The source record only says the Alibaba announcement landed days before a Trump-Xi meeting expected to focus on AI competition; it does not support the show's claim about monitoring a joint statement or that there has been no update.",
+          "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
         }
       ],
       "warnings": [
-        "The script repeatedly says the Security Council meeting is on 'Wednesday' / 'Wednesday afternoon'; that matches the AP summary, but the episode date is 2026-09-21 so the exact calendar date should be made explicit if you want maximum clarity.",
-        "The Bloomberg AI czar / AI Force claim is supported only by the supplied Bloomberg record and a search result snippet; I could not access the full Bloomberg article directly because of robots restrictions, so the wording should be treated as verified only at the headline/snippet level.",
-        "The lawsuit claims about Anthropic, OpenAI, SpaceXAI, and Google are allegations, not established facts; the script correctly frames them as allegations.",
-        "The script states 'The AP does not establish the claims as true' and 'No court has ruled on the merits,' which is consistent with the supplied record.",
-        "The phrase 'AI getting out of human control' is a paraphrase of AP framing about runaway AI threatening humanity; it is not a verbatim quote from the supplied record."
+        "The script treats Googlebook as a 'Chromebook successor' and says Android is 'a shift from ChromeOS'; the source says Googlebooks run on Android OS with a desktop version of Chrome and are meant to offer a step up from traditional Chromebooks. This is broadly supported, but 'successor' is stronger than the cited wording.",
+        "The line 'Google is essentially asking buyers to pay a premium for AI integration that isn't independently benchmarked yet' is an inference from the source's preorder status and lack of third-party performance data, not an explicit source fact.",
+        "The Amazon/Muse segment largely matches the source, including the error-message wording and the report's uncertainty about permanence, but claims about why Amazon acted are speculative and should remain framed as host opinion.",
+        "The Gates coalition segment is broadly supported, but the script's statements about workflow, budget, and governance are extrapolations beyond the AP report.",
+        "The Alibaba segment should not overstate external validation of Alibaba's 3x performance claim; the AP report presents it as Alibaba's own claim, not independently benchmarked evidence.",
+        "Advisory only; no reviewable factual correction: Sponsor read is excluded from fact-checking unless it contains concrete numerical or regulated-product claims; this line is promotional opinion and is not a critical error. Kept here only as a warning that it should not be treated as verified factual content."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd",
-        "https://apnews.com/article/960af4308161eaf4ed13c383b0ce1c1b",
-        "https://apnews.com/article/c4727651b9030d6e7f81c0457a33440b",
-        "https://bloomberg.com/news/articles/2026-09-19/trump-to-name-ai-czar-while-rejecting-safety-risks-as-a-hoax"
+        "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/",
+        "https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/",
+        "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0",
+        "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-09-22",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Googlebook is the name used for Google's new $899 preorder laptop line, with a U.S. shelf date of October 4 and Android OS plus desktop Chrome.",
+          "evidence_quote": "Googlebook is available for preorder. The preorder price is $899. The device runs Android OS with a desktop version of the Chrome browser.",
+          "exact_line": "ALEX: So Google opened preorders on September 21st for the Googlebook — that's what they're calling it. Eight hundred and ninety-nine dollars, with a planned U.S. shelf date of October 4th. What is this thing actually running?",
+          "replacement_line": "ALEX: So Google opened preorders on September 21st for its $899 Googlebook laptop — the one with a planned U.S. shelf date of October 4th. What is this thing actually running?",
+          "reason": "This line is materially incomplete/misleading because it omits that the product is described as a new premium laptop line and that the source says it runs Android OS with a desktop version of Chrome; the date and price are fine, but the line’s wording can mislead by treating 'Googlebook' as a settled official name without the source’s nuance.",
+          "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Typical Chromebooks cost well under $500 for education use, and there is no third-party performance data on Googlebook in the story.",
+          "evidence_quote": "Google’s $899 Googlebook is a bet that you’ll buy a new laptop for Gemini ... Meant to offer a step up from traditional Chromebooks ... The devices will receive regular updates for up to 10 years, Google said.",
+          "exact_line": "RUFUS: The gap is real. A typical Chromebook sits well under five hundred dollars for education use. Google is essentially asking buyers to pay a premium for AI integration that isn't independently benchmarked yet. The Googlebook exists at preorder pricing, with vendor claims about the features and no third-party performance data in the story.",
+          "replacement_line": "RUFUS: The gap is real. Google is asking buyers to pay a premium for AI integration that isn't independently benchmarked yet. The Googlebook exists at preorder pricing, with vendor claims about the features and no third-party performance data in the story.",
+          "reason": "The 'typical Chromebook sits well under five hundred dollars' comparison is unsupported by the supplied sources, and the script overstates the absence of third-party performance data as if it were a verified fact beyond the story's scope.",
+          "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "There are thousands of languages spoken by hundreds of millions of people that have almost no training data representation.",
+          "evidence_quote": "an estimated 3.4 billion people who speak languages currently underrepresented by today’s AI models are able to use AI tools in their own language and voice.",
+          "exact_line": "RUFUS: Most large AI models are trained overwhelmingly on English and a handful of high-resource languages. There are thousands of languages spoken by hundreds of millions of people that have almost no training data representation. For those communities, the AI revolution is largely happening in a language they don't read.",
+          "replacement_line": "RUFUS: Most large AI models are trained overwhelmingly on English and a handful of high-resource languages. There are thousands of languages that remain underrepresented in today's AI systems. For those communities, the AI revolution is largely happening in a language they don't read.",
+          "reason": "The first sentence is broadly true, but the middle claim is too sweeping and numerically imprecise relative to the source. The source supports a claim about 3.4 billion people speaking underrepresented languages, not 'hundreds of millions' and not 'almost no training data' as a universal fact.",
+          "source_url": "https://www.gatesfoundation.org/ideas/media-center/press-releases/2026/09/ai-language-partnership"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The hosts have been watching the Trump-Xi AI question since Sunday and expect a joint statement.",
+          "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders at which competition to lead on AI technology is expected to be a major theme.",
+          "exact_line": "ALEX: One quick continuity note — we've been watching the Trump-Xi AI question since Sunday. We're looking to see whether AI comes up in any joint statement, if there is one.",
+          "replacement_line": "ALEX: One quick continuity note — we've been watching the Trump-Xi AI question closely. We're looking to see whether AI comes up in any joint statement, if there is one.",
+          "reason": "This refers to a specific ongoing diplomatic event and implies a known sequence from Sunday without support in the provided sources. The source records only say the Alibaba announcement came days before a Trump-Xi meeting and that the U.S. proposed an AI incident notification mechanism in weekend talks; they do not establish 'since Sunday' or any joint statement watch.",
+          "source_url": "https://apnews.com/article/alibaba-ai-chip-qwen-zhenwu-china-us-b29908e516faff9f5a82b201ba954aab"
+        }
+      ],
+      "warnings": [
+        "The sponsor read should generally be ignored per instructions, but the script mentions T-H-E-L-E-D-G-R dot I-O; I did not evaluate sponsor-copy factuality beyond that exemption.",
+        "Several lines describe Google's 'Gemini features' in more detail than the supplied source records explicitly verify; those details are likely fine but should be treated as dependent on secondary reporting unless independently confirmed.",
+        "The script repeatedly states or implies that 'Rambler' is unproven; the source records support that this is a vendor feature at preorder stage, but not a general proof-status judgment.",
+        "The script mentions Amazon's own shopping AI and Meta's or Amazon's broader partnerships in ways that go beyond the supplied records; those comments may be accurate but are not verified here."
+      ],
+      "verified_source_urls": [
+        "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/",
+        "https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/",
+        "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0",
+        "https://www.gatesfoundation.org/ideas/media-center/press-releases/2026/09/ai-language-partnership",
+        "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab",
+        "https://www.gatesfoundation.org/ideas/media-center/press-releases/2026/09/goalkeepers-report-equitable-ai"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-09-22",
+      "pass": false,
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Google itself named the widgets 'vibe-coded widgets'.",
+          "evidence_quote": "Google is trying to offer a laptop with unique features like an AI-powered cursor, vibe-coded widgets, and support for AI-enhanced dictation.",
+          "exact_line": "JAMIE: Their words.",
+          "replacement_line": "JAMIE: That’s the phrase TechCrunch used.",
+          "reason": "This line is attached to the claim that Google calls the widgets 'vibe-coded widgets,' but the sourced article describes them as 'vibe-coded widgets' in TechCrunch's language, while Google's own naming in the article is not established by the record. The phrasing overstates attribution certainty.",
+          "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The wording indicates the press release writer's style or identity.",
+          "evidence_quote": "Google is trying to offer a laptop with unique features like an AI-powered cursor, vibe-coded widgets, and support for AI-enhanced dictation.",
+          "exact_line": "RUFUS: Which tells you quite a lot about who wrote the press release.",
+          "replacement_line": "RUFUS: Which tells you quite a lot about the kind of marketing language they’re leaning on.",
+          "reason": "This is a speculative attribution about the press release writer, not a supported factual assertion. It implies insider knowledge not established by the source.",
+          "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Standard Chromebooks typically cost two to three hundred dollars.",
+          "evidence_quote": "Google on Monday said the new device is now available for preorder for $899.",
+          "exact_line": "ALEX: Rufus, what's the competitive framing here? Eight ninety-nine versus a standard Chromebook running what, two, three hundred?",
+          "replacement_line": "ALEX: Rufus, what's the competitive framing here? Eight ninety-nine versus the cheaper Chromebooks buyers usually see?",
+          "reason": "The comparison to a standard Chromebook priced at two to three hundred dollars is an unsupported generalization and may be stale or misleading because no source in the records establishes that price range as a current factual baseline.",
+          "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Rambler's field performance is unproven and the device could reduce replacement-cycle costs for a 1,000-student district.",
+          "evidence_quote": "The limitations_or_qualifiers note says real-world adoption and benchmarked performance are not established in the article.",
+          "exact_line": "JAMIE: If the dictation genuinely works — and Rambler is unproven in the field — then yes, for a school district equipping a thousand students, the total cost of ownership argument gets interesting. You're paying more upfront but potentially avoiding the replacement cycle.",
+          "replacement_line": "JAMIE: If the dictation genuinely works — and we still don’t have third-party performance data — then schools might see value, but that case is still hypothetical.",
+          "reason": "The line makes a concrete school purchasing claim and implies a cost-of-ownership outcome that is not supported by the source record. It also asserts Rambler is 'unproven in the field,' which is a reasonable inference but should be framed more cautiously because the article only says there is no third-party performance data.",
+          "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The ten-year update promise quantifiably reflects Google's roadmap pricing and financial commitment.",
+          "evidence_quote": "The devices will receive regular updates for up to 10 years, Google said.",
+          "exact_line": "RUFUS: Google's financial commitment is, however, real. Ten years of promised updates on a consumer device represents a support liability that costs money regardless of whether the AI succeeds. That's not a claim about quality — it's an observation about how seriously they've priced this product into their roadmap.",
+          "replacement_line": "RUFUS: Google's financial commitment is, however, real. Ten years of promised updates is a meaningful support promise, regardless of whether the AI succeeds.",
+          "reason": "The first sentence is supported, but the claim that this represents a quantified financial liability and 'how seriously they've priced this product into their roadmap' is interpretive speculation not established by the record.",
+          "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+        }
+      ],
+      "warnings": [
+        "The script repeatedly describes Google's launch as a 'Chromebook successor' and 'transition away from ChromeOS' in ways that are broadly consistent with the TechCrunch reporting, but the source is careful to say Googlebook 'could eventually replace Chromebooks' rather than stating that replacement is already definitive.",
+        "The line 'Android OS. Which is a shift from ChromeOS.' is directionally right based on the source records, but the exact product architecture is described more cautiously in TechCrunch and AP; if precision matters, avoid over-certainty about the full OS migration.",
+        "Several assertions about school districts, education buyers, and total cost of ownership are analytical speculation rather than sourced facts. They are allowed as commentary, but they should be recognized as opinion.",
+        "Advisory only; no reviewable factual correction: This sponsor read contains a concrete factual/marketing claim about the sponsor's service value that is not supported by the supplied source records or verified primary evidence. The script asserts a specific decision-grade editorial function for the sponsor without evidence.",
+        "Advisory only; no reviewable factual correction: This line repeats the unsupported sponsor branding/value claim and is not backed by supplied records."
+      ],
+      "verified_source_urls": [
+        "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/",
+        "https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/",
+        "https://apnews.com/article/artificial-intelligence-anthropic-openai-gates-aefb021bede3b02c83890f65cd540fd0",
+        "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
       ]
     }
   ],
-  "replacements_applied": 0,
+  "replacements_applied": 7,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-21",
+    "date": "2026-09-22",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The U.S. proposed an AI incident notification mechanism that could affect national security during weekend talks ahead of Trump-Xi meetings this week.",
-        "evidence_quote": "the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents that could affect national security",
-        "exact_line": "ALEX: Our lead story today is Bessent says the U.S. proposed an AI incident alert system in China talks.",
-        "replacement_line": "ALEX: Our lead story today is Bessent says the U.S. proposed a notification mechanism for AI incidents that could affect national security in China talks.",
-        "reason": "This overstates the reported mechanism. The AP says the U.S. proposed a new 'notification mechanism' for AI incidents that could affect national security; 'incident alert system' is a paraphrase, but the line presents it as the specific reported formulation and misses the national-security qualifier.",
-        "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+        "factual_claim": "Google itself named the widgets 'vibe-coded widgets'.",
+        "evidence_quote": "Google is trying to offer a laptop with unique features like an AI-powered cursor, vibe-coded widgets, and support for AI-enhanced dictation.",
+        "exact_line": "JAMIE: Their words.",
+        "replacement_line": "JAMIE: That’s the phrase TechCrunch used.",
+        "reason": "This line is attached to the claim that Google calls the widgets 'vibe-coded widgets,' but the sourced article describes them as 'vibe-coded widgets' in TechCrunch's language, while Google's own naming in the article is not established by the record. The phrasing overstates attribution certainty.",
+        "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The wording indicates the press release writer's style or identity.",
+        "evidence_quote": "Google is trying to offer a laptop with unique features like an AI-powered cursor, vibe-coded widgets, and support for AI-enhanced dictation.",
+        "exact_line": "RUFUS: Which tells you quite a lot about who wrote the press release.",
+        "replacement_line": "RUFUS: Which tells you quite a lot about the kind of marketing language they’re leaning on.",
+        "reason": "This is a speculative attribution about the press release writer, not a supported factual assertion. It implies insider knowledge not established by the source.",
+        "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Standard Chromebooks typically cost two to three hundred dollars.",
+        "evidence_quote": "Google on Monday said the new device is now available for preorder for $899.",
+        "exact_line": "ALEX: Rufus, what's the competitive framing here? Eight ninety-nine versus a standard Chromebook running what, two, three hundred?",
+        "replacement_line": "ALEX: Rufus, what's the competitive framing here? Eight ninety-nine versus the cheaper Chromebooks buyers usually see?",
+        "reason": "The comparison to a standard Chromebook priced at two to three hundred dollars is an unsupported generalization and may be stale or misleading because no source in the records establishes that price range as a current factual baseline.",
+        "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Rambler's field performance is unproven and the device could reduce replacement-cycle costs for a 1,000-student district.",
+        "evidence_quote": "The limitations_or_qualifiers note says real-world adoption and benchmarked performance are not established in the article.",
+        "exact_line": "JAMIE: If the dictation genuinely works — and Rambler is unproven in the field — then yes, for a school district equipping a thousand students, the total cost of ownership argument gets interesting. You're paying more upfront but potentially avoiding the replacement cycle.",
+        "replacement_line": "JAMIE: If the dictation genuinely works — and we still don’t have third-party performance data — then schools might see value, but that case is still hypothetical.",
+        "reason": "The line makes a concrete school purchasing claim and implies a cost-of-ownership outcome that is not supported by the source record. It also asserts Rambler is 'unproven in the field,' which is a reasonable inference but should be framed more cautiously because the article only says there is no third-party performance data.",
+        "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The ten-year update promise quantifiably reflects Google's roadmap pricing and financial commitment.",
+        "evidence_quote": "The devices will receive regular updates for up to 10 years, Google said.",
+        "exact_line": "RUFUS: Google's financial commitment is, however, real. Ten years of promised updates on a consumer device represents a support liability that costs money regardless of whether the AI succeeds. That's not a claim about quality — it's an observation about how seriously they've priced this product into their roadmap.",
+        "replacement_line": "RUFUS: Google's financial commitment is, however, real. Ten years of promised updates is a meaningful support promise, regardless of whether the AI succeeds.",
+        "reason": "The first sentence is supported, but the claim that this represents a quantified financial liability and 'how seriously they've priced this product into their roadmap' is interpretive speculation not established by the record.",
+        "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/"
       }
     ],
     "warnings": [
-      "The script repeatedly says the Security Council meeting is on 'Wednesday' / 'Wednesday afternoon'; that matches the AP summary, but the episode date is 2026-09-21 so the exact calendar date should be made explicit if you want maximum clarity.",
-      "The Bloomberg AI czar / AI Force claim is supported only by the supplied Bloomberg record and a search result snippet; I could not access the full Bloomberg article directly because of robots restrictions, so the wording should be treated as verified only at the headline/snippet level.",
-      "The lawsuit claims about Anthropic, OpenAI, SpaceXAI, and Google are allegations, not established facts; the script correctly frames them as allegations.",
-      "The script states 'The AP does not establish the claims as true' and 'No court has ruled on the merits,' which is consistent with the supplied record.",
-      "The phrase 'AI getting out of human control' is a paraphrase of AP framing about runaway AI threatening humanity; it is not a verbatim quote from the supplied record."
+      "The script repeatedly describes Google's launch as a 'Chromebook successor' and 'transition away from ChromeOS' in ways that are broadly consistent with the TechCrunch reporting, but the source is careful to say Googlebook 'could eventually replace Chromebooks' rather than stating that replacement is already definitive.",
+      "The line 'Android OS. Which is a shift from ChromeOS.' is directionally right based on the source records, but the exact product architecture is described more cautiously in TechCrunch and AP; if precision matters, avoid over-certainty about the full OS migration.",
+      "Several assertions about school districts, education buyers, and total cost of ownership are analytical speculation rather than sourced facts. They are allowed as commentary, but they should be recognized as opinion.",
+      "Advisory only; no reviewable factual correction: This sponsor read contains a concrete factual/marketing claim about the sponsor's service value that is not supported by the supplied source records or verified primary evidence. The script asserts a specific decision-grade editorial function for the sponsor without evidence.",
+      "Advisory only; no reviewable factual correction: This line repeats the unsupported sponsor branding/value claim and is not backed by supplied records."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd",
-      "https://apnews.com/article/960af4308161eaf4ed13c383b0ce1c1b",
-      "https://apnews.com/article/c4727651b9030d6e7f81c0457a33440b",
-      "https://bloomberg.com/news/articles/2026-09-19/trump-to-name-ai-czar-while-rejecting-safety-risks-as-a-hoax"
+      "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/",
+      "https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/",
+      "https://apnews.com/article/artificial-intelligence-anthropic-openai-gates-aefb021bede3b02c83890f65cd540fd0",
+      "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
     ]
   },
   "pass": false,

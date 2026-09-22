@@ -101,43 +101,109 @@
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "Bessent says the U.S. proposed an AI incident alert system in China talks",
-    "central_fight": "Bessent says the U.S. proposed an AI incident alert system in China talks: what actually changes, who benefits, and what remains uncertain?",
-    "opening_question": "Bessent says the U.S. proposed an AI incident alert system in China talks: what actually changes, who benefits, and what remains uncertain?",
-    "listener_question": "Bessent says the U.S. proposed an AI incident alert system in China talks: what actually changes, who benefits, and what remains uncertain?",
+    "published_title": "Google’s $899 Googlebook: Is Gemini-First Hardware Worth the Premium Price?",
+    "central_fight": "Whether AI utility is defined by the hardware we buy, the platforms that allow it, or the languages it serves.",
+    "opening_question": "If your laptop costs $900 specifically for its AI features, what is the first task it needs to perform perfectly to earn that price?",
+    "listener_question": "Would you pay a $300 premium for a laptop if it guaranteed an AI assistant that could handle your shopping and scheduling?",
     "poll_options": [
-      "Necessary progress",
-      "Too much control",
-      "Too early to tell"
+      "Yes, if it saves me time.",
+      "No, I prefer manual control.",
+      "Only if the AI is local and private.",
+      "I'm waiting for real-world reviews."
     ],
-    "listener_promise": "What changed. Who wins. What you do next.",
+    "listener_promise": "You will understand the trade-offs between AI-integrated hardware, platform-restricted agents, and the push for global language accessibility.",
     "positions": {
-      "alex": "Asks what changed and what the evidence means for the listener.",
-      "jamie": "Tests the strongest claim against concrete human benefits and costs.",
-      "rufus": "Examines incentives and uncertainty; never assumes the outcome is known."
+      "alex": "Focuses on the practical utility of the new hardware and whether it solves real user friction.",
+      "jamie": "Champions the human need for interoperable agents and accessible, inclusive technology.",
+      "rufus": "Analyzes the market incentives and the liability risks inherent in platform-level blocking."
     },
-    "concession": {},
-    "who_wins": "whoever controls distribution, permissions, data, or trust",
-    "who_is_exposed": "the operators, users, doctors, developers, or families who inherit the risk without seeing the handoff",
-    "normal_person_payoff": "AI matters when it touches work, money, health, privacy, family, safety, or trust — not when a press release says so.",
+    "concession": {
+      "host": "alex",
+      "gives_ground_on": "Admits that a 10-year update promise is a significant financial commitment for Google, regardless of the AI's success."
+    },
+    "who_wins": "Platform owners like Amazon who control the 'last mile' of the consumer experience.",
+    "who_is_exposed": "Consumers who rely on AI agents that may be blocked from major retail sites without notice.",
+    "normal_person_payoff": "You'll know to temper your expectations for 'agentic' shopping until platform disputes are resolved.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "human agency, fairness, access, work, family, safety or lived consequences",
-      "rufus_value": "capital allocation, market incentives, global competition, liability and what scales",
-      "point_of_collision": "the specific decision where today's facts make those values disagree"
+      "jamie_value": "Universal access and the convenience of automated personal assistance.",
+      "rufus_value": "The stability of platform ecosystems and the protection of proprietary retail data.",
+      "point_of_collision": "Whether Amazon's block of Meta's Muse is a necessary security measure or an anti-competitive barrier."
     },
     "rufus_global_markets_desk": {
-      "market_or_region": "the market most directly affected by today's sourced events",
-      "companies_or_assets": [],
-      "capital_policy_or_infrastructure_move": "the sourced financial, policy, chip, power, or data-center consequence",
-      "dated_market_receipts": []
+      "market_or_region": "New York",
+      "companies_or_assets": [
+        "Alphabet",
+        "Amazon",
+        "Meta"
+      ],
+      "capital_policy_or_infrastructure_move": "The shift toward hardware-as-a-service models and the fragmentation of the agentic web.",
+      "dated_market_receipts": [
+        "$899 MSRP for Googlebook, 2026-09-21"
+      ]
     },
     "mandatory_receipts": [
-      "Use the lead story's concrete numbers and named institutions",
-      "Use at least six specific figures, dates, or named bodies across the episode",
-      "Explain why each number changes someone's incentives"
+      "Googlebook is available for preorder at $899.",
+      "Amazon blocked Meta's Muse from shopping on its site.",
+      "Gates Foundation coalition includes Anthropic and Google."
     ],
-    "forwardable_targets": [],
-    "story_scenes": [],
-    "_episode_date": "2026-09-21"
+    "forwardable_targets": [
+      "If your AI assistant can't shop where you shop, it's just a search engine with a better PR team.",
+      "A 10-year update promise is a long time to bet on a cursor."
+    ],
+    "story_scenes": [
+      {
+        "story_index": 1,
+        "source_url": "https://techcrunch.com/2026/09/21/googles-899-googlebook-is-a-bet-that-youll-buy-a-new-laptop-for-gemini/",
+        "new_development": "Google has officially opened preorders for the $899 Googlebook, featuring Gemini-integrated tools like 'Rambler' dictation.",
+        "why_today": "The device has moved from a concept to a commercial product with a specific price point.",
+        "question": "Is an AI-native operating system worth a premium price over standard hardware?",
+        "competing_readings": [
+          "A necessary evolution for productivity-focused users.",
+          "An expensive attempt to lock users into a specific AI ecosystem."
+        ],
+        "receipt": "The device includes an AI-powered cursor and 10 years of promised software updates.",
+        "unknown": "Real-world performance benchmarks remain unverified by independent testers.",
+        "listener_payoff": "You can now decide if the Gemini feature set justifies the cost compared to existing Chromebooks.",
+        "exchange_premise": "Rufus notes the 10-year update promise is a long time to bet on a single AI cursor; Jamie counters that if it fixes dictation, it's a bargain."
+      },
+      {
+        "story_index": 2,
+        "source_url": "https://techcrunch.com/2026/09/21/metas-ai-agent-has-been-blocked-from-using-amazon-com/",
+        "new_development": "Amazon has blocked Meta’s Muse assistant from executing shopping tasks on its platform.",
+        "why_today": "It marks a direct conflict between major tech platforms over the control of agentic commerce.",
+        "question": "Who owns the right to interact with a retail site: the user or the AI agent?",
+        "competing_readings": [
+          "Amazon is protecting its platform integrity and user data.",
+          "Amazon is stifling innovation to maintain its retail monopoly."
+        ],
+        "receipt": "Users received error messages citing violation of conditions of use.",
+        "unknown": "Whether this is a permanent ban or a temporary technical dispute.",
+        "listener_payoff": "Understand that your AI assistant's ability to shop for you is currently at the mercy of platform-level agreements.",
+        "exchange_premise": "Alex asks if this is a 'walled garden' issue; Jamie points out that if the AI can't shop where you shop, it's just a glorified search engine."
+      },
+      {
+        "story_index": 3,
+        "source_url": "https://apnews.com/article/aefb021bede3b02c83890f65cd540fd0",
+        "new_development": "The Gates Foundation launched a coalition with major AI firms to expand language accessibility.",
+        "why_today": "It shifts the focus from frontier model competition to infrastructure for underrepresented languages.",
+        "question": "Can private-sector coalitions effectively solve the digital language gap?",
+        "competing_readings": [
+          "A vital step toward global AI equity.",
+          "A philanthropic effort that lacks the scale to change market incentives."
+        ],
+        "receipt": "The coalition includes Anthropic, Google, and the OpenAI Foundation.",
+        "unknown": "The specific budget and deployment timeline for these language tools.",
+        "listener_payoff": "Watch for whether these datasets become open-source or remain proprietary to the coalition members.",
+        "exchange_premise": "Rufus observes that 'representative data' is often code for 'training material,' while Jamie argues that even imperfect access is better than current exclusion."
+      }
+    ],
+    "title_candidates": [
+      "Google’s $899 Googlebook: Is Gemini-First Hardware Worth the Premium Price?",
+      "Amazon Blocks Meta’s Muse: The New Battle for Your Shopping Data",
+      "Can AI Language Coalitions Actually Bridge the Global Digital Divide?"
+    ],
+    "episode_hook": "Google just opened preorders for an $899 AI-centric laptop, while Amazon is actively blocking Meta’s shopping assistant. We’ll break down what these moves mean for your wallet and your digital autonomy.",
+    "planning_status": "model_plan",
+    "_episode_date": "2026-09-22"
   }
 }
