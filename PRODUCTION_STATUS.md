@@ -1,3 +1,14 @@
+## September 23 — benchmark audit and listening-page packaging
+
+- Verified September 22 recovery run 35759175542 and Pages run 35761238403 succeeded. Public RSS contains September 22 episode (1,211 seconds), transcript and chapters. Main at inspection: 90fe9f1aab43c9e322217f56f93bb2a1ef9ec71d. Earlier pending-recovery entry below is historical.
+- Replace the immediate Spotify redirect with an accessible listening page: live RSS episode/player, recent episodes, transcript link, substantial About/cast copy, AI-voice disclosure, Spotify/RSS routes, share control and visible Ledger sponsor destination.
+- Add canonical and social preview metadata; reuse existing cast artwork. No paid audio regenerated and no main-voice changes.
+- Validation: HTML/feed parsing, JavaScript syntax and expected listening/sponsor routes checked. Browser rendering and actual playback were not checked at this commit; Pages deployment verification follows.
+- Comparison uses AI Daily Brief for daily utility, the September 18 Hard Fork cast for ensemble writing, Planet Money for narrative craft and Morning Brew Daily for packaging. No rival audio listened to, no entertainment score or growth guarantee.
+- Observed remaining defects: explanation after apparent story endings, repeated closing CTAs/questions, descriptions listing unused research, and late autonomous delivery. These are findings, not fixes in this release. Private platform analytics and Spotify availability remain unverified.
+
+---
+
 ## September 22 — failed production diagnosis and recovery repair
 
 Run 35723240924 failed before TTS. Saved script: 3,177 words against 3,300 minimum; cast introduction lacked the required welcome phrase; model midroll duplicated the spoken sponsor URL. The deterministic structure repair was a no-op and midroll normalization removed only known house variants, leaving the model-written ad.
