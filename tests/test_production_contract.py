@@ -279,10 +279,10 @@ class ProductionContractTests(unittest.TestCase):
             self.assertEqual(report["clip"]["seconds"], 30)
             self.assertTrue((output / report["clip"]["audio"]).exists())
             self.assertTrue((output / report["clip"]["video"]).exists(), report)
-            self.assertEqual(report["trailer"]["status"], "ready_for_review_and_pinning")
+            self.assertEqual(report["trailer"]["status"], "candidate_requires_listening_not_published")
             self.assertTrue(60 <= report["trailer"]["seconds"] <= 90)
             second = assets.export_promo_assets(master, {"rows": rows}, "2026-09-04", output / "missing-cover.png")
-            self.assertEqual(second["trailer"]["status"], "existing_trailer_preserved")
+            self.assertEqual(second["trailer"]["status"], "existing_candidate_preserved")
 
     def test_jamie_has_varied_native_laughs_without_extra_render_calls(self):
         for text, tag in (("Hah! Wait, you just priced your own objection.", "laugh"), ("Hah. That is a lovely invoice, Rufus.", "chuckle"), ("Heh. Okay, that one was good.", "giggle")):

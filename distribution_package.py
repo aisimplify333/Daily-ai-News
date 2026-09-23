@@ -53,11 +53,25 @@ def package(root=Path('.')):
         block = block[:dm.start(1)] + html.escape(desc, quote=False) + block[dm.end(1):]
         # Keep an existing content:encoded description in sync when present.
         block = re.sub(r'(<content:encoded>).*?(</content:encoded>)', lambda m:m[1]+html.escape(desc,quote=False)+m[2],block,flags=re.S)
+        art = {}
+        if not packages:
+            try:
+                from discovery_art import create_art
+                art = create_art(title, date, root)
+            except (ImportError, OSError) as exc:
+                art = {'status': 'not_generated', 'reason': type(exc).__name__}
+        art_file = root/'episode_art'/f'{date}-cover.png'
+        if art_file.exists() and 'xmlns:itunes=' in source:
+            tag = f'<itunes:image href="{SITE}/episode_art/{date}-cover.png" />'
+            if re.search(r'<itunes:image\b[^>]*/>', block):
+                block = re.sub(r'<itunes:image\b[^>]*/>', tag, block)
+            else:
+                block = block.replace('</item>', tag+'</item>')
         target = root/'distribution'/date
         target.mkdir(parents=True, exist_ok=True)
         question = re.search(r'Listener question:\s*([^\n]+)', desc)
         payload = {'date':date, 'title':title, 'description':desc, 'episode_url':f'{SITE}/episodes/{date}/',
-            'chapters':chapters, 'community_prompt':question[1] if question else None,
+            'artwork':art, 'chapters':chapters, 'community_prompt':question[1] if question else None,
             'share_copy':f'{title}\nAlex, Jamie and Rufus unpack what changed, who wins and what you do next.\n{SITE}/episodes/{date}/?utm_source=share&utm_medium=episode',
             'clip_file':f'episode_audio/clip_{date}.mp4' if (root/'episode_audio'/f'clip_{date}.mp4').exists() else None,
             'spotify_native_status':{'clip_upload':'unverified','pinned_question':'unverified','best_place_to_start':'unverified'},

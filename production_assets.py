@@ -104,7 +104,7 @@ def trailer_ranges(timeline: dict[str, Any], clip: dict[str, Any]) -> list[tuple
     if not all((speech, intro, welcome, promise, follow, outro)):
         return []
     welcome_index = speech.index(welcome)
-    introductions = speech[welcome_index:welcome_index + 3]
+    introductions = [row for row in speech[welcome_index:welcome_index + 3] if not re.search(r"sponsor|brought to you|the ledger", row["text"], re.I)]
     intro_text = " ".join(row["text"] for row in introductions).lower()
     if not all(name in intro_text for name in ("alex", "jamie", "rufus")):
         return []
@@ -147,7 +147,10 @@ def export_promo_assets(master_path: Path, timeline: dict[str, Any], date: str, 
 
     trailer_path = output_dir / "show_trailer.mp3"
     if trailer_path.exists():
-        report["trailer"] = {"status": "existing_trailer_preserved", "audio": trailer_path.name}
+        report["existing_trailer"] = {"status": "preserved", "audio": trailer_path.name}
+    trailer_path = output_dir / f"show_trailer_candidate_{date}.mp3"
+    if trailer_path.exists():
+        report["trailer"] = {"status": "existing_candidate_preserved", "audio": trailer_path.name}
     else:
         ranges = trailer_ranges(timeline, clip)
         if ranges:
@@ -155,7 +158,7 @@ def export_promo_assets(master_path: Path, timeline: dict[str, Any], date: str, 
             for start, end in ranges:
                 trailer += master[round(start * 1000):round(end * 1000)].fade_in(35).fade_out(65)
             trailer.export(trailer_path, format="mp3", bitrate="192k").close()
-            report["trailer"] = {"status": "ready_for_review_and_pinning", "audio": trailer_path.name, "seconds": round(len(trailer) / 1000, 3), "source_ranges": ranges}
+            report["trailer"] = {"status": "candidate_requires_listening_not_published", "audio": trailer_path.name, "seconds": round(len(trailer) / 1000, 3), "source_ranges": ranges}
         else:
             report["warnings"].append("Trailer beats do not fit 60–90 seconds cleanly; prepared trailer script remains available.")
     return report

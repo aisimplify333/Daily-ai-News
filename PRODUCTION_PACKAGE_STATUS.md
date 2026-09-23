@@ -17,8 +17,8 @@ Sources reviewed: the supplied 43-page Spotify for Creators Optimization Playboo
 | SEO | Source-based titles, unique episode copy, host names, indexable episode pages and sitemap | Search impressions and click-through |
 | Chapters | Measured timestamps included in RSS description, synchronized sidecar and episode page | Spotify rendering after ingestion |
 | Discovery clip | Existing master excerpts with captions; selection rejects context-dependent starts and ads | Clip listening, native upload and conversion |
-| Trailer | Existing trailer preserved | Replacement evergreen trailer and listening remain unfinished; existence is not approval |
-| Artwork | Existing show artwork used consistently | Episode-specific artwork and video thumbnails remain unfinished |
+| Trailer | Existing trailer preserved; new dated candidate assembled from existing cast, music and follow beats when 60–90s fit | Listening and selecting/publishing the candidate; an episode sample is not an evergreen replacement |
+| Artwork | Original title-based square art and 16:9 thumbnail generated without paid models, with episode image in RSS | Render verification and Spotify refresh |
 | Community | Real episode question and copy exported each day | Native pinning, replies and poll publication not performed |
 | Distribution | Daily package generated from published assets, with share copy and explicit native status | Actual social/newsletter sends need explicit messaging authorization |
 | Spotify customization | Native status explicitly unknown in package | Best-place-to-start and host recommendations require Creator controls; RSS cannot configure these |
