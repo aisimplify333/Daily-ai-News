@@ -2256,7 +2256,7 @@ def _expand_segment_four(
         # dialogue. The normalizer later reasserts the rotating house midroll.
         section_start = list(re.finditer(rf"^###\s*SEGMENT\s*{segment}\b", script, re.I | re.M))
         if section_start:
-            ad = re.search(r"^(?:ALEX|JAMIE|RUFUS):.*(?:sponsor break|paid partner|brought to you by)",
+            ad = re.search(r"^(?:ALEX|JAMIE|RUFUS):.*(?:sponsor break|word from our sponsor|paid partner|brought to you by)",
                            script[section_start[-1].end():insertion], re.I | re.M)
             if ad:
                 insertion = section_start[-1].end() + ad.start()
@@ -2265,7 +2265,7 @@ def _expand_segment_four(
             tail_start = section_start[-1].end()
             payoff = re.search(
                 r"^(?:ALEX|JAMIE|RUFUS):\s*(?:So (?:the takeaway|that.s the takeaway)|That.s the practical payoff|"
-                r"What do listeners watch|The takeaway|Quick break|After the break|"
+                r"What do listeners watch|The takeaway|The practical watch|Here.s what to watch|Quick break|After the break|"
                 r"Let.s (?:move|turn)|One quick continuity note)\b",
                 script[tail_start:insertion], re.I | re.M)
             if payoff:
@@ -2814,7 +2814,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                     model=editor_model, max_tokens=8000),
                 normalize=stabilize,
                 assess=lambda candidate: _assess(candidate, stories, board, fuel),
-                runtime_distance=_runtime_distance, snapshot_dir=Path("."),
+                runtime_distance=_runtime_distance, snapshot_dir=Path("."), allow_runtime_repair=True,
             )
             editor_report["model"] = editor_model
             try:

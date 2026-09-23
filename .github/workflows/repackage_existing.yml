@@ -1,0 +1,54 @@
+name: Repackage published audio without paid generation
+on:
+  push:
+    branches: [main]
+    paths: ['PACKAGING_RUN_ONCE']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: daily-podcast-socials
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - run: |
+          python -m pip install pydub
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+      - name: Rebuild discovery assets from existing master only
+        run: |
+          python - <<'PY'
+          import json
+          import hashlib
+          from pathlib import Path
+          from production_assets import export_promo_assets
+          from distribution_package import package
+          from episode_pages import build
+          date = Path('PACKAGING_RUN_ONCE').read_text().strip()
+          import datetime
+          datetime.date.fromisoformat(date)
+          master = Path(f'episode_audio/podcast_{date}.mp3')
+          before = hashlib.sha256(master.read_bytes()).hexdigest()
+          timeline = json.loads(Path(f'episode_audio/podcast_{date}.timeline.json').read_text())
+          result = export_promo_assets(master, timeline, date, Path('assets/cover_trio_master.png'))
+          Path('promo_assets_report.json').write_text(json.dumps(result, indent=2)+'\n')
+          package()
+          build()
+          assert hashlib.sha256(master.read_bytes()).hexdigest() == before
+          print('Paid master unchanged:', before)
+          PY
+      - name: Publish packaging
+        run: |
+          git config user.name 'AI Edge production'
+          git config user.email 'production@users.noreply.github.com'
+          git add feed.xml distribution episodes sitemap.xml promo_assets_report.json episode_audio/clip_* episode_audio/podcast_*.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Refresh discovery assets from preserved paid episode'
+            git push origin main
+          fi

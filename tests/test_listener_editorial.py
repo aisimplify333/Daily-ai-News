@@ -33,6 +33,7 @@ class ListenerEditorialTests(unittest.TestCase):
 
     def test_existing_expansion_targets_matching_source_and_preserves_sponsor_boundary(self):
         script = writer._normalize_midroll(episode((500, 30, 600)), '2026-09-15')
+        script = script.replace('JAMIE: A short sponsor break', 'JAMIE: Before the math story, a word from our sponsor.\nJAMIE: A short sponsor break')
         stories = [{'headline': 'SOURCE_ONE'}, {'headline': 'SOURCE_TWO'}, {'headline': 'SOURCE_THREE'}]
         addon = 'RUFUS: An additional observation grounded in the second story changes this interpretation.'
         with patch.object(writer, '_anthropic_text', return_value=addon) as call:
@@ -42,6 +43,7 @@ class ListenerEditorialTests(unittest.TestCase):
         self.assertIn('SOURCE_TWO', source)
         self.assertNotIn('SOURCE_ONE', source)
         self.assertNotIn('SOURCE_THREE', source)
+        self.assertLess(result.index(addon), result.index('Before the math story'))
         self.assertLess(result.index(addon), result.index('A short sponsor break'))
         self.assertEqual(result.count('A short sponsor break'), 1)
         self.assertLess(result.index('### SEGMENT 3'), result.index(addon))

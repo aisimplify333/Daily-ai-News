@@ -52,6 +52,11 @@ def choose_clip(timeline: dict[str, Any]) -> dict[str, Any] | None:
             window = turns[start:start + count]
             if len(window) != count or len({row["segment"] for row in window}) != 1:
                 continue
+            # Do not start a share asset with a context-dependent rebuttal.
+            if re.match(r"^(?:those|that|it|yes|no|which|but|and|precisely)\b", window[0]["text"].strip(), re.I):
+                continue
+            if any(re.search(r"sponsor|the ledger|theledgr", row["text"], re.I) for row in window):
+                continue
             seconds = window[-1]["end"] - window[0]["start"]
             if not 20 <= seconds <= 45:
                 continue

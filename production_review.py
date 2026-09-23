@@ -47,5 +47,8 @@ def write_review(stories, timeline, directory="."):
                   for m in sorted({str(c.get("mood", "unknown")) for c in jamie})},
         "listened": False,
     }
+    emotional = {"delight", "warmth", "curiosity", "disbelief"}
+    if jamie and not any(c.get("mood") in emotional for c in jamie):
+        report["issues"].append("No Jamie emotional-direction modes requested; inspect script and routing before claiming the upgrade worked.")
     (root / "listener_review_report.json").write_text(json.dumps(report, indent=2) + "\n")
     return report

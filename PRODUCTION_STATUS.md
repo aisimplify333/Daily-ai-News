@@ -1,3 +1,12 @@
+# September 23 — performance and distribution repair
+
+- 102 offline tests passed. Small dialogue contractions (up to 5%) on already-short drafts can proceed to existing runtime repair; structural and numeric checks remain.
+- Jamie direction recognizes natural reactions inside turns and directs a short matching sentence, preserving qualifiers. Advisory review flags zero emotional modes.
+- Expansion precedes sponsor announcements and known payoffs. Clip candidates reject context-dependent openings and sponsor copy.
+- Daily measured chapters now enter RSS descriptions, sidecar metadata, public episode pages and distribution packages. September 23 packaging repaired without master regeneration.
+- Packaging-only workflow refreshes existing clips; no model/TTS credentials and paid-master checksum asserted unchanged.
+- See PRODUCTION_PACKAGE_STATUS.md for full evidence ledger and unfinished trailer, artwork, native Spotify, timing, analytics and listening items. Do not call the entire package complete.
+
 # September 23 — cast relationship, public identity and episode discovery
 
 - Canonical show description now introduces Alex, Jamie and Rufus as an ensemble, with warmth, useful discoveries and three distinct stories. Shared across writer, runner, RSS and feed repair so legacy defaults cannot restore the old pitch.
