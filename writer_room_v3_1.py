@@ -1569,13 +1569,14 @@ def _ensure_connection_elements(
         if match:
             speaker, spoken = match.group(1).upper(), match.group(2)
             if in_closing and re.search(
-                r"listener question|question for you|Spotify poll|your options|"
-                r"follow\s+The AI Edge|we.ll have your answers", spoken, re.I
+                r"listener question|question for (?:you|listeners)|Spotify poll|your options|"
+                r"follow (?:\s*The AI Edge|us wherever)|we.ll have your answers|"
+                r"^(?:Thanks for listening|See you tomorrow|Until then)[.! ,]", spoken, re.I
             ):
                 skip_speaker = speaker
                 continue
-            if skip_speaker == speaker:
-                continue
+            # Every labelled line is a complete turn; never swallow a later
+            # substantive turn merely because the same host spoke the CTA.
             skip_speaker = None
         cleaned.append(line)
     lines = cleaned
@@ -2189,7 +2190,7 @@ Chemistry:
 - Jamie is an opinionated equal; give her a sharp human-stakes challenge and one earned,
   understated sarcastic beat. She may win.
 - Rufus follows money, incentives, permission, or liability with one dry undercut.
-- Include two genuine challenges and one moment of connection. No stage directions.
+- Let replies follow the evidence: curiosity, agreement, challenge or delight. No required argument or joke quota. No stage directions.
 - Turns are 8-38 words, absolute maximum 55.
 
 FACT FIREWALL:
@@ -2266,6 +2267,16 @@ def _expand_segment_four(
                            script[section_start[-1].end():insertion], re.I | re.M)
             if ad:
                 insertion = section_start[-1].end() + ad.start()
+        # Add new evidence before the existing payoff/navigation, not after goodbye.
+        if section_start:
+            tail_start = section_start[-1].end()
+            payoff = re.search(
+                r"^(?:ALEX|JAMIE|RUFUS):\s*(?:So (?:the takeaway|that.s the takeaway)|That.s the practical payoff|"
+                r"What do listeners watch|The takeaway|Quick break|After the break|"
+                r"Let.s (?:move|turn)|One quick continuity note)\b",
+                script[tail_start:insertion], re.I | re.M)
+            if payoff:
+                insertion = tail_start + payoff.start()
         candidate = (
             script[:insertion].rstrip() + "\n" + addon + "\n\n"
             + script[insertion:].lstrip()
@@ -2574,7 +2585,7 @@ def _marketing_pack(stories: List[Dict[str, Any]], date_str: str, listen_url: st
     title = SIGNAL_ROOM_RE.sub(SHOW_TITLE, str(board.get("published_title") or _hard_title(stories)))
     if title.lower().startswith("today") or "lesson" in title.lower():
         title = _hard_title(stories)
-    bullets = "\n".join(f"• {_headline(s)}" for s in stories[:5] if _headline(s))
+    bullets = "\n".join(f"• {_headline(s)}" for s in stories[:3] if _headline(s))
     listen = tracking.get("listen", listen_url)
     subscribe = "https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge"
     hook = str(board.get("episode_hook") or "").strip()

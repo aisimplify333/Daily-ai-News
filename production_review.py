@@ -37,5 +37,15 @@ def write_review(stories, timeline, directory="."):
             return {}
     report = review_episode(stories, timeline, read("audio_engineering_report.json"),
                             read("dialogue_editor_report.json"), read("storyboard_report.json"))
+    # Actual provider-call metadata, never an inferred entertainment score.
+    calls = read("hybrid_tts_report.json").get("calls") or []
+    jamie = [c for c in calls if c.get("speaker") == "JAMIE"]
+    report["jamie_performance"] = {
+        "basis": "recorded provider calls; requested delivery is not verified emotion",
+        "calls": len(jamie),
+        "moods": {m: sum(c.get("mood") == m for c in jamie)
+                  for m in sorted({str(c.get("mood", "unknown")) for c in jamie})},
+        "listened": False,
+    }
     (root / "listener_review_report.json").write_text(json.dumps(report, indent=2) + "\n")
     return report

@@ -1,3 +1,15 @@
+## September 23 — Jamie emotional direction and permanent editorial repairs
+
+- Jamie remains Grok Ursa, with existing fallback policy. Conservative personal-reaction cues route delight, warmth, disbelief and curiosity into supported speech-only wrapping controls, limited to one short sentence. Sponsor reads remain dry. JAMIE_EMOTIONAL_DIRECTION=false disables new controls. Cast writing now asks for evidence-earned emotional movement, not constant indignation.
+- Preserve provider expressions in telemetry and report Jamie's requested mood distribution without claiming measured emotional quality.
+- Closing cleanup recognizes more listener-question/follow/farewell variants and no longer drops subsequent substantive turns by the same host. Expansions go before recognized story payoff/navigation rather than after it. Remove the expansion prompt's compulsory challenge quota.
+- Main show notes and writer packaging list three primary stories instead of five research candidates. Correct stale one-lead-story descriptions in all three default/sanitizer paths; remove doubled title punctuation.
+- 98 offline tests passed before publication, including mocked actual Grok payload/voice checks, rollback/sponsor protection and closing idempotence. Final code review included comparison to current main. Actual performance still requires listening.
+- A bounded audition workflow renders four matched baseline/directed Ursa pairs; no full episode regeneration or public audio publishing. Triggered only by its run-once marker or explicit workflow dispatch. Audition result pending at this commit.
+- Previous listening-page Pages run 35807684841 succeeded. September 22 Spotify listing was observed. Full growth implementation, authenticated analytics, scheduling reliability and a listened verdict remain outstanding; this entry does not claim full completion or 10/10 quality.
+
+---
+
 ## September 23 — benchmark audit and listening-page packaging
 
 - Verified September 22 recovery run 35759175542 and Pages run 35761238403 succeeded. Public RSS contains September 22 episode (1,211 seconds), transcript and chapters. Main at inspection: 90fe9f1aab43c9e322217f56f93bb2a1ef9ec71d. Earlier pending-recovery entry below is historical.

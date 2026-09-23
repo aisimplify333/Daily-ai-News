@@ -59,8 +59,8 @@ RSS_SETTINGS: Dict[str, str] = {
     "description": (
         "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
         "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
-        "Each episode debates one lead story from the last 24–48 hours, using the other top "
-        "AI events as evidence, complications, or counterarguments. Follow The AI Edge for "
+        "Each episode explores three distinct AI stories from the last 24–48 hours, with "
+        "clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for "
         "new episodes Monday through Friday. What changed. Who wins. What you do next."
     ),
     "author": "AI Simplify Media",
@@ -4720,13 +4720,13 @@ def build_episode_show_notes(
     stories: List[Dict[str, str]],
 ) -> str:
     cta_url = PUBLIC_SUBSCRIBE_URL
-    story_bullets = "\n".join([f"• {_story_display_headline(s)}" for s in stories[:5]])
+    story_bullets = "\n".join([f"• {_story_display_headline(s)}" for s in stories[:3]])
     tomorrow_tease = (pack.get("tomorrow_tease") or "Tomorrow's winners will be the operators who saw the second-order consequence first.").strip()
     tomorrow_tease = re.sub(r"^Tomorrow(?:\s+tension)?\s*:\s*", "", tomorrow_tease, flags=re.IGNORECASE)
     episode_blurb = (pack.get("episode_blurb") or "Alex, Jamie, and Rufus break down what matters, what changes tomorrow, where the real stakes are, and the lines you will want to send to somebody else.").strip()
     hook = (pack.get("show_notes_hook") or episode_blurb).strip()
     public_title = (pack.get("spotify_title") or pack.get("title") or pack.get("yt_title") or "").strip()
-    discovery_open = f"{public_title}. {hook}" if public_title and public_title.lower() not in hook.lower() else hook
+    discovery_open = f"{public_title.rstrip(chr(46) + chr(33) + chr(63))}. {hook}" if public_title and public_title.lower() not in hook.lower() else hook
     listener_question = (pack.get("listener_question") or "Which part of today's AI story changes your next decision?").strip()
     parts = [
         discovery_open,

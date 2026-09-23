@@ -170,6 +170,7 @@ DRY_RE = re.compile(
 )
 
 MOODS = (
+    "delight", "warmth", "disbelief", "curiosity",
     "interruption", "concession", "pushback", "amused", "concern",
     "explainer", "pressure", "dry_wit", "neutral",
 )
@@ -184,6 +185,11 @@ def infer_mood(text: str, speaker: str) -> str:
     spk = (speaker or "").strip().upper()
     if not body:
         return "neutral"
+    if spk == "JAMIE":
+        from jamie_performance import emotional_intent
+        intent = emotional_intent(body)
+        if intent:
+            return intent
     # An explicit written laugh survives a following "wait"/challenge. Without
     # this, Jamie's best funny pushbacks were all flattened into one sharp mood.
     if spk == "JAMIE" and re.match(r"^(?:ha|hah|heh)[.!]", body, re.I):

@@ -49,8 +49,8 @@ def _set_default_env() -> None:
         "PODCAST_SHOW_DESCRIPTION",
         "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
         "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
-        "Each episode debates one lead story from the last 24–48 hours, using the other top "
-        "AI events as evidence, complications, or counterarguments. Follow The AI Edge for "
+        "Each episode explores three distinct AI stories from the last 24–48 hours, with "
+        "clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for "
         "new episodes Monday through Friday. What changed. Who wins. What you do next.",
     )
 

@@ -16,6 +16,13 @@ PERFORMANCE AND DIALOGUE EDIT:
 - Jamie catches the implication, challenges an exact point, or affectionately turns
   Rufus's image back on him. Do not answer every joke with another joke or a compulsory
   laugh. A sincere agreement can be the surprise. Give her joy as well as indignation.
+- Jamie has emotional range, not a permanent prosecutorial voice. Let a useful
+  discovery genuinely delight her; let uncertainty sound curious, a human consequence
+  become quieter and sincere, and a colleague's observation provoke playful disbelief.
+  Write the specific reason for her feeling into the reply. Move between these states
+  as evidence and relationships change, never on a rotation or emotion quota. Short
+  reactions can lead into substantive facts. Avoid shouting, constant outrage, breathy
+  melodrama and compulsory laughter. Do not put delivery labels into spoken dialogue.
 - Alex asks short, consequential questions and follows the answer. He can finish a
   colleague's thought or make a small joke, then restore focus without summarising
   what everyone just heard. Give the other hosts ownership of substantial facts.
@@ -60,7 +67,7 @@ def boundary_pause(text, speaker, next_text="", next_speaker="", mood="neutral",
     # short-observation space, not a claim that a joke was detected.
     if speaker == "RUFUS" and mood == "dry_wit" and len(body.split()) <= 18:
         return {"milliseconds": 210, "reason": "short_rufus_observation"}
-    if mood in {"concern", "concession"}:
+    if mood in {"concern", "concession", "warmth"}:
         return {"milliseconds": 180, "reason": "reflective_response"}
     if len(reply.split()) <= 9:
         return {"milliseconds": 65, "reason": "short_reply"}

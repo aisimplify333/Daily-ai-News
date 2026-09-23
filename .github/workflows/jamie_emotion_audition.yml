@@ -1,0 +1,37 @@
+name: Jamie emotional range audition
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['auditions/JAMIE_EMOTION_RUN_ONCE']
+permissions:
+  contents: read
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /auditions/jamie_emotion.py
+            /grok_tts_v4.py
+            /hybrid_tts_router_v3_1.py
+            /jamie_performance.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests pydub
+      - name: Render four matched pairs with Ursa
+        env:
+          XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
+          GROK_TTS_MAX_RETRIES: '1'
+          GROK_TTS_VOICE_JAMIE: ursa
+        run: python auditions/jamie_emotion.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jamie-emotional-range
+          path: jamie_emotion_audition/

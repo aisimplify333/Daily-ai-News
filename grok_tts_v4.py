@@ -18,6 +18,7 @@ from pathlib import Path
 from typing import Any, Dict, Optional
 
 import requests
+from jamie_performance import direct_delivery
 
 BASE_DIR = Path(__file__).parent
 CACHE_DIR = BASE_DIR / ".tts_cache" / "grok"
@@ -71,7 +72,7 @@ def _expressive_text(text: str, mood: str) -> str:
     # Never invent spoken fillers. The writer owns every interruption and reply.
     if mood == "concession":
         return f"[pause] {clean}"
-    return clean
+    return direct_delivery(clean, mood)
 
 
 def _cache_key(text: str, voice: str, mood: str) -> str:
@@ -167,7 +168,7 @@ def render_jamie(
                 "bytes": out_path.stat().st_size,
                 "estimated_cost_usd": 0.0,
                 "mood": mood,
-                "expressions": re.findall(r"\[(laugh|chuckle|giggle|breath)\]", expressive),
+                "expressions": [a or b for a, b in re.findall(r"\[([a-z-]+)\]|<([a-z-]+)>", expressive)],
             }
 
         for attempt in range(1, retries + 1):
@@ -186,7 +187,7 @@ def render_jamie(
                         len(expressive) * COST_PER_MILLION_CHARS / 1_000_000, 6
                     ),
                     "mood": mood,
-                    "expressions": re.findall(r"\[(laugh|chuckle|giggle|breath)\]", expressive),
+                    "expressions": [a or b for a, b in re.findall(r"\[([a-z-]+)\]|<([a-z-]+)>", expressive)],
                     "attempt": attempt,
                 }
             except Exception as exc:
