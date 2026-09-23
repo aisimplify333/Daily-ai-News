@@ -1,9 +1,45 @@
 {
-  "passed": false,
-  "segment": null,
-  "estimated_seconds": 0.0,
-  "word_count": 0,
-  "speakers": [],
-  "turns": [],
+  "passed": true,
+  "segment": 2,
+  "estimated_seconds": 44.3,
+  "word_count": 107,
+  "speakers": [
+    "ALEX",
+    "JAMIE",
+    "RUFUS"
+  ],
+  "score": 6,
+  "turns": [
+    {
+      "segment": 2,
+      "block": 5,
+      "speaker": "JAMIE",
+      "text": "The benchmark they cited is striking. In a finance-workflow task, Opus 5.5 scored 86.6 percent versus 60.3 percent for the prior generation. That's not a rounding error."
+    },
+    {
+      "segment": 2,
+      "block": 5,
+      "speaker": "RUFUS",
+      "text": "Those are Anthropic's numbers. On Anthropic's benchmark."
+    },
+    {
+      "segment": 2,
+      "block": 5,
+      "speaker": "JAMIE",
+      "text": "Yes. But even discounting for that, sixty to eighty-six is a gap that would take a very flattering methodology to explain away entirely."
+    },
+    {
+      "segment": 2,
+      "block": 5,
+      "speaker": "ALEX",
+      "text": "What else changed besides the price?"
+    },
+    {
+      "segment": 2,
+      "block": 5,
+      "speaker": "JAMIE",
+      "text": "Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — that applies to API accounts created on or after August thirty-first. Which means competitors can't as easily train on Opus 5.5's reasoning traces."
+    }
+  ],
   "test": "Would this exact exchange make sense and feel worth sending without the full episode?"
 }

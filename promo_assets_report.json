@@ -1,8 +1,79 @@
 {
-  "date": "2026-09-22",
+  "date": "2026-09-23",
   "new_tts_calls": 0,
-  "warnings": [
-    "No self-contained measured 20–45 second candidate; producer review needed."
-  ],
-  "publication": "assets_only_not_uploaded_to_spotify"
+  "warnings": [],
+  "publication": "assets_only_not_uploaded_to_spotify",
+  "clip": {
+    "start": 109.416,
+    "end": 142.065,
+    "seconds": 32.649,
+    "score": 6,
+    "turns": [
+      {
+        "kind": "speech",
+        "segment": 2,
+        "speaker": "RUFUS",
+        "text": "Those are Anthropic's numbers. On Anthropic's benchmark.",
+        "performance_mood": "dry_wit",
+        "tempo_factor": 0.985,
+        "speed": 0.97515,
+        "level_delta_db": -0.15,
+        "pause_requested_ms": 210,
+        "pause_reason": "short_rufus_observation",
+        "start": 109.416,
+        "end": 112.974
+      },
+      {
+        "kind": "speech",
+        "segment": 2,
+        "speaker": "JAMIE",
+        "text": "Yes. But even discounting for that, sixty to eighty-six is a gap that would take a very flattering methodology to explain away entirely.",
+        "performance_mood": "neutral",
+        "tempo_factor": 1.0,
+        "speed": 1.05,
+        "level_delta_db": 0.0,
+        "pause_requested_ms": 65,
+        "pause_reason": "short_reply",
+        "start": 113.187,
+        "end": 121.573
+      },
+      {
+        "kind": "speech",
+        "segment": 2,
+        "speaker": "ALEX",
+        "text": "What else changed besides the price?",
+        "performance_mood": "pressure",
+        "tempo_factor": 1.025,
+        "speed": 1.03525,
+        "level_delta_db": 0.2,
+        "pause_requested_ms": 85,
+        "pause_reason": "question_to_answer",
+        "start": 121.638,
+        "end": 123.409
+      },
+      {
+        "kind": "speech",
+        "segment": 2,
+        "speaker": "JAMIE",
+        "text": "Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — that applies to API accounts created on or after August thirty-first. Which means competitors can't as easily train on Opus 5.5's reasoning traces.",
+        "performance_mood": "explainer",
+        "tempo_factor": 1.0,
+        "speed": 1.05,
+        "level_delta_db": 0.0,
+        "pause_requested_ms": 110,
+        "pause_reason": "conversational_handoff",
+        "start": 123.494,
+        "end": 142.065
+      }
+    ],
+    "audio": "clip_2026-09-23.mp3",
+    "captions": "clip_2026-09-23.vtt",
+    "caption_timing": "measured-turn-boundaries-with-estimated-word-groups",
+    "needs_editorial_review": true,
+    "video": "clip_2026-09-23.mp4"
+  },
+  "trailer": {
+    "status": "existing_trailer_preserved",
+    "audio": "show_trailer.mp3"
+  }
 }
