@@ -53,16 +53,12 @@ load_dotenv()
 # ----------------------------
 # CONFIG (RSS identity)
 # ----------------------------
+from show_identity import SHOW_DESCRIPTION as CANONICAL_SHOW_DESCRIPTION
+
 RSS_SETTINGS: Dict[str, str] = {
     "title": "The AI Edge",
     "link": "https://github.com/aisimplify333/Daily-ai-News",
-    "description": (
-        "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
-        "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
-        "Each episode explores three distinct AI stories from the last 24–48 hours, with "
-        "clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for "
-        "new episodes Monday through Friday. What changed. Who wins. What you do next."
-    ),
+    "description": CANONICAL_SHOW_DESCRIPTION,
     "author": "AI Simplify Media",
     "email": "aisimplify333@gmail.com",
     "image": "https://raw.githubusercontent.com/aisimplify333/Daily-ai-News/main/cover.png",

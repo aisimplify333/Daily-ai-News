@@ -1,3 +1,12 @@
+# September 23 — cast relationship, public identity and episode discovery
+
+- Canonical show description now introduces Alex, Jamie and Rufus as an ensemble, with warmth, useful discoveries and three distinct stories. Shared across writer, runner, RSS and feed repair so legacy defaults cannot restore the old pitch.
+- Shared editorial direction gives each host a motive, encourages responsive discovery and earned humor, and permits remembered opinions only from supplied aired history. No invented personal histories or audience reactions.
+- Listen page About and published RSS channel description updated; completed episode audio and identifiers preserved.
+- New standard-library episode page generator publishes audio, descriptions, available transcripts, canonical/social metadata, PodcastEpisode structured data, archive and sitemap. Invoked non-blocking before normal publishing; initial September 22 page included.
+- Jamie Ursa bounded audition run 35830499382 succeeded: eight real provider takes (four baseline/directed pairs), no fallback. This verifies provider acceptance, not listening quality; no listening assessment has been performed.
+- Offline suite: 99 tests passed. Full next scheduled episode and public Spotify metadata refresh remain unverified. No paid episode regeneration.
+
 ## September 23 — Jamie emotional direction and permanent editorial repairs
 
 - Jamie remains Grok Ursa, with existing fallback policy. Conservative personal-reaction cues route delight, warmth, disbelief and curiosity into supported speech-only wrapping controls, limited to one short sentence. Sponsor reads remain dry. JAMIE_EMOTIONAL_DIRECTION=false disables new controls. Cast writing now asks for evidence-earned emotional movement, not constant indignation.

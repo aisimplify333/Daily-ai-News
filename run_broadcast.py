@@ -143,6 +143,7 @@ def main() -> None:
         allow_fail=False,
     )
 
+    run_command("python episode_pages.py", "Searchable episode pages and sitemap", allow_fail=True)
     print("\n>> UPLOADING TO GITHUB...", flush=True)
     run_command("git add .", "Staging Files", allow_fail=False)
 

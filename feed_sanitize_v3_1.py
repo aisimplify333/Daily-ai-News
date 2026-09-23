@@ -22,13 +22,7 @@ from typing import Dict, List
 
 OLD_BRAND_RE = re.compile(r"\b(?:The\s+AI\s+Signal\s+Room|AI\s+Signal\s+Room|Signal\s+Room)\b", re.IGNORECASE)
 SHOW_TITLE = "The AI Edge"
-SHOW_DESCRIPTION = (
-    "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
-    "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
-    "Each episode explores three distinct AI stories from the last 24–48 hours, with "
-    "clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for "
-    "new episodes Monday through Friday. What changed. Who wins. What you do next."
-)
+from show_identity import SHOW_DESCRIPTION
 
 GENERATED_TEXT_FILES = [
     "feed.xml",

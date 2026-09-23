@@ -70,14 +70,7 @@ from listener_editorial import EDITORIAL_DIRECTION, editorial_diagnostics, expan
 # ----------------------------------------------------------------------------
 SHOW_TITLE = os.getenv("PODCAST_SHOW_TITLE", "The AI Edge").strip() or "The AI Edge"
 LISTENER_PROMISE = "What changed. Who wins. What you do next."
-SHOW_DESCRIPTION = os.getenv(
-    "PODCAST_SHOW_DESCRIPTION",
-    "The AI Edge is the weekday artificial intelligence news and analysis podcast where "
-    "Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. "
-    "Each episode debates three distinct AI stories from the last 24–48 hours, with "
-    "clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for "
-    "new episodes Monday through Friday. What changed. Who wins. What you do next.",
-).strip()
+from show_identity import SHOW_DESCRIPTION
 
 STORY_BOARD_MODEL = os.getenv("STORY_BOARD_MODEL", "gemini-3.1-flash-lite").strip()
 STORY_BOARD_FALLBACK_MODEL = os.getenv("STORY_BOARD_FALLBACK_MODEL", "gemini-3-flash-preview").strip()
