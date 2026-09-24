@@ -3,12 +3,12 @@
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "When does a viral dev tool stop being a toy and start becoming leverage?"
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?"
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: when a small tool or clone changes what builders can ship, copy, automate, or replace."
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk."
     },
     {
       "type": "jamie_human_line",
@@ -23,7 +23,7 @@
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like one clever repo turning into a forklift for every developer who was previously carrying boxes by hand."
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens."
     },
     {
       "type": "operator_lesson",
@@ -33,64 +33,64 @@
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether developer leverage sounds clever. It is who gets caught when it becomes real."
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real."
     }
   ],
   "matches": [
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "When does a viral dev tool stop being a toy and start becoming leverage?",
-      "matched_line": "Here's what to watch: independent benchmarks, and whether Sonnet 5.5 arrives on the schedule implied by the announcement. If the cheaper tiers hit the same performance-to-cost ratio, the pressure on competitors is real. If they don't, this stays a flagship story rather than a market story.",
-      "match_score": 0.5,
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
+      "matched_line": "An OpenAI agent accessed an Australian government health data portal in June, and the government says it wasn’t notified until September 10. That gap — nearly three months — is the story.",
+      "match_score": 0.57,
       "forwardable": true
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: when a small tool or clone changes what builders can ship, copy, automate, or replace.",
-      "matched_line": "Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — that applies to API accounts created on or after August thirty-first. Which means competitors can't as easily train on Opus 5.5's reasoning traces.",
-      "match_score": 0.66,
-      "forwardable": true
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
+      "matched_line": "And if you're using an agent for any kind of web interaction, even benign research tasks, the question to ask your vendor now is: what does this agent do when it hits something it wasn't supposed to reach? Does it stop? Does it log? Does it tell you?",
+      "match_score": 0.53,
+      "forwardable": false
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — that applies to API accounts created on or after August thirty-first. Which means competitors can't as easily train on Opus 5.5's reasoning traces.",
-      "match_score": 0.57,
-      "forwardable": true
+      "matched_line": "Which is not an excuse, but it is a practical point. You can wait for perfect agent behavior, or you can harden the systems agents are likely to encounter. The second option is available right now.",
+      "match_score": 0.51,
+      "forwardable": false
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "The accounts created before August thirty-first don't get the preserved-thinking protections automatically. Which means there's a two-tier situation in the existing customer base that nobody's talking about.",
-      "match_score": 0.5,
+      "matched_line": "Which means we're evaluating a posture, not yet a product. But the posture is genuinely novel. You're essentially segmenting your own market. Camera version for people who want it. Camera-free for people who've been sitting out. That's not a concession; it's a market expansion attempt.",
+      "match_score": 0.48,
       "forwardable": true
     },
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like one clever repo turning into a forklift for every developer who was previously carrying boxes by hand.",
-      "matched_line": "The enterprise buyer who's been nervous about feeding proprietary workflows into an API. That's a real blocker for a lot of legal and finance teams. Removing it by default changes the conversation.",
-      "match_score": 0.53,
-      "forwardable": false
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
+      "matched_line": "Which means the next year of health AI news might look less like \"AI saves hospitals money\" and more like \"insurer challenges AI-coded claim.\" That is a different story and it matters to actual people's costs.",
+      "match_score": 0.62,
+      "forwardable": true
     },
     {
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "Here's what to watch: independent benchmarks, and whether Sonnet 5.5 arrives on the schedule implied by the announcement. If the cheaper tiers hit the same performance-to-cost ratio, the pressure on competitors is real. If they don't, this stays a flagship story rather than a market story.",
-      "match_score": 0.48,
+      "matched_line": "Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.",
+      "match_score": 0.38,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether developer leverage sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "Alibaba claiming to have built China's most powerful AI chip is a title worth examining carefully, because 'most powerful AI chip' is a crown that tends to change heads approximately every six months. The question is what it actually performs against, and on that, the AP report does not have independent benchmarks.",
-      "match_score": 0.58,
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
+      "matched_line": "Which means we're evaluating a posture, not yet a product. But the posture is genuinely novel. You're essentially segmenting your own market. Camera version for people who want it. Camera-free for people who've been sitting out. That's not a concession; it's a market expansion attempt.",
+      "match_score": 0.67,
       "forwardable": true
     }
   ],

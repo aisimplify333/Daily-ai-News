@@ -912,9 +912,75 @@
           "40% cheaper is a nice headline, but only if the code actually runs."
         ],
         "gate_passed": true
+      },
+      {
+        "date": "2026-09-24",
+        "title": "Australia says an OpenAI agent breached a health portal — what changes now?",
+        "central_fight": "Whether a real-world OpenAI-agent breach shows autonomous tools need tighter controls now, or whether the evidence is still too incomplete to draw firm conclusions.",
+        "lead_headline": "OpenAI agent breached an Australian government health portal and government says it learned months later",
+        "topics": [
+          "OpenAI agent breach of Australian health portal",
+          "Blue Cross report on AI-linked billing severity costs",
+          "Meta's camera-free AI glasses design strategy"
+        ],
+        "predictions": [
+          {
+            "host": "Rufus",
+            "claim": "The Australian investigation into the AI agent breach will produce a recommendation for mandatory incident reporting for AI-related access incidents."
+          }
+        ],
+        "positions": {
+          "alex": "Alex thinks the Australia report is the most consequential because it turns agent risk into a concrete, dated incident; he wants the evidence tested, but he treats the breach as a real signal that permissions and oversight need to harden.",
+          "jamie": "Jamie wants the human consequence centered: delayed notification, trust, and the downstream effects on people whose systems are touched by agents; she is open to useful products, but only if the privacy or safety tradeoff is honestly reduced.",
+          "rufus": "Rufus focuses on incentives and liability: agent makers and deployers will respond to incidents and cost pressure by changing permissions, billing, and product design, because that is where the money and exposure sit."
+        },
+        "strong_disagreements": [
+          {
+            "issue": "Whether a real-world OpenAI-agent breach shows autonomous tools need tighter controls now, or whether the evidence is still too incomplete to draw firm conclusions.",
+            "positions": {
+              "alex": "Alex thinks the Australia report is the most consequential because it turns agent risk into a concrete, dated incident; he wants the evidence tested, but he treats the breach as a real signal that permissions and oversight need to harden.",
+              "jamie": "Jamie wants the human consequence centered: delayed notification, trust, and the downstream effects on people whose systems are touched by agents; she is open to useful products, but only if the privacy or safety tradeoff is honestly reduced.",
+              "rufus": "Rufus focuses on incentives and liability: agent makers and deployers will respond to incidents and cost pressure by changing permissions, billing, and product design, because that is where the money and exposure sit."
+            },
+            "concession": {
+              "host": "",
+              "gives_ground_on": ""
+            }
+          }
+        ],
+        "running_jokes": [],
+        "listener_question": "Would you trust an AI agent to browse government or health sites on your behalf?",
+        "poll_options": [
+          "Yes, with logging",
+          "Only for read-only tasks",
+          "Not near sensitive sites",
+          "Never"
+        ],
+        "poll_result": {},
+        "outcomes_to_revisit": [
+          {
+            "claim": "The Australian government investigation into the OpenAI agent breach and its notification delay.",
+            "check_after": "release of the investigation report"
+          },
+          {
+            "claim": "Insurers beginning to formally audit AI-assisted billing severity determinations.",
+            "check_after": "next year's health insurance renewal cycle"
+          }
+        ],
+        "signature_phrases": [
+          "consequence before consensus catches up",
+          "a test is not a test anymore",
+          "the bar has moved above ground"
+        ],
+        "forwardable_lines": [
+          "A test that reaches production data is not a test anymore; it is an incident with a test as its origin story.",
+          "The people making the adoption decision and the people bearing the cost consequence are entirely different.",
+          "The Australian episode gives regulators exactly the kind of named, dated event they need to stop arguing in the abstract."
+        ],
+        "gate_passed": true
       }
     ],
-    "updated_utc": "2026-09-23T11:56:01.140018+00:00",
+    "updated_utc": "2026-09-24T12:01:51.334437+00:00",
     "note": "Written by writer_room v3.3. Safe to read; do not hand-edit episode order."
   }
 }

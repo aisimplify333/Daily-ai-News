@@ -1,65 +1,81 @@
 {
-  "date": "2026-09-23",
+  "date": "2026-09-24",
   "new_tts_calls": 0,
-  "warnings": [],
+  "warnings": [
+    "Trailer beats do not fit 60–90 seconds cleanly; prepared trailer script remains available."
+  ],
   "publication": "assets_only_not_uploaded_to_spotify",
   "clip": {
-    "start": 121.638,
-    "end": 156.372,
-    "seconds": 34.734,
+    "start": 493.475,
+    "end": 532.151,
+    "seconds": 38.676,
     "score": 6,
     "turns": [
       {
         "kind": "speech",
-        "segment": 2,
-        "speaker": "ALEX",
-        "text": "What else changed besides the price?",
-        "performance_mood": "pressure",
-        "tempo_factor": 1.025,
-        "speed": 1.03525,
-        "level_delta_db": 0.2,
-        "pause_requested_ms": 85,
-        "pause_reason": "question_to_answer",
-        "start": 121.638,
-        "end": 123.409
+        "segment": 3,
+        "speaker": "RUFUS",
+        "text": "The mechanism is specifically worth sitting with. The association isn't saying AI is ordering unnecessary tests. They're saying providers are billing for more severe patient care. Which means AI is either helping clinicians identify severity they would have previously missed — which is arguably good —",
+        "performance_mood": "interruption",
+        "tempo_factor": 1.04,
+        "speed": 1.0296,
+        "level_delta_db": 0.35,
+        "pause_requested_ms": 90,
+        "pause_reason": "same_speaker",
+        "start": 493.475,
+        "end": 511.73
       },
       {
         "kind": "speech",
-        "segment": 2,
+        "segment": 3,
+        "speaker": "RUFUS",
+        "text": "or it's making a billing argument that the insurer doesn't believe reflects genuine clinical complexity.",
+        "performance_mood": "dry_wit",
+        "tempo_factor": 0.985,
+        "speed": 0.97515,
+        "level_delta_db": -0.15,
+        "pause_requested_ms": 210,
+        "pause_reason": "short_rufus_observation",
+        "start": 511.82,
+        "end": 518.608
+      },
+      {
+        "kind": "speech",
+        "segment": 3,
+        "speaker": "ALEX",
+        "text": "And the association covers more than a hundred million people across 31 independent insurers. So this isn't a regional quirk.",
+        "performance_mood": "neutral",
+        "tempo_factor": 1.0,
+        "speed": 1.01,
+        "level_delta_db": 0.0,
+        "pause_requested_ms": 110,
+        "pause_reason": "conversational_handoff",
+        "start": 518.821,
+        "end": 526.552
+      },
+      {
+        "kind": "speech",
+        "segment": 3,
         "speaker": "JAMIE",
-        "text": "Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections \u2014 that applies to API accounts created on or after August thirty-first. Which means competitors can't as easily train on Opus 5.5's reasoning traces.",
-        "performance_mood": "explainer",
+        "text": "What's the limit on the finding, though? Because this is the insurer's study, not an independent audit.",
+        "performance_mood": "neutral",
         "tempo_factor": 1.0,
         "speed": 1.05,
         "level_delta_db": 0.0,
         "pause_requested_ms": 110,
         "pause_reason": "conversational_handoff",
-        "start": 123.494,
-        "end": 142.065
-      },
-      {
-        "kind": "speech",
-        "segment": 2,
-        "speaker": "RUFUS",
-        "text": "That's the interesting bit. The zero retention and the anti-distillation protections aren't really a customer benefit. They're a moat. Anthropic is saying: you can use the outputs, but you cannot reverse-engineer how it got there.",
-        "performance_mood": "dry_wit",
-        "tempo_factor": 1.0,
-        "speed": 0.99,
-        "level_delta_db": 0.0,
-        "pause_requested_ms": 65,
-        "pause_reason": "short_reply",
-        "start": 142.175,
-        "end": 156.372
+        "start": 526.662,
+        "end": 532.151
       }
     ],
-    "audio": "clip_2026-09-23.mp3",
-    "captions": "clip_2026-09-23.vtt",
+    "audio": "clip_2026-09-24.mp3",
+    "captions": "clip_2026-09-24.vtt",
     "caption_timing": "measured-turn-boundaries-with-estimated-word-groups",
     "needs_editorial_review": true,
-    "video": "clip_2026-09-23.mp4"
+    "video": "clip_2026-09-24.mp4"
   },
-  "trailer": {
-    "status": "existing_trailer_preserved",
+  "existing_trailer": {
+    "status": "preserved",
     "audio": "show_trailer.mp3"
   }
 }

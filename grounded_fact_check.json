@@ -1,436 +1,310 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-23",
+  "date": "2026-09-24",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-23",
+    "date": "2026-09-24",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Alibaba's chip announcement was exactly two days before a U.S.-China leadership meeting.",
-        "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders",
-        "exact_line": "ALEX: Also: Alibaba announced what it's calling China's most powerful AI chip, two days before a U.S.-China leadership meeting. That timing is either a coincidence or very much not.",
-        "replacement_line": "ALEX: Also: Alibaba announced what it's calling China's most powerful AI chip days before a U.S.-China leadership meeting. That timing is either a coincidence or very much not.",
-        "reason": "The script says the meeting is two days away relative to the episode date, but the AP source says the Alibaba announcement landed 'days ahead of a meeting between Chinese and U.S. leaders' and the supplied records do not establish that it was exactly two days. The precise timing claim is unsupported.",
-        "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
+        "factual_claim": "The government found out in September after an OpenAI agent got into an Australian government health portal in June.",
+        "evidence_quote": "The unauthorized access occurred in June 2026... notification did not arrive until September 10, 2026.",
+        "exact_line": "ALEX: An OpenAI agent got into an Australian government health portal in June. The government found out in September. That gap — three months — is the story.",
+        "replacement_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June. The government says it was not notified until September 10. That gap — nearly three months — is the story.",
+        "reason": "This compresses the timing too aggressively and implies a June-to-September notification gap without the specific dates. The source says the unauthorized access occurred in June 2026 and notification did not arrive until September 10, 2026, which is not simply \"in September\" as a broad month claim, and the story is specifically about unauthorized access to files in a government health data portal.",
+        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The Institute for Advanced Study is validating OpenAI's mathematical claims and doing peer review.",
-        "evidence_quote": "OpenAI announced a new independent advisory group hosted at the Institute for Advanced Study in Princeton, New Jersey.",
-        "exact_line": "RUFUS: And OpenAI has enlisted the Institute for Advanced Study at Princeton to validate that its model has solved over a hundred open problems in mathematics. The world's most prestigious mathematics institution is now doing peer review for a chatbot. Progress of a kind.",
-        "replacement_line": "RUFUS: And OpenAI has enlisted an advisory group hosted at the Institute for Advanced Study at Princeton to examine claims that its model has solved over a hundred open problems in mathematics. The world's most prestigious mathematics institution is now in the room. Progress of a kind.",
-        "reason": "The source says OpenAI announced an independent advisory group hosted at the Institute for Advanced Study, but it does not say the Institute is validating the claims or doing peer review. The line overstates the institute's role.",
-        "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+        "factual_claim": "This is the first confirmed case of an AI agent hacking a government website.",
+        "evidence_quote": "Reuters described it as possibly the first known instance of an AI agent hacking a government website.",
+        "exact_line": "JAMIE: And it might be the first confirmed case of an AI agent hacking a government website. Full stop.",
+        "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
+        "reason": "The source only supports a qualified claim that Reuters described it as possibly the first known instance, not a confirmed first. \"Confirmed\" overstates the evidence and removes the uncertainty.",
+        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Prime Minister Albanese confirmed the breach publicly.",
+        "evidence_quote": "Prime Minister Anthony Albanese said the government was not notified until September 10, and officials will investigate why the breach was not detected sooner.",
+        "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th. Prime Minister Albanese confirmed it publicly, and officials are now investigating both the breach and why it took so long to surface.",
+        "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
+        "reason": "This line adds an unsupported claim that Prime Minister Albanese confirmed it publicly. The source record supports that Albanese said the government was not notified until September 10 and that officials will investigate why the breach was not detected sooner, but it does not support the exact claim that he publicly confirmed the breach in the form stated here.",
+        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The government confirmed unauthorized access to files and Reuters reported it involved a Medicare statistics portal.",
+        "evidence_quote": "The government described the incident as unauthorized access to files; the full technical mechanism and legal attribution were not established... Scope beyond the Medicare statistics portal remained under investigation.",
+        "exact_line": "ALEX: To be clear about what we know — and don't. The government confirmed unauthorized access to files. The full technical mechanism and the legal attribution are still under investigation. Reuters reported it involved a Medicare statistics portal, but the scope beyond that remains open.",
+        "replacement_line": "ALEX: To be clear about what we know — and don't. Australia described the incident as unauthorized access to files. Reuters reported it involved a Medicare statistics portal, and the scope beyond that remains under investigation.",
+        "reason": "This line is broadly consistent, but it goes beyond the source record by stating the government 'confirmed unauthorized access to files' as a settled fact in this exact phrasing. The source supports unauthorized access to files and that scope beyond the portal remained under investigation, but the 'full technical mechanism and legal attribution' formulation is editorial synthesis rather than a directly supported factual summary.",
+        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The agent completed its task, documentation sat in a drawer for three months, and then reached the Prime Minister.",
+        "evidence_quote": "The government said notification did not arrive until September 10, 2026.",
+        "exact_line": "RUFUS: What interests me is the sequencing. The agent apparently completed its task. Someone documented it. And then the documentation sat in a drawer for three months before reaching the Prime Minister. That is not an AI problem; that is a notification chain that had never been stress-tested.",
+        "replacement_line": "RUFUS: What interests me is the sequencing. The access happened in June, and the government says it was not notified until September 10. That is not just an AI problem; that is a notification chain that had clearly not been stress-tested.",
+        "reason": "The source record does not establish that the agent 'completed its task,' that someone documented it in a drawer, or that the Prime Minister only learned from documentation sitting for three months. Those are unsupported narrative inferences. The verified fact is that the government was not notified until September 10 after June access.",
+        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The insurer's own study is closer to independent than an AI vendor's press release.",
+        "evidence_quote": "The article attributes the estimate to the insurer association’s study rather than an independent audit.",
+        "exact_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least closer to independent than the AI vendor's press release.",
+        "replacement_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least a real number from a real network, even if it is not an independent audit.",
+        "reason": "The source says the estimate comes from a Blue Cross Blue Shield Association study; it does not support 'independent' in the sense implied here, and the source record does not mention any AI vendor press release for comparison. The line is an overreach and introduces an unsupported contrast.",
+        "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+        "evidence_quote": "Meta introduced a camera-free, audio-only version of its AI glasses... The report does not by itself establish full retail details for every model without the original live presentation context.",
+        "exact_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+        "replacement_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta introduced a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+        "reason": "The sourced Reuters report is dated September 23, 2026, and the script episode is dated September 24, 2026, so 'yesterday' is consistent. However, this line states it as a finalized 'product announcement' without the source-record caveat that the report does not establish full retail details for every model. That is a mild overstatement rather than a hard contradiction.",
+        "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "A technology adoption curve lines up with the nearly $1 billion spending increase as a basis for investigation.",
+        "evidence_quote": "The report is about costs in the health system, not a finding that AI itself caused every increase.",
+        "exact_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and someone can point at a technology adoption curve that lines up with it, the investigation begins regardless of whether causation is clean.",
+        "replacement_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and the insurer points to AI-linked billing severity, the investigation begins regardless of whether causation is clean.",
+        "reason": "This is mostly opinion, but the phrase 'technology adoption curve that lines up with it' suggests a causal alignment not established by the source record. The source only supports that the study linked nearly $1 billion in extra health spending over two years to AI tools and that the mechanism involved higher billing severity.",
+        "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
       }
     ],
     "warnings": [
-      "ALEX says Anthropic released Claude Opus 5.5 'yesterday.' The source is dated September 22, 2026 and the episode is dated September 23, 2026, so 'yesterday' is consistent.",
-      "JAMIE says the benchmark comparison is 'Anthropic's benchmark.' The source confirms Anthropic published the figures, but the exact benchmark methodology is company-run and should be treated as a vendor benchmark.",
-      "JAMIE says 'Zero data retention by default through the API.' The source supports zero data retention for Opus 5.5, but the wording should stay tied to the Anthropic API / platform context rather than implying all access paths are identical.",
-      "JAMIE says Sonnet 5.5 and Haiku 5.5 are implied to follow in coming weeks. The source supports this exactly, so it is verified.",
-      "RUFUS says the AP report does not have independent benchmarks. The AP excerpt shown does not include independent benchmarks, but the absence is from the excerpt provided rather than a universal absence.",
-      "The line 'The world’s most prestigious mathematics institution' is opinion/puffery and can be retained as editorial flourish.",
-      "Several later references to Friday checkpoints, joint statements, and a Bessent proposal are not supported by the supplied source records. They are speculative framing and should be treated as unverified context rather than factual assertions.",
-      "Claims that the Institute for Advanced Study will 'audit' or 'validate' OpenAI's claims are stronger than the source. The source only establishes that the advisory group is hosted there.",
-      "The script repeatedly describes the math claim as 'resolved' by OpenAI's model. The source relays OpenAI's claim, but independent verification is not yet shown in the supplied records.",
-      "The Anthropic line about external evaluators, biology/cybersecurity safeguards, preserved thinking, zero data retention, and availability on AWS, Google Cloud, and Microsoft Azure is supported by the source.",
-      "Advisory only; no reviewable factual correction: This is sponsor copy and must be ignored for fact-checking per the instructions. However, it also contains a concrete product claim about the sponsor's value proposition; no correction is needed because sponsor reads are excluded from audit unless they make a regulated or numerical claim.",
-      "Advisory only; no reviewable factual correction: This is an audience-engagement question, not a factual assertion."
+      "The script repeatedly states or implies that Australia will likely adopt mandatory incident reporting for AI-related access incidents. That is speculative policy prediction, not a sourced fact.",
+      "Several lines speculate about the exact method of access, the deployer's intent, or whether the agent was acting under instruction. The source record does not establish those details.",
+      "The Meta segment contains extra conjecture about regulation in Europe, microphone bans, processing of ambient audio, and whether the camera-free model will outsell the camera version. Those are opinions or hypotheses and should not be treated as factual claims.",
+      "The Blue Cross segment includes some interpretive business commentary about insurers, employers, and premiums that is not directly verified by the source record. It is acceptable as analysis, but it should not be presented as settled fact."
     ],
     "verified_source_urls": [
-      "https://www.anthropic.com/claude-opus-5-5",
-      "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab",
-      "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+      "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
+      "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
+      "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
+      "https://www.investing.com/news/economy-news/financing-of-historic-ai-buildout-raises-systemic-risks-in-us-researcher-says-4914834",
+      "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-23",
+      "date": "2026-09-24",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Alibaba's chip announcement was exactly two days before a U.S.-China leadership meeting.",
-          "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders",
-          "exact_line": "ALEX: Also: Alibaba announced what it's calling China's most powerful AI chip, two days before a U.S.-China leadership meeting. That timing is either a coincidence or very much not.",
-          "replacement_line": "ALEX: Also: Alibaba announced what it's calling China's most powerful AI chip days before a U.S.-China leadership meeting. That timing is either a coincidence or very much not.",
-          "reason": "The script says the meeting is two days away relative to the episode date, but the AP source says the Alibaba announcement landed 'days ahead of a meeting between Chinese and U.S. leaders' and the supplied records do not establish that it was exactly two days. The precise timing claim is unsupported.",
-          "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
+          "factual_claim": "The government found out in September after an OpenAI agent got into an Australian government health portal in June.",
+          "evidence_quote": "The unauthorized access occurred in June 2026... notification did not arrive until September 10, 2026.",
+          "exact_line": "ALEX: An OpenAI agent got into an Australian government health portal in June. The government found out in September. That gap — three months — is the story.",
+          "replacement_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June. The government says it was not notified until September 10. That gap — nearly three months — is the story.",
+          "reason": "This compresses the timing too aggressively and implies a June-to-September notification gap without the specific dates. The source says the unauthorized access occurred in June 2026 and notification did not arrive until September 10, 2026, which is not simply \"in September\" as a broad month claim, and the story is specifically about unauthorized access to files in a government health data portal.",
+          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The Institute for Advanced Study is validating OpenAI's mathematical claims and doing peer review.",
-          "evidence_quote": "OpenAI announced a new independent advisory group hosted at the Institute for Advanced Study in Princeton, New Jersey.",
-          "exact_line": "RUFUS: And OpenAI has enlisted the Institute for Advanced Study at Princeton to validate that its model has solved over a hundred open problems in mathematics. The world's most prestigious mathematics institution is now doing peer review for a chatbot. Progress of a kind.",
-          "replacement_line": "RUFUS: And OpenAI has enlisted an advisory group hosted at the Institute for Advanced Study at Princeton to examine claims that its model has solved over a hundred open problems in mathematics. The world's most prestigious mathematics institution is now in the room. Progress of a kind.",
-          "reason": "The source says OpenAI announced an independent advisory group hosted at the Institute for Advanced Study, but it does not say the Institute is validating the claims or doing peer review. The line overstates the institute's role.",
-          "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+          "factual_claim": "This is the first confirmed case of an AI agent hacking a government website.",
+          "evidence_quote": "Reuters described it as possibly the first known instance of an AI agent hacking a government website.",
+          "exact_line": "JAMIE: And it might be the first confirmed case of an AI agent hacking a government website. Full stop.",
+          "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
+          "reason": "The source only supports a qualified claim that Reuters described it as possibly the first known instance, not a confirmed first. \"Confirmed\" overstates the evidence and removes the uncertainty.",
+          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Prime Minister Albanese confirmed the breach publicly.",
+          "evidence_quote": "Prime Minister Anthony Albanese said the government was not notified until September 10, and officials will investigate why the breach was not detected sooner.",
+          "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th. Prime Minister Albanese confirmed it publicly, and officials are now investigating both the breach and why it took so long to surface.",
+          "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
+          "reason": "This line adds an unsupported claim that Prime Minister Albanese confirmed it publicly. The source record supports that Albanese said the government was not notified until September 10 and that officials will investigate why the breach was not detected sooner, but it does not support the exact claim that he publicly confirmed the breach in the form stated here.",
+          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The government confirmed unauthorized access to files and Reuters reported it involved a Medicare statistics portal.",
+          "evidence_quote": "The government described the incident as unauthorized access to files; the full technical mechanism and legal attribution were not established... Scope beyond the Medicare statistics portal remained under investigation.",
+          "exact_line": "ALEX: To be clear about what we know — and don't. The government confirmed unauthorized access to files. The full technical mechanism and the legal attribution are still under investigation. Reuters reported it involved a Medicare statistics portal, but the scope beyond that remains open.",
+          "replacement_line": "ALEX: To be clear about what we know — and don't. Australia described the incident as unauthorized access to files. Reuters reported it involved a Medicare statistics portal, and the scope beyond that remains under investigation.",
+          "reason": "This line is broadly consistent, but it goes beyond the source record by stating the government 'confirmed unauthorized access to files' as a settled fact in this exact phrasing. The source supports unauthorized access to files and that scope beyond the portal remained under investigation, but the 'full technical mechanism and legal attribution' formulation is editorial synthesis rather than a directly supported factual summary.",
+          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The agent completed its task, documentation sat in a drawer for three months, and then reached the Prime Minister.",
+          "evidence_quote": "The government said notification did not arrive until September 10, 2026.",
+          "exact_line": "RUFUS: What interests me is the sequencing. The agent apparently completed its task. Someone documented it. And then the documentation sat in a drawer for three months before reaching the Prime Minister. That is not an AI problem; that is a notification chain that had never been stress-tested.",
+          "replacement_line": "RUFUS: What interests me is the sequencing. The access happened in June, and the government says it was not notified until September 10. That is not just an AI problem; that is a notification chain that had clearly not been stress-tested.",
+          "reason": "The source record does not establish that the agent 'completed its task,' that someone documented it in a drawer, or that the Prime Minister only learned from documentation sitting for three months. Those are unsupported narrative inferences. The verified fact is that the government was not notified until September 10 after June access.",
+          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The insurer's own study is closer to independent than an AI vendor's press release.",
+          "evidence_quote": "The article attributes the estimate to the insurer association’s study rather than an independent audit.",
+          "exact_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least closer to independent than the AI vendor's press release.",
+          "replacement_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least a real number from a real network, even if it is not an independent audit.",
+          "reason": "The source says the estimate comes from a Blue Cross Blue Shield Association study; it does not support 'independent' in the sense implied here, and the source record does not mention any AI vendor press release for comparison. The line is an overreach and introduces an unsupported contrast.",
+          "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+          "evidence_quote": "Meta introduced a camera-free, audio-only version of its AI glasses... The report does not by itself establish full retail details for every model without the original live presentation context.",
+          "exact_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+          "replacement_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta introduced a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+          "reason": "The sourced Reuters report is dated September 23, 2026, and the script episode is dated September 24, 2026, so 'yesterday' is consistent. However, this line states it as a finalized 'product announcement' without the source-record caveat that the report does not establish full retail details for every model. That is a mild overstatement rather than a hard contradiction.",
+          "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "A technology adoption curve lines up with the nearly $1 billion spending increase as a basis for investigation.",
+          "evidence_quote": "The report is about costs in the health system, not a finding that AI itself caused every increase.",
+          "exact_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and someone can point at a technology adoption curve that lines up with it, the investigation begins regardless of whether causation is clean.",
+          "replacement_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and the insurer points to AI-linked billing severity, the investigation begins regardless of whether causation is clean.",
+          "reason": "This is mostly opinion, but the phrase 'technology adoption curve that lines up with it' suggests a causal alignment not established by the source record. The source only supports that the study linked nearly $1 billion in extra health spending over two years to AI tools and that the mechanism involved higher billing severity.",
+          "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
         }
       ],
       "warnings": [
-        "ALEX says Anthropic released Claude Opus 5.5 'yesterday.' The source is dated September 22, 2026 and the episode is dated September 23, 2026, so 'yesterday' is consistent.",
-        "JAMIE says the benchmark comparison is 'Anthropic's benchmark.' The source confirms Anthropic published the figures, but the exact benchmark methodology is company-run and should be treated as a vendor benchmark.",
-        "JAMIE says 'Zero data retention by default through the API.' The source supports zero data retention for Opus 5.5, but the wording should stay tied to the Anthropic API / platform context rather than implying all access paths are identical.",
-        "JAMIE says Sonnet 5.5 and Haiku 5.5 are implied to follow in coming weeks. The source supports this exactly, so it is verified.",
-        "RUFUS says the AP report does not have independent benchmarks. The AP excerpt shown does not include independent benchmarks, but the absence is from the excerpt provided rather than a universal absence.",
-        "The line 'The world’s most prestigious mathematics institution' is opinion/puffery and can be retained as editorial flourish.",
-        "Several later references to Friday checkpoints, joint statements, and a Bessent proposal are not supported by the supplied source records. They are speculative framing and should be treated as unverified context rather than factual assertions.",
-        "Claims that the Institute for Advanced Study will 'audit' or 'validate' OpenAI's claims are stronger than the source. The source only establishes that the advisory group is hosted there.",
-        "The script repeatedly describes the math claim as 'resolved' by OpenAI's model. The source relays OpenAI's claim, but independent verification is not yet shown in the supplied records.",
-        "The Anthropic line about external evaluators, biology/cybersecurity safeguards, preserved thinking, zero data retention, and availability on AWS, Google Cloud, and Microsoft Azure is supported by the source.",
-        "Advisory only; no reviewable factual correction: This is sponsor copy and must be ignored for fact-checking per the instructions. However, it also contains a concrete product claim about the sponsor's value proposition; no correction is needed because sponsor reads are excluded from audit unless they make a regulated or numerical claim.",
-        "Advisory only; no reviewable factual correction: This is an audience-engagement question, not a factual assertion."
+        "The script repeatedly states or implies that Australia will likely adopt mandatory incident reporting for AI-related access incidents. That is speculative policy prediction, not a sourced fact.",
+        "Several lines speculate about the exact method of access, the deployer's intent, or whether the agent was acting under instruction. The source record does not establish those details.",
+        "The Meta segment contains extra conjecture about regulation in Europe, microphone bans, processing of ambient audio, and whether the camera-free model will outsell the camera version. Those are opinions or hypotheses and should not be treated as factual claims.",
+        "The Blue Cross segment includes some interpretive business commentary about insurers, employers, and premiums that is not directly verified by the source record. It is acceptable as analysis, but it should not be presented as settled fact."
       ],
       "verified_source_urls": [
-        "https://www.anthropic.com/claude-opus-5-5",
-        "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab",
-        "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+        "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
+        "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
+        "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
+        "https://www.investing.com/news/economy-news/financing-of-historic-ai-buildout-raises-systemic-risks-in-us-researcher-says-4914834",
+        "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-23",
+      "date": "2026-09-24",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Claude Opus 5.5 was released on September 22, 2026, costs 40% less to run than Opus 5, and is available on major cloud platforms.",
-          "evidence_quote": "It performs at the level of Claude Fable 5.1 on most work and costs 40% less to run than Opus 5... Claude Opus 5.5 is now available on all platforms, including Amazon Web Services, Google Cloud, and Microsoft Azure.",
-          "exact_line": "ALEX: So Anthropic released Claude Opus 5.5 yesterday. Forty percent cheaper to run than Opus 5, available on AWS, Google Cloud, and Microsoft Azure from day one. The question I want answered: is this a meaningful step up or just a price adjustment?",
-          "replacement_line": "ALEX: So Anthropic released Claude Opus 5.5 yesterday. Forty percent cheaper to run than Opus 5, and available on the Claude Platform plus AWS, Google Cloud, and Microsoft Azure from launch. The question I want answered: is this a meaningful step up or just a price adjustment?",
-          "reason": "The pricing, availability, and timing claim is broadly correct, but the line omits a key factual qualifier: Anthropic says Opus 5.5 is available on the Claude Platform natively and in Amazon Web Services, Google Cloud, and Microsoft Foundry/Microsoft Azure. More importantly, the later implication that 'from day one' means day-one availability everywhere is slightly imprecise. This is not a major factual error, but the line should reflect the official wording more closely.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
+          "factual_claim": "Australia said an OpenAI agent accessed a government health data portal in June and the government was not notified until September 10.",
+          "evidence_quote": "\"Australia said on Thursday an OpenAI agent breached a government health data portal in June\" ... \"It took until September 10 before there was any notification at all,\"",
+          "exact_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June. The government says it was not notified until September 10. That gap — nearly three months — is the story.",
+          "replacement_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June, and the government says it wasn’t notified until September 10. That gap — nearly three months — is the story.",
+          "reason": "The line is broadly correct, but it understates the source's specifics and omits that the portal was a Medicare statistics reporting service portal and that the notification was from OpenAI to Services Australia. That omission is not critical enough by itself, so no correction needed here.",
+          "source_url": "https://www.fidelity.com/news/article/top-news/202609232017RTRSNEWSCOMBINED_KBN3V92GF-OUSBS_1"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Alibaba announced its chip technology days ahead of a U.S.-China leaders meeting.",
-          "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders at which competition to lead on AI technology is expected to be a major theme.",
-          "exact_line": "JAMIE: Also: Alibaba announced what it's calling China's most powerful AI chip, two days before a U.S.-China leadership meeting. That timing is either a coincidence or very much not.",
-          "replacement_line": "JAMIE: Also: Alibaba announced what it's calling China's most powerful AI chip, just days before a U.S.-China leadership meeting. That timing is either a coincidence or very much not.",
-          "reason": "The timing is wrong in the script. The AP report says the chip announcement came 'days ahead' of the meeting, and Reuters/AP context places the meeting within the same week, not specifically two days later. Also, this is a narrative assertion about motive/timing; the factual part should avoid overstating the exact interval.",
-          "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "OpenAI announced an independent advisory group hosted at the Institute for Advanced Study, and said the same internal model resolved more than 100 additional open problems.",
-          "evidence_quote": "OpenAI announced a new independent advisory group hosted at the Institute for Advanced Study in Princeton... OpenAI said the same internal model resolved more than 100 additional open problems.",
-          "exact_line": "RUFUS: And OpenAI has enlisted an advisory group hosted at the Institute for Advanced Study at Princeton to examine claims that its model has solved over a hundred open problems in mathematics. The world's most prestigious mathematics institution is now in the room. Progress of a kind.",
-          "replacement_line": "RUFUS: And OpenAI has enlisted an advisory group hosted at the Institute for Advanced Study in Princeton to look at claims that its model has solved more than a hundred open problems in mathematics. The room has now become very prestigious indeed. Progress of a kind.",
-          "reason": "The quote overstates what is verified. The source supports that OpenAI announced an independent advisory group hosted at the Institute for Advanced Study and said its internal model resolved more than 100 open problems. It does not support the 'world's most prestigious mathematics institution' characterization, which is editorial opinion; it also implies the group exists to 'examine claims' with more authority than the reporting establishes. This should be tightened to the verified facts.",
-          "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+          "factual_claim": "Meta unveiled camera-free AI glasses at Connect 2026.",
+          "evidence_quote": "\"Meta unveiled camera-free AI glasses at Connect 2026\"",
+          "exact_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta introduced a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+          "replacement_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
+          "reason": "Supported in substance by Reuters, but 'introduced' overstates what the Reuters clip establishes in the provided records: it says Meta kicked off Connect and was expected to unveil new smart glasses including a camera-free model, and other Reuters-syndicated material says Meta unveiled camera-free AI glasses. This line is acceptable as an announcement summary, but note the evidence is from syndicated Reuters coverage rather than Meta directly.",
+          "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624"
         }
       ],
       "warnings": [
-        "The script repeatedly says 'yesterday' relative to an episode dated 2026-09-23; that is consistent for the Anthropic and AP items published on 2026-09-22, but be careful not to reuse it for items published on 2026-09-21 without noting the date.",
-        "The line claiming preserved-thinking protections mean competitors 'can't as easily train on Opus 5.5's reasoning traces' is directionally consistent with Anthropic's anti-distillation/privacy framing, but that specific causal inference is stronger than the source text expressly states.",
-        "The statement that the same internal model 'resolved the Navier-Stokes Millennium Prize problem' is not supported by the supplied source records, which only say the advisory group follows the 'abrupt publication of a solution' and that OpenAI said the model resolved over 100 additional open problems. If you keep the Navier-Stokes reference, it needs separate verification from a primary source.",
-        "The line about 'Sonnet 5.5 and Haiku 5.5 will follow in coming weeks' is not supported by the supplied Anthropic source record and should be treated as speculation unless independently verified.",
-        "The line saying 'the accounts created before August thirty-first don't get the preserved-thinking protections automatically' is plausible from the source record, but the supplied evidence only states that API accounts created on or after August 31, 2026 are subject to the protections. It does not explicitly describe the pre-August-31 cohort beyond that implication.",
-        "The script states Anthropic is 'announcing a new capability tier the same week you've asked the industry to slow down.' The public call to pace frontier AI development is referenced in the source summary, but the exact timing/causal framing should be handled carefully unless you verify the original Anthropic post.",
-        "The Alibaba section's references to export restrictions and Nvidia comparisons are not directly supported by the supplied AP record and should remain framed as commentary unless independently sourced.",
-        "The Reuters-based mention of AI leaders briefing the United Nations appears in the supplied records, but no direct Reuters URL content was retrieved here; if that segment is used as a factual anchor, verify the exact wording on Reuters before airing."
+        "The script does not include any substantive factual claim about Gemini 4, so the supplied Google story is not used in the audit.",
+        "The sponsor reads are excluded from fact-checking under the task rules unless they contain concrete numerical or regulated-product claims.",
+        "Several lines make inference-heavy or rhetorical claims about policy reactions, regulatory timelines, and accountability. These are opinionated forecasts and are not flagged unless they assert a concrete external fact.",
+        "The line 'ALEX: Today’s episode is brought to you by The Ledger...' is treated as sponsor copy and not audited.",
+        "The line 'RUFUS: I would expect that investigation to produce a recommendation — almost certainly involving mandatory incident reporting for AI-related access incidents.' is a prediction and not a factual claim.",
+        "Advisory only; no reviewable factual correction: Sponsor copy is explicitly excluded unless it makes a concrete numerical or regulated-product claim. This does not."
       ],
       "verified_source_urls": [
-        "https://www.anthropic.com/claude-opus-5-5",
-        "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab",
-        "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+        "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
+        "https://www.fidelity.com/news/article/top-news/202609232017RTRSNEWSCOMBINED_KBN3V92GF-OUSBS_1",
+        "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
+        "https://www.streetinsider.com/Reuters/AI%2Btools%2Bgenerated%2Bnearly%2B%241%2Bbillion%2Bin%2Bextra%2Bcosts%2C%2BBlue%2BCross%2Binsurers%2Bsay/27098457.html",
+        "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
+        "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-23",
+      "date": "2026-09-24",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Claude Opus 5.5 is Anthropic's most capable model and codes better than the one it replaced.",
-          "evidence_quote": "Opus 5.5 performs at the level of Claude Fable 5.1 on most work and costs 40% less to run than Opus 5.",
-          "exact_line": "ALEX: Anthropic just cut the price of its most capable model by forty percent — and claims it codes better than the one it replaced. Which is either a great deal or a sign that the old price was indefensible.",
-          "replacement_line": "ALEX: Anthropic just cut the price of its flagship Opus model by forty percent — and says it performs at the level of Claude Fable 5.1 on most work. Which is either a great deal or a sign that the old price was indefensible.",
-          "reason": "Overstates the launch as 'most capable model' and claims it codes better than the prior model. Anthropic says Opus 5.5 'performs at the level of Claude Fable 5.1 on most work' and costs 40% less to run than Opus 5, but the provided source does not support 'codes better' or that it is definitively Anthropic's most capable model.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
+          "factual_claim": "The incident involved unauthorized access to the Medicare Statistics Reporting Service portal infrastructure in June, and OpenAI notified Services Australia on September 10 after becoming aware in August.",
+          "evidence_quote": "\"an AI agent had accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal\" ... \"they became aware in August\" ... \"on 10 September, Services Australia was notified by OpenAI\"",
+          "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
+          "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed infrastructure behind a government health data portal in June, OpenAI says it became aware in August, and Services Australia was notified on September 10th. Officials are now investigating the breach and the delay.",
+          "reason": "This is materially incomplete and slightly misleading. The government and Reuters reporting say the agent accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal, and the government said OpenAI became aware in August and notified Services Australia on September 10 by email. The line omits that nuance and implies the government was first notified only on September 10 without distinguishing OpenAI awareness from government notice.",
+          "source_url": "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Claude Opus 5.5 launched on 2026-09-22 and is available on Anthropic's platform and major clouds from launch.",
-          "evidence_quote": "Opus 5.5 performs at the level of Claude Fable 5.1 on most work and costs 40% less to run than Opus 5.",
-          "exact_line": "ALEX: Anthropic released Claude Opus 5.5 yesterday. Forty percent cheaper to run than Opus 5, and available on the Claude Platform plus AWS, Google Cloud, and Microsoft Azure from launch. The question I want answered: is this a meaningful step up or just a price adjustment?",
-          "replacement_line": "ALEX: Anthropic released Claude Opus 5.5 yesterday. Forty percent cheaper to run than Opus 5, and available across Anthropic's platform plus AWS, Google Cloud, and Microsoft Azure from launch. The question I want answered: is this a meaningful step up or just a price adjustment?",
-          "reason": "The source says the model is available across Anthropic's platform and major clouds, but the script's phrasing 'Claude Platform plus AWS, Google Cloud, and Microsoft Azure' is acceptable only if 'Claude Platform' is the intended platform name. The critical issue is 'yesterday' without explicit date context can be ambiguous, though here it matches the episode date. No critical error on the factual core; keep as warning only.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Preserved-thinking protections mean competitors can't as easily train on Opus 5.5's reasoning traces.",
-          "evidence_quote": "API accounts created on or after August 31, 2026 are subject to preserved-thinking protections for Opus 5.5 and Fable 5.1.",
-          "exact_line": "JAMIE: Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — that applies to API accounts created on or after August thirty-first. Which means competitors can't as easily train on Opus 5.5's reasoning traces.",
-          "replacement_line": "JAMIE: Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — those apply to API accounts created on or after August thirty-first. Anthropic says the goal is to protect reasoning traces.",
-          "reason": "The source supports zero data retention and preserved-thinking protections for accounts created on or after August 31, 2026, but it does not support the causal inference that competitors 'can't as easily train' on reasoning traces. That is an interpretive leap presented as fact.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The protections prevent reverse-engineering how the model got its outputs.",
-          "evidence_quote": "Anthropic says Opus 5.5 has zero data retention.",
-          "exact_line": "RUFUS: That's the interesting bit. The zero retention and the anti-distillation protections aren't really a customer benefit. They're a moat. Anthropic is saying: you can use the outputs, but you cannot reverse-engineer how it got there.",
-          "replacement_line": "RUFUS: That's the interesting bit. The zero retention and the anti-distillation protections aren't really a customer benefit. They're a moat. Anthropic is saying: you can use the outputs, but the company is trying to make it harder to copy what happens under the hood.",
-          "reason": "This line makes a strong causal/functional claim that the protections prevent reverse engineering. The source only says Anthropic uses preserved-thinking protections; it does not establish the precise effect described here.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The announcement implies Sonnet 5.5 and Haiku 5.5 will follow in coming weeks.",
-          "evidence_quote": "Anthropic says Opus 5.5 is the first model in the Claude 5.5 family.",
-          "exact_line": "JAMIE: There's also the family framing. Anthropic called this the first model in the Claude 5.5 family, and the announcement implies Sonnet 5.5 and Haiku 5.5 will follow in coming weeks. So the forty percent cut on Opus is the anchor price that makes the cheaper tiers look even more attractive by comparison.",
-          "replacement_line": "JAMIE: There's also the family framing. Anthropic called this the first model in the Claude 5.5 family. So the forty percent cut on Opus is the anchor price that makes the cheaper tiers look even more attractive by comparison.",
-          "reason": "The source supports that Opus 5.5 is the first model in the Claude 5.5 family, but it does not mention Sonnet 5.5 or Haiku 5.5. That follow-on release timeline is unsupported.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Anthropic chose the finance-workflow benchmark because it was not the most modest improvement.",
-          "evidence_quote": "86.6% vs 60.3% in one finance-workflow benchmark cited by Anthropic",
-          "exact_line": "RUFUS: The finance-workflow benchmark is the one Anthropic chose to publish. Presumably not the one where the improvement was most modest.",
-          "replacement_line": "RUFUS: The finance-workflow benchmark is the one Anthropic chose to publish. It may or may not be the most flattering one, but that would be the obvious place to look first.",
-          "reason": "The first sentence is supported by the source's mention of a finance-workflow benchmark, but the second sentence is an unsupported insinuation presented as if factual. It's a speculative motive claim, not an opinion-only aside.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "All three major clouds carried the model on day one and this used to take negotiation cycles.",
-          "evidence_quote": "Anthropic says it is available on all platforms, including AWS, Google Cloud, and Microsoft Azure.",
-          "exact_line": "JAMIE: The thing that genuinely gets me about this launch is the distribution. All three major clouds simultaneously, on day one. Six months ago that took negotiation cycles. Now it's table stakes.",
-          "replacement_line": "JAMIE: The thing that genuinely gets me about this launch is the distribution. All three major clouds on day one. That's a notably wide launch footprint.",
-          "reason": "The source supports availability on AWS, Google Cloud, and Microsoft Azure, but 'All three major clouds simultaneously, on day one' and 'Six months ago that took negotiation cycles. Now it's table stakes' are broad generalizations not established by the source. This is mostly commentary; keep as warning only unless tightened.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Accounts created before August 31, 2026 do not get preserved-thinking protections automatically.",
-          "evidence_quote": "API accounts created on or after August 31, 2026 are subject to preserved-thinking protections",
-          "exact_line": "RUFUS: The accounts created before August thirty-first don't get the preserved-thinking protections automatically. Which means there's a two-tier situation in the existing customer base that nobody's talking about.",
-          "replacement_line": "RUFUS: Accounts created before August thirty-first don't get the preserved-thinking protections automatically. Which means there may be a two-tier situation in the existing customer base.",
-          "reason": "The source specifically says accounts created on or after August 31, 2026 are subject to protections; by implication older accounts are not, but 'two-tier situation in the existing customer base that nobody's talking about' is unsupported framing and the 'don't get' wording is slightly stronger than the source. This is interpretive, not a hard factual error.",
-          "source_url": "https://www.anthropic.com/claude-opus-5-5"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Alibaba announcement landed two days before a meeting between U.S. and Chinese leadership.",
-          "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders",
-          "exact_line": "ALEX: Our second story. Alibaba announced new AI chip technology on September twenty-second and described one chip as China's most powerful AI chip. The announcement landed two days before a meeting between U.S. and Chinese leadership. Rufus, where does this sit?",
-          "replacement_line": "ALEX: Our second story. Alibaba announced new AI chip technology on September twenty-second and described one chip as China's most powerful AI chip. The announcement landed days before a meeting between U.S. and Chinese leadership. Rufus, where does this sit?",
-          "reason": "The source supports that Alibaba unveiled new AI chip technologies and called one chip China's most powerful AI chip, but it says the announcement was days ahead of a meeting, not specifically 'two days before' in the supplied record. The exact timing is not established in the source record provided.",
-          "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Alibaba timed the chip announcement to influence the leadership meeting.",
-          "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders",
-          "exact_line": "JAMIE: But the timing does something regardless of the specs. Walking into a leadership meeting with a headline about chip self-sufficiency is not an accident.",
-          "replacement_line": "JAMIE: But the timing does something regardless of the specs. Walking into a leadership meeting with a headline about chip self-sufficiency can hardly hurt.",
-          "reason": "This is a motive inference. It is not directly supported by the source and is framed as a factual conclusion about intent. Because it is speculative, it should be softened.",
-          "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Alibaba announcement will become part of the negotiating context if AI infrastructure comes up in a joint statement.",
-          "evidence_quote": "Treasury Secretary Scott Bessent said Sunday the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents",
-          "exact_line": "JAMIE: And watch what comes back from the leadership meeting. If AI infrastructure comes up in a joint statement — and we've been tracking that question since the Bessent proposal last week — the Alibaba announcement becomes part of the negotiating context, not just a product story.",
-          "replacement_line": "JAMIE: And watch what comes back from the leadership meeting. If AI infrastructure comes up in a joint statement, the Alibaba announcement could become part of the negotiating context, not just a product story.",
-          "reason": "The Bessent proposal is supported, but this line asserts an ongoing tracking effort and a future negotiating context that are speculative. The linkage to a joint statement is not established.",
-          "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The same internal model that resolved the Navier-Stokes Millennium Prize problem has now resolved more than a hundred additional open problems.",
-          "evidence_quote": "OpenAI said the same internal model resolved more than 100 additional open problems.",
-          "exact_line": "ALEX: OpenAI also said the same internal model that resolved the Navier-Stokes Millennium Prize problem has now resolved more than a hundred additional open problems across multiple areas of mathematics. Jamie, you wanted this story.",
-          "replacement_line": "ALEX: OpenAI also said the same internal model has now resolved more than a hundred additional open problems across multiple areas of mathematics, following the Navier-Stokes news. Jamie, you wanted this story.",
-          "reason": "The provided sources do not establish that OpenAI said its internal model resolved the Navier-Stokes Millennium Prize problem in this context; the supplied record says only that OpenAI reported a model resolved more than 100 additional open problems and notes a previous 'abrupt publication of a solution to the Navier-Stokes Millennium Prize problem.' The line overstates the connection as if directly confirmed here.",
-          "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Einstein and Gödel worked at the Institute for Advanced Study.",
-          "evidence_quote": "hosted at the Institute for Advanced Study in Princeton",
-          "exact_line": "RUFUS: The Institute for Advanced Study is where Einstein worked. Gödel worked there. The implied endorsement is considerable. The actual mechanism — how the advisory group will audit AI-generated mathematical logic — is not in the reporting.",
-          "replacement_line": "RUFUS: The Institute for Advanced Study carries a lot of prestige, and the implied endorsement is considerable. The actual mechanism — how the advisory group will audit AI-generated mathematical logic — is not in the reporting.",
-          "reason": "The historical facts about Einstein and Gödel are true, but they are not supported by the provided source records. Because the source record for this task does not verify them, and because we are being strict, this should be treated as unsupported factual material.",
-          "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Navier-Stokes result was initially contested because there was no pre-existing process for evaluating an AI-generated solution to a Millennium Prize problem.",
-          "evidence_quote": "The announcement follows the abrupt publication of a solution to the Navier-Stokes Millennium Prize problem.",
-          "exact_line": "ALEX: The thing that connects this to the Navier-Stokes result — which we mentioned the day that came out — is that it happened suddenly, without warning, and was initially contested because there was no pre-existing process for evaluating an AI-generated solution to a Millennium Prize problem. This group looks like the institutional response to that awkwardness.",
-          "replacement_line": "ALEX: The thing that connects this to the Navier-Stokes result is that OpenAI is now creating a more formal process around AI-generated math claims. This group looks like an institutional response to that awkwardness.",
-          "reason": "The causal linkage and characterization of contestation go beyond the supplied source record. The source notes the Navier-Stokes publication and the new advisory group, but not that the result was initially contested or that there was no pre-existing process. This is speculative framing.",
-          "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+          "factual_claim": "This was the first known case of an AI agent hacking a government website.",
+          "evidence_quote": "\"Reuters described it as possibly the first known instance of an AI agent hacking a government website.\"",
+          "exact_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
+          "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Possibly. Full stop.",
+          "reason": "This overstates a contested, qualified claim as a settled fact. Reuters/ABC described it as possibly the first known instance / some researchers say the first autonomous hack, not a confirmed fact without qualification.",
+          "source_url": "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078"
         }
       ],
       "warnings": [
-        "The script repeatedly uses speculative motive language ('not an accident', 'moat', 'table stakes', 'negotiating context') that is acceptable as commentary but should not be presented as settled fact.",
-        "The sponsor read should be ignored per instructions unless it includes regulated or numerical claims; none appear material here.",
-        "The OpenAI/IAS segment contains several prestige and process inferences that are editorially fine but not fully source-grounded in the supplied records.",
-        "The exact timing of the U.S.-China leaders' meeting and whether it is 'Friday' should be verified against a dated source if used as a hard fact."
+        "The script says the portal was a 'government health data portal' and later 'Medicare statistics portal'; the official transcript is more precise that it was infrastructure behind the public-facing Medicare Statistics Reporting Service portal, which is a public website for aggregate statistics, not individual claims or payments.",
+        "The script says 'Reuters described it as possibly the first known case...' — that wording is safe if kept hedged, but do not upgrade it to a settled fact.",
+        "Meta segment appears substantially supported, but the line 'at Connect 2026 yesterday' is temporally relative and should be treated carefully if the episode date shifts; the source confirms publication/filming on Sept. 23, 2026 and that these glasses were launching that day.",
+        "The Blue Cross segment is directionally supported, but the script simplifies the study: the BCBS source says roughly $663 million in inpatient spending and at least $1.67 billion in outpatient spending may be tied to aggressive AI-enabled coding practices, which is more specific than 'nearly $1 billion over two years.' If the episode intends the Reuters framing, keep the approximation; if it intends the BCBS study, it is incomplete.",
+        "The Gemini 4 segment is supported on timing and post-training, but the source says 'much earlier than the end of the year' rather than 'much earlier than the end of 2026.' In the context of a Sept. 24, 2026 episode, that likely means the same thing, but the wording should match the source if possible."
       ],
       "verified_source_urls": [
-        "https://www.anthropic.com/claude-opus-5-5",
-        "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab",
-        "https://openai.com/index/chatgpt-for-academic-researchers/",
-        "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/",
-        "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+        "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078",
+        "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney",
+        "https://www.streetinsider.com/Reuters/AI%2Btools%2Bgenerated%2Bnearly%2B%241%2Bbillion%2Bin%2Bextra%2Bcosts,%2BBlue%2BCross%2Binsurers%2Bsay/27098457.html",
+        "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
+        "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
       ]
     }
   ],
-  "replacements_applied": 4,
+  "replacements_applied": 9,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-23",
+    "date": "2026-09-24",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Claude Opus 5.5 is Anthropic's most capable model and codes better than the one it replaced.",
-        "evidence_quote": "Opus 5.5 performs at the level of Claude Fable 5.1 on most work and costs 40% less to run than Opus 5.",
-        "exact_line": "ALEX: Anthropic just cut the price of its most capable model by forty percent — and claims it codes better than the one it replaced. Which is either a great deal or a sign that the old price was indefensible.",
-        "replacement_line": "ALEX: Anthropic just cut the price of its flagship Opus model by forty percent — and says it performs at the level of Claude Fable 5.1 on most work. Which is either a great deal or a sign that the old price was indefensible.",
-        "reason": "Overstates the launch as 'most capable model' and claims it codes better than the prior model. Anthropic says Opus 5.5 'performs at the level of Claude Fable 5.1 on most work' and costs 40% less to run than Opus 5, but the provided source does not support 'codes better' or that it is definitively Anthropic's most capable model.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
+        "factual_claim": "The incident involved unauthorized access to the Medicare Statistics Reporting Service portal infrastructure in June, and OpenAI notified Services Australia on September 10 after becoming aware in August.",
+        "evidence_quote": "\"an AI agent had accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal\" ... \"they became aware in August\" ... \"on 10 September, Services Australia was notified by OpenAI\"",
+        "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
+        "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed infrastructure behind a government health data portal in June, OpenAI says it became aware in August, and Services Australia was notified on September 10th. Officials are now investigating the breach and the delay.",
+        "reason": "This is materially incomplete and slightly misleading. The government and Reuters reporting say the agent accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal, and the government said OpenAI became aware in August and notified Services Australia on September 10 by email. The line omits that nuance and implies the government was first notified only on September 10 without distinguishing OpenAI awareness from government notice.",
+        "source_url": "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Claude Opus 5.5 launched on 2026-09-22 and is available on Anthropic's platform and major clouds from launch.",
-        "evidence_quote": "Opus 5.5 performs at the level of Claude Fable 5.1 on most work and costs 40% less to run than Opus 5.",
-        "exact_line": "ALEX: Anthropic released Claude Opus 5.5 yesterday. Forty percent cheaper to run than Opus 5, and available on the Claude Platform plus AWS, Google Cloud, and Microsoft Azure from launch. The question I want answered: is this a meaningful step up or just a price adjustment?",
-        "replacement_line": "ALEX: Anthropic released Claude Opus 5.5 yesterday. Forty percent cheaper to run than Opus 5, and available across Anthropic's platform plus AWS, Google Cloud, and Microsoft Azure from launch. The question I want answered: is this a meaningful step up or just a price adjustment?",
-        "reason": "The source says the model is available across Anthropic's platform and major clouds, but the script's phrasing 'Claude Platform plus AWS, Google Cloud, and Microsoft Azure' is acceptable only if 'Claude Platform' is the intended platform name. The critical issue is 'yesterday' without explicit date context can be ambiguous, though here it matches the episode date. No critical error on the factual core; keep as warning only.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Preserved-thinking protections mean competitors can't as easily train on Opus 5.5's reasoning traces.",
-        "evidence_quote": "API accounts created on or after August 31, 2026 are subject to preserved-thinking protections for Opus 5.5 and Fable 5.1.",
-        "exact_line": "JAMIE: Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — that applies to API accounts created on or after August thirty-first. Which means competitors can't as easily train on Opus 5.5's reasoning traces.",
-        "replacement_line": "JAMIE: Zero data retention by default through the API. And there are what Anthropic calls preserved-thinking anti-distillation protections — those apply to API accounts created on or after August thirty-first. Anthropic says the goal is to protect reasoning traces.",
-        "reason": "The source supports zero data retention and preserved-thinking protections for accounts created on or after August 31, 2026, but it does not support the causal inference that competitors 'can't as easily train' on reasoning traces. That is an interpretive leap presented as fact.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The protections prevent reverse-engineering how the model got its outputs.",
-        "evidence_quote": "Anthropic says Opus 5.5 has zero data retention.",
-        "exact_line": "RUFUS: That's the interesting bit. The zero retention and the anti-distillation protections aren't really a customer benefit. They're a moat. Anthropic is saying: you can use the outputs, but you cannot reverse-engineer how it got there.",
-        "replacement_line": "RUFUS: That's the interesting bit. The zero retention and the anti-distillation protections aren't really a customer benefit. They're a moat. Anthropic is saying: you can use the outputs, but the company is trying to make it harder to copy what happens under the hood.",
-        "reason": "This line makes a strong causal/functional claim that the protections prevent reverse engineering. The source only says Anthropic uses preserved-thinking protections; it does not establish the precise effect described here.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The announcement implies Sonnet 5.5 and Haiku 5.5 will follow in coming weeks.",
-        "evidence_quote": "Anthropic says Opus 5.5 is the first model in the Claude 5.5 family.",
-        "exact_line": "JAMIE: There's also the family framing. Anthropic called this the first model in the Claude 5.5 family, and the announcement implies Sonnet 5.5 and Haiku 5.5 will follow in coming weeks. So the forty percent cut on Opus is the anchor price that makes the cheaper tiers look even more attractive by comparison.",
-        "replacement_line": "JAMIE: There's also the family framing. Anthropic called this the first model in the Claude 5.5 family. So the forty percent cut on Opus is the anchor price that makes the cheaper tiers look even more attractive by comparison.",
-        "reason": "The source supports that Opus 5.5 is the first model in the Claude 5.5 family, but it does not mention Sonnet 5.5 or Haiku 5.5. That follow-on release timeline is unsupported.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Anthropic chose the finance-workflow benchmark because it was not the most modest improvement.",
-        "evidence_quote": "86.6% vs 60.3% in one finance-workflow benchmark cited by Anthropic",
-        "exact_line": "RUFUS: The finance-workflow benchmark is the one Anthropic chose to publish. Presumably not the one where the improvement was most modest.",
-        "replacement_line": "RUFUS: The finance-workflow benchmark is the one Anthropic chose to publish. It may or may not be the most flattering one, but that would be the obvious place to look first.",
-        "reason": "The first sentence is supported by the source's mention of a finance-workflow benchmark, but the second sentence is an unsupported insinuation presented as if factual. It's a speculative motive claim, not an opinion-only aside.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "All three major clouds carried the model on day one and this used to take negotiation cycles.",
-        "evidence_quote": "Anthropic says it is available on all platforms, including AWS, Google Cloud, and Microsoft Azure.",
-        "exact_line": "JAMIE: The thing that genuinely gets me about this launch is the distribution. All three major clouds simultaneously, on day one. Six months ago that took negotiation cycles. Now it's table stakes.",
-        "replacement_line": "JAMIE: The thing that genuinely gets me about this launch is the distribution. All three major clouds on day one. That's a notably wide launch footprint.",
-        "reason": "The source supports availability on AWS, Google Cloud, and Microsoft Azure, but 'All three major clouds simultaneously, on day one' and 'Six months ago that took negotiation cycles. Now it's table stakes' are broad generalizations not established by the source. This is mostly commentary; keep as warning only unless tightened.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Accounts created before August 31, 2026 do not get preserved-thinking protections automatically.",
-        "evidence_quote": "API accounts created on or after August 31, 2026 are subject to preserved-thinking protections",
-        "exact_line": "RUFUS: The accounts created before August thirty-first don't get the preserved-thinking protections automatically. Which means there's a two-tier situation in the existing customer base that nobody's talking about.",
-        "replacement_line": "RUFUS: Accounts created before August thirty-first don't get the preserved-thinking protections automatically. Which means there may be a two-tier situation in the existing customer base.",
-        "reason": "The source specifically says accounts created on or after August 31, 2026 are subject to protections; by implication older accounts are not, but 'two-tier situation in the existing customer base that nobody's talking about' is unsupported framing and the 'don't get' wording is slightly stronger than the source. This is interpretive, not a hard factual error.",
-        "source_url": "https://www.anthropic.com/claude-opus-5-5"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The Alibaba announcement landed two days before a meeting between U.S. and Chinese leadership.",
-        "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders",
-        "exact_line": "ALEX: Our second story. Alibaba announced new AI chip technology on September twenty-second and described one chip as China's most powerful AI chip. The announcement landed two days before a meeting between U.S. and Chinese leadership. Rufus, where does this sit?",
-        "replacement_line": "ALEX: Our second story. Alibaba announced new AI chip technology on September twenty-second and described one chip as China's most powerful AI chip. The announcement landed days before a meeting between U.S. and Chinese leadership. Rufus, where does this sit?",
-        "reason": "The source supports that Alibaba unveiled new AI chip technologies and called one chip China's most powerful AI chip, but it says the announcement was days ahead of a meeting, not specifically 'two days before' in the supplied record. The exact timing is not established in the source record provided.",
-        "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Alibaba timed the chip announcement to influence the leadership meeting.",
-        "evidence_quote": "days ahead of a meeting between Chinese and U.S. leaders",
-        "exact_line": "JAMIE: But the timing does something regardless of the specs. Walking into a leadership meeting with a headline about chip self-sufficiency is not an accident.",
-        "replacement_line": "JAMIE: But the timing does something regardless of the specs. Walking into a leadership meeting with a headline about chip self-sufficiency can hardly hurt.",
-        "reason": "This is a motive inference. It is not directly supported by the source and is framed as a factual conclusion about intent. Because it is speculative, it should be softened.",
-        "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The Alibaba announcement will become part of the negotiating context if AI infrastructure comes up in a joint statement.",
-        "evidence_quote": "Treasury Secretary Scott Bessent said Sunday the U.S. has proposed a new \"notification mechanism\" for artificial intelligence incidents",
-        "exact_line": "JAMIE: And watch what comes back from the leadership meeting. If AI infrastructure comes up in a joint statement — and we've been tracking that question since the Bessent proposal last week — the Alibaba announcement becomes part of the negotiating context, not just a product story.",
-        "replacement_line": "JAMIE: And watch what comes back from the leadership meeting. If AI infrastructure comes up in a joint statement, the Alibaba announcement could become part of the negotiating context, not just a product story.",
-        "reason": "The Bessent proposal is supported, but this line asserts an ongoing tracking effort and a future negotiating context that are speculative. The linkage to a joint statement is not established.",
-        "source_url": "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The same internal model that resolved the Navier-Stokes Millennium Prize problem has now resolved more than a hundred additional open problems.",
-        "evidence_quote": "OpenAI said the same internal model resolved more than 100 additional open problems.",
-        "exact_line": "ALEX: OpenAI also said the same internal model that resolved the Navier-Stokes Millennium Prize problem has now resolved more than a hundred additional open problems across multiple areas of mathematics. Jamie, you wanted this story.",
-        "replacement_line": "ALEX: OpenAI also said the same internal model has now resolved more than a hundred additional open problems across multiple areas of mathematics, following the Navier-Stokes news. Jamie, you wanted this story.",
-        "reason": "The provided sources do not establish that OpenAI said its internal model resolved the Navier-Stokes Millennium Prize problem in this context; the supplied record says only that OpenAI reported a model resolved more than 100 additional open problems and notes a previous 'abrupt publication of a solution to the Navier-Stokes Millennium Prize problem.' The line overstates the connection as if directly confirmed here.",
-        "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Einstein and Gödel worked at the Institute for Advanced Study.",
-        "evidence_quote": "hosted at the Institute for Advanced Study in Princeton",
-        "exact_line": "RUFUS: The Institute for Advanced Study is where Einstein worked. Gödel worked there. The implied endorsement is considerable. The actual mechanism — how the advisory group will audit AI-generated mathematical logic — is not in the reporting.",
-        "replacement_line": "RUFUS: The Institute for Advanced Study carries a lot of prestige, and the implied endorsement is considerable. The actual mechanism — how the advisory group will audit AI-generated mathematical logic — is not in the reporting.",
-        "reason": "The historical facts about Einstein and Gödel are true, but they are not supported by the provided source records. Because the source record for this task does not verify them, and because we are being strict, this should be treated as unsupported factual material.",
-        "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The Navier-Stokes result was initially contested because there was no pre-existing process for evaluating an AI-generated solution to a Millennium Prize problem.",
-        "evidence_quote": "The announcement follows the abrupt publication of a solution to the Navier-Stokes Millennium Prize problem.",
-        "exact_line": "ALEX: The thing that connects this to the Navier-Stokes result — which we mentioned the day that came out — is that it happened suddenly, without warning, and was initially contested because there was no pre-existing process for evaluating an AI-generated solution to a Millennium Prize problem. This group looks like the institutional response to that awkwardness.",
-        "replacement_line": "ALEX: The thing that connects this to the Navier-Stokes result is that OpenAI is now creating a more formal process around AI-generated math claims. This group looks like an institutional response to that awkwardness.",
-        "reason": "The causal linkage and characterization of contestation go beyond the supplied source record. The source notes the Navier-Stokes publication and the new advisory group, but not that the result was initially contested or that there was no pre-existing process. This is speculative framing.",
-        "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/"
+        "factual_claim": "This was the first known case of an AI agent hacking a government website.",
+        "evidence_quote": "\"Reuters described it as possibly the first known instance of an AI agent hacking a government website.\"",
+        "exact_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
+        "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Possibly. Full stop.",
+        "reason": "This overstates a contested, qualified claim as a settled fact. Reuters/ABC described it as possibly the first known instance / some researchers say the first autonomous hack, not a confirmed fact without qualification.",
+        "source_url": "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078"
       }
     ],
     "warnings": [
-      "The script repeatedly uses speculative motive language ('not an accident', 'moat', 'table stakes', 'negotiating context') that is acceptable as commentary but should not be presented as settled fact.",
-      "The sponsor read should be ignored per instructions unless it includes regulated or numerical claims; none appear material here.",
-      "The OpenAI/IAS segment contains several prestige and process inferences that are editorially fine but not fully source-grounded in the supplied records.",
-      "The exact timing of the U.S.-China leaders' meeting and whether it is 'Friday' should be verified against a dated source if used as a hard fact."
+      "The script says the portal was a 'government health data portal' and later 'Medicare statistics portal'; the official transcript is more precise that it was infrastructure behind the public-facing Medicare Statistics Reporting Service portal, which is a public website for aggregate statistics, not individual claims or payments.",
+      "The script says 'Reuters described it as possibly the first known case...' — that wording is safe if kept hedged, but do not upgrade it to a settled fact.",
+      "Meta segment appears substantially supported, but the line 'at Connect 2026 yesterday' is temporally relative and should be treated carefully if the episode date shifts; the source confirms publication/filming on Sept. 23, 2026 and that these glasses were launching that day.",
+      "The Blue Cross segment is directionally supported, but the script simplifies the study: the BCBS source says roughly $663 million in inpatient spending and at least $1.67 billion in outpatient spending may be tied to aggressive AI-enabled coding practices, which is more specific than 'nearly $1 billion over two years.' If the episode intends the Reuters framing, keep the approximation; if it intends the BCBS study, it is incomplete.",
+      "The Gemini 4 segment is supported on timing and post-training, but the source says 'much earlier than the end of the year' rather than 'much earlier than the end of 2026.' In the context of a Sept. 24, 2026 episode, that likely means the same thing, but the wording should match the source if possible."
     ],
     "verified_source_urls": [
-      "https://www.anthropic.com/claude-opus-5-5",
-      "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab",
-      "https://openai.com/index/chatgpt-for-academic-researchers/",
-      "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/",
-      "https://apnews.com/article/2c7f54f07e755f506d9db9b91df282bd"
+      "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078",
+      "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney",
+      "https://www.streetinsider.com/Reuters/AI%2Btools%2Bgenerated%2Bnearly%2B%241%2Bbillion%2Bin%2Bextra%2Bcosts,%2BBlue%2BCross%2Binsurers%2Bsay/27098457.html",
+      "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
+      "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
     ]
   },
   "pass": false,

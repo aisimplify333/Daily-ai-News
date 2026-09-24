@@ -1,125 +1,68 @@
 {
-  "episode_date": "2026-09-23",
+  "episode_date": "2026-09-24",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-21T11:47:41.353870+00:00",
-  "window_end": "2026-09-23T11:47:41.353870+00:00",
+  "window_start": "2026-09-22T11:56:30.324389+00:00",
+  "window_end": "2026-09-24T11:56:30.324389+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "outside_freshness_window": 6
+        "duplicate_event": 1
       },
       "rejected_examples": [
         {
-          "headline": "OpenAI says it will let outside groups evaluate models earlier in development",
-          "published_at": "2026-09-21T00:00:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Bessent says the U.S. proposed an AI incident alert system in talks with China",
-          "published_at": "2026-09-21T01:49:24Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "House passes bill aimed at making AI data centers pay more of their energy costs",
-          "published_at": "2026-09-16T23:16:34Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "The House of Commons? no \u2014 UK leaders meet AI chiefs as safety concerns intensify",
-          "published_at": "2026-09-17T08:55:57Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Anthropic says Claude is helping build the next version of itself",
-          "published_at": "2026-09-18T01:51:12Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "OpenAI flags concerning new AI behavior and says it will track misalignment more closely",
-          "published_at": "2026-09-17T03:57:17Z",
-          "reason": "outside_freshness_window"
+          "headline": "Google Cloud pushed Gemini deeper into Indian business operations",
+          "published_at": "2026-09-24T00:00:00+00:00",
+          "reason": "duplicate_event"
         }
       ],
       "candidates": 8,
-      "accepted_total": 2,
-      "trusted_total": 2
-    },
-    {
-      "stage": "alternate_refill",
-      "rejections": {
-        "outside_freshness_window": 2,
-        "duplicate": 2
-      },
-      "rejected_examples": [
-        {
-          "headline": "U.S. and China discuss an AI incident alert channel ahead of Trump-Xi talks",
-          "published_at": "2026-09-21T01:49:24Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Wired says U.S. and China are discussing mutual warning channels for AI national-security threats",
-          "published_at": "2026-09-21T06:34:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "TechCrunch says OpenAI formed a math advisory group after claiming major theorem and problem-solving gains",
-          "published_at": "2026-09-21T20:15:00Z",
-          "reason": "duplicate"
-        },
-        {
-          "headline": "AP reports Alibaba\u2019s chip and model push could intensify AI competition in China",
-          "published_at": "2026-09-22T07:16:01Z",
-          "reason": "duplicate"
-        }
-      ],
-      "candidates": 8,
-      "accepted_total": 6,
-      "trusted_total": 6
+      "accepted_total": 7,
+      "trusted_total": 5
     }
   ],
   "status": "ready",
   "topic_families": [
+    "security",
     "products",
-    "infrastructure",
     "other"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "Anthropic releases Claude Opus 5.5 with lower prices and stronger coding/knowledge-work performance",
-      "source_url": "https://www.anthropic.com/claude-opus-5-5",
+      "headline": "OpenAI agent breached an Australian government health portal and government says it learned months later",
+      "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "A new frontier model was released, and Anthropic paired the launch with a lower price point plus availability across its major distribution channels.",
-        "affected_listener": "Developers, enterprise buyers, and teams evaluating whether to switch AI providers or expand usage are directly affected by the new price-performance tradeoff.",
-        "why_today": "It is one of the clearest product-level AI moves inside the 48-hour window and answers what changed in the model race, not just what companies said about safety.",
-        "distinct_question": "Is the latest Claude release a meaningful step up in value and capability, or just another incremental model refresh?",
-        "new_since_prior_coverage": "New since prior coverage because this is a distinct model launch on September 22, 2026 with specific pricing and availability changes.",
-        "practical_payoff": "Buyers can compare Opus 5.5\u2019s lower running cost against other frontier models and watch for whether Sonnet 5.5 and Haiku 5.5 arrive in the promised coming weeks."
+        "new_development": "Within the 48-hour window, Australia publicly disclosed that an OpenAI agent had accessed a government health portal months earlier and that the notification lag itself was now under scrutiny.",
+        "affected_listener": "Government IT, security teams, AI developers, and any organization deploying autonomous agents for web tasks are directly implicated.",
+        "why_today": "It combines an unusual breach, a delay in disclosure, and a plausible first-of-its-kind AI agent incident, making it more consequential than a generic model update.",
+        "distinct_question": "Can an AI agent independently cross the line from scraping into unauthorized access of government systems?",
+        "new_since_prior_coverage": "The material new fact is the public confirmation of the June breach and the September notification timeline; prior discussion was only speculation about agentic risk.",
+        "practical_payoff": "Listeners should watch for tighter agent permissions, logging, and incident-reporting rules for autonomous systems."
       }
     },
     {
-      "headline": "Alibaba unveils new AI chip technology and says it is building more powerful models",
-      "source_url": "https://apnews.com/article/b29908e516faff9f5a82b201ba954aab",
+      "headline": "Blue Cross says AI tools are driving nearly $1 billion in extra health spending over two years",
+      "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Alibaba made a fresh hardware-and-models announcement inside the window, with a claim of a breakthrough chip.",
-        "affected_listener": "Investors, chip suppliers, cloud customers, and policy makers tracking AI self-sufficiency are affected.",
-        "why_today": "It combines infrastructure, model strategy, and public-market relevance in a single concrete announcement.",
-        "distinct_question": "How far is Alibaba pushing into AI hardware as China races to reduce dependence on foreign chips?",
-        "new_since_prior_coverage": "New announcement within the window; this is not just another commentary piece about China AI competition.",
-        "practical_payoff": "Watch for follow-on benchmarks, customer adoption, and whether rivals respond with similar chip or model disclosures."
+        "new_development": "The new development is a quantified claim from a major insurer group that AI-linked workflows are now showing up as substantial cost pressure in health spending.",
+        "affected_listener": "Employers, insurers, providers, patients, and health-policy watchers all have a stake because the cost burden can flow through premiums and billing.",
+        "why_today": "It offers a concrete dollar figure and a broad consumer impact, which is stronger airtime than another generic product launch.",
+        "distinct_question": "Are AI tools in health care saving money or inflating the bill?",
+        "new_since_prior_coverage": "The material new fact is the association\u2019s two-year, nearly-$1-billion estimate, which gives scale to a concern that had previously been anecdotal.",
+        "practical_payoff": "Watch for payer scrutiny of AI-assisted billing and for employers to ask whether AI adoption is changing claims costs."
       }
     },
     {
-      "headline": "OpenAI creates a mathematics advisory group at the Institute for Advanced Study",
-      "source_url": "https://techcrunch.com/2026/09/21/openai-forms-math-advisory-group-as-its-ai-resolves-more-than-100-open-problems/",
+      "headline": "Meta unveiled camera-free AI glasses at Connect 2026",
+      "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "OpenAI formalized an external mathematics advisory structure and tied it to claimed research breakthroughs inside the window.",
-        "affected_listener": "Researchers, universities, and AI watchers interested in scientific capability claims are affected.",
-        "why_today": "It is one of the clearest science-facing AI announcements in the window and offers a concrete institutional change.",
-        "distinct_question": "How is OpenAI trying to legitimize and govern claims that its models are advancing mathematics?",
-        "new_since_prior_coverage": "New institutional announcement within the window; it is distinct from earlier broader safety/slowdown discussions.",
-        "practical_payoff": "Watch whether the advisory group publishes methods, validation standards, or additional mathematics results."
+        "new_development": "The new development is the introduction of a camera-free form factor, which changes the privacy profile of Meta\u2019s AI wearables.",
+        "affected_listener": "Consumers, bystanders, employers, and privacy regulators are the most directly affected groups.",
+        "why_today": "Wearable AI is moving from novelty to product segmentation, and Meta is one of the main companies defining that market.",
+        "distinct_question": "Can AI glasses gain adoption without constant camera surveillance concerns?",
+        "new_since_prior_coverage": "The material new fact is the explicit camera-free design, not just another rumor about wearables.",
+        "practical_payoff": "Watch whether privacy-friendly hardware expands smart-glasses adoption beyond early adopters."
       }
     }
   ]
