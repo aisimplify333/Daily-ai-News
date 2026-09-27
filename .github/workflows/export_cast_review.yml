@@ -1,0 +1,28 @@
+name: Export casting review pack
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/export_cast_review.yml']
+permissions:
+  actions: read
+  contents: read
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: alex-rufus-casting
+          run-id: 36347926276
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: review
+      - name: Summarize audition results
+        run: cat review/manifest.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: casting-listen-first
+          path: |
+            review/*.mp3
+            review/*.txt
+            review/manifest.json
+          retention-days: 30
