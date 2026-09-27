@@ -1,4 +1,4 @@
-"""Four matched, bounded Jamie auditions. Does not modify or publish an episode."""
+"""Matched, bounded Jamie auditions. Does not modify or publish an episode."""
 import json
 import os
 from pathlib import Path
@@ -8,6 +8,11 @@ from grok_tts_v4 import render_jamie
 from hybrid_tts_router_v3_1 import infer_mood
 
 SCENES = [
+    "I disagree. A cheaper demo is not the same as a cheaper working day.",
+    "Who owns that decision? Show me the cost after the trial ends.",
+    "—Then show me the result. That is the part I care about.",
+    "Families could lose access. We need to know who gets help when that happens.",
+    "You are right. I had not separated the promise from the evidence.",
     "I love that. Give me back the hour I lose to admin, and then we can talk. But I want to see the results first.",
     "I'm glad. If this gives people another way to get help, that matters. We still need to know who can actually use it.",
     "Did you just cite yourself as a source? Rufus, your research department is getting remarkably efficient.",

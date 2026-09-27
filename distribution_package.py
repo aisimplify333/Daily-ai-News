@@ -60,13 +60,19 @@ def package(root=Path('.')):
                 art = create_art(title, date, root)
             except (ImportError, OSError) as exc:
                 art = {'status': 'not_generated', 'reason': type(exc).__name__}
-        art_file = root/'episode_art'/f'{date}-cover.png'
-        if art_file.exists() and 'xmlns:itunes=' in source:
-            tag = f'<itunes:image href="{SITE}/episode_art/{date}-cover.png" />'
-            if re.search(r'<itunes:image\b[^>]*/>', block):
-                block = re.sub(r'<itunes:image\b[^>]*/>', tag, block)
-            else:
-                block = block.replace('</item>', tag+'</item>')
+        # Link approved monthly source directly; retire old typographic overrides.
+        try:
+            from discovery_art import monthly_cover
+            cover = monthly_cover(date, root).as_posix()
+            if 'xmlns:itunes=' in source:
+                tag = f'<itunes:image href="{SITE}/{cover}" />'
+                if re.search(r'<itunes:image\b[^>]*/>', block):
+                    block = re.sub(r'<itunes:image\b[^>]*/>', tag, block)
+                else:
+                    block = block.replace('</item>', tag+'</item>')
+        except (OSError, ValueError):
+            # An unavailable image must never resurrect the rejected text card.
+            block = re.sub(r'<itunes:image\b[^>]*href=["\'][^"\']*/episode_art/[^"\']+["\'][^>]*/>', '', block)
         target = root/'distribution'/date
         target.mkdir(parents=True, exist_ok=True)
         question = re.search(r'Listener question:\s*([^\n]+)', desc)

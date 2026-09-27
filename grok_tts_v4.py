@@ -53,6 +53,8 @@ def _expressive_text(text: str, mood: str) -> str:
     mood = (mood or "neutral").strip().lower()
     if not clean:
         return clean
+    if os.getenv("JAMIE_EMOTIONAL_DIRECTION", "true").lower() != "true":
+        return clean
     if re.search(r"\bthe\s*ledger\b|t-h-e-l-e-d-g-r|brought to you by", clean, re.I):
         return clean
 
@@ -67,11 +69,6 @@ def _expressive_text(text: str, mood: str) -> str:
             tag = "chuckle"
         spoken = re.sub(r"^(?:(?:ha|hah|heh)[!. ]+)+", "", clean, flags=re.I).strip()
         return f"[{tag}] {spoken}".strip()
-    if mood == "concern":
-        return f"[breath] {clean}"
-    # Never invent spoken fillers. The writer owns every interruption and reply.
-    if mood == "concession":
-        return f"[pause] {clean}"
     return direct_delivery(clean, mood)
 
 

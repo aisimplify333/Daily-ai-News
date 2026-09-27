@@ -47,6 +47,18 @@ def write_review(stories, timeline, directory="."):
                   for m in sorted({str(c.get("mood", "unknown")) for c in jamie})},
         "listened": False,
     }
+    grok_calls = [c for c in jamie if c.get("provider") == "grok"]
+    tags = [tag for c in grok_calls for tag in c.get("expressions", [])]
+    report["jamie_performance"]["grok_expression_counts"] = {
+        tag: tags.count(tag) for tag in sorted(set(tags))}
+    expressive_moods = {"delight", "warmth", "disbelief", "curiosity",
+                        "pushback", "pressure", "interruption", "concern", "concession"}
+    missing = [c for c in grok_calls if c.get("mood") in expressive_moods
+               and not c.get("expressions")]
+    report["jamie_performance"]["undirected_expressive_calls"] = len(missing)
+    if missing:
+        report["issues"].append(
+            f"{len(missing)} expressive Grok calls had no delivery tags; inspect long-turn guard or disabled direction.")
     emotional = {"delight", "warmth", "curiosity", "disbelief"}
     if jamie and not any(c.get("mood") in emotional for c in jamie):
         report["issues"].append("No Jamie emotional-direction modes requested; inspect script and routing before claiming the upgrade worked.")

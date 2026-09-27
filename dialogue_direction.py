@@ -26,6 +26,13 @@ PERFORMANCE AND DIALOGUE EDIT:
 - Alex asks short, consequential questions and follows the answer. He can finish a
   colleague's thought or make a small joke, then restore focus without summarising
   what everyone just heard. Give the other hosts ownership of substantial facts.
+- Build dramatic exchanges from a real stake: one host wants a useful outcome,
+  another tests the obstacle, and the answer changes someone's position. Let Jamie
+  move from delight to a pointed challenge or from disbelief to a quiet concession
+  when the evidence earns it. Let Alex press a specific unanswered question; give
+  Rufus an observation that changes the frame. Keep short replies adjacent so the
+  performance can accelerate, then let the consequential fact settle. Do not restart
+  a resolved argument or explain a punchline. Never invent disagreement or facts.
 - Vary scene rhythm: quick exchange, a complete explanation, an unexpected response,
   then room to absorb it. Never manufacture interruptions or disagreement for a quota.
   Use an ending em dash only for an intentional unfinished thought that the next host

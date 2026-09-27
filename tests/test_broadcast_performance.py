@@ -18,8 +18,8 @@ class BroadcastPerformanceTests(unittest.TestCase):
         original = "Amodei is making a different argument, Rufus."
         self.assertEqual(grok._clean_text(original), original)
         self.assertEqual(grok._expressive_text(original, "pushback"),
-                         "Ah-moh-day is making a different argument, Rufus.")
-        self.assertEqual(grok._expressive_text("No, Rufus.", "interruption"), "No, Rufus.")
+                         "<emphasis>Ah-moh-day is making a different argument, Rufus.</emphasis>")
+        self.assertEqual(grok._expressive_text("No, Rufus.", "interruption"), "<fast>No, Rufus.</fast>")
 
     def test_sponsor_and_jamie_excluded_and_disable_supported(self):
         for speaker, text in [("ALEX", "The Ledger is our sponsor."), ("JAMIE", "No, Rufus.")]:

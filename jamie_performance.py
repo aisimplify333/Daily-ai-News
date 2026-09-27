@@ -1,4 +1,4 @@
-"""Conservative Jamie intent cues and speech-only direction; no new factual words.
+"""Jamie intent cues and speech-only direction; no new factual words.
 
 Controls: https://docs.x.ai/developers/model-capabilities/audio/text-to-speech
 Intent is a heuristic, not a measurement of the resulting performance.
@@ -36,7 +36,10 @@ def direct_delivery(text, mood):
     if os.getenv("JAMIE_EMOTIONAL_DIRECTION", "true").lower() != "true":
         return text
     tag = {"delight": "build-intensity", "warmth": "soft",
-           "disbelief": "emphasis", "curiosity": "slow"}.get(mood)
+           "disbelief": "emphasis", "curiosity": "slow",
+           "pushback": "emphasis", "pressure": "build-intensity",
+           "interruption": "fast", "concern": "soft",
+           "concession": "decrease-intensity"}.get(mood)
     if not tag:
         return text
     sentences = list(re.finditer(r"[^.!?]+(?:[.!?](?=\s|$)|$)", text))

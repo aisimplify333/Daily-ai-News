@@ -24,7 +24,7 @@ jobs:
         with:
           python-version: '3.11'
       - run: pip install requests pydub
-      - name: Render four matched pairs with Ursa
+      - name: Render matched emotional and dramatic pairs with Ursa
         env:
           XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
           GROK_TTS_MAX_RETRIES: '1'
