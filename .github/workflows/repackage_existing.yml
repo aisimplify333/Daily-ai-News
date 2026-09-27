@@ -2,7 +2,7 @@ name: Repackage published audio without paid generation
 on:
   push:
     branches: [main]
-    paths: ['PACKAGING_RUN_ONCE']
+    paths: ['PACKAGING_RUN_ONCE', '.github/workflows/repackage_existing.yml']
   workflow_dispatch:
 permissions:
   contents: write
@@ -40,7 +40,7 @@ jobs:
           from pathlib import Path
           date = Path('PACKAGING_RUN_ONCE').read_text().strip()
           datetime.date.fromisoformat(date)
-          subprocess.run(['git', 'sparse-checkout', 'add', '--no-cone',
+          subprocess.run(['git', 'sparse-checkout', 'add',
                           f'/episode_audio/podcast_{date}.mp3',
                           f'/episode_audio/clip_{date}.*',
                           f'/episode_audio/show_trailer_candidate_{date}.mp3'], check=True)
