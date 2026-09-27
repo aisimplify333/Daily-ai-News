@@ -121,9 +121,17 @@ class RecoveryTests(unittest.TestCase):
             [story(i) for i in range(3)], [story(3), story(4)], n=5)
         self.assertEqual((len(rows), first, second), (5, 1, 1))
 
-    def test_production_does_not_return_cached_incomplete_slate(self):
-        with patch.object(news, "_grounded_text", return_value=json.dumps({"stories": [story(i) for i in range(3)]})), patch.object(news, "_recovery_search", return_value="{}"):
-            with self.assertRaisesRegex(RuntimeError, "at least 5 required"):
+    def test_four_validated_stories_survive_missing_reserves_after_retry(self):
+        rows, first, second = self.run_slate([story(i) for i in range(4)], [], n=5)
+        self.assertEqual((len(rows), first, second), (4, 1, 1))
+        with open("grounded_research_report.json") as handle:
+            report = json.load(handle)
+        self.assertEqual(report['status'], 'ready_without_full_reserves')
+        self.assertEqual(report['reserve_candidates_missing'], 1)
+
+    def test_two_stories_still_block_and_are_not_cached(self):
+        with patch.object(news, "_grounded_text", return_value=json.dumps({"stories": [story(i) for i in range(2)]})), patch.object(news, "_recovery_search", return_value="{}"):
+            with self.assertRaisesRegex(RuntimeError, "at least 3 required"):
                 news.build_grounded_story_slate("2026-09-08")
         self.assertEqual(news.build_grounded_story_slate.cache_info().currsize, 0)
 
@@ -148,7 +156,7 @@ class RecoveryTests(unittest.TestCase):
 
     def test_exhaustion_stops_before_generation(self):
         with patch.object(news, "_grounded_text", return_value="invalid JSON"), patch.object(news, "_recovery_search", return_value="{}") as second:
-            with self.assertRaisesRegex(RuntimeError, "at least 5 required"):
+            with self.assertRaisesRegex(RuntimeError, "at least 3 required"):
                 news.build_grounded_story_slate("2026-09-08")
             self.assertEqual(second.call_count, 1)
 
@@ -177,7 +185,7 @@ class RecoveryTests(unittest.TestCase):
     def test_discovery_never_substitutes_for_verified_stories(self):
         seeds = json.dumps([{"title": "Unverified headline", "published": story(1)["published_at"]}])
         with patch.object(news, "_grounded_text", return_value="{}"), patch.object(news, "_recovery_search", return_value="{}") as recover:
-            with self.assertRaisesRegex(RuntimeError, "at least 5 required"):
+            with self.assertRaisesRegex(RuntimeError, "at least 3 required"):
                 news.build_grounded_story_slate("2026-09-08", discovery_json=seeds)
         self.assertEqual(recover.call_count, 2)
 

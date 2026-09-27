@@ -17,7 +17,7 @@ def load_recovery(date_str):
         raise ValueError("Recovery requires today's matching dated research and storyboard")
     stories = slate.get("selected", [])
     board = decision.get("v3_3_debate_board", {})
-    if len(stories) != 5 or not board.get("published_title"):
+    if not 3 <= len(stories) <= 5 or not board.get("published_title"):
         raise ValueError("Incomplete recovery research or storyboard")
     for story in stories:
         published = dt.datetime.fromisoformat(story["published_at"].replace("Z", "+00:00"))

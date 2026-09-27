@@ -242,8 +242,8 @@ def main() -> int:
 
     slate = _read_json(ROOT / "story_slate_decision.json")
     selected = slate.get("selected") or []
-    if len(selected) != 5:
-        failures.append(f"expected 5 stories, found {len(selected)}")
+    if not 3 <= len(selected) <= 5:
+        failures.append(f"expected 3 aired stories and up to 2 reserves, found {len(selected)}")
     trusted_count = sum(
         1 for item in selected
         if isinstance(item, dict) and int(item.get("source_tier") or 0) >= 2
@@ -253,7 +253,7 @@ def main() -> int:
         if selected and isinstance(selected[0], dict) else 0
     )
     if trusted_count < 3:
-        failures.append(f"only {trusted_count} of 5 stories came from trusted sources")
+        failures.append(f"only {trusted_count} of {len(selected)} stories came from trusted sources")
     if lead_source_tier < 2:
         failures.append("lead story did not come from a primary or trusted source")
     stale = [

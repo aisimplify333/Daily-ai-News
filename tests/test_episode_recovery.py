@@ -36,6 +36,8 @@ class RecoveryTests(unittest.TestCase):
             with patch.dict(os.environ, {'EPISODE_RECOVERY_DIR': folder}), patch.object(recovery.dt, 'datetime', wraps=dt.datetime) as clock:
                 clock.now.return_value = dt.datetime(2026, 9, 22, 18, tzinfo=dt.timezone.utc)
                 self.assertEqual(len(recovery.load_recovery('2026-09-22')['stories']), 5)
+                (root/'grounded_story_slate.json').write_text(json.dumps({'date':'2026-09-22','selected':[row]*3}))
+                self.assertEqual(len(recovery.load_recovery('2026-09-22')['stories']),3)
                 with self.assertRaises(ValueError):
                     recovery.load_recovery('2026-09-23')
                 row['published_at'] = '2026-09-19T10:00:00Z'

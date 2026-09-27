@@ -399,6 +399,8 @@ def build_grounded_story_slate(
     seen: set[str] = set()
     seen_urls: set[str] = set()
     minimum_story_count = min(n, max(1, MIN_TRUSTED_STORIES))
+    # Five is the research target; three distinct stories fill the aired show.
+    required_story_count = min(n, 3)
     report: Dict[str, Any] = {"episode_date": date_str, "discovery_seed_count": len(seeds),
                             "window_start": (now - dt.timedelta(hours=MAX_AGE_HOURS)).isoformat(),
                             "window_end": now.isoformat(), "attempts": [], "status": "researching"}
@@ -478,16 +480,21 @@ def build_grounded_story_slate(
          "editorial_analysis_not_verified_facts": s.get("editorial_case", {})}
         for s in normalized[:3]
     ]
-    report["status"] = "ready" if len(normalized) >= n else "insufficient"
+    report["candidate_target"] = n
+    report["required_air_stories"] = required_story_count
+    report["reserve_candidates_missing"] = max(0, n - len(normalized))
+    report["status"] = ("ready" if len(normalized) >= n else
+                        "ready_without_full_reserves" if len(normalized) >= required_story_count
+                        else "insufficient")
     try:
         Path("grounded_research_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     except OSError:
         pass
     trusted = sum(1 for story in normalized if int(story["source_tier"]) >= 2)
-    if len(normalized) < n:
+    if len(normalized) < required_story_count:
         raise RuntimeError(
             f"Grounded search returned {len(normalized)} valid stories; "
-            f"at least {n} required"
+            f"at least {required_story_count} required ({n} candidate target)"
         )
     if int(normalized[0]["source_tier"]) < 2:
         raise RuntimeError("Grounded lead did not come from a primary or trusted source")
@@ -730,7 +737,9 @@ def write_grounded_slate_report(
     payload = {
         "version": "grounded-story-slate-v1",
         "date": date_str,
-        "pass": len(stories) == 5,
+        "pass": 3 <= len(stories) <= 5,
+        "candidate_target": 5,
+        "required_air_stories": 3,
         "selected": stories,
     }
     Path(path).write_text(

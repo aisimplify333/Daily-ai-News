@@ -5951,14 +5951,14 @@ def produce_episode() -> None:
     experiments = choose_episode_experiments(seed=today)
     sponsors = apply_sponsor_variant(load_sponsors(), experiments=experiments, spoken_url=THELEDGR_SPOKEN_URL)
     stories = order_stories_for_episode(pick_top_stories(intel, n=5))
-    if len(stories) < 5:
+    if len(stories) < 3:
         _safe_print(f"    ⚠️ Story slate thin after selection ({len(stories)}). Broadening and retrying...")
         intel = broaden_intel_pool()
         candidate_debug = select_story_candidates(intel, n=60, memory=load_show_memory(), bucket_cap=STORY_BUCKET_CAP)
         STORY_SCORES_PATH.write_text(json.dumps(build_story_debug_table(candidate_debug), indent=2, ensure_ascii=False), encoding="utf-8")
         stories = order_stories_for_episode(pick_top_stories(intel, n=5))
-    if len(stories) < 5:
-        raise RuntimeError(f"Unable to build a 5-story slate. Only {len(stories)} stories survived intake + selection.")
+    if len(stories) < 3:
+        raise RuntimeError(f"Unable to build the required 3-story slate. Only {len(stories)} stories survived intake + selection.")
 
     _safe_print(" >> ✍️ WRITING FULL EPISODE (5 segments)...")
     script = generate_episode_script(stories, sponsors, today)
