@@ -1,0 +1,47 @@
+name: Complete missing Gemini casting takes
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/complete_cast_audition.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  resume:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: /auditions/ensemble_cast.py
+      - uses: actions/download-artifact@v4
+        with:
+          name: alex-rufus-casting
+          run-id: 36347926276
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          path: auditions/ensemble_output
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          pip install requests pydub
+      - name: Retry only four missing Gemini takes sequentially
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          RESUME_CAST: 'true'
+        run: python auditions/ensemble_cast.py
+      - name: Results
+        if: always()
+        run: cat auditions/ensemble_output/manifest.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: complete-casting-listen-first
+          path: |
+            auditions/ensemble_output/*.mp3
+            auditions/ensemble_output/*.txt
+            auditions/ensemble_output/manifest.json
+          retention-days: 30

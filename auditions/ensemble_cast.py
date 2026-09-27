@@ -6,6 +6,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import time
 import requests
 from pydub import AudioSegment
 from pydub.silence import detect_leading_silence
@@ -59,7 +60,7 @@ def request_audio(provider, voice, row):
                     'speech_metadata': {'style': accent + style + '. Close microphone conversation with friends; no announcer delivery.'}}]}],
                    'generationConfig': {'responseModalities': ['AUDIO'],
                     'speechConfig': {'voiceConfig': {'voice': voice}}}}
-    response = requests.post(url, headers=headers, json=payload, timeout=(10, 150))
+    response = requests.post(url, headers=headers, json=payload, timeout=(10, 240))
     if not response.ok:
         # Never log request headers, credential-bearing URLs, or raw provider errors.
         raise RuntimeError(f'{provider} HTTP {response.status_code}')
@@ -80,6 +81,8 @@ def request_audio(provider, voice, row):
 
 def render(job):
     key, provider, voice, index = job
+    if os.getenv('RESUME_CAST') == 'true':
+        time.sleep(20)
     try:
         clip, meta = request_audio(provider, voice, SCENE[index])
         path = OUT / f'{key}.wav'
@@ -106,7 +109,16 @@ def main():
                 'maximum_requests': 28, 'retry_count': 0, 'takes': {}, 'mixes': {},
                 'limitation': 'Compares complete voice-and-direction packages, not isolated models. Baseline has no acting tags. Gemini chuckles use its documented laugh event. All versions use identical Jamie audio and gaps.'}
     (OUT/'TRANSCRIPT.txt').write_text('\n'.join(f'{r[0]}: {r[1]} [Direction: {r[2]}]' for r in SCENE))
-    with ThreadPoolExecutor(max_workers=3) as pool:
+    resume = os.getenv('RESUME_CAST') == 'true'
+    if resume:
+        manifest = json.loads((OUT/'manifest.json').read_text())
+        jobs = [j for j in jobs if manifest['takes'].get(j[0], {}).get('status') != 'ok']
+        assert len(jobs) <= 4 and all(j[1] == 'gemini' for j in jobs)
+        for result in manifest['takes'].values():
+            if result['status'] == 'ok':
+                assert (OUT/result['file']).is_file(), 'Preserved take missing'
+        manifest['recovery_maximum_requests'] = len(jobs)
+    with ThreadPoolExecutor(max_workers=1 if resume else 3) as pool:
         for key, result in pool.map(render, jobs):
             manifest['takes'][key] = result
             (OUT/'manifest.json').write_text(json.dumps(manifest, indent=2))
