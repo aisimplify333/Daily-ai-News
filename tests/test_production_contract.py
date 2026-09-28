@@ -221,10 +221,15 @@ class ProductionContractTests(unittest.TestCase):
 
     def test_schedule_avoids_hour_boundary_and_keeps_cost_safe_triggers(self):
         workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text(encoding="utf-8")
-        self.assertEqual(re.findall(r"cron:\s*'([^']+)'", workflow), ["17 6 * * 1-5"])
+        self.assertEqual(re.findall(r"cron:\s*'([^']+)'", workflow), ["17 6 * * 1-5", "17 7 * * 1-5", "17 8 * * 1-5"])
         triggers = workflow.split("on:\n", 1)[1].split("\npermissions:", 1)[0]
         self.assertIn("workflow_dispatch:", triggers)
-        self.assertNotRegex(triggers, r"(?m)^  (push|pull_request):")
+        self.assertNotRegex(triggers, r"(?m)^  pull_request:")
+        self.assertIn("paths: ['PRODUCTION_RUN_ONCE']", triggers)
+        self.assertIn("steps.release_check.outputs.result == 'produce'", workflow)
+        self.assertIn("context.eventName === 'schedule'", workflow)
+        self.assertIn("r.id !== context.runId", workflow)
+        self.assertIn("['completed', 'in_progress'].includes(r.status)", workflow)
         self.assertIn("cancel-in-progress: false", workflow)
         self.assertIn('FORCE_REBUILD: "false"', workflow)
         self.assertIn('ALLOW_DUPLICATE_DATE_REBUILD: "false"', workflow)
