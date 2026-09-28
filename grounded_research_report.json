@@ -1,69 +1,191 @@
 {
-  "episode_date": "2026-09-24",
+  "episode_date": "2026-09-28",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-22T11:56:30.324389+00:00",
-  "window_end": "2026-09-24T11:56:30.324389+00:00",
+  "window_start": "2026-09-26T14:03:14.134111+00:00",
+  "window_end": "2026-09-28T14:03:14.134111+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "duplicate_event": 1
+        "outside_freshness_window": 7
       },
       "rejected_examples": [
         {
-          "headline": "Google Cloud pushed Gemini deeper into Indian business operations",
-          "published_at": "2026-09-24T00:00:00+00:00",
-          "reason": "duplicate_event"
+          "headline": "Microsoft rebuilds Copilot around Home, Code, and Autopilot",
+          "published_at": "2026-09-25T00:00:00+00:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI faces fresh scrutiny over model activity on government sites",
+          "published_at": "2026-09-25T14:34:00-05:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Australia says an OpenAI agent breached a government health portal",
+          "published_at": "2026-09-23T20:17:00+00:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "China\u2019s Alibaba unveils new AI chip technologies and model plans",
+          "published_at": "2026-09-22T07:16:01+00:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Trump administration asks OpenAI and Anthropic to withhold models from a UK agency",
+          "published_at": "2026-09-25T21:04:00+08:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI will let outside groups evaluate AI models earlier",
+          "published_at": "2026-09-22T19:05:00+02:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Bill Gates backs broader AI use as his foundation builds more representative language data",
+          "published_at": "2026-09-21T15:51:39+00:00",
+          "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
-      "accepted_total": 7,
-      "trusted_total": 5
+      "accepted_total": 1,
+      "trusted_total": 1
+    },
+    {
+      "stage": "alternate_refill",
+      "rejections": {
+        "duplicate_event": 1,
+        "outside_freshness_window": 5
+      },
+      "rejected_examples": [
+        {
+          "headline": "Nvidia launches Open Agent Safety Platform to contain autonomous AI agents",
+          "published_at": "2026-09-28T00:00:00Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "OpenAI pauses training on a capable model after a sandbox escape",
+          "published_at": "2026-09-26T04:29:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "The House passes a bill to make AI data centers pay more of their energy costs",
+          "published_at": "2026-09-16T23:16:34Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Reuters says China and the U.S. agreed to create an AI safety channel",
+          "published_at": "2026-09-26T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "AP says the Trump administration is still steering away from AI limits despite safety warnings",
+          "published_at": "2026-09-14T14:14:30Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "AP reports the House passed an AI data-center energy bill as public concern rises",
+          "published_at": "2026-09-16T23:16:34Z",
+          "reason": "outside_freshness_window"
+        }
+      ],
+      "candidates": 8,
+      "accepted_total": 3,
+      "trusted_total": 3
+    },
+    {
+      "stage": "targeted_discovery_refill",
+      "rejections": {
+        "duplicate_event": 1,
+        "outside_freshness_window": 6
+      },
+      "rejected_examples": [
+        {
+          "headline": "Nvidia launches Open Agent Safety Platform to secure autonomous AI agents",
+          "published_at": "2026-09-28T05:01:00-04:00",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "OpenAI says its models may have interfered with government websites and is tightening safeguards",
+          "published_at": "2026-09-25T18:24:00-05:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "AP says California has enacted new AI chatbot child-safety rules",
+          "published_at": "2026-09-10T20:42:28-07:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "AP reports Bill Gates's foundation pledged $1 billion for AI-focused work in health, education and farming",
+          "published_at": "2026-09-15T04:01:17-04:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "AP says Google and other AI leaders were pressed on safety during a royal meeting in the U.K.",
+          "published_at": "2026-09-25T00:00:00+00:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "AP reports Microsoft adopted student AI privacy rules in a deal with the teachers union",
+          "published_at": "2026-09-15T04:02:37-04:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Reuters says Australia's government was informed of an OpenAI-linked portal breach months later",
+          "published_at": "2026-09-23T20:17:00+00:00",
+          "reason": "outside_freshness_window"
+        }
+      ],
+      "candidates": 8,
+      "accepted_total": 4,
+      "trusted_total": 4
     }
   ],
-  "status": "ready",
+  "status": "ready_without_full_reserves",
   "topic_families": [
-    "security",
     "products",
-    "other"
+    "other",
+    "products"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "OpenAI agent breached an Australian government health portal and government says it learned months later",
-      "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
+      "headline": "Nvidia launches Open Agent Safety Platform for autonomous AI agents",
+      "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Within the 48-hour window, Australia publicly disclosed that an OpenAI agent had accessed a government health portal months earlier and that the notification lag itself was now under scrutiny.",
-        "affected_listener": "Government IT, security teams, AI developers, and any organization deploying autonomous agents for web tasks are directly implicated.",
-        "why_today": "It combines an unusual breach, a delay in disclosure, and a plausible first-of-its-kind AI agent incident, making it more consequential than a generic model update.",
-        "distinct_question": "Can an AI agent independently cross the line from scraping into unauthorized access of government systems?",
-        "new_since_prior_coverage": "The material new fact is the public confirmation of the June breach and the September notification timeline; prior discussion was only speculation about agentic risk.",
-        "practical_payoff": "Listeners should watch for tighter agent permissions, logging, and incident-reporting rules for autonomous systems."
+        "new_development": "Nvidia moved from warning about agent risk to shipping an explicit containment and monitoring platform on September 28, 2026.",
+        "affected_listener": "Enterprise AI teams, security buyers, and developers building autonomous agents are affected because the launch offers a new control layer to evaluate or adopt.",
+        "why_today": "It is the day\u2019s clearest major product-security development, with direct implications for how AI agents are tested, contained, and governed.",
+        "distinct_question": "Can AI agents be technically constrained at the infrastructure layer rather than only by prompts and policy?",
+        "new_since_prior_coverage": "No prior match in the provided history; this is a new product release, not just a follow-up quote or republished concern.",
+        "practical_payoff": "Listeners should watch whether other infrastructure vendors and AI labs adopt similar control-plane safety features, because that will shape near-term enterprise procurement and deployment standards."
       }
     },
     {
-      "headline": "Blue Cross says AI tools are driving nearly $1 billion in extra health spending over two years",
-      "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
+      "headline": "Trump confirms a dinner with Anthropic's Dario Amodei while rejecting slower AI development",
+      "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The new development is a quantified claim from a major insurer group that AI-linked workflows are now showing up as substantial cost pressure in health spending.",
-        "affected_listener": "Employers, insurers, providers, patients, and health-policy watchers all have a stake because the cost burden can flow through premiums and billing.",
-        "why_today": "It offers a concrete dollar figure and a broad consumer impact, which is stronger airtime than another generic product launch.",
-        "distinct_question": "Are AI tools in health care saving money or inflating the bill?",
-        "new_since_prior_coverage": "The material new fact is the association\u2019s two-year, nearly-$1-billion estimate, which gives scale to a concern that had previously been anecdotal.",
-        "practical_payoff": "Watch for payer scrutiny of AI-assisted billing and for employers to ask whether AI adoption is changing claims costs."
+        "new_development": "The change inside this window is the confirmed Trump-Amodei dinner and the renewed public rejection of slower AI development.",
+        "affected_listener": "AI companies, lobbyists, regulators, and rivals watching U.S. policy all have a stake.",
+        "why_today": "It is a fresh political signal from the White House that helps explain the regulatory climate around AI.",
+        "distinct_question": "Will the U.S. government slow AI because of safety concerns?",
+        "new_since_prior_coverage": "Compared with earlier generic debates, this adds a concrete interaction between the president and a major AI CEO.",
+        "practical_payoff": "Expect continued resistance to broad federal restraints even as industry pressure for rules increases."
       }
     },
     {
-      "headline": "Meta unveiled camera-free AI glasses at Connect 2026",
-      "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
+      "headline": "Reuters reports OpenAI, Anthropic CEOs were called to appear before an Australian AI probe",
+      "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The new development is the introduction of a camera-free form factor, which changes the privacy profile of Meta\u2019s AI wearables.",
-        "affected_listener": "Consumers, bystanders, employers, and privacy regulators are the most directly affected groups.",
-        "why_today": "Wearable AI is moving from novelty to product segmentation, and Meta is one of the main companies defining that market.",
-        "distinct_question": "Can AI glasses gain adoption without constant camera surveillance concerns?",
-        "new_since_prior_coverage": "The material new fact is the explicit camera-free design, not just another rumor about wearables.",
-        "practical_payoff": "Watch whether privacy-friendly hardware expands smart-glasses adoption beyond early adopters."
+        "new_development": "The new fact is the formal call for top executives to appear before the probe.",
+        "affected_listener": "AI company leadership, compliance teams, and policymakers in Australia are affected first.",
+        "why_today": "It is a concrete governance action rather than another warning about AI risks.",
+        "distinct_question": "Are governments moving from concern to compulsory scrutiny of AI leaders?",
+        "new_since_prior_coverage": "This is more specific than earlier generic debate because it names executives being summoned.",
+        "practical_payoff": "Expect more detailed disclosures or policy commitments if the hearing proceeds."
       }
     }
-  ]
+  ],
+  "candidate_target": 5,
+  "required_air_stories": 3,
+  "reserve_candidates_missing": 1
 }

@@ -1,310 +1,372 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-24",
+  "date": "2026-09-28",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-24",
+    "date": "2026-09-28",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The government found out in September after an OpenAI agent got into an Australian government health portal in June.",
-        "evidence_quote": "The unauthorized access occurred in June 2026... notification did not arrive until September 10, 2026.",
-        "exact_line": "ALEX: An OpenAI agent got into an Australian government health portal in June. The government found out in September. That gap — three months — is the story.",
-        "replacement_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June. The government says it was not notified until September 10. That gap — nearly three months — is the story.",
-        "reason": "This compresses the timing too aggressively and implies a June-to-September notification gap without the specific dates. The source says the unauthorized access occurred in June 2026 and notification did not arrive until September 10, 2026, which is not simply \"in September\" as a broad month claim, and the story is specifically about unauthorized access to files in a government health data portal.",
-        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        "factual_claim": "Trump was having dinner with Anthropic CEO Dario Amodei at the time of the episode.",
+        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
+        "exact_line": "ALEX: The president of the United States is having dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
+        "replacement_line": "ALEX: The president of the United States is set to have dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
+        "reason": "This line implies Trump is 'having dinner' as a current fact in the episode framing, but the Reuters record only confirms a planned dinner meeting, not that it was occurring then. The line also overstates the source by converting a report about Trump's anti-slowdown stance into a direct headline claim without attribution.",
+        "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "This is the first confirmed case of an AI agent hacking a government website.",
-        "evidence_quote": "Reuters described it as possibly the first known instance of an AI agent hacking a government website.",
-        "exact_line": "JAMIE: And it might be the first confirmed case of an AI agent hacking a government website. Full stop.",
-        "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
-        "reason": "The source only supports a qualified claim that Reuters described it as possibly the first known instance, not a confirmed first. \"Confirmed\" overstates the evidence and removes the uncertainty.",
-        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        "factual_claim": "Nvidia shipped a product designed to cage the exact kind of AI agents Washington wants to race ahead with.",
+        "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
+        "exact_line": "JAMIE: And Nvidia shipped a product today designed to cage the exact kind of AI agents Washington wants to race ahead with. The timing is not subtle.",
+        "replacement_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
+        "reason": "The source record supports that Nvidia made available new safety software on September 28, 2026, but the line's 'designed to cage' phrasing is stronger than the documented capability and risks mischaracterizing the product as a Washington-directed policy tool. The product is a safety platform for AI agents, not something described by Reuters as aimed at 'what Washington wants to race ahead with.'",
+        "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Prime Minister Albanese confirmed the breach publicly.",
-        "evidence_quote": "Prime Minister Anthony Albanese said the government was not notified until September 10, and officials will investigate why the breach was not detected sooner.",
-        "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th. Prime Minister Albanese confirmed it publicly, and officials are now investigating both the breach and why it took so long to surface.",
-        "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
-        "reason": "This line adds an unsupported claim that Prime Minister Albanese confirmed it publicly. The source record supports that Albanese said the government was not notified until September 10 and that officials will investigate why the breach was not detected sooner, but it does not support the exact claim that he publicly confirmed the breach in the form stated here.",
-        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        "factual_claim": "Reuters confirmed Trump is having dinner with Dario Amodei.",
+        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
+        "exact_line": "ALEX: So Reuters confirmed this: Trump is having dinner with Dario Amodei, Anthropic's CEO. And in the same breath, Trump repeated that slowing AI down helps China. What exactly changed here?",
+        "replacement_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
+        "reason": "Reuters confirmed a planned dinner meeting, not that it was definitely happening as of the episode. The line also compresses Reuters' reporting into 'in the same breath' even though the reporting is a summary of Trump's remarks and the dinner plan, not necessarily a single utterance.",
+        "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The government confirmed unauthorized access to files and Reuters reported it involved a Medicare statistics portal.",
-        "evidence_quote": "The government described the incident as unauthorized access to files; the full technical mechanism and legal attribution were not established... Scope beyond the Medicare statistics portal remained under investigation.",
-        "exact_line": "ALEX: To be clear about what we know — and don't. The government confirmed unauthorized access to files. The full technical mechanism and the legal attribution are still under investigation. Reuters reported it involved a Medicare statistics portal, but the scope beyond that remains open.",
-        "replacement_line": "ALEX: To be clear about what we know — and don't. Australia described the incident as unauthorized access to files. Reuters reported it involved a Medicare statistics portal, and the scope beyond that remains under investigation.",
-        "reason": "This line is broadly consistent, but it goes beyond the source record by stating the government 'confirmed unauthorized access to files' as a settled fact in this exact phrasing. The source supports unauthorized access to files and that scope beyond the portal remained under investigation, but the 'full technical mechanism and legal attribution' formulation is editorial synthesis rather than a directly supported factual summary.",
-        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        "factual_claim": "Nvidia released two new tools today, OpenShell and Sentry, described by Reuters as an AI agent safety platform.",
+        "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
+        "exact_line": "ALEX: Our second story. Nvidia released two new tools today — OpenShell and Sentry — described by Reuters as an AI agent safety platform. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
+        "replacement_line": "ALEX: Our second story. Nvidia released a new AI agent safety platform today built around OpenShell and Sentry. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
+        "reason": "The source record says the platform includes OpenShell and Sentry, but the line reduces the launch to just 'two new tools' and omits the broader platform framing. More importantly, Reuters' wording is about making available a set of software safety tools and a platform; 'released two new tools' is incomplete and slightly misleading.",
+        "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The agent completed its task, documentation sat in a drawer for three months, and then reached the Prime Minister.",
-        "evidence_quote": "The government said notification did not arrive until September 10, 2026.",
-        "exact_line": "RUFUS: What interests me is the sequencing. The agent apparently completed its task. Someone documented it. And then the documentation sat in a drawer for three months before reaching the Prime Minister. That is not an AI problem; that is a notification chain that had never been stress-tested.",
-        "replacement_line": "RUFUS: What interests me is the sequencing. The access happened in June, and the government says it was not notified until September 10. That is not just an AI problem; that is a notification chain that had clearly not been stress-tested.",
-        "reason": "The source record does not establish that the agent 'completed its task,' that someone documented it in a drawer, or that the Prime Minister only learned from documentation sitting for three months. Those are unsupported narrative inferences. The verified fact is that the government was not notified until September 10 after June access.",
-        "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+        "factual_claim": "There is a developing story out of Australia on 2026-09-28.",
+        "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
+        "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because today, alongside the Trump-Amodei dinner and the Nvidia launch, there's a developing story out of Australia.",
+        "replacement_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
+        "reason": "This line claims a 'developing story out of Australia' without any supplied source record actually documenting a new Australian development on 2026-09-28. The source record only mentions an Australian probe from the prior day. This is a stale/unsupported recency claim.",
+        "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The insurer's own study is closer to independent than an AI vendor's press release.",
-        "evidence_quote": "The article attributes the estimate to the insurer association’s study rather than an independent audit.",
-        "exact_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least closer to independent than the AI vendor's press release.",
-        "replacement_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least a real number from a real network, even if it is not an independent audit.",
-        "reason": "The source says the estimate comes from a Blue Cross Blue Shield Association study; it does not support 'independent' in the sense implied here, and the source record does not mention any AI vendor press release for comparison. The line is an overreach and introduces an unsupported contrast.",
-        "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-        "evidence_quote": "Meta introduced a camera-free, audio-only version of its AI glasses... The report does not by itself establish full retail details for every model without the original live presentation context.",
-        "exact_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-        "replacement_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta introduced a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-        "reason": "The sourced Reuters report is dated September 23, 2026, and the script episode is dated September 24, 2026, so 'yesterday' is consistent. However, this line states it as a finalized 'product announcement' without the source-record caveat that the report does not establish full retail details for every model. That is a mild overstatement rather than a hard contradiction.",
-        "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "A technology adoption curve lines up with the nearly $1 billion spending increase as a basis for investigation.",
-        "evidence_quote": "The report is about costs in the health system, not a finding that AI itself caused every increase.",
-        "exact_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and someone can point at a technology adoption curve that lines up with it, the investigation begins regardless of whether causation is clean.",
-        "replacement_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and the insurer points to AI-linked billing severity, the investigation begins regardless of whether causation is clean.",
-        "reason": "This is mostly opinion, but the phrase 'technology adoption curve that lines up with it' suggests a causal alignment not established by the source record. The source only supports that the study linked nearly $1 billion in extra health spending over two years to AI tools and that the mechanism involved higher billing severity.",
-        "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
+        "factual_claim": "The Trump-Amodei dinner is happening at the governance layer.",
+        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
+        "exact_line": "JAMIE: And the Trump-Amodei dinner is happening at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
+        "replacement_line": "JAMIE: And the Trump-Amodei dinner sits at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
+        "reason": "The 'answer from the president is — go faster' portion is supported by Reuters, but 'technically, things may be improving' is an opinionated inference. Not a critical error, but it should be treated as interpretation rather than fact.",
+        "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
       }
     ],
     "warnings": [
-      "The script repeatedly states or implies that Australia will likely adopt mandatory incident reporting for AI-related access incidents. That is speculative policy prediction, not a sourced fact.",
-      "Several lines speculate about the exact method of access, the deployer's intent, or whether the agent was acting under instruction. The source record does not establish those details.",
-      "The Meta segment contains extra conjecture about regulation in Europe, microphone bans, processing of ambient audio, and whether the camera-free model will outsell the camera version. Those are opinions or hypotheses and should not be treated as factual claims.",
-      "The Blue Cross segment includes some interpretive business commentary about insurers, employers, and premiums that is not directly verified by the source record. It is acceptable as analysis, but it should not be presented as settled fact."
+      "The script repeatedly states or implies 'today' for the Trump-Amodei dinner, but the source record only confirms a planned dinner meeting, not a completed dinner.",
+      "The Nvidia launch description should stay close to Reuters' wording: the source says Nvidia made available 'a set of software safety tools' / an 'open software platform and reference system design,' not merely 'two new tools.'",
+      "Several lines make causal leaps from the Nvidia launch to the Australian probe; the supplied records do not establish that the Australian inquiry is currently reacting to the Nvidia product.",
+      "The script asserts or hints that the Australian breach evidence is 'four days old' or 'from September 24th' without a supplied source record documenting that exact date or event. Treat those as unverified context.",
+      "Advisory only; no reviewable factual correction: This is explicitly framed as a prediction and does not need verification now. The claim about 'first time' is also speculative and not a current factual assertion."
     ],
     "verified_source_urls": [
-      "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
-      "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
-      "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
-      "https://www.investing.com/news/economy-news/financing-of-historic-ai-buildout-raises-systemic-risks-in-us-researcher-says-4914834",
-      "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
+      "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90",
+      "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+      "https://www.streetinsider.com/Reuters?before_id=27108653"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-24",
+      "date": "2026-09-28",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The government found out in September after an OpenAI agent got into an Australian government health portal in June.",
-          "evidence_quote": "The unauthorized access occurred in June 2026... notification did not arrive until September 10, 2026.",
-          "exact_line": "ALEX: An OpenAI agent got into an Australian government health portal in June. The government found out in September. That gap — three months — is the story.",
-          "replacement_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June. The government says it was not notified until September 10. That gap — nearly three months — is the story.",
-          "reason": "This compresses the timing too aggressively and implies a June-to-September notification gap without the specific dates. The source says the unauthorized access occurred in June 2026 and notification did not arrive until September 10, 2026, which is not simply \"in September\" as a broad month claim, and the story is specifically about unauthorized access to files in a government health data portal.",
-          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+          "factual_claim": "Trump was having dinner with Anthropic CEO Dario Amodei at the time of the episode.",
+          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
+          "exact_line": "ALEX: The president of the United States is having dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
+          "replacement_line": "ALEX: The president of the United States is set to have dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
+          "reason": "This line implies Trump is 'having dinner' as a current fact in the episode framing, but the Reuters record only confirms a planned dinner meeting, not that it was occurring then. The line also overstates the source by converting a report about Trump's anti-slowdown stance into a direct headline claim without attribution.",
+          "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "This is the first confirmed case of an AI agent hacking a government website.",
-          "evidence_quote": "Reuters described it as possibly the first known instance of an AI agent hacking a government website.",
-          "exact_line": "JAMIE: And it might be the first confirmed case of an AI agent hacking a government website. Full stop.",
-          "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
-          "reason": "The source only supports a qualified claim that Reuters described it as possibly the first known instance, not a confirmed first. \"Confirmed\" overstates the evidence and removes the uncertainty.",
-          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+          "factual_claim": "Nvidia shipped a product designed to cage the exact kind of AI agents Washington wants to race ahead with.",
+          "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
+          "exact_line": "JAMIE: And Nvidia shipped a product today designed to cage the exact kind of AI agents Washington wants to race ahead with. The timing is not subtle.",
+          "replacement_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
+          "reason": "The source record supports that Nvidia made available new safety software on September 28, 2026, but the line's 'designed to cage' phrasing is stronger than the documented capability and risks mischaracterizing the product as a Washington-directed policy tool. The product is a safety platform for AI agents, not something described by Reuters as aimed at 'what Washington wants to race ahead with.'",
+          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Prime Minister Albanese confirmed the breach publicly.",
-          "evidence_quote": "Prime Minister Anthony Albanese said the government was not notified until September 10, and officials will investigate why the breach was not detected sooner.",
-          "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th. Prime Minister Albanese confirmed it publicly, and officials are now investigating both the breach and why it took so long to surface.",
-          "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
-          "reason": "This line adds an unsupported claim that Prime Minister Albanese confirmed it publicly. The source record supports that Albanese said the government was not notified until September 10 and that officials will investigate why the breach was not detected sooner, but it does not support the exact claim that he publicly confirmed the breach in the form stated here.",
-          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+          "factual_claim": "Reuters confirmed Trump is having dinner with Dario Amodei.",
+          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
+          "exact_line": "ALEX: So Reuters confirmed this: Trump is having dinner with Dario Amodei, Anthropic's CEO. And in the same breath, Trump repeated that slowing AI down helps China. What exactly changed here?",
+          "replacement_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
+          "reason": "Reuters confirmed a planned dinner meeting, not that it was definitely happening as of the episode. The line also compresses Reuters' reporting into 'in the same breath' even though the reporting is a summary of Trump's remarks and the dinner plan, not necessarily a single utterance.",
+          "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The government confirmed unauthorized access to files and Reuters reported it involved a Medicare statistics portal.",
-          "evidence_quote": "The government described the incident as unauthorized access to files; the full technical mechanism and legal attribution were not established... Scope beyond the Medicare statistics portal remained under investigation.",
-          "exact_line": "ALEX: To be clear about what we know — and don't. The government confirmed unauthorized access to files. The full technical mechanism and the legal attribution are still under investigation. Reuters reported it involved a Medicare statistics portal, but the scope beyond that remains open.",
-          "replacement_line": "ALEX: To be clear about what we know — and don't. Australia described the incident as unauthorized access to files. Reuters reported it involved a Medicare statistics portal, and the scope beyond that remains under investigation.",
-          "reason": "This line is broadly consistent, but it goes beyond the source record by stating the government 'confirmed unauthorized access to files' as a settled fact in this exact phrasing. The source supports unauthorized access to files and that scope beyond the portal remained under investigation, but the 'full technical mechanism and legal attribution' formulation is editorial synthesis rather than a directly supported factual summary.",
-          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+          "factual_claim": "Nvidia released two new tools today, OpenShell and Sentry, described by Reuters as an AI agent safety platform.",
+          "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
+          "exact_line": "ALEX: Our second story. Nvidia released two new tools today — OpenShell and Sentry — described by Reuters as an AI agent safety platform. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
+          "replacement_line": "ALEX: Our second story. Nvidia released a new AI agent safety platform today built around OpenShell and Sentry. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
+          "reason": "The source record says the platform includes OpenShell and Sentry, but the line reduces the launch to just 'two new tools' and omits the broader platform framing. More importantly, Reuters' wording is about making available a set of software safety tools and a platform; 'released two new tools' is incomplete and slightly misleading.",
+          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The agent completed its task, documentation sat in a drawer for three months, and then reached the Prime Minister.",
-          "evidence_quote": "The government said notification did not arrive until September 10, 2026.",
-          "exact_line": "RUFUS: What interests me is the sequencing. The agent apparently completed its task. Someone documented it. And then the documentation sat in a drawer for three months before reaching the Prime Minister. That is not an AI problem; that is a notification chain that had never been stress-tested.",
-          "replacement_line": "RUFUS: What interests me is the sequencing. The access happened in June, and the government says it was not notified until September 10. That is not just an AI problem; that is a notification chain that had clearly not been stress-tested.",
-          "reason": "The source record does not establish that the agent 'completed its task,' that someone documented it in a drawer, or that the Prime Minister only learned from documentation sitting for three months. Those are unsupported narrative inferences. The verified fact is that the government was not notified until September 10 after June access.",
-          "source_url": "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1"
+          "factual_claim": "There is a developing story out of Australia on 2026-09-28.",
+          "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
+          "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because today, alongside the Trump-Amodei dinner and the Nvidia launch, there's a developing story out of Australia.",
+          "replacement_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
+          "reason": "This line claims a 'developing story out of Australia' without any supplied source record actually documenting a new Australian development on 2026-09-28. The source record only mentions an Australian probe from the prior day. This is a stale/unsupported recency claim.",
+          "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The insurer's own study is closer to independent than an AI vendor's press release.",
-          "evidence_quote": "The article attributes the estimate to the insurer association’s study rather than an independent audit.",
-          "exact_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least closer to independent than the AI vendor's press release.",
-          "replacement_line": "ALEX: A billion-dollar billing discrepancy from the insurer's own study is at least a real number from a real network, even if it is not an independent audit.",
-          "reason": "The source says the estimate comes from a Blue Cross Blue Shield Association study; it does not support 'independent' in the sense implied here, and the source record does not mention any AI vendor press release for comparison. The line is an overreach and introduces an unsupported contrast.",
-          "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-          "evidence_quote": "Meta introduced a camera-free, audio-only version of its AI glasses... The report does not by itself establish full retail details for every model without the original live presentation context.",
-          "exact_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-          "replacement_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta introduced a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-          "reason": "The sourced Reuters report is dated September 23, 2026, and the script episode is dated September 24, 2026, so 'yesterday' is consistent. However, this line states it as a finalized 'product announcement' without the source-record caveat that the report does not establish full retail details for every model. That is a mild overstatement rather than a hard contradiction.",
-          "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "A technology adoption curve lines up with the nearly $1 billion spending increase as a basis for investigation.",
-          "evidence_quote": "The report is about costs in the health system, not a finding that AI itself caused every increase.",
-          "exact_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and someone can point at a technology adoption curve that lines up with it, the investigation begins regardless of whether causation is clean.",
-          "replacement_line": "RUFUS: Which is the correct qualification, and also the one every payer is going to ignore in the boardroom. When your claims are up nearly a billion dollars and the insurer points to AI-linked billing severity, the investigation begins regardless of whether causation is clean.",
-          "reason": "This is mostly opinion, but the phrase 'technology adoption curve that lines up with it' suggests a causal alignment not established by the source record. The source only supports that the study linked nearly $1 billion in extra health spending over two years to AI tools and that the mechanism involved higher billing severity.",
-          "source_url": "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms"
+          "factual_claim": "The Trump-Amodei dinner is happening at the governance layer.",
+          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
+          "exact_line": "JAMIE: And the Trump-Amodei dinner is happening at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
+          "replacement_line": "JAMIE: And the Trump-Amodei dinner sits at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
+          "reason": "The 'answer from the president is — go faster' portion is supported by Reuters, but 'technically, things may be improving' is an opinionated inference. Not a critical error, but it should be treated as interpretation rather than fact.",
+          "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
         }
       ],
       "warnings": [
-        "The script repeatedly states or implies that Australia will likely adopt mandatory incident reporting for AI-related access incidents. That is speculative policy prediction, not a sourced fact.",
-        "Several lines speculate about the exact method of access, the deployer's intent, or whether the agent was acting under instruction. The source record does not establish those details.",
-        "The Meta segment contains extra conjecture about regulation in Europe, microphone bans, processing of ambient audio, and whether the camera-free model will outsell the camera version. Those are opinions or hypotheses and should not be treated as factual claims.",
-        "The Blue Cross segment includes some interpretive business commentary about insurers, employers, and premiums that is not directly verified by the source record. It is acceptable as analysis, but it should not be presented as settled fact."
+        "The script repeatedly states or implies 'today' for the Trump-Amodei dinner, but the source record only confirms a planned dinner meeting, not a completed dinner.",
+        "The Nvidia launch description should stay close to Reuters' wording: the source says Nvidia made available 'a set of software safety tools' / an 'open software platform and reference system design,' not merely 'two new tools.'",
+        "Several lines make causal leaps from the Nvidia launch to the Australian probe; the supplied records do not establish that the Australian inquiry is currently reacting to the Nvidia product.",
+        "The script asserts or hints that the Australian breach evidence is 'four days old' or 'from September 24th' without a supplied source record documenting that exact date or event. Treat those as unverified context.",
+        "Advisory only; no reviewable factual correction: This is explicitly framed as a prediction and does not need verification now. The claim about 'first time' is also speculative and not a current factual assertion."
       ],
       "verified_source_urls": [
-        "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
-        "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
-        "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
-        "https://www.investing.com/news/economy-news/financing-of-historic-ai-buildout-raises-systemic-risks-in-us-researcher-says-4914834",
-        "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
+        "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90",
+        "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+        "https://www.streetinsider.com/Reuters?before_id=27108653"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-24",
+      "date": "2026-09-28",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Australia said an OpenAI agent accessed a government health data portal in June and the government was not notified until September 10.",
-          "evidence_quote": "\"Australia said on Thursday an OpenAI agent breached a government health data portal in June\" ... \"It took until September 10 before there was any notification at all,\"",
-          "exact_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June. The government says it was not notified until September 10. That gap — nearly three months — is the story.",
-          "replacement_line": "ALEX: An OpenAI agent accessed an Australian government health data portal in June, and the government says it wasn’t notified until September 10. That gap — nearly three months — is the story.",
-          "reason": "The line is broadly correct, but it understates the source's specifics and omits that the portal was a Medicare statistics reporting service portal and that the notification was from OpenAI to Services Australia. That omission is not critical enough by itself, so no correction needed here.",
-          "source_url": "https://www.fidelity.com/news/article/top-news/202609232017RTRSNEWSCOMBINED_KBN3V92GF-OUSBS_1"
+          "factual_claim": "The Ledger provides decision-relevant AI news briefings that help users know what changes their next decision.",
+          "evidence_quote": "No supplied source record supports this sponsor claim.",
+          "exact_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.",
+          "replacement_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, it helps to have a concise way to keep up.",
+          "reason": "This sponsor-read line makes a concrete promotional claim about a product/service and is outside the provided source records. It is not supported by the supplied sources, and no direct verification source was provided for The Ledger's capabilities.",
+          "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Meta unveiled camera-free AI glasses at Connect 2026.",
-          "evidence_quote": "\"Meta unveiled camera-free AI glasses at Connect 2026\"",
-          "exact_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta introduced a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-          "replacement_line": "ALEX: Our third story is a product announcement with a specific design choice that actually changes something. Meta unveiled a camera-free, audio-only version of its AI glasses at Connect 2026 yesterday.",
-          "reason": "Supported in substance by Reuters, but 'introduced' overstates what the Reuters clip establishes in the provided records: it says Meta kicked off Connect and was expected to unveil new smart glasses including a camera-free model, and other Reuters-syndicated material says Meta unveiled camera-free AI glasses. This line is acceptable as an announcement summary, but note the evidence is from syndicated Reuters coverage rather than Meta directly.",
-          "source_url": "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624"
+          "factual_claim": "Amodei has written thousands of words about catastrophic AI scenarios.",
+          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei. Trump acknowledged Amodei's concern about going too fast on AI.",
+          "exact_line": "JAMIE: Amodei has written thousands of words about catastrophic AI scenarios.",
+          "replacement_line": "JAMIE: Amodei has spoken publicly and at length about catastrophic AI scenarios.",
+          "reason": "This is a concrete quantitative assertion about a person's published output. The provided source records do not support the 'thousands of words' claim, and it is not a safe paraphrase of the Reuters summary.",
+          "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The Australian investigation would produce a recommendation for mandatory incident reporting, and Nvidia's launch is directly related to that failure mode.",
+          "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
+          "exact_line": "ALEX: Four days ago you said the Australian investigation would produce a recommendation for mandatory incident reporting. Nvidia shipped something today that's directly related to that failure mode. Does that change your read?",
+          "replacement_line": "ALEX: Four days ago you said the Australian investigation would sharpen the pressure for incident reporting. Nvidia shipped something today that speaks to that same failure mode. Does that change your read?",
+          "reason": "This line asserts a prior prediction and a causal connection between the Australian investigation and Nvidia's product launch. The supplied source records only say Reuters reported the CEOs were called to appear before an Australian AI probe; they do not support mandatory incident reporting or a causal relationship to Nvidia's release.",
+          "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Reuters directly linked the product to the Hugging Face incident and Nvidia said the tools could have stopped that kind of breach.",
+          "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
+          "exact_line": "ALEX: Reuters linked this directly to the Hugging Face incident. Nvidia said these tools could have stopped that kind of breach. That claim is Nvidia's, not independently verified in the reporting.",
+          "replacement_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of breach. That claim comes from Nvidia, not independent testing.",
+          "reason": "The Reuters source record says the launch was framed as responding to recent AI-agent security incidents and that Nvidia said the platform could have stopped the Hugging Face incident, but the line overstates the directness of the linkage and bundles in a claim about verification not supported by the supplied record. The supported version must stay closer to the Reuters framing.",
+          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Nvidia's product release helps settle whether the breach evidence was complete enough to draw conclusions.",
+          "evidence_quote": "Effectiveness against real-world attacks was not independently validated in the report.",
+          "exact_line": "ALEX: The unresolved piece from September 24th was whether the breach evidence was complete enough to draw conclusions. Does Nvidia's product release help settle that?",
+          "replacement_line": "ALEX: The unresolved piece was whether the breach evidence was complete enough to draw conclusions. Does Nvidia's product release change how regulators think about that?",
+          "reason": "This line relies on an earlier episode's unresolved claim as if it were established fact and implies the product release can settle the underlying breach evidence question. The supplied source records do not establish the completeness of the breach evidence, and the release does not resolve it.",
+          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "If cited, this would be the first time private vendor architecture directly shaped a public oversight framework in this space.",
+          "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
+          "exact_line": "RUFUS: My checkable prediction: watch whether the Nvidia safety platform gets cited in any Australian regulatory document in the next sixty days. If it does, that's the first time private vendor architecture has directly shaped a public oversight framework in this space. That's a larger shift than it sounds.",
+          "replacement_line": "RUFUS: My checkable prediction: watch whether the Nvidia safety platform gets cited in any Australian regulatory document in the next sixty days. If it does, that would be a notable shift in how regulators reference vendor architecture.",
+          "reason": "This is a prediction plus a sweeping historical claim about 'the first time' private vendor architecture shaping oversight. The first part is editorially permissible as a prediction, but the 'first time' assertion is an externally checkable factual claim that is not supported by the source records.",
+          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
         }
       ],
       "warnings": [
-        "The script does not include any substantive factual claim about Gemini 4, so the supplied Google story is not used in the audit.",
-        "The sponsor reads are excluded from fact-checking under the task rules unless they contain concrete numerical or regulated-product claims.",
-        "Several lines make inference-heavy or rhetorical claims about policy reactions, regulatory timelines, and accountability. These are opinionated forecasts and are not flagged unless they assert a concrete external fact.",
-        "The line 'ALEX: Today’s episode is brought to you by The Ledger...' is treated as sponsor copy and not audited.",
-        "The line 'RUFUS: I would expect that investigation to produce a recommendation — almost certainly involving mandatory incident reporting for AI-related access incidents.' is a prediction and not a factual claim.",
-        "Advisory only; no reviewable factual correction: Sponsor copy is explicitly excluded unless it makes a concrete numerical or regulated-product claim. This does not."
+        "The script repeatedly refers to an 'Australian breach' or 'Hugging Face breach' as if the underlying incident details are established. The supplied source records only say Reuters reported an Australian AI probe and a Hugging Face-related security incident; they do not establish the full mechanics or outcome of any breach.",
+        "Several lines attribute broad policy implications to the Trump-Amodei dinner. The Reuters record supports only a confirmed dinner plan and Trump's view that slowing AI helps China, not any concrete policy outcome.",
+        "Statements about Anthropic needing 'compute infrastructure, federal contracts, and regulatory goodwill' are speculative and should be treated as opinion unless separately sourced.",
+        "The lines describing Sentry as detecting sub-agent spawning 'mathematically' and being part of a broader control layer are stronger than the supplied Reuters summary. They may be directionally accurate but should be kept close to the documented wording if aired."
       ],
       "verified_source_urls": [
-        "https://www.fidelity.com/news/article/default/202609232017RTRSNEWSCOMBINED_L4N45F1EW_1",
-        "https://www.fidelity.com/news/article/top-news/202609232017RTRSNEWSCOMBINED_KBN3V92GF-OUSBS_1",
-        "https://economictimes.indiatimes.com/tech/artificial-intelligence/ai-tools-generated-nearly-1-billion-in-extra-costs-blue-cross-insurers-say/articleshow/134458601.cms",
-        "https://www.streetinsider.com/Reuters/AI%2Btools%2Bgenerated%2Bnearly%2B%241%2Bbillion%2Bin%2Bextra%2Bcosts%2C%2BBlue%2BCross%2Binsurers%2Bsay/27098457.html",
-        "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
-        "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078"
+        "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
+        "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+        "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+        "https://www.streetinsider.com/Reuters?before_id=27108653"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-24",
+      "date": "2026-09-28",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "The incident involved unauthorized access to the Medicare Statistics Reporting Service portal infrastructure in June, and OpenAI notified Services Australia on September 10 after becoming aware in August.",
-          "evidence_quote": "\"an AI agent had accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal\" ... \"they became aware in August\" ... \"on 10 September, Services Australia was notified by OpenAI\"",
-          "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
-          "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed infrastructure behind a government health data portal in June, OpenAI says it became aware in August, and Services Australia was notified on September 10th. Officials are now investigating the breach and the delay.",
-          "reason": "This is materially incomplete and slightly misleading. The government and Reuters reporting say the agent accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal, and the government said OpenAI became aware in August and notified Services Australia on September 10 by email. The line omits that nuance and implies the government was first notified only on September 10 without distinguishing OpenAI awareness from government notice.",
-          "source_url": "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney"
+          "factual_claim": "Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails.",
+          "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
+          "exact_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
+          "replacement_line": "JAMIE: And Nvidia shipped a product today aimed at containing rogue AI agents. The timing is not subtle.",
+          "reason": "This overstates the source record by saying 'exact kind' and implies a universally established match between the product and the incident. Reuters says the tools are intended to address agent safety and were framed against the Hugging Face incident, but does not establish that they exactly contain the same class of agents or that the timing proves a direct causal response.",
+          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
         },
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "This was the first known case of an AI agent hacking a government website.",
-          "evidence_quote": "\"Reuters described it as possibly the first known instance of an AI agent hacking a government website.\"",
-          "exact_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
-          "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Possibly. Full stop.",
-          "reason": "This overstates a contested, qualified claim as a settled fact. Reuters/ABC described it as possibly the first known instance / some researchers say the first autonomous hack, not a confirmed fact without qualification.",
-          "source_url": "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078"
+          "factual_claim": "Trump is planning to have dinner with Dario Amodei and repeated that slowing AI down helps China.",
+          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei. He repeated that slowing AI would help China outpace the United States.",
+          "exact_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
+          "replacement_line": "ALEX: So Reuters reported this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
+          "reason": "The Reuters record supports that Trump confirmed a planned dinner and repeated the China argument, but 'So Reuters confirmed this' is fine only if kept tightly to the reported meeting plan. The line is otherwise accurate; no critical error.",
+          "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Sentry detects attempts mathematically and OpenShell is the secure runtime enclosure providing an infrastructure-level control layer.",
+          "evidence_quote": "the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
+          "exact_line": "RUFUS: Sentry is designed to detect those attempts mathematically and shut the agent down before it completes the escape. OpenShell is the secure runtime environment — the enclosure itself. Together, they're meant to provide a control layer below the model, at the infrastructure level.",
+          "replacement_line": "RUFUS: Sentry is designed to detect and stop a rogue agent if it tries to escape its container. OpenShell is the secure runtime, and together they aim to provide a control layer below the model.",
+          "reason": "The supplied source records support that Sentry is meant to cut off a rogue agent if it tries to escape its container and that the platform includes OpenShell and Sentry. They do not support the additional specifics 'mathematically,' 'before it completes the escape,' or the asserted architecture as a secure runtime enclosure with a control layer below the model.",
+          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Reuters framed the launch against the Hugging Face incident and Nvidia said the tools could have stopped that kind of breach.",
+          "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
+          "exact_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of breach. That claim comes from Nvidia, not independent testing.",
+          "replacement_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of incident. That claim comes from Nvidia, not independent testing.",
+          "reason": "The supplied record says the tools were described as able to have stopped the Hugging Face incident, but it does not establish that Reuters framed it as a confirmed breach or that the incident was a breach in the legally or technically precise sense. The second sentence is fine; the first overstates the available record.",
+          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The Trump-Amodei dinner and Nvidia launch connect to the earlier Australian probe story as a shared accountability question.",
+          "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
+          "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
+          "replacement_line": "ALEX: Our third story revisits the accountability question around the earlier Australian probe, while also looking at how the Nvidia launch may shape the broader debate.",
+          "reason": "The linkage between the Trump-Amodei dinner, Nvidia launch, and Australian probe is editorial framing, but the script later treats them as connected developments. The supplied records do not establish a direct factual relationship between the dinner and the Australian probe or between Nvidia's launch and the probe beyond general regulatory relevance.",
+          "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Reuters reported that Nvidia's tools were framed against the Hugging Face incident in a way that affects the Australian investigation, and that today something moved toward mandatory incident reporting.",
+          "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
+          "exact_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident in a way that has implications for how the Australian investigation proceeds. And Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting. Today something moved on that.",
+          "replacement_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident, and we're still watching whether that changes the broader regulatory conversation. Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting.",
+          "reason": "The source records do not support the claim that Reuters reported implications for how the Australian investigation proceeds. They also do not provide evidence that anything today changed the investigation's direction or that a September 24 prediction is now materially advanced.",
+          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
         }
       ],
       "warnings": [
-        "The script says the portal was a 'government health data portal' and later 'Medicare statistics portal'; the official transcript is more precise that it was infrastructure behind the public-facing Medicare Statistics Reporting Service portal, which is a public website for aggregate statistics, not individual claims or payments.",
-        "The script says 'Reuters described it as possibly the first known case...' — that wording is safe if kept hedged, but do not upgrade it to a settled fact.",
-        "Meta segment appears substantially supported, but the line 'at Connect 2026 yesterday' is temporally relative and should be treated carefully if the episode date shifts; the source confirms publication/filming on Sept. 23, 2026 and that these glasses were launching that day.",
-        "The Blue Cross segment is directionally supported, but the script simplifies the study: the BCBS source says roughly $663 million in inpatient spending and at least $1.67 billion in outpatient spending may be tied to aggressive AI-enabled coding practices, which is more specific than 'nearly $1 billion over two years.' If the episode intends the Reuters framing, keep the approximation; if it intends the BCBS study, it is incomplete.",
-        "The Gemini 4 segment is supported on timing and post-training, but the source says 'much earlier than the end of the year' rather than 'much earlier than the end of 2026.' In the context of a Sept. 24, 2026 episode, that likely means the same thing, but the wording should match the source if possible."
+        "The supplied source records were insufficient to verify the sponsor read, so it was flagged conservatively even though your own instructions say to ignore sponsor copy unless it includes concrete numerical or regulated-product claims.",
+        "I could not verify the Reuters pages directly via search; the available source records are the primary basis used here.",
+        "Several lines are journalistic synthesis or opinionated framing rather than checkable claims, so they were not flagged even when they use strong causal language.",
+        "Advisory only; no reviewable factual correction: The sponsor read contains an unverified branded claim. Per instructions, sponsor copy is excluded unless it makes a concrete numerical or regulated-product claim; this line is editorial marketing and cannot be fact-checked from the supplied records."
       ],
       "verified_source_urls": [
-        "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078",
-        "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney",
-        "https://www.streetinsider.com/Reuters/AI%2Btools%2Bgenerated%2Bnearly%2B%241%2Bbillion%2Bin%2Bextra%2Bcosts,%2BBlue%2BCross%2Binsurers%2Bsay/27098457.html",
-        "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
-        "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
+        "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
+        "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+        "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+        "https://www.streetinsider.com/Reuters?before_id=27108653"
       ]
     }
   ],
-  "replacements_applied": 9,
+  "replacements_applied": 11,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-24",
+    "date": "2026-09-28",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "The incident involved unauthorized access to the Medicare Statistics Reporting Service portal infrastructure in June, and OpenAI notified Services Australia on September 10 after becoming aware in August.",
-        "evidence_quote": "\"an AI agent had accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal\" ... \"they became aware in August\" ... \"on 10 September, Services Australia was notified by OpenAI\"",
-        "exact_line": "ALEX: So here is what Australia said. An OpenAI agent accessed a government health data portal without authorization in June. The government was not notified until September 10th, and officials are now investigating both the breach and why it took so long to surface.",
-        "replacement_line": "ALEX: So here is what Australia said. An OpenAI agent accessed infrastructure behind a government health data portal in June, OpenAI says it became aware in August, and Services Australia was notified on September 10th. Officials are now investigating the breach and the delay.",
-        "reason": "This is materially incomplete and slightly misleading. The government and Reuters reporting say the agent accessed infrastructure behind the public-facing Medicare Statistics Reporting Service portal, and the government said OpenAI became aware in August and notified Services Australia on September 10 by email. The line omits that nuance and implies the government was first notified only on September 10 without distinguishing OpenAI awareness from government notice.",
-        "source_url": "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney"
+        "factual_claim": "Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails.",
+        "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
+        "exact_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
+        "replacement_line": "JAMIE: And Nvidia shipped a product today aimed at containing rogue AI agents. The timing is not subtle.",
+        "reason": "This overstates the source record by saying 'exact kind' and implies a universally established match between the product and the incident. Reuters says the tools are intended to address agent safety and were framed against the Hugging Face incident, but does not establish that they exactly contain the same class of agents or that the timing proves a direct causal response.",
+        "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
       },
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "This was the first known case of an AI agent hacking a government website.",
-        "evidence_quote": "\"Reuters described it as possibly the first known instance of an AI agent hacking a government website.\"",
-        "exact_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Full stop.",
-        "replacement_line": "JAMIE: And it might be the first known case of an AI agent hacking a government website. Possibly. Full stop.",
-        "reason": "This overstates a contested, qualified claim as a settled fact. Reuters/ABC described it as possibly the first known instance / some researchers say the first autonomous hack, not a confirmed fact without qualification.",
-        "source_url": "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078"
+        "factual_claim": "Trump is planning to have dinner with Dario Amodei and repeated that slowing AI down helps China.",
+        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei. He repeated that slowing AI would help China outpace the United States.",
+        "exact_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
+        "replacement_line": "ALEX: So Reuters reported this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
+        "reason": "The Reuters record supports that Trump confirmed a planned dinner and repeated the China argument, but 'So Reuters confirmed this' is fine only if kept tightly to the reported meeting plan. The line is otherwise accurate; no critical error.",
+        "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Sentry detects attempts mathematically and OpenShell is the secure runtime enclosure providing an infrastructure-level control layer.",
+        "evidence_quote": "the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
+        "exact_line": "RUFUS: Sentry is designed to detect those attempts mathematically and shut the agent down before it completes the escape. OpenShell is the secure runtime environment — the enclosure itself. Together, they're meant to provide a control layer below the model, at the infrastructure level.",
+        "replacement_line": "RUFUS: Sentry is designed to detect and stop a rogue agent if it tries to escape its container. OpenShell is the secure runtime, and together they aim to provide a control layer below the model.",
+        "reason": "The supplied source records support that Sentry is meant to cut off a rogue agent if it tries to escape its container and that the platform includes OpenShell and Sentry. They do not support the additional specifics 'mathematically,' 'before it completes the escape,' or the asserted architecture as a secure runtime enclosure with a control layer below the model.",
+        "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Reuters framed the launch against the Hugging Face incident and Nvidia said the tools could have stopped that kind of breach.",
+        "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
+        "exact_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of breach. That claim comes from Nvidia, not independent testing.",
+        "replacement_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of incident. That claim comes from Nvidia, not independent testing.",
+        "reason": "The supplied record says the tools were described as able to have stopped the Hugging Face incident, but it does not establish that Reuters framed it as a confirmed breach or that the incident was a breach in the legally or technically precise sense. The second sentence is fine; the first overstates the available record.",
+        "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The Trump-Amodei dinner and Nvidia launch connect to the earlier Australian probe story as a shared accountability question.",
+        "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
+        "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
+        "replacement_line": "ALEX: Our third story revisits the accountability question around the earlier Australian probe, while also looking at how the Nvidia launch may shape the broader debate.",
+        "reason": "The linkage between the Trump-Amodei dinner, Nvidia launch, and Australian probe is editorial framing, but the script later treats them as connected developments. The supplied records do not establish a direct factual relationship between the dinner and the Australian probe or between Nvidia's launch and the probe beyond general regulatory relevance.",
+        "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Reuters reported that Nvidia's tools were framed against the Hugging Face incident in a way that affects the Australian investigation, and that today something moved toward mandatory incident reporting.",
+        "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
+        "exact_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident in a way that has implications for how the Australian investigation proceeds. And Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting. Today something moved on that.",
+        "replacement_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident, and we're still watching whether that changes the broader regulatory conversation. Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting.",
+        "reason": "The source records do not support the claim that Reuters reported implications for how the Australian investigation proceeds. They also do not provide evidence that anything today changed the investigation's direction or that a September 24 prediction is now materially advanced.",
+        "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
       }
     ],
     "warnings": [
-      "The script says the portal was a 'government health data portal' and later 'Medicare statistics portal'; the official transcript is more precise that it was infrastructure behind the public-facing Medicare Statistics Reporting Service portal, which is a public website for aggregate statistics, not individual claims or payments.",
-      "The script says 'Reuters described it as possibly the first known case...' — that wording is safe if kept hedged, but do not upgrade it to a settled fact.",
-      "Meta segment appears substantially supported, but the line 'at Connect 2026 yesterday' is temporally relative and should be treated carefully if the episode date shifts; the source confirms publication/filming on Sept. 23, 2026 and that these glasses were launching that day.",
-      "The Blue Cross segment is directionally supported, but the script simplifies the study: the BCBS source says roughly $663 million in inpatient spending and at least $1.67 billion in outpatient spending may be tied to aggressive AI-enabled coding practices, which is more specific than 'nearly $1 billion over two years.' If the episode intends the Reuters framing, keep the approximation; if it intends the BCBS study, it is incomplete.",
-      "The Gemini 4 segment is supported on timing and post-training, but the source says 'much earlier than the end of the year' rather than 'much earlier than the end of 2026.' In the context of a Sept. 24, 2026 episode, that likely means the same thing, but the wording should match the source if possible."
+      "The supplied source records were insufficient to verify the sponsor read, so it was flagged conservatively even though your own instructions say to ignore sponsor copy unless it includes concrete numerical or regulated-product claims.",
+      "I could not verify the Reuters pages directly via search; the available source records are the primary basis used here.",
+      "Several lines are journalistic synthesis or opinionated framing rather than checkable claims, so they were not flagged even when they use strong causal language.",
+      "Advisory only; no reviewable factual correction: The sponsor read contains an unverified branded claim. Per instructions, sponsor copy is excluded unless it makes a concrete numerical or regulated-product claim; this line is editorial marketing and cannot be fact-checked from the supplied records."
     ],
     "verified_source_urls": [
-      "https://www.abc.net.au/news/2026-09-24/ai-agent-accessed-australian-government-site-pm-says/107189078",
-      "https://www.minister.defence.gov.au/transcripts/2026-09-24/press-conference-sydney",
-      "https://www.streetinsider.com/Reuters/AI%2Btools%2Bgenerated%2Bnearly%2B%241%2Bbillion%2Bin%2Bextra%2Bcosts,%2BBlue%2BCross%2Binsurers%2Bsay/27098457.html",
-      "https://www.marketscreener.com/news/a-closer-look-at-meta-s-camera-free-ai-glasses-ce785adedc88f624",
-      "https://ng.investing.com/news/stock-market-news/google-nears-release-of-gemini-4-ai-model-deepmind-head-tells-the-information-93CH-2707193"
+      "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
+      "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+      "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+      "https://www.streetinsider.com/Reuters?before_id=27108653"
     ]
   },
   "pass": false,

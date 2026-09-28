@@ -3,12 +3,12 @@
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?"
+      "target": "When does a viral dev tool stop being a toy and start becoming leverage?"
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk."
+      "target": "The simple version is this: when a small tool or clone changes what builders can ship, copy, automate, or replace."
     },
     {
       "type": "jamie_human_line",
@@ -23,7 +23,7 @@
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens."
+      "target": "Think of it like one clever repo turning into a forklift for every developer who was previously carrying boxes by hand."
     },
     {
       "type": "operator_lesson",
@@ -33,64 +33,64 @@
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real."
+      "target": "The question for tomorrow is not whether developer leverage sounds clever. It is who gets caught when it becomes real."
     }
   ],
   "matches": [
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
-      "matched_line": "An OpenAI agent accessed an Australian government health data portal in June, and the government says it wasn’t notified until September 10. That gap — nearly three months — is the story.",
-      "match_score": 0.57,
-      "forwardable": true
+      "target": "When does a viral dev tool stop being a toy and start becoming leverage?",
+      "matched_line": "Our second story. Nvidia released a new AI agent safety platform today built around OpenShell and Sentry. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
+      "match_score": 0.43,
+      "forwardable": false
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
-      "matched_line": "And if you're using an agent for any kind of web interaction, even benign research tasks, the question to ask your vendor now is: what does this agent do when it hits something it wasn't supposed to reach? Does it stop? Does it log? Does it tell you?",
-      "match_score": 0.53,
-      "forwardable": false
+      "target": "The simple version is this: when a small tool or clone changes what builders can ship, copy, automate, or replace.",
+      "matched_line": "What I want to watch is whether this becomes a procurement requirement. If a major bank or a hospital system says \"any AI agent operating in our environment needs Sentry-equivalent containment,\" that's when you know the category is real. Until then it's a sensible idea that hasn't been tested under fire.",
+      "match_score": 0.67,
+      "forwardable": true
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "Which is not an excuse, but it is a practical point. You can wait for perfect agent behavior, or you can harden the systems agents are likely to encounter. The second option is available right now.",
-      "match_score": 0.51,
-      "forwardable": false
+      "matched_line": "So the product is marketed against an incident whose technical details remain incomplete. That's not disqualifying — but it's the gap a security team should walk into with open eyes.",
+      "match_score": 0.56,
+      "forwardable": true
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "Which means we're evaluating a posture, not yet a product. But the posture is genuinely novel. You're essentially segmenting your own market. Camera version for people who want it. Camera-free for people who've been sitting out. That's not a concession; it's a market expansion attempt.",
-      "match_score": 0.48,
+      "matched_line": "What moved is the framing. Nvidia releasing a product on the same day and explicitly linking it to an agent-breach class of failure makes it harder for any inquiry to say the problem is theoretical. The industry itself is now marketing against the failure mode.",
+      "match_score": 0.53,
       "forwardable": true
     },
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
-      "matched_line": "Which means the next year of health AI news might look less like \"AI saves hospitals money\" and more like \"insurer challenges AI-coded claim.\" That is a different story and it matters to actual people's costs.",
-      "match_score": 0.62,
+      "target": "Think of it like one clever repo turning into a forklift for every developer who was previously carrying boxes by hand.",
+      "matched_line": "Which is not unusual in security. But it does mean the \"Sentry could have stopped the Hugging Face breach\" claim needs a footnote: assuming the rest of the stack was also in place.",
+      "match_score": 0.44,
       "forwardable": true
     },
     {
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.",
-      "match_score": 0.38,
+      "matched_line": "And the question we asked listeners four days ago — would you trust an AI agent to browse government or health sites on your behalf — this product is at least a partial technical answer to why the answer might be shifting from \"no\" toward \"not yet, but here's what needs to be true.\"",
+      "match_score": 0.45,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "Which means we're evaluating a posture, not yet a product. But the posture is genuinely novel. You're essentially segmenting your own market. Camera version for people who want it. Camera-free for people who've been sitting out. That's not a concession; it's a market expansion attempt.",
-      "match_score": 0.67,
+      "target": "The question for tomorrow is not whether developer leverage sounds clever. It is who gets caught when it becomes real.",
+      "matched_line": "What moved is the framing. Nvidia releasing a product on the same day and explicitly linking it to an agent-breach class of failure makes it harder for any inquiry to say the problem is theoretical. The industry itself is now marketing against the failure mode.",
+      "match_score": 0.62,
       "forwardable": true
     }
   ],

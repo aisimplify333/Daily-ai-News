@@ -4,20 +4,20 @@
   "entertainment_rating": null,
   "blocking": false,
   "story_families": [
-    "security",
+    "other",
     "products",
-    "other"
+    "products"
   ],
-  "first_story_seconds": 61.328,
+  "first_story_seconds": 73.822,
   "audio_measurements": {
-    "integrated_lufs": -16.3,
-    "true_peak_dbtp": -1.5,
+    "integrated_lufs": -16.23,
+    "true_peak_dbtp": -1.53,
     "loudness_range_lu": 6.3
   },
   "dialogue_editor_accepted": false,
   "storyboard_status": "model_plan",
   "issues": [
-    "Dialogue revision not retained: numeric_receipts_changed_original_preserved",
+    "Dialogue revision not retained: runtime_regression_original_preserved",
     "No Jamie emotional-direction modes requested; inspect script and routing before claiming the upgrade worked."
   ],
   "requires_listening": [
@@ -30,13 +30,16 @@
   ],
   "jamie_performance": {
     "basis": "recorded provider calls; requested delivery is not verified emotion",
-    "calls": 32,
+    "calls": 38,
     "moods": {
-      "concern": 2,
-      "explainer": 1,
-      "neutral": 27,
-      "pushback": 2
+      "dry_wit": 1,
+      "neutral": 33,
+      "pushback": 4
     },
-    "listened": false
+    "listened": false,
+    "grok_expression_counts": {
+      "emphasis": 4
+    },
+    "undirected_expressive_calls": 0
   }
 }
