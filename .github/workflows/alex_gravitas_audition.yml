@@ -1,0 +1,38 @@
+name: Alex gravitas audition
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['auditions/ALEX_GRAVITAS_RUN_ONCE']
+permissions:
+  contents: read
+concurrency:
+  group: alex-gravitas-audition
+  cancel-in-progress: false
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          pip install requests pydub
+      - name: Render four bounded takes through production adapter
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_MAX_RETRIES: '3'
+          GEMINI_TTS_MIN_INTERVAL: '20'
+        run: python auditions/alex_gravitas.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: alex-top-three-and-faster-rufus
+          path: auditions/alex_output/
+          retention-days: 30
+          compression-level: 0

@@ -430,7 +430,7 @@ def _extract_audio_bytes(response: Any) -> bytes:
 
 def _cache_key(text: str, speaker: str, voice: str, model: str, mood: str) -> str:
     raw = json.dumps(
-        {"speaker": speaker, "voice": voice, "model": model, "mood": mood,
+        {"direction_version": "gemini-cast-v1", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
          "text": _sanitize_spoken_text(text)},
         sort_keys=True,
     )
@@ -485,6 +485,24 @@ def _gemini_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
     for attempt in range(1, retries + 1):
         wav_path = out_path.with_suffix(f".gemini_{attempt}.wav")
         try:
+            if model.startswith('gemini-3.8-'):
+                from gemini_cast_tts import render_wav
+                render_wav(clean, spk, mood, voice, model,
+                           MOOD_DIRECTION.get(mood, MOOD_DIRECTION['neutral'])[0],
+                           wav_path, api_key)
+                _ffmpeg_wav_to_mp3(wav_path, out_path)
+                if not out_path.exists() or out_path.stat().st_size <= 1000:
+                    raise RuntimeError('Gemini MP3 output missing or too small')
+                if use_cache:
+                    shutil.copyfile(out_path, cache_file)
+                STATS['gemini_successes'] += 1
+                if spk == 'JAMIE':
+                    STATS['jamie_gemini_successes'] += 1
+                STATS['calls'].append({'speaker': spk, 'provider': 'gemini', 'mood': mood,
+                                       'cache': False, 'model': model, 'voice': voice,
+                                       'chars': len(clean), 'attempt': attempt})
+                _write_report()
+                return
             from google import genai          # type: ignore
             from google.genai import types    # type: ignore
             client = genai.Client(api_key=api_key)

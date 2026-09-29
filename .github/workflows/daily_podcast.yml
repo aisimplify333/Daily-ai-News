@@ -41,10 +41,15 @@ jobs:
       HARD_FAIL_PRE_TTS: "true"
       ALLOW_DUPLICATE_DATE_REBUILD: "false"
 
-      # Approved recovered cast routing.
+      # Approved Gemini Alex/Rufus with Grok Jamie.
+      GEMINI_TTS_MODEL: "gemini-3.8-flash-tts"
+      GEMINI_TTS_VOICE_ALEX: "Orus"
+      GEMINI_TTS_VOICE_RUFUS: "Iapetus"
+      GEMINI_TTS_MAX_RETRIES: "3"
+      GEMINI_TTS_MIN_INTERVAL: "6"
       AUDIO_BACKEND: "openai"
       TTS_ROUTER_MODE: "hybrid"
-      ALEX_TTS_PROVIDER: "openai"
+      ALEX_TTS_PROVIDER: "gemini"
       JAMIE_TTS_PROVIDER: "grok"
       GROK_TTS_VOICE_JAMIE: "ursa"
       GROK_TTS_VOICE_JAMIE_FALLBACK: "celeste"
@@ -52,7 +57,7 @@ jobs:
       GROK_TTS_CACHE: "true"
       REQUIRE_JAMIE_PRIMARY: "true"
       RUN_JAMIE_SMOKE_TEST: "false"
-      RUFUS_TTS_PROVIDER: "openai"
+      RUFUS_TTS_PROVIDER: "gemini"
       ELEVENLABS_ENABLED: "false"
       ELEVEN_USE_DIALOGUE_SCENES: "false"
 
@@ -164,10 +169,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
-          # Voice stack: legacy OpenAI HD onyx/fable; Jamie stays Grok Ursa/Celeste.
+          # Gemini Orus/Iapetus primary; OpenAI HD remains the logged outage fallback.
           AUDIO_BACKEND: "openai"
           TTS_ROUTER_MODE: "hybrid"
-          ALEX_TTS_PROVIDER: "openai"
+          ALEX_TTS_PROVIDER: "gemini"
           JAMIE_TTS_PROVIDER: "grok"
           GROK_TTS_VOICE_JAMIE: "ursa"
           GROK_TTS_VOICE_JAMIE_FALLBACK: "celeste"
@@ -175,7 +180,7 @@ jobs:
           GROK_TTS_CACHE: "true"
           REQUIRE_JAMIE_PRIMARY: "true"
           RUN_JAMIE_SMOKE_TEST: "false"
-          RUFUS_TTS_PROVIDER: "openai"
+          RUFUS_TTS_PROVIDER: "gemini"
           ELEVENLABS_ENABLED: "false"
           ELEVEN_USE_DIALOGUE_SCENES: "false"
 
@@ -214,7 +219,7 @@ jobs:
           NO_REPEAT_TITLE_WINDOW: "14"
           HARD_FAIL_PRE_TTS: "true"
 
-          ALEX_USE_OPENAI: "true"
+          ALEX_USE_OPENAI: "false"
           OPENAI_TTS_MODEL: "gpt-4o-mini-tts"
           VOICE_MODEL_ALEX: "tts-1-hd"
           VOICE_ALEX: "onyx"
@@ -239,7 +244,7 @@ jobs:
           RUFUS_GAIN_DB: "0.3"
           ALEX_SPEED: "1.01"
           JAMIE_SPEED: "1.05"
-          RUFUS_SPEED: "0.99"
+          RUFUS_SPEED: "1.12"
 
           INTER_TURN_SILENCE_MS: "100"
           REACTION_PAUSE_MS: "70"
