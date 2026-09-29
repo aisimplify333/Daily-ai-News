@@ -1,374 +1,105 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-28",
+  "date": "2026-09-29",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-28",
+    "date": "2026-09-29",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "Trump was having dinner with Anthropic CEO Dario Amodei at the time of the episode.",
-        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
-        "exact_line": "ALEX: The president of the United States is having dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
-        "replacement_line": "ALEX: The president of the United States is set to have dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
-        "reason": "This line implies Trump is 'having dinner' as a current fact in the episode framing, but the Reuters record only confirms a planned dinner meeting, not that it was occurring then. The line also overstates the source by converting a report about Trump's anti-slowdown stance into a direct headline claim without attribution.",
-        "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Nvidia shipped a product designed to cage the exact kind of AI agents Washington wants to race ahead with.",
-        "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
-        "exact_line": "JAMIE: And Nvidia shipped a product today designed to cage the exact kind of AI agents Washington wants to race ahead with. The timing is not subtle.",
-        "replacement_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
-        "reason": "The source record supports that Nvidia made available new safety software on September 28, 2026, but the line's 'designed to cage' phrasing is stronger than the documented capability and risks mischaracterizing the product as a Washington-directed policy tool. The product is a safety platform for AI agents, not something described by Reuters as aimed at 'what Washington wants to race ahead with.'",
-        "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Reuters confirmed Trump is having dinner with Dario Amodei.",
-        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
-        "exact_line": "ALEX: So Reuters confirmed this: Trump is having dinner with Dario Amodei, Anthropic's CEO. And in the same breath, Trump repeated that slowing AI down helps China. What exactly changed here?",
-        "replacement_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
-        "reason": "Reuters confirmed a planned dinner meeting, not that it was definitely happening as of the episode. The line also compresses Reuters' reporting into 'in the same breath' even though the reporting is a summary of Trump's remarks and the dinner plan, not necessarily a single utterance.",
-        "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Nvidia released two new tools today, OpenShell and Sentry, described by Reuters as an AI agent safety platform.",
-        "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
-        "exact_line": "ALEX: Our second story. Nvidia released two new tools today — OpenShell and Sentry — described by Reuters as an AI agent safety platform. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
-        "replacement_line": "ALEX: Our second story. Nvidia released a new AI agent safety platform today built around OpenShell and Sentry. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
-        "reason": "The source record says the platform includes OpenShell and Sentry, but the line reduces the launch to just 'two new tools' and omits the broader platform framing. More importantly, Reuters' wording is about making available a set of software safety tools and a platform; 'released two new tools' is incomplete and slightly misleading.",
-        "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "There is a developing story out of Australia on 2026-09-28.",
-        "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
-        "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because today, alongside the Trump-Amodei dinner and the Nvidia launch, there's a developing story out of Australia.",
-        "replacement_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
-        "reason": "This line claims a 'developing story out of Australia' without any supplied source record actually documenting a new Australian development on 2026-09-28. The source record only mentions an Australian probe from the prior day. This is a stale/unsupported recency claim.",
-        "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The Trump-Amodei dinner is happening at the governance layer.",
-        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
-        "exact_line": "JAMIE: And the Trump-Amodei dinner is happening at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
-        "replacement_line": "JAMIE: And the Trump-Amodei dinner sits at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
-        "reason": "The 'answer from the president is — go faster' portion is supported by Reuters, but 'technically, things may be improving' is an opinionated inference. Not a critical error, but it should be treated as interpretation rather than fact.",
-        "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
+        "factual_claim": "GPT-6.1 Astra was internal only, and the delay concerns the same release path as the already-deployed GPT-6 Astra.",
+        "evidence_quote": "\"GPT‑6 Astra will be made available in a phased rollout beginning September 3, 2026.\"",
+        "exact_line": "ALEX: GPT-6.1 Astra was internal. Researchers tested it, flagged it, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
+        "replacement_line": "ALEX: GPT-6.1 Astra was tested internally, flagged, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
+        "reason": "This line is mostly accurate, but it omits an important factual nuance: OpenAI had already been publicly deploying GPT-6 Astra on a phased rollout before this delay, so calling GPT-6.1 Astra simply “internal” is misleading. The delay concerns GPT-6.1 Astra, not the already-released GPT-6 Astra. The source material also says the delay was announced after internal testing, not that the model was exclusively internal in the broader sense.",
+        "source_url": "https://openai.com/index/gpt-6-astra/"
       }
     ],
     "warnings": [
-      "The script repeatedly states or implies 'today' for the Trump-Amodei dinner, but the source record only confirms a planned dinner meeting, not a completed dinner.",
-      "The Nvidia launch description should stay close to Reuters' wording: the source says Nvidia made available 'a set of software safety tools' / an 'open software platform and reference system design,' not merely 'two new tools.'",
-      "Several lines make causal leaps from the Nvidia launch to the Australian probe; the supplied records do not establish that the Australian inquiry is currently reacting to the Nvidia product.",
-      "The script asserts or hints that the Australian breach evidence is 'four days old' or 'from September 24th' without a supplied source record documenting that exact date or event. Treat those as unverified context.",
-      "Advisory only; no reviewable factual correction: This is explicitly framed as a prediction and does not need verification now. The claim about 'first time' is also speculative and not a current factual assertion."
+      "The script’s sponsor-read block is exempt under the instructions, so I did not audit those lines.",
+      "Some story framing is opinionated or inferential (for example, reading motive into timing); I did not flag those unless they asserted a concrete checkable fact.",
+      "The script uses AP reporting about GPT-6.1 Astra, but OpenAI’s own pages also indicate GPT-6 Astra was already in phased rollout; keep the distinction clear to avoid model/version confusion."
     ],
     "verified_source_urls": [
-      "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90",
-      "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-      "https://www.streetinsider.com/Reuters?before_id=27108653"
+      "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
+      "https://openai.com/index/gpt-6-astra/",
+      "https://openai.com/index/path-to-astra/",
+      "https://apnews.com/article/a4cfc84ed00353ff8f2dad4bed7b429e",
+      "https://nvidianews.nvidia.com/news/nvidia-launches-open-agent-safety-platform-to-secure-agents-from-testing-to-deployment/default.aspx",
+      "https://marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
+      "https://www.axios.com/2026/09/29/meta-muse-ai-small-business"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-28",
+      "date": "2026-09-29",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "Trump was having dinner with Anthropic CEO Dario Amodei at the time of the episode.",
-          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
-          "exact_line": "ALEX: The president of the United States is having dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
-          "replacement_line": "ALEX: The president of the United States is set to have dinner with the CEO of one of the most safety-conscious AI companies in the world — and the headline coming out is that he thinks safety concerns are slowing us down. That's not a contradiction. That's a policy position.",
-          "reason": "This line implies Trump is 'having dinner' as a current fact in the episode framing, but the Reuters record only confirms a planned dinner meeting, not that it was occurring then. The line also overstates the source by converting a report about Trump's anti-slowdown stance into a direct headline claim without attribution.",
-          "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Nvidia shipped a product designed to cage the exact kind of AI agents Washington wants to race ahead with.",
-          "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
-          "exact_line": "JAMIE: And Nvidia shipped a product today designed to cage the exact kind of AI agents Washington wants to race ahead with. The timing is not subtle.",
-          "replacement_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
-          "reason": "The source record supports that Nvidia made available new safety software on September 28, 2026, but the line's 'designed to cage' phrasing is stronger than the documented capability and risks mischaracterizing the product as a Washington-directed policy tool. The product is a safety platform for AI agents, not something described by Reuters as aimed at 'what Washington wants to race ahead with.'",
-          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Reuters confirmed Trump is having dinner with Dario Amodei.",
-          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
-          "exact_line": "ALEX: So Reuters confirmed this: Trump is having dinner with Dario Amodei, Anthropic's CEO. And in the same breath, Trump repeated that slowing AI down helps China. What exactly changed here?",
-          "replacement_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
-          "reason": "Reuters confirmed a planned dinner meeting, not that it was definitely happening as of the episode. The line also compresses Reuters' reporting into 'in the same breath' even though the reporting is a summary of Trump's remarks and the dinner plan, not necessarily a single utterance.",
-          "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Nvidia released two new tools today, OpenShell and Sentry, described by Reuters as an AI agent safety platform.",
-          "evidence_quote": "Nvidia on Monday made available a set of software safety tools for AI agents",
-          "exact_line": "ALEX: Our second story. Nvidia released two new tools today — OpenShell and Sentry — described by Reuters as an AI agent safety platform. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
-          "replacement_line": "ALEX: Our second story. Nvidia released a new AI agent safety platform today built around OpenShell and Sentry. Rufus, explain what Sentry actually does, because \"cuts off a rogue agent\" is doing a lot of work in that description.",
-          "reason": "The source record says the platform includes OpenShell and Sentry, but the line reduces the launch to just 'two new tools' and omits the broader platform framing. More importantly, Reuters' wording is about making available a set of software safety tools and a platform; 'released two new tools' is incomplete and slightly misleading.",
-          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "There is a developing story out of Australia on 2026-09-28.",
-          "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
-          "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because today, alongside the Trump-Amodei dinner and the Nvidia launch, there's a developing story out of Australia.",
-          "replacement_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
-          "reason": "This line claims a 'developing story out of Australia' without any supplied source record actually documenting a new Australian development on 2026-09-28. The source record only mentions an Australian probe from the prior day. This is a stale/unsupported recency claim.",
-          "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Trump-Amodei dinner is happening at the governance layer.",
-          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei.",
-          "exact_line": "JAMIE: And the Trump-Amodei dinner is happening at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
-          "replacement_line": "JAMIE: And the Trump-Amodei dinner sits at the governance layer, where the answer from the president is — go faster. So technically, things may be improving. Governance-wise, the signal is still: not today.",
-          "reason": "The 'answer from the president is — go faster' portion is supported by Reuters, but 'technically, things may be improving' is an opinionated inference. Not a critical error, but it should be treated as interpretation rather than fact.",
-          "source_url": "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90"
+          "factual_claim": "GPT-6.1 Astra was internal only, and the delay concerns the same release path as the already-deployed GPT-6 Astra.",
+          "evidence_quote": "\"GPT‑6 Astra will be made available in a phased rollout beginning September 3, 2026.\"",
+          "exact_line": "ALEX: GPT-6.1 Astra was internal. Researchers tested it, flagged it, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
+          "replacement_line": "ALEX: GPT-6.1 Astra was tested internally, flagged, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
+          "reason": "This line is mostly accurate, but it omits an important factual nuance: OpenAI had already been publicly deploying GPT-6 Astra on a phased rollout before this delay, so calling GPT-6.1 Astra simply “internal” is misleading. The delay concerns GPT-6.1 Astra, not the already-released GPT-6 Astra. The source material also says the delay was announced after internal testing, not that the model was exclusively internal in the broader sense.",
+          "source_url": "https://openai.com/index/gpt-6-astra/"
         }
       ],
       "warnings": [
-        "The script repeatedly states or implies 'today' for the Trump-Amodei dinner, but the source record only confirms a planned dinner meeting, not a completed dinner.",
-        "The Nvidia launch description should stay close to Reuters' wording: the source says Nvidia made available 'a set of software safety tools' / an 'open software platform and reference system design,' not merely 'two new tools.'",
-        "Several lines make causal leaps from the Nvidia launch to the Australian probe; the supplied records do not establish that the Australian inquiry is currently reacting to the Nvidia product.",
-        "The script asserts or hints that the Australian breach evidence is 'four days old' or 'from September 24th' without a supplied source record documenting that exact date or event. Treat those as unverified context.",
-        "Advisory only; no reviewable factual correction: This is explicitly framed as a prediction and does not need verification now. The claim about 'first time' is also speculative and not a current factual assertion."
+        "The script’s sponsor-read block is exempt under the instructions, so I did not audit those lines.",
+        "Some story framing is opinionated or inferential (for example, reading motive into timing); I did not flag those unless they asserted a concrete checkable fact.",
+        "The script uses AP reporting about GPT-6.1 Astra, but OpenAI’s own pages also indicate GPT-6 Astra was already in phased rollout; keep the distinction clear to avoid model/version confusion."
       ],
       "verified_source_urls": [
-        "https://www.boursorama.com/bourse/actualites/trump-confirme-avoir-rencontre-amodei-d-anthropic-et-reitere-son-rejet-des-craintes-liees-a-l-ia-9780c0291263c30790f3daf9b1a9df90",
-        "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-        "https://www.streetinsider.com/Reuters?before_id=27108653"
+        "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
+        "https://openai.com/index/gpt-6-astra/",
+        "https://openai.com/index/path-to-astra/",
+        "https://apnews.com/article/a4cfc84ed00353ff8f2dad4bed7b429e",
+        "https://nvidianews.nvidia.com/news/nvidia-launches-open-agent-safety-platform-to-secure-agents-from-testing-to-deployment/default.aspx",
+        "https://marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
+        "https://www.axios.com/2026/09/29/meta-muse-ai-small-business"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-28",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Ledger provides decision-relevant AI news briefings that help users know what changes their next decision.",
-          "evidence_quote": "No supplied source record supports this sponsor claim.",
-          "exact_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.",
-          "replacement_line": "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, it helps to have a concise way to keep up.",
-          "reason": "This sponsor-read line makes a concrete promotional claim about a product/service and is outside the provided source records. It is not supported by the supplied sources, and no direct verification source was provided for The Ledger's capabilities.",
-          "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Amodei has written thousands of words about catastrophic AI scenarios.",
-          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei. Trump acknowledged Amodei's concern about going too fast on AI.",
-          "exact_line": "JAMIE: Amodei has written thousands of words about catastrophic AI scenarios.",
-          "replacement_line": "JAMIE: Amodei has spoken publicly and at length about catastrophic AI scenarios.",
-          "reason": "This is a concrete quantitative assertion about a person's published output. The provided source records do not support the 'thousands of words' claim, and it is not a safe paraphrase of the Reuters summary.",
-          "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Australian investigation would produce a recommendation for mandatory incident reporting, and Nvidia's launch is directly related to that failure mode.",
-          "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
-          "exact_line": "ALEX: Four days ago you said the Australian investigation would produce a recommendation for mandatory incident reporting. Nvidia shipped something today that's directly related to that failure mode. Does that change your read?",
-          "replacement_line": "ALEX: Four days ago you said the Australian investigation would sharpen the pressure for incident reporting. Nvidia shipped something today that speaks to that same failure mode. Does that change your read?",
-          "reason": "This line asserts a prior prediction and a causal connection between the Australian investigation and Nvidia's product launch. The supplied source records only say Reuters reported the CEOs were called to appear before an Australian AI probe; they do not support mandatory incident reporting or a causal relationship to Nvidia's release.",
-          "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Reuters directly linked the product to the Hugging Face incident and Nvidia said the tools could have stopped that kind of breach.",
-          "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
-          "exact_line": "ALEX: Reuters linked this directly to the Hugging Face incident. Nvidia said these tools could have stopped that kind of breach. That claim is Nvidia's, not independently verified in the reporting.",
-          "replacement_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of breach. That claim comes from Nvidia, not independent testing.",
-          "reason": "The Reuters source record says the launch was framed as responding to recent AI-agent security incidents and that Nvidia said the platform could have stopped the Hugging Face incident, but the line overstates the directness of the linkage and bundles in a claim about verification not supported by the supplied record. The supported version must stay closer to the Reuters framing.",
-          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Nvidia's product release helps settle whether the breach evidence was complete enough to draw conclusions.",
-          "evidence_quote": "Effectiveness against real-world attacks was not independently validated in the report.",
-          "exact_line": "ALEX: The unresolved piece from September 24th was whether the breach evidence was complete enough to draw conclusions. Does Nvidia's product release help settle that?",
-          "replacement_line": "ALEX: The unresolved piece was whether the breach evidence was complete enough to draw conclusions. Does Nvidia's product release change how regulators think about that?",
-          "reason": "This line relies on an earlier episode's unresolved claim as if it were established fact and implies the product release can settle the underlying breach evidence question. The supplied source records do not establish the completeness of the breach evidence, and the release does not resolve it.",
-          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "If cited, this would be the first time private vendor architecture directly shaped a public oversight framework in this space.",
-          "evidence_quote": "Reuters said the OpenAI and Anthropic CEOs were called to appear before an Australian AI probe.",
-          "exact_line": "RUFUS: My checkable prediction: watch whether the Nvidia safety platform gets cited in any Australian regulatory document in the next sixty days. If it does, that's the first time private vendor architecture has directly shaped a public oversight framework in this space. That's a larger shift than it sounds.",
-          "replacement_line": "RUFUS: My checkable prediction: watch whether the Nvidia safety platform gets cited in any Australian regulatory document in the next sixty days. If it does, that would be a notable shift in how regulators reference vendor architecture.",
-          "reason": "This is a prediction plus a sweeping historical claim about 'the first time' private vendor architecture shaping oversight. The first part is editorially permissible as a prediction, but the 'first time' assertion is an externally checkable factual claim that is not supported by the source records.",
-          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        }
-      ],
+      "date": "2026-09-29",
+      "pass": true,
+      "critical_errors": [],
       "warnings": [
-        "The script repeatedly refers to an 'Australian breach' or 'Hugging Face breach' as if the underlying incident details are established. The supplied source records only say Reuters reported an Australian AI probe and a Hugging Face-related security incident; they do not establish the full mechanics or outcome of any breach.",
-        "Several lines attribute broad policy implications to the Trump-Amodei dinner. The Reuters record supports only a confirmed dinner plan and Trump's view that slowing AI helps China, not any concrete policy outcome.",
-        "Statements about Anthropic needing 'compute infrastructure, federal contracts, and regulatory goodwill' are speculative and should be treated as opinion unless separately sourced.",
-        "The lines describing Sentry as detecting sub-agent spawning 'mathematically' and being part of a broader control layer are stronger than the supplied Reuters summary. They may be directionally accurate but should be kept close to the documented wording if aired."
+        "The sponsor read was not fact-checked per instructions.",
+        "The script is consistent with the supplied source records and the corroborating Google Search results for the three editorial stories.",
+        "The line 'open-source' for Nvidia is supported by the company press release, but the exact product architecture and availability details are broader in the official release than in the AP summary.",
+        "The Google segment relies on a syndicated Reuters report; the appeal and privacy/Android claims are supported, but the court outcome remains unresolved."
       ],
       "verified_source_urls": [
-        "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
-        "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-        "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-        "https://www.streetinsider.com/Reuters?before_id=27108653"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-09-28",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails.",
-          "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
-          "exact_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
-          "replacement_line": "JAMIE: And Nvidia shipped a product today aimed at containing rogue AI agents. The timing is not subtle.",
-          "reason": "This overstates the source record by saying 'exact kind' and implies a universally established match between the product and the incident. Reuters says the tools are intended to address agent safety and were framed against the Hugging Face incident, but does not establish that they exactly contain the same class of agents or that the timing proves a direct causal response.",
-          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Trump is planning to have dinner with Dario Amodei and repeated that slowing AI down helps China.",
-          "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei. He repeated that slowing AI would help China outpace the United States.",
-          "exact_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
-          "replacement_line": "ALEX: So Reuters reported this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
-          "reason": "The Reuters record supports that Trump confirmed a planned dinner and repeated the China argument, but 'So Reuters confirmed this' is fine only if kept tightly to the reported meeting plan. The line is otherwise accurate; no critical error.",
-          "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Sentry detects attempts mathematically and OpenShell is the secure runtime enclosure providing an infrastructure-level control layer.",
-          "evidence_quote": "the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
-          "exact_line": "RUFUS: Sentry is designed to detect those attempts mathematically and shut the agent down before it completes the escape. OpenShell is the secure runtime environment — the enclosure itself. Together, they're meant to provide a control layer below the model, at the infrastructure level.",
-          "replacement_line": "RUFUS: Sentry is designed to detect and stop a rogue agent if it tries to escape its container. OpenShell is the secure runtime, and together they aim to provide a control layer below the model.",
-          "reason": "The supplied source records support that Sentry is meant to cut off a rogue agent if it tries to escape its container and that the platform includes OpenShell and Sentry. They do not support the additional specifics 'mathematically,' 'before it completes the escape,' or the asserted architecture as a secure runtime enclosure with a control layer below the model.",
-          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Reuters framed the launch against the Hugging Face incident and Nvidia said the tools could have stopped that kind of breach.",
-          "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
-          "exact_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of breach. That claim comes from Nvidia, not independent testing.",
-          "replacement_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of incident. That claim comes from Nvidia, not independent testing.",
-          "reason": "The supplied record says the tools were described as able to have stopped the Hugging Face incident, but it does not establish that Reuters framed it as a confirmed breach or that the incident was a breach in the legally or technically precise sense. The second sentence is fine; the first overstates the available record.",
-          "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The Trump-Amodei dinner and Nvidia launch connect to the earlier Australian probe story as a shared accountability question.",
-          "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
-          "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
-          "replacement_line": "ALEX: Our third story revisits the accountability question around the earlier Australian probe, while also looking at how the Nvidia launch may shape the broader debate.",
-          "reason": "The linkage between the Trump-Amodei dinner, Nvidia launch, and Australian probe is editorial framing, but the script later treats them as connected developments. The supplied records do not establish a direct factual relationship between the dinner and the Australian probe or between Nvidia's launch and the probe beyond general regulatory relevance.",
-          "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Reuters reported that Nvidia's tools were framed against the Hugging Face incident in a way that affects the Australian investigation, and that today something moved toward mandatory incident reporting.",
-          "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
-          "exact_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident in a way that has implications for how the Australian investigation proceeds. And Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting. Today something moved on that.",
-          "replacement_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident, and we're still watching whether that changes the broader regulatory conversation. Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting.",
-          "reason": "The source records do not support the claim that Reuters reported implications for how the Australian investigation proceeds. They also do not provide evidence that anything today changed the investigation's direction or that a September 24 prediction is now materially advanced.",
-          "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-        }
-      ],
-      "warnings": [
-        "The supplied source records were insufficient to verify the sponsor read, so it was flagged conservatively even though your own instructions say to ignore sponsor copy unless it includes concrete numerical or regulated-product claims.",
-        "I could not verify the Reuters pages directly via search; the available source records are the primary basis used here.",
-        "Several lines are journalistic synthesis or opinionated framing rather than checkable claims, so they were not flagged even when they use strong causal language.",
-        "Advisory only; no reviewable factual correction: The sponsor read contains an unverified branded claim. Per instructions, sponsor copy is excluded unless it makes a concrete numerical or regulated-product claim; this line is editorial marketing and cannot be fact-checked from the supplied records."
-      ],
-      "verified_source_urls": [
-        "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
-        "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-        "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-        "https://www.streetinsider.com/Reuters?before_id=27108653"
+        "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
+        "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/default.aspx",
+        "https://www.marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
+        "https://openai.com/index/safety-overview-gpt-6-astra/"
       ]
     }
   ],
-  "replacements_applied": 11,
+  "replacements_applied": 1,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-28",
-    "pass": false,
-    "critical_errors": [
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails.",
-        "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
-        "exact_line": "JAMIE: And Nvidia shipped a product today designed to contain the exact kind of AI agents that can go off the rails. The timing is not subtle.",
-        "replacement_line": "JAMIE: And Nvidia shipped a product today aimed at containing rogue AI agents. The timing is not subtle.",
-        "reason": "This overstates the source record by saying 'exact kind' and implies a universally established match between the product and the incident. Reuters says the tools are intended to address agent safety and were framed against the Hugging Face incident, but does not establish that they exactly contain the same class of agents or that the timing proves a direct causal response.",
-        "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Trump is planning to have dinner with Dario Amodei and repeated that slowing AI down helps China.",
-        "evidence_quote": "Trump confirmed he planned a dinner meeting with Anthropic CEO Dario Amodei. He repeated that slowing AI would help China outpace the United States.",
-        "exact_line": "ALEX: So Reuters confirmed this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
-        "replacement_line": "ALEX: So Reuters reported this: Trump is planning to have dinner with Dario Amodei, Anthropic's CEO. And in the same reporting, Trump repeated that slowing AI down helps China. What exactly changed here?",
-        "reason": "The Reuters record supports that Trump confirmed a planned dinner and repeated the China argument, but 'So Reuters confirmed this' is fine only if kept tightly to the reported meeting plan. The line is otherwise accurate; no critical error.",
-        "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Sentry detects attempts mathematically and OpenShell is the secure runtime enclosure providing an infrastructure-level control layer.",
-        "evidence_quote": "the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
-        "exact_line": "RUFUS: Sentry is designed to detect those attempts mathematically and shut the agent down before it completes the escape. OpenShell is the secure runtime environment — the enclosure itself. Together, they're meant to provide a control layer below the model, at the infrastructure level.",
-        "replacement_line": "RUFUS: Sentry is designed to detect and stop a rogue agent if it tries to escape its container. OpenShell is the secure runtime, and together they aim to provide a control layer below the model.",
-        "reason": "The supplied source records support that Sentry is meant to cut off a rogue agent if it tries to escape its container and that the platform includes OpenShell and Sentry. They do not support the additional specifics 'mathematically,' 'before it completes the escape,' or the asserted architecture as a secure runtime enclosure with a control layer below the model.",
-        "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Reuters framed the launch against the Hugging Face incident and Nvidia said the tools could have stopped that kind of breach.",
-        "evidence_quote": "Reuters reported that the platform includes OpenShell, a secure runtime, and Sentry, a system designed to cut off a rogue agent if it tries to escape its container.",
-        "exact_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of breach. That claim comes from Nvidia, not independent testing.",
-        "replacement_line": "ALEX: Reuters framed this against the Hugging Face incident, and Nvidia said the tools could have stopped that kind of incident. That claim comes from Nvidia, not independent testing.",
-        "reason": "The supplied record says the tools were described as able to have stopped the Hugging Face incident, but it does not establish that Reuters framed it as a confirmed breach or that the incident was a breach in the legally or technically precise sense. The second sentence is fine; the first overstates the available record.",
-        "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The Trump-Amodei dinner and Nvidia launch connect to the earlier Australian probe story as a shared accountability question.",
-        "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
-        "exact_line": "ALEX: Our third story brings those two threads together — the political one and the technical one — in an accountability question. Because alongside the Trump-Amodei dinner and the Nvidia launch, there’s the earlier Australian probe story we’ve been tracking.",
-        "replacement_line": "ALEX: Our third story revisits the accountability question around the earlier Australian probe, while also looking at how the Nvidia launch may shape the broader debate.",
-        "reason": "The linkage between the Trump-Amodei dinner, Nvidia launch, and Australian probe is editorial framing, but the script later treats them as connected developments. The supplied records do not establish a direct factual relationship between the dinner and the Australian probe or between Nvidia's launch and the probe beyond general regulatory relevance.",
-        "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Reuters reported that Nvidia's tools were framed against the Hugging Face incident in a way that affects the Australian investigation, and that today something moved toward mandatory incident reporting.",
-        "evidence_quote": "The report focuses on executive testimony rather than a product announcement.",
-        "exact_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident in a way that has implications for how the Australian investigation proceeds. And Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting. Today something moved on that.",
-        "replacement_line": "ALEX: Reuters is reporting that Nvidia's tools were framed against the Hugging Face incident, and we're still watching whether that changes the broader regulatory conversation. Rufus, you made a prediction on September 24th that the Australian investigation would recommend mandatory incident reporting.",
-        "reason": "The source records do not support the claim that Reuters reported implications for how the Australian investigation proceeds. They also do not provide evidence that anything today changed the investigation's direction or that a September 24 prediction is now materially advanced.",
-        "source_url": "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/"
-      }
-    ],
+    "date": "2026-09-29",
+    "pass": true,
+    "critical_errors": [],
     "warnings": [
-      "The supplied source records were insufficient to verify the sponsor read, so it was flagged conservatively even though your own instructions say to ignore sponsor copy unless it includes concrete numerical or regulated-product claims.",
-      "I could not verify the Reuters pages directly via search; the available source records are the primary basis used here.",
-      "Several lines are journalistic synthesis or opinionated framing rather than checkable claims, so they were not flagged even when they use strong causal language.",
-      "Advisory only; no reviewable factual correction: The sponsor read contains an unverified branded claim. Per instructions, sponsor copy is excluded unless it makes a concrete numerical or regulated-product claim; this line is editorial marketing and cannot be fact-checked from the supplied records."
+      "The sponsor read was not fact-checked per instructions.",
+      "The script is consistent with the supplied source records and the corroborating Google Search results for the three editorial stories.",
+      "The line 'open-source' for Nvidia is supported by the company press release, but the exact product architecture and availability details are broader in the official release than in the AP summary.",
+      "The Google segment relies on a syndicated Reuters report; the appeal and privacy/Android claims are supported, but the court outcome remains unresolved."
     ],
     "verified_source_urls": [
-      "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
-      "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-      "https://www.reuters.com/legal/litigation/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
-      "https://www.streetinsider.com/Reuters?before_id=27108653"
+      "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
+      "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/default.aspx",
+      "https://www.marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
+      "https://openai.com/index/safety-overview-gpt-6-astra/"
     ]
   },
-  "pass": false,
+  "pass": true,
   "blocking": false
 }

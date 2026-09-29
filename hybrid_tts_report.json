@@ -1,14 +1,14 @@
 {
   "version": "v4-grok-jamie-mood-aware-router",
   "routing": {
-    "ALEX": "openai",
+    "ALEX": "gemini",
     "JAMIE": "grok",
-    "RUFUS": "openai",
+    "RUFUS": "gemini",
     "ELEVENLABS": "disabled"
   },
   "grok_primary_voice": "ursa",
   "grok_fallback_voice": "celeste",
-  "gemini_model": "gemini-3.1-flash-tts-preview",
+  "gemini_model": "gemini-3.8-flash-tts",
   "openai_tts_model": "gpt-4o-mini-tts",
   "installed": true,
   "patched": [
@@ -19,12 +19,13 @@
   "calls": [
     {
       "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pushback",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 270,
-      "directed": false
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 199,
+      "attempt": 1
     },
     {
       "speaker": "JAMIE",
@@ -34,73 +35,71 @@
       "mood": "neutral",
       "cache": false,
       "expressions": [],
-      "chars": 135,
-      "estimated_cost_usd": 0.002025
+      "chars": 140,
+      "estimated_cost_usd": 0.0021
     },
     {
       "speaker": "RUFUS",
-      "provider": "openai_router",
+      "provider": "gemini",
       "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 184,
-      "directed": false
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 128,
+      "attempt": 1
     },
     {
       "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 23,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
+      "provider": "gemini",
       "mood": "neutral",
       "cache": false,
-      "expressions": [],
-      "chars": 90,
-      "estimated_cost_usd": 0.00135
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 186,
+      "attempt": 1
     },
     {
       "speaker": "ALEX",
-      "provider": "openai_router",
+      "provider": "gemini",
       "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 114,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
       "chars": 329,
-      "directed": false
+      "attempt": 1
     },
     {
       "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 198,
-      "directed": false
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 247,
+      "attempt": 3
     },
     {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 276,
-      "directed": false
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 154,
+      "estimated_cost_usd": 0.00231
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "neutral",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 55,
+      "attempt": 1
     },
     {
       "speaker": "JAMIE",
@@ -110,26 +109,71 @@
       "mood": "neutral",
       "cache": false,
       "expressions": [],
-      "chars": 143,
-      "estimated_cost_usd": 0.002145
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 60,
-      "directed": false
+      "chars": 69,
+      "estimated_cost_usd": 0.001035
     },
     {
       "speaker": "RUFUS",
-      "provider": "openai_router",
+      "provider": "gemini",
       "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 149,
-      "directed": false
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 244,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "neutral",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 161,
+      "attempt": 1
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 84,
+      "estimated_cost_usd": 0.00126
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 239,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "pressure",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 71,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 198,
+      "attempt": 1
     },
     {
       "speaker": "JAMIE",
@@ -146,12 +190,24 @@
     },
     {
       "speaker": "ALEX",
-      "provider": "openai_router",
+      "provider": "gemini",
+      "mood": "pressure",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 135,
+      "attempt": 2
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
       "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 107,
-      "directed": false
+      "cache": false,
+      "expressions": [],
+      "chars": 17,
+      "estimated_cost_usd": 0.000255
     },
     {
       "speaker": "RUFUS",
@@ -159,7 +215,7 @@
       "mood": "dry_wit",
       "model": "tts-1-hd",
       "voice": "fable",
-      "chars": 146,
+      "chars": 210,
       "directed": false
     },
     {
@@ -170,8 +226,8 @@
       "mood": "neutral",
       "cache": false,
       "expressions": [],
-      "chars": 321,
-      "estimated_cost_usd": 0.004815
+      "chars": 68,
+      "estimated_cost_usd": 0.00102
     },
     {
       "speaker": "ALEX",
@@ -179,7 +235,739 @@
       "mood": "neutral",
       "model": "tts-1-hd",
       "voice": "onyx",
-      "chars": 125,
+      "chars": 78,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 247,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 243,
+      "estimated_cost_usd": 0.003645
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "neutral",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 53,
+      "attempt": 1
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 170,
+      "estimated_cost_usd": 0.00255
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 281,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 31,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 165,
+      "estimated_cost_usd": 0.002475
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 180,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 147,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 245,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 143,
+      "estimated_cost_usd": 0.002145
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 170,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 91,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 272,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 146,
+      "estimated_cost_usd": 0.00219
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 76,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 157,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 269,
+      "estimated_cost_usd": 0.004035
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 199,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 190,
+      "estimated_cost_usd": 0.00285
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pushback",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 69,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 57,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 210,
+      "estimated_cost_usd": 0.00315
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 120,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 74,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 293,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 185,
+      "estimated_cost_usd": 0.002775
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 191,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 151,
+      "estimated_cost_usd": 0.002265
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 126,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 191,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 161,
+      "estimated_cost_usd": 0.002415
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 151,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 92,
+      "estimated_cost_usd": 0.00138
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 288,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 16,
+      "estimated_cost_usd": 0.00024
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 20,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 132,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 394,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 111,
+      "estimated_cost_usd": 0.001665
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 62,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 113,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "interruption",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 299,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 289,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 94,
+      "estimated_cost_usd": 0.00141
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 180,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 247,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 56,
+      "estimated_cost_usd": 0.00084
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 238,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 250,
+      "estimated_cost_usd": 0.00375
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 205,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 90,
+      "estimated_cost_usd": 0.00135
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 61,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "pushback",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 296,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 159,
+      "estimated_cost_usd": 0.002385
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 97,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": true,
+      "expressions": [],
+      "chars": 172,
+      "estimated_cost_usd": 0.0
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 126,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": true,
+      "expressions": [],
+      "chars": 95,
+      "estimated_cost_usd": 0.0
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 84,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 302,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "concern",
+      "cache": false,
+      "expressions": [
+        "soft"
+      ],
+      "chars": 158,
+      "estimated_cost_usd": 0.00237
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 185,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 34,
+      "estimated_cost_usd": 0.00051
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 72,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 241,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 136,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 357,
+      "estimated_cost_usd": 0.005355
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 51,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 217,
+      "estimated_cost_usd": 0.003255
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 381,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 233,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 43,
+      "estimated_cost_usd": 0.000645
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 328,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 321,
       "directed": false
     },
     {
@@ -199,94 +987,7 @@
       "mood": "dry_wit",
       "model": "tts-1-hd",
       "voice": "fable",
-      "chars": 195,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 81,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 279,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 227,
-      "estimated_cost_usd": 0.003405
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 238,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 263,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 19,
-      "estimated_cost_usd": 0.000285
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 205,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 89,
-      "estimated_cost_usd": 0.001335
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 231,
+      "chars": 308,
       "directed": false
     },
     {
@@ -295,259 +996,45 @@
       "mood": "neutral",
       "model": "tts-1-hd",
       "voice": "onyx",
-      "chars": 59,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 228,
-      "estimated_cost_usd": 0.00342
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 150,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 206,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 131,
-      "estimated_cost_usd": 0.001965
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 267,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 32,
+      "chars": 64,
       "directed": false
     },
     {
       "speaker": "RUFUS",
       "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 158,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
       "mood": "pushback",
-      "cache": false,
-      "expressions": [
-        "emphasis"
-      ],
-      "chars": 235,
-      "estimated_cost_usd": 0.003525
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 115,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 235,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 232,
-      "estimated_cost_usd": 0.00348
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 24,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "dry_wit",
-      "cache": false,
-      "expressions": [],
-      "chars": 24,
-      "estimated_cost_usd": 0.00036
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 43,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 224,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 575,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 156,
-      "estimated_cost_usd": 0.00234
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 220,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 175,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 226,
-      "estimated_cost_usd": 0.00339
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 361,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 234,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 261,
-      "estimated_cost_usd": 0.003915
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
       "model": "tts-1-hd",
       "voice": "fable",
       "chars": 290,
       "directed": false
     },
     {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 188,
+      "estimated_cost_usd": 0.00282
+    },
+    {
       "speaker": "ALEX",
       "provider": "openai_router",
       "mood": "neutral",
       "model": "tts-1-hd",
       "voice": "onyx",
-      "chars": 76,
+      "chars": 183,
       "directed": false
     },
     {
-      "speaker": "RUFUS",
+      "speaker": "ALEX",
       "provider": "openai_router",
-      "mood": "dry_wit",
+      "mood": "pressure",
       "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 70,
+      "voice": "onyx",
+      "chars": 156,
       "directed": false
     },
     {
@@ -558,8 +1045,17 @@
       "mood": "neutral",
       "cache": false,
       "expressions": [],
-      "chars": 305,
-      "estimated_cost_usd": 0.004575
+      "chars": 198,
+      "estimated_cost_usd": 0.00297
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 264,
+      "directed": false
     },
     {
       "speaker": "ALEX",
@@ -567,84 +1063,6 @@
       "mood": "neutral",
       "model": "tts-1-hd",
       "voice": "onyx",
-      "chars": 283,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 68,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 433,
-      "estimated_cost_usd": 0.006495
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 78,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 410,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 23,
-      "estimated_cost_usd": 0.000345
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 158,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": true,
-      "expressions": [],
-      "chars": 132,
-      "estimated_cost_usd": 0.0
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
       "chars": 103,
       "directed": false
     },
@@ -654,520 +1072,549 @@
       "voice": "ursa",
       "primary_voice": true,
       "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 354,
+      "estimated_cost_usd": 0.00531
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 262,
+      "directed": false
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "openai_router",
+      "mood": "dry_wit",
+      "model": "tts-1-hd",
+      "voice": "fable",
+      "chars": 61,
+      "directed": false
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "neutral",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 278,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 43,
+      "estimated_cost_usd": 0.000645
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "openai_router",
+      "mood": "pressure",
+      "model": "tts-1-hd",
+      "voice": "onyx",
+      "chars": 329,
+      "directed": false
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
       "cache": true,
       "expressions": [],
-      "chars": 89,
+      "chars": 134,
       "estimated_cost_usd": 0.0
     },
     {
       "speaker": "ALEX",
       "provider": "openai_router",
-      "mood": "neutral",
+      "mood": "dry_wit",
       "model": "tts-1-hd",
       "voice": "onyx",
-      "chars": 580,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 261,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 92,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 265,
-      "estimated_cost_usd": 0.003975
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 62,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 44,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 292,
-      "estimated_cost_usd": 0.00438
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 163,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 347,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "pushback",
-      "cache": false,
-      "expressions": [
-        "emphasis"
-      ],
-      "chars": 332,
-      "estimated_cost_usd": 0.00498
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 59,
-      "estimated_cost_usd": 0.000885
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 60,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 203,
-      "estimated_cost_usd": 0.003045
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 116,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 38,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 43,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 223,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 234,
-      "estimated_cost_usd": 0.00351
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 129,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 38,
-      "estimated_cost_usd": 0.00057
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 218,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 97,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 166,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "pushback",
-      "cache": false,
-      "expressions": [
-        "emphasis"
-      ],
-      "chars": 203,
-      "estimated_cost_usd": 0.003045
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 26,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 78,
-      "estimated_cost_usd": 0.00117
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 82,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 312,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 274,
-      "estimated_cost_usd": 0.00411
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 223,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 88,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 180,
-      "estimated_cost_usd": 0.0027
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 111,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 149,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 177,
-      "estimated_cost_usd": 0.002655
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 178,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 117,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 228,
-      "estimated_cost_usd": 0.00342
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 155,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 162,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 317,
-      "estimated_cost_usd": 0.004755
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 229,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 309,
-      "estimated_cost_usd": 0.004635
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 122,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 246,
-      "directed": false
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 118,
-      "estimated_cost_usd": 0.00177
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "pressure",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 61,
-      "directed": false
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "openai_router",
-      "mood": "dry_wit",
-      "model": "tts-1-hd",
-      "voice": "fable",
-      "chars": 134,
-      "directed": false
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "openai_router",
-      "mood": "neutral",
-      "model": "tts-1-hd",
-      "voice": "onyx",
-      "chars": 178,
+      "chars": 183,
       "directed": false
     }
   ],
-  "fallbacks": [],
+  "fallbacks": [
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pushback",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "interruption",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "pushback",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "pushback",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "RUFUS",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for RUFUS after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "neutral",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "pressure",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    },
+    {
+      "speaker": "ALEX",
+      "mood": "dry_wit",
+      "from": "gemini",
+      "to": "openai",
+      "reason": "Gemini TTS failed for ALEX after 3 attempts: Gemini TTS HTTP 429"
+    }
+  ],
   "mood_distribution": {
-    "pushback": 5,
+    "explainer": 2,
     "neutral": 55,
-    "dry_wit": 41,
-    "pressure": 14
+    "dry_wit": 37,
+    "pushback": 7,
+    "pressure": 11,
+    "interruption": 1,
+    "concern": 1
   },
   "jamie_expression_distribution": {
-    "emphasis": 4
+    "emphasis": 4,
+    "soft": 1
   },
   "characters_by_speaker": {
-    "ALEX": 5818,
-    "JAMIE": 7244,
-    "RUFUS": 7481
+    "ALEX": 4611,
+    "JAMIE": 5864,
+    "RUFUS": 6907
   },
-  "jamie_chars_requested": 7244,
+  "jamie_chars_requested": 5864,
   "jamie_cache_hits": 0,
   "jamie_gemini_successes": 0,
   "jamie_gemini_failures": 0,
-  "gemini_successes": 0,
-  "openai_router_calls": 77,
+  "gemini_successes": 13,
+  "openai_router_calls": 62,
   "openai_passthrough_calls": 0,
   "jamie_gemini_verified": false,
-  "jamie_grok_successes": 38,
-  "jamie_grok_episode_successes": 38,
+  "jamie_grok_successes": 39,
+  "jamie_grok_episode_successes": 39,
   "jamie_grok_failures": 0,
-  "jamie_grok_primary_successes": 38,
+  "jamie_grok_primary_successes": 39,
   "jamie_grok_fallback_successes": 0,
-  "jamie_grok_cost_estimate_usd": 0.105345,
+  "jamie_grok_cost_estimate_usd": 0.081945,
   "jamie_primary_verified": true,
   "router_owned_openai": true,
   "openai_client_available": true,
-  "total_characters_rendered": 20543
+  "total_characters_rendered": 17382
 }

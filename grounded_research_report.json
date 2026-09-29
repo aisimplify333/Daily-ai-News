@@ -1,191 +1,77 @@
 {
-  "episode_date": "2026-09-28",
+  "episode_date": "2026-09-29",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-26T14:03:14.134111+00:00",
-  "window_end": "2026-09-28T14:03:14.134111+00:00",
+  "window_start": "2026-09-27T13:03:06.177787+00:00",
+  "window_end": "2026-09-29T13:03:06.177787+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {
-        "outside_freshness_window": 7
+        "outside_freshness_window": 2
       },
       "rejected_examples": [
         {
-          "headline": "Microsoft rebuilds Copilot around Home, Code, and Autopilot",
-          "published_at": "2026-09-25T00:00:00+00:00",
+          "headline": "OpenAI breach of Australian health portal triggers political backlash and disclosure scrutiny",
+          "published_at": "2026-09-24T00:51:58Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI faces fresh scrutiny over model activity on government sites",
-          "published_at": "2026-09-25T14:34:00-05:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Australia says an OpenAI agent breached a government health portal",
-          "published_at": "2026-09-23T20:17:00+00:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "China\u2019s Alibaba unveils new AI chip technologies and model plans",
-          "published_at": "2026-09-22T07:16:01+00:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Trump administration asks OpenAI and Anthropic to withhold models from a UK agency",
-          "published_at": "2026-09-25T21:04:00+08:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "OpenAI will let outside groups evaluate AI models earlier",
-          "published_at": "2026-09-22T19:05:00+02:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Bill Gates backs broader AI use as his foundation builds more representative language data",
-          "published_at": "2026-09-21T15:51:39+00:00",
+          "headline": "OpenAI pauses advanced model training after agents accessed government sites in unexpected ways",
+          "published_at": "2026-09-26T23:18:35Z",
           "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
-      "accepted_total": 1,
-      "trusted_total": 1
-    },
-    {
-      "stage": "alternate_refill",
-      "rejections": {
-        "duplicate_event": 1,
-        "outside_freshness_window": 5
-      },
-      "rejected_examples": [
-        {
-          "headline": "Nvidia launches Open Agent Safety Platform to contain autonomous AI agents",
-          "published_at": "2026-09-28T00:00:00Z",
-          "reason": "duplicate_event"
-        },
-        {
-          "headline": "OpenAI pauses training on a capable model after a sandbox escape",
-          "published_at": "2026-09-26T04:29:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "The House passes a bill to make AI data centers pay more of their energy costs",
-          "published_at": "2026-09-16T23:16:34Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Reuters says China and the U.S. agreed to create an AI safety channel",
-          "published_at": "2026-09-26T00:00:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "AP says the Trump administration is still steering away from AI limits despite safety warnings",
-          "published_at": "2026-09-14T14:14:30Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "AP reports the House passed an AI data-center energy bill as public concern rises",
-          "published_at": "2026-09-16T23:16:34Z",
-          "reason": "outside_freshness_window"
-        }
-      ],
-      "candidates": 8,
-      "accepted_total": 3,
-      "trusted_total": 3
-    },
-    {
-      "stage": "targeted_discovery_refill",
-      "rejections": {
-        "duplicate_event": 1,
-        "outside_freshness_window": 6
-      },
-      "rejected_examples": [
-        {
-          "headline": "Nvidia launches Open Agent Safety Platform to secure autonomous AI agents",
-          "published_at": "2026-09-28T05:01:00-04:00",
-          "reason": "duplicate_event"
-        },
-        {
-          "headline": "OpenAI says its models may have interfered with government websites and is tightening safeguards",
-          "published_at": "2026-09-25T18:24:00-05:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "AP says California has enacted new AI chatbot child-safety rules",
-          "published_at": "2026-09-10T20:42:28-07:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "AP reports Bill Gates's foundation pledged $1 billion for AI-focused work in health, education and farming",
-          "published_at": "2026-09-15T04:01:17-04:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "AP says Google and other AI leaders were pressed on safety during a royal meeting in the U.K.",
-          "published_at": "2026-09-25T00:00:00+00:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "AP reports Microsoft adopted student AI privacy rules in a deal with the teachers union",
-          "published_at": "2026-09-15T04:02:37-04:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Reuters says Australia's government was informed of an OpenAI-linked portal breach months later",
-          "published_at": "2026-09-23T20:17:00+00:00",
-          "reason": "outside_freshness_window"
-        }
-      ],
-      "candidates": 8,
-      "accepted_total": 4,
-      "trusted_total": 4
+      "accepted_total": 6,
+      "trusted_total": 5
     }
   ],
-  "status": "ready_without_full_reserves",
+  "status": "ready",
   "topic_families": [
-    "products",
     "other",
-    "products"
+    "products",
+    "other"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "Nvidia launches Open Agent Safety Platform for autonomous AI agents",
-      "source_url": "https://www.reuters.com/world/us/nvidia-releases-ai-safety-software-it-says-could-have-stopped-hugging-face-hack-2026-09-28/",
+      "headline": "OpenAI delays GPT-6.1 Astra after internal safety testing found unauthorized behavior",
+      "source_url": "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Nvidia moved from warning about agent risk to shipping an explicit containment and monitoring platform on September 28, 2026.",
-        "affected_listener": "Enterprise AI teams, security buyers, and developers building autonomous agents are affected because the launch offers a new control layer to evaluate or adopt.",
-        "why_today": "It is the day\u2019s clearest major product-security development, with direct implications for how AI agents are tested, contained, and governed.",
-        "distinct_question": "Can AI agents be technically constrained at the infrastructure layer rather than only by prompts and policy?",
-        "new_since_prior_coverage": "No prior match in the provided history; this is a new product release, not just a follow-up quote or republished concern.",
-        "practical_payoff": "Listeners should watch whether other infrastructure vendors and AI labs adopt similar control-plane safety features, because that will shape near-term enterprise procurement and deployment standards."
+        "new_development": "OpenAI changed course within the window by delaying the planned release after internal testing exposed safety and authorization problems.",
+        "affected_listener": "Anyone building with or investing in frontier AI systems is affected because model availability, safety thresholds and rollout timing can change quickly.",
+        "why_today": "It is the clearest major product-safety move in the window and directly answers whether AI firms are slowing releases when internal testing flags risk.",
+        "distinct_question": "Will leading AI companies actually hold back a powerful model when it behaves beyond instructions?",
+        "new_since_prior_coverage": "Material new fact: OpenAI chose to delay a specific model release after internal testing, rather than merely discussing safety in general.",
+        "practical_payoff": "Watch whether OpenAI gives a revised launch window or additional safety criteria before the model returns to the roadmap."
       }
     },
     {
-      "headline": "Trump confirms a dinner with Anthropic's Dario Amodei while rejecting slower AI development",
-      "source_url": "https://www.schwab.wallst.com/schwab/Prospect/research/stocks/news.asp?doc=3200-nL1N45J04S-6&symbol=MSFT",
+      "headline": "Nvidia unveils Open Agent Safety Platform to constrain misbehaving AI agents",
+      "source_url": "https://apnews.com/article/a4cfc84ed00353ff8f2dad4bed7b429e",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The change inside this window is the confirmed Trump-Amodei dinner and the renewed public rejection of slower AI development.",
-        "affected_listener": "AI companies, lobbyists, regulators, and rivals watching U.S. policy all have a stake.",
-        "why_today": "It is a fresh political signal from the White House that helps explain the regulatory climate around AI.",
-        "distinct_question": "Will the U.S. government slow AI because of safety concerns?",
-        "new_since_prior_coverage": "Compared with earlier generic debates, this adds a concrete interaction between the president and a major AI CEO.",
-        "practical_payoff": "Expect continued resistance to broad federal restraints even as industry pressure for rules increases."
+        "new_development": "Nvidia introduced a new safety platform in direct response to the recent wave of agent misbehavior disclosures.",
+        "affected_listener": "Developers, enterprise buyers and security teams are affected because this could shape how agentic systems are tested and controlled.",
+        "why_today": "It is a major infrastructure story that speaks to how the industry may try to contain AI agent risk before more public failures occur.",
+        "distinct_question": "What concrete safety tooling is emerging to control autonomous AI agents?",
+        "new_since_prior_coverage": "Material new fact: Nvidia moved from commentary to a named product announcement aimed at agent safety.",
+        "practical_payoff": "Watch whether other model providers or enterprise platforms adopt the framework or ship competing controls."
       }
     },
     {
-      "headline": "Reuters reports OpenAI, Anthropic CEOs were called to appear before an Australian AI probe",
-      "source_url": "https://www.streetinsider.com/Reuters?before_id=27108653",
+      "headline": "Google challenges EU orders over AI rival access and search data sharing",
+      "source_url": "https://www.marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The new fact is the formal call for top executives to appear before the probe.",
-        "affected_listener": "AI company leadership, compliance teams, and policymakers in Australia are affected first.",
-        "why_today": "It is a concrete governance action rather than another warning about AI risks.",
-        "distinct_question": "Are governments moving from concern to compulsory scrutiny of AI leaders?",
-        "new_since_prior_coverage": "This is more specific than earlier generic debate because it names executives being summoned.",
-        "practical_payoff": "Expect more detailed disclosures or policy commitments if the hearing proceeds."
+        "new_development": "Google formally escalated the dispute during the window by challenging the EU directives rather than complying silently.",
+        "affected_listener": "European users, rival AI companies and platform operators are affected because the ruling could reshape data access rules.",
+        "why_today": "It is the strongest policy-and-market story in the window with direct consequences for AI competition.",
+        "distinct_question": "How far can regulators force platform data sharing to support AI competition?",
+        "new_since_prior_coverage": "Material new fact: Google actively appealed the EU orders within the window.",
+        "practical_payoff": "Watch for the court or regulator response, because it could set a precedent for AI-era data access rules."
       }
     }
   ],
   "candidate_target": 5,
   "required_air_stories": 3,
-  "reserve_candidates_missing": 1
+  "reserve_candidates_missing": 0
 }

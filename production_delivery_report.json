@@ -4,25 +4,25 @@
   "cost": "zero-model-calls",
   "feed": "feed.xml",
   "newest_episode": {
-    "title": "Trump confirms a dinner with Anthropic's Dario Amodei while rejecting slower AI development",
-    "description_chars": 1570,
-    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-28.mp3",
-    "pub_date": "Mon, 28 Sep 2026 12:00:00 -0000",
-    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-28.mp3"
+    "title": "OpenAI delays GPT-6.1 Astra after safety tests exposed scope risk",
+    "description_chars": 1580,
+    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-29.mp3",
+    "pub_date": "Tue, 29 Sep 2026 12:00:00 -0000",
+    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-09-29.mp3"
   },
-  "audio_path": "episode_audio/podcast_2026-09-28.mp3",
-  "duration_minutes": 20.948,
+  "audio_path": "episode_audio/podcast_2026-09-29.mp3",
+  "duration_minutes": 19.367,
   "cost_metrics": {
-    "tts_characters_total": 20543,
+    "tts_characters_total": 17382,
     "tts_characters_by_speaker": {
-      "ALEX": 5818,
-      "JAMIE": 7244,
-      "RUFUS": 7481
+      "ALEX": 4611,
+      "JAMIE": 5864,
+      "RUFUS": 6907
     },
-    "grok_estimated_cost_usd": 0.105345,
+    "grok_estimated_cost_usd": 0.081945,
     "grok_cache_hits": 0,
-    "fallback_count": 0,
-    "provider_calls": 115
+    "fallback_count": 62,
+    "provider_calls": 114
   },
   "checks": {
     "stop_scroll_title": "passed",
@@ -36,17 +36,6 @@
     "audio_window": "passed"
   },
   "failures": [],
-  "warnings": [
-    {
-      "reason": "tts_dynamic_range_moods_low",
-      "active_moods": 4,
-      "distribution": {
-        "pushback": 5,
-        "neutral": 55,
-        "dry_wit": 41,
-        "pressure": 14
-      }
-    }
-  ],
+  "warnings": [],
   "recovery": "Completed audio is preserved. Repair packaging and rerun this gate; do not regenerate TTS."
 }

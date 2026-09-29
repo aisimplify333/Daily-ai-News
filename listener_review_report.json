@@ -6,18 +6,19 @@
   "story_families": [
     "other",
     "products",
-    "products"
+    "other"
   ],
-  "first_story_seconds": 73.822,
+  "first_story_seconds": 68.256,
   "audio_measurements": {
-    "integrated_lufs": -16.23,
-    "true_peak_dbtp": -1.53,
-    "loudness_range_lu": 6.3
+    "integrated_lufs": -17.37,
+    "true_peak_dbtp": -1.68,
+    "loudness_range_lu": 6.6
   },
   "dialogue_editor_accepted": false,
   "storyboard_status": "model_plan",
   "issues": [
     "Dialogue revision not retained: runtime_regression_original_preserved",
+    "Integrated loudness outside house target -16 +/-1 LUFS.",
     "No Jamie emotional-direction modes requested; inspect script and routing before claiming the upgrade worked."
   ],
   "requires_listening": [
@@ -30,15 +31,16 @@
   ],
   "jamie_performance": {
     "basis": "recorded provider calls; requested delivery is not verified emotion",
-    "calls": 38,
+    "calls": 39,
     "moods": {
-      "dry_wit": 1,
-      "neutral": 33,
+      "concern": 1,
+      "neutral": 34,
       "pushback": 4
     },
     "listened": false,
     "grok_expression_counts": {
-      "emphasis": 4
+      "emphasis": 4,
+      "soft": 1
     },
     "undirected_expressive_calls": 0
   }
