@@ -16,7 +16,7 @@ def payload(text, speaker, mood, voice, note):
     }.get(speaker, 'Warm conversational co-host.')
     sponsor = 'the ledger' in text.lower() or 't-h-e-l-e-d-g-r' in text.lower()
     spoken = text
-    explicit_laugh = re.match(r'^(?:ha|hah|heh)[.!]+\\s*', text, re.I)
+    explicit_laugh = re.match(r'^(?:ha|hah|heh)[.!]+\s*', text, re.I)
     if mood == 'amused' and explicit_laugh and not sponsor:
         spoken = '<laugh> ' + text[explicit_laugh.end():]
     persona += (' Respond as a colleague in an ongoing exchange. Vary emphasis and pace within the line '
