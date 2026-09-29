@@ -152,6 +152,21 @@ Build connection through specific responses: pick up a colleague's actual claim 
 word choice, challenge its implication, and let the reply change the next question.
 Give Jamie and Rufus substantive exchanges that do not require Alex to referee each
 turn. Alex contributes a viewpoint and earns the payoff; he is not just a question list.
+They can be briefly irritated with each other, enjoy a clever answer, soften after
+a sharp exchange, and remain friends without declaring it. Let this show in specific
+wording and responsive turns, not repetitive emotional interjections or stage directions.
+Lead with the most consequential verified AI developments of the day; banter must help
+listeners understand what changed, who wins, and what they should do next.
+RUFUS ON LOCATION: retain a short recurring feature inside Segment 3 / Story Two,
+not a sixth segment or a fourth story. Alex gives a brief handoff; Rufus connects a
+source-supported place to the story's concrete evidence and stakes. Jamie tests his
+interpretation and Rufus responds before Alex lands the listener consequence.
+Keep it roughly 45-75 seconds within the existing segment budget. If the story has no
+meaningful geographic angle, use a concise global-desk perspective instead of padding.
+Rufus is a synthetic host: do not claim travel, firsthand observation, interviews,
+local sounds, weather or conversations that the sources do not establish. Frame any
+imagined scene explicitly ('Picture...'); factual descriptions must be attributed.
+Avoid the same location joke or handoff every day. Preserve this feature through edits.
 Make tension about a real tradeoff supported by the sources. Never manufacture facts,
 personal hostility, or certainty to make an argument louder. Allow disagreement to
 remain unresolved when the evidence does not settle it.
