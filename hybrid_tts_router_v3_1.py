@@ -638,6 +638,8 @@ def _openai_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
 # ----------------------------------------------------------------------------
 def _provider_for(speaker: str) -> str:
     spk = (speaker or "").strip().upper()
+    if spk in _RT.get('episode_provider', {}):
+        return _RT['episode_provider'][spk]
     return {
         "ALEX": os.getenv("ALEX_TTS_PROVIDER", "openai"),
         "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "grok"),
@@ -656,6 +658,16 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
     mood = infer_mood(text, spk)
     _note_mood(mood)
     provider = _provider_for(spk)
+
+    prepared = _RT.get('prepared_audio', {}).get((spk, text))
+    if prepared:
+        shutil.copyfile(prepared, out)
+        env_name, default_voice = _GEMINI_VOICE_ENV[spk]
+        STATS['calls'].append({'speaker': spk, 'provider': 'gemini', 'voice': os.getenv(env_name, default_voice),
+                               'mood': mood, 'cache': True, 'prepared': True, 'chars': len(_sanitize_spoken_text(text))})
+        STATS['characters_by_speaker'][spk] += len(_sanitize_spoken_text(text))
+        _write_report()
+        return
 
     # 1. Jamie on Grok: Ursa primary, Celeste automatic voice fallback.
     if provider == "grok":
@@ -869,6 +881,11 @@ def install(g: Dict[str, Any]) -> None:
         return "openai"
 
     g["tts_to_file"] = hybrid_tts_to_file
+    def prepare_episode_cast(render_items):
+        import sys
+        from episode_cast import prepare
+        prepare(sys.modules[__name__], render_items, g['chunk_text'], g['_tts_chunk_max_chars'])
+    g['prepare_episode_cast'] = prepare_episode_cast
     STATS["patched"].append("tts_to_file")
     if callable(original_render_spoken):
         g["_render_spoken_chunk_to_file"] = hybrid_render_spoken_chunk_to_file

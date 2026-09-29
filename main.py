@@ -5997,6 +5997,10 @@ def produce_episode() -> None:
     dialogue = iter_dialogue(script)
     render_items = _build_eleven_render_items(dialogue) if AUDIO_BACKEND == "eleven" else merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)
 
+    cast_preparer = globals().get('prepare_episode_cast')
+    if callable(cast_preparer):
+        cast_preparer(render_items)
+
     run_tmp = TMP_AUDIO_DIR / today
     if run_tmp.exists():
         shutil.rmtree(run_tmp, ignore_errors=True)
