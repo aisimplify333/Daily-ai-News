@@ -46,7 +46,8 @@ jobs:
       GEMINI_TTS_VOICE_ALEX: "Charon"
       GEMINI_TTS_VOICE_RUFUS: "Iapetus"
       GEMINI_TTS_MAX_RETRIES: "3"
-      GEMINI_TTS_MIN_INTERVAL: "6"
+      GEMINI_TTS_MIN_INTERVAL: "20"
+      GEMINI_REQUIRE_APPROVED_VOICE: "true"
       AUDIO_BACKEND: "openai"
       TTS_ROUTER_MODE: "hybrid"
       ALEX_TTS_PROVIDER: "gemini"
@@ -169,7 +170,7 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
 
-          # Gemini Orus/Iapetus primary; OpenAI HD remains the logged outage fallback.
+          # Charon/Iapetus stay consistent; provider failures preserve recovery assets.
           AUDIO_BACKEND: "openai"
           TTS_ROUTER_MODE: "hybrid"
           ALEX_TTS_PROVIDER: "gemini"
@@ -359,3 +360,13 @@ jobs:
           if-no-files-found: ignore
           path: _run_artifacts/
           compression-level: 0
+
+      - name: Preserve completed voice takes for recovery
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: voice-recovery-${{ github.run_id }}
+          path: .tts_cache/
+          include-hidden-files: true
+          retention-days: 14
+          if-no-files-found: ignore

@@ -1,0 +1,41 @@
+name: Gemini quota diagnosis
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['auditions/GEMINI_QUOTA_CHECK']
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /gemini_cast_tts.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - name: Single request; print only sanitized quota identifiers
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          python - <<'PY'
+          import os, tempfile
+          from pathlib import Path
+          from gemini_cast_tts import render_wav, GeminiTTSHTTPError
+          try:
+              with tempfile.TemporaryDirectory() as d:
+                  render_wav('This is a brief voice availability check.', 'ALEX', 'neutral', 'Charon', 'gemini-3.8-flash-tts', 'Conversational.', Path(d)/'probe.wav', os.environ['GEMINI_API_KEY'])
+              print('PROBE: success. One request works; full-episode quota is not verified.')
+          except GeminiTTSHTTPError as e:
+              print('PROBE:', str(e))
+              raise SystemExit(1)
+          except Exception as e:
+              print('PROBE: transport or audio failure:', type(e).__name__)
+              raise SystemExit(1)
+          PY

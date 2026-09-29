@@ -540,7 +540,15 @@ def _gemini_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
             if spk == "JAMIE":
                 STATS["jamie_gemini_failures"] += 1
             _safe_print(f"   ⚠️ Gemini TTS failed for {spk} attempt {attempt}/{retries}: {e}")
-            time.sleep(min(6, 1.5 * attempt))
+            STATS.setdefault('gemini_errors', []).append({'speaker': spk, 'attempt': attempt, 'reason': str(e)[:500]})
+            _write_report()
+            if getattr(e, 'retryable', True) is False:
+                break
+            if attempt < retries:
+                delay = max(30 * 2 ** (attempt - 1), getattr(e, 'retry_after', 0))
+                if delay > 180:
+                    break  # Preserve takes for recovery; do not ignore a longer server wait.
+                time.sleep(delay)
         finally:
             try:
                 if wav_path.exists():
@@ -703,12 +711,17 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
             _write_report()
             _safe_print(f"   ⚠️ {spk}: Grok Ursa/Celeste failed, falling back to OpenAI — {e}")
 
-    # 2. Gemini remains available as an explicit emergency route.
+    # 2. Preserve the approved Gemini cast; never switch identity mid-episode.
     if provider == "gemini":
         try:
             _gemini_tts_to_file(text, spk, mood, out)
             return
         except Exception as e:
+            if _bool_env('GEMINI_REQUIRE_APPROVED_VOICE', 'true'):
+                STATS.setdefault('blocked_voice_substitutions', []).append({
+                    'speaker': spk, 'reason': str(e)[:500]})
+                _write_report()
+                raise RuntimeError(f'{spk}: approved Gemini voice unavailable; completed takes retained for recovery') from e
             STATS["fallbacks"].append({"speaker": spk, "mood": mood,
                                        "from": "gemini", "to": "openai",
                                        "reason": str(e)[:400]})
