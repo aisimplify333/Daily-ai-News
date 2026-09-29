@@ -430,7 +430,7 @@ def _extract_audio_bytes(response: Any) -> bytes:
 
 def _cache_key(text: str, speaker: str, voice: str, model: str, mood: str) -> str:
     raw = json.dumps(
-        {"direction_version": "gemini-cast-v1", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
+        {"direction_version": "gemini-cast-v2", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
          "text": _sanitize_spoken_text(text)},
         sort_keys=True,
     )

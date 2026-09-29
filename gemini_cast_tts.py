@@ -1,6 +1,7 @@
 """Gemini 3.8 delivery: separate acting from verbatim text; bounded requests."""
 import base64
 import os
+import re
 import threading
 import time
 import requests
@@ -15,8 +16,13 @@ def payload(text, speaker, mood, voice, note):
     }.get(speaker, 'Warm conversational co-host.')
     sponsor = 'the ledger' in text.lower() or 't-h-e-l-e-d-g-r' in text.lower()
     spoken = text
-    if mood == 'amused' and not sponsor:
-        spoken = '<laugh> ' + text
+    explicit_laugh = re.match(r'^(?:ha|hah|heh)[.!]+\\s*', text, re.I)
+    if mood == 'amused' and explicit_laugh and not sponsor:
+        spoken = '<laugh> ' + text[explicit_laugh.end():]
+    persona += (' Respond as a colleague in an ongoing exchange. Vary emphasis and pace within the line '
+                'as its meaning changes; keep short reactions quick and serious conclusions grounded. '
+                'A brief laugh only when explicitly cued, then recover into clear speech. '
+                'Keep the established vocal identity; avoid constant intensity or a sales cadence.')
     style = persona + ' ' + ( 'Sincere, clear sponsor read; no laughter.' if sponsor else note)
     return {'contents': [{'role': 'user', 'parts': [{'text': spoken, 'speech_metadata': {'style': style}}]}],
             'generationConfig': {'responseModalities': ['AUDIO'],

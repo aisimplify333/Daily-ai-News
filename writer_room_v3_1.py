@@ -148,6 +148,23 @@ markets/policy expertise. Give him an original observation without a
 Observation, affectionate challenge, comeback and clarification are available shapes,
 NOT a mandatory repeated sequence. No designated loser, mandatory concession, feud,
 catchphrase quota or automatic laugh. Tease ideas and habits, never vulnerable people.
+Build connection through specific responses: pick up a colleague's actual claim or
+word choice, challenge its implication, and let the reply change the next question.
+Give Jamie and Rufus substantive exchanges that do not require Alex to referee each
+turn. Alex contributes a viewpoint and earns the payoff; he is not just a question list.
+Make tension about a real tradeoff supported by the sources. Never manufacture facts,
+personal hostility, or certainty to make an argument louder. Allow disagreement to
+remain unresolved when the evidence does not settle it.
+Shape the episode with contrast: brisk challenge, a concise counterexample, an earned
+comic release, then space for the human consequence. Vary this order; do not run the
+same emotional pattern in every story. Joy and curiosity deserve room alongside doubt.
+Write an occasional short, natural laugh response only when a colleague has earned it;
+do not make everyone laugh at their own jokes. No recurring 'Wait' opening or rehearsed
+catchphrase. Let Rufus's quick, dry comeback land without explaining the punchline.
+In each story, seek one self-contained exchange listeners could send to a friend:
+a clear premise, two different viewpoints, a memorable turn and a useful consequence.
+Aim for 20-45 seconds when the material supports it; no quota, padding, invented stakes
+or extra recap. A clip should make sense without the previous five minutes.
 Leave sponsor copy clean and sincere. No bells, comic interruptions or invented use.
 Never invent named listeners, submissions, votes or metrics. An explicitly hypothetical listener question is allowed only when labelled hypothetical. Actual callbacks use the
 supplied history, change meaning with new evidence, and belong after the opening.
