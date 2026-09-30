@@ -89,11 +89,12 @@ jobs:
                 ...context.repo, workflow_id: 'daily_podcast.yml',
                 created: '>=' + today + 'T00:00:00Z', per_page: 100
               });
-              const earlier = data.workflow_runs.find(r => r.id !== context.runId &&
-                ['completed', 'in_progress'].includes(r.status));
-              if (earlier) {
-                core.notice('Production already attempted today: ' + earlier.html_url +
-                  '. Preserve artifacts for recovery; do not regenerate automatically.');
+              const attempts = data.workflow_runs.filter(r => r.id !== context.runId);
+              const active = attempts.find(r => r.status === 'in_progress');
+              const failures = attempts.filter(r => ['failure', 'timed_out'].includes(r.conclusion));
+              if (active || failures.length >= 2) {
+                core.notice(active ? 'Another production run is active.' :
+                  'Two failed attempts today; preserve artifacts for supervised recovery.');
                 return 'skip';
               }
             }

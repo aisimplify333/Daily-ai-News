@@ -1285,6 +1285,11 @@ def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]]
                    date_str: str, board: Dict[str, Any], fuel: Dict[str, Any]) -> str:
     return f"""Write The AI Edge for {date_str}. Return the full spoken script only.
 
+LENGTH: Aim for 3800 spoken words across the complete episode. Build the length through
+source-backed follow-up questions, differing interpretations and practical examples,
+not longer monologues. Give each story a sustained exchange before its payoff.
+Keep individual turns short and responsive. Do not invent facts to fill time.
+
 PUBLIC TITLE: {board.get('published_title', _hard_title(stories))}
 LISTENER BENEFIT: {board.get('listener_promise', LISTENER_PROMISE)}
 Explain the actual headline immediately; answer the title's question in the closing.
@@ -2918,17 +2923,14 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         )
         final_words = int((assessment.get("metrics") or {}).get("words") or 0)
         if final_words < min_episode_words:
-            for pad_attempt in range(1, 4):
+            for pad_attempt in range(1, 7):
                 if final_words >= min_episode_words:
                     break
-                # A final bounded repair is only for a modest remaining deficit.
-                if pad_attempt == 3 and min_episode_words - final_words > 300:
-                    break
-                needed = min(850, max(300, min_episode_words + 125 - final_words))
+                needed = min(850, max(300, target_episode_words - final_words))
                 _safe_print(
                     g,
                     f"      🧩 runtime underrun ({final_words} words); "
-                    f"deepening the underweight story with sourced debate (pass {pad_attempt}/3)",
+                    f"deepening the underweight story with sourced debate (pass {pad_attempt}/6)",
                 )
                 expanded = _expand_segment_four(
                     g, script, stories, date_str, board, add_words=needed
