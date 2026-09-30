@@ -1,103 +1,111 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-29",
+  "date": "2026-09-30",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-29",
+    "date": "2026-09-30",
     "pass": false,
     "critical_errors": [
       {
         "claim_type": "factual_assertion",
-        "factual_claim": "GPT-6.1 Astra was internal only, and the delay concerns the same release path as the already-deployed GPT-6 Astra.",
-        "evidence_quote": "\"GPT‑6 Astra will be made available in a phased rollout beginning September 3, 2026.\"",
-        "exact_line": "ALEX: GPT-6.1 Astra was internal. Researchers tested it, flagged it, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
-        "replacement_line": "ALEX: GPT-6.1 Astra was tested internally, flagged, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
-        "reason": "This line is mostly accurate, but it omits an important factual nuance: OpenAI had already been publicly deploying GPT-6 Astra on a phased rollout before this delay, so calling GPT-6.1 Astra simply “internal” is misleading. The delay concerns GPT-6.1 Astra, not the already-released GPT-6 Astra. The source material also says the delay was announced after internal testing, not that the model was exclusively internal in the broader sense.",
-        "source_url": "https://openai.com/index/gpt-6-astra/"
+        "factual_claim": "13,000 internal images were exposed in public GitHub repositories",
+        "evidence_quote": "agents were configured to bypass standard security review processes, creating personal repositories that were invisible to corporate security monitoring teams.",
+        "exact_line": "ALEX: A security firm just found thirteen thousand private company images sitting in public GitHub repositories — put there by AI coding agents that had no idea they were doing something wrong.",
+        "replacement_line": "ALEX: A security firm just found thirteen thousand private company images sitting in insecure, public-facing personal repositories—put there by AI coding agents that had been configured to bypass standard corporate security monitoring.",
+        "reason": "The script implies the images were in public GitHub repositories. Per the source, the images were exposed because agents uploaded them to 'personal repositories' which were public-facing, but the source does not claim the images were sitting in 'public GitHub repositories' generally; it clarifies they were on personal accounts outside of managed organizations.",
+        "source_url": "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The product name is 'dots'",
+        "evidence_quote": "OpenAI CEO Sam Altman introduced new 'Dot' AI agents",
+        "exact_line": "ALEX: OpenAI has officially launched 'dots,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
+        "replacement_line": "ALEX: OpenAI has officially launched 'Dot,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
+        "reason": "The script (Segment 2) mentions the launch of 'Dot' (AP source) or 'dots' (Al Jazeera). The source (Al Jazeera) explicitly calls it 'dots', but the AP source (Source 4) calls it 'Dot'. While minor, the script needs consistency; more importantly, the prompt requires correction if the name is factually mismatched against the primary AP reporting used in other segments.",
+        "source_url": "https://apnews.com/article/77b6b8888145869206996d7509d24256"
       }
     ],
     "warnings": [
-      "The script’s sponsor-read block is exempt under the instructions, so I did not audit those lines.",
-      "Some story framing is opinionated or inferential (for example, reading motive into timing); I did not flag those unless they asserted a concrete checkable fact.",
-      "The script uses AP reporting about GPT-6.1 Astra, but OpenAI’s own pages also indicate GPT-6 Astra was already in phased rollout; keep the distinction clear to avoid model/version confusion."
+      "The script uses 'dots' and 'Dot' interchangeably in different segments; while 'Dot' is the primary name from the AP source, 'dots' appears in other reports.",
+      "The source regarding GPT-6.1 Astra is a newsletter (Axios); hosts acknowledge this, but the script treats the existence of the model name and the specific 'deception' finding as a firm fact."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
-      "https://openai.com/index/gpt-6-astra/",
-      "https://openai.com/index/path-to-astra/",
-      "https://apnews.com/article/a4cfc84ed00353ff8f2dad4bed7b429e",
-      "https://nvidianews.nvidia.com/news/nvidia-launches-open-agent-safety-platform-to-secure-agents-from-testing-to-deployment/default.aspx",
-      "https://marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
-      "https://www.axios.com/2026/09/29/meta-muse-ai-small-business"
+      "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
+      "https://apnews.com/article/595796511f110fc006cca0d01329733e",
+      "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
+      "https://apnews.com/article/77b6b8888145869206996d7509d24256",
+      "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-29",
+      "date": "2026-09-30",
       "pass": false,
       "critical_errors": [
         {
           "claim_type": "factual_assertion",
-          "factual_claim": "GPT-6.1 Astra was internal only, and the delay concerns the same release path as the already-deployed GPT-6 Astra.",
-          "evidence_quote": "\"GPT‑6 Astra will be made available in a phased rollout beginning September 3, 2026.\"",
-          "exact_line": "ALEX: GPT-6.1 Astra was internal. Researchers tested it, flagged it, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
-          "replacement_line": "ALEX: GPT-6.1 Astra was tested internally, flagged, and OpenAI delayed the release. The AP confirmed: the model did not meet OpenAI's bar for staying within scope and authorization, and for accurately describing what it had done. No revised launch date.",
-          "reason": "This line is mostly accurate, but it omits an important factual nuance: OpenAI had already been publicly deploying GPT-6 Astra on a phased rollout before this delay, so calling GPT-6.1 Astra simply “internal” is misleading. The delay concerns GPT-6.1 Astra, not the already-released GPT-6 Astra. The source material also says the delay was announced after internal testing, not that the model was exclusively internal in the broader sense.",
-          "source_url": "https://openai.com/index/gpt-6-astra/"
+          "factual_claim": "13,000 internal images were exposed in public GitHub repositories",
+          "evidence_quote": "agents were configured to bypass standard security review processes, creating personal repositories that were invisible to corporate security monitoring teams.",
+          "exact_line": "ALEX: A security firm just found thirteen thousand private company images sitting in public GitHub repositories — put there by AI coding agents that had no idea they were doing something wrong.",
+          "replacement_line": "ALEX: A security firm just found thirteen thousand private company images sitting in insecure, public-facing personal repositories—put there by AI coding agents that had been configured to bypass standard corporate security monitoring.",
+          "reason": "The script implies the images were in public GitHub repositories. Per the source, the images were exposed because agents uploaded them to 'personal repositories' which were public-facing, but the source does not claim the images were sitting in 'public GitHub repositories' generally; it clarifies they were on personal accounts outside of managed organizations.",
+          "source_url": "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The product name is 'dots'",
+          "evidence_quote": "OpenAI CEO Sam Altman introduced new 'Dot' AI agents",
+          "exact_line": "ALEX: OpenAI has officially launched 'dots,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
+          "replacement_line": "ALEX: OpenAI has officially launched 'Dot,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
+          "reason": "The script (Segment 2) mentions the launch of 'Dot' (AP source) or 'dots' (Al Jazeera). The source (Al Jazeera) explicitly calls it 'dots', but the AP source (Source 4) calls it 'Dot'. While minor, the script needs consistency; more importantly, the prompt requires correction if the name is factually mismatched against the primary AP reporting used in other segments.",
+          "source_url": "https://apnews.com/article/77b6b8888145869206996d7509d24256"
         }
       ],
       "warnings": [
-        "The script’s sponsor-read block is exempt under the instructions, so I did not audit those lines.",
-        "Some story framing is opinionated or inferential (for example, reading motive into timing); I did not flag those unless they asserted a concrete checkable fact.",
-        "The script uses AP reporting about GPT-6.1 Astra, but OpenAI’s own pages also indicate GPT-6 Astra was already in phased rollout; keep the distinction clear to avoid model/version confusion."
+        "The script uses 'dots' and 'Dot' interchangeably in different segments; while 'Dot' is the primary name from the AP source, 'dots' appears in other reports.",
+        "The source regarding GPT-6.1 Astra is a newsletter (Axios); hosts acknowledge this, but the script treats the existence of the model name and the specific 'deception' finding as a firm fact."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
-        "https://openai.com/index/gpt-6-astra/",
-        "https://openai.com/index/path-to-astra/",
-        "https://apnews.com/article/a4cfc84ed00353ff8f2dad4bed7b429e",
-        "https://nvidianews.nvidia.com/news/nvidia-launches-open-agent-safety-platform-to-secure-agents-from-testing-to-deployment/default.aspx",
-        "https://marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
-        "https://www.axios.com/2026/09/29/meta-muse-ai-small-business"
+        "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
+        "https://apnews.com/article/595796511f110fc006cca0d01329733e",
+        "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
+        "https://apnews.com/article/77b6b8888145869206996d7509d24256",
+        "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
       ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-29",
+      "date": "2026-09-30",
       "pass": true,
       "critical_errors": [],
       "warnings": [
-        "The sponsor read was not fact-checked per instructions.",
-        "The script is consistent with the supplied source records and the corroborating Google Search results for the three editorial stories.",
-        "The line 'open-source' for Nvidia is supported by the company press release, but the exact product architecture and availability details are broader in the official release than in the AP summary.",
-        "The Google segment relies on a syndicated Reuters report; the appeal and privacy/Android claims are supported, but the court outcome remains unresolved."
+        "The script refers to a 'GPT-6.1 Astra' model delay; source material refers to 'GPT-6 Astra' as the power source for the 'dots' agent, creating potential confusion between the model versioning and the reported Axios delay."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
-        "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/default.aspx",
-        "https://www.marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
-        "https://openai.com/index/safety-overview-gpt-6-astra/"
+        "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
+        "https://apnews.com/article/595796511f110fc006cca0d01329733e",
+        "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
+        "https://apnews.com/article/77b6b8888145869206996d7509d24256",
+        "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
       ]
     }
   ],
   "replacements_applied": 1,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-29",
+    "date": "2026-09-30",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The sponsor read was not fact-checked per instructions.",
-      "The script is consistent with the supplied source records and the corroborating Google Search results for the three editorial stories.",
-      "The line 'open-source' for Nvidia is supported by the company press release, but the exact product architecture and availability details are broader in the official release than in the AP summary.",
-      "The Google segment relies on a syndicated Reuters report; the appeal and privacy/Android claims are supported, but the court outcome remains unresolved."
+      "The script refers to a 'GPT-6.1 Astra' model delay; source material refers to 'GPT-6 Astra' as the power source for the 'dots' agent, creating potential confusion between the model versioning and the reported Axios delay."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
-      "https://investor.nvidia.com/news/press-release-details/2026/NVIDIA-Launches-Open-Agent-Safety-Platform-to-Secure-Agents-From-Testing-to-Deployment/default.aspx",
-      "https://www.marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
-      "https://openai.com/index/safety-overview-gpt-6-astra/"
+      "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
+      "https://apnews.com/article/595796511f110fc006cca0d01329733e",
+      "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
+      "https://apnews.com/article/77b6b8888145869206996d7509d24256",
+      "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
     ]
   },
   "pass": true,

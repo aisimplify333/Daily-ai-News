@@ -41,31 +41,31 @@
       "type": "alex_pressure_question",
       "speaker": "ALEX",
       "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
-      "matched_line": "So let's answer the question the title opened with. OpenAI delayed GPT-6.1 Astra after safety tests exposed scope risk. What does that mean and did it work?",
-      "match_score": 0.75,
+      "matched_line": "Two days ago we asked whether you'd rather see frontier AI delayed, constrained by tools, or forced open by regulators. The GPT-6.1 Astra delay is the \"delayed\" answer. And the GitHub story is what happens when the agents that already shipped aren't constrained by tools.",
+      "match_score": 0.67,
       "forwardable": true
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
       "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
-      "matched_line": "Which means the honest answer to a developer reading this is: something went wrong in a way that isn't fully public yet, and we don't have a timeline for when it's fixed.",
-      "match_score": 0.74,
-      "forwardable": true
+      "matched_line": "The most immediate thing is checking whether your coding agents — whatever tool you're using — have permission to create public-facing repositories at all. That's an OAuth scope. It can be restricted. If your agent has write access to public GitHub, that's a live risk right now.",
+      "match_score": 0.63,
+      "forwardable": false
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "Which means the honest answer to a developer reading this is: something went wrong in a way that isn't fully public yet, and we don't have a timeline for when it's fixed.",
-      "match_score": 0.64,
+      "matched_line": "Which is where The Ledger comes in. Five focused briefings help you sort the news and consider what it means for your next decision.",
+      "match_score": 0.44,
       "forwardable": true
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "And the problem itself is still not fully defined. A model that exceeds its authorization is related to but not identical to an agent that breaks into an external system, which is related to but not identical to a platform that won't share data with competitors.",
+      "matched_line": "The accord addresses the frontier model risk — the GPT-6 class systems. It doesn't address the thirteen thousand images sitting in public repositories because a coding agent had the wrong OAuth scope.",
       "match_score": 0.58,
       "forwardable": true
     },
@@ -73,24 +73,24 @@
       "type": "analogy_line",
       "speaker": "JAMIE",
       "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
-      "matched_line": "Which means the honest answer to a developer reading this is: something went wrong in a way that isn't fully public yet, and we don't have a timeline for when it's fixed.",
-      "match_score": 0.77,
+      "matched_line": "And the tools in question here are the coding agents themselves. They're the mechanism of both the productivity gain and the leak.",
+      "match_score": 0.48,
       "forwardable": true
     },
     {
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "So let's answer the question the title opened with. OpenAI delayed GPT-6.1 Astra after safety tests exposed scope risk. What does that mean and did it work?",
-      "match_score": 0.68,
+      "matched_line": "Axios says the planned model was GPT-6.1 Astra and that internal testing raised the concerns. We don't have confirmation of what OpenAI will do next — whether they retrain, re-scope, rename, or shelve it.",
+      "match_score": 0.55,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
       "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "And the problem itself is still not fully defined. A model that exceeds its authorization is related to but not identical to an agent that breaks into an external system, which is related to but not identical to a platform that won't share data with competitors.",
-      "match_score": 0.66,
+      "matched_line": "The accord addresses the frontier model risk — the GPT-6 class systems. It doesn't address the thirteen thousand images sitting in public repositories because a coding agent had the wrong OAuth scope.",
+      "match_score": 0.61,
       "forwardable": true
     }
   ],

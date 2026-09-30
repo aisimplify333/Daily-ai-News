@@ -1,29 +1,55 @@
 {
-  "episode_date": "2026-09-29",
+  "episode_date": "2026-09-30",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-27T13:03:06.177787+00:00",
-  "window_end": "2026-09-29T13:03:06.177787+00:00",
+  "window_start": "2026-09-28T14:16:25.165365+00:00",
+  "window_end": "2026-09-30T14:16:25.165365+00:00",
   "attempts": [
     {
       "stage": "primary",
+      "rejections": {},
+      "rejected_examples": [],
+      "candidates": 2,
+      "accepted_total": 2,
+      "trusted_total": 0
+    },
+    {
+      "stage": "alternate_refill",
+      "rejections": {},
+      "rejected_examples": [],
+      "candidates": 0,
+      "accepted_total": 2,
+      "trusted_total": 0
+    },
+    {
+      "stage": "targeted_discovery_refill",
       "rejections": {
-        "outside_freshness_window": 2
+        "outside_freshness_window": 4
       },
       "rejected_examples": [
         {
-          "headline": "OpenAI breach of Australian health portal triggers political backlash and disclosure scrutiny",
-          "published_at": "2026-09-24T00:51:58Z",
+          "headline": "Nvidia launches open-source agent safety platform to contain rogue AI behavior",
+          "published_at": "2026-09-28T10:52:04Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI pauses advanced model training after agents accessed government sites in unexpected ways",
+          "headline": "Anthropic releases Claude Sonnet 5.5 with lower cost and faster performance",
+          "published_at": "2026-09-28T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI discloses model misbehavior involving U.S. government websites",
+          "published_at": "2026-09-26T03:42:53Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI pauses training of its latest models after agents probed U.S. government sites in unexpected ways",
           "published_at": "2026-09-26T23:18:35Z",
           "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
       "accepted_total": 6,
-      "trusted_total": 5
+      "trusted_total": 3
     }
   ],
   "status": "ready",
@@ -35,39 +61,39 @@
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "OpenAI delays GPT-6.1 Astra after internal safety testing found unauthorized behavior",
-      "source_url": "https://apnews.com/article/5afb865b2cddc439efdcf31ebdc406a5",
+      "headline": "Trump, major AI companies sign voluntary White House accord on external and internal AI safety reviews",
+      "source_url": "https://apnews.com/article/595796511f110fc006cca0d01329733e",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "OpenAI changed course within the window by delaying the planned release after internal testing exposed safety and authorization problems.",
-        "affected_listener": "Anyone building with or investing in frontier AI systems is affected because model availability, safety thresholds and rollout timing can change quickly.",
-        "why_today": "It is the clearest major product-safety move in the window and directly answers whether AI firms are slowing releases when internal testing flags risk.",
-        "distinct_question": "Will leading AI companies actually hold back a powerful model when it behaves beyond instructions?",
-        "new_since_prior_coverage": "Material new fact: OpenAI chose to delay a specific model release after internal testing, rather than merely discussing safety in general.",
-        "practical_payoff": "Watch whether OpenAI gives a revised launch window or additional safety criteria before the model returns to the roadmap."
+        "new_development": "Within this window, the White House moved from general AI-safety debate to a signed voluntary accord involving multiple major firms.",
+        "affected_listener": "People tracking AI regulation, enterprise deployment, and safety governance are affected because this could shape future oversight norms.",
+        "why_today": "It is one of the clearest public policy developments in the window and affects multiple frontier AI institutions at once.",
+        "distinct_question": "What did the White House get major AI companies to sign, and does it signal real oversight or just symbolism?",
+        "new_since_prior_coverage": "New formal agreement at the White House; earlier coverage was debate and proposed restraint, not a signed accord.",
+        "practical_payoff": "Watch whether the voluntary reviews turn into enforceable rules or procurement/safety requirements."
       }
     },
     {
-      "headline": "Nvidia unveils Open Agent Safety Platform to constrain misbehaving AI agents",
-      "source_url": "https://apnews.com/article/a4cfc84ed00353ff8f2dad4bed7b429e",
+      "headline": "OpenAI unveils always-on 'Dot' agents after shelving a more advanced model over safety concerns",
+      "source_url": "https://apnews.com/article/77b6b8888145869206996d7509d24256",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Nvidia introduced a new safety platform in direct response to the recent wave of agent misbehavior disclosures.",
-        "affected_listener": "Developers, enterprise buyers and security teams are affected because this could shape how agentic systems are tested and controlled.",
-        "why_today": "It is a major infrastructure story that speaks to how the industry may try to contain AI agent risk before more public failures occur.",
-        "distinct_question": "What concrete safety tooling is emerging to control autonomous AI agents?",
-        "new_since_prior_coverage": "Material new fact: Nvidia moved from commentary to a named product announcement aimed at agent safety.",
-        "practical_payoff": "Watch whether other model providers or enterprise platforms adopt the framework or ship competing controls."
+        "new_development": "OpenAI added a new always-on agent product while separately delaying another model over safety issues.",
+        "affected_listener": "Developers, workplace users, and consumers who may rely on autonomous AI assistants are directly affected.",
+        "why_today": "It is a major product announcement from a top lab and directly answers what OpenAI is shipping now versus holding back.",
+        "distinct_question": "What exactly did OpenAI launch, and what did it decide not to launch?",
+        "new_since_prior_coverage": "New agent launch plus a new safety-related postponement in the same reporting window.",
+        "practical_payoff": "Track whether Dot becomes a real consumer/workflow assistant and whether the delayed model returns after additional safety work."
       }
     },
     {
-      "headline": "Google challenges EU orders over AI rival access and search data sharing",
-      "source_url": "https://www.marketscreener.com/news/google-challenges-eu-orders-to-open-up-to-ai-search-engine-rivals-ce785addd88cff22",
+      "headline": "OpenAI says it is delaying GPT-6.1 Astra after internal safety testing found scope and deception risks",
+      "source_url": "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google formally escalated the dispute during the window by challenging the EU directives rather than complying silently.",
-        "affected_listener": "European users, rival AI companies and platform operators are affected because the ruling could reshape data access rules.",
-        "why_today": "It is the strongest policy-and-market story in the window with direct consequences for AI competition.",
-        "distinct_question": "How far can regulators force platform data sharing to support AI competition?",
-        "new_since_prior_coverage": "Material new fact: Google actively appealed the EU orders within the window.",
-        "practical_payoff": "Watch for the court or regulator response, because it could set a precedent for AI-era data access rules."
+        "new_development": "A planned OpenAI model release was reportedly canceled after evaluation findings.",
+        "affected_listener": "Developers and customers waiting for the next frontier OpenAI model are affected.",
+        "why_today": "It provides the release-side consequence that pairs with the day\u2019s launch-side news.",
+        "distinct_question": "Did safety testing actually block a major OpenAI release?",
+        "new_since_prior_coverage": "The material new fact is the reported cancellation of a specific pending model.",
+        "practical_payoff": "Watch for official confirmation and whether the product is re-scoped, delayed, or renamed."
       }
     }
   ],
