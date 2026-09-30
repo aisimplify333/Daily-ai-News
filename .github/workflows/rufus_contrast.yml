@@ -1,0 +1,41 @@
+name: Rufus English contrast audition
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['auditions/RUFUS_CONTRAST_RUN_ONCE']
+permissions:
+  contents: read
+concurrency:
+  group: rufus-contrast-audition
+  cancel-in-progress: false
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /gemini_cast_tts.py
+            /auditions/rufus_contrast.py
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install audio dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          pip install requests pydub
+      - name: Render four contrast takes
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_TTS_MIN_INTERVAL: '20'
+        run: python auditions/rufus_contrast.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alex-rufus-english-contrast
+          path: auditions/rufus_contrast_output/
+          retention-days: 30

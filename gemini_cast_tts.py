@@ -41,7 +41,7 @@ class GeminiTTSHTTPError(RuntimeError):
 def payload(text, speaker, mood, voice, note):
     persona = {
         'ALEX': 'American male host. Resonant lower register, grounded gravitas, warm and conversational. Brisk responsive timing; never a slow announcer.',
-        'RUFUS': 'Contemporary British male. Crisp, brisk conversational pace, quick dry wit and affectionate sarcasm. Short pauses, no languid drawl. Keep the accent through laughter and serious moments.',
+        'RUFUS': 'Distinct contemporary southern English male voice with consistent non-rhotic British pronunciation. Lighter, drier mid-register than the American bass of Alex; precise consonants and clipped sentence endings. Use brisk conversational phrasing, no languid drawl or lowered announcer register. Underplay dry wit: let the final word land, without explaining the joke. Affectionate mock formality, occasional genuine warmth. Keep this English accent in every sentence, including laughter and serious facts.',
     }.get(speaker, 'Warm conversational co-host.')
     sponsor = 'the ledger' in text.lower() or 't-h-e-l-e-d-g-r' in text.lower()
     spoken = text

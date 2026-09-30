@@ -10,6 +10,11 @@ EDITORIAL BRIEF — The AI Edge:
 1. Explain consequential AI developments from the last 24-48 hours. Newsworthiness
    and source quality come first. Three stories need separate questions and payoffs.
    Identify what changed, who benefits and what the listener can do or watch.
+   For each story use one familiar everyday example (clearly hypothetical if invented),
+   and explain technical terms in ordinary language on first use. Write for an interested
+   commuter, not only an enterprise buyer. Avoid making all three stories one risk thesis.
+   Where equally important sourced news permits, include useful progress or discovery
+   alongside accountability; never invent good news to force emotional balance.
 2. Curiosity, delight, disagreement and affection can all move a scene. Seek actual
    useful progress without a positivity quota. Never manufacture danger or hope.
    No permanent villains, designated loser or required change of mind.

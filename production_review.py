@@ -37,6 +37,15 @@ def write_review(stories, timeline, directory="."):
             return {}
     report = review_episode(stories, timeline, read("audio_engineering_report.json"),
                             read("dialogue_editor_report.json"), read("storyboard_report.json"))
+    contract = read("editorial_contract_report.json")
+    plan = read("performance_plan.json")
+    report["editorial_contract"] = contract
+    report["performance_plan_turns"] = len(plan.get("directions", []))
+    report["performance_direction_usage"] = read("hybrid_tts_report.json").get("performance_direction_usage", {})
+    report["issues"].extend(contract.get("issues", []))
+    report["issues"].extend(plan.get("issues", []))
+    if not plan:
+        report["issues"].append("No explicit performance plan was available.")
     # Actual provider-call metadata, never an inferred entertainment score.
     calls = read("hybrid_tts_report.json").get("calls") or []
     jamie = [c for c in calls if c.get("speaker") == "JAMIE"]

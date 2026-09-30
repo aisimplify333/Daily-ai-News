@@ -185,6 +185,10 @@ def infer_mood(text: str, speaker: str) -> str:
     spk = (speaker or "").strip().upper()
     if not body:
         return "neutral"
+    from performance_plan import planned_mood
+    directed = planned_mood(body, spk)
+    if directed is not None:
+        return directed
     if spk == "JAMIE":
         from jamie_performance import emotional_intent
         intent = emotional_intent(body)
@@ -236,7 +240,7 @@ PERSONA = {
               "Lead the earned laughs, occasional surprised guffaw and sotto-voce snicker; "
               "vary their intensity, then get straight back to the argument. Never a laugh track."),
     "RUFUS": ("Rufus — the dry British analyst. Calm, precise, quietly funny, "
-              "unhurried. Tracks money, liability, and regulation. Understatement, "
+              "brisk and clipped, with a distinct non-rhotic English accent. Tracks money, liability, and regulation. Understatement, "
               "never theatrics."),
 }
 PERSONA_SHORT = {
@@ -302,6 +306,17 @@ MOOD_DIRECTION = {
     ),
 }
 
+
+MOOD_DIRECTION.update({
+    "delight": ("A useful discovery genuinely delights you. Brighten briefly, then explain why; no sales pitch.",
+                "Warm, delighted by a concrete useful discovery; stay conversational."),
+    "warmth": ("Respond affectionately and sincerely to your colleague. Gentle smile, relaxed conversational energy.",
+               "Warm, sincere and affectionate, with a gentle smile."),
+    "curiosity": ("You genuinely want to understand the previous point. Alert, interested, questioning without confrontation.",
+                  "Interested and inquisitive; this is genuine curiosity, not an interrogation."),
+    "disbelief": ("A specific absurdity surprises you. Brief incredulous emphasis, then recover into the substance.",
+                  "Brief, natural disbelief at a specific absurdity; avoid shouting."),
+})
 
 # ----------------------------------------------------------------------------
 # Text sanitation
@@ -430,7 +445,7 @@ def _extract_audio_bytes(response: Any) -> bytes:
 
 def _cache_key(text: str, speaker: str, voice: str, model: str, mood: str) -> str:
     raw = json.dumps(
-        {"direction_version": "gemini-cast-v2", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
+        {"direction_version": "gemini-cast-v3-distinct-rufus", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
          "text": _sanitize_spoken_text(text)},
         sort_keys=True,
     )
@@ -657,6 +672,11 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
     out = Path(out_path)
     mood = infer_mood(text, spk)
     _note_mood(mood)
+    from performance_plan import planned_mood
+    from dialogue_direction import sponsor_text
+    source = 'sponsor' if sponsor_text(text) else 'planned' if planned_mood(text, spk) is not None else 'heuristic'
+    usage = STATS.setdefault('performance_direction_usage', {}).setdefault(spk, {})
+    usage[source] = usage.get(source, 0) + 1
     provider = _provider_for(spk)
 
     prepared = _RT.get('prepared_audio', {}).get((spk, text))
