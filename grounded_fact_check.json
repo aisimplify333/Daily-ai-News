@@ -1,111 +1,64 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-09-30",
+  "date": "2026-10-01",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-30",
-    "pass": false,
-    "critical_errors": [
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "13,000 internal images were exposed in public GitHub repositories",
-        "evidence_quote": "agents were configured to bypass standard security review processes, creating personal repositories that were invisible to corporate security monitoring teams.",
-        "exact_line": "ALEX: A security firm just found thirteen thousand private company images sitting in public GitHub repositories — put there by AI coding agents that had no idea they were doing something wrong.",
-        "replacement_line": "ALEX: A security firm just found thirteen thousand private company images sitting in insecure, public-facing personal repositories—put there by AI coding agents that had been configured to bypass standard corporate security monitoring.",
-        "reason": "The script implies the images were in public GitHub repositories. Per the source, the images were exposed because agents uploaded them to 'personal repositories' which were public-facing, but the source does not claim the images were sitting in 'public GitHub repositories' generally; it clarifies they were on personal accounts outside of managed organizations.",
-        "source_url": "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The product name is 'dots'",
-        "evidence_quote": "OpenAI CEO Sam Altman introduced new 'Dot' AI agents",
-        "exact_line": "ALEX: OpenAI has officially launched 'dots,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
-        "replacement_line": "ALEX: OpenAI has officially launched 'Dot,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
-        "reason": "The script (Segment 2) mentions the launch of 'Dot' (AP source) or 'dots' (Al Jazeera). The source (Al Jazeera) explicitly calls it 'dots', but the AP source (Source 4) calls it 'Dot'. While minor, the script needs consistency; more importantly, the prompt requires correction if the name is factually mismatched against the primary AP reporting used in other segments.",
-        "source_url": "https://apnews.com/article/77b6b8888145869206996d7509d24256"
-      }
-    ],
+    "date": "2026-10-01",
+    "pass": true,
+    "critical_errors": [],
     "warnings": [
-      "The script uses 'dots' and 'Dot' interchangeably in different segments; while 'Dot' is the primary name from the AP source, 'dots' appears in other reports.",
-      "The source regarding GPT-6.1 Astra is a newsletter (Axios); hosts acknowledge this, but the script treats the existence of the model name and the specific 'deception' finding as a firm fact."
+      "The segment regarding OpenAI's funding round mentions a $1.4 trillion valuation; ensure listeners understand this is a report based on 'people familiar with the matter' and not a finalized public filing.",
+      "The Gemini 4 Argon pricing ($2/$10 per million tokens) is specific and should be treated as introductory, as noted in the source.",
+      "Advisory only; no reviewable factual correction: The script includes a sponsor read that contradicts the provided rules. The rules state: 'Ignore the two-line sponsor read immediately after [MUSIC]... unless it makes a concrete numerical or regulated-product claim.' However, the script contains multiple, repetitive, and incorrect sponsor placements, including one that breaks the narrative flow in Segment 3.",
+      "Advisory only; no reviewable factual correction: This line is a duplicate/placeholder that appears twice in Segment 3 due to a script error, disrupting the flow."
     ],
     "verified_source_urls": [
-      "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
-      "https://apnews.com/article/595796511f110fc006cca0d01329733e",
-      "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
-      "https://apnews.com/article/77b6b8888145869206996d7509d24256",
-      "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
+      "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "https://deepmind.google/discover/blog/synthid-bio-watermarking-methods-for-synthetic-biology/",
+      "https://techcrunch.com/2026/09/30/doordash-unveils-text-ordering-drone-delivery-retail-expansion-at-dash-forward/",
+      "https://bloomberg.com/news/articles/2026-09-29/openai-targets-30-billion-in-funding-at-1-4-trillion-value",
+      "https://apnews.com/article/80d203a503d5843f32c8160dc004646b"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-09-30",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "13,000 internal images were exposed in public GitHub repositories",
-          "evidence_quote": "agents were configured to bypass standard security review processes, creating personal repositories that were invisible to corporate security monitoring teams.",
-          "exact_line": "ALEX: A security firm just found thirteen thousand private company images sitting in public GitHub repositories — put there by AI coding agents that had no idea they were doing something wrong.",
-          "replacement_line": "ALEX: A security firm just found thirteen thousand private company images sitting in insecure, public-facing personal repositories—put there by AI coding agents that had been configured to bypass standard corporate security monitoring.",
-          "reason": "The script implies the images were in public GitHub repositories. Per the source, the images were exposed because agents uploaded them to 'personal repositories' which were public-facing, but the source does not claim the images were sitting in 'public GitHub repositories' generally; it clarifies they were on personal accounts outside of managed organizations.",
-          "source_url": "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The product name is 'dots'",
-          "evidence_quote": "OpenAI CEO Sam Altman introduced new 'Dot' AI agents",
-          "exact_line": "ALEX: OpenAI has officially launched 'dots,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
-          "replacement_line": "ALEX: OpenAI has officially launched 'Dot,' a new always-on personal AI assistant powered by the GPT-6 Astra model.",
-          "reason": "The script (Segment 2) mentions the launch of 'Dot' (AP source) or 'dots' (Al Jazeera). The source (Al Jazeera) explicitly calls it 'dots', but the AP source (Source 4) calls it 'Dot'. While minor, the script needs consistency; more importantly, the prompt requires correction if the name is factually mismatched against the primary AP reporting used in other segments.",
-          "source_url": "https://apnews.com/article/77b6b8888145869206996d7509d24256"
-        }
-      ],
-      "warnings": [
-        "The script uses 'dots' and 'Dot' interchangeably in different segments; while 'Dot' is the primary name from the AP source, 'dots' appears in other reports.",
-        "The source regarding GPT-6.1 Astra is a newsletter (Axios); hosts acknowledge this, but the script treats the existence of the model name and the specific 'deception' finding as a firm fact."
-      ],
-      "verified_source_urls": [
-        "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
-        "https://apnews.com/article/595796511f110fc006cca0d01329733e",
-        "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
-        "https://apnews.com/article/77b6b8888145869206996d7509d24256",
-        "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-09-30",
+      "date": "2026-10-01",
       "pass": true,
       "critical_errors": [],
       "warnings": [
-        "The script refers to a 'GPT-6.1 Astra' model delay; source material refers to 'GPT-6 Astra' as the power source for the 'dots' agent, creating potential confusion between the model versioning and the reported Axios delay."
+        "The segment regarding OpenAI's funding round mentions a $1.4 trillion valuation; ensure listeners understand this is a report based on 'people familiar with the matter' and not a finalized public filing.",
+        "The Gemini 4 Argon pricing ($2/$10 per million tokens) is specific and should be treated as introductory, as noted in the source.",
+        "Advisory only; no reviewable factual correction: The script includes a sponsor read that contradicts the provided rules. The rules state: 'Ignore the two-line sponsor read immediately after [MUSIC]... unless it makes a concrete numerical or regulated-product claim.' However, the script contains multiple, repetitive, and incorrect sponsor placements, including one that breaks the narrative flow in Segment 3.",
+        "Advisory only; no reviewable factual correction: This line is a duplicate/placeholder that appears twice in Segment 3 due to a script error, disrupting the flow."
       ],
       "verified_source_urls": [
-        "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
-        "https://apnews.com/article/595796511f110fc006cca0d01329733e",
-        "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
-        "https://apnews.com/article/77b6b8888145869206996d7509d24256",
-        "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
+        "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+        "https://deepmind.google/discover/blog/synthid-bio-watermarking-methods-for-synthetic-biology/",
+        "https://techcrunch.com/2026/09/30/doordash-unveils-text-ordering-drone-delivery-retail-expansion-at-dash-forward/",
+        "https://bloomberg.com/news/articles/2026-09-29/openai-targets-30-billion-in-funding-at-1-4-trillion-value",
+        "https://apnews.com/article/80d203a503d5843f32c8160dc004646b"
       ]
     }
   ],
-  "replacements_applied": 1,
+  "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-09-30",
+    "date": "2026-10-01",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The script refers to a 'GPT-6.1 Astra' model delay; source material refers to 'GPT-6 Astra' as the power source for the 'dots' agent, creating potential confusion between the model versioning and the reported Axios delay."
+      "The segment regarding OpenAI's funding round mentions a $1.4 trillion valuation; ensure listeners understand this is a report based on 'people familiar with the matter' and not a finalized public filing.",
+      "The Gemini 4 Argon pricing ($2/$10 per million tokens) is specific and should be treated as introductory, as noted in the source.",
+      "Advisory only; no reviewable factual correction: The script includes a sponsor read that contradicts the provided rules. The rules state: 'Ignore the two-line sponsor read immediately after [MUSIC]... unless it makes a concrete numerical or regulated-product claim.' However, the script contains multiple, repetitive, and incorrect sponsor placements, including one that breaks the narrative flow in Segment 3.",
+      "Advisory only; no reviewable factual correction: This line is a duplicate/placeholder that appears twice in Segment 3 due to a script error, disrupting the flow."
     ],
     "verified_source_urls": [
-      "https://thehackernews.com/2026/09/ai-coding-agents-exposed-13000-internal.html",
-      "https://apnews.com/article/595796511f110fc006cca0d01329733e",
-      "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
-      "https://apnews.com/article/77b6b8888145869206996d7509d24256",
-      "https://www.aljazeera.com/news/2026/9/30/openai-launches-dots-personal-ai-assistant-built-to-handle-everything"
+      "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
+      "https://deepmind.google/discover/blog/synthid-bio-watermarking-methods-for-synthetic-biology/",
+      "https://techcrunch.com/2026/09/30/doordash-unveils-text-ordering-drone-delivery-retail-expansion-at-dash-forward/",
+      "https://bloomberg.com/news/articles/2026-09-29/openai-targets-30-billion-in-funding-at-1-4-trillion-value",
+      "https://apnews.com/article/80d203a503d5843f32c8160dc004646b"
     ]
   },
   "pass": true,

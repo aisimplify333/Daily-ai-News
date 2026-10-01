@@ -1,19 +1,26 @@
 {
   "provider": "anthropic",
-  "role": "dialogue_editor",
-  "requested_calls": 1,
-  "accepted": false,
+  "role": "scene_dialogue_editor",
+  "requested_calls": 3,
+  "accepted": true,
   "listened": false,
-  "input_sha256": "fa30020efd48162fbe3fa64a05351c4f624f3ae41d5ebbde9c79c056207584e7",
-  "input_words": 3373,
-  "input_runtime_distance": 0,
-  "candidate_words": 2785,
-  "candidate_runtime_distance": 515,
-  "candidate_failed": [
-    "runtime_word_band",
-    "no_monologue_bloat"
+  "scenes": [
+    {
+      "segment": 2,
+      "accepted": false,
+      "reason": "numeric_receipts_changed"
+    },
+    {
+      "segment": 3,
+      "accepted": true,
+      "reason": "scene_revision_retained"
+    },
+    {
+      "segment": 4,
+      "accepted": false,
+      "reason": "scene_word_budget_regression"
+    }
   ],
-  "candidate_sha256": "8ec7a44e7fae7da4c4a016b2cc5e13fabdb2352ea5e1c6c4e3a9ec7ad93d4c4a",
-  "reason": "numeric_receipts_changed_original_preserved",
+  "reason": "scene_revisions_retained",
   "model": "claude-sonnet-4-6"
 }

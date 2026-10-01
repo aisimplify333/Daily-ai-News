@@ -1,99 +1,96 @@
 {
-  "episode_date": "2026-09-30",
+  "episode_date": "2026-10-01",
   "discovery_seed_count": 40,
-  "window_start": "2026-09-28T14:16:25.165365+00:00",
-  "window_end": "2026-09-30T14:16:25.165365+00:00",
+  "window_start": "2026-09-29T13:28:51.249970+00:00",
+  "window_end": "2026-10-01T13:28:51.249970+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {},
       "rejected_examples": [],
-      "candidates": 2,
-      "accepted_total": 2,
-      "trusted_total": 0
+      "candidates": 3,
+      "accepted_total": 3,
+      "trusted_total": 3
     },
     {
       "stage": "alternate_refill",
-      "rejections": {},
-      "rejected_examples": [],
-      "candidates": 0,
-      "accepted_total": 2,
-      "trusted_total": 0
-    },
-    {
-      "stage": "targeted_discovery_refill",
       "rejections": {
-        "outside_freshness_window": 4
+        "outside_freshness_window": 5
       },
       "rejected_examples": [
         {
-          "headline": "Nvidia launches open-source agent safety platform to contain rogue AI behavior",
-          "published_at": "2026-09-28T10:52:04Z",
+          "headline": "OpenAI delays GPT-6.1 Astra after safety tests found it was not reliable enough to ship",
+          "published_at": "2026-09-28T21:24:00-06:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Anthropic releases Claude Sonnet 5.5 with lower cost and faster performance",
-          "published_at": "2026-09-28T00:00:00Z",
+          "headline": "OpenAI launches GPT-6.1 Sol and new ChatGPT agent features, including a cheaper model tier",
+          "published_at": "2026-09-29T00:00:00-07:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI discloses model misbehavior involving U.S. government websites",
-          "published_at": "2026-09-26T03:42:53Z",
+          "headline": "Nvidia launches Open Agent Safety Platform to govern AI agents from testing through deployment",
+          "published_at": "2026-09-28T00:00:00-07:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI pauses training of its latest models after agents probed U.S. government sites in unexpected ways",
-          "published_at": "2026-09-26T23:18:35Z",
+          "headline": "California\u2019s AskCA launches a live AI job-skills matching feature for state job seekers",
+          "published_at": "2026-09-09T00:00:00-07:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Nvidia boosts its buyback plan by $150 billion as AI spending remains under scrutiny",
+          "published_at": "2026-09-28T16:11:41+00:00",
           "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
       "accepted_total": 6,
-      "trusted_total": 3
+      "trusted_total": 5
     }
   ],
   "status": "ready",
   "topic_families": [
-    "other",
-    "products",
-    "other"
+    "security",
+    "science_access",
+    "products"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "Trump, major AI companies sign voluntary White House accord on external and internal AI safety reviews",
-      "source_url": "https://apnews.com/article/595796511f110fc006cca0d01329733e",
+      "headline": "Google Launches Gemini 4 Argon for Trusted Cyber Defenders",
+      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/gemini-4-argon/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Within this window, the White House moved from general AI-safety debate to a signed voluntary accord involving multiple major firms.",
-        "affected_listener": "People tracking AI regulation, enterprise deployment, and safety governance are affected because this could shape future oversight norms.",
-        "why_today": "It is one of the clearest public policy developments in the window and affects multiple frontier AI institutions at once.",
-        "distinct_question": "What did the White House get major AI companies to sign, and does it signal real oversight or just symbolism?",
-        "new_since_prior_coverage": "New formal agreement at the White House; earlier coverage was debate and proposed restraint, not a signed accord.",
-        "practical_payoff": "Watch whether the voluntary reviews turn into enforceable rules or procurement/safety requirements."
+        "new_development": "Google officially released its most advanced frontier model, Gemini 4 Argon, focusing on long-horizon reasoning and cyber defense.",
+        "affected_listener": "Enterprise security teams and developers waiting for the next-generation of reasoning capabilities are affected by the restricted, partner-only availability.",
+        "why_today": "This is a major frontier model release from a top-tier provider that immediately impacts competitive benchmarks and shifts expectations for agentic model capabilities.",
+        "distinct_question": "Does Gemini 4 Argon's performance in specialized security tasks signal that Google is successfully returning to the frontier lead?",
+        "new_since_prior_coverage": "This is a new model launch; prior coverage dealt with legacy Gemini versions and general rumors.",
+        "practical_payoff": "Security organizations can monitor their eligibility for the Fairwind Program while other developers should watch for standard API rollout timelines."
       }
     },
     {
-      "headline": "OpenAI unveils always-on 'Dot' agents after shelving a more advanced model over safety concerns",
-      "source_url": "https://apnews.com/article/77b6b8888145869206996d7509d24256",
+      "headline": "DeepMind Introduces SynthID Bio to Watermark Synthetic Proteins",
+      "source_url": "https://deepmind.google/discover/blog/synthid-bio-watermarking-methods-for-synthetic-biology/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "OpenAI added a new always-on agent product while separately delaying another model over safety issues.",
-        "affected_listener": "Developers, workplace users, and consumers who may rely on autonomous AI assistants are directly affected.",
-        "why_today": "It is a major product announcement from a top lab and directly answers what OpenAI is shipping now versus holding back.",
-        "distinct_question": "What exactly did OpenAI launch, and what did it decide not to launch?",
-        "new_since_prior_coverage": "New agent launch plus a new safety-related postponement in the same reporting window.",
-        "practical_payoff": "Track whether Dot becomes a real consumer/workflow assistant and whether the delayed model returns after additional safety work."
+        "new_development": "The release of SynthID Bio provides a first-of-its-kind mechanism for watermarking physical, AI-designed biological matter.",
+        "affected_listener": "Scientists, bio-security professionals, and researchers in drug discovery will be impacted by the need to integrate these provenance checks into their workflows.",
+        "why_today": "This is a rare, substantive intersection of frontier AI safety and life-critical physical science.",
+        "distinct_question": "Can digital-era security solutions successfully contain the biosecurity risks inherent in the AI-accelerated protein design era?",
+        "new_since_prior_coverage": "This is the first deployment of SynthID technology into physical molecular biology.",
+        "practical_payoff": "Laboratories and synthesis providers have a new, validated standard for authenticating the origin of custom-designed proteins."
       }
     },
     {
-      "headline": "OpenAI says it is delaying GPT-6.1 Astra after internal safety testing found scope and deception risks",
-      "source_url": "https://www.axios.com/newsletters/axios-am-3d952702-8a60-49ba-b611-b06451856278",
+      "headline": "DoorDash Launches Text-Based AI Ordering Agent",
+      "source_url": "https://techcrunch.com/2026/09/30/doordash-unveils-text-ordering-drone-delivery-retail-expansion-at-dash-forward/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "A planned OpenAI model release was reportedly canceled after evaluation findings.",
-        "affected_listener": "Developers and customers waiting for the next frontier OpenAI model are affected.",
-        "why_today": "It provides the release-side consequence that pairs with the day\u2019s launch-side news.",
-        "distinct_question": "Did safety testing actually block a major OpenAI release?",
-        "new_since_prior_coverage": "The material new fact is the reported cancellation of a specific pending model.",
-        "practical_payoff": "Watch for official confirmation and whether the product is re-scoped, delayed, or renamed."
+        "new_development": "DoorDash has expanded its AI assistant from a dedicated app feature to a text-message-based ordering channel.",
+        "affected_listener": "Everyday consumers who use food delivery services will experience a shift in how they interact with their favorite convenience platforms.",
+        "why_today": "This represents a major shift toward 'agentic commerce,' where platforms compete to own the conversational interface, not just the delivery logistics.",
+        "distinct_question": "Does moving the interface to text messaging effectively protect DoorDash from losing customer loyalty to platform-wide AI assistants?",
+        "new_since_prior_coverage": "Previous AI efforts at DoorDash were restricted to in-app assistance; this is the first expansion into direct, frictionless text-based ordering.",
+        "practical_payoff": "Users can check their eligibility at the DoorDash text portal to test whether they can bypass the main app for food orders."
       }
     }
   ],
