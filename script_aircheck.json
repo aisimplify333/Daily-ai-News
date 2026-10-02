@@ -1,23 +1,23 @@
 {
-  "date": "2026-10-01",
+  "date": "2026-10-02",
   "show": "The AI Edge",
   "target_band": "88-95",
   "pass": true,
-  "lead_heat": 80.0,
+  "lead_heat": 0.0,
   "receipt_scores": [
-    10,
+    6,
     7,
-    2,
-    8,
+    10,
+    6,
     6
   ],
-  "summary_heavy_ratio": 0.015,
+  "summary_heavy_ratio": 0.007,
   "duplicate_family_risk": false,
   "blank_story_slot": false,
-  "forwardable_count": 2,
+  "forwardable_count": 4,
   "forwardable_target_hits": 7,
   "sponsor": {
-    "date": "2026-10-01",
+    "date": "2026-10-02",
     "TheLEDGR_Readout_present": false,
     "brand_present": true,
     "spoken_url_present": true,
@@ -25,39 +25,39 @@
     "main_read_present": true,
     "main_read_speaker": "ALEX",
     "rotating_end_tag_present": true,
-    "rotating_end_tag_speaker": "JAMIE",
+    "rotating_end_tag_speaker": "RUFUS",
     "sponsor_bed_expected": false,
     "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
     "readout_answers": {
       "what_changed": true,
       "who_wins": true,
-      "who_is_exposed": false,
-      "operator_tomorrow": false
+      "who_is_exposed": true,
+      "operator_tomorrow": true
     },
-    "sponsor_tone_score": 6,
-    "strongest_story": "Google Launches Gemini 4 Argon for Trusted Cyber Defenders"
+    "sponsor_tone_score": 8,
+    "strongest_story": "California enacts new worker protections targeting AI-driven layoffs and surveillance"
   },
   "lesson_card": {
     "show_name": "The AI Edge",
-    "concept": "agent surface area",
-    "plain_english": "every tool, server, connector, and permission an agent can touch becomes a new place for risk",
-    "big_question": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
-    "simple_analogy": "giving an intern keys to every room in the building and then acting surprised when a door opens",
+    "concept": "permission layer",
+    "plain_english": "who can approve, access, trigger, delete, escalate, or spend when an AI agent starts acting",
+    "big_question": "Is the product the agent, or the power to decide what the agent is allowed to do?",
+    "simple_analogy": "the remote control for what an AI agent is allowed to touch, approve, buy, or break",
     "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
-    "hard_receipt": "1,000,000 output tokens",
-    "listener_payoff": "By the end, listeners should understand agent surface area well enough to explain why today's AI story matters tomorrow.",
+    "hard_receipt": "2026-09-30T22:45:12Z",
+    "listener_payoff": "By the end, listeners should understand permission layer well enough to explain why today's AI story matters tomorrow.",
     "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-    "episode_spine": "Google Launches Gemini 4 Argon for Trusted Cyber Defenders shows that every new agent connector also creates a new place for risk.",
+    "episode_spine": "California enacts new worker protections targeting AI-driven layoffs and surveillance is really about who controls what agents are allowed to do.",
     "titles": {
-      "spotify_title": "The Hidden Attack Surface Inside AI Agents",
-      "youtube_title": "Your AI Agent Can Act. That Means It Can Break Things.",
-      "social_hook": "Every connector an AI agent touches becomes a new door someone has to lock.",
-      "operator_title": "Today’s AI Lesson: Agent Surface Area",
-      "archive_title": "Google Launches Gemini 4 Argon for Trusted Cyber Defenders — Agent Surface Area Explained"
+      "spotify_title": "Your AI Agent Has Keys. Who Gave It Permission?",
+      "youtube_title": "Why OpenAI Might Need a Phone to Control Your Agents",
+      "social_hook": "The phone is not the product. The permission layer is.",
+      "operator_title": "Today’s AI Lesson: Permission Layer",
+      "archive_title": "California enacts new worker protections targeting AI-driven layoffs — Permission Layer Explained"
     }
   },
-  "title": "Google Launches Gemini 4 Argon for Trusted Cyber Defenders",
-  "description_first_180": "Google just released a powerful new AI model for cyber defense, but it’s restricted to a select few. We’re breaking down what this means for your security and the future of AI-driv",
+  "title": "California enacts new worker protections targeting AI-driven layoffs and surveillance",
+  "description_first_180": "California just enacted the most significant AI labor protections in the country, while OpenAI reveals a massive security breach affecting over 100 organizations. We’ll break down ",
   "note": "Structural compliance only. No listening or audience rating has been performed.",
   "v3_3_assessment": {
     "version": "v3.3-connection-first",
@@ -78,7 +78,7 @@
       "sponsor_cta_exactly_once": true,
       "rotating_sponsor_end_tag": true,
       "listener_question_present": true,
-      "prior_listener_question_or_poll_acknowledged": true,
+      "prior_listener_question_or_poll_acknowledged": false,
       "show_follow_cta_present": true,
       "single_show_cta": true,
       "listener_promise_present": true,
@@ -97,10 +97,11 @@
       "continuity_callback": true
     },
     "soft_flags": [
-      "alex_extended_exposition (58 words before substantive reply)",
+      "alex_extended_exposition (74 words before substantive reply)",
+      "advisory_prior_listener_question_or_poll_acknowledged",
       "repeated_stale_phrase: 'consequence before consensus catches up'"
     ],
-    "keyword_signal": 100,
+    "keyword_signal": 97,
     "keyword_signal_note": "Informational only. Real quality = listener retention in Spotify/Apple analytics, not this number.",
     "score": null,
     "target": 84,
@@ -109,36 +110,36 @@
         "basis": "transcript heuristics only; no listening or audience measurement",
         "blocking": false,
         "story_words": {
-          "2": 1228,
-          "3": 857,
-          "4": 703
+          "2": 1238,
+          "3": 831,
+          "4": 858
         },
         "story_word_shares": {
-          "2": 0.44,
-          "3": 0.307,
-          "4": 0.252
+          "2": 0.423,
+          "3": 0.284,
+          "4": 0.293
         },
         "repeated_sentences": [],
         "flags": []
       },
-      "words": 3441,
+      "words": 3621,
       "runtime_word_band": [
         3300,
         4350
       ],
-      "speaker_lines": 134,
+      "speaker_lines": 135,
       "segments": 5,
-      "receipts": 18,
+      "receipts": 12,
       "concessions": 0,
       "callback_present": true,
       "show_follow_cta_count": 1,
       "competing_show_cta": false,
-      "listener_memory_acknowledged": true,
+      "listener_memory_acknowledged": false,
       "shareable_exchange": {
         "passed": true,
-        "segment": 2,
-        "estimated_seconds": 44.7,
-        "word_count": 108,
+        "segment": 3,
+        "estimated_seconds": 41.4,
+        "word_count": 100,
         "speakers": [
           "ALEX",
           "JAMIE",
@@ -147,59 +148,53 @@
         "score": 6,
         "turns": [
           {
-            "segment": 2,
-            "block": 5,
-            "speaker": "ALEX",
-            "text": "The specific benchmark is DeepSWE v1.1. Do we know who runs that?"
-          },
-          {
-            "segment": 2,
-            "block": 5,
+            "segment": 3,
+            "block": 6,
             "speaker": "JAMIE",
-            "text": "The source doesn't say it's independent. It's presented as Google's benchmark. So we have a vendor claim, not a third-party result. That distinction matters."
+            "text": "According to AP, Meta Ray-Ban glasses alone have sold more than seven million units. Seven million. And right now there is no California law requiring those glasses to signal anything when they're capturing you. That's the gap the bill was trying to close."
           },
           {
-            "segment": 2,
-            "block": 5,
-            "speaker": "RUFUS",
-            "text": "Particularly when the vendor is also announcing the product. These things tend to coincide."
-          },
-          {
-            "segment": 2,
-            "block": 5,
+            "segment": 3,
+            "block": 6,
             "speaker": "ALEX",
-            "text": "Let's talk about the pricing. Because even if you're not in the Fairwind Program, this tells you something about where this tier of model is heading. Two dollars per million input tokens, ten per million output."
+            "text": "And Newsom said no because—"
           },
           {
-            "segment": 2,
-            "block": 5,
+            "segment": 3,
+            "block": 6,
             "speaker": "RUFUS",
-            "text": "The output cost is the interesting part. You're paying five times more to receive the answer than to ask the question."
+            "text": "The definition of \"wearable recording device\" was too broad. His specific objection was that the bill's language would have swept in devices its authors probably didn't intend to cover."
+          },
+          {
+            "segment": 3,
+            "block": 6,
+            "speaker": "JAMIE",
+            "text": "Which might be true. But \"too broad\" is a reason to rewrite the bill, not kill it entirely. Those are two different problems."
           }
         ],
         "test": "Would this exact exchange make sense and feel worth sending without the full episode?"
       },
-      "alex_questions": 18,
-      "jamie_reactions": 7,
+      "alex_questions": 17,
+      "jamie_reactions": 1,
       "jamie_comic_beats": 0,
-      "rufus_dry_lines": 5,
-      "friction_beats": 4,
-      "interruptions": 36,
+      "rufus_dry_lines": 3,
+      "friction_beats": 3,
+      "interruptions": 39,
       "jamie_rufus_exchange_segments": [
         2,
         3,
         4
       ],
       "spoken_production_language": false,
-      "max_turn_words": 55,
-      "max_alex_exposition_words": 58,
-      "title": "Google Launches Gemini 4 Argon for Trusted Cyber Defenders",
-      "lead_actor": "Google"
+      "max_turn_words": 54,
+      "max_alex_exposition_words": 74,
+      "title": "California enacts new worker protections targeting AI-driven layoffs and surveillance",
+      "lead_actor": "AWS"
     }
   },
-  "legacy_heuristic_score": 56.2,
+  "legacy_heuristic_score": 50.0,
   "legacy_checks": {
-    "lead_story_heat": true,
+    "lead_story_heat": false,
     "lead_receipts": true,
     "story_variety": false,
     "no_duplicate_story_family": true,
@@ -207,11 +202,11 @@
     "title_quality": true,
     "description_quality": true,
     "sponsor_quality": false,
-    "forwardable_moments": false,
+    "forwardable_moments": true,
     "learning_arc": false,
     "scene_shape": false,
     "signal_or_static": false,
-    "real_humor_or_banter": true,
+    "real_humor_or_banter": false,
     "no_monologue": false,
     "not_summary_heavy": true,
     "malformed_metadata": true
@@ -235,7 +230,7 @@
     "sponsor_cta_exactly_once": true,
     "rotating_sponsor_end_tag": true,
     "listener_question_present": true,
-    "prior_listener_question_or_poll_acknowledged": true,
+    "prior_listener_question_or_poll_acknowledged": false,
     "show_follow_cta_present": true,
     "single_show_cta": true,
     "listener_promise_present": true,
@@ -253,7 +248,7 @@
     "temporal_consistency": true,
     "continuity_callback": true
   },
-  "keyword_signal": 100,
+  "keyword_signal": 97,
   "passed": true,
   "failed": []
 }
