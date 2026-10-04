@@ -1,4 +1,5 @@
 import unittest
+import re
 from unittest.mock import patch
 
 import listener_editorial as editorial
@@ -33,7 +34,8 @@ class ListenerEditorialTests(unittest.TestCase):
 
     def test_existing_expansion_targets_matching_source_and_preserves_sponsor_boundary(self):
         script = writer._normalize_midroll(episode((500, 30, 600)), '2026-09-15')
-        script = script.replace('JAMIE: A short sponsor break', 'JAMIE: Before the math story, a word from our sponsor.\nJAMIE: A short sponsor break')
+        script = re.sub(r'(?m)^(ALEX|JAMIE|RUFUS): A short sponsor break',
+                        r'JAMIE: Before the math story, a word from our sponsor.\n\1: A short sponsor break', script)
         stories = [{'headline': 'SOURCE_ONE'}, {'headline': 'SOURCE_TWO'}, {'headline': 'SOURCE_THREE'}]
         addon = 'RUFUS: An additional observation grounded in the second story changes this interpretation.'
         with patch.object(writer, '_anthropic_text', return_value=addon) as call:

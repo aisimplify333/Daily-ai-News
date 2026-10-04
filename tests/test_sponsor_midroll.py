@@ -3,6 +3,19 @@ import writer_room_v3_1 as writer
 
 
 class SponsorMidrollTests(unittest.TestCase):
+    def test_six_dates_rotate_without_accumulating_ads(self):
+        script = '### SEGMENT 3 — Story\nALEX: Keep this news.\n### SEGMENT 4 — Next\nJAMIE: Keep this too.'
+        rendered = set()
+        for day in range(1, 7):
+            date = f'2026-10-{day:02d}'
+            script = writer._normalize_midroll(script, date)
+            self.assertEqual(script.count('A short sponsor break'), 1)
+            self.assertEqual(script, writer._normalize_midroll(script, date))
+            self.assertIn('ALEX: Keep this news.', script)
+            self.assertIn('JAMIE: Keep this too.', script)
+            rendered.add(script)
+        self.assertEqual(len(rendered), 6)
+
     def test_rotation_preserves_opening_and_only_inserts_once(self):
         script = '\n'.join([
             '### SEGMENT 1 — Intro', '[MUSIC]',

@@ -1426,6 +1426,30 @@ def _clean_script(text: str) -> str:
 
 MIDROLL_TREATMENTS = (
     (
+        "JAMIE: A short sponsor break for The Ledger. Alex, if everything is breaking news, when are we supposed to get any work done?",
+        "ALEX: That's the question The Ledger helps you work through: five focused briefings connecting AI news with the decisions in front of you.",
+        "RUFUS: The Ledger. Because reading another headline is a marvellous way to postpone deciding anything. I admire the efficiency of the procrastination.",
+        "JAMIE: Rufus has diagnosed the problem. The Ledger link is in our show notes. Back to the story.",
+    ),
+    (
+        "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+        "ALEX: I'd start with a better question. The Ledger offers five focused briefings to help you think through what the news means for your next decision.",
+        "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+        "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+    ),
+    (
+        "ALEX: A short sponsor break for The Ledger. Jamie, what's the difference between following AI news and actually knowing what to do with it?",
+        "JAMIE: Asking what changes for you. The Ledger brings five focused briefings to that question, connecting the news with decisions about your work and your team.",
+        "RUFUS: The Ledger. A useful distinction. Being able to pronounce the new model's name is not, regrettably, a business strategy.",
+        "ALEX: Though we do appreciate the effort. Find The Ledger in our show notes. Back to today's stories.",
+    ),
+    (
+        "JAMIE: A short sponsor break for The Ledger. Rufus, can we agree that people need something more useful than another argument about AI?",
+        "RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite. The Ledger offers five focused briefings to help connect news with decisions.",
+        "ALEX: That's the point of The Ledger: think about what matters for your work and your team, beyond the headline. The link is in our show notes.",
+        "JAMIE: The Ledger. Briefings there, exquisite disagreements here. Right, let's get back to it.",
+    ),
+    (
         "JAMIE: A short sponsor break for The Ledger. Rufus, another hundred AI headlines before breakfast? People have actual work to do. How do they decide what deserves their attention?",
         "RUFUS: With The Ledger, Jamie. A longer reading list is hardly a strategy. Five focused briefings help connect the news to decisions.",
         "JAMIE: So The Ledger gives you a place to start asking better questions about your work and your team?",
@@ -2221,6 +2245,10 @@ Deepen Story {segment - 1} with UNUSED source-backed facts, an understandable ex
 or an unresolved question. Stay within this story's source record. Do not repeat the
 existing episode or transfer another story's facts into this discussion. No padding.
 If no useful new material is supported, return no dialogue.
+Enter the conversation directly with the new fact or question. Never announce that
+the existing discussion, script, or segment has not covered something. Do not say
+"one thing we didn't land on" or reopen a completed summary. This exchange will be
+inserted before the existing conclusion; do not write a second conclusion.
 
 Chemistry:
 - Alex drives with the blunt question a listener is forming, then asks the harder follow-up.
