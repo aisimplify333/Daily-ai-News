@@ -1,99 +1,58 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-02",
+  "date": "2026-10-05",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-02",
-    "pass": false,
-    "critical_errors": [
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The law mandates a human must 'own' the decision to fire someone, implying a specific level of responsibility/liability.",
-        "evidence_quote": "prohibit employers from using AI as the sole basis for firing someone.",
-        "exact_line": "ALEX: California just told every employer in the state: if AI fires someone, a human has to own that decision. Signed into law two days ago.",
-        "replacement_line": "ALEX: California just told every employer in the state: you cannot rely on AI as the sole basis for firing someone. The law was signed on September 30th.",
-        "reason": "The law was signed on September 30, 2026. Given the episode date of October 2, 2026, this was signed two days ago, but the phrasing implies the action is immediate for all employment, whereas the actual legislation prohibits AI as the *sole* basis for termination, not a mandate that a human 'own' the decision in the way implied.",
-        "source_url": "https://apnews.com/article/1aa4935e3ee79519ae8b2458b2b9ebc1"
-      }
-    ],
+    "date": "2026-10-05",
+    "pass": true,
+    "critical_errors": [],
     "warnings": [
-      "While the script correctly notes the OpenAI investigation into rogue agents, it relies on Reuters as the source; note that the source record provided for this is a summary and does not contain a specific URL, but the claim is treated as verified based on the provided source list.",
-      "The script mentions OpenAI paused training and tool-use inference; this is accepted as accurate based on the provided source records.",
-      "The script mentions a veto of a smart glasses bill; the source record confirms the veto occurred on October 1, 2026."
+      "The script mentions a California smart-glasses veto from 'three days ago'; while this is framed as an editorial opinion/reference, it should be noted that the timeline of legislative events is highly specific.",
+      "The description of the NYC Council hearing notes 'SpaceXAI' as the entity subpoenaed; ensure this company name matches the specific source material provided."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/1aa4935e3ee79519ae8b2458b2b9ebc1",
-      "https://apnews.com/article/e599fbbff476b41b8a6ededcd2576cf9",
+      "https://www.bloomberg.com",
       "https://www.reuters.com",
-      "https://www.wsj.com",
-      "https://apnews.com/article/ed0337966ba4f598c7e7bb6ad93ba6f3"
+      "https://techcrunch.com/2026/10/04/google-froze-its-open-source-bug-bounty-program-due-to-a-significant-rise-in-ai-submissions/",
+      "https://techcrunch.com/2026/10/04/trump-unveils-his-new-super-intelligence-force/",
+      "https://www.nyc.gov/office-of-the-mayor/news/press-releases/2026/09/28/new-york-city-council-announces-anthropic-openai-google-meta-publicly-testify-under-oath-first-time"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-02",
-      "pass": false,
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The law mandates a human must 'own' the decision to fire someone, implying a specific level of responsibility/liability.",
-          "evidence_quote": "prohibit employers from using AI as the sole basis for firing someone.",
-          "exact_line": "ALEX: California just told every employer in the state: if AI fires someone, a human has to own that decision. Signed into law two days ago.",
-          "replacement_line": "ALEX: California just told every employer in the state: you cannot rely on AI as the sole basis for firing someone. The law was signed on September 30th.",
-          "reason": "The law was signed on September 30, 2026. Given the episode date of October 2, 2026, this was signed two days ago, but the phrasing implies the action is immediate for all employment, whereas the actual legislation prohibits AI as the *sole* basis for termination, not a mandate that a human 'own' the decision in the way implied.",
-          "source_url": "https://apnews.com/article/1aa4935e3ee79519ae8b2458b2b9ebc1"
-        }
-      ],
-      "warnings": [
-        "While the script correctly notes the OpenAI investigation into rogue agents, it relies on Reuters as the source; note that the source record provided for this is a summary and does not contain a specific URL, but the claim is treated as verified based on the provided source list.",
-        "The script mentions OpenAI paused training and tool-use inference; this is accepted as accurate based on the provided source records.",
-        "The script mentions a veto of a smart glasses bill; the source record confirms the veto occurred on October 1, 2026."
-      ],
-      "verified_source_urls": [
-        "https://apnews.com/article/1aa4935e3ee79519ae8b2458b2b9ebc1",
-        "https://apnews.com/article/e599fbbff476b41b8a6ededcd2576cf9",
-        "https://www.reuters.com",
-        "https://www.wsj.com",
-        "https://apnews.com/article/ed0337966ba4f598c7e7bb6ad93ba6f3"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-10-02",
+      "date": "2026-10-05",
       "pass": true,
       "critical_errors": [],
       "warnings": [
-        "The Reuters source URL provided in the prompt is a general publisher homepage (reuters.com) rather than a direct link to the specific article about OpenAI agents. The script treats the Reuters report as a primary source for the '100 organizations' and '50 petabytes' claims, which are accepted for this audit based on the prompt's provided 'Source Records' context.",
-        "The script mentions OpenAI fired researchers named Jasmine Wang, Tomek Korbak, and Mikita Balesni. While the provided source (WSJ) supports this, the script's discussion of the OpenAI agent breach (Reuters) and these terminations (WSJ) connects them in a thematic way that may imply a causal link not explicitly confirmed by the sources.",
-        "The script refers to the '100 organizations' notification occurring by September 26, which is consistent with the provided source summary for the Reuters article."
+        "The script mentions a California smart-glasses veto from 'three days ago'; while this is framed as an editorial opinion/reference, it should be noted that the timeline of legislative events is highly specific.",
+        "The description of the NYC Council hearing notes 'SpaceXAI' as the entity subpoenaed; ensure this company name matches the specific source material provided."
       ],
       "verified_source_urls": [
-        "https://apnews.com/article/1aa4935e3ee79519ae8b2458b2b9ebc1",
-        "https://apnews.com/article/e599fbbff476b41b8a6ededcd2576cf9",
-        "https://apnews.com/article/ed0337966ba4f598c7e7bb6ad93ba6f3",
+        "https://www.bloomberg.com",
         "https://www.reuters.com",
-        "https://www.wsj.com"
+        "https://techcrunch.com/2026/10/04/google-froze-its-open-source-bug-bounty-program-due-to-a-significant-rise-in-ai-submissions/",
+        "https://techcrunch.com/2026/10/04/trump-unveils-his-new-super-intelligence-force/",
+        "https://www.nyc.gov/office-of-the-mayor/news/press-releases/2026/09/28/new-york-city-council-announces-anthropic-openai-google-meta-publicly-testify-under-oath-first-time"
       ]
     }
   ],
-  "replacements_applied": 1,
+  "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-02",
+    "date": "2026-10-05",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The Reuters source URL provided in the prompt is a general publisher homepage (reuters.com) rather than a direct link to the specific article about OpenAI agents. The script treats the Reuters report as a primary source for the '100 organizations' and '50 petabytes' claims, which are accepted for this audit based on the prompt's provided 'Source Records' context.",
-      "The script mentions OpenAI fired researchers named Jasmine Wang, Tomek Korbak, and Mikita Balesni. While the provided source (WSJ) supports this, the script's discussion of the OpenAI agent breach (Reuters) and these terminations (WSJ) connects them in a thematic way that may imply a causal link not explicitly confirmed by the sources.",
-      "The script refers to the '100 organizations' notification occurring by September 26, which is consistent with the provided source summary for the Reuters article."
+      "The script mentions a California smart-glasses veto from 'three days ago'; while this is framed as an editorial opinion/reference, it should be noted that the timeline of legislative events is highly specific.",
+      "The description of the NYC Council hearing notes 'SpaceXAI' as the entity subpoenaed; ensure this company name matches the specific source material provided."
     ],
     "verified_source_urls": [
-      "https://apnews.com/article/1aa4935e3ee79519ae8b2458b2b9ebc1",
-      "https://apnews.com/article/e599fbbff476b41b8a6ededcd2576cf9",
-      "https://apnews.com/article/ed0337966ba4f598c7e7bb6ad93ba6f3",
+      "https://www.bloomberg.com",
       "https://www.reuters.com",
-      "https://www.wsj.com"
+      "https://techcrunch.com/2026/10/04/google-froze-its-open-source-bug-bounty-program-due-to-a-significant-rise-in-ai-submissions/",
+      "https://techcrunch.com/2026/10/04/trump-unveils-his-new-super-intelligence-force/",
+      "https://www.nyc.gov/office-of-the-mayor/news/press-releases/2026/09/28/new-york-city-council-announces-anthropic-openai-google-meta-publicly-testify-under-oath-first-time"
     ]
   },
   "pass": true,
