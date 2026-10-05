@@ -1,0 +1,37 @@
+{
+  "campaign": "AI changes the story. Know what it means for you.",
+  "scenes": {
+    "monday_meeting": {
+      "hook": "The meeting starts in five minutes.",
+      "turns": [
+        ["ALEX", "curious", "The meeting starts in five minutes. Someone asks what AI changes for your team. What do you say?"],
+        ["RUFUS", "dry", "Something about transformation. Then look thoughtfully at a window."],
+        ["JAMIE", "amused", "Or have an actual answer. What changed, why it matters, and what you still need to check."],
+        ["ALEX", "warm", "That's our conversation on The AI Edge. Three perspectives. Useful questions. Occasionally, a useful Rufus."]
+      ]
+    },
+    "too_many_headlines": {
+      "hook": "More AI headlines. Less clarity?",
+      "turns": [
+        ["JAMIE", "frustrated", "I've read twelve AI headlines, Alex. I now have thirteen opinions and absolutely no plan."],
+        ["RUFUS", "dry", "Excellent. You're qualified to chair a panel."],
+        ["ALEX", "warm", "Start here: what changed, who wins, and what do you do next?"],
+        ["JAMIE", "warm", "That's why we argue it through on The AI Edge. You bring the curiosity. Rufus brings the unnecessary commentary."]
+      ]
+    },
+    "would_you_trust_ai": {
+      "hook": "Would you let AI send it?",
+      "turns": [
+        ["ALEX", "curious", "Would you let AI write an email to your boss?"],
+        ["JAMIE", "confident", "Draft it? Absolutely. Send it without me reading it? Absolutely not."],
+        ["RUFUS", "dry", "A small but rather career-preserving distinction."],
+        ["ALEX", "warm", "The exciting part and the awkward questions. We make room for both on The AI Edge."]
+      ]
+    }
+  },
+  "endings": {
+    "podcast": ["JAMIE", "warm", "Make sense of the AI stories shaping your day. Follow The AI Edge wherever you listen."],
+    "newsletter": ["ALEX", "warm", "Prefer the written briefing? Subscribe to The Ledger at the ledgr dot io. That's ledgr, without the second e."],
+    "combined": ["JAMIE", "warm", "Listen with The AI Edge. Read with The Ledger. Start with the newsletter at the ledgr dot io."]
+  }
+}

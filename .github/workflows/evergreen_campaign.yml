@@ -1,0 +1,62 @@
+name: Evergreen cast campaign
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['specialty_audio/CAMPAIGN_ONCE']
+permissions:
+  contents: write
+concurrency:
+  group: evergreen-cast-campaign
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install campaign dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg fonts-dejavu-core
+          pip install requests pydub Pillow
+      - name: Produce bounded reusable cast campaign
+        id: render
+        continue-on-error: true
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
+          GEMINI_TTS_MODEL: gemini-3.8-flash-tts
+          GEMINI_TTS_MIN_INTERVAL: '20'
+          GROK_TTS_VOICE_JAMIE: ursa
+          GROK_TTS_MAX_RETRIES: '1'
+          GROK_TTS_CACHE: 'true'
+        run: python specialty_audio/build_campaign.py
+      - name: Preserve completed takes and outputs
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add specialty_audio/campaign/
+          if ! git diff --cached --quiet; then
+            git commit -m 'Preserve evergreen campaign takes and video candidates'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: evergreen-cast-campaign
+          path: specialty_audio/campaign/
+          retention-days: 30
+          compression-level: 0
+      - name: Report render failure
+        if: steps.render.outcome == 'failure'
+        run: exit 1
