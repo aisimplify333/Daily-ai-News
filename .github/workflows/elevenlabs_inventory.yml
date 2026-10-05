@@ -2,6 +2,9 @@ name: ElevenLabs Specialty - Read-only Inventory
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['specialty_audio/INVENTORY_ONCE']
 
 permissions:
   contents: read
