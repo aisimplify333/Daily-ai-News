@@ -18,8 +18,26 @@ def get_json(path: str, key: str) -> dict:
         with urllib.request.urlopen(request, timeout=30) as response:
             return json.load(response)
     except urllib.error.HTTPError as error:
-        # Never expose provider response bodies, headers, or account identifiers.
-        raise RuntimeError(f"ElevenLabs read-only preflight failed: HTTP {error.code}") from None
+        # Expose only a bounded provider error code and known diagnostic categories.
+        # Never log the raw body, key, headers, or account identifiers.
+        code = "unavailable"
+        category = "unclassified"
+        try:
+            payload = json.loads(error.read(16384))
+            detail = payload.get("detail", {})
+            if isinstance(detail, dict):
+                candidate = str(detail.get("status", ""))
+                import re
+                if re.fullmatch(r"[a-z_]{1,64}", candidate):
+                    code = candidate
+                message = str(detail.get("message", "")).lower()
+                for word in ("permission", "api key", "quota", "billing", "region", "header"):
+                    if word in message:
+                        category = word.replace(" ", "_")
+                        break
+        except (ValueError, TypeError, AttributeError):
+            pass
+        raise RuntimeError(f"ElevenLabs preflight {path}: HTTP {error.code}; provider_code={code}; category={category}") from None
     except (urllib.error.URLError, TimeoutError, ValueError):
         raise RuntimeError("ElevenLabs read-only preflight unavailable; no generation attempted") from None
 
