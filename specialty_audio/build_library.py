@@ -127,6 +127,8 @@ def main():
     report = json.loads(manifest.read_text()) if manifest.exists() else {
         'version': 1, 'sounds': [], 'promos': [], 'accounted_credits': 0,
         'daily_integration': 'disabled_pending_audio_review', 'errors': []}
+    report['previous_errors'] = report.get('previous_errors', []) + report.get('errors', [])
+    report['errors'] = []
     key = os.getenv('AI_EDGE_PODCAST_ELEVENLABS', '').strip()
     try:
         if not key:
