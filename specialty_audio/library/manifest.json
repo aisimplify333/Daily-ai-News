@@ -1,6 +1,103 @@
 {
   "version": 1,
-  "sounds": [],
+  "sounds": [
+    {
+      "name": "conference",
+      "status": "generated",
+      "prompt": "Quiet technology conference foyer, distant indistinct crowd murmur, soft footsteps, spacious interior. No intelligible words, announcements, applause or music.",
+      "seconds_requested": 10,
+      "file": "conference.mp3",
+      "seconds": 10.0,
+      "accounted_credits": 100,
+      "sha256": "f5fc805b19e27ab7ee26b873ebf3b928598cc44f07f1e3bf0c3989cda5168343",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    },
+    {
+      "name": "factory",
+      "status": "generated",
+      "prompt": "Quiet modern factory floor ambience, gentle steady mechanical hum, occasional distant machine movement. No alarms, impacts, voices or music.",
+      "seconds_requested": 10,
+      "file": "factory.mp3",
+      "seconds": 10.0,
+      "accounted_credits": 100,
+      "sha256": "6440b5d7d0b34f9a28a685279d7ce1bc5299515b7d8c78b2fd14b3b7e1791cf4",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    },
+    {
+      "name": "office",
+      "status": "generated",
+      "prompt": "Subtle small office ambience, quiet ventilation, sparse soft keyboard taps and paper movement. No voices, ringing phones or music.",
+      "seconds_requested": 10,
+      "file": "office.mp3",
+      "seconds": 10.0,
+      "accounted_credits": 100,
+      "sha256": "93f40fd3801e2d9dac0765c43a13160aa85bb042b4cac587c043314ab65b08a2",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    },
+    {
+      "name": "server_room",
+      "status": "generated",
+      "prompt": "Soft steady server room ventilation, layered low fan hum, clean restrained texture. No beeps, alarms, voices or music.",
+      "seconds_requested": 10,
+      "file": "server_room.mp3",
+      "seconds": 10.0,
+      "accounted_credits": 100,
+      "sha256": "6d7130519bb1f339b30a72290f04409e71b8d1d71f9e8c5570f9456121269ea1",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    },
+    {
+      "name": "city",
+      "status": "generated",
+      "prompt": "Quiet city sidewalk atmosphere, distant traffic and light footsteps, calm daytime exterior. No horns, sirens, intelligible voices or music.",
+      "seconds_requested": 10,
+      "file": "city.mp3",
+      "seconds": 10.0,
+      "accounted_credits": 100,
+      "sha256": "065b709588c9beded7fb7a653fcf27ed9212f26decfc97e254638eca2274bc40",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    },
+    {
+      "name": "legislative_hall",
+      "status": "generated",
+      "prompt": "Quiet large civic building hallway, restrained room tone, occasional distant footsteps with a little natural reverberation. No speeches, voices or music.",
+      "seconds_requested": 10,
+      "file": "legislative_hall.mp3",
+      "seconds": 10.0,
+      "accounted_credits": 100,
+      "sha256": "defc261d922e2380b2a6bac27054977112144955c320ddfa91de74430221bc27",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    },
+    {
+      "name": "edge_signature",
+      "status": "generated",
+      "prompt": "Original short audio logo: three crisp warm electronic tones rising with a subtle soft percussive tick, clean confident final resolution. Restrained news podcast identity, no voice, no cinematic boom, no recognizable existing melody.",
+      "seconds_requested": 3,
+      "file": "edge_signature.mp3",
+      "seconds": 3.0,
+      "accounted_credits": 30,
+      "sha256": "db6e345a674d9cf01e35c1479cb88470ca08ab0831427ced5289237cb2a8df8d",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    },
+    {
+      "name": "rufus_entrance",
+      "status": "generated",
+      "prompt": "Short restrained sonic punctuation: a light mechanical click followed by a warm dry resonant pluck, curious and witty, clean ending. No voice, laughter, fanfare or recognizable melody.",
+      "seconds_requested": 2,
+      "file": "rufus_entrance.mp3",
+      "seconds": 2.0,
+      "accounted_credits": 20,
+      "sha256": "bb10a05693684bb72d076a56374a4b2658fee0bfec026ade610ef864ba8e4e20",
+      "listening_review": "pending",
+      "enabled_in_daily": false
+    }
+  ],
   "promos": [
     {
       "date": "2026-10-02",
@@ -39,9 +136,18 @@
       "social_publication": "not_posted"
     }
   ],
-  "accounted_credits": 0,
+  "accounted_credits": 650,
   "daily_integration": "disabled_pending_audio_review",
-  "errors": [
+  "errors": [],
+  "previous_errors": [
     "Sound generation stopped: HTTPError"
-  ]
+  ],
+  "allowance_before": {
+    "remaining": 300000,
+    "reset": 1791410297
+  },
+  "allowance_after": {
+    "remaining": 300000,
+    "reset": 1791410297
+  }
 }
