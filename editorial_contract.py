@@ -43,7 +43,8 @@ def ensure_feature_fallback(script):
 
 def audit(script):
     feature = feature_status(script)
-    issues = []
+    from crew_review import spoken_leaks
+    issues = ["Spoken production language remains: " + line for line in spoken_leaks(script)]
     if not feature['present']:
         issues.append('Rufus feature missing or incomplete.')
     elif feature['mode'] == 'global_desk':
@@ -55,3 +56,4 @@ def audit(script):
             'requires_editorial_review':['distinct listener consequences across three stories',
                 'technical terms explained on first use','everyday examples',
                 'responsive warmth, humor and changed viewpoints','self-contained exchange worth sharing']}
+

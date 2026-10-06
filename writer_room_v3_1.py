@@ -64,6 +64,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from listener_editorial import EDITORIAL_DIRECTION, editorial_diagnostics, expansion_segment
+from crew_review import spoken_leaks
 
 # ----------------------------------------------------------------------------
 # Config (env names preserved so the existing workflow needs no rewiring)
@@ -1110,7 +1111,11 @@ one specific sourced detail, what remains unknown, a listener consequence and a
 self-contained exchange premise. These are planning notes, never invented facts.
 A returning company needs a materially new development, not yesterday's argument.
 Do not reorder source records or fabricate additional reporting in this planning call.
-Keep each story scene under 70 words; keep other JSON fields concise.
+Keep each story scene under 150 words; keep other JSON fields concise.
+For each scene give each host a story-specific intention, the exact point of
+disagreement or shared curiosity, a reciprocal relationship beat, an emotional
+turn earned by a sourced discovery, and the final listener payoff. Vary these
+from supplied history. Planning notes are never spoken or treated as evidence.
 
 This show has three hosts who are PEOPLE, not functions:
 - ALEX drives, but can be wrong and can change his mind.
@@ -1192,7 +1197,11 @@ Return exactly this JSON:
     "new_development": "one sourced sentence", "why_today": "material change",
     "question": "specific question", "competing_readings": ["strong case", "strong countercase"],
     "receipt": "detail from this source", "unknown": "evidence limitation",
-    "listener_payoff": "practical consequence", "exchange_premise": "setup and useful payoff"}},
+    "listener_payoff": "practical consequence", "exchange_premise": "setup and useful payoff",
+    "cast_direction": {{"alex": "intention and emotional movement",
+      "jamie": "intention and emotional movement", "rufus": "intention and emotional movement"}},
+    "relationship_beat": "specific setup, colleague response and payoff",
+    "discovery": "source-backed possibility worth curiosity or delight, or honest absence"}},
     {{"story_index": 2, "instruction": "same fields for Story 2"}},
     {{"story_index": 3, "instruction": "same fields for Story 3"}}],
   "central_fight": "the lead disagreement in one sentence, not the thesis for every story",
@@ -1941,6 +1950,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "no_generic_panel_filler": not GENERIC_PANEL_RE.search(full),
         "no_legacy_lesson_ritual": not LEGACY_RITUAL_RE.search(full),
         "no_spoken_stage_directions": not spoken_stage_direction,
+        "no_spoken_production_language": not spoken_leaks(full),
         "temporal_consistency": (
             not episode_date or not _has_relative_date_contradiction(full, episode_date)
         ),
@@ -1975,6 +1985,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "not_lesson_title",
         "no_monologue_bloat",
         "no_spoken_stage_directions",
+        "no_spoken_production_language",
         "temporal_consistency",
     }
     failed = [k for k, ok in gate.items() if k in hard_gate_keys and not ok]
@@ -3012,6 +3023,21 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
 
+        # One final bounded scene pass AFTER expansion/trim, BEFORE the fact audit.
+        # Exact local edits preserve good scenes; no full-script replacement/retry loop.
+        from crew_review import review_final_scenes
+        script, crew_report = review_final_scenes(
+            script, stories, board,
+            request=lambda prompt: _anthropic_text(
+                g, prompt, model=os.getenv("DIALOGUE_EDITOR_MODEL", "claude-sonnet-4-6"),
+                max_tokens=6000),
+            normalize=stabilize,
+            assess=lambda candidate: _assess(candidate, stories, board, fuel),
+        )
+        Path("crew_review_report.json").write_text(
+            json.dumps(crew_report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        assessment = _assess(script, stories, board, fuel)
+
         # Preserve the generated candidate before external fact auditing so a
         # blocked run can be diagnosed and repaired without paying to rewrite it.
         try:
@@ -3077,7 +3103,9 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         if assessment.get("pass"):
             performance = build_plan(script, lambda prompt: _anthropic_text(
                 g, prompt, model=os.getenv("PERFORMANCE_DIRECTOR_MODEL", "claude-sonnet-4-6"),
-                max_tokens=6500))
+                max_tokens=6500), scene_context={"date": date_str,
+                    "scenes": board.get("story_scenes", []),
+                    "recent_patterns": fuel.get("recent_editorial_patterns", [])})
             _safe_print(g, f"      Performance plan: {len(performance['directions'])} directed turns; "
                           f"{len(performance['issues'])} issues")
 
@@ -3268,3 +3296,4 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     g["V3_1_WRITER_ROOM_INSTALLED"] = True
     g["V3_2_HARD_DEBATE_WRITER_ROOM_INSTALLED"] = True
     g["V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"] = True
+

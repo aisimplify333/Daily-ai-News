@@ -15,7 +15,7 @@ def turns(script):
     return [{'id':i, 'speaker':m[1], 'text':m[2]} for i,m in enumerate(
         re.finditer(r'^(ALEX|JAMIE|RUFUS):\s*(.+)$', script, re.M))]
 
-def build_plan(script, request, path='performance_plan.json'):
+def build_plan(script, request, path='performance_plan.json', scene_context=None):
     rows = turns(script)
     prompt = '''Direct this exact podcast script. Return only JSON {"directions":[{"id":0,"mood":"curiosity","reason":"brief reason grounded in this reply and the preceding turn"}]}.
 One entry per turn. Allowed moods: ''' + ', '.join(sorted(MOODS)) + '''.
@@ -26,7 +26,9 @@ emotion into every turn or assign delight to harm. Do not use keyword matching. 
 contextual direction, not automatic neutral. Sponsor reads are neutral. Laughter is optional,
 not implied by every amused turn. Preserve each host's identity.
 TURNS:\n''' + json.dumps(rows, ensure_ascii=False)
-    report = {'script_sha256':hashlib.sha256(script.encode()).hexdigest(),
+    from crew_direction import CREW_DIRECTION
+    prompt = CREW_DIRECTION + '\nDAILY SCENE BRIEFS (planning, not new facts):\n' + json.dumps(scene_context or {}, ensure_ascii=False) + '\n' + prompt
+    report = {'scene_context': scene_context or {}, 'script_sha256':hashlib.sha256(script.encode()).hexdigest(),
               'basis':'requested performance, not listening', 'listened':False,
               'directions':[], 'issues':[]}
     try:
@@ -76,3 +78,4 @@ def planned_mood(text, speaker, path='performance_plan.json'):
         if len(moods) == 1:
             return next(iter(moods))
     return None
+

@@ -3,6 +3,7 @@ import re
 from collections import Counter
 from dialogue_direction import PERFORMANCE_DIRECTION
 from show_identity import RELATIONSHIP_DIRECTION
+from crew_direction import CREW_DIRECTION
 
 
 EDITORIAL_DIRECTION = """
@@ -30,7 +31,7 @@ EDITORIAL BRIEF — The AI Edge:
 6. Explain the headline early and end with a specific answer or honest uncertainty.
    Keep the opening brief, give each story audible navigation, and leave the listener
    more capable. Instructions and automated checks are not entertainment ratings.
-""".strip() + "\n\n" + PERFORMANCE_DIRECTION + "\n\n" + RELATIONSHIP_DIRECTION
+""".strip() + "\n\n" + PERFORMANCE_DIRECTION + "\n\n" + RELATIONSHIP_DIRECTION + "\n\n" + CREW_DIRECTION
 
 
 def story_turns(script):
@@ -91,3 +92,4 @@ def expansion_segment(script):
         return None
     weights = {2: .4, 3: .3, 4: .3}
     return min(available, key=lambda segment: counts[segment] / weights[segment])
+

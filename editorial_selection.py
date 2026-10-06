@@ -6,7 +6,7 @@ def topic_family(story):
     # Classify the actual event headline, not incidental risk words in the summary.
     text = str(story.get("headline") or story.get("title") or "").lower()
     groups = (
-        ("governance", r"lawsuit|antitrust|security council|\bun\b|regulat|legislat|treaty|summit|china talks|ai czar|ai force|diploma|incident alert|governance|safety pact"),
+        ("governance", r"lawsuit|antitrust|security council|\bun\b|regulat|legislat|treaty|summit|china talks|ai czar|ai force|diploma|incident alert|governance|safety pact|task force|reporting|policymaker|government|city council|dangers|oversight|subpoena|safety concern"),
         ("science_access", r"medical|clinical|hospital|disabil|accessib|scient|research atlas|genome|protein|education|school|teacher|blind|deaf"),
         ("infrastructure", r"chip|gpu|data cent|power|energy|compute|semiconductor"),
         ("markets", r"funding|raises|raised|earnings|acqui|merger|investment|billion euros|stock"),
@@ -16,8 +16,14 @@ def topic_family(story):
     return next((name for name, pattern in groups if re.search(pattern, text)), "other")
 
 
+def listener_frame(story):
+    """A second axis prevents governance/security being mistaken for tonal variety."""
+    family = topic_family(story)
+    return "accountability_risk" if family in {"governance", "security"} else family
+
+
 def concentrated(stories):
-    families = [topic_family(s) for s in stories[:3]]
+    families = [listener_frame(s) for s in stories[:3]]
     return len(families) == 3 and len(set(families)) == 1 and families[0] != "other"
 
 
@@ -31,10 +37,10 @@ def balanced_story_order(stories):
         return []
     chosen, remaining = [dict(stories[0])], [dict(s) for s in stories[1:]]
     while remaining and len(chosen) < 3:
-        seen = {topic_family(s) for s in chosen}
+        seen = {listener_frame(s) for s in chosen}
         def penalty(pair):
             index, row = pair
-            family = topic_family(row)
+            family = listener_frame(row)
             tier = int(row.get("source_tier", 2))
             return 100 * (tier < 2) + index + (5 if family in seen and family != "other" else 0)
         index, row = min(enumerate(remaining), key=penalty)
@@ -45,3 +51,4 @@ def balanced_story_order(stories):
         row.update(rank=index, story_tier="primary" if index <= 3 else "supporting",
                    topic_family=topic_family(row))
     return result
+
