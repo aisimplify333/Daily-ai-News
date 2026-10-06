@@ -1,50 +1,50 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-10-05",
+  "date": "2026-10-06",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
-    "changed": true,
+    "changed": false,
     "lookback_episodes": 7,
     "previous_lead_actor": "",
     "previous_argument_family": "policy",
-    "original_lead": "Norway Proposes Temporary Ban on AI Glasses in Public Spaces",
-    "selected_lead": "NATO Drafts 'Theory of Victory' Using AI and Drones Against Eastern Flank Incursions",
+    "original_lead": "Trump names Jay Clayton to lead a new federal AI task force",
+    "selected_lead": "Trump names Jay Clayton to lead a new federal AI task force",
     "candidates": [
       {
-        "headline": "NATO Drafts 'Theory of Victory' Using AI and Drones Against Eastern Flank Incursions",
-        "score": 86.0,
-        "actor": "EU",
+        "headline": "Trump names Jay Clayton to lead a new federal AI task force",
+        "score": 96.0,
+        "actor": "White House",
         "argument_family": "security",
         "penalties": []
       },
       {
-        "headline": "Norway Proposes Temporary Ban on AI Glasses in Public Spaces",
-        "score": 82.0,
-        "actor": "EU",
+        "headline": "OpenAI and Anthropic tell Australia they would welcome mandatory reporting of AI agent hacks",
+        "score": 77.0,
+        "actor": "OpenAI",
+        "argument_family": "security",
+        "penalties": []
+      },
+      {
+        "headline": "Reflection debuts Beam, an open-weight model aimed at cheaper frontier reasoning",
+        "score": 70.0,
+        "actor": "",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "AI insiders warn New York City leaders as local governments take up safety concerns",
+        "score": 62.0,
+        "actor": "SEC",
         "argument_family": "policy",
         "penalties": [
           "same argument family as previous episode"
         ]
       },
       {
-        "headline": "Google pauses open-source bug bounty program after surge in AI-generated submissions",
-        "score": 76.0,
-        "actor": "Google",
-        "argument_family": "security",
-        "penalties": []
-      },
-      {
-        "headline": "Trump announces a new Super Intelligence Force to coordinate federal AI policy",
-        "score": 66.0,
-        "actor": "White House",
-        "argument_family": "security",
-        "penalties": []
-      },
-      {
-        "headline": "Anthropic, OpenAI, Google, and Meta Testify Under Oath at NYC Council AI Hearing",
-        "score": 47.0,
+        "headline": "OpenAI Executives Testify Under Oath Before NYC Council Regarding AI Risks",
+        "score": 51.0,
         "actor": "OpenAI",
-        "argument_family": "security",
+        "argument_family": "models",
         "penalties": []
       }
     ]
@@ -52,160 +52,161 @@
   "selected": [
     {
       "rank": 1,
-      "headline": "NATO Drafts 'Theory of Victory' Using AI and Drones Against Eastern Flank Incursions",
-      "publisher": "Bloomberg",
+      "headline": "Trump names Jay Clayton to lead a new federal AI task force",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 3.96,
+      "story_age_hours": 43.93,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.bloomberg.com"
+      "source_url": "https://apnews.com/article/b8689ea07de9102a52bd1cd2049b5901"
     },
     {
       "rank": 2,
-      "headline": "Norway Proposes Temporary Ban on AI Glasses in Public Spaces",
+      "headline": "OpenAI and Anthropic tell Australia they would welcome mandatory reporting of AI agent hacks",
       "publisher": "Reuters",
       "top_event_score": null,
-      "story_age_hours": 2.96,
+      "story_age_hours": 2.7,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
       "source_url": "https://www.reuters.com"
     },
     {
       "rank": 3,
-      "headline": "Google pauses open-source bug bounty program after surge in AI-generated submissions",
-      "publisher": "TechCrunch",
+      "headline": "AI insiders warn New York City leaders as local governments take up safety concerns",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 11.44,
-      "source_tier": 2,
+      "story_age_hours": 14.36,
+      "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://techcrunch.com/2026/10/04/google-froze-its-open-source-bug-bounty-program-due-to-a-significant-rise-in-ai-submissions/"
+      "source_url": "https://apnews.com/article/4be252d137ff1de1006130cdbb42ec24"
     },
     {
       "rank": 4,
-      "headline": "Trump announces a new Super Intelligence Force to coordinate federal AI policy",
+      "headline": "Reflection debuts Beam, an open-weight model aimed at cheaper frontier reasoning",
       "publisher": "TechCrunch",
       "top_event_score": null,
-      "story_age_hours": 23.71,
+      "story_age_hours": 13.58,
       "source_tier": 2,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://techcrunch.com/2026/10/04/trump-unveils-his-new-super-intelligence-force/"
+      "source_url": "https://techcrunch.com/2026/10/05/reflection-debuts-beam-a-open-weight-ai-model-to-rival-chinese-models-at-lower-compute-cost/"
     },
     {
       "rank": 5,
-      "headline": "Anthropic, OpenAI, Google, and Meta Testify Under Oath at NYC Council AI Hearing",
-      "publisher": "NYC.gov",
+      "headline": "OpenAI Executives Testify Under Oath Before NYC Council Regarding AI Risks",
+      "publisher": "Quartz",
       "top_event_score": null,
-      "story_age_hours": 3.96,
+      "story_age_hours": 9.13,
       "source_tier": 1,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.nyc.gov/office-of-the-mayor/news/press-releases/2026/09/28/new-york-city-council-announces-anthropic-openai-google-meta-publicly-testify-under-oath-first-time"
+      "source_url": "https://qz.com/ai-execs-testify-before-nyc-council-on-existential-ai-risks"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "NATO’s New Theory of Victory: How AI and Drones Change Military Deterrence",
-    "central_fight": "Whether AI-driven automation is a tool for efficiency or a source of systemic noise and instability.",
-    "opening_question": "If NATO is betting its 'Theory of Victory' on AI, are we ready for the consequences of a machine-speed miscalculation?",
-    "listener_question": "If you saw someone wearing AI glasses in a public park, would you feel your privacy was being violated?",
+    "published_title": "Jay Clayton Leads New Federal AI Task Force: What Changes for Contractors",
+    "central_fight": "Whether the shift from voluntary industry commitments to mandatory, government-enforced reporting is a genuine safety improvement or a new layer of bureaucratic friction.",
+    "opening_question": "If the federal government and local councils are both suddenly demanding answers, are we seeing the end of the 'move fast and break things' era of AI?",
+    "listener_question": "If your city required AI companies to testify under oath about safety, would you trust the results more than federal oversight?",
     "poll_options": [
-      "Yes, it's an invasive recording risk.",
-      "No, it's no different than a smartphone.",
-      "I'm not sure, I need to know if it's recording."
+      "Yes, local oversight is more accountable.",
+      "No, it's just political theater.",
+      "Unsure, both levels are equally flawed."
     ],
-    "listener_promise": "By the end, you will understand how AI is reshaping military doctrine, public privacy laws, and the security of the software we all rely on.",
+    "listener_promise": "By the end, you'll understand why AI labs are suddenly inviting regulation and how the shift from federal to local oversight changes your risk profile.",
     "positions": {
-      "alex": "Views these events as a necessary, if messy, maturation of AI integration into critical infrastructure.",
-      "jamie": "Prioritizes the human need for consent and accountability, viewing the 'noise' and 'automation' as threats to public trust.",
-      "rufus": "Focuses on the economic and liability costs of these systems, noting that incentives will eventually force better design."
+      "alex": "Alex argues that centralized federal coordination is the only way to manage national security risks at scale.",
+      "jamie": "Jamie believes that sworn testimony and mandatory reporting are essential to restoring public trust in autonomous systems.",
+      "rufus": "Rufus observes that companies are choosing the 'least bad' regulatory path to avoid fragmented, costly compliance across different cities."
     },
     "concession": {
       "host": "rufus",
-      "gives_ground_on": "Admits that the Google bug bounty pause proves that AI spam is now a direct, measurable cost to enterprise security operations."
+      "gives_ground_on": "Admits that the threat of subpoenas is successfully forcing engagement from companies that previously ignored voluntary requests."
     },
-    "who_wins": "The developers of filtering and verification tools who will now be in high demand.",
-    "who_is_exposed": "Open-source maintainers and security researchers who rely on bounty programs for income and system integrity.",
-    "normal_person_payoff": "You'll know why your next wearable device might be banned in certain countries and why your software updates might take longer to verify.",
+    "who_wins": "The regulators, who are successfully moving the goalposts from 'voluntary' to 'mandatory' disclosure.",
+    "who_is_exposed": "Smaller AI firms that lack the legal and compliance teams to navigate a patchwork of city and federal mandates.",
+    "normal_person_payoff": "You will know whether to expect more transparency from the AI tools you use, or just more legal paperwork.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "The right to public anonymity and human-verifiable security.",
-      "rufus_value": "The efficiency of automated systems and the necessity of managing operational costs.",
-      "point_of_collision": "Whether the 'noise' of AI-generated bug reports is a temporary bug or a permanent feature of the new security landscape."
+      "jamie_value": "Public accountability and the right to know when AI systems fail.",
+      "rufus_value": "Regulatory efficiency and avoiding a chaotic, fragmented compliance landscape.",
+      "point_of_collision": "Whether city-level subpoenas are a productive tool or a wasteful, performative burden on the industry."
     },
     "rufus_global_markets_desk": {
       "market_or_region": "New York",
       "companies_or_assets": [
-        "Alphabet (Google)",
+        "OpenAI",
+        "Anthropic",
+        "Google",
         "Meta",
-        "Defense contractors"
+        "SpaceXAI"
       ],
-      "capital_policy_or_infrastructure_move": "The shift in defense procurement toward 'minimally crewed' systems and the operational cost of AI-spam on tech platforms.",
+      "capital_policy_or_infrastructure_move": "The transition from voluntary compliance to mandatory, subpoena-backed reporting requirements for AI vendors.",
       "dated_market_receipts": [
-        "October 1, 2026: Google bug bounty pause",
-        "October 12, 2026: NATO strategy presentation"
+        "October 5, 2026: NYC Council Committee of the Whole hearing."
       ]
     },
     "mandatory_receipts": [
-      "NATO's 'Theory of Victory' integrates AI-powered targeting.",
-      "Norway is proposing a temporary ban on AI glasses in public spaces.",
-      "Google paused its open-source bug bounty program on October 1."
+      "Jay Clayton appointed to lead federal AI task force on Oct 4, 2026.",
+      "OpenAI and Anthropic support mandatory reporting for agent hacks in Australia.",
+      "NYC Council subpoenaed SpaceXAI for failing to testify under oath."
     ],
     "forwardable_targets": [
-      "When the machines start doing the work, the first thing they do is create more work for everyone else.",
-      "NATO's new strategy isn't just about drones; it's about how fast we're willing to let a computer make a decision."
+      "When companies start asking to be regulated, check who is writing the rules.",
+      "New York is now the front line for AI accountability, and the subpoenas are real."
     ],
     "story_scenes": [
       {
         "story_index": 1,
-        "source_url": "https://www.bloomberg.com",
-        "new_development": "NATO’s Supreme Allied Commander has codified a 'Theory of Victory' strategy integrating AI-powered targeting and low-cost drones.",
-        "why_today": "The unclassified strategy document was reported within the last 48 hours, signaling a shift to formal AI-integrated doctrine.",
-        "question": "Does automating targeting decisions strengthen deterrence or lower the threshold for conflict?",
+        "source_url": "https://apnews.com/article/b8689ea07de9102a52bd1cd2049b5901",
+        "new_development": "President Trump appointed Jay Clayton to lead a newly formed federal AI task force.",
+        "why_today": "It marks a pivot toward centralized federal governance after a period of decentralized agency-level activity.",
+        "question": "Will this task force streamline procurement or create a new bottleneck for AI developers?",
         "competing_readings": [
-          "AI-driven speed creates a credible deterrent that makes invasion impossible.",
-          "Automated systems introduce unpredictable escalation risks that could destabilize the region."
+          "A necessary move to harmonize fragmented national security and AI policy.",
+          "An overreach that risks stifling innovation through heavy-handed federal coordination."
         ],
-        "receipt": "The strategy is scheduled for formal presentation in Poland on October 12, 2026.",
-        "unknown": "The specific AI model specifications and the degree of human oversight in the targeting loop remain unclassified.",
-        "listener_payoff": "Understand how defense budgets are shifting toward 'minimally crewed systems' and what that means for regional stability.",
-        "exchange_premise": "Alex notes the shift from experimental to doctrinal; Rufus questions the liability of 'minimally crewed' systems; Jamie asks who takes the blame when the algorithm misidentifies a target."
+        "receipt": "Jay Clayton is the current director of national intelligence.",
+        "unknown": "The specific mandate and enforcement powers of the task force remain undefined.",
+        "listener_payoff": "Contractors and developers should prepare for a shift in how federal AI standards are set and audited.",
+        "exchange_premise": "Rufus notes the irony of a 'light-touch' administration creating a new central body; Alex explains the intelligence angle."
       },
       {
         "story_index": 2,
         "source_url": "https://www.reuters.com",
-        "new_development": "Norway is proposing a temporary ban on AI-powered glasses in public spaces like parks and schools.",
-        "why_today": "The government announcement marks a significant escalation from local school bans to state-level legislation.",
-        "question": "Can we regulate the privacy impact of wearable AI through geography-based bans?",
+        "new_development": "OpenAI and Anthropic have publicly signaled support for mandatory reporting laws regarding AI agent hacks in Australia.",
+        "why_today": "It is a rare instance of major labs proactively inviting regulation after real-world security breaches.",
+        "question": "Is this a genuine commitment to transparency or a strategic move to shape the rules in their favor?",
         "competing_readings": [
-          "Geographic restrictions protect public consent without stifling innovation.",
-          "Hardware-level bans are unenforceable and ignore the reality of ubiquitous recording."
+          "A responsible step to standardize security disclosures across the industry.",
+          "A defensive play to preempt more punitive, non-negotiable legislative mandates."
         ],
-        "receipt": "The proposal specifically cites Meta’s Ray-Ban AI glasses as a primary concern for non-consensual recording.",
-        "unknown": "The exact timeline for the parliamentary vote and the definition of 'public space' in the final bill.",
-        "listener_payoff": "Recognize that your wearable tech might soon be restricted in specific European zones, affecting travel and product utility.",
-        "exchange_premise": "Jamie highlights the relief of a 'no-camera zone'; Rufus points out the absurdity of policing glasses while smartphones remain everywhere."
+        "receipt": "The position follows recent revelations of AI systems breaching government websites.",
+        "unknown": "Whether these companies will support similar mandates in the U.S. or other jurisdictions.",
+        "listener_payoff": "Expect a global trend toward mandatory incident reporting, which may increase the cost of compliance for smaller AI vendors.",
+        "exchange_premise": "Jamie contrasts this with previous resistance; Rufus points out that reporting is cheaper than litigation."
       },
       {
         "story_index": 3,
-        "source_url": "https://techcrunch.com/2026/10/04/google-froze-its-open-source-bug-bounty-program-due-to-a-significant-rise-in-ai-submissions/",
-        "new_development": "Google paused its open-source bug bounty program due to an overwhelming surge of invalid, AI-generated submissions.",
-        "why_today": "This is a concrete operational failure where AI 'slop' has forced a major platform to halt a critical security process.",
-        "question": "Does AI-generated noise threaten the integrity of software vulnerability reporting?",
+        "source_url": "https://qz.com/ai-execs-testify-before-nyc-council-on-existential-ai-risks",
+        "new_development": "Big AI leadership provided sworn testimony before the New York City Council, with subpoenas issued for non-compliance.",
+        "why_today": "It represents the first time major AI firms have been compelled to testify under oath at the municipal level.",
+        "question": "Does local legislative scrutiny hold more weight than federal voluntary commitments?",
         "competing_readings": [
-          "This is a necessary pause to retool intake systems against automated spam.",
-          "The reliance on bounty programs is failing because AI can generate more noise than humans can filter."
+          "A vital way to force accountability when federal progress is slow.",
+          "A performative distraction that adds regulatory complexity without solving technical risks."
         ],
-        "receipt": "The pause began October 1, 2026, with an update expected in Q1 2027.",
-        "unknown": "The volume of legitimate reports being missed during this three-month window.",
-        "listener_payoff": "Security teams should prepare for increased noise in their own intake channels and implement stricter submission filtering.",
-        "exchange_premise": "Alex notes the irony of AI 'helping' researchers by flooding the gates; Rufus calculates the cost of manual triage versus automated failure."
+        "receipt": "SpaceXAI was subpoenaed after failing to respond to voluntary requests.",
+        "unknown": "Whether city-level bills like 'kill switches' will actually be enacted into law.",
+        "listener_payoff": "Watch for other cities adopting New York's aggressive subpoena strategy to force tech company participation.",
+        "exchange_premise": "Alex asks if a city council can actually regulate a frontier model; Jamie argues that local pressure is the only thing that feels real to the public."
       }
     ],
     "title_candidates": [
-      "NATO Adopts AI-Integrated Defense Strategy to Counter Eastern Flank Incursions",
-      "NATO’s New Theory of Victory: How AI and Drones Change Military Deterrence",
-      "Can AI-Powered Targeting Actually Deter Military Incursions on the Eastern Flank?"
+      "Federal AI Oversight Centralizes Under Jay Clayton's New Task Force",
+      "Why Major AI Labs Now Support Mandatory Reporting for Agent Hacks",
+      "Does City-Level Sworn Testimony Change How AI Companies Face Accountability?"
     ],
-    "episode_hook": "NATO has unveiled a new 'Theory of Victory' that puts AI-powered drones at the center of European security. We break down what this means for the future of military deterrence and your local defense procurement news.",
+    "episode_hook": "The White House has just centralized AI policy under a new federal task force, while major AI labs are suddenly backing mandatory reporting laws. We’re breaking down what this means for your security and the companies you work with.",
     "planning_status": "model_plan",
-    "_episode_date": "2026-10-05"
+    "_episode_date": "2026-10-06"
   }
 }

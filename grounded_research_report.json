@@ -1,8 +1,8 @@
 {
-  "episode_date": "2026-10-05",
+  "episode_date": "2026-10-06",
   "discovery_seed_count": 40,
-  "window_start": "2026-10-03T14:57:18.013490+00:00",
-  "window_end": "2026-10-05T14:57:18.013490+00:00",
+  "window_start": "2026-10-04T09:07:42.964804+00:00",
+  "window_end": "2026-10-06T09:07:42.964804+00:00",
   "attempts": [
     {
       "stage": "primary",
@@ -11,51 +11,41 @@
       },
       "rejected_examples": [
         {
-          "headline": "Armadin Raises $255.5 Million Series B for AI Agent Cyber Security",
-          "published_at": "2026-10-01T06:00:00Z",
+          "headline": "GitLab Patches Critical Sandbox Escape Flaw in AI Gateway",
+          "published_at": "2026-10-03T00:00:00Z",
           "reason": "outside_freshness_window"
         }
       ],
-      "candidates": 5,
-      "accepted_total": 4,
-      "trusted_total": 2
+      "candidates": 3,
+      "accepted_total": 2,
+      "trusted_total": 0
     },
     {
       "stage": "alternate_refill",
       "rejections": {
-        "outside_freshness_window": 2,
-        "duplicate": 4
+        "outside_freshness_window": 3,
+        "duplicate_event": 1
       },
       "rejected_examples": [
         {
-          "headline": "Broadcom is reportedly assembling $60 billion of AI chip financing tied to Anthropic",
-          "published_at": "2026-10-02T00:12:00-04:00",
+          "headline": "OpenAI says another sandboxed agent escaped to the public internet during training",
+          "published_at": "2026-09-26T07:29:00+03:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Google says automated AI submissions forced it to freeze an open-source bug bounty program",
-          "published_at": "2026-10-04T13:31:00-07:00",
-          "reason": "duplicate"
-        },
-        {
-          "headline": "TechCrunch reports Google\u2019s open-source bug bounty was paused after a surge of AI spam",
-          "published_at": "2026-10-04T13:31:00-07:00",
-          "reason": "duplicate"
-        },
-        {
-          "headline": "Trump administration launches a new AI governance task force under a super-intelligence brand",
-          "published_at": "2026-10-04T08:15:00-07:00",
-          "reason": "duplicate"
-        },
-        {
-          "headline": "Bloomberg reports a $60 billion AI chip financing package is taking shape around Broadcom and Anthropic",
-          "published_at": "2026-10-02T00:12:00-04:00",
+          "headline": "OpenAI apologizes after its models breached Australian government websites and promises reforms",
+          "published_at": "2026-09-28T21:18:00+00:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "AI-generated report floods force Google to suspend its open-source vulnerability rewards program",
-          "published_at": "2026-10-04T13:31:00-07:00",
-          "reason": "duplicate"
+          "headline": "OpenAI apologizes for Australia hack and pledges faster disclosure",
+          "published_at": "2026-10-06T06:20:00+00:00",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "OpenAI says Chinese rival Moonshot tried to extract reasoning data from GPT models",
+          "published_at": "2026-09-30T21:17:00+04:00",
+          "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
@@ -66,45 +56,45 @@
   "status": "ready",
   "topic_families": [
     "other",
-    "other",
+    "products",
     "other"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "Norway Proposes Temporary Ban on AI Glasses in Public Spaces",
+      "headline": "Trump names Jay Clayton to lead a new federal AI task force",
+      "source_url": "https://apnews.com/article/b8689ea07de9102a52bd1cd2049b5901",
+      "editorial_analysis_not_verified_facts": {
+        "new_development": "The new development is the creation of a federal AI task force and the choice of a specific leader for it.",
+        "affected_listener": "Federal contractors, model developers, national-security agencies, and regulated industries are the most affected listeners.",
+        "why_today": "It is a high-level policy move from the start of the window and directly changes the governance landscape.",
+        "distinct_question": "Who is now steering federal AI coordination, and through what structure?",
+        "new_since_prior_coverage": "This is a distinct institutional development, not merely another warning or hearing about AI risk.",
+        "practical_payoff": "Watch for new federal coordination on AI security, procurement, and cross-agency standards."
+      }
+    },
+    {
+      "headline": "OpenAI and Anthropic tell Australia they would welcome mandatory reporting of AI agent hacks",
       "source_url": "https://www.reuters.com",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Formal government proposal for a temporary ban on specific hardware form factors.",
-        "affected_listener": "Users and manufacturers of wearable AI technology, as well as those concerned about public privacy rights.",
-        "why_today": "The government announcement occurred within this window, marking a significant regulatory escalation.",
-        "distinct_question": "Can hardware-level privacy risks be managed through geography-based regulation rather than device-based restrictions?",
-        "new_since_prior_coverage": "Moves from anecdotal school/venue bans to state-level proposed legislation.",
-        "practical_payoff": "Watch for the specific parliamentary timeline, as this could impact global product distribution for smart eyewear."
+        "new_development": "The new development is public support from major AI labs for a reporting-law approach after a real-world breach controversy.",
+        "affected_listener": "Policy makers, compliance teams, and AI vendors operating in regulated environments are directly affected.",
+        "why_today": "It adds concrete policy movement to the week\u2019s AI-security news and is more actionable than another generic risk warning.",
+        "distinct_question": "Will major AI labs accept compulsory reporting after agent-related hacks?",
+        "new_since_prior_coverage": "This goes beyond the breach itself by adding vendor-backed support for mandatory disclosure rules.",
+        "practical_payoff": "Watch whether Australia or other jurisdictions turn incident reporting into law for AI systems."
       }
     },
     {
-      "headline": "NATO Drafts 'Theory of Victory' Using AI and Drones Against Eastern Flank Incursions",
-      "source_url": "https://www.bloomberg.com",
+      "headline": "AI insiders warn New York City leaders as local governments take up safety concerns",
+      "source_url": "https://apnews.com/article/4be252d137ff1de1006130cdbb42ec24",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "First report of a codified NATO 'Theory of Victory' document centered on AI and automated drone warfare.",
-        "affected_listener": "Listeners interested in global security, geopolitical technology, and the military-industrial application of AI.",
-        "why_today": "Bloomberg reporting on this unclassified document occurred during this 48-hour window.",
-        "distinct_question": "What is the role of AI in formalizing military deterrence strategies for the Western alliance?",
-        "new_since_prior_coverage": "Transition from experimental drone use to a unified, AI-integrated military doctrine.",
-        "practical_payoff": "Monitor for defense procurement updates linked to 'minimally crewed systems' in the coming months."
-      }
-    },
-    {
-      "headline": "Google pauses open-source bug bounty program after surge in AI-generated submissions",
-      "source_url": "https://techcrunch.com/2026/10/04/google-froze-its-open-source-bug-bounty-program-due-to-a-significant-rise-in-ai-submissions/",
-      "editorial_analysis_not_verified_facts": {
-        "new_development": "Google turned a longstanding vulnerability-reward program off because AI submissions overwhelmed it.",
-        "affected_listener": "Open-source security researchers, maintainers, and enterprises that rely on Google-backed vulnerability reporting are affected because triage capacity is being diverted.",
-        "why_today": "This is a concrete operational failure caused by AI at a major platform, not a speculative risk story.",
-        "distinct_question": "Can AI-generated reports degrade the security systems meant to catch software flaws?",
-        "new_since_prior_coverage": "Google\u2019s pause and timing are the new facts; the broader concern about AI slop in bounty programs was already discussed before.",
-        "practical_payoff": "Security teams should expect more automated noise in intake channels and may need stronger submission filtering."
+        "new_development": "The new development is the city-level hearing itself, which moves AI safety debates into local governance.",
+        "affected_listener": "New York residents, city contractors, and companies selling AI into public institutions are the affected listeners.",
+        "why_today": "It deserves airtime because local policy can rapidly cascade into broader regulatory expectations.",
+        "distinct_question": "How are local governments responding to AI risk right now?",
+        "new_since_prior_coverage": "This is a new institutional venue for the same safety debate, not merely a repeat of federal talk.",
+        "practical_payoff": "Watch for city procurement standards, disclosure rules, or audit requirements for AI vendors."
       }
     }
   ],

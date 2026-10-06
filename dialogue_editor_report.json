@@ -2,7 +2,7 @@
   "provider": "anthropic",
   "role": "scene_dialogue_editor",
   "requested_calls": 3,
-  "accepted": true,
+  "accepted": false,
   "listened": false,
   "scenes": [
     {
@@ -17,10 +17,10 @@
     },
     {
       "segment": 4,
-      "accepted": true,
-      "reason": "scene_revision_retained"
+      "accepted": false,
+      "reason": "numeric_receipts_changed"
     }
   ],
-  "reason": "scene_revisions_retained",
+  "reason": "original_scenes_preserved",
   "model": "claude-sonnet-4-6"
 }
