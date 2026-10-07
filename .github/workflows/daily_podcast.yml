@@ -100,6 +100,23 @@ jobs:
             }
             return 'produce';
 
+      - name: Restore preserved voice cache for supervised recovery
+        if: steps.release_check.outputs.result == 'produce'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          recovery_run="$(sed -n 's/^RECOVER_RUN_ID=\([0-9][0-9]*\)$/\1/p' PRODUCTION_RUN_ONCE | tail -n 1)"
+          if [[ -z "$recovery_run" ]]; then
+            exit 0
+          fi
+          mkdir -p _voice_recovery .tts_cache
+          gh run download "$recovery_run" \
+            --repo "$GITHUB_REPOSITORY" \
+            --name "voice-recovery-$recovery_run" \
+            --dir _voice_recovery
+          cp -a _voice_recovery/. .tts_cache/
+
       - name: Set up Python
         if: steps.release_check.outputs.result == 'produce'
         uses: actions/setup-python@v5
