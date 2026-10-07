@@ -6191,14 +6191,6 @@ def produce_episode() -> None:
             if sponsor_chunk and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
                 final_voice_path = mixed_voice_path
 
-            if not continuing and entrance_due(speaker, text, assembly_segment, rufus_entrance_played):
-                # Once, after Alex's complete handoff, never under spoken words.
-                rufus_entrance_played = True
-                entrance = prepare_entrance(run_tmp / "rufus_entrance.mp3")
-                if entrance is not None:
-                    assembly_markers.append({"kind": "rufus_entrance", "segment": assembly_segment,
-                                             "start_index": len(concat_files), "end_index": len(concat_files) + 1})
-                    concat_files.append(entrance)
             if sponsor_chunk:
                 concat_files.append(sponsor_pause_path)
                 # A sponsor at a segment boundary must not inherit another bed.
