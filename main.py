@@ -6062,6 +6062,8 @@ def produce_episode() -> None:
 
     from dialogue_direction import boundary_pause
     pause_assets = {}
+    from rufus_audio import entrance_due, prepare_entrance
+    rufus_entrance_played = False
     for render_index, (speaker, text) in enumerate(render_items):
         if speaker == "MUSIC":
             if not intro_done:
@@ -6189,6 +6191,14 @@ def produce_episode() -> None:
             if sponsor_chunk and _mix_brand_bed_if_needed(final_voice_path, chunk, speaker, mixed_voice_path):
                 final_voice_path = mixed_voice_path
 
+            if not continuing and entrance_due(speaker, text, assembly_segment, rufus_entrance_played):
+                # Once, after Alex's complete handoff, never under spoken words.
+                rufus_entrance_played = True
+                entrance = prepare_entrance(run_tmp / "rufus_entrance.mp3")
+                if entrance is not None:
+                    assembly_markers.append({"kind": "rufus_entrance", "segment": assembly_segment,
+                                             "start_index": len(concat_files), "end_index": len(concat_files) + 1})
+                    concat_files.append(entrance)
             if sponsor_chunk:
                 concat_files.append(sponsor_pause_path)
                 # A sponsor at a segment boundary must not inherit another bed.
@@ -6237,6 +6247,14 @@ def produce_episode() -> None:
             edit = boundary_pause(chunk, speaker, str(next_text), next_speaker,
                                   performance_mood, INTER_TURN_SILENCE_MS, continuing)
             assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "performance_mood": performance_mood, "tempo_factor": tempo_factor, "speed": speaker_speed, "level_delta_db": level_delta, "pause_requested_ms": edit["milliseconds"], "pause_reason": edit["reason"], "start_index": speech_start_index, "end_index": len(concat_files)})
+            if not continuing and entrance_due(speaker, text, assembly_segment, rufus_entrance_played):
+                # Once, after Alex's complete handoff, never under spoken words.
+                rufus_entrance_played = True
+                entrance = prepare_entrance(run_tmp / "rufus_entrance.mp3")
+                if entrance is not None:
+                    assembly_markers.append({"kind": "rufus_entrance", "segment": assembly_segment,
+                                             "start_index": len(concat_files), "end_index": len(concat_files) + 1})
+                    concat_files.append(entrance)
             if sponsor_chunk:
                 concat_files.append(sponsor_pause_path)
             else:
@@ -6425,3 +6443,4 @@ def produce_episode() -> None:
 
 if __name__ == "__main__":
     produce_episode()
+

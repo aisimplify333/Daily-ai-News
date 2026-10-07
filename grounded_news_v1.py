@@ -278,6 +278,14 @@ Rules:
   freshness and evidence, not emotional negativity. No compulsory good-news quota.
 - Prioritize legal/policy moves, major model or product releases, safety/security
   events, material deals, compute/chip shifts, and changes affecting work or people.
+- For Rufus's global markets reporting, actively consider Shanghai, Wall Street/
+  New York, London, Hong Kong, Japan/Tokyo and Washington/the White House alongside
+  other relevant markets, including Singapore, Dubai, Abu Dhabi, Seoul, Taipei,
+  Zurich, Nairobi and Reykjavik when current source-backed developments warrant.
+  Seek dated AI financing, major disclosed institutional
+  investments, market movers, compliance and policy consequences. No city quota.
+  A "whale" angle requires reliable disclosure or reporting of the actual actor
+  and transaction; never infer identity, intent or price causation from a transfer.
 - Search for material AI-linked public-market moves worldwide: named stocks, earnings,
   capex, financing, chips, data centers, utilities/power, sovereign investment and
   legislation with a market consequence. Include price or percentage moves only when
@@ -763,3 +771,4 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+

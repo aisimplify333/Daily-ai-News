@@ -36,7 +36,7 @@ within its existing runtime band; prioritize replacing dull text, not adding fil
 Use source facts only, never planning notes as evidence. A lack of genuinely varied
 stories cannot be repaired by calling regulation exciting: report it as unresolved.
 Do not claim your proposed edits are verified improvements or assign a numeric score.
-''' + '\nSOURCES:\n' + json.dumps(stories[:3], ensure_ascii=False) + '\nSCENE BRIEFS:\n' + json.dumps(board.get('story_scenes', []), ensure_ascii=False) + '\nFINAL SCRIPT:\n' + script
+''' + '\nSOURCES:\n' + json.dumps(stories[:3], ensure_ascii=False) + '\nSCENE BRIEFS:\n' + json.dumps({'scenes': board.get('story_scenes', []), 'rufus_global_markets_desk': board.get('rufus_global_markets_desk', {})}, ensure_ascii=False) + '\nFINAL SCRIPT:\n' + script
     try:
         raw = request(prompt)
         data = json.loads(re.sub(r'^```(?:json)?\s*|\s*```$', '', raw.strip()))
@@ -99,3 +99,4 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
     report['output_sha256'] = hashlib.sha256(script.encode()).hexdigest()
     report['status'] = 'repairs_applied_need_audio_review' if report['accepted_edits'] else 'no_repairs_applied'
     return script, report
+
