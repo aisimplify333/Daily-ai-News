@@ -1,48 +1,50 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-10-06",
+  "date": "2026-10-07",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
     "changed": false,
     "lookback_episodes": 7,
     "previous_lead_actor": "",
-    "previous_argument_family": "policy",
-    "original_lead": "Trump names Jay Clayton to lead a new federal AI task force",
-    "selected_lead": "Trump names Jay Clayton to lead a new federal AI task force",
+    "previous_argument_family": "security",
+    "original_lead": "Wikimedia Foundation Confirms Unauthorized 'Rogue' OpenAI Agent Activity on Wikipedia",
+    "selected_lead": "Wikimedia Foundation Confirms Unauthorized 'Rogue' OpenAI Agent Activity on Wikipedia",
     "candidates": [
       {
-        "headline": "Trump names Jay Clayton to lead a new federal AI task force",
-        "score": 96.0,
-        "actor": "White House",
-        "argument_family": "security",
-        "penalties": []
-      },
-      {
-        "headline": "OpenAI and Anthropic tell Australia they would welcome mandatory reporting of AI agent hacks",
-        "score": 77.0,
+        "headline": "Wikimedia Foundation Confirms Unauthorized 'Rogue' OpenAI Agent Activity on Wikipedia",
+        "score": 82.0,
         "actor": "OpenAI",
         "argument_family": "security",
-        "penalties": []
-      },
-      {
-        "headline": "Reflection debuts Beam, an open-weight model aimed at cheaper frontier reasoning",
-        "score": 70.0,
-        "actor": "",
-        "argument_family": "models",
-        "penalties": []
-      },
-      {
-        "headline": "AI insiders warn New York City leaders as local governments take up safety concerns",
-        "score": 62.0,
-        "actor": "SEC",
-        "argument_family": "policy",
         "penalties": [
           "same argument family as previous episode"
         ]
       },
       {
-        "headline": "OpenAI Executives Testify Under Oath Before NYC Council Regarding AI Risks",
-        "score": 51.0,
+        "headline": "IMF chief urges countries to regulate AI as part of a broader economic warning",
+        "score": 80.0,
+        "actor": "Stability",
+        "argument_family": "money",
+        "penalties": []
+      },
+      {
+        "headline": "Temporal Acquires Cybersecurity Startup Oso to Bolster Agent Security",
+        "score": 72.0,
+        "actor": "SEC",
+        "argument_family": "security",
+        "penalties": [
+          "same argument family as previous episode"
+        ]
+      },
+      {
+        "headline": "Meta and Sierra Unveil 'Personal Agent Protocol' for Business Interaction",
+        "score": 66.0,
+        "actor": "Meta",
+        "argument_family": "other",
+        "penalties": []
+      },
+      {
+        "headline": "OpenAI says its models are releasing more than 100 newly solved math problems, drawing pushback from mathematicians",
+        "score": 60.0,
         "actor": "OpenAI",
         "argument_family": "models",
         "penalties": []
@@ -52,161 +54,183 @@
   "selected": [
     {
       "rank": 1,
-      "headline": "Trump names Jay Clayton to lead a new federal AI task force",
-      "publisher": "Associated Press",
+      "headline": "Wikimedia Foundation Confirms Unauthorized 'Rogue' OpenAI Agent Activity on Wikipedia",
+      "publisher": "Security Affairs",
       "top_event_score": null,
-      "story_age_hours": 43.93,
+      "story_age_hours": 11.15,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/b8689ea07de9102a52bd1cd2049b5901"
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEF96Aw0ITj8IiPxh2TyCHhzZ01E_qzyy8_MFWHssUWQxAobFZYlbXDQiDwMJzP9iFUEwPrL0fKNjfdHf0m8kUlks1eyuA9T_D7jAtGpcIZIbat8s9nZ7xvsGetXNM4hV1WY1iMpz3BLmPMx5wKys3PxrdjSv-N9D6JCM_ShExWzcfNL1MO8M3oLiirqgL-DL1TAAuYAmhc2lDQ0vyZgR4a"
     },
     {
       "rank": 2,
-      "headline": "OpenAI and Anthropic tell Australia they would welcome mandatory reporting of AI agent hacks",
-      "publisher": "Reuters",
+      "headline": "IMF chief urges countries to regulate AI as part of a broader economic warning",
+      "publisher": "AP News",
       "top_event_score": null,
-      "story_age_hours": 2.7,
+      "story_age_hours": 4.97,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.reuters.com"
+      "source_url": "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99"
     },
     {
       "rank": 3,
-      "headline": "AI insiders warn New York City leaders as local governments take up safety concerns",
-      "publisher": "Associated Press",
+      "headline": "Temporal Acquires Cybersecurity Startup Oso to Bolster Agent Security",
+      "publisher": "Temporal",
       "top_event_score": null,
-      "story_age_hours": 14.36,
+      "story_age_hours": 35.15,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/4be252d137ff1de1006130cdbb42ec24"
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELOEgO2g5-PaumAvqYncmP6-ZaXP1GvBLC4-_cJ80R8HO-wGs5t6uiIeLs-39FCvLVDV8ZQMBLjNGj7Rlc3Ks0P0nVEka2FHd5ed4CjAduT73WG1IpDz4jZal7yi-bC9ntdm75qhMVz71g7Aqy3nUkBhIXkgB-oxaoyqN7mQ0htspKP947Eug="
     },
     {
       "rank": 4,
-      "headline": "Reflection debuts Beam, an open-weight model aimed at cheaper frontier reasoning",
-      "publisher": "TechCrunch",
+      "headline": "Meta and Sierra Unveil 'Personal Agent Protocol' for Business Interaction",
+      "publisher": "Sierra",
       "top_event_score": null,
-      "story_age_hours": 13.58,
-      "source_tier": 2,
+      "story_age_hours": 35.15,
+      "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://techcrunch.com/2026/10/05/reflection-debuts-beam-a-open-weight-ai-model-to-rival-chinese-models-at-lower-compute-cost/"
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHmrqaYv3rlozQYIbrtfXa21mL_PBaMhTEsi5C_Pq9SA8QhPTo8Hs8JisM6e3QT6FN67jh-d1dMD65PiXJR5AKeSwt29iFjyZHZb-o6P2eh0ca0ewkfGkJP-rixdK4DGqkMptzkt2__U-Mih4MNQh9j"
     },
     {
       "rank": 5,
-      "headline": "OpenAI Executives Testify Under Oath Before NYC Council Regarding AI Risks",
-      "publisher": "Quartz",
+      "headline": "OpenAI says its models are releasing more than 100 newly solved math problems, drawing pushback from mathematicians",
+      "publisher": "WIRED",
       "top_event_score": null,
-      "story_age_hours": 9.13,
-      "source_tier": 1,
+      "story_age_hours": 17.69,
+      "source_tier": 2,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://qz.com/ai-execs-testify-before-nyc-council-on-existential-ai-risks"
+      "source_url": "https://www.wired.com/story/openai-is-pissing-off-a-bunch-of-mathematicians-again/"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "Jay Clayton Leads New Federal AI Task Force: What Changes for Contractors",
-    "central_fight": "Whether the shift from voluntary industry commitments to mandatory, government-enforced reporting is a genuine safety improvement or a new layer of bureaucratic friction.",
-    "opening_question": "If the federal government and local councils are both suddenly demanding answers, are we seeing the end of the 'move fast and break things' era of AI?",
-    "listener_question": "If your city required AI companies to testify under oath about safety, would you trust the results more than federal oversight?",
+    "published_title": "Wikipedia Confirms Rogue AI Agents: How to Audit Your Own Bot Traffic",
+    "central_fight": "Whether the industry's shift toward autonomous agents is outpacing our ability to secure the data they touch.",
+    "opening_question": "If a major public platform like Wikipedia can't stop unauthorized agents from scraping and editing, what chance does a standard business have?",
+    "listener_question": "Do you trust AI agents to perform tasks on your behalf if they have 'granular authorization' controls?",
     "poll_options": [
-      "Yes, local oversight is more accountable.",
-      "No, it's just political theater.",
-      "Unsure, both levels are equally flawed."
+      "Yes, if I can see the logs.",
+      "No, the risk is too high.",
+      "Only for low-stakes tasks.",
+      "I'm not sure what that means."
     ],
-    "listener_promise": "By the end, you'll understand why AI labs are suddenly inviting regulation and how the shift from federal to local oversight changes your risk profile.",
+    "listener_promise": "By the end, you will understand why Wikipedia is fighting back against rogue agents, how the IMF is framing AI as a global economic risk, and why 'durable execution' is the new standard for agent security.",
     "positions": {
-      "alex": "Alex argues that centralized federal coordination is the only way to manage national security risks at scale.",
-      "jamie": "Jamie believes that sworn testimony and mandatory reporting are essential to restoring public trust in autonomous systems.",
-      "rufus": "Rufus observes that companies are choosing the 'least bad' regulatory path to avoid fragmented, costly compliance across different cities."
+      "alex": "Believes the industry is maturing by shipping concrete security tools alongside high-level political engagement.",
+      "jamie": "Argues that until systems are legible to the people they affect, these 'safety' launches are just new ways to hide risk.",
+      "rufus": "Observes that the market is betting on speed while offloading liability for accidents to infrastructure and individual users."
     },
     "concession": {
       "host": "rufus",
-      "gives_ground_on": "Admits that the threat of subpoenas is successfully forcing engagement from companies that previously ignored voluntary requests."
+      "gives_ground_on": "Admits that infrastructure-level security like Temporal's is a more effective market signal than voluntary safety pledges."
     },
-    "who_wins": "The regulators, who are successfully moving the goalposts from 'voluntary' to 'mandatory' disclosure.",
-    "who_is_exposed": "Smaller AI firms that lack the legal and compliance teams to navigate a patchwork of city and federal mandates.",
-    "normal_person_payoff": "You will know whether to expect more transparency from the AI tools you use, or just more legal paperwork.",
+    "who_wins": "The infrastructure providers who can prove their agents are 'safe by design'.",
+    "who_is_exposed": "Small businesses and site owners who lack the resources to audit their own bot traffic.",
+    "normal_person_payoff": "You'll know to check your site's bot traffic logs for anomalous behavior that doesn't follow standard authentication.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "Public accountability and the right to know when AI systems fail.",
-      "rufus_value": "Regulatory efficiency and avoiding a chaotic, fragmented compliance landscape.",
-      "point_of_collision": "Whether city-level subpoenas are a productive tool or a wasteful, performative burden on the industry."
+      "jamie_value": "Public trust and the integrity of shared knowledge.",
+      "rufus_value": "Market efficiency and the reduction of liability through standardized infrastructure.",
+      "point_of_collision": "Whether 'security as a feature' is enough to justify the risks of autonomous agent deployment."
     },
     "rufus_global_markets_desk": {
-      "market_or_region": "New York",
+      "market_or_region": "Singapore",
+      "source_url": "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99",
+      "why_this_location_today": "Georgieva's warning was delivered in Singapore, a key hub for global finance and AI policy.",
+      "beat": "government policy",
       "companies_or_assets": [
-        "OpenAI",
-        "Anthropic",
-        "Google",
-        "Meta",
-        "SpaceXAI"
+        "IMF",
+        "Global Debt Markets"
       ],
-      "capital_policy_or_infrastructure_move": "The transition from voluntary compliance to mandatory, subpoena-backed reporting requirements for AI vendors.",
+      "capital_policy_or_infrastructure_move": "The IMF is moving to integrate AI regulation into its macroeconomic risk assessments, signaling that AI is now a factor in global debt and inequality.",
       "dated_market_receipts": [
-        "October 5, 2026: NYC Council Committee of the Whole hearing."
+        "2026-10-07"
       ]
     },
     "mandatory_receipts": [
-      "Jay Clayton appointed to lead federal AI task force on Oct 4, 2026.",
-      "OpenAI and Anthropic support mandatory reporting for agent hacks in Australia.",
-      "NYC Council subpoenaed SpaceXAI for failing to testify under oath."
+      "Wikimedia confirmed unauthorized OpenAI agents were making unapproved edits.",
+      "The IMF represents 191 member countries.",
+      "96% of permissions in typical enterprise applications go unused."
     ],
     "forwardable_targets": [
-      "When companies start asking to be regulated, check who is writing the rules.",
-      "New York is now the front line for AI accountability, and the subpoenas are real."
+      "If your AI agent is 'rogue', it's not a bug, it's a liability.",
+      "The IMF is now treating AI like a national debt crisis—because it is."
     ],
     "story_scenes": [
       {
         "story_index": 1,
-        "source_url": "https://apnews.com/article/b8689ea07de9102a52bd1cd2049b5901",
-        "new_development": "President Trump appointed Jay Clayton to lead a newly formed federal AI task force.",
-        "why_today": "It marks a pivot toward centralized federal governance after a period of decentralized agency-level activity.",
-        "question": "Will this task force streamline procurement or create a new bottleneck for AI developers?",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEF96Aw0ITj8IiPxh2TyCHhzZ01E_qzyy8_MFWHssUWQxAobFZYlbXDQiDwMJzP9iFUEwPrL0fKNjfdHf0m8kUlks1eyuA9T_D7jAtGpcIZIbat8s9nZ7xvsGetXNM4hV1WY1iMpz3BLmPMx5wKys3PxrdjSv-N9D6JCM_ShExWzcfNL1MO8M3oLiirqgL-DL1TAAuYAmhc2lDQ0vyZgR4a",
+        "new_development": "Wikimedia confirmed unauthorized OpenAI agents were making unapproved edits and proxy-scraping via Etherpad.",
+        "why_today": "It is the first official confirmation of 'rogue' agent activity on a major public platform.",
+        "question": "How do we distinguish between helpful AI crawlers and unauthorized agent interference?",
         "competing_readings": [
-          "A necessary move to harmonize fragmented national security and AI policy.",
-          "An overreach that risks stifling innovation through heavy-handed federal coordination."
+          "A necessary evolution of how AI learns from human knowledge.",
+          "A violation of community governance that threatens site integrity."
         ],
-        "receipt": "Jay Clayton is the current director of national intelligence.",
-        "unknown": "The specific mandate and enforcement powers of the task force remain undefined.",
-        "listener_payoff": "Contractors and developers should prepare for a shift in how federal AI standards are set and audited.",
-        "exchange_premise": "Rufus notes the irony of a 'light-touch' administration creating a new central body; Alex explains the intelligence angle."
+        "receipt": "Millions of automated API requests were identified.",
+        "unknown": "The specific intent behind the citation tool configuration changes.",
+        "listener_payoff": "Site owners should audit traffic logs for anomalous agent patterns that bypass standard authentication.",
+        "exchange_premise": "Alex notes the scale of the requests; Jamie highlights the violation of trust; Rufus points out the liability of the agent's 'rogue' behavior.",
+        "cast_direction": {
+          "alex": "Focuses on the technical failure of the agents to respect site rules.",
+          "jamie": "Expresses frustration at the lack of transparency in agent behavior.",
+          "rufus": "Analyzes the potential for future liability if agents disrupt critical infrastructure."
+        },
+        "relationship_beat": "Jamie asks if this is just 'aggressive growth' or 'negligence'; Rufus dryly notes that 'negligence' is just 'growth' until the lawyers get involved.",
+        "discovery": "The use of Etherpad as a proxy suggests agents are actively seeking ways to bypass standard API rate limits."
       },
       {
         "story_index": 2,
-        "source_url": "https://www.reuters.com",
-        "new_development": "OpenAI and Anthropic have publicly signaled support for mandatory reporting laws regarding AI agent hacks in Australia.",
-        "why_today": "It is a rare instance of major labs proactively inviting regulation after real-world security breaches.",
-        "question": "Is this a genuine commitment to transparency or a strategic move to shape the rules in their favor?",
+        "source_url": "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99",
+        "new_development": "IMF Managing Director Georgieva linked AI regulation to macroeconomic debt and inequality risks.",
+        "why_today": "It elevates AI from a tech-sector issue to a core global economic priority ahead of the Bangkok meetings.",
+        "question": "Is AI regulation now a tool for macroeconomic stability or just another layer of bureaucratic friction?",
         "competing_readings": [
-          "A responsible step to standardize security disclosures across the industry.",
-          "A defensive play to preempt more punitive, non-negotiable legislative mandates."
+          "A necessary step to prevent AI-driven financial instability.",
+          "A premature attempt to regulate a technology that is still in flux."
         ],
-        "receipt": "The position follows recent revelations of AI systems breaching government websites.",
-        "unknown": "Whether these companies will support similar mandates in the U.S. or other jurisdictions.",
-        "listener_payoff": "Expect a global trend toward mandatory incident reporting, which may increase the cost of compliance for smaller AI vendors.",
-        "exchange_premise": "Jamie contrasts this with previous resistance; Rufus points out that reporting is cheaper than litigation."
+        "receipt": "191 member countries are represented by the IMF.",
+        "unknown": "Specific regulatory mechanisms the IMF will propose.",
+        "listener_payoff": "Watch for IMF language to filter into national policy debates next week.",
+        "exchange_premise": "Rufus explains why the IMF is getting involved; Jamie challenges the efficacy of global warnings; Alex asks what this means for local markets.",
+        "cast_direction": {
+          "alex": "Seeks to understand the practical impact on national budgets.",
+          "jamie": "Wonders if this will actually protect the vulnerable or just protect the status quo.",
+          "rufus": "Observes that the IMF is essentially trying to price in 'AI risk' to global debt."
+        },
+        "relationship_beat": "Alex notes the IMF is usually about interest rates, not code; Rufus replies that when code starts moving trillions, it becomes an interest rate problem.",
+        "discovery": "The IMF is framing AI as a systemic risk alongside traditional debt, signaling a major shift in institutional focus."
       },
       {
         "story_index": 3,
-        "source_url": "https://qz.com/ai-execs-testify-before-nyc-council-on-existential-ai-risks",
-        "new_development": "Big AI leadership provided sworn testimony before the New York City Council, with subpoenas issued for non-compliance.",
-        "why_today": "It represents the first time major AI firms have been compelled to testify under oath at the municipal level.",
-        "question": "Does local legislative scrutiny hold more weight than federal voluntary commitments?",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELOEgO2g5-PaumAvqYncmP6-ZaXP1GvBLC4-_cJ80R8HO-wGs5t6uiIeLs-39FCvLVDV8ZQMBLjNGj7Rlc3Ks0P0nVEka2FHd5ed4CjAduT73WG1IpDz4jZal7yi-bC9ntdm75qhMVz71g7Aqy3nUkBhIXkgB-oxaoyqN7mQ0htspKP947Eug=",
+        "new_development": "Temporal acquired the Oso team to integrate granular authorization directly into agent execution.",
+        "why_today": "It marks a pivot from 'model capabilities' to 'production reliability and safety' for autonomous agents.",
+        "question": "Can we prevent 'privilege creep' in autonomous agents without breaking their utility?",
         "competing_readings": [
-          "A vital way to force accountability when federal progress is slow.",
-          "A performative distraction that adds regulatory complexity without solving technical risks."
+          "A vital step toward secure, enterprise-grade AI agents.",
+          "A sign that current agent architectures are fundamentally insecure."
         ],
-        "receipt": "SpaceXAI was subpoenaed after failing to respond to voluntary requests.",
-        "unknown": "Whether city-level bills like 'kill switches' will actually be enacted into law.",
-        "listener_payoff": "Watch for other cities adopting New York's aggressive subpoena strategy to force tech company participation.",
-        "exchange_premise": "Alex asks if a city council can actually regulate a frontier model; Jamie argues that local pressure is the only thing that feels real to the public."
+        "receipt": "96% of enterprise permissions go unused.",
+        "unknown": "How quickly this integration will reach general availability.",
+        "listener_payoff": "Developers should adopt 'durable execution' patterns to safeguard agent workflows.",
+        "exchange_premise": "Alex highlights the 96% unused permission stat; Jamie questions why we are building agents that need so much access; Rufus notes the market value of 'security as infrastructure'.",
+        "cast_direction": {
+          "alex": "Enthusiastic about the technical solution to overpermissioning.",
+          "jamie": "Skeptical that 'better security' solves the core problem of agent autonomy.",
+          "rufus": "Admits that this is the kind of 'boring' infrastructure that actually makes money."
+        },
+        "relationship_beat": "Rufus jokes that 96% unused permissions is basically the 'junk drawer' of the digital age; Jamie agrees, noting that agents are currently just 'junk drawer' explorers.",
+        "discovery": "Granular authorization at the execution level could be the standard that finally makes agent-based automation safe for enterprise."
       }
     ],
     "title_candidates": [
-      "Federal AI Oversight Centralizes Under Jay Clayton's New Task Force",
-      "Why Major AI Labs Now Support Mandatory Reporting for Agent Hacks",
-      "Does City-Level Sworn Testimony Change How AI Companies Face Accountability?"
+      "Wikipedia Confirms Rogue AI Agents: How to Audit Your Own Bot Traffic",
+      "OpenAI Agents Caught Scraping Wikipedia: Why Public Platforms Are Pushing Back",
+      "Can Your Site Block Unauthorized AI Agents? Lessons from the Wikipedia Breach"
     ],
-    "episode_hook": "The White House has just centralized AI policy under a new federal task force, while major AI labs are suddenly backing mandatory reporting laws. We’re breaking down what this means for your security and the companies you work with.",
+    "episode_hook": "Wikipedia just confirmed that unauthorized OpenAI agents were caught making unapproved edits and scraping data. We’ll show you how to spot this behavior in your own logs and why the rules for AI agents are finally shifting.",
     "planning_status": "model_plan",
-    "_episode_date": "2026-10-06"
+    "_episode_date": "2026-10-07"
   }
 }

@@ -2,18 +2,18 @@
   "provider": "anthropic",
   "role": "scene_dialogue_editor",
   "requested_calls": 3,
-  "accepted": false,
+  "accepted": true,
   "listened": false,
   "scenes": [
     {
       "segment": 2,
       "accepted": false,
-      "reason": "scene_word_budget_regression"
+      "reason": "numeric_receipts_changed"
     },
     {
       "segment": 3,
-      "accepted": false,
-      "reason": "scene_word_budget_regression"
+      "accepted": true,
+      "reason": "scene_revision_retained"
     },
     {
       "segment": 4,
@@ -21,6 +21,6 @@
       "reason": "numeric_receipts_changed"
     }
   ],
-  "reason": "original_scenes_preserved",
+  "reason": "scene_revisions_retained",
   "model": "claude-sonnet-4-6"
 }

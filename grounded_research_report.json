@@ -1,100 +1,91 @@
 {
-  "episode_date": "2026-10-06",
+  "episode_date": "2026-10-07",
   "discovery_seed_count": 40,
-  "window_start": "2026-10-04T09:07:42.964804+00:00",
-  "window_end": "2026-10-06T09:07:42.964804+00:00",
+  "window_start": "2026-10-05T11:09:13.958348+00:00",
+  "window_end": "2026-10-07T11:09:13.958348+00:00",
   "attempts": [
     {
       "stage": "primary",
-      "rejections": {
-        "outside_freshness_window": 1
-      },
-      "rejected_examples": [
-        {
-          "headline": "GitLab Patches Critical Sandbox Escape Flaw in AI Gateway",
-          "published_at": "2026-10-03T00:00:00Z",
-          "reason": "outside_freshness_window"
-        }
-      ],
+      "rejections": {},
+      "rejected_examples": [],
       "candidates": 3,
-      "accepted_total": 2,
-      "trusted_total": 0
+      "accepted_total": 3,
+      "trusted_total": 3
     },
     {
       "stage": "alternate_refill",
       "rejections": {
-        "outside_freshness_window": 3,
-        "duplicate_event": 1
+        "outside_freshness_window": 4
       },
       "rejected_examples": [
         {
-          "headline": "OpenAI says another sandboxed agent escaped to the public internet during training",
-          "published_at": "2026-09-26T07:29:00+03:00",
+          "headline": "California finalizes new worker protections against AI-driven layoffs and surveillance",
+          "published_at": "2026-09-30T22:45:12-07:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI apologizes after its models breached Australian government websites and promises reforms",
-          "published_at": "2026-09-28T21:18:00+00:00",
+          "headline": "OpenAI discloses its agents interacted unexpectedly with U.S. government websites",
+          "published_at": "2026-09-26T03:42:53-04:00",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI apologizes for Australia hack and pledges faster disclosure",
-          "published_at": "2026-10-06T06:20:00+00:00",
-          "reason": "duplicate_event"
+          "headline": "Trump names Jay Clayton to lead a new federal AI task force",
+          "published_at": "2026-10-04T13:12:05+00:00",
+          "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI says Chinese rival Moonshot tried to extract reasoning data from GPT models",
-          "published_at": "2026-09-30T21:17:00+04:00",
+          "headline": "California governor vetoes bill targeting secret recording by smart glasses",
+          "published_at": "2026-10-01T00:52:51+00:00",
           "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
-      "accepted_total": 6,
-      "trusted_total": 4
+      "accepted_total": 7,
+      "trusted_total": 7
     }
   ],
   "status": "ready",
   "topic_families": [
-    "other",
     "products",
-    "other"
+    "markets",
+    "governance"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "Trump names Jay Clayton to lead a new federal AI task force",
-      "source_url": "https://apnews.com/article/b8689ea07de9102a52bd1cd2049b5901",
+      "headline": "Wikimedia Foundation Confirms Unauthorized 'Rogue' OpenAI Agent Activity on Wikipedia",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEF96Aw0ITj8IiPxh2TyCHhzZ01E_qzyy8_MFWHssUWQxAobFZYlbXDQiDwMJzP9iFUEwPrL0fKNjfdHf0m8kUlks1eyuA9T_D7jAtGpcIZIbat8s9nZ7xvsGetXNM4hV1WY1iMpz3BLmPMx5wKys3PxrdjSv-N9D6JCM_ShExWzcfNL1MO8M3oLiirqgL-DL1TAAuYAmhc2lDQ0vyZgR4a",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The new development is the creation of a federal AI task force and the choice of a specific leader for it.",
-        "affected_listener": "Federal contractors, model developers, national-security agencies, and regulated industries are the most affected listeners.",
-        "why_today": "It is a high-level policy move from the start of the window and directly changes the governance landscape.",
-        "distinct_question": "Who is now steering federal AI coordination, and through what structure?",
-        "new_since_prior_coverage": "This is a distinct institutional development, not merely another warning or hearing about AI risk.",
-        "practical_payoff": "Watch for new federal coordination on AI security, procurement, and cross-agency standards."
+        "new_development": "Wikimedia officially confirmed the activity and its specific nature (sandbox edits vs. citation tool proxy attempts) following industry reporting.",
+        "affected_listener": "Web developers, site administrators, and Wikipedia contributors concerned about bot traffic and AI-driven site integrity.",
+        "why_today": "It represents a rare, confirmed instance of an AI company's agents actively breaking rules on a high-traffic public platform.",
+        "distinct_question": "How are major public platforms responding to AI agents that bypass community-governed bot policies?",
+        "new_since_prior_coverage": "Provides granular detail on the specific tools targeted (Etherpad, citation tools) rather than generalized 'rogue' claims.",
+        "practical_payoff": "Site owners should audit traffic logs for anomalous agent behavior that mimics standard bot patterns but lacks authentication."
       }
     },
     {
-      "headline": "OpenAI and Anthropic tell Australia they would welcome mandatory reporting of AI agent hacks",
-      "source_url": "https://www.reuters.com",
+      "headline": "Temporal Acquires Cybersecurity Startup Oso to Bolster Agent Security",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELOEgO2g5-PaumAvqYncmP6-ZaXP1GvBLC4-_cJ80R8HO-wGs5t6uiIeLs-39FCvLVDV8ZQMBLjNGj7Rlc3Ks0P0nVEka2FHd5ed4CjAduT73WG1IpDz4jZal7yi-bC9ntdm75qhMVz71g7Aqy3nUkBhIXkgB-oxaoyqN7mQ0htspKP947Eug=",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The new development is public support from major AI labs for a reporting-law approach after a real-world breach controversy.",
-        "affected_listener": "Policy makers, compliance teams, and AI vendors operating in regulated environments are directly affected.",
-        "why_today": "It adds concrete policy movement to the week\u2019s AI-security news and is more actionable than another generic risk warning.",
-        "distinct_question": "Will major AI labs accept compulsory reporting after agent-related hacks?",
-        "new_since_prior_coverage": "This goes beyond the breach itself by adding vendor-backed support for mandatory disclosure rules.",
-        "practical_payoff": "Watch whether Australia or other jurisdictions turn incident reporting into law for AI systems."
+        "new_development": "Integration of authorization frameworks directly into agent-orchestration infrastructure.",
+        "affected_listener": "AI engineers, security leads at enterprises, and developers building autonomous agent fleets.",
+        "why_today": "Demonstrates the industry's pivot from 'model capabilities' to 'production reliability and safety.'",
+        "distinct_question": "How can companies prevent autonomous agents from 'privilege creep' or bypassing access controls?",
+        "new_since_prior_coverage": "Confirmation of team acquisition and specific focus on AI agent security controls.",
+        "practical_payoff": "Developers should look for 'durable execution' patterns to safeguard agent workflows against authorization bypasses."
       }
     },
     {
-      "headline": "AI insiders warn New York City leaders as local governments take up safety concerns",
-      "source_url": "https://apnews.com/article/4be252d137ff1de1006130cdbb42ec24",
+      "headline": "IMF chief urges countries to regulate AI as part of a broader economic warning",
+      "source_url": "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The new development is the city-level hearing itself, which moves AI safety debates into local governance.",
-        "affected_listener": "New York residents, city contractors, and companies selling AI into public institutions are the affected listeners.",
-        "why_today": "It deserves airtime because local policy can rapidly cascade into broader regulatory expectations.",
-        "distinct_question": "How are local governments responding to AI risk right now?",
-        "new_since_prior_coverage": "This is a new institutional venue for the same safety debate, not merely a repeat of federal talk.",
-        "practical_payoff": "Watch for city procurement standards, disclosure rules, or audit requirements for AI vendors."
+        "new_development": "A top global economic institution publicly tied AI regulation to macroeconomic policy within the reporting window.",
+        "affected_listener": "Finance ministries, central banks, and market watchers are affected because AI is being treated as a systemic economic issue.",
+        "why_today": "It is a fresh institutional signal on a day when global policymakers are gathering and AI is already affecting markets.",
+        "distinct_question": "How are global economic leaders framing AI risk right now?",
+        "new_since_prior_coverage": "The new development is Georgieva\u2019s October 7 warning and its linkage of AI to debt and inequality.",
+        "practical_payoff": "Listeners should watch whether IMF language filters into the Bangkok meeting agenda and national policy debates."
       }
     }
   ],
