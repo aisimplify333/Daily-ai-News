@@ -18,6 +18,16 @@ def topic_family(story):
 
 def listener_frame(story):
     """A second axis prevents governance/security being mistaken for tonal variety."""
+    # Emotional angle is independent of sector: a security acquisition is still
+    # a risk story, even though its subject family is markets. Do not scan arbitrary
+    # source facts for incidental risk words; use the headline's central action.
+    headline = str(story.get("headline") or story.get("title") or "").lower()
+    risk_angle = re.search(
+        r"rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
+        r"regulat|oversight|warnings?|dangers?|liability|surveillance|"
+        r"safety|compliance|fraud|lawsuit|antitrust|ban\b", headline)
+    if risk_angle:
+        return "accountability_risk"
     family = topic_family(story)
     return "accountability_risk" if family in {"governance", "security"} else family
 

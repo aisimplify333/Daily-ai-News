@@ -15,7 +15,8 @@ def turns(script):
     return [{'id':i, 'speaker':m[1], 'text':m[2]} for i,m in enumerate(
         re.finditer(r'^(ALEX|JAMIE|RUFUS):\s*(.+)$', script, re.M))]
 
-def build_plan(script, request, path='performance_plan.json', scene_context=None):
+def build_plan(script, request, path='performance_plan.json', scene_context=None,
+               fallback_request=None, batch_size=24):
     rows = turns(script)
     prompt = '''Direct this exact podcast script. Return only JSON {"directions":[{"id":0,"mood":"curiosity","reason":"brief reason grounded in this reply and the preceding turn"}]}.
 One entry per turn. Allowed moods: ''' + ', '.join(sorted(MOODS)) + '''.
@@ -25,29 +26,66 @@ usefulness earn delight, stakes earn concern, and disagreement earn pushback. Ne
 emotion into every turn or assign delight to harm. Do not use keyword matching. Give Jamie
 contextual direction, not automatic neutral. Sponsor reads are neutral. Laughter is optional,
 not implied by every amused turn. Preserve each host's identity.
-TURNS:\n''' + json.dumps(rows, ensure_ascii=False)
+Return a short reason (at most 12 words). IDs are global: do not renumber.
+Direct only TARGET TURNS; neighboring turns are context, not output.
+'''
     from crew_direction import CREW_DIRECTION
     prompt = CREW_DIRECTION + '\nDAILY SCENE BRIEFS (planning, not new facts):\n' + json.dumps(scene_context or {}, ensure_ascii=False) + '\n' + prompt
     report = {'scene_context': scene_context or {}, 'script_sha256':hashlib.sha256(script.encode()).hexdigest(),
               'basis':'requested performance, not listening', 'listened':False,
               'directions':[], 'issues':[]}
-    try:
-        raw = request(prompt)
-        raw = re.sub(r'^```(?:json)?\s*|\s*```$', '', raw.strip())
-        data = json.loads(raw)
-        seen = set()
-        for item in data.get('directions', []):
-            idx, mood = item.get('id'), item.get('mood')
-            if type(idx) is not int or not 0 <= idx < len(rows) or idx in seen or mood not in MOODS:
-                continue
-            seen.add(idx)
-            row = rows[idx]
-            report['directions'].append(dict(row, mood='neutral' if sponsor_text(row['text']) else mood,
-                                             reason=str(item.get('reason', ''))[:240]))
-        if len(seen) != len(rows):
-            report['issues'].append(f'Only {len(seen)}/{len(rows)} turns received valid direction; unmatched turns use existing heuristics.')
-    except Exception as exc:
-        report['issues'].append('Performance plan unavailable; existing heuristics retained: ' + type(exc).__name__)
+    directed = {}
+    report['requested_calls'] = 0
+    report['attempts'] = []
+    batch_size = max(1, min(32, int(batch_size)))
+    for start in range(0, len(rows), batch_size):
+        target = rows[start:start + batch_size]
+        pending = {row['id'] for row in target}
+        context = rows[max(0, start - 2):start + batch_size + 2]
+        # At most two attempts per small batch; preserve valid entries from attempt one.
+        for attempt in range(2):
+            if not pending:
+                break
+            request_fn = fallback_request if attempt and fallback_request else request
+            batch_prompt = prompt + '\nCONTEXT TURNS:\n' + json.dumps(context, ensure_ascii=False)
+            batch_prompt += '\nTARGET TURNS:\n' + json.dumps(
+                [row for row in target if row['id'] in pending], ensure_ascii=False)
+            record = {'start': start, 'attempt': attempt + 1,
+                      'provider': 'fallback' if attempt and fallback_request else 'primary'}
+            report['requested_calls'] += 1
+            try:
+                raw = request_fn(batch_prompt)
+                raw = re.sub(r'^```(?:json)?\s*|\s*```$', '', raw.strip())
+                data = json.loads(raw)
+                if not isinstance(data, dict) or not isinstance(data.get('directions'), list):
+                    raise ValueError('Expected directions list')
+                candidates = {}
+                duplicates = set()
+                for item in data['directions']:
+                    if not isinstance(item, dict):
+                        continue
+                    idx, mood = item.get('id'), item.get('mood')
+                    if type(idx) is not int or idx not in pending or mood not in MOODS:
+                        continue
+                    if idx in candidates:
+                        duplicates.add(idx)
+                    candidates[idx] = item
+                for idx, item in candidates.items():
+                    if idx in duplicates:
+                        continue
+                    row = rows[idx]
+                    directed[idx] = dict(row, mood='neutral' if sponsor_text(row['text']) else item['mood'],
+                                         reason=str(item.get('reason', ''))[:240])
+                    pending.remove(idx)
+            except Exception as exc:
+                record['error_type'] = type(exc).__name__
+            record['missing_ids'] = sorted(pending)
+            report['attempts'].append(record)
+    report['directions'] = [directed[idx] for idx in sorted(directed)]
+    report['complete'] = bool(rows) and len(directed) == len(rows)
+    report['status'] = 'complete' if report['complete'] else 'incomplete'
+    if not report['complete']:
+        report['issues'].append(f'Only {len(directed)}/{len(rows)} turns received valid direction after bounded recovery.')
     Path(path).write_text(json.dumps(report, ensure_ascii=False, indent=2)+'\n')
     return report
 
