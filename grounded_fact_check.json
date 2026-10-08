@@ -1,55 +1,64 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-07",
+  "date": "2026-10-08",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-07",
+    "date": "2026-10-08",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The script correctly identifies that Wikimedia found no evidence of systemic data compromise, but it is worth noting that the 'potentially malicious configuration changes' mentioned in the source remains an active area of concern within the foundation's investigation."
+      "The script correctly identifies that Manus AI has raised $500 million at a $4 billion valuation and discusses the regulatory risks; however, it attributes the 'four-billion valuation' as being 'roughly four times revenue' based on $100 million in revenue, which is a calculation based on the provided source facts rather than an explicitly stated fact in the source [1].",
+      "Regarding the FCC segment, the script mentions 'late October' as a potential timeline for a ruling [3]. The source confirms this is a possibility for a ruling, though it notes this is a regulatory consideration [3].",
+      "The script accurately captures the OpenAI safety update details, but refers to GPT-6 Sol and GPT-6 Luna [5]. While this is an official update, the script appropriately treats it as a safety disclosure [5].",
+      "The segment on Norway's proposal for a ban on AI glasses mentions it covers 'parks, beaches, museums, schools, and shopping centers' [2], which aligns with the provided source [2]."
     ],
     "verified_source_urls": [
-      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEF96Aw0ITj8IiPxh2TyCHhzZ01E_qzyy8_MFWHssUWQxAobFZYlbXDQiDwMJzP9iFUEwPrL0fKNjfdHf0m8kUlks1eyuA9T_D7jAtGpcIZIbat8s9nZ7xvsGetXNM4hV1WY1iMpz3BLmPMx5wKys3PxrdjSv-N9D6JCM_ShExWzcfNL1MO8M3oLiirqgL-DL1TAAuYAmhc2lDQ0vyZgR4a",
-      "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99",
-      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELOEgO2g5-PaumAvqYncmP6-ZaXP1GvBLC4-_cJ80R8HO-wGs5t6uiIeLs-39FCvLVDV8ZQMBLjNGj7Rlc3Ks0P0nVEka2FHd5ed4CjAduT73WG1IpDz4jZal7yi-bC9ntdm75qhMVz71g7Aqy3nUkBhIXkgB-oxaoyqN7mQ0htspKP947Eug=",
-      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHmrqaYv3rlozQYIbrtfXa21mL_PBaMhTEsi5C_Pq9SA8QhPTo8Hs8JisM6e3QT6FN67jh-d1dMD65PiXJR5AKeSwt29iFjyZHZb-o6P2eh0ca0ewkfGkJP-rixdK4DGqkMptzkt2__U-Mih4MNQh9j",
-      "https://www.wired.com/story/openai-is-pissing-off-a-bunch-of-mathematicians-again/"
+      "https://www.cnbc.com",
+      "https://www.ft.com",
+      "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
+      "https://www.investing.com/news/stock-market-news/usgovernment-google-join-zuckerbergbacked-biohub-in-18-billion-push-for-ai-biology-data-4936795",
+      "https://openai.com/news/safety-alignment/"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-07",
+      "date": "2026-10-08",
       "pass": true,
       "critical_errors": [],
       "warnings": [
-        "The script correctly identifies that Wikimedia found no evidence of systemic data compromise, but it is worth noting that the 'potentially malicious configuration changes' mentioned in the source remains an active area of concern within the foundation's investigation."
+        "The script correctly identifies that Manus AI has raised $500 million at a $4 billion valuation and discusses the regulatory risks; however, it attributes the 'four-billion valuation' as being 'roughly four times revenue' based on $100 million in revenue, which is a calculation based on the provided source facts rather than an explicitly stated fact in the source [1].",
+        "Regarding the FCC segment, the script mentions 'late October' as a potential timeline for a ruling [3]. The source confirms this is a possibility for a ruling, though it notes this is a regulatory consideration [3].",
+        "The script accurately captures the OpenAI safety update details, but refers to GPT-6 Sol and GPT-6 Luna [5]. While this is an official update, the script appropriately treats it as a safety disclosure [5].",
+        "The segment on Norway's proposal for a ban on AI glasses mentions it covers 'parks, beaches, museums, schools, and shopping centers' [2], which aligns with the provided source [2]."
       ],
       "verified_source_urls": [
-        "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEF96Aw0ITj8IiPxh2TyCHhzZ01E_qzyy8_MFWHssUWQxAobFZYlbXDQiDwMJzP9iFUEwPrL0fKNjfdHf0m8kUlks1eyuA9T_D7jAtGpcIZIbat8s9nZ7xvsGetXNM4hV1WY1iMpz3BLmPMx5wKys3PxrdjSv-N9D6JCM_ShExWzcfNL1MO8M3oLiirqgL-DL1TAAuYAmhc2lDQ0vyZgR4a",
-        "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99",
-        "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELOEgO2g5-PaumAvqYncmP6-ZaXP1GvBLC4-_cJ80R8HO-wGs5t6uiIeLs-39FCvLVDV8ZQMBLjNGj7Rlc3Ks0P0nVEka2FHd5ed4CjAduT73WG1IpDz4jZal7yi-bC9ntdm75qhMVz71g7Aqy3nUkBhIXkgB-oxaoyqN7mQ0htspKP947Eug=",
-        "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHmrqaYv3rlozQYIbrtfXa21mL_PBaMhTEsi5C_Pq9SA8QhPTo8Hs8JisM6e3QT6FN67jh-d1dMD65PiXJR5AKeSwt29iFjyZHZb-o6P2eh0ca0ewkfGkJP-rixdK4DGqkMptzkt2__U-Mih4MNQh9j",
-        "https://www.wired.com/story/openai-is-pissing-off-a-bunch-of-mathematicians-again/"
+        "https://www.cnbc.com",
+        "https://www.ft.com",
+        "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
+        "https://www.investing.com/news/stock-market-news/usgovernment-google-join-zuckerbergbacked-biohub-in-18-billion-push-for-ai-biology-data-4936795",
+        "https://openai.com/news/safety-alignment/"
       ]
     }
   ],
   "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-07",
+    "date": "2026-10-08",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The script correctly identifies that Wikimedia found no evidence of systemic data compromise, but it is worth noting that the 'potentially malicious configuration changes' mentioned in the source remains an active area of concern within the foundation's investigation."
+      "The script correctly identifies that Manus AI has raised $500 million at a $4 billion valuation and discusses the regulatory risks; however, it attributes the 'four-billion valuation' as being 'roughly four times revenue' based on $100 million in revenue, which is a calculation based on the provided source facts rather than an explicitly stated fact in the source [1].",
+      "Regarding the FCC segment, the script mentions 'late October' as a potential timeline for a ruling [3]. The source confirms this is a possibility for a ruling, though it notes this is a regulatory consideration [3].",
+      "The script accurately captures the OpenAI safety update details, but refers to GPT-6 Sol and GPT-6 Luna [5]. While this is an official update, the script appropriately treats it as a safety disclosure [5].",
+      "The segment on Norway's proposal for a ban on AI glasses mentions it covers 'parks, beaches, museums, schools, and shopping centers' [2], which aligns with the provided source [2]."
     ],
     "verified_source_urls": [
-      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEF96Aw0ITj8IiPxh2TyCHhzZ01E_qzyy8_MFWHssUWQxAobFZYlbXDQiDwMJzP9iFUEwPrL0fKNjfdHf0m8kUlks1eyuA9T_D7jAtGpcIZIbat8s9nZ7xvsGetXNM4hV1WY1iMpz3BLmPMx5wKys3PxrdjSv-N9D6JCM_ShExWzcfNL1MO8M3oLiirqgL-DL1TAAuYAmhc2lDQ0vyZgR4a",
-      "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99",
-      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELOEgO2g5-PaumAvqYncmP6-ZaXP1GvBLC4-_cJ80R8HO-wGs5t6uiIeLs-39FCvLVDV8ZQMBLjNGj7Rlc3Ks0P0nVEka2FHd5ed4CjAduT73WG1IpDz4jZal7yi-bC9ntdm75qhMVz71g7Aqy3nUkBhIXkgB-oxaoyqN7mQ0htspKP947Eug=",
-      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHmrqaYv3rlozQYIbrtfXa21mL_PBaMhTEsi5C_Pq9SA8QhPTo8Hs8JisM6e3QT6FN67jh-d1dMD65PiXJR5AKeSwt29iFjyZHZb-o6P2eh0ca0ewkfGkJP-rixdK4DGqkMptzkt2__U-Mih4MNQh9j",
-      "https://www.wired.com/story/openai-is-pissing-off-a-bunch-of-mathematicians-again/"
+      "https://www.cnbc.com",
+      "https://www.ft.com",
+      "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
+      "https://www.investing.com/news/stock-market-news/usgovernment-google-join-zuckerbergbacked-biohub-in-18-billion-push-for-ai-biology-data-4936795",
+      "https://openai.com/news/safety-alignment/"
     ]
   },
   "pass": true,

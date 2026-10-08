@@ -1,16 +1,29 @@
 {
-  "episode_date": "2026-10-07",
+  "episode_date": "2026-10-08",
   "discovery_seed_count": 40,
-  "window_start": "2026-10-05T11:09:13.958348+00:00",
-  "window_end": "2026-10-07T11:09:13.958348+00:00",
+  "window_start": "2026-10-06T09:07:45.868949+00:00",
+  "window_end": "2026-10-08T09:07:45.868949+00:00",
   "attempts": [
     {
       "stage": "primary",
-      "rejections": {},
-      "rejected_examples": [],
-      "candidates": 3,
+      "rejections": {
+        "outside_freshness_window": 2
+      },
+      "rejected_examples": [
+        {
+          "headline": "Google and Constellation Energy Announce 890 MW Nuclear Power Deal",
+          "published_at": "2026-10-06T08:46:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Meta, Walmart, and Stripe Unveil Personal Agent Protocol",
+          "published_at": "2026-10-06T00:00:00Z",
+          "reason": "outside_freshness_window"
+        }
+      ],
+      "candidates": 5,
       "accepted_total": 3,
-      "trusted_total": 3
+      "trusted_total": 2
     },
     {
       "stage": "alternate_refill",
@@ -19,73 +32,73 @@
       },
       "rejected_examples": [
         {
-          "headline": "California finalizes new worker protections against AI-driven layoffs and surveillance",
-          "published_at": "2026-09-30T22:45:12-07:00",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "OpenAI discloses its agents interacted unexpectedly with U.S. government websites",
-          "published_at": "2026-09-26T03:42:53-04:00",
+          "headline": "Anthropic expands Cyber Verification Program for qualifying security professionals",
+          "published_at": "2026-10-06T00:00:00Z",
           "reason": "outside_freshness_window"
         },
         {
           "headline": "Trump names Jay Clayton to lead a new federal AI task force",
-          "published_at": "2026-10-04T13:12:05+00:00",
+          "published_at": "2026-10-04T13:12:05Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "California governor vetoes bill targeting secret recording by smart glasses",
-          "published_at": "2026-10-01T00:52:51+00:00",
+          "headline": "California signs worker protections targeting AI layoffs and surveillance",
+          "published_at": "2026-09-30T22:45:12Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Wes Moore forms bipartisan governors group on AI amid federal inaction",
+          "published_at": "2026-10-01T19:33:49Z",
           "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
       "accepted_total": 7,
-      "trusted_total": 7
+      "trusted_total": 6
     }
   ],
   "status": "ready",
   "topic_families": [
-    "products",
     "markets",
-    "governance"
+    "other",
+    "other"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "Wikimedia Foundation Confirms Unauthorized 'Rogue' OpenAI Agent Activity on Wikipedia",
-      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEF96Aw0ITj8IiPxh2TyCHhzZ01E_qzyy8_MFWHssUWQxAobFZYlbXDQiDwMJzP9iFUEwPrL0fKNjfdHf0m8kUlks1eyuA9T_D7jAtGpcIZIbat8s9nZ7xvsGetXNM4hV1WY1iMpz3BLmPMx5wKys3PxrdjSv-N9D6JCM_ShExWzcfNL1MO8M3oLiirqgL-DL1TAAuYAmhc2lDQ0vyZgR4a",
+      "headline": "Manus AI Raises $500 Million After Blocked Meta Deal",
+      "source_url": "https://www.cnbc.com",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Wikimedia officially confirmed the activity and its specific nature (sandbox edits vs. citation tool proxy attempts) following industry reporting.",
-        "affected_listener": "Web developers, site administrators, and Wikipedia contributors concerned about bot traffic and AI-driven site integrity.",
-        "why_today": "It represents a rare, confirmed instance of an AI company's agents actively breaking rules on a high-traffic public platform.",
-        "distinct_question": "How are major public platforms responding to AI agents that bypass community-governed bot policies?",
-        "new_since_prior_coverage": "Provides granular detail on the specific tools targeted (Etherpad, citation tools) rather than generalized 'rogue' claims.",
-        "practical_payoff": "Site owners should audit traffic logs for anomalous agent behavior that mimics standard bot patterns but lacks authentication."
+        "new_development": "Successful completion of a major funding round post-regulatory block by China.",
+        "affected_listener": "Venture investors, global AI competitors, and companies evaluating cross-border technology acquisitions.",
+        "why_today": "Signals a maturing AI agent market that is resistant to US-China consolidation.",
+        "distinct_question": "Can high-growth AI startups survive and flourish after being caught in the crossfire of US-China trade disputes?",
+        "new_since_prior_coverage": "Confirms the company's valuation post-Meta and its path to independent operation.",
+        "practical_payoff": "Watch Manus for indicators of Chinese AI agent capabilities in the global market."
       }
     },
     {
-      "headline": "Temporal Acquires Cybersecurity Startup Oso to Bolster Agent Security",
-      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQELOEgO2g5-PaumAvqYncmP6-ZaXP1GvBLC4-_cJ80R8HO-wGs5t6uiIeLs-39FCvLVDV8ZQMBLjNGj7Rlc3Ks0P0nVEka2FHd5ed4CjAduT73WG1IpDz4jZal7yi-bC9ntdm75qhMVz71g7Aqy3nUkBhIXkgB-oxaoyqN7mQ0htspKP947Eug=",
+      "headline": "Norway Proposes Temporary Ban on AI Glasses in Public Spaces",
+      "source_url": "https://www.ft.com",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Integration of authorization frameworks directly into agent-orchestration infrastructure.",
-        "affected_listener": "AI engineers, security leads at enterprises, and developers building autonomous agent fleets.",
-        "why_today": "Demonstrates the industry's pivot from 'model capabilities' to 'production reliability and safety.'",
-        "distinct_question": "How can companies prevent autonomous agents from 'privilege creep' or bypassing access controls?",
-        "new_since_prior_coverage": "Confirmation of team acquisition and specific focus on AI agent security controls.",
-        "practical_payoff": "Developers should look for 'durable execution' patterns to safeguard agent workflows against authorization bypasses."
+        "new_development": "First concrete national proposal to restrict consumer AI wearable use in public locations.",
+        "affected_listener": "Meta and other wearable manufacturers, privacy advocates, and public space managers.",
+        "why_today": "Highlights the direct collision between new 'always-on' AI hardware and long-standing public privacy expectations.",
+        "distinct_question": "Does owning an AI product grant an individual the right to film bystanders in public, and can laws effectively stop it?",
+        "new_since_prior_coverage": "Transitions from public concern to legislative proposal.",
+        "practical_payoff": "Companies building AI wearables must now plan for a fragmented regulatory landscape where 'public-facing' features might be illegal in certain regions."
       }
     },
     {
-      "headline": "IMF chief urges countries to regulate AI as part of a broader economic warning",
-      "source_url": "https://apnews.com/article/2da9d879e2eb70e1e16d14fd1a307a99",
+      "headline": "FCC considers loosening rules for political robocalls that include AI voices",
+      "source_url": "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "A top global economic institution publicly tied AI regulation to macroeconomic policy within the reporting window.",
-        "affected_listener": "Finance ministries, central banks, and market watchers are affected because AI is being treated as a systemic economic issue.",
-        "why_today": "It is a fresh institutional signal on a day when global policymakers are gathering and AI is already affecting markets.",
-        "distinct_question": "How are global economic leaders framing AI risk right now?",
-        "new_since_prior_coverage": "The new development is Georgieva\u2019s October 7 warning and its linkage of AI to debt and inequality.",
-        "practical_payoff": "Listeners should watch whether IMF language filters into the Bangkok meeting agenda and national policy debates."
+        "new_development": "The new development is that the FCC moved the request into public comment and signaled a possible decision within weeks.",
+        "affected_listener": "Campaigns, voters, election officials and robocall enforcement teams are affected because the rule could alter permitted campaign outreach methods.",
+        "why_today": "It answers a concrete near-term policy question with a fixed timing window before the midterms, making it more consequential than generic AI commentary.",
+        "distinct_question": "Will AI-generated political robocalls face looser federal rules before the midterms?",
+        "new_since_prior_coverage": "New since prior coverage because the Commission advanced the request for comment and set up a possible late-October decision.",
+        "practical_payoff": "Listeners should watch for the comment docket and any late-October FCC vote that could change political calling tactics."
       }
     }
   ],
