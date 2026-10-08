@@ -6,8 +6,8 @@ def topic_family(story):
     # Classify the actual event headline, not incidental risk words in the summary.
     text = str(story.get("headline") or story.get("title") or "").lower()
     groups = (
-        ("governance", r"lawsuit|antitrust|security council|\bun\b|regulat|legislat|treaty|summit|china talks|ai czar|ai force|diploma|incident alert|governance|safety pact|task force|reporting|policymaker|government|city council|dangers|oversight|subpoena|safety concern"),
-        ("science_access", r"medical|clinical|hospital|disabil|accessib|scient|research atlas|genome|protein|education|school|teacher|blind|deaf"),
+        ("governance", r"\bfcc\b|robocall|\bban\b|lawsuit|antitrust|security council|\bun\b|regulat|legislat|treaty|summit|china talks|ai czar|ai force|diploma|incident alert|governance|safety pact|task force|reporting|policymaker|government|city council|dangers|oversight|subpoena|safety concern"),
+        ("science_access", r"medical|clinical|patients?|restore speech|researchers? use|hospital|disabil|accessib|scient|research atlas|genome|protein|education|school|teacher|blind|deaf"),
         ("infrastructure", r"chip|gpu|data cent|power|energy|compute|semiconductor"),
         ("markets", r"funding|raises|raised|earnings|acqui|merger|investment|billion euros|stock"),
         ("security", r"breach|cyber|vulnerab|exploit|attack"),
@@ -22,8 +22,12 @@ def listener_frame(story):
     # a risk story, even though its subject family is markets. Do not scan arbitrary
     # source facts for incidental risk words; use the headline's central action.
     headline = str(story.get("headline") or story.get("title") or "").lower()
+    case = story.get("editorial_case") or {}
+    # Only the central development/question, never incidental caveats in facts.
+    headline += " " + " ".join(str(case.get(k) or "") for k in
+                              ("new_development", "distinct_question")).lower()
     risk_angle = re.search(
-        r"rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
+        r"blocked|\bfcc\b|political robocall|rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
         r"regulat|oversight|warnings?|dangers?|liability|surveillance|"
         r"safety|compliance|fraud|lawsuit|antitrust|ban\b", headline)
     if risk_angle:
@@ -52,7 +56,7 @@ def balanced_story_order(stories):
             index, row = pair
             family = listener_frame(row)
             tier = int(row.get("source_tier", 2))
-            return 100 * (tier < 2) + index + (5 if family in seen and family != "other" else 0)
+            return 100 * (tier < 2) + index + (8 if family in seen or family == "other" else 0)
         index, row = min(enumerate(remaining), key=penalty)
         chosen.append(row)
         remaining.pop(index)
@@ -61,4 +65,5 @@ def balanced_story_order(stories):
         row.update(rank=index, story_tier="primary" if index <= 3 else "supporting",
                    topic_family=topic_family(row))
     return result
+
 

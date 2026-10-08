@@ -1,0 +1,53 @@
+name: Editorial rehearsal (no audio or publishing)
+on:
+  push:
+    branches: [podcast-root-repair-oct08]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rehearse:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*.py
+            /scripts/rehearse_editorial.py
+            /show_memory.json
+            /listener_poll_results.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install openai google-genai anthropic requests pydub
+      - name: Fresh research and complete script acceptance
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          XAI_API_KEY: ${{ secrets.GROK_XAI_API_KEY }}
+          HARD_FAIL_PRE_TTS: 'true'
+          ENABLE_GROUNDED_FACT_AUDIT: 'true'
+          GROUNDING_REQUIRED: 'true'
+          RECOVERY_MIN_SCRIPT_WORDS: '3150'
+          RECOVERY_MAX_SCRIPT_WORDS: '4800'
+          RECOVERY_TARGET_SCRIPT_WORDS: '3800'
+        run: python scripts/rehearse_editorial.py
+      - name: Preserve rehearsal evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-rehearsal
+          path: |
+            rehearsal_*.json
+            rehearsal_*.txt
+            *_report.json
+            grounded_*.json
+            story_slate_decision.json
+            script_*.txt
+            script_aircheck.json
+            performance_plan.json
+          retention-days: 7

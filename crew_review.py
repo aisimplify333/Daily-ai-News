@@ -32,7 +32,9 @@ Line numbers are 1-based and refer to NUMBERED FINAL SCRIPT. Do not include line
 numbers in replacement speech. Select complete speaker lines only. New may be an empty
 string to delete a redundant exchange without deleting receipts or navigation.
 Keep review notes concise (at most 40 words per field) and edit reasons under 25 words.
-Review segments 2,3,4. At most 12 small, nonoverlapping edits. Improve the weakest
+Review segments 2,3,4. The supplied runtime headroom is binding: when cuts would
+drop below minimum, replace weak exposition with a substantive sourced exchange
+in the same edit. Do not retain repetition merely to pad runtime. At most 12 small, nonoverlapping edits. Improve the weakest
 exchanges, remove internal production language and repeated endings, and make the
 Rufus feature an honest imagined scene with a responsive studio exchange. Preserve
 numbers, factual qualifications, attribution, sponsor copy, navigation and segment
@@ -41,7 +43,7 @@ within its existing runtime band; prioritize replacing dull text, not adding fil
 Use source facts only, never planning notes as evidence. A lack of genuinely varied
 stories cannot be repaired by calling regulation exciting: report it as unresolved.
 Do not claim your proposed edits are verified improvements or assign a numeric score.
-''' + '\nSOURCES:\n' + json.dumps(stories[:3], ensure_ascii=False) + '\nSCENE BRIEFS:\n' + json.dumps({'scenes': board.get('story_scenes', []), 'rufus_global_markets_desk': board.get('rufus_global_markets_desk', {})}, ensure_ascii=False) + '\nNUMBERED FINAL SCRIPT:\n' + '\n'.join(f'{i}: {line}' for i, line in enumerate(original_lines, 1))
+''' + '\nSOURCES:\n' + json.dumps(stories[:3], ensure_ascii=False) + '\nSCENE BRIEFS:\n' + json.dumps({'scenes': board.get('story_scenes', []), 'rufus_global_markets_desk': board.get('rufus_global_markets_desk', {})}, ensure_ascii=False) + '\nRUNTIME HEADROOM:\n' + json.dumps(assess(script).get('metrics', {})) + '\nNUMBERED FINAL SCRIPT:\n' + '\n'.join(f'{i}: {line}' for i, line in enumerate(original_lines, 1))
     try:
         raw = request(prompt)
         data = json.loads(re.sub(r'^```(?:json)?\s*|\s*```$', '', raw.strip()))
@@ -107,4 +109,5 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
     report['output_sha256'] = hashlib.sha256(script.encode()).hexdigest()
     report['status'] = 'repairs_applied_need_audio_review' if report['accepted_edits'] else 'no_repairs_applied'
     return script, report
+
 

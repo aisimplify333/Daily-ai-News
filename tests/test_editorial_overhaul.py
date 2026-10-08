@@ -43,7 +43,7 @@ class EditorialOverhaulTests(unittest.TestCase):
         rows[3]["source_tier"] = rows[4]["source_tier"] = 0
         self.assertTrue(concentrated(balanced_story_order(rows)))
 
-    def test_one_bounded_variety_refill_and_no_failure_when_day_is_concentrated(self):
+    def test_bounded_variety_refill_blocks_unresolved_concentration(self):
         now = dt.datetime.now(dt.timezone.utc)
         rows = [{"headline": h, "publisher": "AP", "published_at": now.isoformat(),
                  "source_url": f"https://apnews.com/article/{i}", "summary": "Confirmed description of this distinct event and its implications, with enough source detail to satisfy the current validation contract.",
@@ -55,9 +55,9 @@ class EditorialOverhaulTests(unittest.TestCase):
             try:
                 os.chdir(folder)
                 with patch.object(news, "_grounded_text", return_value=json.dumps({"stories": rows})), patch.object(news, "_recovery_search", return_value='{"stories": []}') as refill:
-                    result = news.build_grounded_story_slate("2026-09-21", n=3)
+                    with self.assertRaisesRegex(RuntimeError, "variety unresolved"):
+                        news.build_grounded_story_slate("2026-09-21", n=3)
                 self.assertEqual(refill.call_count, 1)
-                self.assertEqual(len(result), 3)
                 self.assertTrue(json.loads(Path("grounded_research_report.json").read_text())["concentrated_slate"])
             finally:
                 os.chdir(previous)
@@ -98,7 +98,7 @@ class EditorialOverhaulTests(unittest.TestCase):
 
     def test_usable_shorter_script_has_zero_runtime_penalty(self):
         self.assertEqual(writer._runtime_distance({"metrics": {"words": 3400}}), 0)
-        self.assertGreater(writer._runtime_distance({"metrics": {"words": 3200}}), 0)
+        self.assertGreater(writer._runtime_distance({"metrics": {"words": 3000}}), 0)
 
     def test_review_flags_production_gaps_without_inventing_a_rating(self):
         rows = [{"headline": h} for h in ("AI governance talks", "Antitrust lawsuit", "UN Security Council AI meeting")]

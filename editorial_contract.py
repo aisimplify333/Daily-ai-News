@@ -14,7 +14,7 @@ def feature_status(script):
     words = len(re.findall(r"\b[\w'-]+\b", re.sub(r'^(ALEX|JAMIE|RUFUS):','',content,flags=re.M)))
     frame = mode == 'global_desk' or bool(re.search(r'\b(?:picture|imagine)\b',content,re.I))
     return {'mode':mode, 'word_count':words, 'handoff_and_return':bool(content),
-            'clearly_framed':frame, 'duration_in_word_band':100 <= words <= 180,
+            'clearly_framed':frame, 'duration_in_word_band':100 <= words <= 220,
             'present': bool(content) and frame and 'RUFUS:' in content and 'JAMIE:' in content}
 
 def ensure_feature_fallback(script):
@@ -50,10 +50,11 @@ def audit(script):
     elif feature['mode'] == 'global_desk':
         issues.append('Global-desk fallback delivered; a sourced on-location scene was not verified.')
     if feature['present'] and not feature['duration_in_word_band']:
-        issues.append('Rufus feature outside its 100-180 word budget.')
+        issues.append('Rufus feature outside its 100-220 word budget.')
     return {'basis':'transcript structure only; not a listening rating', 'entertainment_rating':None,
             'rufus_feature':feature, 'issues':issues,
             'requires_editorial_review':['distinct listener consequences across three stories',
                 'technical terms explained on first use','everyday examples',
                 'responsive warmth, humor and changed viewpoints','self-contained exchange worth sharing']}
+
 

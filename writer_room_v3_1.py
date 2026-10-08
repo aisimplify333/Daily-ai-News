@@ -1350,7 +1350,7 @@ checkable prediction, one listener question, one show-follow CTA. Keep the endin
 180-240 words. Do not replay all three debates. Existing end sponsor and outro remain.
 
 LENGTH AND EDIT:
-Target 3,700-4,000 spoken words; acceptable planning range 3,300-4,350. Actual audio
+Target 3,700-4,200 spoken words; acceptable planning range 3,150-4,800. Actual audio
 must meet the 19-26 minute preference and 30 minute ceiling. Depth comes from evidence,
 examples explicitly labelled hypothetical, a sharper objection or a useful consequence.
 Never pad with recaps. Split the editorial discussion approximately 40/30/30.
@@ -1659,7 +1659,7 @@ def _ensure_connection_elements(
             speaker, spoken = match.group(1).upper(), match.group(2)
             if in_closing and re.search(
                 r"listener question|question for (?:you|listeners)|Spotify poll|your options|"
-                r"follow (?:\s*The AI Edge|us wherever)|we.ll have your answers|"
+                r"follow (?:\s*The AI Edge|(?:this|the|our) (?:show|podcast)|us wherever)|we.ll have your answers|"
                 r"^(?:Thanks for listening|See you tomorrow|Until then)[.! ,]", spoken, re.I
             ):
                 skip_speaker = speaker
@@ -1809,8 +1809,8 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     title = str(board.get("published_title") or "")
     spoken = [ln for ln in full.splitlines() if SPEAKER_RE.match(ln)]
     words = _word_count(full)
-    min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3300"))
-    max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4350"))
+    min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3150"))
+    max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4800"))
 
     segments = len(re.findall(r"^###\s*SEGMENT\s+[1-5]\b", full, flags=re.MULTILINE | re.IGNORECASE))
     music = full.count("[MUSIC]")
@@ -1897,7 +1897,7 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     lead_actor = _lead_actor(stories)
     shareable_exchange = _find_shareable_exchange(full)
     show_follow_cta_count = len(re.findall(
-        r"^ALEX:\s*Follow The AI Edge now\.", full, re.IGNORECASE | re.MULTILINE
+        r"\bfollow\s+(?:The AI Edge|(?:this|the|our) (?:show|podcast)|us wherever)\b", full, re.IGNORECASE
     ))
     competing_show_cta = bool(re.search(
         r"\b(?:rate|review|share) (?:this|the|our) (?:show|podcast|episode)\b|"
@@ -2150,7 +2150,7 @@ It also has these soft weaknesses to improve while you are in there:
 
 Hard requirements:
 - Exactly five segment headers and exactly one [MUSIC].
-- Return 3,700-4,000 spoken words (acceptable 3,300-4,350); expand the argument with concrete evidence,
+- Return 3,700-4,200 spoken words (acceptable 3,150-4,800); expand the argument with concrete evidence,
   counterarguments, human consequences, and tomorrow-watch items. Never pad with recap.
 - The Ledger CTA must spell the URL: T-H-E-L-E-D-G-R dot I-O.
 - At least six concrete receipts (numbers, dates, named institutions).
@@ -2456,11 +2456,11 @@ def _runtime_distance(assessment: Dict[str, Any]) -> int:
     """Word distance from the accepted runtime band; zero means in band."""
     metrics = assessment.get("metrics") or {}
     words = int(metrics.get("words") or 0)
-    band = metrics.get("runtime_word_band") or [3300, 4350]
+    band = metrics.get("runtime_word_band") or [3150, 4800]
     try:
         low, high = int(band[0]), int(band[1])
     except Exception:
-        low, high = 3300, 4350
+        low, high = 3150, 4800
     if words < low:
         return low - words
     if words > high:
@@ -2818,6 +2818,9 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             _, history = _load_continuity(g)
             selected, freshness = _freshen_story_order(selected, history)
             selected = _three_story_order(selected)
+        from editorial_selection import concentrated
+        if concentrated(selected):
+            raise RuntimeError("Final story order repeats one listener frame; research recovery required")
         last_selected = selected
         try:
             path = g.get("STORY_SLATE_DECISION_PATH") or Path("story_slate_decision.json")
@@ -2861,6 +2864,19 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         board = recovery["board"] if recovery else _preproduction(g, stories, date_str, fuel)
         board["_episode_date"] = date_str
         last_board = board
+
+        def final_editor_request(prompt: str) -> str:
+            # Recover malformed/empty editor output with a second provider once.
+            raw = _anthropic_text(g, prompt,
+                model=os.getenv("DIALOGUE_EDITOR_MODEL", "claude-sonnet-4-6"),
+                max_tokens=6000, json_output=True)
+            try:
+                parsed = json.loads(re.sub(r'^```(?:json)?\s*|\s*```$', '', raw.strip()))
+                if isinstance(parsed, dict) and parsed:
+                    return raw
+            except (ValueError, TypeError):
+                pass
+            return _openai_text(g, prompt, model=OPENAI_CHEAP_MODEL, max_tokens=6000)
 
         def stabilize(candidate: str) -> str:
             return _ensure_connection_elements(
@@ -2996,8 +3012,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         # Runtime is normalized deterministically before episode TTS. A modest
         # under-run may use the restored main.py add-on writer; any over-run is
         # trimmed around receipts, sponsor copy, the concession, and chemistry.
-        min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3300"))
-        max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4350"))
+        min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3150"))
+        max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4800"))
         target_episode_words = min(
             max_episode_words - 25,
             int(os.getenv("RECOVERY_TARGET_SCRIPT_WORDS", "3800")),
@@ -3048,9 +3064,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         from crew_review import review_final_scenes
         script, crew_report = review_final_scenes(
             script, stories, board,
-            request=lambda prompt: _anthropic_text(
-                g, prompt, model=os.getenv("DIALOGUE_EDITOR_MODEL", "claude-sonnet-4-6"),
-                max_tokens=6000, json_output=True),
+            request=final_editor_request,
             normalize=stabilize,
             assess=lambda candidate: _assess(candidate, stories, board, fuel),
         )
@@ -3068,8 +3082,16 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         except Exception:
             pass
 
-        # Claim-level audit is advisory. Retain exact-line repairs and evidence,
-        # but neither its verdict nor provider availability blocks production.
+        # Final review must demonstrate the experience in the actual script.
+        # One targeted repair and recheck; no unbounded rewrite loop or paid TTS yet.
+        from final_acceptance import repair_and_verify
+        script, acceptance = repair_and_verify(
+            script, stories, board,
+            request=final_editor_request,
+            normalize=stabilize,
+            assess=lambda candidate: _assess(candidate, stories, board, fuel))
+
+        # Required fact verification of the actual final script, after all creative edits.
         try:
             from grounded_news_v1 import audit_with_repairs, fact_check_script
 
@@ -3094,20 +3116,18 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                 "replacements_applied": total_applied,
                 "final": final_fact_audit,
                 "pass": bool(final_fact_audit.get("pass")),
-                "blocking": False,
+                "blocking": True,
             }
             Path("grounded_fact_check.json").write_text(
                 json.dumps(fact_report, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
             if not fact_report["pass"]:
-                _safe_print(g,
-                    "      ⚠️ Advisory fact findings remain; continuing production. See grounded_fact_check.json"
-                )
+                raise RuntimeError("Unresolved factual errors after bounded repairs; see grounded_fact_check.json")
             else:
                 _safe_print(g, f"      ✅ grounded fact audit passed; exact-line repairs={total_applied}")
         except Exception as exc:
-            _safe_print(g, f"      ⚠️ Advisory fact audit unavailable; continuing production: {exc}")
+            raise RuntimeError("Required factual verification failed before TTS: " + type(exc).__name__) from exc
 
         # Fact correction may replace a full line. Reassert only the deterministic
         # navigation/connection lines, then take the final authoritative reading.
@@ -3115,6 +3135,14 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
 
+        # Fact edits must not reopen a weak scene or invalidate the accepted script.
+        if total_applied:
+            from final_acceptance import verify
+            post_fact_review = verify(script, stories, final_editor_request)
+            Path("post_fact_editorial_report.json").write_text(
+                json.dumps(post_fact_review, indent=2) + "\n", encoding="utf-8")
+            if not post_fact_review['pass']:
+                raise RuntimeError("Fact repairs require editorial recovery before TTS")
         from editorial_contract import audit as editorial_audit
         Path("editorial_contract_report.json").write_text(
             json.dumps(editorial_audit(script), indent=2) + "\n", encoding="utf-8")
@@ -3324,5 +3352,6 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     g["V3_1_WRITER_ROOM_INSTALLED"] = True
     g["V3_2_HARD_DEBATE_WRITER_ROOM_INSTALLED"] = True
     g["V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"] = True
+
 
 

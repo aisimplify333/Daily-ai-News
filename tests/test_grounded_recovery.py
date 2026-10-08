@@ -43,7 +43,7 @@ class RecoveryTests(unittest.TestCase):
         opinion = {"claim_type": "opinion", "reason": "Ripoff is too opinionated"}
         with patch.dict(os.environ, {"ENABLE_GROUNDED_FACT_AUDIT": "true"}), patch.object(
             news, "_grounded_text", return_value=json.dumps({
-                "critical_errors": [opinion, price], "warnings": []})):
+                "pass": False, "critical_errors": [opinion, price], "warnings": [], "calculations": []})):
             result = news.fact_check_script(price["exact_line"], [], "2026-09-09")
         self.assertEqual(len(result["critical_errors"]), 1)
         self.assertTrue(result["warnings"])
