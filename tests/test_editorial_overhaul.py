@@ -57,7 +57,7 @@ class EditorialOverhaulTests(unittest.TestCase):
                 with patch.object(news, "_grounded_text", return_value=json.dumps({"stories": rows})), patch.object(news, "_recovery_search", return_value='{"stories": []}') as refill:
                     with self.assertRaisesRegex(RuntimeError, "variety unresolved"):
                         news.build_grounded_story_slate("2026-09-21", n=3)
-                self.assertEqual(refill.call_count, 1)
+                self.assertEqual(refill.call_count, 2)
                 self.assertTrue(json.loads(Path("grounded_research_report.json").read_text())["concentrated_slate"])
             finally:
                 os.chdir(previous)

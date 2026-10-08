@@ -32,7 +32,7 @@ Line numbers are 1-based and refer to NUMBERED FINAL SCRIPT. Do not include line
 numbers in replacement speech. Select complete speaker lines only. New may be an empty
 string to delete a redundant exchange without deleting receipts or navigation.
 Keep review notes concise (at most 40 words per field) and edit reasons under 25 words.
-Review segments 2,3,4. The supplied runtime headroom is binding: when cuts would
+Review segments 2,3,4 and editorial closing lines in 5. The supplied runtime headroom is binding: when cuts would
 drop below minimum, replace weak exposition with a substantive sourced exchange
 in the same edit. Do not retain repetition merely to pad runtime. At most 12 small, nonoverlapping edits. Improve the weakest
 exchanges, remove internal production language and repeated endings, and make the
@@ -61,10 +61,10 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
             start, end = item.get('start_line'), item.get('end_line')
             if type(start) is int and type(end) is int and 1 <= start <= end <= len(original_lines):
                 old = '\n'.join(original_lines[start-1:end])
-            if not isinstance(old, str) or not isinstance(new, str) or segment not in (2,3,4):
+            if not isinstance(old, str) or not isinstance(new, str) or segment not in (2,3,4,5):
                 row['reason'] = 'invalid_edit'
                 continue
-            section = re.search(rf'^###\s*SEGMENT\s*{segment}\b[^\n]*\n(.*?)(?=^###\s*SEGMENT\s*{segment+1}\b)', script, re.M|re.S|re.I)
+            section = re.search(rf'^###\s*SEGMENT\s*{segment}\b[^\n]*\n(.*?)(?=^###\s*SEGMENT\s*{segment+1}\b|\Z)', script, re.M|re.S|re.I)
             if not old or script.count(old) != 1 or not section or old not in section[1]:
                 row['reason'] = 'nonunique_or_wrong_scene'
                 continue

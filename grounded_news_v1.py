@@ -168,7 +168,7 @@ def _rejection_reason(raw: Any, now: dt.datetime) -> str:
         return "invalid_publication_time"
     url = str(raw["source_url"])
     if (not url.startswith("https://") or not _domain(url) or "news.google.com" in url
-            or not urlparse(url).path.strip("/")):
+            or urlparse(url).path.strip("/").lower() in {"", "news", "blog", "technology", "news/safety-alignment"}):
         return "invalid_source_url"
     age = (now - published).total_seconds() / 3600
     if age < -6 or age > MAX_AGE_HOURS:
@@ -334,7 +334,7 @@ def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str
     if not all((headline, publisher, source_url, summary, published)):
         return None
     if (not source_url.startswith("https://") or "news.google.com" in source_url
-            or not urlparse(source_url).path.strip("/")):
+            or urlparse(source_url).path.strip("/").lower() in {"", "news", "blog", "technology", "news/safety-alignment"}):
         return None
     age_hours = (now - published).total_seconds() / 3600.0
     if age_hours < -6 or age_hours > MAX_AGE_HOURS:
@@ -414,9 +414,9 @@ def build_grounded_story_slate(
     report: Dict[str, Any] = {"episode_date": date_str, "discovery_seed_count": len(seeds),
                             "window_start": (now - dt.timedelta(hours=MAX_AGE_HOURS)).isoformat(),
                             "window_end": now.isoformat(), "attempts": [], "status": "researching"}
-    # One extra targeted pass only when actual fresh discovery leads exist.
+    # Final targeted pass may use fresh RSS leads OR validated/rejected article leads.
     # At most four provider requests including the primary's existing fallback.
-    for attempt in range(3 if seeds else 2):
+    for attempt in range(3):
         stage = ("primary", "alternate_refill", "targeted_discovery_refill")[attempt]
         entry: Dict[str, Any] = {"stage": stage, "rejections": {}, "rejected_examples": []}
         report["attempts"].append(entry)
@@ -427,6 +427,7 @@ def build_grounded_story_slate(
                 refill = prompt + "\nRecovery: independently search documented uses of AI at work and home, creative projects, science, accessibility, education, useful product releases, and infrastructure advances. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these accepted headlines: " + json.dumps([s["headline"] for s in normalized])
                 refill += "\nPrevious validation results (do not resubmit rejected old stories or change their dates): " + json.dumps(report["attempts"][:-1])
                 if attempt == 2:
+                    refill += "\nSOURCE RECOVERY: prioritize direct original articles from primary/major/specialist sources. Corroborating one of these weaker-source events is allowed and should upgrade its evidence, not become an extra story: " + json.dumps([s['headline'] for s in normalized if s['source_tier'] < 2])
                     refill += "\nTARGETED FINAL PASS: search individual discovery headlines, open their original articles, and fill the missing slots only. Prioritize documented useful applications and discoveries when the accepted slate is risk-heavy. If a date is unknown, omit the item; never guess a timestamp."
                 text = _recovery_search(refill)
             payload = _extract_json(text, {})
@@ -450,7 +451,14 @@ def build_grounded_story_slate(
                     if key in seen or url in seen_urls:
                         reason = "duplicate"
                     elif any(_same_news_event(story, accepted) for accepted in normalized):
-                        reason = "duplicate_event"
+                        index = next(i for i, accepted in enumerate(normalized) if _same_news_event(story, accepted))
+                        if story['source_tier'] > normalized[index]['source_tier']:
+                            normalized[index] = story
+                            seen.add(key)
+                            seen_urls.add(url)
+                            entry['source_upgrades'] = entry.get('source_upgrades', 0) + 1
+                        else:
+                            reason = "duplicate_event"
                     else:
                         seen.add(key)
                         seen_urls.add(url)

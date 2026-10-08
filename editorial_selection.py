@@ -11,7 +11,7 @@ def topic_family(story):
         ("infrastructure", r"chip|gpu|data cent|power|energy|compute|semiconductor"),
         ("markets", r"funding|raises|raised|earnings|acqui|merger|investment|billion euros|stock"),
         ("security", r"breach|cyber|vulnerab|exploit|attack"),
-        ("products", r"launch|release|model|tool|coding|agent|app|feature|creative|image|video"),
+        ("products", r"rolls out|interactive|interface|launch|release|model|tool|coding|agent|app|feature|creative|image|video"),
     )
     return next((name for name, pattern in groups if re.search(pattern, text)), "other")
 
@@ -27,7 +27,7 @@ def listener_frame(story):
     headline += " " + " ".join(str(case.get(k) or "") for k in
                               ("new_development", "distinct_question")).lower()
     risk_angle = re.search(
-        r"blocked|\bfcc\b|political robocall|rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
+        r"false front|deceptive|abuse|blocked|\bfcc\b|political robocall|rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
         r"regulat|oversight|warnings?|dangers?|liability|surveillance|"
         r"safety|compliance|fraud|lawsuit|antitrust|ban\b", headline)
     if risk_angle:

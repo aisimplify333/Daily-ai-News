@@ -4,17 +4,36 @@ from decimal import Decimal, InvalidOperation
 
 SMALL = dict(zip('zero one two three four five six seven eight nine ten eleven twelve thirteen fourteen fifteen sixteen seventeen eighteen nineteen twenty thirty forty fifty sixty seventy eighty ninety'.split(), list(range(21)) + list(range(30, 100, 10))))
 SCALE = {'hundred': 100, 'thousand': 1000, 'million': 10**6, 'billion': 10**9, 'trillion': 10**12}
-NUM = r'(?:\d[\d,.]*|a|an|' + '|'.join(SMALL) + '|' + '|'.join(SCALE) + r')'
+NUM = r'(?:\d[\d,.]*|a|an|point|and|half|quarter|' + '|'.join(SMALL) + '|' + '|'.join(SCALE) + r')'
 AMOUNT = re.compile(r'(?<!\w)\$?(' + NUM + r'(?:[ -]+' + NUM + r')*)(?!\w)', re.I)
 RATIO = re.compile(r'(' + NUM + r'(?:[ -]+' + NUM + r')*)[ -]+times\b', re.I)
 
 
 def number(phrase):
-    tokens = phrase.lower().replace(',', '').replace('-', ' ').split()
+    phrase = phrase.lower().replace(',', '').replace('-', ' ')
+    phrase = re.sub(r'\b(?:a half|half a)\b', 'half', phrase)
+    phrase = re.sub(r'\b(?:a quarter|quarter a)\b', 'quarter', phrase)
+    tokens = phrase.split()
     total = Decimal(0)
     group = Decimal(0)
-    for token in tokens:
-        if token in ('a', 'an'):
+    index = 0
+    while index < len(tokens):
+        token = tokens[index]
+        if token == 'and':
+            pass
+        elif token == 'point':
+            digits = ''
+            index += 1
+            while index < len(tokens) and (tokens[index] in SMALL and SMALL[tokens[index]] < 10 or tokens[index].isdigit()):
+                digits += str(SMALL.get(tokens[index], tokens[index]))
+                index += 1
+            if not digits:
+                raise ValueError('missing decimal digits')
+            group += Decimal('0.' + digits)
+            continue
+        elif token in ('half', 'quarter'):
+            group += Decimal('.5' if token == 'half' else '.25')
+        elif token in ('a', 'an'):
             group += 1
         elif token in SMALL:
             group += SMALL[token]
@@ -25,6 +44,7 @@ def number(phrase):
             group = Decimal(0)
         else:
             group += Decimal(token)
+        index += 1
     return total + group
 
 

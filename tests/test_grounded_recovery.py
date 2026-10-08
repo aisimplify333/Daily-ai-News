@@ -123,7 +123,7 @@ class RecoveryTests(unittest.TestCase):
 
     def test_four_validated_stories_survive_missing_reserves_after_retry(self):
         rows, first, second = self.run_slate([story(i) for i in range(4)], [], n=5)
-        self.assertEqual((len(rows), first, second), (4, 1, 1))
+        self.assertEqual((len(rows), first, second), (4, 1, 2))
         with open("grounded_research_report.json") as handle:
             report = json.load(handle)
         self.assertEqual(report['status'], 'ready_without_full_reserves')
@@ -158,7 +158,7 @@ class RecoveryTests(unittest.TestCase):
         with patch.object(news, "_grounded_text", return_value="invalid JSON"), patch.object(news, "_recovery_search", return_value="{}") as second:
             with self.assertRaisesRegex(RuntimeError, "at least 3 required"):
                 news.build_grounded_story_slate("2026-09-08")
-            self.assertEqual(second.call_count, 1)
+            self.assertEqual(second.call_count, 2)
 
     def test_trusted_candidates_not_hidden_by_untrusted(self):
         weak = [story(i, publisher="Unknown", source_url=f"https://example.org/{i}") for i in range(5)]

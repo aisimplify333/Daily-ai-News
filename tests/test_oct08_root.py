@@ -8,7 +8,7 @@ from pathlib import Path
 import grounded_news_v1 as news
 import writer_room_v3_1 as writer
 from editorial_selection import concentrated, balanced_story_order, listener_frame
-from claim_math import check_calculations
+from claim_math import check_calculations, amount
 from final_acceptance import verify, repair_and_verify, CHECKS
 
 HEADLINES = ['Manus AI Raises $500 Million After Blocked Meta Deal',
@@ -53,7 +53,21 @@ class RootRepairs(unittest.TestCase):
             with patch.object(news, '_grounded_text', return_value=json.dumps({'stories':rows})), patch.object(news, '_recovery_search', return_value='{}') as refill:
                 with self.assertRaisesRegex(RuntimeError, 'variety unresolved'):
                     news.build_grounded_story_slate('2026-10-08', n=3)
-                self.assertEqual(refill.call_count, 1)
+                self.assertEqual(refill.call_count, 2)
+            news.build_grounded_story_slate.cache_clear()
+
+    def test_primary_corroboration_upgrades_instead_of_discarding_event(self):
+        from test_grounded_recovery import story
+        weak = story(1, headline='Genesis Mission science funding', event_key='genesis-funding',
+                     publisher='Trade publication', source_url='https://example.org/genesis')
+        strong = story(2, headline='Genesis Mission receives science funding', event_key='genesis-funding')
+        others = [story(3, headline='Accessibility tool launches'), story(4, headline='Chip power advance')]
+        with tempfile.TemporaryDirectory() as tmp, patch('grounded_news_v1.Path', side_effect=lambda x:Path(tmp)/x):
+            news.build_grounded_story_slate.cache_clear()
+            with patch.object(news, '_grounded_text', return_value=json.dumps({'stories':[weak]+others})), patch.object(news, '_recovery_search', return_value=json.dumps({'stories':[strong]})):
+                selected = news.build_grounded_story_slate('2026-10-08', n=3)
+            self.assertTrue(all(s['source_tier'] >= 2 for s in selected))
+            self.assertEqual(sum(s['event_key'] == 'genesis-funding' for s in selected), 1)
             news.build_grounded_story_slate.cache_clear()
 
     def test_arithmetic_recomputed_not_advisory(self):
@@ -61,6 +75,11 @@ class RootRepairs(unittest.TestCase):
         self.assertEqual(len(errors), 1)
         self.assertIn('= 40, not 4', errors[0]['reason'])
         self.assertFalse(unresolved)
+
+    def test_spoken_decimal_and_fraction_amounts(self):
+        self.assertEqual(amount('one point five billion dollars'), 1500000000)
+        self.assertEqual(amount('one and a half billion dollars'), 1500000000)
+        self.assertEqual(amount('half a billion dollars'), 500000000)
 
     def test_correct_ratio_and_rounding_pass(self):
         line = RATIO_LINE.replace('four times', 'forty times')
