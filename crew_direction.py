@@ -38,7 +38,7 @@ CREW CALL — audience connection is part of the journalism:
   Treat the location as an honestly framed imagined dispatch. Named investors,
   holdings, trades, price moves and market causation require attributed evidence
   and dates; a large transfer alone does not establish a whale's identity or intent.
-- Rufus's location feature must change the listener's experience: 100-180 words,
+- Rufus's location feature must change the listener's experience: 100-220 words,
   one clearly imagined concrete situation anchored to a sourced place, a studio
   interruption or question, Rufus's observation/comeback, and a useful return.
   Picture/Imagine must frame the whole scene. No claimed travel, eyewitness reporting,

@@ -1373,7 +1373,7 @@ Alex hands over with "Rufus, take us on location." Rufus names the story's sourc
 geographic setting and explicitly frames the scene as "Picture..." or "Imagine...".
 He must not claim to be physically present or to have witnessed or interviewed anyone.
 Jamie challenges his specific observation, Rufus responds with evidence and understated
-wit, and Alex returns with "Back to the wider story." Use 100-180 words between those
+wit, and Alex returns with "Back to the wider story." Use 100-220 words between those
 handoffs. When no location is supported, use the explicitly labelled "global desk"
 perspective (RUFUS GLOBAL MARKETS DESK) instead and state that the supplied reporting gives no location. Preserve
 all source qualifications. Prices and market moves require dated evidence.
@@ -1639,7 +1639,7 @@ def _ensure_connection_elements(
     """
     lines = (script or "").splitlines()
     deterministic_re = re.compile(
-        r"^(?:ALEX:\s*(?:Our lead story today is|Today[’']s question for you:|"
+        r"^(?:ALEX:\s*(?:Our lead story today is|"
         r"Follow The AI Edge now\.|What changed\. Who wins\. What you do next\.)|"
         r"(?:JAMIE|RUFUS):\s*A quick final note: today[’']s "
         r"episode was brought to you by The Ledger\b)",
@@ -1650,6 +1650,8 @@ def _ensure_connection_elements(
     # continuation chunks containing poll answer options. Preserve editorial turns.
     cleaned = []
     in_closing = False
+    closing_question_seen = False
+    board_question = str(board.get("listener_question") or "").strip()
     skip_speaker = None
     for line in lines:
         if re.match(r"^(?:###\s*)?SEGMENT\s+5\b", line, re.I):
@@ -1657,6 +1659,13 @@ def _ensure_connection_elements(
         match = SPEAKER_RE.match(line.strip())
         if match:
             speaker, spoken = match.group(1).upper(), match.group(2)
+            if in_closing and (spoken.strip() == board_question or re.match(r"Today[’']s question for you:", spoken, re.I)):
+                if not closing_question_seen:
+                    cleaned.append("ALEX: Today’s question for you: " + (board_question or re.sub(r"^Today[’']s question for you:\s*", "", spoken, flags=re.I)))
+                    closing_question_seen = True
+                continue
+            if in_closing and re.search(r"that[’']s The AI Edge|we[’']ll see you tomorrow|t-h-e-l-e-d-g-r dot i-o", spoken, re.I):
+                continue
             if in_closing and re.search(
                 r"listener question|question for (?:you|listeners)|Spotify poll|your options|"
                 r"follow (?:\s*The AI Edge|(?:this|the|our) (?:show|podcast)|us wherever)|we.ll have your answers|"
@@ -1690,9 +1699,9 @@ def _ensure_connection_elements(
     ).strip()
     question = question[:139].rstrip(" .") + ("?" if not question.endswith("?") else "")
     closing_lines = [
+        *([] if closing_question_seen else [f"ALEX: Today’s question for you: {question[:140]}"]),
         "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
         f"{tag_speaker}: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
-        f"ALEX: Today’s question for you: {question[:140]}",
         "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
     ]
     segment5 = next(
@@ -2372,6 +2381,10 @@ def _expand_segment_four(
                 script[tail_start:insertion], re.I | re.M)
             if payoff:
                 insertion = tail_start + payoff.start()
+            else:
+                turns = list(re.finditer(r"^(?:ALEX|JAMIE|RUFUS):", script[tail_start:insertion], re.M))
+                if len(turns) > 8:
+                    insertion = tail_start + turns[-8].start()
         candidate = (
             script[:insertion].rstrip() + "\n" + addon + "\n\n"
             + script[insertion:].lstrip()
@@ -2932,7 +2945,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                     "Let a specific affectionate jab receive a response where natural; no joke quota. "
                     "Do not turn all three stories into one safety argument.\n"
                     + CAST_CONNECTION_DIRECTION + "\n" + EDITORIAL_DIRECTION
-                    + ("\nIn this Story 2 include a 100-180 word feature: Alex says 'Rufus, take us on location.' "
+                    + ("\nIn this Story 2 include a 100-220 word feature: Alex says 'Rufus, take us on location.' "
                        "Rufus names a sourced location and says Picture or Imagine to frame it honestly. "
                        "Jamie responds to his observation. Alex ends 'Back to the wider story.' "
                        "No invented presence, eyewitness details or interviews. If location is unsupported, "
@@ -3085,11 +3098,26 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         # Final review must demonstrate the experience in the actual script.
         # One targeted repair and recheck; no unbounded rewrite loop or paid TTS yet.
         from final_acceptance import repair_and_verify
+        def finish_editorial(candidate):
+            from editorial_contract import ensure_feature_fallback
+            candidate = stabilize(ensure_feature_fallback(candidate))
+            for _ in range(2):
+                words = _word_count(candidate)
+                if words >= min_episode_words:
+                    break
+                expanded = _expand_segment_four(g, candidate, stories, date_str, board,
+                                                min(600, min_episode_words + 150 - words))
+                if expanded == candidate:
+                    break
+                candidate = stabilize(ensure_feature_fallback(expanded))
+            return candidate
+
         script, acceptance = repair_and_verify(
             script, stories, board,
             request=final_editor_request,
             normalize=stabilize,
-            assess=lambda candidate: _assess(candidate, stories, board, fuel))
+            assess=lambda candidate: _assess(candidate, stories, board, fuel),
+            finish=finish_editorial)
 
         # Required fact verification of the actual final script, after all creative edits.
         try:

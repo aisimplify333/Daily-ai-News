@@ -80,6 +80,7 @@ class RootRepairs(unittest.TestCase):
         self.assertEqual(amount('one point five billion dollars'), 1500000000)
         self.assertEqual(amount('one and a half billion dollars'), 1500000000)
         self.assertEqual(amount('half a billion dollars'), 500000000)
+        self.assertEqual(amount('a four-billion-dollar valuation'), 4000000000)
 
     def test_correct_ratio_and_rounding_pass(self):
         line = RATIO_LINE.replace('four times', 'forty times')
@@ -133,6 +134,25 @@ class RootRepairs(unittest.TestCase):
         response = {'checks':{k:{'pass':True,'evidence':['JAMIE: Imaginary evidence.']} for k in CHECKS}}
         result = verify('ALEX: Real line.', [], lambda _:json.dumps(response))
         self.assertFalse(result['pass'])
+
+    def test_multiline_actual_quotes_survive_typographic_normalization(self):
+        script = "JAMIE: Don’t sound so surprised.\nRUFUS: Naturally."
+        evidence = "JAMIE: Don't sound so surprised. RUFUS: Naturally."
+        response = {'checks':{k:{'pass':True,'evidence':[evidence]} for k in CHECKS}}
+        with patch('final_acceptance.feature_status', return_value={'present':True,'duration_in_word_band':True}):
+            self.assertTrue(verify(script, [], lambda _:json.dumps(response))['pass'])
+        response['checks']['cast_warmth']['evidence'] = ['']
+        with patch('final_acceptance.feature_status', return_value={'present':True,'duration_in_word_band':True}):
+            self.assertFalse(verify(script, [], lambda _:json.dumps(response))['pass'])
+
+    def test_missing_rufus_return_repaired_without_inventing_speech(self):
+        from editorial_contract import ensure_feature_fallback, feature_status
+        scene = '### SEGMENT 3 — Story\nALEX: Rufus, take us on location.\nRUFUS: Picture ' + 'a concrete example ' * 34
+        scene += '\nJAMIE: What changes for the listener?\nRUFUS: The benefit comes with a limit.\nALEX: Here is the next point.\n### SEGMENT 4 — Next\n'
+        fixed = ensure_feature_fallback(scene)
+        self.assertTrue(feature_status(fixed)['present'])
+        self.assertEqual(fixed.count('Back to the wider story.'),1)
+        self.assertEqual(fixed, ensure_feature_fallback(fixed))
 
     def test_failed_editorial_repair_is_bounded_and_preserved(self):
         with tempfile.TemporaryDirectory() as tmp:

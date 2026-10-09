@@ -34,7 +34,8 @@ def number(phrase):
         elif token in ('half', 'quarter'):
             group += Decimal('.5' if token == 'half' else '.25')
         elif token in ('a', 'an'):
-            group += 1
+            if index + 1 == len(tokens) or tokens[index + 1] in SCALE:
+                group += 1
         elif token in SMALL:
             group += SMALL[token]
         elif token == 'hundred':

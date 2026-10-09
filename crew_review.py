@@ -94,7 +94,12 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                 continue
             candidate = normalize(script.replace(old, new, 1))
             before, after = assess(script), assess(candidate)
-            if set(after.get('failed', [])) - set(before.get('failed', [])):
+            new_failures = set(after.get('failed', [])) - set(before.get('failed', []))
+            # Permit useful cuts temporarily; the caller replenishes sourced material
+            # before final acceptance/TTS. Never publish this intermediate candidate.
+            if new_failures == {'runtime_word_band'} and 2800 <= after.get('metrics', {}).get('words', 0) <= 4800:
+                new_failures.clear()
+            if new_failures:
                 row['reason'] = 'new_structural_or_runtime_failure'
                 continue
             if len(spoken_leaks(candidate)) > len(spoken_leaks(script)):
