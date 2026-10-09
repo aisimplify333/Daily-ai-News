@@ -24,13 +24,13 @@ def select_voices(catalog):
     british = [v for v in voices if v.get('labels', {}).get('gender') == 'male'
                and any(k in v.get('labels', {}).get('accent', '').lower()
                        for k in ('british', 'english'))]
-    if len(voices) < 4 or len(british) < 3:
+    if len(voices) < 4 or len(british) < 2:
         raise RuntimeError('Insufficient verified catalog voices for the requested comparison')
     # Compare four different narrators, including male and female choices.
     female = [v for v in voices if v.get('labels', {}).get('gender') == 'female']
     male = [v for v in voices if v.get('labels', {}).get('gender') == 'male']
     narrators = (female[:2] + male[:2]) if len(female) >= 2 and len(male) >= 2 else voices[:4]
-    return narrators, british[:3]
+    return narrators, (british[:3] if len(british) >= 3 else british[:2]+british[:1])
 
 
 def save(report):
@@ -103,10 +103,12 @@ def main():
         report['catalog_categories'] = sorted(set(str(v.get('category')) for v in catalog.get('voices', [])))
         report['default_voice_catalog'] = [{'voice_id':v['voice_id'], 'name':v.get('name'), 'labels':v.get('labels', {})} for v in catalog.get('voices', []) if v.get('category') == 'premade' or (v.get('category') == 'professional' and (v.get('sharing') or {}).get('status') == 'enabled')]
         narrators, british = select_voices(catalog.get('voices', []))
+        report['rufus_comparison_note'] = 'Three performance candidates; if only two British male catalog voices are available, candidate 3 repeats candidate 1 at creative stability.'
         for i, voice in enumerate(narrators, 1):
             render(key, report, f'trailer_{i}', TRAILER, voice)
         for i, voice in enumerate(british, 1):
-            render(key, report, f'rufus_candidate_{i}', RUFUS, voice)
+            render(key, report, f'rufus_candidate_{i}', RUFUS, voice,
+                   0.0 if i == 3 and voice['voice_id'] == british[0]['voice_id'] else 0.5)
         for i, (tag, stability) in enumerate([('[warmly] ', 0.5), ('[confident] ', 0.5), ('[conversational] ', 0.0)], 1):
             render(key, report, f'sponsor_treatment_{i}', tag+SPONSOR, narrators[0], stability)
         render(key, report, 'fictional_voicemail', 'This is a fictional listener scenario. Hi, team. My boss asked me to put AI into our workflow. I asked which problem we were solving. We now have a meeting to decide what the meeting should be about. What should I ask first?', narrators[1])
