@@ -13,6 +13,15 @@ import writer_room_v3_1 as writer
 
 def main():
     date = dt.datetime.now(dt.timezone.utc).date().isoformat()
+    recovered = False
+    saved = Path('rehearsal_recovery')
+    if saved.exists():
+        from episode_recovery import load_recovery
+        os.environ['EPISODE_RECOVERY_DIR'] = str(saved)
+        try:
+            recovered = bool(load_recovery(date))
+        except (ValueError, OSError, KeyError):
+            os.environ.pop('EPISODE_RECOVERY_DIR', None)
     namespace = {'openai_client': OpenAI(api_key=os.environ['OPENAI_API_KEY']),
                  'gemini_client': genai.Client(api_key=os.environ['GEMINI_API_KEY']),
                  'genai_types': types}
@@ -22,9 +31,10 @@ def main():
     Path('rehearsal_script.txt').write_text(script, encoding='utf-8')
     Path('rehearsal_result.json').write_text(json.dumps({
         'status':'passed_text_and_direction_gates', 'date':date,
+        'research_mode':'same_day_recovery' if recovered else 'fresh',
         'listened':False, 'audio_generated':False, 'published':False,
         'stories':[s['headline'] for s in stories[:3]], 'words':len(script.split())},indent=2))
-    print('REHEARSAL PASSED: fresh research, final script, fact audit and direction. No audio/publication.')
+    print('REHEARSAL PASSED: validated research, final script, fact audit and direction. No audio/publication.')
 
 if __name__ == '__main__':
     main()

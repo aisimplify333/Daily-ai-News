@@ -86,9 +86,11 @@ def render(key, report, name, text, voice, stability=0.5):
 def make_page(report):
     cards = []
     for row in report['takes']:
-        if row['status'] != 'complete':
+        if row['status'] != 'complete' or row['name'].startswith('war_room_'):
             continue
         cards.append('<article><h2>'+html.escape(row['name'])+'</h2><audio controls preload="none" src="'+row['file']+'"></audio><p>'+html.escape(row['text'])+'</p></article>')
+    if report.get('war_room'):
+        cards.append('<article><h2>Fictional war room — complete exchange</h2><audio controls preload="none" src="war_room.mp3"></audio><p>A short performance comparison, not actual news or listener testimony.</p></article>')
     page = '<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>The AI Edge — specialty auditions</title><style>body{font:18px system-ui;background:#101827;color:#edf4ff;max-width:850px;margin:40px auto;padding:20px}article{padding:24px;background:#1b2940;margin:20px 0;border-radius:12px}audio{width:100%}p{line-height:1.6}</style><h1>The AI Edge: specialty auditions</h1><p>These are candidates, not changes to the daily cast. Compare matching scripts on headphones and a phone speaker. Judge clarity, warmth, dry wit and whether the performance sounds like a person talking. Voice identities and settings are retained in manifest.json. No listening winner has been assigned.</p>'+''.join(cards)
     (ROOT/'index.html').write_text(page)
 
@@ -97,6 +99,7 @@ def main():
     ROOT.mkdir(parents=True, exist_ok=True)
     p = ROOT/'manifest.json'
     report = json.loads(p.read_text()) if p.exists() else {'takes': [], 'reserved_credits': 0, 'daily_cast_changed': False}
+    report.pop('diagnostic', None)
     key = os.environ['AI_EDGE_PODCAST_ELEVENLABS']
     try:
         catalog = get_json('/v2/voices?page_size=100&include_custom_rates=false', key)

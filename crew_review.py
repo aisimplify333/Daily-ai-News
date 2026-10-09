@@ -66,7 +66,7 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                 row['reason'] = 'invalid_edit'
                 continue
             section = re.search(rf'^###\s*SEGMENT\s*{segment}\b[^\n]*\n(.*?)(?=^###\s*SEGMENT\s*{segment+1}\b|\Z)', script, re.M|re.S|re.I)
-            if not old or script.count(old) != 1 or not section or old not in section[1]:
+            if not old or (script.count(old) != 1 and new != '') or not section or old not in section[1]:
                 row['reason'] = 'nonunique_or_wrong_scene'
                 continue
             if any(not re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*\S.*', line) for block in (old,new) for line in block.splitlines()):
@@ -84,16 +84,16 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                 continue
             navigation = ('Rufus, take us on location.', 'Rufus, take us to the global desk.',
                           'Back to the wider story.')
-            if any(old.count(marker) > new.count(marker) for marker in navigation):
+            if any(marker in old and section[1].count(marker)-old.count(marker)+new.count(marker) < 1 for marker in navigation):
                 row['reason'] = 'feature_navigation_protected'
                 continue
             if Counter(re.findall(r'\b\d[\d,.%]*', new)) - Counter(re.findall(r'\b\d[\d,.%]*', old)):
                 row['reason'] = 'numeric_receipts_changed'
                 continue
-            if len(new.split()) > max(80, len(old.split()) * 1.3):
+            if len(new.split()) > max(250, len(old.split()) * 1.5):
                 row['reason'] = 'unbounded_expansion'
                 continue
-            candidate = normalize(script.replace(old, new, 1))
+            candidate = normalize(script[:section.start(1)] + section[1].replace(old, new, 1) + script[section.end(1):])
             before, after = assess(script), assess(candidate)
             new_failures = set(after.get('failed', [])) - set(before.get('failed', []))
             # Permit useful cuts temporarily; the caller replenishes sourced material

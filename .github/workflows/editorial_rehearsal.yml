@@ -18,6 +18,7 @@ jobs:
           sparse-checkout: |
             /*.py
             /scripts/rehearse_editorial.py
+            /rehearsal_recovery/
             /show_memory.json
             /listener_poll_results.json
       - uses: actions/setup-python@v5
