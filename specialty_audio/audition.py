@@ -18,13 +18,14 @@ SPONSOR = "Too many AI headlines. Too little time to work out what matters. The 
 
 def select_voices(catalog):
     # Use available provider voices; never clone or modify anyone's voice.
-    voices = sorted((v for v in catalog if v.get('category') == 'premade'),
+    voices = sorted((v for v in catalog if v.get('category') == 'premade' or
+                     (v.get('category') == 'professional' and (v.get('sharing') or {}).get('status') == 'enabled')), 
                     key=lambda v: (v.get('name', ''), v['voice_id']))
     british = [v for v in voices if v.get('labels', {}).get('gender') == 'male'
                and any(k in v.get('labels', {}).get('accent', '').lower()
                        for k in ('british', 'english'))]
     if len(voices) < 4 or len(british) < 3:
-        raise RuntimeError('Insufficient verified default voices for the requested comparison')
+        raise RuntimeError('Insufficient verified catalog voices for the requested comparison')
     # Compare four different narrators, including male and female choices.
     female = [v for v in voices if v.get('labels', {}).get('gender') == 'female']
     male = [v for v in voices if v.get('labels', {}).get('gender') == 'male']
@@ -98,9 +99,9 @@ def main():
     report = json.loads(p.read_text()) if p.exists() else {'takes': [], 'reserved_credits': 0, 'daily_cast_changed': False}
     key = os.environ['AI_EDGE_PODCAST_ELEVENLABS']
     try:
-        catalog = get_json('/v2/voices?page_size=100', key)
+        catalog = get_json('/v2/voices?page_size=100&include_custom_rates=false', key)
         report['catalog_categories'] = sorted(set(str(v.get('category')) for v in catalog.get('voices', [])))
-        report['default_voice_catalog'] = [{'voice_id':v['voice_id'], 'name':v.get('name'), 'labels':v.get('labels', {})} for v in catalog.get('voices', []) if v.get('category') == 'premade']
+        report['default_voice_catalog'] = [{'voice_id':v['voice_id'], 'name':v.get('name'), 'labels':v.get('labels', {})} for v in catalog.get('voices', []) if v.get('category') == 'premade' or (v.get('category') == 'professional' and (v.get('sharing') or {}).get('status') == 'enabled')]
         narrators, british = select_voices(catalog.get('voices', []))
         for i, voice in enumerate(narrators, 1):
             render(key, report, f'trailer_{i}', TRAILER, voice)
