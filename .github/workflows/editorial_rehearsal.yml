@@ -2,6 +2,7 @@ name: Editorial rehearsal (no audio or publishing)
 on:
   push:
     branches: [podcast-root-repair-oct08]
+    paths: ["*.py", "scripts/rehearse_editorial.py", ".github/workflows/editorial_rehearsal.yml"]
   workflow_dispatch:
 permissions:
   contents: read

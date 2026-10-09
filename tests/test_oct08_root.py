@@ -70,6 +70,9 @@ class RootRepairs(unittest.TestCase):
             self.assertEqual(sum(s['event_key'] == 'genesis-funding' for s in selected), 1)
             news.build_grounded_story_slate.cache_clear()
 
+    def test_google_official_blog_is_a_primary_source(self):
+        self.assertEqual(news._source_tier('Google Cloud Blog', 'https://blog.google/products/google-cloud/new-agent/'), 3)
+
     def test_arithmetic_recomputed_not_advisory(self):
         errors, unresolved = check_calculations(RATIO_LINE+'\n'+REVENUE, [CALC])
         self.assertEqual(len(errors), 1)

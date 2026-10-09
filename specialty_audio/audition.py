@@ -99,6 +99,8 @@ def main():
     key = os.environ['AI_EDGE_PODCAST_ELEVENLABS']
     try:
         catalog = get_json('/v2/voices?page_size=100', key)
+        report['catalog_categories'] = sorted(set(str(v.get('category')) for v in catalog.get('voices', [])))
+        report['default_voice_catalog'] = [{'voice_id':v['voice_id'], 'name':v.get('name'), 'labels':v.get('labels', {})} for v in catalog.get('voices', []) if v.get('category') == 'premade']
         narrators, british = select_voices(catalog.get('voices', []))
         for i, voice in enumerate(narrators, 1):
             render(key, report, f'trailer_{i}', TRAILER, voice)
@@ -119,6 +121,7 @@ def main():
         report['status'] = 'generated_pending_listening'
     except Exception as exc:
         report['status'] = 'blocked_'+type(exc).__name__
+        if isinstance(exc, RuntimeError): report['diagnostic'] = str(exc)[:300]
         raise
     finally:
         save(report)

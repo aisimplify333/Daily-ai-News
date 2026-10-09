@@ -32,7 +32,7 @@ TIER2_PUBLISHERS = {
 TIER3_DOMAINS = {
     "reuters.com", "apnews.com", "bloomberg.com", "ft.com", "wsj.com",
     "nytimes.com", "washingtonpost.com", "openai.com", "anthropic.com",
-    "google.com", "deepmind.google", "microsoft.com", "nvidia.com",
+    "google.com", "blog.google", "deepmind.google", "microsoft.com", "nvidia.com",
     "meta.com", "apple.com", "amazon.com", "github.com", "cursor.com",
 }
 TIER2_DOMAINS = {
@@ -493,6 +493,7 @@ def build_grounded_story_slate(
             break
     from editorial_selection import balanced_story_order, concentrated, listener_frame
     normalized = balanced_story_order(normalized)[:n]
+    report["validated_candidates"] = normalized
     report["selected_editorial_cases"] = [
         {"headline": s["headline"], "source_url": s["source_url"],
          "editorial_analysis_not_verified_facts": s.get("editorial_case", {})}
