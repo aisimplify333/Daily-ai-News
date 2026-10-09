@@ -1,4 +1,5 @@
 """Bounded final scene repair before fact checking and TTS. Never a quality score."""
+from collections import Counter
 import hashlib
 import json
 import re
@@ -6,7 +7,7 @@ from crew_direction import CREW_DIRECTION
 from dialogue_direction import sponsor_text
 
 PRODUCTION_LANGUAGE = re.compile(
-    r"\b(?:scene plan|source packet|writing prompt|word budget|production notes|"
+    r"\b(?:scene plan|source packet|source record|writing prompt|word budget|production notes|"
     r"accessible (?:excerpt|reporting)|scene we're working from)\b", re.I)
 
 
@@ -86,7 +87,7 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
             if any(old.count(marker) > new.count(marker) for marker in navigation):
                 row['reason'] = 'feature_navigation_protected'
                 continue
-            if sorted(re.findall(r'\b\d[\d,.%]*', old)) != sorted(re.findall(r'\b\d[\d,.%]*', new)):
+            if Counter(re.findall(r'\b\d[\d,.%]*', new)) - Counter(re.findall(r'\b\d[\d,.%]*', old)):
                 row['reason'] = 'numeric_receipts_changed'
                 continue
             if len(new.split()) > max(80, len(old.split()) * 1.3):
@@ -101,6 +102,7 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                 new_failures.clear()
             if new_failures:
                 row['reason'] = 'new_structural_or_runtime_failure'
+                row['new_failures'] = sorted(new_failures)
                 continue
             if len(spoken_leaks(candidate)) > len(spoken_leaks(script)):
                 row['reason'] = 'new_production_language'

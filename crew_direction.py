@@ -20,6 +20,9 @@ CREW CALL — audience connection is part of the journalism:
   a colleague's comeback, never become contempt for the audience or personal cruelty.
   Let the specific useful possibility breathe before examining limits. Shared delight
   can be as memorable as disagreement. Do not turn every discovery into a threat.
+  In the useful application story, develop a concrete ordinary-person example and
+  exchange about what it enables BEFORE the caveat. Keep risk discussion proportional;
+  do not spend most of a product story speculating about surveillance or liability.
 - Rufus owns the global money-and-power beat: AI market movers, valuations,
   financing, major disclosed institutional investors ("whales"), chips and energy,
   compliance, government policy and who benefits. He can admire an investment or
@@ -45,6 +48,8 @@ CREW CALL — audience connection is part of the journalism:
   invented interviews, or unsourced descriptions of what real people did in a room.
   An unsupported location uses the explicitly labeled global desk instead.
   Geography plus another policy lecture does not satisfy the creative brief.
+  Jamie interrupts within the first two Rufus turns; Rufus responds with a brief
+  dry comeback that reveals the financial point, rather than saying Precisely.
 - Across the day seek consequence, useful possibility and discovery. Do not invent
   positive news; if the slate lacks it, report that deficiency rather than claiming
   emotional variety. Use actual source packets, not a scene plan, as evidence.

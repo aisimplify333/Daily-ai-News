@@ -1700,8 +1700,8 @@ def _ensure_connection_elements(
     question = question[:139].rstrip(" .") + ("?" if not question.endswith("?") else "")
     closing_lines = [
         *([] if closing_question_seen else [f"ALEX: Today’s question for you: {question[:140]}"]),
-        "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
         f"{tag_speaker}: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
+        "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
         "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
     ]
     segment5 = next(
@@ -2352,7 +2352,8 @@ def _expand_segment_four(
             continue
         if _word_count(addon) > add_words + 75:
             continue
-        if GENERIC_PANEL_RE.search(addon) or LEGACY_RITUAL_RE.search(addon):
+        from crew_review import spoken_leaks
+        if GENERIC_PANEL_RE.search(addon) or LEGACY_RITUAL_RE.search(addon) or spoken_leaks(addon):
             _safe_print(g, f"      ⚠️ rejected generic expansion from {model}")
             continue
         marker = re.search(

@@ -27,7 +27,7 @@ def listener_frame(story):
     headline += " " + " ".join(str(case.get(k) or "") for k in
                               ("new_development", "distinct_question")).lower()
     risk_angle = re.search(
-        r"false front|deceptive|abuse|blocked|\bfcc\b|political robocall|rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
+        r"public fear|worried|worries|debt|false front|deceptive|abuse|blocked|\bfcc\b|political robocall|rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
         r"regulat|oversight|warnings?|dangers?|liability|surveillance|"
         r"safety|compliance|fraud|lawsuit|antitrust|ban\b", headline)
     if risk_angle:
