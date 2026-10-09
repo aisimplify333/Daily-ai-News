@@ -1,104 +1,93 @@
 {
-  "episode_date": "2026-10-08",
+  "episode_date": "2026-10-09",
   "discovery_seed_count": 40,
-  "window_start": "2026-10-06T09:07:45.868949+00:00",
-  "window_end": "2026-10-08T09:07:45.868949+00:00",
+  "window_start": "2026-10-07T13:28:07.056800+00:00",
+  "window_end": "2026-10-09T13:28:07.056800+00:00",
   "attempts": [
     {
       "stage": "primary",
-      "rejections": {
-        "outside_freshness_window": 2
-      },
-      "rejected_examples": [
-        {
-          "headline": "Google and Constellation Energy Announce 890 MW Nuclear Power Deal",
-          "published_at": "2026-10-06T08:46:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Meta, Walmart, and Stripe Unveil Personal Agent Protocol",
-          "published_at": "2026-10-06T00:00:00Z",
-          "reason": "outside_freshness_window"
-        }
-      ],
-      "candidates": 5,
+      "rejections": {},
+      "rejected_examples": [],
+      "candidates": 3,
       "accepted_total": 3,
-      "trusted_total": 2
+      "trusted_total": 1
     },
     {
       "stage": "alternate_refill",
       "rejections": {
-        "outside_freshness_window": 4
+        "outside_freshness_window": 2,
+        "duplicate_event": 1,
+        "duplicate": 1
       },
       "rejected_examples": [
         {
-          "headline": "Anthropic expands Cyber Verification Program for qualifying security professionals",
-          "published_at": "2026-10-06T00:00:00Z",
+          "headline": "OpenAI rolls out GPT-6 and an intelligent UI for everyone",
+          "published_at": "2026-10-07T00:00:00Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Trump names Jay Clayton to lead a new federal AI task force",
-          "published_at": "2026-10-04T13:12:05Z",
+          "headline": "Google Cloud launches Gemini at Work 2026 with a universal agent for enterprises",
+          "published_at": "2026-10-08T18:18:00Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "Anthropic releases Claude Haiku 5.5, a cheaper small model",
+          "published_at": "2026-10-07T00:00:00Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "California signs worker protections targeting AI layoffs and surveillance",
-          "published_at": "2026-09-30T22:45:12Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Wes Moore forms bipartisan governors group on AI amid federal inaction",
-          "published_at": "2026-10-01T19:33:49Z",
-          "reason": "outside_freshness_window"
+          "headline": "Google Cloud launches Gemini agent for work",
+          "published_at": "2026-10-08T00:00:00Z",
+          "reason": "duplicate"
         }
       ],
       "candidates": 8,
       "accepted_total": 7,
-      "trusted_total": 6
+      "trusted_total": 5
     }
   ],
   "status": "ready",
   "topic_families": [
-    "markets",
     "other",
-    "other"
+    "products",
+    "security"
   ],
   "concentrated_slate": false,
   "selected_editorial_cases": [
     {
-      "headline": "Manus AI Raises $500 Million After Blocked Meta Deal",
-      "source_url": "https://www.cnbc.com",
+      "headline": "OpenAI Projects $70 Billion Annualized Revenue by End of 2026",
+      "source_url": "https://www.bloomberg.com",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Successful completion of a major funding round post-regulatory block by China.",
-        "affected_listener": "Venture investors, global AI competitors, and companies evaluating cross-border technology acquisitions.",
-        "why_today": "Signals a maturing AI agent market that is resistant to US-China consolidation.",
-        "distinct_question": "Can high-growth AI startups survive and flourish after being caught in the crossfire of US-China trade disputes?",
-        "new_since_prior_coverage": "Confirms the company's valuation post-Meta and its path to independent operation.",
-        "practical_payoff": "Watch Manus for indicators of Chinese AI agent capabilities in the global market."
+        "new_development": "First-party projection shared with investors clarifying previous market confusion over revenue metrics.",
+        "affected_listener": "Market investors and employees analyzing the sustainability of the generative AI enterprise boom.",
+        "why_today": "Clarifies recent market volatility caused by contradictory reports earlier in the week.",
+        "distinct_question": "Is the enterprise AI growth narrative currently sustainable enough to justify trillion-dollar valuations?",
+        "new_since_prior_coverage": "Moves from speculative investor-led calculations to an official management-backed forecast.",
+        "practical_payoff": "Watch for the conclusion of the $30 billion funding round as a benchmark for AI capital appetite."
       }
     },
     {
-      "headline": "Norway Proposes Temporary Ban on AI Glasses in Public Spaces",
-      "source_url": "https://www.ft.com",
+      "headline": "Google Cloud unveils Gemini agent as a universal work assistant",
+      "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026?hl=en",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "First concrete national proposal to restrict consumer AI wearable use in public locations.",
-        "affected_listener": "Meta and other wearable manufacturers, privacy advocates, and public space managers.",
-        "why_today": "Highlights the direct collision between new 'always-on' AI hardware and long-standing public privacy expectations.",
-        "distinct_question": "Does owning an AI product grant an individual the right to film bystanders in public, and can laws effectively stop it?",
-        "new_since_prior_coverage": "Transitions from public concern to legislative proposal.",
-        "practical_payoff": "Companies building AI wearables must now plan for a fragmented regulatory landscape where 'public-facing' features might be illegal in certain regions."
+        "new_development": "Google moved Gemini from a family of tools into a single, cross-surface agent for work with embedded workflows and governance.",
+        "affected_listener": "Enterprise workers, IT admins, and companies already using Google Workspace or Google Cloud are the most directly affected.",
+        "why_today": "It is a consequential product architecture change from a major platform vendor with immediate workflow implications.",
+        "distinct_question": "What does Google think the next phase of workplace AI looks like?",
+        "new_since_prior_coverage": "Materially new product announcement within the window, not just a new review or commentary.",
+        "practical_payoff": "Listeners should watch for pricing, admin controls, and whether Gemini agent actually replaces discrete point tools in enterprise workflows."
       }
     },
     {
-      "headline": "FCC considers loosening rules for political robocalls that include AI voices",
-      "source_url": "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
+      "headline": "Anthropic launches the Cyber Mission with a critical infrastructure defense program and free OSS scanner",
+      "source_url": "https://www.anthropic.com/news/anthropic-cyber-mission",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "The new development is that the FCC moved the request into public comment and signaled a possible decision within weeks.",
-        "affected_listener": "Campaigns, voters, election officials and robocall enforcement teams are affected because the rule could alter permitted campaign outreach methods.",
-        "why_today": "It answers a concrete near-term policy question with a fixed timing window before the midterms, making it more consequential than generic AI commentary.",
-        "distinct_question": "Will AI-generated political robocalls face looser federal rules before the midterms?",
-        "new_since_prior_coverage": "New since prior coverage because the Commission advanced the request for comment and set up a possible late-October decision.",
-        "practical_payoff": "Listeners should watch for the comment docket and any late-October FCC vote that could change political calling tactics."
+        "new_development": "Anthropic formalized a new security-centered initiative and paired it with a free open-source scanning product.",
+        "affected_listener": "Infrastructure defenders, open-source maintainers, and security teams are the main beneficiaries.",
+        "why_today": "It is a fresh policy-and-product move with concrete security implications, not a vague safety pledge.",
+        "distinct_question": "How is a frontier AI company trying to turn its models into defense tools?",
+        "new_since_prior_coverage": "Material new program and product launch within the window.",
+        "practical_payoff": "Open-source maintainers and critical-infrastructure teams may want to evaluate whether they qualify for the new defensive tooling."
       }
     }
   ],

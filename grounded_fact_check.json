@@ -1,64 +1,58 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-08",
+  "date": "2026-10-09",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-08",
+    "date": "2026-10-09",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The script correctly identifies that Manus AI has raised $500 million at a $4 billion valuation and discusses the regulatory risks; however, it attributes the 'four-billion valuation' as being 'roughly four times revenue' based on $100 million in revenue, which is a calculation based on the provided source facts rather than an explicitly stated fact in the source [1].",
-      "Regarding the FCC segment, the script mentions 'late October' as a potential timeline for a ruling [3]. The source confirms this is a possibility for a ruling, though it notes this is a regulatory consideration [3].",
-      "The script accurately captures the OpenAI safety update details, but refers to GPT-6 Sol and GPT-6 Luna [5]. While this is an official update, the script appropriately treats it as a safety disclosure [5].",
-      "The segment on Norway's proposal for a ban on AI glasses mentions it covers 'parks, beaches, museums, schools, and shopping centers' [2], which aligns with the provided source [2]."
+      "The script attributes the 'nearly 90% of the Fortune 100' statistic to Google, which is accurate according to the source, but the host's commentary on the 'installed base' and its implications for the new unified agent rollout relies on the assumption that these are the same users who will immediately adopt the new agent.",
+      "The script mentions 'nearly 80% of Google Cloud customers' using AI products; this is consistent with the source, though it refers to broad AI product usage rather than the specific Gemini agent announced."
     ],
     "verified_source_urls": [
-      "https://www.cnbc.com",
-      "https://www.ft.com",
-      "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
-      "https://www.investing.com/news/stock-market-news/usgovernment-google-join-zuckerbergbacked-biohub-in-18-billion-push-for-ai-biology-data-4936795",
-      "https://openai.com/news/safety-alignment/"
+      "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026?hl=en",
+      "https://www.bloomberg.com",
+      "https://www.anthropic.com/news/anthropic-cyber-mission",
+      "https://www.anthropic.com/news/2026-usage-policy-update",
+      "https://techcrunch.com/2026/10/08/chinas-manus-raises-over-500m-in-first-funding-round-since-split-with-meta/"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-08",
+      "date": "2026-10-09",
       "pass": true,
       "critical_errors": [],
       "warnings": [
-        "The script correctly identifies that Manus AI has raised $500 million at a $4 billion valuation and discusses the regulatory risks; however, it attributes the 'four-billion valuation' as being 'roughly four times revenue' based on $100 million in revenue, which is a calculation based on the provided source facts rather than an explicitly stated fact in the source [1].",
-        "Regarding the FCC segment, the script mentions 'late October' as a potential timeline for a ruling [3]. The source confirms this is a possibility for a ruling, though it notes this is a regulatory consideration [3].",
-        "The script accurately captures the OpenAI safety update details, but refers to GPT-6 Sol and GPT-6 Luna [5]. While this is an official update, the script appropriately treats it as a safety disclosure [5].",
-        "The segment on Norway's proposal for a ban on AI glasses mentions it covers 'parks, beaches, museums, schools, and shopping centers' [2], which aligns with the provided source [2]."
+        "The script attributes the 'nearly 90% of the Fortune 100' statistic to Google, which is accurate according to the source, but the host's commentary on the 'installed base' and its implications for the new unified agent rollout relies on the assumption that these are the same users who will immediately adopt the new agent.",
+        "The script mentions 'nearly 80% of Google Cloud customers' using AI products; this is consistent with the source, though it refers to broad AI product usage rather than the specific Gemini agent announced."
       ],
       "verified_source_urls": [
-        "https://www.cnbc.com",
-        "https://www.ft.com",
-        "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
-        "https://www.investing.com/news/stock-market-news/usgovernment-google-join-zuckerbergbacked-biohub-in-18-billion-push-for-ai-biology-data-4936795",
-        "https://openai.com/news/safety-alignment/"
+        "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026?hl=en",
+        "https://www.bloomberg.com",
+        "https://www.anthropic.com/news/anthropic-cyber-mission",
+        "https://www.anthropic.com/news/2026-usage-policy-update",
+        "https://techcrunch.com/2026/10/08/chinas-manus-raises-over-500m-in-first-funding-round-since-split-with-meta/"
       ]
     }
   ],
   "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-08",
+    "date": "2026-10-09",
     "pass": true,
     "critical_errors": [],
     "warnings": [
-      "The script correctly identifies that Manus AI has raised $500 million at a $4 billion valuation and discusses the regulatory risks; however, it attributes the 'four-billion valuation' as being 'roughly four times revenue' based on $100 million in revenue, which is a calculation based on the provided source facts rather than an explicitly stated fact in the source [1].",
-      "Regarding the FCC segment, the script mentions 'late October' as a potential timeline for a ruling [3]. The source confirms this is a possibility for a ruling, though it notes this is a regulatory consideration [3].",
-      "The script accurately captures the OpenAI safety update details, but refers to GPT-6 Sol and GPT-6 Luna [5]. While this is an official update, the script appropriately treats it as a safety disclosure [5].",
-      "The segment on Norway's proposal for a ban on AI glasses mentions it covers 'parks, beaches, museums, schools, and shopping centers' [2], which aligns with the provided source [2]."
+      "The script attributes the 'nearly 90% of the Fortune 100' statistic to Google, which is accurate according to the source, but the host's commentary on the 'installed base' and its implications for the new unified agent rollout relies on the assumption that these are the same users who will immediately adopt the new agent.",
+      "The script mentions 'nearly 80% of Google Cloud customers' using AI products; this is consistent with the source, though it refers to broad AI product usage rather than the specific Gemini agent announced."
     ],
     "verified_source_urls": [
-      "https://www.cnbc.com",
-      "https://www.ft.com",
-      "https://apnews.com/article/b97fb6e8d06704dc043556dba25de548",
-      "https://www.investing.com/news/stock-market-news/usgovernment-google-join-zuckerbergbacked-biohub-in-18-billion-push-for-ai-biology-data-4936795",
-      "https://openai.com/news/safety-alignment/"
+      "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026?hl=en",
+      "https://www.bloomberg.com",
+      "https://www.anthropic.com/news/anthropic-cyber-mission",
+      "https://www.anthropic.com/news/2026-usage-policy-update",
+      "https://techcrunch.com/2026/10/08/chinas-manus-raises-over-500m-in-first-funding-round-since-split-with-meta/"
     ]
   },
   "pass": true,

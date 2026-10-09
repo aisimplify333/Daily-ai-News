@@ -4,21 +4,20 @@
   "entertainment_rating": null,
   "blocking": false,
   "story_families": [
-    "markets",
+    "products",
     "other",
-    "other"
+    "security"
   ],
-  "first_story_seconds": 58.587,
+  "first_story_seconds": 56.138,
   "audio_measurements": {
-    "integrated_lufs": -16.45,
-    "true_peak_dbtp": -1.72,
-    "loudness_range_lu": 3.9
+    "integrated_lufs": -16.39,
+    "true_peak_dbtp": -1.71,
+    "loudness_range_lu": 4.1
   },
   "dialogue_editor_accepted": true,
   "storyboard_status": "model_plan",
   "issues": [
-    "Rufus feature outside its 100-180 word budget.",
-    "2 expressive Grok calls had no delivery tags; inspect long-turn guard or disabled direction."
+    "Rufus feature outside its 100-180 word budget."
   ],
   "requires_listening": [
     "responsive chemistry",
@@ -33,7 +32,7 @@
     "entertainment_rating": null,
     "rufus_feature": {
       "mode": "on_location",
-      "word_count": 204,
+      "word_count": 224,
       "handoff_and_return": true,
       "clearly_framed": true,
       "duration_in_word_band": false,
@@ -50,42 +49,47 @@
       "self-contained exchange worth sharing"
     ]
   },
-  "performance_plan_turns": 121,
+  "performance_plan_turns": 132,
   "performance_direction_usage": {
     "ALEX": {
-      "planned": 30,
-      "heuristic": 5,
-      "sponsor": 2
+      "planned": 39,
+      "sponsor": 3
     },
     "JAMIE": {
-      "planned": 32,
-      "sponsor": 1
+      "planned": 40,
+      "sponsor": 2
     },
     "RUFUS": {
-      "planned": 37,
-      "sponsor": 3
+      "planned": 38,
+      "heuristic": 2,
+      "sponsor": 1
     }
   },
   "jamie_performance": {
     "basis": "recorded provider calls; requested delivery is not verified emotion",
-    "calls": 33,
+    "calls": 42,
     "moods": {
-      "concern": 10,
-      "curiosity": 2,
-      "dry_wit": 4,
-      "explainer": 2,
-      "neutral": 1,
-      "pressure": 3,
-      "pushback": 9,
-      "warmth": 2
+      "amused": 3,
+      "concern": 4,
+      "concession": 3,
+      "curiosity": 4,
+      "delight": 2,
+      "dry_wit": 6,
+      "explainer": 4,
+      "neutral": 3,
+      "pressure": 2,
+      "pushback": 7,
+      "warmth": 4
     },
     "listened": false,
     "grok_expression_counts": {
-      "build-intensity": 3,
-      "emphasis": 9,
-      "slow": 2,
-      "soft": 10
+      "build-intensity": 4,
+      "chuckle": 3,
+      "decrease-intensity": 3,
+      "emphasis": 7,
+      "slow": 4,
+      "soft": 8
     },
-    "undirected_expressive_calls": 2
+    "undirected_expressive_calls": 0
   }
 }
