@@ -1,0 +1,40 @@
+name: Specialty audio listening review
+on:
+  push:
+    branches: [podcast-root-repair-oct08]
+    paths: [specialty_audio/REVIEW_ONCE]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          sparse-checkout: specialty_audio
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install google-genai
+      - name: Review retained sounds and audition performances
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m specialty_audio.review_audio
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: specialty-audio-review
+          path: specialty_audio/audio_review.json
+      - name: Preserve review evidence
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add specialty_audio/audio_review.json specialty_audio/library/manifest.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Record automated audio review and reviewed sound eligibility'
+            git push origin HEAD:${{ github.ref_name }}
+          fi
