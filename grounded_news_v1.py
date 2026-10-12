@@ -199,7 +199,8 @@ def _fresh_discovery_seeds(items: Any, now: dt.datetime) -> List[Dict[str, str]]
         seen.add(headline.lower())
         seeds.append({"headline": headline[:240],
                       "publisher": str(item.get("publisher") or "")[:100],
-                      "feed_timestamp": published.isoformat()})
+                      "feed_timestamp": published.isoformat(),
+                      "discovery_url": str(item.get("source_url") or item.get("link") or "")[:2000]})
     seeds.sort(key=lambda row: row["feed_timestamp"], reverse=True)
     return seeds[:40]
 
@@ -424,7 +425,7 @@ def build_grounded_story_slate(
             if attempt == 0:
                 text = _grounded_text(prompt, model=model)
             else:
-                refill = prompt + "\nRecovery: independently search documented uses of AI at work and home, creative projects, science, accessibility, education, useful product releases, and infrastructure advances. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these accepted headlines: " + json.dumps([s["headline"] for s in normalized])
+                refill = prompt + "\nRecovery: independently search documented uses of AI at work and home, creative projects, science, accessibility, education, useful product releases, and infrastructure advances. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these already trusted headlines: " + json.dumps([s["headline"] for s in normalized if s["source_tier"] >= 2])
                 refill += "\nPrevious validation results (do not resubmit rejected old stories or change their dates): " + json.dumps(report["attempts"][:-1])
                 if attempt == 2:
                     refill += "\nSOURCE RECOVERY: prioritize direct original articles from primary/major/specialist sources. Corroborating one of these weaker-source events is allowed and should upgrade its evidence, not become an extra story: " + json.dumps([s['headline'] for s in normalized if s['source_tier'] < 2])
@@ -448,17 +449,17 @@ def build_grounded_story_slate(
                 if story:
                     key = re.sub(r"[^a-z0-9]+", " ", story["headline"].lower()).strip()
                     url = story["source_url"].split("?")[0].split("#")[0].rstrip("/")
-                    if key in seen or url in seen_urls:
-                        reason = "duplicate"
-                    elif any(_same_news_event(story, accepted) for accepted in normalized):
-                        index = next(i for i, accepted in enumerate(normalized) if _same_news_event(story, accepted))
+                    if any(_same_news_event(story, accepted) or story["headline"].lower() == accepted["headline"].lower() for accepted in normalized):
+                        index = next(i for i, accepted in enumerate(normalized) if _same_news_event(story, accepted) or story["headline"].lower() == accepted["headline"].lower())
                         if story['source_tier'] > normalized[index]['source_tier']:
                             normalized[index] = story
                             seen.add(key)
                             seen_urls.add(url)
                             entry['source_upgrades'] = entry.get('source_upgrades', 0) + 1
                         else:
-                            reason = "duplicate_event"
+                            reason = "duplicate" if key in seen or url in seen_urls else "duplicate_event"
+                    elif key in seen or url in seen_urls:
+                        reason = "duplicate"
                     else:
                         seen.add(key)
                         seen_urls.add(url)
