@@ -21,7 +21,8 @@ def review(client, rows, folder, kind):
     response = client.models.generate_content(model=os.getenv('AUDIO_REVIEW_MODEL','gemini-3.1-flash-lite'),
         contents=parts, config=types.GenerateContentConfig(response_mime_type='application/json', temperature=0.2, max_output_tokens=5000))
     payload = json.loads(response.text)
-    results = {r['name']:r for r in payload.get('assets',[]) if isinstance(r,dict) and isinstance(r.get('name'),str)}
+    rows_returned = payload if isinstance(payload, list) else payload.get('assets',[])
+    results = {r['name']:r for r in rows_returned if isinstance(r,dict) and isinstance(r.get('name'),str)}
     for row in rows:
         name = row.get('name','war_room')
         result = results.get(name)
