@@ -144,7 +144,7 @@ def main() -> None:
     )
 
     run_command("python distribution_package.py", "Measured chapters and distribution package", allow_fail=True)
-    run_command("python episode_pages.py", "Searchable episode pages and sitemap", allow_fail=True)
+    run_command("python episode_pages.py", "Searchable episode pages and sitemap", allow_fail=False)
     print("\n>> UPLOADING TO GITHUB...", flush=True)
     run_command("git add .", "Staging Files", allow_fail=False)
 
@@ -160,7 +160,7 @@ def main() -> None:
     maybe_run_post_push_publisher()
 
     print("\n===================================================", flush=True)
-    print("   THE AI EDGE v3.1 COST-SAFE COMPLETE. LIVE.", flush=True)
+    print("   THE AI EDGE v3.1 GENERATION AND PUSH COMPLETE. PUBLIC DELIVERY CHECK FOLLOWS.", flush=True)
     print("===================================================", flush=True)
 
 

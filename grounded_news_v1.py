@@ -34,11 +34,14 @@ TIER3_DOMAINS = {
     "nytimes.com", "washingtonpost.com", "openai.com", "anthropic.com",
     "google.com", "blog.google", "deepmind.google", "microsoft.com", "nvidia.com",
     "meta.com", "apple.com", "amazon.com", "github.com", "cursor.com",
+    "mit.edu", "stanford.edu", "nasa.gov", "nih.gov", "nsf.gov",
 }
 TIER2_DOMAINS = {
     "theverge.com", "wired.com", "arstechnica.com", "techcrunch.com",
     "axios.com", "cnbc.com", "fortune.com", "theinformation.com",
-    "technologyreview.com",
+    "technologyreview.com", "bbc.com", "bbc.co.uk", "theguardian.com",
+    "nature.com", "science.org", "newscientist.com", "scientificamerican.com",
+    "spectrum.ieee.org", "statnews.com", "404media.co", "platformer.news",
 }
 
 
@@ -429,10 +432,18 @@ def build_grounded_story_slate(
                 refill += "\nPrevious validation results (do not resubmit rejected old stories or change their dates): " + json.dumps(report["attempts"][:-1])
                 if attempt == 2:
                     refill += "\nSOURCE RECOVERY: prioritize direct original articles from primary/major/specialist sources. Corroborating one of these weaker-source events is allowed and should upgrade its evidence, not become an extra story: " + json.dumps([s['headline'] for s in normalized if s['source_tier'] < 2])
+                    # A focused final request is not another sprawling eight-story brief.
+                    # Preserve the output contract and dates while searching specific leads.
+                    refill = _story_prompt(date_str, 3, now, editorial_history[:3])
+                    refill += "\nTARGETED SOURCE RECOVERY: return up to THREE additional verified events only. Search specific article titles below first, then science/accessibility and documented everyday/workplace uses. Include direct article URLs and actual source dates. Do not return publisher homepages or rewrite old dates."
+                    refill += "\nACCEPTED (retain, do not repeat unless upgrading a weak source): " + json.dumps([
+                        {"headline": s["headline"], "source_url": s["source_url"], "source_tier": s["source_tier"]} for s in normalized])
+                    refill += "\nDISCOVERY LEADS (verify independently): " + json.dumps(seeds[:15])
+                    refill += "\nREJECTIONS TO RESOLVE, NOT BYPASS: " + json.dumps(report["attempts"][:-1])
                     refill += "\nTARGETED FINAL PASS: search individual discovery headlines, open their original articles, and fill the missing slots only. Prioritize documented useful applications and discoveries when the accepted slate is risk-heavy. If a date is unknown, omit the item; never guess a timestamp."
                 text = _recovery_search(refill)
             payload = _extract_json(text, {})
-            rows = payload.get("stories", []) if isinstance(payload, dict) else []
+            rows = payload.get("stories", []) if isinstance(payload, dict) else payload if isinstance(payload, list) else []
             if not isinstance(rows, list):
                 rows = []
             entry["candidates"] = len(rows)
@@ -560,6 +571,7 @@ Return STRICT JSON only:
   "pass": true,
   "critical_errors": [
     {{
+      "line_number": 1,
       "exact_line": "the complete ALEX:, JAMIE:, or RUFUS: line exactly as written",
       "reason": "specific factual problem",
       "claim_type": "factual_assertion",
@@ -613,6 +625,10 @@ Rules:
 - Reserve critical_errors for a materially false, contradicted, fabricated, stale, or
   misleading factual assertion. Put attribution nuance or extra context in warnings.
 - Every replacement must preserve the exact speaker label and conversational intent.
+- line_number is the 1-based index in NUMBERED SCRIPT LINES, including headings and
+  blank lines. Copy exact_line verbatim from that line. Do not include the number
+  in exact_line or replacement_line. When removing an unsupported qualifier is
+  enough, make that small correction; do not invent a replacement fact.
 - Verify claims that documentation, methodology, spend controls or independent
   evidence do not exist by checking linked primary documentation. A short source
   summary omitting something does not establish its absence. Correct overstatements
@@ -631,6 +647,9 @@ SOURCE RECORDS:
 
 SCRIPT:
 {script}
+
+NUMBERED SCRIPT LINES (same script, location reference only):
+{chr(10).join(str(i) + ": " + line for i, line in enumerate(script.splitlines(), 1))}
 """.strip()
 
 
@@ -667,6 +686,24 @@ def fact_check_script(
         ),
         {},
     )
+    report = _validate_fact_payload(script, payload, date_str)
+    # Invalid/no-op/overlong correction output is a transport/schema failure,
+    # not proof that a detected factual defect is impossible to repair.
+    if report["unresolved"]:
+        recovery_prompt = _fact_check_prompt(script, stories, date_str)
+        recovery_prompt += "\nCORRECTION RECOVERY: the previous review detected the following unresolved factual concerns but supplied no usable edit. Verify each concern against sources, locate its numbered SCRIPT line, and return minimal same-speaker corrections with all evidence fields. Never silently clear these concerns or return a pass-only response. Preserve humor and the surrounding exchange.\n" + json.dumps(report["unresolved"])
+        try:
+            recovered = _validate_fact_payload(script, _extract_json(_recovery_search(recovery_prompt), {}), date_str)
+            if recovered["critical_errors"] and not recovered["unresolved"]:
+                recovered["recovery_from"] = report["unresolved"]
+                return recovered
+            report["correction_recovery"] = recovered
+        except Exception as error:
+            report["correction_recovery_error_type"] = type(error).__name__
+    return report
+
+
+def _validate_fact_payload(script, payload, date_str):
     if not isinstance(payload, dict) or type(payload.get("pass")) is not bool:
         raise RuntimeError("Grounded fact audit did not return an explicit verdict")
     errors = payload.get("critical_errors") or []
@@ -689,6 +726,11 @@ def fact_check_script(
                             str(item.get("reason") or "unclassified concern"))
             continue
         exact = str(item.get("exact_line") or "").strip()
+        # A valid numeric location can recover an omitted quote, never redirect
+        # a mismatched quote to a different host turn.
+        line_number = item.get("line_number")
+        if not exact and type(line_number) is int and 1 <= line_number <= len(script.splitlines()):
+            exact = script.splitlines()[line_number - 1]
         replacement = str(item.get("replacement_line") or "").strip()
         reason = str(item.get("reason") or "").strip()
         source_url = str(item.get("source_url") or "").strip()
