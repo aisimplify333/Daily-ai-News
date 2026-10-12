@@ -46,6 +46,21 @@ def main():
     previous = json.loads(previous_path.read_text()) if previous_path.exists() else {}
     if previous.get('sounds', {}).get('conference', {}).get('pass') is False:
         from specialty_audio import build_library
+        # Recover the retained response from the decoder-only failure on Oct 12.
+        # No repeat synthesis: inspect its bytes, duration and silence first.
+        retained = root/'library/conference_v2.mp3'
+        pending = next((r for r in sounds['sounds'] if r['name']=='conference_v2'), None)
+        if retained.exists() and pending and pending['status']=='attempted':
+            from pydub import AudioSegment
+            clip = AudioSegment.from_file(retained)
+            if not 7000 <= len(clip) <= 12000 or clip.rms == 0:
+                raise RuntimeError('Retained replacement failed audio validation')
+            pending.update(status='generated', file=retained.name, seconds=len(clip)/1000,
+                sha256=hashlib.sha256(retained.read_bytes()).hexdigest(),
+                accounted_credits=build_library.RESERVATION, credit_basis='conservative reservation; response header unavailable',
+                listening_review='pending', enabled_in_daily=False)
+            sounds['accounted_credits'] += build_library.RESERVATION
+            build_library.save(sounds)
         build_library.BRIEFS = [('conference_v2', 10, 'Completely empty conference foyer room tone. Only very soft air ventilation and one faint distant footstep. No people, no crowd, no voices, no speech, no music, no alarms. Quiet unobtrusive background for spoken podcast dialogue.')]
         build_library.build_sounds(os.environ['AI_EDGE_PODCAST_ELEVENLABS'], sounds)
         build_library.save(sounds)
