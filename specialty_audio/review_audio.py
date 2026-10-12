@@ -42,6 +42,14 @@ def main():
     root = Path('specialty_audio')
     sounds = json.loads((root/'library/manifest.json').read_text())
     auditions = json.loads((root/'auditions/manifest.json').read_text())
+    previous_path = root/'audio_review.json'
+    previous = json.loads(previous_path.read_text()) if previous_path.exists() else {}
+    if previous.get('sounds', {}).get('conference', {}).get('pass') is False:
+        from specialty_audio import build_library
+        build_library.BRIEFS = [('conference_v2', 10, 'Completely empty conference foyer room tone. Only very soft air ventilation and one faint distant footstep. No people, no crowd, no voices, no speech, no music, no alarms. Quiet unobtrusive background for spoken podcast dialogue.')]
+        build_library.build_sounds(os.environ['AI_EDGE_PODCAST_ELEVENLABS'], sounds)
+        build_library.save(sounds)
+
     sound_rows = [r for r in sounds['sounds'] if r['status']=='generated']
     voice_rows = [r for r in auditions['takes'] if r['status']=='complete' and not r['name'].startswith('war_room_')]
     voice_rows.append(dict(auditions['war_room'],name='war_room'))
@@ -50,9 +58,21 @@ def main():
     output = root/'audio_review.json'
     try:
         for row in sound_rows:
-            report['sounds'].update(review(client, [row], root/'library', 'sound'))
+            old = previous.get('sounds', {}).get(row['name'], {})
+            if old.get('sha256') == hashlib.sha256((root/'library'/row['file']).read_bytes()).hexdigest():
+                report['sounds'][row['name']] = old
+            else:
+                report['sounds'].update(review(client, [row], root/'library', 'sound'))
         output.write_text(json.dumps(report,indent=2))
         # Small batches keep individual performances identifiable to the reviewer.
+        pending = []
+        for row in voice_rows:
+            old = previous.get('auditions', {}).get(row['name'], {})
+            if old.get('sha256') == hashlib.sha256((root/'auditions'/row['file']).read_bytes()).hexdigest():
+                report['auditions'][row['name']] = old
+            else:
+                pending.append(row)
+        voice_rows = pending
         for start in range(0,len(voice_rows),4):
             report['auditions'].update(review(client,voice_rows[start:start+4],root/'auditions','speech'))
             output.write_text(json.dumps(report,indent=2))

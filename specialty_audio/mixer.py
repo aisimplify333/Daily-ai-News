@@ -28,7 +28,7 @@ def mix_reviewed_bed(voice_path, destination, text, root=None):
         if not name:
             return None
         manifest = json.loads((root/'manifest.json').read_text())
-        row = next((r for r in manifest.get('sounds', []) if r.get('name') == name
+        row = next((r for r in manifest.get('sounds', []) if r.get('name') in (name, name+'_v2')
                     and r.get('listening_review') == 'approved'
                     and r.get('enabled_in_daily') is True), None)
         if not row or Path(row['file']).name != row['file']:
