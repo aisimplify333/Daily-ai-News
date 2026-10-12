@@ -2,6 +2,7 @@
 import hashlib
 import json
 import os
+import traceback
 from pathlib import Path
 from google import genai
 from google.genai import types
@@ -60,7 +61,9 @@ def main():
         report['complete'] = True
         output.write_text(json.dumps(report,indent=2))
     except Exception as exc:
-        report.update(complete=False,error=type(exc).__name__)
+        report.update(complete=False,error=type(exc).__name__,
+                      frames=[{'file':Path(f.filename).name,'function':f.name,'line':f.lineno} for f in traceback.extract_tb(exc.__traceback__)])
+        if isinstance(exc, AttributeError): report['attribute'] = str(exc.name)
         output.write_text(json.dumps(report,indent=2))
         raise SystemExit('Audio review incomplete: '+type(exc).__name__) from None
 
