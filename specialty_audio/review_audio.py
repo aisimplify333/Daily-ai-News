@@ -19,7 +19,12 @@ def review(client, rows, folder, kind):
         parts += [types.Part.from_text(text='LABEL: '+name+'\nBRIEF: '+row.get('prompt', row.get('text','Fictional multi-speaker war room'))),
                   types.Part.from_bytes(data=path.read_bytes(), mime_type='audio/mpeg')]
     response = client.models.generate_content(model=os.getenv('AUDIO_REVIEW_MODEL','gemini-3.1-flash-lite'),
-        contents=parts, config=types.GenerateContentConfig(response_mime_type='application/json', temperature=0.2, max_output_tokens=5000))
+        contents=parts, config=types.GenerateContentConfig(response_mime_type='application/json',
+            response_schema={'type':'OBJECT', 'properties':{'assets':{'type':'ARRAY','items':{
+                'type':'OBJECT','properties':{'name':{'type':'STRING','enum':[r.get('name','war_room') for r in rows]},
+                'pass':{'type':'BOOLEAN'},'reason':{'type':'STRING'},'clarity':{'type':'INTEGER'},'naturalness':{'type':'INTEGER'}},
+                'required':['name','pass','reason','clarity','naturalness']}}},'required':['assets']},
+            temperature=0.2, max_output_tokens=5000))
     payload = json.loads(response.text)
     rows_returned = payload if isinstance(payload, list) else payload.get('assets',[])
     results = {r['name']:r for r in rows_returned if isinstance(r,dict) and isinstance(r.get('name'),str)}
@@ -44,7 +49,8 @@ def main():
               'model':os.getenv('AUDIO_REVIEW_MODEL','gemini-3.1-flash-lite'), 'sounds':{}, 'auditions':{}}
     output = root/'audio_review.json'
     try:
-        report['sounds'] = review(client, sound_rows, root/'library', 'sound')
+        for row in sound_rows:
+            report['sounds'].update(review(client, [row], root/'library', 'sound'))
         output.write_text(json.dumps(report,indent=2))
         # Small batches keep individual performances identifiable to the reviewer.
         for start in range(0,len(voice_rows),4):
@@ -65,6 +71,7 @@ def main():
         report.update(complete=False,error=type(exc).__name__,
                       frames=[{'file':Path(f.filename).name,'function':f.name,'line':f.lineno} for f in traceback.extract_tb(exc.__traceback__)])
         if isinstance(exc, AttributeError): report['attribute'] = str(exc.name)
+        if isinstance(exc, RuntimeError): report['diagnostic'] = str(exc)[:250]
         output.write_text(json.dumps(report,indent=2))
         raise SystemExit('Audio review incomplete: '+type(exc).__name__) from None
 
