@@ -31,8 +31,13 @@ useful_discovery: a concrete supported use, possibility or insight that teaches 
 listener something beyond fear/compliance: at least one substantial beneficial
 application or discovery people could be curious or excited about. Explaining harm
 or adding controls alone does not qualify. Do not invent an uplifting outcome.
-rufus_scene: an explicitly imagined concrete situation, studio challenge DURING that scene, witty
-reply and useful payoff. A ministry/city name followed by a lecture is a FAIL.
+rufus_scene: an explicitly imagined concrete situation, a responsive studio exchange,
+dry wit and a useful payoff. The scene begins at Alex's handoff and ends at Alex's
+"Back to the wider story" return. A Jamie question, observation or teasing challenge
+ANYWHERE between those boundaries followed by Rufus's responsive reply counts as
+interaction during the scene. Do not demand interruption before the setting is
+finished, a difficulty to overcome, or theatrical conflict. Wit can appear in the
+setup or response. A city name followed only by a monologue is a FAIL.
 single_endings: each story earns one payoff; no analysis restarting after a sign-off
 or repeated recap. A brief closing synthesis/forward look is allowed, but not a
 second discussion. The listener question, sponsor credit, house tag and follow CTA

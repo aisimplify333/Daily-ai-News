@@ -585,6 +585,9 @@ Rules:
   arithmetic is a factual error, never an opinion or a warning because it is derived.
   Include each monetary ratio or "raised more than the acquisition" comparison in
   calculations, using exact amount phrases from SCRIPT; code will compute the result.
+  Return calculations: [] when there are no monetary ratios/comparisons. Do not
+  put years, dates, headcounts, ordinary quoted amounts or percentage changes into
+  this monetary-only schema; check those factual assertions in critical_errors.
   Four billion divided by one hundred million is forty, not four. Funding raised,
   company valuation and an acquisition price are different quantities.
 - Verify the YEAR of historical examples against the episode date, including phrases
@@ -733,6 +736,7 @@ def fact_check_script(
         "date": date_str,
         "pass": payload["pass"] and not clean_errors and not unresolved,
         "unresolved": unresolved,
+        "calculation_records": payload.get("calculations"),
         "critical_errors": clean_errors,
         "warnings": [str(value).strip() for value in warnings if str(value).strip()],
         "verified_source_urls": [
@@ -769,6 +773,10 @@ def audit_with_repairs(script, audit_fn, normalize_fn, checkpoint_path=None):
             break
         corrected, applied = apply_fact_replacements(script, audit)
         if not applied:
+            # One fresh audit can repair malformed model output, not waive a fact.
+            malformed = ('Invalid or ungrounded calculation record', 'Fact audit omitted calculations array')
+            if index == 0 and audit.get('unresolved') and all(x in malformed for x in audit['unresolved']):
+                continue
             break
         corrected = normalize_fn(corrected)
         if corrected == script:
