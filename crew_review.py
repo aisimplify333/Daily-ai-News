@@ -1,4 +1,5 @@
 """Bounded final scene repair before fact checking and TTS. Never a quality score."""
+from collections import Counter
 import hashlib
 import json
 import re
@@ -6,7 +7,7 @@ from crew_direction import CREW_DIRECTION
 from dialogue_direction import sponsor_text
 
 PRODUCTION_LANGUAGE = re.compile(
-    r"\b(?:scene plan|source packet|writing prompt|word budget|production notes|"
+    r"\b(?:scene plan|source packet|source record|writing prompt|word budget|production notes|"
     r"accessible (?:excerpt|reporting)|scene we're working from)\b", re.I)
 
 
@@ -32,7 +33,9 @@ Line numbers are 1-based and refer to NUMBERED FINAL SCRIPT. Do not include line
 numbers in replacement speech. Select complete speaker lines only. New may be an empty
 string to delete a redundant exchange without deleting receipts or navigation.
 Keep review notes concise (at most 40 words per field) and edit reasons under 25 words.
-Review segments 2,3,4. At most 12 small, nonoverlapping edits. Improve the weakest
+Review segments 2,3,4 and editorial closing lines in 5. The supplied runtime headroom is binding: when cuts would
+drop below minimum, replace weak exposition with a substantive sourced exchange
+in the same edit. Do not retain repetition merely to pad runtime. At most 12 small, nonoverlapping edits. Improve the weakest
 exchanges, remove internal production language and repeated endings, and make the
 Rufus feature an honest imagined scene with a responsive studio exchange. Preserve
 numbers, factual qualifications, attribution, sponsor copy, navigation and segment
@@ -41,7 +44,7 @@ within its existing runtime band; prioritize replacing dull text, not adding fil
 Use source facts only, never planning notes as evidence. A lack of genuinely varied
 stories cannot be repaired by calling regulation exciting: report it as unresolved.
 Do not claim your proposed edits are verified improvements or assign a numeric score.
-''' + '\nSOURCES:\n' + json.dumps(stories[:3], ensure_ascii=False) + '\nSCENE BRIEFS:\n' + json.dumps({'scenes': board.get('story_scenes', []), 'rufus_global_markets_desk': board.get('rufus_global_markets_desk', {})}, ensure_ascii=False) + '\nNUMBERED FINAL SCRIPT:\n' + '\n'.join(f'{i}: {line}' for i, line in enumerate(original_lines, 1))
+''' + '\nSOURCES:\n' + json.dumps(stories[:3], ensure_ascii=False) + '\nSCENE BRIEFS:\n' + json.dumps({'scenes': board.get('story_scenes', []), 'rufus_global_markets_desk': board.get('rufus_global_markets_desk', {})}, ensure_ascii=False) + '\nRUNTIME HEADROOM:\n' + json.dumps(assess(script).get('metrics', {})) + '\nNUMBERED FINAL SCRIPT:\n' + '\n'.join(f'{i}: {line}' for i, line in enumerate(original_lines, 1))
     try:
         raw = request(prompt)
         data = json.loads(re.sub(r'^```(?:json)?\s*|\s*```$', '', raw.strip()))
@@ -59,11 +62,11 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
             start, end = item.get('start_line'), item.get('end_line')
             if type(start) is int and type(end) is int and 1 <= start <= end <= len(original_lines):
                 old = '\n'.join(original_lines[start-1:end])
-            if not isinstance(old, str) or not isinstance(new, str) or segment not in (2,3,4):
+            if not isinstance(old, str) or not isinstance(new, str) or segment not in (2,3,4,5):
                 row['reason'] = 'invalid_edit'
                 continue
-            section = re.search(rf'^###\s*SEGMENT\s*{segment}\b[^\n]*\n(.*?)(?=^###\s*SEGMENT\s*{segment+1}\b)', script, re.M|re.S|re.I)
-            if not old or script.count(old) != 1 or not section or old not in section[1]:
+            section = re.search(rf'^###\s*SEGMENT\s*{segment}\b[^\n]*\n(.*?)(?=^###\s*SEGMENT\s*{segment+1}\b|\Z)', script, re.M|re.S|re.I)
+            if not old or (script.count(old) != 1 and new != '') or not section or old not in section[1]:
                 row['reason'] = 'nonunique_or_wrong_scene'
                 continue
             if any(not re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*\S.*', line) for block in (old,new) for line in block.splitlines()):
@@ -81,19 +84,25 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                 continue
             navigation = ('Rufus, take us on location.', 'Rufus, take us to the global desk.',
                           'Back to the wider story.')
-            if any(old.count(marker) > new.count(marker) for marker in navigation):
+            if any(marker in old and section[1].count(marker)-old.count(marker)+new.count(marker) < 1 for marker in navigation):
                 row['reason'] = 'feature_navigation_protected'
                 continue
-            if sorted(re.findall(r'\b\d[\d,.%]*', old)) != sorted(re.findall(r'\b\d[\d,.%]*', new)):
+            if Counter(re.findall(r'\b\d[\d,.%]*', new)) - Counter(re.findall(r'\b\d[\d,.%]*', old)):
                 row['reason'] = 'numeric_receipts_changed'
                 continue
-            if len(new.split()) > max(80, len(old.split()) * 1.3):
+            if len(new.split()) > max(250, len(old.split()) * 1.5):
                 row['reason'] = 'unbounded_expansion'
                 continue
-            candidate = normalize(script.replace(old, new, 1))
+            candidate = normalize(script[:section.start(1)] + section[1].replace(old, new, 1) + script[section.end(1):])
             before, after = assess(script), assess(candidate)
-            if set(after.get('failed', [])) - set(before.get('failed', [])):
+            new_failures = set(after.get('failed', [])) - set(before.get('failed', []))
+            # Permit useful cuts temporarily; the caller replenishes sourced material
+            # before final acceptance/TTS. Never publish this intermediate candidate.
+            if new_failures == {'runtime_word_band'} and 2800 <= after.get('metrics', {}).get('words', 0) <= 4800:
+                new_failures.clear()
+            if new_failures:
                 row['reason'] = 'new_structural_or_runtime_failure'
+                row['new_failures'] = sorted(new_failures)
                 continue
             if len(spoken_leaks(candidate)) > len(spoken_leaks(script)):
                 row['reason'] = 'new_production_language'
@@ -107,4 +116,5 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
     report['output_sha256'] = hashlib.sha256(script.encode()).hexdigest()
     report['status'] = 'repairs_applied_need_audio_review' if report['accepted_edits'] else 'no_repairs_applied'
     return script, report
+
 

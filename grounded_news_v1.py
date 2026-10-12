@@ -32,7 +32,7 @@ TIER2_PUBLISHERS = {
 TIER3_DOMAINS = {
     "reuters.com", "apnews.com", "bloomberg.com", "ft.com", "wsj.com",
     "nytimes.com", "washingtonpost.com", "openai.com", "anthropic.com",
-    "google.com", "deepmind.google", "microsoft.com", "nvidia.com",
+    "google.com", "blog.google", "deepmind.google", "microsoft.com", "nvidia.com",
     "meta.com", "apple.com", "amazon.com", "github.com", "cursor.com",
 }
 TIER2_DOMAINS = {
@@ -167,7 +167,8 @@ def _rejection_reason(raw: Any, now: dt.datetime) -> str:
     if published is None:
         return "invalid_publication_time"
     url = str(raw["source_url"])
-    if not url.startswith("https://") or not _domain(url) or "news.google.com" in url:
+    if (not url.startswith("https://") or not _domain(url) or "news.google.com" in url
+            or urlparse(url).path.strip("/").lower() in {"", "news", "blog", "technology", "news/safety-alignment"}):
         return "invalid_source_url"
     age = (now - published).total_seconds() / 3600
     if age < -6 or age > MAX_AGE_HOURS:
@@ -267,7 +268,7 @@ Rules:
   Reuters, AP, Bloomberg, CNBC, Wall Street Journal, Financial Times, Yahoo Finance,
   TechCrunch, The Verge, Wired and Ars Technica; use the original report rather than
   a syndicated Yahoo copy when the original is available.
-- At least five candidates must use a primary source or major newsroom.
+- At least five candidates must use a primary source or major newsroom. Publisher homepages are invalid evidence: supply the specific article, announcement or filing URL.
 - Build usable reporting packets, not two-fact headlines. When evidence permits,
   supply 6-8 distinct facts: what changed, previous state, a concrete documented use,
   who benefits, actual access/cost/timing, a measurable result and its strongest limit.
@@ -332,7 +333,8 @@ def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str
     published = _parse_time(published_at)
     if not all((headline, publisher, source_url, summary, published)):
         return None
-    if not source_url.startswith("https://") or "news.google.com" in source_url:
+    if (not source_url.startswith("https://") or "news.google.com" in source_url
+            or urlparse(source_url).path.strip("/").lower() in {"", "news", "blog", "technology", "news/safety-alignment"}):
         return None
     age_hours = (now - published).total_seconds() / 3600.0
     if age_hours < -6 or age_hours > MAX_AGE_HOURS:
@@ -412,9 +414,9 @@ def build_grounded_story_slate(
     report: Dict[str, Any] = {"episode_date": date_str, "discovery_seed_count": len(seeds),
                             "window_start": (now - dt.timedelta(hours=MAX_AGE_HOURS)).isoformat(),
                             "window_end": now.isoformat(), "attempts": [], "status": "researching"}
-    # One extra targeted pass only when actual fresh discovery leads exist.
+    # Final targeted pass may use fresh RSS leads OR validated/rejected article leads.
     # At most four provider requests including the primary's existing fallback.
-    for attempt in range(3 if seeds else 2):
+    for attempt in range(3):
         stage = ("primary", "alternate_refill", "targeted_discovery_refill")[attempt]
         entry: Dict[str, Any] = {"stage": stage, "rejections": {}, "rejected_examples": []}
         report["attempts"].append(entry)
@@ -422,10 +424,11 @@ def build_grounded_story_slate(
             if attempt == 0:
                 text = _grounded_text(prompt, model=model)
             else:
-                refill = prompt + "\nRecovery: independently search model releases, legislation/courts, finance/banking/funding, chips/infrastructure, and AI security. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these accepted headlines: " + json.dumps([s["headline"] for s in normalized])
+                refill = prompt + "\nRecovery: independently search documented uses of AI at work and home, creative projects, science, accessibility, education, useful product releases, and infrastructure advances. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these accepted headlines: " + json.dumps([s["headline"] for s in normalized])
                 refill += "\nPrevious validation results (do not resubmit rejected old stories or change their dates): " + json.dumps(report["attempts"][:-1])
                 if attempt == 2:
-                    refill += "\nTARGETED FINAL PASS: search individual discovery headlines, open their original articles, and fill the missing slots only. Prefer current model releases, financial deals and policy filings. If a date is unknown, omit the item; never guess a timestamp."
+                    refill += "\nSOURCE RECOVERY: prioritize direct original articles from primary/major/specialist sources. Corroborating one of these weaker-source events is allowed and should upgrade its evidence, not become an extra story: " + json.dumps([s['headline'] for s in normalized if s['source_tier'] < 2])
+                    refill += "\nTARGETED FINAL PASS: search individual discovery headlines, open their original articles, and fill the missing slots only. Prioritize documented useful applications and discoveries when the accepted slate is risk-heavy. If a date is unknown, omit the item; never guess a timestamp."
                 text = _recovery_search(refill)
             payload = _extract_json(text, {})
             rows = payload.get("stories", []) if isinstance(payload, dict) else []
@@ -448,7 +451,14 @@ def build_grounded_story_slate(
                     if key in seen or url in seen_urls:
                         reason = "duplicate"
                     elif any(_same_news_event(story, accepted) for accepted in normalized):
-                        reason = "duplicate_event"
+                        index = next(i for i, accepted in enumerate(normalized) if _same_news_event(story, accepted))
+                        if story['source_tier'] > normalized[index]['source_tier']:
+                            normalized[index] = story
+                            seen.add(key)
+                            seen_urls.add(url)
+                            entry['source_upgrades'] = entry.get('source_upgrades', 0) + 1
+                        else:
+                            reason = "duplicate_event"
                     else:
                         seen.add(key)
                         seen_urls.add(url)
@@ -479,15 +489,18 @@ def build_grounded_story_slate(
         provisional = balanced_story_order(normalized)
         report["topic_families"] = [topic_family(s) for s in provisional[:3]]
         report["concentrated_slate"] = concentrated(provisional)
-        if ready and not (attempt == 0 and concentrated(provisional)):
+        if ready and not concentrated(provisional):
             break
-    from editorial_selection import balanced_story_order
+    from editorial_selection import balanced_story_order, concentrated, listener_frame
     normalized = balanced_story_order(normalized)[:n]
+    report["validated_candidates"] = normalized
     report["selected_editorial_cases"] = [
         {"headline": s["headline"], "source_url": s["source_url"],
          "editorial_analysis_not_verified_facts": s.get("editorial_case", {})}
         for s in normalized[:3]
     ]
+    report["listener_frames"] = [listener_frame(s) for s in normalized[:3]]
+    report["concentrated_slate"] = concentrated(normalized)
     report["candidate_target"] = n
     report["required_air_stories"] = required_story_count
     report["reserve_candidates_missing"] = max(0, n - len(normalized))
@@ -511,6 +524,8 @@ def build_grounded_story_slate(
             f"Grounded search returned only {trusted} trusted stories; "
             f"{MIN_TRUSTED_STORIES} required"
         )
+    if concentrated(normalized):
+        raise RuntimeError("Story variety unresolved after bounded research: three stories share one listener frame")
     for rank, story in enumerate(normalized, start=1):
         story["rank"] = rank
         story["story_role"] = "top_ai_event"
@@ -532,7 +547,7 @@ def _fact_check_prompt(script: str, stories: List[Dict[str, Any]], date_str: str
             "data_points": story.get("data_points") or [],
             "limitations_or_qualifiers": story.get("limitations_or_qualifiers") or [],
         }
-        for story in stories
+        for story in stories[:3]
     ]
     return f"""Fact-check this podcast script for the episode dated {date_str} using
 Google Search and the supplied source records. Be strict about factual assertions,
@@ -554,11 +569,31 @@ Return STRICT JSON only:
     }}
   ],
   "warnings": ["noncritical uncertainty"],
+  "calculations": [{{"exact_line":"complete speaker line containing a numerical comparison",
+    "left_quote":"exact monetary amount phrase from SCRIPT",
+    "right_quote":"exact monetary amount phrase from SCRIPT",
+    "operation":"ratio or greater_than",
+    "ratio_quote":"exact phrase such as four times from exact_line; empty for greater_than",
+    "replacement_line":"corrected complete same-speaker line if wrong; otherwise exact_line"}}],
   "verified_source_urls": ["direct URL"]
 }}
 
 Rules:
 - pass is false when critical_errors is non-empty.
+- Audit only assertions actually spoken in SCRIPT, not unused reserve story records.
+- Recalculate ALL numerical comparisons, revenue multiples and percentages. Wrong
+  arithmetic is a factual error, never an opinion or a warning because it is derived.
+  Include each monetary ratio or "raised more than the acquisition" comparison in
+  calculations, using exact amount phrases from SCRIPT; code will compute the result.
+  Return calculations: [] when there are no monetary ratios/comparisons. Do not
+  put years, dates, headcounts, ordinary quoted amounts or percentage changes into
+  this monetary-only schema; check those factual assertions in critical_errors.
+  Four billion divided by one hundred million is forty, not four. Funding raised,
+  company valuation and an acquisition price are different quantities.
+- Verify the YEAR of historical examples against the episode date, including phrases
+  such as "earlier this year". Do not carry old events into the current year.
+- A critical error you cannot safely repair must still be returned with its exact_line
+  and reason; never mark the episode clean merely because a repair is unavailable.
 - EDITORIAL FREEDOM: this is an opinionated debate, not a neutral news bulletin.
   Preserve strong judgments, sarcasm, British idioms, rhetorical exaggeration,
   disagreement, predictions and clearly fictional/hypothetical scenes. Do not
@@ -619,19 +654,10 @@ def fact_check_script(
     date_str: str,
     model: str = DEFAULT_MODEL,
 ) -> Dict[str, Any]:
-    if os.getenv("ENABLE_GROUNDED_FACT_AUDIT", "false").strip().lower() not in {
+    if os.getenv("ENABLE_GROUNDED_FACT_AUDIT", "true").strip().lower() not in {
         "1", "true", "yes",
     }:
-        return {
-            "version": "grounded-fact-check-v1",
-            "date": date_str,
-            "pass": True,
-            "skipped": True,
-            "reason": "advisory audit disabled on the autonomous daily critical path",
-            "critical_errors": [],
-            "warnings": [],
-            "verified_source_urls": [],
-        }
+        raise RuntimeError("Required fact audit is disabled; refusing an unchecked episode")
     payload = _extract_json(
         _grounded_text(
             _fact_check_prompt(script, stories, date_str),
@@ -640,18 +666,24 @@ def fact_check_script(
         ),
         {},
     )
-    if not isinstance(payload, dict):
-        raise RuntimeError("Grounded fact audit did not return an object")
+    if not isinstance(payload, dict) or type(payload.get("pass")) is not bool:
+        raise RuntimeError("Grounded fact audit did not return an explicit verdict")
     errors = payload.get("critical_errors") or []
     warnings = payload.get("warnings") or []
     if not isinstance(errors, list) or not isinstance(warnings, list):
         raise RuntimeError("Grounded fact audit returned an invalid schema")
     clean_errors: List[Dict[str, str]] = []
+    unresolved = []
     seen_exact: set[str] = set()
     for item in errors:
         if not isinstance(item, dict):
+            unresolved.append("malformed critical error")
+            continue
+        if item.get("claim_type") == "opinion":
+            warnings.append(str(item.get("reason") or "opinion"))
             continue
         if not _has_factual_evidence(item):
+            unresolved.append(str(item.get("reason") or "Critical factual concern without valid evidence"))
             warnings.append("Advisory only; no reviewable factual correction: " +
                             str(item.get("reason") or "unclassified concern"))
             continue
@@ -660,8 +692,12 @@ def fact_check_script(
         reason = str(item.get("reason") or "").strip()
         source_url = str(item.get("source_url") or "").strip()
         if not exact or not replacement or not reason:
+            unresolved.append(reason or "Unrepairable critical error")
             continue
-        if exact == replacement or exact in seen_exact:
+        if exact in seen_exact:
+            continue
+        if exact == replacement or exact not in script.splitlines():
+            unresolved.append(reason or "Unmatched critical error")
             continue
         exact_low = exact.lower()
         if (
@@ -672,9 +708,14 @@ def fact_check_script(
         if not re.match(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", exact, flags=re.I):
             continue
         if not re.match(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", replacement, flags=re.I):
+            unresolved.append(reason)
+            continue
+        if exact.split(":", 1)[0] != replacement.split(":", 1)[0]:
+            unresolved.append(reason)
             continue
         spoken = re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", replacement, flags=re.I)
         if len(re.findall(r"\b[\w'-]+\b", spoken)) > 55:
+            unresolved.append(reason)
             continue
         clean_errors.append({
             "claim_type": "factual_assertion",
@@ -686,10 +727,16 @@ def fact_check_script(
             "source_url": source_url,
         })
         seen_exact.add(exact)
+    from claim_math import check_calculations
+    math_errors, math_unresolved = check_calculations(script, payload.get("calculations"))
+    clean_errors.extend(math_errors)
+    unresolved.extend(math_unresolved)
     return {
         "version": "grounded-fact-check-v1",
         "date": date_str,
-        "pass": not clean_errors,
+        "pass": payload["pass"] and not clean_errors and not unresolved,
+        "unresolved": unresolved,
+        "calculation_records": payload.get("calculations"),
         "critical_errors": clean_errors,
         "warnings": [str(value).strip() for value in warnings if str(value).strip()],
         "verified_source_urls": [
@@ -726,6 +773,10 @@ def audit_with_repairs(script, audit_fn, normalize_fn, checkpoint_path=None):
             break
         corrected, applied = apply_fact_replacements(script, audit)
         if not applied:
+            # One fresh audit can repair malformed model output, not waive a fact.
+            malformed = ('Invalid or ungrounded calculation record', 'Fact audit omitted calculations array')
+            if index == 0 and audit.get('unresolved') and all(x in malformed for x in audit['unresolved']):
+                continue
             break
         corrected = normalize_fn(corrected)
         if corrected == script:
@@ -771,4 +822,5 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 

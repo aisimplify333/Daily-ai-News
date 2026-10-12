@@ -14,7 +14,7 @@ def feature_status(script):
     words = len(re.findall(r"\b[\w'-]+\b", re.sub(r'^(ALEX|JAMIE|RUFUS):','',content,flags=re.M)))
     frame = mode == 'global_desk' or bool(re.search(r'\b(?:picture|imagine)\b',content,re.I))
     return {'mode':mode, 'word_count':words, 'handoff_and_return':bool(content),
-            'clearly_framed':frame, 'duration_in_word_band':100 <= words <= 180,
+            'clearly_framed':frame, 'duration_in_word_band':100 <= words <= 220,
             'present': bool(content) and frame and 'RUFUS:' in content and 'JAMIE:' in content}
 
 def ensure_feature_fallback(script):
@@ -24,7 +24,24 @@ def ensure_feature_fallback(script):
     if feature_status(script)['present']:
         return script
     match = re.search(r'(^###\s*SEGMENT\s*3\b[^\n]*\n)(.*?)(?=^###\s*SEGMENT\s*4\b)',script,re.M|re.S|re.I)
-    if not match or HANDOFF in match[2] or DESK in match[2]:
+    if not match:
+        return script
+    if (HANDOFF in match[2] or DESK in match[2]) and RETURN not in match[2]:
+        lines = match[2].splitlines()
+        handoff = next(i for i,line in enumerate(lines) if HANDOFF in line or DESK in line)
+        words, jamie_seen, reply_seen = 0, False, False
+        for i in range(handoff + 1, len(lines)):
+            line = lines[i]
+            if line.startswith('ALEX:') and words >= 100 and jamie_seen and reply_seen:
+                lines.insert(i, 'ALEX: ' + RETURN)
+                return script[:match.start(2)] + '\n'.join(lines) + '\n\n' + script[match.end(2):]
+            if line.startswith('JAMIE:'):
+                jamie_seen = True
+            if jamie_seen and line.startswith('RUFUS:'):
+                reply_seen = True
+            words += max(0, len(line.split()) - 1)
+        return script
+    if HANDOFF in match[2] or DESK in match[2]:
         return script
     lines = match[2].splitlines()
     start = next((i for i,l in enumerate(lines) if l.startswith('RUFUS:')),None)
@@ -50,10 +67,11 @@ def audit(script):
     elif feature['mode'] == 'global_desk':
         issues.append('Global-desk fallback delivered; a sourced on-location scene was not verified.')
     if feature['present'] and not feature['duration_in_word_band']:
-        issues.append('Rufus feature outside its 100-180 word budget.')
+        issues.append('Rufus feature outside its 100-220 word budget.')
     return {'basis':'transcript structure only; not a listening rating', 'entertainment_rating':None,
             'rufus_feature':feature, 'issues':issues,
             'requires_editorial_review':['distinct listener consequences across three stories',
                 'technical terms explained on first use','everyday examples',
                 'responsive warmth, humor and changed viewpoints','self-contained exchange worth sharing']}
+
 

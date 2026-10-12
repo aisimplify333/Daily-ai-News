@@ -24,6 +24,12 @@ ALEX: Goodbye.
 
 
 class CrewReviewTests(unittest.TestCase):
+    def test_redundant_number_can_be_cut_before_required_fact_audit(self):
+        result, report = self.review([{'segment':3, 'old':'RUFUS: The price is 20 dollars.',
+                                       'new':'RUFUS: That is the listed price.'}])
+        self.assertEqual(report['accepted_edits'], 1)
+        self.assertIn('That is the listed price.', result)
+
     def review(self, edits, assess=lambda _: {'failed': []}):
         return review_final_scenes(SCRIPT, [], {}, lambda _: json.dumps({'edits': edits}),
                                    lambda x: x, assess)

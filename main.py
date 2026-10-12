@@ -6064,6 +6064,8 @@ def produce_episode() -> None:
     pause_assets = {}
     from rufus_audio import entrance_due, prepare_entrance
     rufus_entrance_played = False
+    rufus_atmosphere_played = False
+    from specialty_audio.mixer import mix_reviewed_bed
     for render_index, (speaker, text) in enumerate(render_items):
         if speaker == "MUSIC":
             if not intro_done:
@@ -6182,6 +6184,13 @@ def produce_episode() -> None:
                 voice_seg = AudioSegment.from_file(final_voice_path).apply_gain(gain_db)
                 voice_seg.export(gained_path, format="mp3", bitrate="192k")
                 final_voice_path = gained_path
+
+            if speaker == "RUFUS" and assembly_segment == 3 and not rufus_atmosphere_played:
+                atmosphere = mix_reviewed_bed(final_voice_path,
+                    run_tmp / f"rufus_atmosphere_{seg_idx}.mp3", chunk)
+                if atmosphere is not None:
+                    final_voice_path = atmosphere
+                    rufus_atmosphere_played = True
 
             mixed_voice_path = run_tmp / f"{today}_seg_{seg_idx:04d}_{speaker.lower()}_mix.mp3"
             sponsor_chunk = any(

@@ -1,0 +1,47 @@
+name: ElevenLabs specialty audition
+on:
+  push:
+    branches: [podcast-root-repair-oct08]
+    paths: [specialty_audio/AUDITION_ONCE]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: eleven-specialty-audition
+  cancel-in-progress: false
+jobs:
+  audition:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          sparse-checkout: specialty_audio
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: sudo apt-get update -qq && sudo apt-get install -y ffmpeg
+      - run: pip install pydub
+      - name: Retained auditions within 10000-credit reservation budget
+        env:
+          AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
+        run: python -m specialty_audio.audition
+      - name: Preserve every completed and partial take
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: elevenlabs-specialty-auditions
+          path: specialty_audio/auditions
+          retention-days: 30
+      - name: Save auditions on the working branch
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add specialty_audio/auditions
+          if ! git diff --cached --quiet; then
+            git commit -m 'Preserve ElevenLabs audition takes and pending listening status'
+            git push origin HEAD:${{ github.ref_name }}
+          fi
