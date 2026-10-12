@@ -1,8 +1,8 @@
 {
-  "episode_date": "2026-10-09",
+  "episode_date": "2026-10-12",
   "discovery_seed_count": 40,
-  "window_start": "2026-10-07T13:28:07.056800+00:00",
-  "window_end": "2026-10-09T13:28:07.056800+00:00",
+  "window_start": "2026-10-10T22:09:52.258904+00:00",
+  "window_end": "2026-10-12T22:09:52.258904+00:00",
   "attempts": [
     {
       "stage": "primary",
@@ -15,30 +15,29 @@
     {
       "stage": "alternate_refill",
       "rejections": {
-        "outside_freshness_window": 2,
-        "duplicate_event": 1,
-        "duplicate": 1
+        "duplicate_event": 2,
+        "outside_freshness_window": 2
       },
       "rejected_examples": [
         {
-          "headline": "OpenAI rolls out GPT-6 and an intelligent UI for everyone",
-          "published_at": "2026-10-07T00:00:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Google Cloud launches Gemini at Work 2026 with a universal agent for enterprises",
-          "published_at": "2026-10-08T18:18:00Z",
+          "headline": "Meta launches Muse Wonder and Muse Wonder Full, its most capable AI models yet",
+          "published_at": "2026-10-12T00:00:00Z",
           "reason": "duplicate_event"
         },
         {
-          "headline": "Anthropic releases Claude Haiku 5.5, a cheaper small model",
-          "published_at": "2026-10-07T00:00:00Z",
+          "headline": "Google Cloud rolls out Gemini Agent for work tasks and multi-step automation",
+          "published_at": "2026-10-09T00:00:00Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Google Cloud launches Gemini agent for work",
-          "published_at": "2026-10-08T00:00:00Z",
-          "reason": "duplicate"
+          "headline": "Meta says Muse Wonder is available now through API and Muse Code subscriptions",
+          "published_at": "2026-10-12T00:00:00Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "AP reports Americans remain worried that AI is developing too fast",
+          "published_at": "2026-10-08T10:20:41Z",
+          "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
@@ -48,48 +47,242 @@
   ],
   "status": "ready",
   "topic_families": [
-    "other",
     "products",
-    "security"
+    "science_access",
+    "products"
   ],
   "concentrated_slate": false,
+  "validated_candidates": [
+    {
+      "event_key": "meta-muse-wonder-launch",
+      "headline": "Meta Launches Muse Wonder AI Models to Challenge Industry Leaders",
+      "title": "Meta Launches Muse Wonder AI Models to Challenge Industry Leaders",
+      "publisher": "Reuters",
+      "published": "2026-10-12T18:32:15Z",
+      "published_at": "2026-10-12T18:32:15Z",
+      "source_url": "https://www.reuters.com/technology/meta-releases-muse-wonder-ai-models-challenge-anthropic-openai-2026-10-12/",
+      "link": "https://www.reuters.com/technology/meta-releases-muse-wonder-ai-models-challenge-anthropic-openai-2026-10-12/",
+      "summary": "Meta has released 'Muse Wonder,' a new series of frontier-class AI models designed to compete directly with offerings from OpenAI and Anthropic. The models are specifically optimized for complex, multi-step agentic tasks. Meta positions this release as a major step in reclaiming competitive ground within the generative AI sector.",
+      "facts": [
+        "Meta released Muse Wonder as a series of models.",
+        "The models are built to perform complex agentic tasks.",
+        "Meta claims the models are at parity with frontier labs like OpenAI and Anthropic.",
+        "The release is part of Meta's strategy to bolster its AI agent ecosystem.",
+        "Pricing for access reportedly ranges from $4 to $200 per month depending on usage tiers."
+      ],
+      "data_points": [
+        "$4-$200 monthly pricing range"
+      ],
+      "limitations_or_qualifiers": [
+        "Availability subject to Meta's platform access terms; performance benchmarks are company-reported."
+      ],
+      "why_it_matters": "This release marks a significant escalation in the 'agent wars,' signaling Meta's intent to shift from social media dominance to becoming a primary infrastructure provider for autonomous AI agents.",
+      "editorial_case": {
+        "new_development": "Meta's official release of its first 'frontier' model series aimed at complex agentic workflows.",
+        "affected_listener": "Enterprise developers and power users looking for alternatives to ChatGPT or Claude for multi-step automation.",
+        "why_today": "It is the most significant competitive shift in the foundational model landscape reported in this 48-hour window.",
+        "distinct_question": "Can Meta's agent-focused architecture provide better reliability for long-running workflows than current industry incumbents?",
+        "new_since_prior_coverage": "This is the first deployment of Muse Wonder, moving it from rumor to public product.",
+        "practical_payoff": "Listeners should monitor integration documentation to see if these models can reduce costs for high-volume automated tasks."
+      },
+      "story_age_hours": 3.63,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 1,
+      "story_tier": "primary",
+      "topic_family": "products"
+    },
+    {
+      "event_key": "suki-series-e-2026-10-12-funding",
+      "headline": "Suki raises $90 million to expand its AI medical scribe and agentic workflows",
+      "title": "Suki raises $90 million to expand its AI medical scribe and agentic workflows",
+      "publisher": "Axios",
+      "published": "2026-10-12T00:00:00Z",
+      "published_at": "2026-10-12T00:00:00Z",
+      "source_url": "https://www.axios.com/pro/health-tech-deals/2026/10/12/suki-series-e-90m-healthier-capital",
+      "link": "https://www.axios.com/pro/health-tech-deals/2026/10/12/suki-series-e-90m-healthier-capital",
+      "summary": "Suki, the healthcare AI company best known for its ambient scribe tools, raised $90 million in a Series E round. Axios reports the company plans to use the money to scale and add agentic workflows. The funding gives the health-AI market a fresh capital-data point in a year when enterprise AI spend remains heavily scrutinized. The company is positioning the product around reducing administrative work for clinicians.",
+      "facts": [
+        "Suki raised $90 million in a Series E round.",
+        "Axios says the capital will help Suki scale and add agentic workflows.",
+        "Suki is a healthcare AI and scribe company.",
+        "The company is targeting administrative-task reduction for clinicians."
+      ],
+      "data_points": [
+        "$90 million",
+        "Series E"
+      ],
+      "limitations_or_qualifiers": [
+        "No updated post-money valuation was disclosed in the cited reporting."
+      ],
+      "why_it_matters": "This is a material health-AI financing event that signals ongoing investor appetite for workflow automation in a high-friction, regulated sector.",
+      "editorial_case": {
+        "new_development": "The company secured new growth capital and explicitly tied it to expanding beyond transcription into agentic workflows.",
+        "affected_listener": "Clinicians, health-system buyers, and health-tech investors are affected by the competitive signal and product expansion.",
+        "why_today": "It is a concrete market event with disclosed funding size, not a speculative trend piece.",
+        "distinct_question": "How much money is still flowing into AI healthcare tools, and what is the company trying to build next?",
+        "new_since_prior_coverage": "The new fact is the Series E financing and the stated expansion into agentic workflows.",
+        "practical_payoff": "Watch for whether Suki uses the new capital to widen enterprise deployments or introduce new automation features in clinics."
+      },
+      "story_age_hours": 22.16,
+      "source_tier": 2,
+      "grounded": true,
+      "rank": 2,
+      "story_tier": "primary",
+      "topic_family": "science_access"
+    },
+    {
+      "event_key": "meta-muse-wonder-2026-10-12-frontier-model-launch",
+      "headline": "Meta says its new AI models are state-of-the-art for agentic tasks, memory and coding",
+      "title": "Meta says its new AI models are state-of-the-art for agentic tasks, memory and coding",
+      "publisher": "Reuters",
+      "published": "2026-10-12T18:32:15Z",
+      "published_at": "2026-10-12T18:32:15Z",
+      "source_url": "https://www.reuters.com/world/us/meta-releases-muse-wonder-ai-models-to-challenge-anthropic-openai-2026-10-12/",
+      "link": "https://www.reuters.com/world/us/meta-releases-muse-wonder-ai-models-to-challenge-anthropic-openai-2026-10-12/",
+      "summary": "Reuters reported that Meta launched Muse Wonder and Muse Wonder Full as its most capable AI models yet. The company says the models are intended to compete more forcefully with OpenAI and Anthropic and are aimed at personal and professional agent tasks, memory, and coding. Reuters also reported that Muse Wonder would soon power Meta\u2019s personal AI agent, initially for subscribers, while the more powerful version is tied to the company\u2019s coding tool. The launch is a clear escalation in Meta\u2019s attempt to re-enter the frontier-model race.",
+      "facts": [
+        "Meta launched Muse Wonder and Muse Wonder Full.",
+        "Reuters reported Meta described them as its most capable AI models yet.",
+        "Meta said the models are meant to compete with OpenAI and Anthropic.",
+        "Reuters reported Muse Wonder would soon power Meta\u2019s personal AI agent for subscribers.",
+        "Reuters reported Muse Wonder Full is tied to the Muse Code coding tool."
+      ],
+      "data_points": [],
+      "limitations_or_qualifiers": [
+        "Subscriber access and product availability are tiered rather than open to everyone."
+      ],
+      "why_it_matters": "Reuters confirmation makes this the most important competitive AI product release in the window because it affects both consumers and developers.",
+      "editorial_case": {
+        "new_development": "Meta publicly launched two frontier models and linked them to both consumer and developer products.",
+        "affected_listener": "People using Meta\u2019s AI products, developers, and rival model providers are directly affected.",
+        "why_today": "It is the strongest corroborated version of the day\u2019s biggest AI product story.",
+        "distinct_question": "What exactly changed in Meta\u2019s AI lineup, and how does it affect users?",
+        "new_since_prior_coverage": "The new fact is the launch and productization of the models, not simply a claim that Meta is improving its models.",
+        "practical_payoff": "Listeners should watch whether the launch pressures pricing, access tiers, or benchmark competition across the frontier-model market."
+      },
+      "story_age_hours": 3.63,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 3,
+      "story_tier": "primary",
+      "topic_family": "products"
+    },
+    {
+      "event_key": "windborne-usaf-balloon-data-contract-2026-10-12",
+      "headline": "TechCrunch reports WindBorne wins a U.S. Air Force contract for balloon data",
+      "title": "TechCrunch reports WindBorne wins a U.S. Air Force contract for balloon data",
+      "publisher": "TechCrunch",
+      "published": "2026-10-12T00:00:00Z",
+      "published_at": "2026-10-12T00:00:00Z",
+      "source_url": "https://techcrunch.com/2026/10/12/windborne-wins-a-hefty-us-air-force-contract-for-its-balloon-data/",
+      "link": "https://techcrunch.com/2026/10/12/windborne-wins-a-hefty-us-air-force-contract-for-its-balloon-data/",
+      "summary": "TechCrunch reported that WindBorne Systems won a U.S. Air Force contract for its balloon data. The story places the award in the AI/infrastructure lane because it concerns data collection and decision support for government use. This is a consequential public-sector deal rather than a consumer launch. It signals continued military and aerospace interest in unconventional sensing infrastructure tied to AI workflows.",
+      "facts": [
+        "WindBorne Systems won a U.S. Air Force contract, according to TechCrunch.",
+        "The contract concerns balloon data.",
+        "The reporting places the deal in the AI/infrastructure category."
+      ],
+      "data_points": [],
+      "limitations_or_qualifiers": [
+        "The reporting cited here does not establish contract value or deployment scope."
+      ],
+      "why_it_matters": "Government demand can accelerate AI-adjacent sensing infrastructure even when consumer AI headlines dominate the news cycle.",
+      "editorial_case": {
+        "new_development": "A specific U.S. Air Force contract became public within the window.",
+        "affected_listener": "Defense-tech watchers, investors, and aerospace suppliers are affected by the procurement signal.",
+        "why_today": "It broadens the slate beyond consumer model launches and shows a concrete infrastructure use case for AI-linked systems.",
+        "distinct_question": "Where is AI-adjacent infrastructure getting real government money?",
+        "new_since_prior_coverage": "The new fact is the disclosed Air Force contract, not merely the existence of the startup.",
+        "practical_payoff": "Listeners should watch for follow-on contracts or similar sensing deals in defense and climate data markets."
+      },
+      "story_age_hours": 22.16,
+      "source_tier": 2,
+      "grounded": true,
+      "rank": 4,
+      "story_tier": "supporting",
+      "topic_family": "other"
+    },
+    {
+      "event_key": "ai-borrowing-boom-corporate-credit-2026-10-12",
+      "headline": "Bloomberg reports AI buildout is driving a borrowing boom in corporate credit",
+      "title": "Bloomberg reports AI buildout is driving a borrowing boom in corporate credit",
+      "publisher": "Bloomberg",
+      "published": "2026-10-11T00:00:00Z",
+      "published_at": "2026-10-11T00:00:00Z",
+      "source_url": "https://www.bloomberg.com/news/videos/2026-10-11/is-ai-crowding-everyone-else-out-of-the-bond-market-video",
+      "link": "https://www.bloomberg.com/news/videos/2026-10-11/is-ai-crowding-everyone-else-out-of-the-bond-market-video",
+      "summary": "Bloomberg reported that hyperscalers, data centers, and chip companies are borrowing hundreds of billions of dollars to finance the AI buildout. The reporting frames AI spending as a significant force in corporate credit markets rather than just a software trend. That has implications for lenders, bond investors, and the pace of infrastructure expansion. It also underscores how capital-intensive the AI race has become.",
+      "facts": [
+        "Bloomberg says hyperscalers, data centers, and chip companies are borrowing heavily for AI buildout.",
+        "The report describes the amounts as hundreds of billions of dollars.",
+        "The story links AI spending to corporate credit market conditions."
+      ],
+      "data_points": [
+        "hundreds of billions of dollars"
+      ],
+      "limitations_or_qualifiers": [
+        "This is a market analysis/video report, not a company filing with a single disclosed transaction."
+      ],
+      "why_it_matters": "The AI boom is now large enough to affect credit markets, which raises the stakes for interest rates, balance sheets, and infrastructure timing.",
+      "editorial_case": {
+        "new_development": "The new development is not a product, but a market-wide financing pattern becoming visible in credit markets.",
+        "affected_listener": "Investors, lenders, and infrastructure planners are affected by the scale of borrowing tied to AI.",
+        "why_today": "It explains the macro consequence behind many AI launches and helps listeners understand the financing engine behind the sector.",
+        "distinct_question": "How is the AI race being paid for?",
+        "new_since_prior_coverage": "The material new fact is the reported borrowing scale and its bond-market effect.",
+        "practical_payoff": "Watch for tighter credit conditions or new disclosure around capex, debt issuance, and data-center financing."
+      },
+      "story_age_hours": 46.16,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 5,
+      "story_tier": "supporting",
+      "topic_family": "other"
+    }
+  ],
   "selected_editorial_cases": [
     {
-      "headline": "OpenAI Projects $70 Billion Annualized Revenue by End of 2026",
-      "source_url": "https://www.bloomberg.com",
+      "headline": "Meta Launches Muse Wonder AI Models to Challenge Industry Leaders",
+      "source_url": "https://www.reuters.com/technology/meta-releases-muse-wonder-ai-models-challenge-anthropic-openai-2026-10-12/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "First-party projection shared with investors clarifying previous market confusion over revenue metrics.",
-        "affected_listener": "Market investors and employees analyzing the sustainability of the generative AI enterprise boom.",
-        "why_today": "Clarifies recent market volatility caused by contradictory reports earlier in the week.",
-        "distinct_question": "Is the enterprise AI growth narrative currently sustainable enough to justify trillion-dollar valuations?",
-        "new_since_prior_coverage": "Moves from speculative investor-led calculations to an official management-backed forecast.",
-        "practical_payoff": "Watch for the conclusion of the $30 billion funding round as a benchmark for AI capital appetite."
+        "new_development": "Meta's official release of its first 'frontier' model series aimed at complex agentic workflows.",
+        "affected_listener": "Enterprise developers and power users looking for alternatives to ChatGPT or Claude for multi-step automation.",
+        "why_today": "It is the most significant competitive shift in the foundational model landscape reported in this 48-hour window.",
+        "distinct_question": "Can Meta's agent-focused architecture provide better reliability for long-running workflows than current industry incumbents?",
+        "new_since_prior_coverage": "This is the first deployment of Muse Wonder, moving it from rumor to public product.",
+        "practical_payoff": "Listeners should monitor integration documentation to see if these models can reduce costs for high-volume automated tasks."
       }
     },
     {
-      "headline": "Google Cloud unveils Gemini agent as a universal work assistant",
-      "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/welcome-to-gemini-at-work-2026?hl=en",
+      "headline": "Suki raises $90 million to expand its AI medical scribe and agentic workflows",
+      "source_url": "https://www.axios.com/pro/health-tech-deals/2026/10/12/suki-series-e-90m-healthier-capital",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google moved Gemini from a family of tools into a single, cross-surface agent for work with embedded workflows and governance.",
-        "affected_listener": "Enterprise workers, IT admins, and companies already using Google Workspace or Google Cloud are the most directly affected.",
-        "why_today": "It is a consequential product architecture change from a major platform vendor with immediate workflow implications.",
-        "distinct_question": "What does Google think the next phase of workplace AI looks like?",
-        "new_since_prior_coverage": "Materially new product announcement within the window, not just a new review or commentary.",
-        "practical_payoff": "Listeners should watch for pricing, admin controls, and whether Gemini agent actually replaces discrete point tools in enterprise workflows."
+        "new_development": "The company secured new growth capital and explicitly tied it to expanding beyond transcription into agentic workflows.",
+        "affected_listener": "Clinicians, health-system buyers, and health-tech investors are affected by the competitive signal and product expansion.",
+        "why_today": "It is a concrete market event with disclosed funding size, not a speculative trend piece.",
+        "distinct_question": "How much money is still flowing into AI healthcare tools, and what is the company trying to build next?",
+        "new_since_prior_coverage": "The new fact is the Series E financing and the stated expansion into agentic workflows.",
+        "practical_payoff": "Watch for whether Suki uses the new capital to widen enterprise deployments or introduce new automation features in clinics."
       }
     },
     {
-      "headline": "Anthropic launches the Cyber Mission with a critical infrastructure defense program and free OSS scanner",
-      "source_url": "https://www.anthropic.com/news/anthropic-cyber-mission",
+      "headline": "Meta says its new AI models are state-of-the-art for agentic tasks, memory and coding",
+      "source_url": "https://www.reuters.com/world/us/meta-releases-muse-wonder-ai-models-to-challenge-anthropic-openai-2026-10-12/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Anthropic formalized a new security-centered initiative and paired it with a free open-source scanning product.",
-        "affected_listener": "Infrastructure defenders, open-source maintainers, and security teams are the main beneficiaries.",
-        "why_today": "It is a fresh policy-and-product move with concrete security implications, not a vague safety pledge.",
-        "distinct_question": "How is a frontier AI company trying to turn its models into defense tools?",
-        "new_since_prior_coverage": "Material new program and product launch within the window.",
-        "practical_payoff": "Open-source maintainers and critical-infrastructure teams may want to evaluate whether they qualify for the new defensive tooling."
+        "new_development": "Meta publicly launched two frontier models and linked them to both consumer and developer products.",
+        "affected_listener": "People using Meta\u2019s AI products, developers, and rival model providers are directly affected.",
+        "why_today": "It is the strongest corroborated version of the day\u2019s biggest AI product story.",
+        "distinct_question": "What exactly changed in Meta\u2019s AI lineup, and how does it affect users?",
+        "new_since_prior_coverage": "The new fact is the launch and productization of the models, not simply a claim that Meta is improving its models.",
+        "practical_payoff": "Listeners should watch whether the launch pressures pricing, access tiers, or benchmark competition across the frontier-model market."
       }
     }
+  ],
+  "listener_frames": [
+    "accountability_risk",
+    "science_access",
+    "products"
   ],
   "candidate_target": 5,
   "required_air_stories": 3,

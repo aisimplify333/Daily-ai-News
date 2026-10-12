@@ -1,0 +1,167 @@
+{
+  "basis": "script evidence only; not listening",
+  "listened": false,
+  "checks": [
+    {
+      "pass": true,
+      "failures": [],
+      "checks": {
+        "responsive_banter": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: Which is either the breakthrough we've been waiting for, or a very confident press release.\nRUFUS: Priced from four dollars to two hundred a month. The ambition scales with the invoice.",
+            "RUFUS: The confidence is always impeccable.\nALEX: So the architecture question is whether Meta built something that actually handles those multi-step sequences more reliably.",
+            "JAMIE: Don't make it beautiful. It's a defense contract.\nRUFUS: Everything looks beautiful at altitude."
+          ],
+          "evidence_line_numbers": [
+            3,
+            4,
+            17,
+            18,
+            114,
+            115
+          ],
+          "reason": "Line 3 sets up 'confident press release,' line 4 responds directly to that with the pricing quip. Lines 16-17 show Jamie's 'wrong city' observation met by Rufus's 'confidence is always impeccable.' Lines 114-115 show Jamie's wry pushback met by Rufus's comeback. All are reciprocal exchanges, not independent quips.",
+          "verified_evidence": [
+            "JAMIE: Which is either the breakthrough we've been waiting for, or a very confident press release.\nRUFUS: Priced from four dollars to two hundred a month. The ambition scales with the invoice.",
+            "RUFUS: The confidence is always impeccable.\nALEX: So the architecture question is whether Meta built something that actually handles those multi-step sequences more reliably.",
+            "JAMIE: Don't make it beautiful. It's a defense contract.\nRUFUS: Everything looks beautiful at altitude.",
+            "JAMIE: Which is either the breakthrough we've been waiting for, or a very confident press release.",
+            "RUFUS: Priced from four dollars to two hundred a month. The ambition scales with the invoice.",
+            "RUFUS: The confidence is always impeccable.",
+            "ALEX: So the architecture question is whether Meta built something that actually handles those multi-step sequences more reliably. And the honest answer right now is \u2014",
+            "JAMIE: Don't make it beautiful. It's a defense contract.",
+            "RUFUS: Everything looks beautiful at altitude."
+          ]
+        },
+        "cast_warmth": {
+          "pass": true,
+          "evidence": [
+            "ALEX: Rufus quietly circling back to the invoice.\nRUFUS: It's where the philosophy lives.",
+            "JAMIE: I find it genuinely impressive that the answer to 'where does the Air Force get its AI training data' includes a company that makes balloons. There's something almost charming about it.\nRUFUS: The romanticism of lighter-than-air intelligence.",
+            "RUFUS: And if anyone needs me, I'll be reviewing WindBorne's balloon specifications from a sensible ground-level location.\nJAMIE: Rufus finally chooses the humble option.\nRUFUS: The view from ground level is underrated. Cheaper per metre, too."
+          ],
+          "evidence_line_numbers": [
+            52,
+            53,
+            112,
+            113,
+            125,
+            126,
+            127
+          ],
+          "reason": "Alex's affectionate observation at line 52 and Rufus's warm reply at 53 show mutual enjoyment. Jamie's delight at the balloon detail (112) and Rufus's playful response (113) show curiosity and wit. The closing three-way riff (125-127) shows all three enjoying each other.",
+          "verified_evidence": [
+            "ALEX: Rufus quietly circling back to the invoice.\nRUFUS: It's where the philosophy lives.",
+            "RUFUS: And if anyone needs me, I'll be reviewing WindBorne's balloon specifications from a sensible ground-level location.\nJAMIE: Rufus finally chooses the humble option.\nRUFUS: The view from ground level is underrated. Cheaper per metre, too.",
+            "ALEX: Rufus quietly circling back to the invoice.",
+            "RUFUS: It's where the philosophy lives.",
+            "JAMIE: I find it genuinely impressive that the answer to \"where does the Air Force get its AI training data\" includes a company that makes balloons. There's something almost charming about it.",
+            "RUFUS: The romanticism of lighter-than-air intelligence.",
+            "RUFUS: And if anyone needs me, I'll be reviewing WindBorne's balloon specifications from a sensible ground-level location.",
+            "JAMIE: Rufus finally chooses the humble option.",
+            "RUFUS: The view from ground level is underrated. Cheaper per metre, too."
+          ]
+        },
+        "useful_discovery": {
+          "pass": true,
+          "evidence": [
+            "RUFUS: Think of it this way. A standard AI model answers your question. An agentic model is supposed to take a goal \u2014 book me three flights, cross-reference my calendar, draft the follow-up email \u2014 and execute the steps itself without you holding its hand through each one.",
+            "JAMIE: Session memory or persistent memory. Ask that question first. Because the answer changes whether this is a productivity tool or a genuine workflow partner.",
+            "RUFUS: Weather data is surprisingly valuable in a defense context. Navigation, operational planning, understanding atmospheric conditions for anything that flies. And balloons are cheap compared to satellites. Persistent, too. A balloon constellation can provide continuous atmospheric coverage at a fraction of the cost of orbital infrastructure."
+          ],
+          "evidence_line_numbers": [
+            15,
+            41,
+            91
+          ],
+          "reason": "Line 15 concretely explains what agentic AI can do for a non-developer. Line 41 gives a specific actionable diagnostic (session vs. persistent memory) that changes how a listener evaluates a product. Line 91 explains a genuine beneficial application of balloon sensing infrastructure that listeners could find curious or useful.",
+          "verified_evidence": [
+            "RUFUS: Think of it this way. A standard AI model answers your question. An agentic model is supposed to take a goal \u2014 book me three flights, cross-reference my calendar, draft the follow-up email \u2014 and execute the steps itself without you holding its hand through each one.",
+            "JAMIE: Session memory or persistent memory. Ask that question first. Because the answer changes whether this is a productivity tool or a genuine workflow partner.",
+            "RUFUS: Weather data is surprisingly valuable in a defense context. Navigation, operational planning, understanding atmospheric conditions for anything that flies. And balloons are cheap compared to satellites. Persistent, too. A balloon constellation can provide continuous atmospheric coverage at a fraction of the cost of orbital infrastructure.",
+            "RUFUS: Think of it this way. A standard AI model answers your question. An agentic model is supposed to take a goal \u2014 book me three flights, cross-reference my calendar, draft the follow-up email \u2014 and execute the steps itself without you holding its hand through each one.",
+            "JAMIE: Session memory or persistent memory. Ask that question first. Because the answer changes whether this is a productivity tool or a genuine workflow partner.",
+            "RUFUS: Weather data is surprisingly valuable in a defense context. Navigation, operational planning, understanding atmospheric conditions for anything that flies. And balloons are cheap compared to satellites. Persistent, too. A balloon constellation can provide continuous atmospheric coverage at a fraction of the cost of orbital infrastructure."
+          ]
+        },
+        "rufus_scene": {
+          "pass": true,
+          "evidence": [
+            "ALEX: Rufus, take us on location.\nRUFUS: Picture a conference room in Midtown Manhattan...\nJAMIE: That 'once before' is doing a lot of work there, Rufus. You're describing the electronic health record, which also had a defensible market and gave clinicians fifteen years of documented misery.\nRUFUS: An entirely fair precedent. The distinction Suki would presumably draw is that an ambient scribe reduces the documentation burden rather than adding a new interface to fight with. Whether that holds when agentic workflows begin touching orders and referrals is a genuinely open question \u2014 and I notice nobody in the funding announcement felt compelled to answer it.\nALEX: Back to the wider story."
+          ],
+          "evidence_line_numbers": [
+            63,
+            64,
+            65,
+            66,
+            67,
+            68,
+            69,
+            70
+          ],
+          "reason": "Alex hands off at line 63, Rufus sets a concrete scene (Midtown Manhattan conference room, bad coffee, term sheet) with a useful payoff about why investors still back vertical healthcare AI. Jamie challenges at line 67 with the EHR precedent, Rufus responds directly and wryly at lines 68-69. Alex returns at line 70. Scene contains handoff, concrete setting, Jamie interaction, dry wit, and useful payoff.",
+          "verified_evidence": [
+            "ALEX: Rufus, take us on location.",
+            "RUFUS: Picture a conference room in Midtown Manhattan \u2014 not Suki's office, just the sort of place where a term sheet gets its final signature over bad coffee and a genuinely good view. What this ninety million tells you is that Wall Street hasn't gone cold on healthcare AI.",
+            "RUFUS: Investors are still writing large checks for vertical AI \u2014 tools built for one specific industry's specific pain point \u2014 even while broader enterprise AI spending is under scrutiny. The mechanism is straightforward: Suki solves a problem every health system in the country has already quantified in dollars.",
+            "RUFUS: Administrative burden costs American healthcare billions annually in clinician time. That's a measurable inefficiency, not a speculative thesis. Investors in this space aren't betting on artificial general intelligence \u2014 they're betting on a very large line item that someone has already tried and failed to fix with software once before.",
+            "JAMIE: That \"once before\" is doing a lot of work there, Rufus. You're describing the electronic health record, which also had a defensible market and gave clinicians fifteen years of documented misery.",
+            "RUFUS: An entirely fair precedent. The distinction Suki would presumably draw is that an ambient scribe reduces the documentation burden rather than adding a new interface to fight with. Whether that holds when agentic workflows begin touching orders and referrals is a genuinely open question \u2014",
+            "RUFUS: and I notice nobody in the funding announcement felt compelled to answer it.",
+            "ALEX: Back to the wider story. Jamie, you flagged accountability before we went to Rufus. What does a health system actually need to see before it hands an AI agent the authority to initiate a referral?"
+          ]
+        },
+        "single_endings": {
+          "pass": true,
+          "evidence": [
+            "ALEX: For The AI Edge, I'm Alex. Thanks for listening.\nALEX: Today's question for you: Would you pay $200/month for an AI agent that reliably handles your multi-step work tasks?\nRUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.\nALEX: What changed. Who wins. What you do next. That's The AI Edge.\nALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
+          ],
+          "evidence_line_numbers": [
+            116,
+            117,
+            118,
+            119,
+            120,
+            121,
+            122,
+            123,
+            124,
+            125,
+            126,
+            127,
+            128,
+            129,
+            130,
+            131,
+            132
+          ],
+          "reason": "Story 1 ends at line 53 with no restart. Story 2 ends at line 83 with no restart. Story 3 ends at line 116 with no restart. Segment 5 (lines 118-127) is a single synthesis/forward look, not a second discussion of any story. Lines 128-132 form one closing block: sign-off, listener question, sponsor credit, house tag, and follow CTA. No analysis restarts after any payoff.",
+          "verified_evidence": [
+            "ALEX: For The AI Edge, I'm Alex. Thanks for listening.\nALEX: Today's question for you: Would you pay $200/month for an AI agent that reliably handles your multi-step work tasks?\nRUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.\nALEX: What changed. Who wins. What you do next. That's The AI Edge.\nALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
+            "ALEX: The follow-on contracts and whether this expands into climate or other environmental monitoring programs are the concrete things to watch. Defense and climate data needs overlap more than people realize.",
+            "RUFUS: Meta has shipped two real products with a real pricing structure and a real product architecture \u2014 Muse Wonder embedded in a personal AI agent, Muse Wonder Full embedded in a coding tool. The engineering intention is agentic: long-running, multi-step workflows with memory. The ambition is credible.",
+            "JAMIE: What we can't verify yet is whether the execution lives up to the claim. The benchmarks are company-reported. The memory and reliability characteristics of these models in production are genuinely unknown. The architecture is promising. The track record is zero days old.",
+            "ALEX: So the honest answer to the title question is: Meta has made the most credible structural attempt we've seen from them at genuine agentic automation. Whether it works better than OpenAI or Anthropic for complex tasks, we don't know yet. Watch the developer documentation, watch the integration reports, and if you're a power user \u2014",
+            "ALEX: the entry tier at four dollars a month is a low-cost way to form your own answer.",
+            "RUFUS: One thing I'll predict: within sixty days, we'll have third-party benchmark comparisons on the coding and agentic task performance. That's when the company-reported claims get tested. Watch that data.",
+            "JAMIE: And across all three stories today \u2014 Meta's models, Suki's ninety million, the balloon contract \u2014 there's a thread. Agentic AI is no longer a research concept. It's a product category with pricing, healthcare deployments, and defense contracts attached to it. The question moving forward isn't whether agentic AI is real.",
+            "JAMIE: It's whether the accountability structures around it are real.",
+            "RUFUS: And if anyone needs me, I'll be reviewing WindBorne's balloon specifications from a sensible ground-level location.",
+            "JAMIE: Rufus finally chooses the humble option.",
+            "RUFUS: The view from ground level is underrated. Cheaper per metre, too.",
+            "ALEX: For The AI Edge, I'm Alex. Thanks for listening.",
+            "ALEX: Today\u2019s question for you: Would you pay $200/month for an AI agent that reliably handles your multi-step work tasks?",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
+          ]
+        }
+      },
+      "feature_word_band_advisory": true,
+      "script_sha256": "ea00890b73c5645363b8344ec282d4484845b64b274cbafdd440e5e6cea89b3a"
+    }
+  ],
+  "repair": null,
+  "pass": true
+}
