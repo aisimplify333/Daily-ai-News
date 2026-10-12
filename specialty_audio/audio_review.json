@@ -2,20 +2,169 @@
   "basis": "automated model listening; not human listening",
   "human_listened": false,
   "model": "gemini-3.1-flash-lite",
-  "sounds": {},
-  "auditions": {},
-  "complete": false,
-  "error": "RuntimeError",
-  "frames": [
-    {
-      "file": "review_audio.py",
-      "function": "main",
-      "line": 47
+  "sounds": {
+    "conference": {
+      "name": "conference",
+      "pass": false,
+      "reason": "The audio contains clear, intelligible speech, which violates the requirement for no intelligible words.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "f5fc805b19e27ab7ee26b873ebf3b928598cc44f07f1e3bf0c3989cda5168343"
     },
-    {
-      "file": "review_audio.py",
-      "function": "review",
-      "line": 30
+    "factory": {
+      "name": "factory",
+      "pass": true,
+      "reason": "The audio contains a steady mechanical hum consistent with a factory floor ambience, with no intrusive sounds.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "6440b5d7d0b34f9a28a685279d7ce1bc5299515b7d8c78b2fd14b3b7e1791cf4"
+    },
+    "office": {
+      "name": "office",
+      "pass": true,
+      "reason": "The audio contains subtle office ambience, including quiet ventilation and soft keyboard taps, with no voices, music, or harsh transients.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "93f40fd3801e2d9dac0765c43a13160aa85bb042b4cac587c043314ab65b08a2"
+    },
+    "server_room": {
+      "name": "server_room",
+      "pass": true,
+      "reason": "The audio provides a consistent, low-frequency fan hum that matches the server room brief perfectly without any intrusive elements.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "6d7130519bb1f339b30a72290f04409e71b8d1d71f9e8c5570f9456121269ea1"
+    },
+    "city": {
+      "name": "city",
+      "pass": true,
+      "reason": "The audio matches the brief of a quiet city sidewalk atmosphere with distant traffic and light footsteps, and contains no prohibited elements.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "065b709588c9beded7fb7a653fcf27ed9212f26decfc97e254638eca2274bc40"
+    },
+    "legislative_hall": {
+      "name": "legislative_hall",
+      "pass": true,
+      "reason": "The audio matches the brief, providing a quiet room tone with subtle, natural reverberation and no unwanted sounds.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "defc261d922e2380b2a6bac27054977112144955c320ddfa91de74430221bc27"
+    },
+    "edge_signature": {
+      "name": "edge_signature",
+      "pass": true,
+      "reason": "The audio consists of three crisp, warm electronic tones with a subtle percussive element, matching the brief perfectly. It is clean, lacks speech or harsh transients, and functions well as a short sonic ID.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "db6e345a674d9cf01e35c1479cb88470ca08ab0831427ced5289237cb2a8df8d"
+    },
+    "rufus_entrance": {
+      "name": "rufus_entrance",
+      "pass": true,
+      "reason": "The audio contains a mechanical click followed by a resonant pluck, fitting the brief perfectly.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "bb10a05693684bb72d076a56374a4b2658fee0bfec026ade610ef864ba8e4e20"
     }
-  ]
+  },
+  "auditions": {
+    "trailer_1": {
+      "name": "trailer_1",
+      "pass": true,
+      "reason": "The audio is clear and natural, with a professional and engaging tone suitable for a podcast trailer.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "e124de5e43cf71a779d7ec1eb967ee9b3067eb7f4abe55b15758cca03831fe27"
+    },
+    "trailer_2": {
+      "name": "trailer_2",
+      "pass": true,
+      "reason": "The audio is clear and natural, with a professional and engaging tone suitable for a podcast trailer.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "def88cf227efb47384328145ade399bce347696db91332c4dac014700560b07e"
+    },
+    "trailer_3": {
+      "name": "trailer_3",
+      "pass": true,
+      "reason": "The audio is clear and natural, with a professional and engaging tone suitable for a podcast trailer.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "a702690156b2b61ac92a9d1442f0c1d6c81005378d4b65f0632fd2343c06c198"
+    },
+    "trailer_4": {
+      "name": "trailer_4",
+      "pass": true,
+      "reason": "The audio is clear and natural, with a professional and engaging tone suitable for a podcast trailer.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "6de02eecab3b073151fea255cc804322ffc93b094471f15969ace9622a65a094"
+    },
+    "rufus_candidate_1": {
+      "name": "rufus_candidate_1",
+      "pass": true,
+      "reason": "The audio is clear and natural, with good pacing and intonation.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "b2da5b9f87868e0761b3bdc934a8d54139dfad0adbeb50f451c7892b7f4e1b9a"
+    },
+    "rufus_candidate_2": {
+      "name": "rufus_candidate_2",
+      "pass": true,
+      "reason": "The audio is clear and natural, with good pacing and intonation.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "addcc8890c907800aa326c066258908de4114a58dceae2624b7378ecaf80e452"
+    },
+    "rufus_candidate_3": {
+      "name": "rufus_candidate_3",
+      "pass": true,
+      "reason": "The audio is clear and natural, with good pacing and intonation.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "66bbc54e929ee0910e168b45ca6bfc5d40da70720e2f4e2ab538a5fc5e62853a"
+    },
+    "sponsor_treatment_1": {
+      "name": "sponsor_treatment_1",
+      "pass": true,
+      "reason": "The audio is clear and natural, with good pacing and intonation.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "4e8146191d3cfc87832bdcfb788823193960edc08fe5cff96f0c9e66dbe1dae5"
+    },
+    "sponsor_treatment_2": {
+      "name": "sponsor_treatment_2",
+      "pass": true,
+      "reason": "The delivery is clear and professional, though slightly robotic in its pacing.",
+      "clarity": 5,
+      "naturalness": 3,
+      "sha256": "47f80491341f7ad14b9173b81923a4f874a1ef35bedbce9b064f3137737ad313"
+    },
+    "sponsor_treatment_3": {
+      "name": "sponsor_treatment_3",
+      "pass": true,
+      "reason": "The delivery is conversational and natural, fitting the podcast format well.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "6e546c868f02ab666325fe65aa9ae09531fc407ea1a81779c32637922f84a3b4"
+    },
+    "fictional_voicemail": {
+      "name": "fictional_voicemail",
+      "pass": true,
+      "reason": "The tone is appropriate for a fictional voicemail, with good clarity and natural pacing.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "e3a20e6ae55086c3f9386f52631f486bfc58cc65e484f0f228dfd13bad27176a"
+    },
+    "war_room": {
+      "name": "war_room",
+      "pass": true,
+      "reason": "The audio features multiple speakers with distinct voices, clear and natural delivery.",
+      "clarity": 5,
+      "naturalness": 5,
+      "sha256": "3be4677fcbd05d3169ad4ffc91d9707cdb9bda8ac97a9a4ba8e01f154ffae2f9"
+    }
+  },
+  "complete": true
 }

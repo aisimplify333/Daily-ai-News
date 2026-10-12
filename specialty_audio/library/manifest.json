@@ -10,8 +10,17 @@
       "seconds": 10.0,
       "accounted_credits": 100,
       "sha256": "f5fc805b19e27ab7ee26b873ebf3b928598cc44f07f1e3bf0c3989cda5168343",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "rejected",
+      "enabled_in_daily": false,
+      "automated_listening_review": {
+        "name": "conference",
+        "pass": false,
+        "reason": "The audio contains clear, intelligible speech, which violates the requirement for no intelligible words.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "f5fc805b19e27ab7ee26b873ebf3b928598cc44f07f1e3bf0c3989cda5168343"
+      },
+      "review_by": "automated_audio_model"
     },
     {
       "name": "factory",
@@ -22,8 +31,17 @@
       "seconds": 10.0,
       "accounted_credits": 100,
       "sha256": "6440b5d7d0b34f9a28a685279d7ce1bc5299515b7d8c78b2fd14b3b7e1791cf4",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "approved",
+      "enabled_in_daily": true,
+      "automated_listening_review": {
+        "name": "factory",
+        "pass": true,
+        "reason": "The audio contains a steady mechanical hum consistent with a factory floor ambience, with no intrusive sounds.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "6440b5d7d0b34f9a28a685279d7ce1bc5299515b7d8c78b2fd14b3b7e1791cf4"
+      },
+      "review_by": "automated_audio_model"
     },
     {
       "name": "office",
@@ -34,8 +52,17 @@
       "seconds": 10.0,
       "accounted_credits": 100,
       "sha256": "93f40fd3801e2d9dac0765c43a13160aa85bb042b4cac587c043314ab65b08a2",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "approved",
+      "enabled_in_daily": true,
+      "automated_listening_review": {
+        "name": "office",
+        "pass": true,
+        "reason": "The audio contains subtle office ambience, including quiet ventilation and soft keyboard taps, with no voices, music, or harsh transients.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "93f40fd3801e2d9dac0765c43a13160aa85bb042b4cac587c043314ab65b08a2"
+      },
+      "review_by": "automated_audio_model"
     },
     {
       "name": "server_room",
@@ -46,8 +73,17 @@
       "seconds": 10.0,
       "accounted_credits": 100,
       "sha256": "6d7130519bb1f339b30a72290f04409e71b8d1d71f9e8c5570f9456121269ea1",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "approved",
+      "enabled_in_daily": true,
+      "automated_listening_review": {
+        "name": "server_room",
+        "pass": true,
+        "reason": "The audio provides a consistent, low-frequency fan hum that matches the server room brief perfectly without any intrusive elements.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "6d7130519bb1f339b30a72290f04409e71b8d1d71f9e8c5570f9456121269ea1"
+      },
+      "review_by": "automated_audio_model"
     },
     {
       "name": "city",
@@ -58,8 +94,17 @@
       "seconds": 10.0,
       "accounted_credits": 100,
       "sha256": "065b709588c9beded7fb7a653fcf27ed9212f26decfc97e254638eca2274bc40",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "approved",
+      "enabled_in_daily": true,
+      "automated_listening_review": {
+        "name": "city",
+        "pass": true,
+        "reason": "The audio matches the brief of a quiet city sidewalk atmosphere with distant traffic and light footsteps, and contains no prohibited elements.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "065b709588c9beded7fb7a653fcf27ed9212f26decfc97e254638eca2274bc40"
+      },
+      "review_by": "automated_audio_model"
     },
     {
       "name": "legislative_hall",
@@ -70,8 +115,17 @@
       "seconds": 10.0,
       "accounted_credits": 100,
       "sha256": "defc261d922e2380b2a6bac27054977112144955c320ddfa91de74430221bc27",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "approved",
+      "enabled_in_daily": true,
+      "automated_listening_review": {
+        "name": "legislative_hall",
+        "pass": true,
+        "reason": "The audio matches the brief, providing a quiet room tone with subtle, natural reverberation and no unwanted sounds.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "defc261d922e2380b2a6bac27054977112144955c320ddfa91de74430221bc27"
+      },
+      "review_by": "automated_audio_model"
     },
     {
       "name": "edge_signature",
@@ -82,8 +136,17 @@
       "seconds": 3.0,
       "accounted_credits": 30,
       "sha256": "db6e345a674d9cf01e35c1479cb88470ca08ab0831427ced5289237cb2a8df8d",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "approved",
+      "enabled_in_daily": true,
+      "automated_listening_review": {
+        "name": "edge_signature",
+        "pass": true,
+        "reason": "The audio consists of three crisp, warm electronic tones with a subtle percussive element, matching the brief perfectly. It is clean, lacks speech or harsh transients, and functions well as a short sonic ID.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "db6e345a674d9cf01e35c1479cb88470ca08ab0831427ced5289237cb2a8df8d"
+      },
+      "review_by": "automated_audio_model"
     },
     {
       "name": "rufus_entrance",
@@ -94,8 +157,17 @@
       "seconds": 2.0,
       "accounted_credits": 20,
       "sha256": "bb10a05693684bb72d076a56374a4b2658fee0bfec026ade610ef864ba8e4e20",
-      "listening_review": "pending",
-      "enabled_in_daily": false
+      "listening_review": "approved",
+      "enabled_in_daily": true,
+      "automated_listening_review": {
+        "name": "rufus_entrance",
+        "pass": true,
+        "reason": "The audio contains a mechanical click followed by a resonant pluck, fitting the brief perfectly.",
+        "clarity": 5,
+        "naturalness": 5,
+        "sha256": "bb10a05693684bb72d076a56374a4b2658fee0bfec026ade610ef864ba8e4e20"
+      },
+      "review_by": "automated_audio_model"
     }
   ],
   "promos": [
@@ -137,7 +209,7 @@
     }
   ],
   "accounted_credits": 650,
-  "daily_integration": "disabled_pending_audio_review",
+  "daily_integration": "reviewed_sound_assets_only; production_cast_unchanged",
   "errors": [],
   "previous_errors": [
     "Sound generation stopped: HTTPError"
