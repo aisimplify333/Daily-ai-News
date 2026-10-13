@@ -22,7 +22,7 @@ def relationship_evidence(script, exchanges):
     lines = script.splitlines()
     segments, current = {}, None
     for number, line in enumerate(lines, 1):
-        header = re.match(r'^###\s*SEGMENT\s*(\d+)\b', line, re.I)
+        header = re.match(r'^(?:###\s*)?SEGMENT\s*(\d+)\b', line, re.I)
         if header:
             current = int(header[1])
         segments[number] = current

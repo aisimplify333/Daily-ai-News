@@ -28,6 +28,7 @@ def test_one_exchange_cannot_certify_all_three_stories():
     assert any('segment 3' in f for f in failures)
     assert any('segment 4' in f for f in failures)
     assert not relationship_evidence(SCRIPT, exchanges())[1]
+    assert relationship_evidence(SCRIPT.replace('### ', ''), [])[1]
 
 
 def test_cherry_picked_lines_and_missing_alex_are_rejected():
