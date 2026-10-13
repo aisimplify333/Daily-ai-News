@@ -1,0 +1,62 @@
+name: Recover completed episode delivery
+on:
+  push:
+    branches: [main]
+    paths: [DELIVERY_RECOVERY_RUN_ONCE]
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: daily-podcast-socials
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/episode_audio/*.mp3
+            !/episode_audio/*.mp4
+            !/.tts_cache/
+            /episode_audio/podcast_2026-10-13.mp3
+            /episode_audio/clip_2026-10-13.mp3
+            /episode_audio/clip_2026-10-13.mp4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Restore reviewed completed master without generation
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh run download 38412277976 --repo "$GITHUB_REPOSITORY" --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir /tmp/completed_episode
+          python recover_completed_episode.py --source /tmp/completed_episode --date 2026-10-13 --sha256 dad7e327e312dafe6ee6a3b340b683cb7ed0fb1d4abae41f78ca7f91b29d97f4
+      - name: Validate delivery package and rebuild episode pages
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          pip install pydub feedparser requests
+          python production_delivery_gate.py --feed feed.xml --min-minutes 19 --max-minutes 30
+          python episode_pages.py
+      - name: Publish recovered episode
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- . ':(exclude).tts_cache' ':(exclude)_voice_recovery' ':(exclude)_run_artifacts'
+          git commit -m 'Publish completed October 13 episode recovered after staging failure'
+          git push origin main
+      - name: Verify public feed page and MP3
+        run: python verify_publication.py --date 2026-10-13 --attempts 30 --interval 20
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: completed-delivery-recovery
+          path: |
+            completed_recovery_report.json
+            production_delivery_report.json
+            public_delivery_report.json
