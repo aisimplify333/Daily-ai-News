@@ -1,161 +1,175 @@
 {
   "version": "grounded-story-slate-v1",
-  "date": "2026-10-12",
+  "date": "2026-10-13",
   "pass": true,
   "candidate_target": 5,
   "required_air_stories": 3,
   "selected": [
     {
-      "event_key": "meta-muse-wonder-launch",
-      "headline": "Meta Launches Muse Wonder AI Models to Challenge Industry Leaders",
-      "title": "Meta Launches Muse Wonder AI Models to Challenge Industry Leaders",
-      "publisher": "Reuters",
-      "published": "2026-10-12T18:32:15Z",
-      "published_at": "2026-10-12T18:32:15Z",
-      "source_url": "https://www.reuters.com/technology/meta-releases-muse-wonder-ai-models-challenge-anthropic-openai-2026-10-12/",
-      "link": "https://www.reuters.com/technology/meta-releases-muse-wonder-ai-models-challenge-anthropic-openai-2026-10-12/",
-      "summary": "Meta has released 'Muse Wonder,' a new series of frontier-class AI models designed to compete directly with offerings from OpenAI and Anthropic. The models are specifically optimized for complex, multi-step agentic tasks. Meta positions this release as a major step in reclaiming competitive ground within the generative AI sector.",
+      "event_key": "apple-homeview-smart-home-hub-2026-10-13",
+      "headline": "Apple launches HomeView, a Siri-powered smart home hub",
+      "title": "Apple launches HomeView, a Siri-powered smart home hub",
+      "publisher": "Apple",
+      "published": "2026-10-13T13:03:10Z",
+      "published_at": "2026-10-13T13:03:10Z",
+      "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-the-new-apple-tv-4k-supercharged-by-siri-ai/",
+      "link": "https://www.apple.com/newsroom/2026/10/apple-unveils-the-new-apple-tv-4k-supercharged-by-siri-ai/",
+      "summary": "Apple unveiled HomeView, a new smart home hub that uses its updated Siri AI assistant. The device is a $299 display-equipped controller for home devices and can handle FaceTime calls, music, video, photos, and household information. Apple says the hub recognizes individual people in a home and changes the on-screen experience depending on who walks up. The product is available for preorder now and ships on November 13, 2026.",
       "facts": [
-        "Meta released Muse Wonder as a series of models.",
-        "The models are built to perform complex agentic tasks.",
-        "Meta claims the models are at parity with frontier labs like OpenAI and Anthropic.",
-        "The release is part of Meta's strategy to bolster its AI agent ecosystem.",
-        "Pricing for access reportedly ranges from $4 to $200 per month depending on usage tiers."
+        "Apple unveiled a new smart home hub called HomeView on October 13, 2026.",
+        "The device uses Apple’s updated Siri AI assistant.",
+        "HomeView costs $299.",
+        "Preorders start immediately and availability begins November 13, 2026.",
+        "Apple says the hub can recognize individual people in a household.",
+        "Apple says it can show person-specific messages, contacts, calendar appointments, notes, and apps.",
+        "The device can be used for FaceTime calls, music, videos, photo slideshows, and smart-home control."
       ],
       "data_points": [
-        "$4-$200 monthly pricing range"
+        "$299",
+        "November 13, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Availability subject to Meta's platform access terms; performance benchmarks are company-reported."
+        "The announcement centers on Apple’s ecosystem and Siri; full third-party compatibility and regional availability were not established in the source material."
       ],
-      "why_it_matters": "This release marks a significant escalation in the 'agent wars,' signaling Meta's intent to shift from social media dominance to becoming a primary infrastructure provider for autonomous AI agents.",
+      "why_it_matters": "Apple is trying to turn AI from a phone feature into a household control layer, which could reshape how everyday users interact with smart-home devices.",
       "editorial_case": {
-        "new_development": "Meta's official release of its first 'frontier' model series aimed at complex agentic workflows.",
-        "affected_listener": "Enterprise developers and power users looking for alternatives to ChatGPT or Claude for multi-step automation.",
-        "why_today": "It is the most significant competitive shift in the foundational model landscape reported in this 48-hour window.",
-        "distinct_question": "Can Meta's agent-focused architecture provide better reliability for long-running workflows than current industry incumbents?",
-        "new_since_prior_coverage": "This is the first deployment of Muse Wonder, moving it from rumor to public product.",
-        "practical_payoff": "Listeners should monitor integration documentation to see if these models can reduce costs for high-volume automated tasks."
+        "new_development": "Apple moved from rumor and reporting to an announced, priced product with preorder timing and household-personalization features.",
+        "affected_listener": "Apple users, smart-home buyers, and competitors such as Amazon and Google are affected by a new premium entry in the smart-display category.",
+        "why_today": "It is a major consumer-launch story with immediate purchase relevance and clear practical use cases.",
+        "distinct_question": "What exactly is Apple shipping into the smart-home market, and when can people buy it?",
+        "new_since_prior_coverage": "This adds concrete hardware, pricing, and timing rather than speculation about an upcoming smart-home hub.",
+        "practical_payoff": "Consumers can now decide whether to wait for HomeView or buy from existing smart-display rivals."
       },
-      "story_age_hours": 3.63,
+      "story_age_hours": 1.29,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
       "story_tier": "primary",
+      "topic_family": "infrastructure",
+      "story_role": "top_ai_event",
+      "bucket": "grounded_top_ai_event"
+    },
+    {
+      "event_key": "meta-muse-wonder-launch",
+      "headline": "Meta Launches Muse Wonder Frontier AI Models",
+      "title": "Meta Launches Muse Wonder Frontier AI Models",
+      "publisher": "Meta",
+      "published": "2026-10-12T00:00:00Z",
+      "published_at": "2026-10-12T00:00:00Z",
+      "source_url": "https://about.meta.com/technologies/muse-wonder",
+      "link": "https://about.meta.com/technologies/muse-wonder",
+      "summary": "Meta has introduced two new frontier models, Muse Wonder and Muse Wonder Full, designed for multi-step agentic workflows. The models feature 'Active Memory' to retain context across sessions and 'Active Focus' to autonomously work through task blockers. Muse Wonder is available via the Meta Model API, while the more capable Muse Wonder Full is restricted to Muse Code subscribers.",
+      "facts": [
+        "Muse Wonder and Muse Wonder Full launched on October 12, 2026.",
+        "Muse Wonder is available via Meta Model API at $4/1M input tokens and $20/1M output tokens.",
+        "Muse Wonder Full is exclusive to Muse Code Power ($50/mo) and Maximum ($200/mo) plans.",
+        "Both models support a 1-million-token context window.",
+        "The models are specifically trained for autonomous agent capabilities, including planning, tool use, and error recovery."
+      ],
+      "data_points": [
+        "$4 per million input tokens",
+        "$20 per million output tokens",
+        "1,000,000 token context window"
+      ],
+      "limitations_or_qualifiers": [
+        "Muse Wonder Full is not available via API; limited to specific subscription tiers.",
+        "Performance benchmarks cited are from Meta's internal testing; independent evaluation is pending."
+      ],
+      "why_it_matters": "Meta's move represents a major transition from general-purpose chatbots to specialized, long-running agents that compete directly with frontier providers like Anthropic and OpenAI for enterprise workflow automation.",
+      "editorial_case": {
+        "new_development": "Meta has shifted its primary frontier model strategy toward 'agentic' models that prioritize persistent memory and task completion over simple conversational interaction.",
+        "affected_listener": "Developers and power users who need AI to manage long-running software or administrative tasks rather than simple Q&A.",
+        "why_today": "This is the first major frontier model release from Meta that explicitly gates its most 'capable' model behind a dedicated enterprise product (Muse Code) while providing an API for the standard version.",
+        "distinct_question": "Can Meta's new agent-specific model outperform existing frontier models in autonomous multi-step tasks?",
+        "new_since_prior_coverage": "This is the official product launch; prior coverage was speculative or based on rumors.",
+        "practical_payoff": "Developers should compare the API cost and 'Active Focus' performance of Muse Wonder against Claude Opus 5.5 for their specific automated agent workloads."
+      },
+      "story_age_hours": 38.34,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 2,
+      "story_tier": "primary",
       "topic_family": "products",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "suki-series-e-2026-10-12-funding",
-      "headline": "Suki raises $90 million to expand its AI medical scribe and agentic workflows",
-      "title": "Suki raises $90 million to expand its AI medical scribe and agentic workflows",
-      "publisher": "Axios",
-      "published": "2026-10-12T00:00:00Z",
-      "published_at": "2026-10-12T00:00:00Z",
-      "source_url": "https://www.axios.com/pro/health-tech-deals/2026/10/12/suki-series-e-90m-healthier-capital",
-      "link": "https://www.axios.com/pro/health-tech-deals/2026/10/12/suki-series-e-90m-healthier-capital",
-      "summary": "Suki, the healthcare AI company best known for its ambient scribe tools, raised $90 million in a Series E round. Axios reports the company plans to use the money to scale and add agentic workflows. The funding gives the health-AI market a fresh capital-data point in a year when enterprise AI spend remains heavily scrutinized. The company is positioning the product around reducing administrative work for clinicians.",
+      "event_key": "character-ai-bankruptcy-disney-asset-sale-2026-10-12",
+      "headline": "Character.AI files for Chapter 11 bankruptcy and agrees to sell some assets to Disney",
+      "title": "Character.AI files for Chapter 11 bankruptcy and agrees to sell some assets to Disney",
+      "publisher": "Reuters",
+      "published": "2026-10-13T00:26:00Z",
+      "published_at": "2026-10-13T00:26:00Z",
+      "source_url": "https://www.reuters.com/legal/litigation/characterai-files-bankruptcy-agrees-sell-some-assets-disney-20-million-2026-10-13/",
+      "link": "https://www.reuters.com/legal/litigation/characterai-files-bankruptcy-agrees-sell-some-assets-disney-20-million-2026-10-13/",
+      "summary": "Character.AI said it filed for Chapter 11 bankruptcy in the U.S. on October 12, 2026 and agreed to sell some assets to Disney for $20 million. In its court filing, the company said it had assets and liabilities between $50 million and $100 million. The company said it will keep operating during the sale process while it seeks a buyer or other actionable proposal. Reuters reported the company also granted Disney a non-exclusive perpetual license to some technology and transition services from former Character.AI employees now at Disney.",
       "facts": [
-        "Suki raised $90 million in a Series E round.",
-        "Axios says the capital will help Suki scale and add agentic workflows.",
-        "Suki is a healthcare AI and scribe company.",
-        "The company is targeting administrative-task reduction for clinicians."
+        "Filed for voluntary Chapter 11 bankruptcy protection in the U.S. on October 12, 2026.",
+        "Agreed to sell some assets to Disney for $20 million.",
+        "Court filing listed assets and liabilities between $50 million and $100 million.",
+        "Company said it expects the sale process to close in late November or early December.",
+        "Company said it will continue operating during the sale process.",
+        "Disney will receive transition services from former Character.AI employees who joined Disney.",
+        "Reuters says the company also granted Disney a non-exclusive perpetual license to some technology."
       ],
       "data_points": [
-        "$90 million",
-        "Series E"
+        "$20 million",
+        "$50 million to $100 million",
+        "late November or early December 2026"
       ],
       "limitations_or_qualifiers": [
-        "No updated post-money valuation was disclosed in the cited reporting."
+        "Company said there is not yet a bid for all assets or a buyer; if no bid emerges, the platform could be wound down."
       ],
-      "why_it_matters": "This is a material health-AI financing event that signals ongoing investor appetite for workflow automation in a high-friction, regulated sector.",
+      "why_it_matters": "This is a sharp signal that consumer-facing AI companion products can attract huge attention yet still fail to become durable businesses.",
       "editorial_case": {
-        "new_development": "The company secured new growth capital and explicitly tied it to expanding beyond transcription into agentic workflows.",
-        "affected_listener": "Clinicians, health-system buyers, and health-tech investors are affected by the competitive signal and product expansion.",
-        "why_today": "It is a concrete market event with disclosed funding size, not a speculative trend piece.",
-        "distinct_question": "How much money is still flowing into AI healthcare tools, and what is the company trying to build next?",
-        "new_since_prior_coverage": "The new fact is the Series E financing and the stated expansion into agentic workflows.",
-        "practical_payoff": "Watch for whether Suki uses the new capital to widen enterprise deployments or introduce new automation features in clinics."
+        "new_development": "Within this window, the startup moved from operating an AI companion platform to a court-supervised sale process after filing for bankruptcy and striking a Disney asset deal.",
+        "affected_listener": "Users of consumer AI chatbots, startup investors, and companies trying to monetize high-engagement AI products are directly affected.",
+        "why_today": "It is a major consequence story with hard numbers, a clear legal filing, and a large strategic buyer involved.",
+        "distinct_question": "Can a popular AI consumer app survive financially once growth, legal exposure, and compute costs collide?",
+        "new_since_prior_coverage": "Materially new because it adds the bankruptcy filing, asset-sale terms, and operating assumptions; prior coverage of lawsuits and business stress did not include this step.",
+        "practical_payoff": "Watch whether Disney’s involvement becomes a platform rescue, a breakup sale, or a wind-down."
       },
-      "story_age_hours": 22.16,
-      "source_tier": 2,
-      "grounded": true,
-      "rank": 2,
-      "story_tier": "primary",
-      "topic_family": "science_access",
-      "story_role": "top_ai_event",
-      "bucket": "grounded_top_ai_event"
-    },
-    {
-      "event_key": "meta-muse-wonder-2026-10-12-frontier-model-launch",
-      "headline": "Meta says its new AI models are state-of-the-art for agentic tasks, memory and coding",
-      "title": "Meta says its new AI models are state-of-the-art for agentic tasks, memory and coding",
-      "publisher": "Reuters",
-      "published": "2026-10-12T18:32:15Z",
-      "published_at": "2026-10-12T18:32:15Z",
-      "source_url": "https://www.reuters.com/world/us/meta-releases-muse-wonder-ai-models-to-challenge-anthropic-openai-2026-10-12/",
-      "link": "https://www.reuters.com/world/us/meta-releases-muse-wonder-ai-models-to-challenge-anthropic-openai-2026-10-12/",
-      "summary": "Reuters reported that Meta launched Muse Wonder and Muse Wonder Full as its most capable AI models yet. The company says the models are intended to compete more forcefully with OpenAI and Anthropic and are aimed at personal and professional agent tasks, memory, and coding. Reuters also reported that Muse Wonder would soon power Meta’s personal AI agent, initially for subscribers, while the more powerful version is tied to the company’s coding tool. The launch is a clear escalation in Meta’s attempt to re-enter the frontier-model race.",
-      "facts": [
-        "Meta launched Muse Wonder and Muse Wonder Full.",
-        "Reuters reported Meta described them as its most capable AI models yet.",
-        "Meta said the models are meant to compete with OpenAI and Anthropic.",
-        "Reuters reported Muse Wonder would soon power Meta’s personal AI agent for subscribers.",
-        "Reuters reported Muse Wonder Full is tied to the Muse Code coding tool."
-      ],
-      "data_points": [],
-      "limitations_or_qualifiers": [
-        "Subscriber access and product availability are tiered rather than open to everyone."
-      ],
-      "why_it_matters": "Reuters confirmation makes this the most important competitive AI product release in the window because it affects both consumers and developers.",
-      "editorial_case": {
-        "new_development": "Meta publicly launched two frontier models and linked them to both consumer and developer products.",
-        "affected_listener": "People using Meta’s AI products, developers, and rival model providers are directly affected.",
-        "why_today": "It is the strongest corroborated version of the day’s biggest AI product story.",
-        "distinct_question": "What exactly changed in Meta’s AI lineup, and how does it affect users?",
-        "new_since_prior_coverage": "The new fact is the launch and productization of the models, not simply a claim that Meta is improving its models.",
-        "practical_payoff": "Listeners should watch whether the launch pressures pricing, access tiers, or benchmark competition across the frontier-model market."
-      },
-      "story_age_hours": 3.63,
+      "story_age_hours": 13.91,
       "source_tier": 3,
       "grounded": true,
       "rank": 3,
       "story_tier": "primary",
-      "topic_family": "products",
+      "topic_family": "other",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "windborne-usaf-balloon-data-contract-2026-10-12",
-      "headline": "TechCrunch reports WindBorne wins a U.S. Air Force contract for balloon data",
-      "title": "TechCrunch reports WindBorne wins a U.S. Air Force contract for balloon data",
-      "publisher": "TechCrunch",
-      "published": "2026-10-12T00:00:00Z",
-      "published_at": "2026-10-12T00:00:00Z",
-      "source_url": "https://techcrunch.com/2026/10/12/windborne-wins-a-hefty-us-air-force-contract-for-its-balloon-data/",
-      "link": "https://techcrunch.com/2026/10/12/windborne-wins-a-hefty-us-air-force-contract-for-its-balloon-data/",
-      "summary": "TechCrunch reported that WindBorne Systems won a U.S. Air Force contract for its balloon data. The story places the award in the AI/infrastructure lane because it concerns data collection and decision support for government use. This is a consequential public-sector deal rather than a consumer launch. It signals continued military and aerospace interest in unconventional sensing infrastructure tied to AI workflows.",
+      "event_key": "alibaba-qwen-glasses-n1-2026-10-13",
+      "headline": "Alibaba unveils Qwen Glasses N1 as it expands AI into consumer hardware",
+      "title": "Alibaba unveils Qwen Glasses N1 as it expands AI into consumer hardware",
+      "publisher": "Reuters",
+      "published": "2026-10-13T10:35:00Z",
+      "published_at": "2026-10-13T10:35:00Z",
+      "source_url": "https://www.reuters.com/world/china/alibaba-unveils-ai-glasses-gadget-push-2026-10-13/",
+      "link": "https://www.reuters.com/world/china/alibaba-unveils-ai-glasses-gadget-push-2026-10-13/",
+      "summary": "Alibaba unveiled its Qwen Glasses N1 series at an event in Hangzhou on October 13, 2026. The company framed the launch as part of its strategy to extend AI from infrastructure and software into end-user devices. Reuters reported the move deepens Alibaba’s consumer-electronics push and follows the company’s broader investment in AI. The glasses are positioned as part of Alibaba’s full-stack AI offering, rather than a standalone hardware experiment.",
       "facts": [
-        "WindBorne Systems won a U.S. Air Force contract, according to TechCrunch.",
-        "The contract concerns balloon data.",
-        "The reporting places the deal in the AI/infrastructure category."
+        "Alibaba unveiled Qwen Glasses N1 on October 13, 2026.",
+        "The product was introduced at an event in Hangzhou, China.",
+        "Alibaba described the glasses as part of its full-stack AI strategy.",
+        "The launch deepens Alibaba’s expansion into consumer electronics.",
+        "The company continues to position AI as spanning data centers, software, and end-user products."
       ],
       "data_points": [],
       "limitations_or_qualifiers": [
-        "The reporting cited here does not establish contract value or deployment scope."
+        "Reuters’ report did not establish broad consumer availability in the source snippet; detailed pricing and shipment timing were not confirmed there."
       ],
-      "why_it_matters": "Government demand can accelerate AI-adjacent sensing infrastructure even when consumer AI headlines dominate the news cycle.",
+      "why_it_matters": "This shows a major Chinese platform translating AI infrastructure spending into a new consumer device category, which matters for hardware competition and AI monetization.",
       "editorial_case": {
-        "new_development": "A specific U.S. Air Force contract became public within the window.",
-        "affected_listener": "Defense-tech watchers, investors, and aerospace suppliers are affected by the procurement signal.",
-        "why_today": "It broadens the slate beyond consumer model launches and shows a concrete infrastructure use case for AI-linked systems.",
-        "distinct_question": "Where is AI-adjacent infrastructure getting real government money?",
-        "new_since_prior_coverage": "The new fact is the disclosed Air Force contract, not merely the existence of the startup.",
-        "practical_payoff": "Listeners should watch for follow-on contracts or similar sensing deals in defense and climate data markets."
+        "new_development": "Alibaba moved from AI infrastructure and cloud investment into a named consumer hardware launch.",
+        "affected_listener": "Buyers of AI wearables, Chinese tech investors, and competitors in smart glasses are directly affected.",
+        "why_today": "It is a clear product-launch story with market implications and a major company behind it.",
+        "distinct_question": "Is Alibaba using AI glasses as a serious consumer-product extension of its AI platform?",
+        "new_since_prior_coverage": "The new fact is the actual product unveiling, not just prior spending or analyst expectation around Alibaba AI.",
+        "practical_payoff": "Watch whether Alibaba’s hardware push becomes a measurable consumer channel for Qwen and cloud services."
       },
-      "story_age_hours": 22.16,
-      "source_tier": 2,
+      "story_age_hours": 3.76,
+      "source_tier": 3,
       "grounded": true,
       "rank": 4,
       "story_tier": "supporting",
@@ -164,41 +178,45 @@
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "ai-borrowing-boom-corporate-credit-2026-10-12",
-      "headline": "Bloomberg reports AI buildout is driving a borrowing boom in corporate credit",
-      "title": "Bloomberg reports AI buildout is driving a borrowing boom in corporate credit",
-      "publisher": "Bloomberg",
-      "published": "2026-10-11T00:00:00Z",
-      "published_at": "2026-10-11T00:00:00Z",
-      "source_url": "https://www.bloomberg.com/news/videos/2026-10-11/is-ai-crowding-everyone-else-out-of-the-bond-market-video",
-      "link": "https://www.bloomberg.com/news/videos/2026-10-11/is-ai-crowding-everyone-else-out-of-the-bond-market-video",
-      "summary": "Bloomberg reported that hyperscalers, data centers, and chip companies are borrowing hundreds of billions of dollars to finance the AI buildout. The reporting frames AI spending as a significant force in corporate credit markets rather than just a software trend. That has implications for lenders, bond investors, and the pace of infrastructure expansion. It also underscores how capital-intensive the AI race has become.",
+      "event_key": "suki-90m-series-e-funding",
+      "headline": "Suki Raises $90 Million Series E for Healthcare AI Agents",
+      "title": "Suki Raises $90 Million Series E for Healthcare AI Agents",
+      "publisher": "Business Wire",
+      "published": "2026-10-13T00:00:00Z",
+      "published_at": "2026-10-13T00:00:00Z",
+      "source_url": "https://www.businesswire.com/news/home/20261013000000/en/Suki-Secures-90-Million-to-Build-and-Scale-AI-Agents",
+      "link": "https://www.businesswire.com/news/home/20261013000000/en/Suki-Secures-90-Million-to-Build-and-Scale-AI-Agents",
+      "summary": "Healthcare AI company Suki has raised $90 million in a Series E round to expand its agentic capabilities. The company plans to move beyond ambient clinical documentation into clinical reasoning, revenue cycle management, and operational workflows for health systems.",
       "facts": [
-        "Bloomberg says hyperscalers, data centers, and chip companies are borrowing heavily for AI buildout.",
-        "The report describes the amounts as hundreds of billions of dollars.",
-        "The story links AI spending to corporate credit market conditions."
+        "Series E funding round announced October 13, 2026.",
+        "New investors include Healthier Capital, Crosslink Capital, and Hercules Capital.",
+        "Suki reports serving over 450 healthcare organizations.",
+        "Patient encounters supported by Suki grew more than 190% year-over-year in 2026.",
+        "Platform is EHR-agnostic, supporting Epic, Oracle Health, MEDITECH, and athenahealth."
       ],
       "data_points": [
-        "hundreds of billions of dollars"
+        "$90 million raised",
+        "190% year-over-year growth in patient encounters"
       ],
       "limitations_or_qualifiers": [
-        "This is a market analysis/video report, not a company filing with a single disclosed transaction."
+        "Suki faces intense competition from established EHR-native scribes like Epic and Oracle.",
+        "Revenue projections are based on company statements."
       ],
-      "why_it_matters": "The AI boom is now large enough to affect credit markets, which raises the stakes for interest rates, balance sheets, and infrastructure timing.",
+      "why_it_matters": "The investment underscores the shift in healthcare AI from passive documentation (scribing) to active task execution (agentic reasoning), aimed at solving administrative burdens for clinicians.",
       "editorial_case": {
-        "new_development": "The new development is not a product, but a market-wide financing pattern becoming visible in credit markets.",
-        "affected_listener": "Investors, lenders, and infrastructure planners are affected by the scale of borrowing tied to AI.",
-        "why_today": "It explains the macro consequence behind many AI launches and helps listeners understand the financing engine behind the sector.",
-        "distinct_question": "How is the AI race being paid for?",
-        "new_since_prior_coverage": "The material new fact is the reported borrowing scale and its bond-market effect.",
-        "practical_payoff": "Watch for tighter credit conditions or new disclosure around capex, debt issuance, and data-center financing."
+        "new_development": "A major capital injection specifically earmarked for scaling AI agents across complex clinical and administrative health workflows.",
+        "affected_listener": "Healthcare administrators and clinicians looking for standardized, cross-platform AI tools to reduce administrative load.",
+        "why_today": "Reflects the ongoing 'agentization' of specialized industry software as startups compete with incumbent EHR vendors.",
+        "distinct_question": "Can third-party AI agents successfully integrate into complex EHR ecosystems to execute clinical tasks beyond simple note-taking?",
+        "new_since_prior_coverage": "This represents the most recent major funding event for an independent healthcare AI agent provider.",
+        "practical_payoff": "Health tech buyers should monitor Suki's platform expansion as a benchmark for how third-party tools can survive in an EHR-dominated market."
       },
-      "story_age_hours": 46.16,
-      "source_tier": 3,
+      "story_age_hours": 14.34,
+      "source_tier": 1,
       "grounded": true,
       "rank": 5,
       "story_tier": "supporting",
-      "topic_family": "other",
+      "topic_family": "markets",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     }
