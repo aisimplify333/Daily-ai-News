@@ -1039,9 +1039,9 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
         "normal_person_payoff": "AI matters when it touches work, money, health, privacy, "
                                 "family, safety, or trust — not when a press release says so.",
         "jamie_rufus_value_conflict": {
-            "jamie_value": "human agency, fairness, access, work, family, safety or lived consequences",
-            "rufus_value": "capital allocation, market incentives, global competition, liability and what scales",
-            "point_of_collision": "the specific decision where today's facts make those values disagree",
+            "jamie_value": "",
+            "rufus_value": "",
+            "point_of_collision": "",
         },
         "rufus_global_markets_desk": {
             "market_or_region": "the market most directly affected by today's sourced events",
@@ -1077,15 +1077,14 @@ self-contained exchange premise. These are planning notes, never invented facts.
 A returning company needs a materially new development, not yesterday's argument.
 Do not reorder source records or fabricate additional reporting in this planning call.
 Keep each story scene under 150 words; keep other JSON fields concise.
-For each scene give each host a story-specific intention, the exact point of
-disagreement or shared curiosity, a reciprocal relationship beat, an emotional
-turn earned by a sourced discovery, and the final listener payoff. Vary these
-from supplied history. Planning notes are never spoken or treated as evidence.
-
-This show has three hosts who are PEOPLE, not functions:
-- ALEX drives, but can be wrong and can change his mind.
-- JAMIE is the human read; warm, funny, fast — and sometimes wins the argument.
-- RUFUS tracks money, liability and regulation with dry British wit — and is occasionally caught out.
+For each scene sketch what each friend wants to understand or get across, what
+specific sourced detail catches their attention, and how their friends might respond.
+Identify the conversation's open question and a possible destination. Leave room for
+the dialogue writer to discover a better route. These are character intentions, not
+fixed emotional assignments, compulsory jokes or a prescribed winner. A scene can
+move through shared fascination as readily as disagreement. Planning notes are never
+spoken or treated as evidence. Use the shared cast brief; do not reduce the characters
+to host, human-stakes prosecutor and financial skeptic.
 
 TODAY'S TOP AI EVENTS:
 {_story_lines(stories)}
@@ -1166,9 +1165,11 @@ Return exactly this JSON:
     "question": "specific question", "competing_readings": ["strong case", "strong countercase"],
     "receipt": "detail from this source", "unknown": "evidence limitation",
     "listener_payoff": "practical consequence", "exchange_premise": "setup and useful payoff",
-    "cast_direction": {{"alex": "intention and emotional movement",
-      "jamie": "intention and emotional movement", "rufus": "intention and emotional movement"}},
-    "relationship_beat": "specific setup, colleague response and payoff",
+    "cast_direction": {{"alex": "what he wants to understand and the detail that hooks him",
+      "jamie": "what matters to her here and what she wants her friends to see",
+      "rufus": "what he notices and wants to explore with his friends"}},
+    "relationship_beat": "a possible personal response to a friend, not a required joke or sequence",
+    "scene_movement": "the opening question and where this conversation might arrive; uncertainty allowed",
     "discovery": "source-backed possibility worth curiosity or delight, or honest absence"}},
     {{"story_index": 2, "instruction": "same fields for Story 2"}},
     {{"story_index": 3, "instruction": "same fields for Story 3"}}],
@@ -1187,9 +1188,9 @@ Return exactly this JSON:
   "who_is_exposed": "...",
   "normal_person_payoff": "...",
   "jamie_rufus_value_conflict": {{
-    "jamie_value": "the specific human value Jamie protects today",
-    "rufus_value": "the specific market, capital or geopolitical value Rufus protects today",
-    "point_of_collision": "the concrete decision they disagree about; vary it from recent episodes"
+    "jamie_value": "her story-specific interest; no assigned side",
+    "rufus_value": "his story-specific interest; no assigned side",
+    "point_of_collision": "optional real disagreement; empty when they share the curiosity"
   }},
   "rufus_global_markets_desk": {{
     "market_or_region": "Shanghai|Wall Street/New York|London|Hong Kong|Japan/Tokyo|Washington/White House|other sourced location",
@@ -1261,6 +1262,22 @@ Return exactly this JSON:
 # ----------------------------------------------------------------------------
 # WRITER PROMPT (rewritten for v3.3: briefs, concession, mess, continuity)
 # ----------------------------------------------------------------------------
+def _scene_plan(board, segment, story):
+    """Route only this story's character plan into its editor/expansion call."""
+    scenes = board.get('story_scenes') or []
+    if not isinstance(scenes, list):
+        return {}
+    for scene in scenes:
+        if not isinstance(scene, dict):
+            continue
+        if scene.get('story_index', scene.get('source_index')) != segment - 1:
+            continue
+        if scene.get('source_url') and _url(story) and scene['source_url'] != _url(story):
+            continue
+        return scene
+    return {}
+
+
 def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]],
                    date_str: str, board: Dict[str, Any], fuel: Dict[str, Any]) -> str:
     return f"""Write The AI Edge for {date_str}. Return the full spoken script only.
@@ -2246,13 +2263,11 @@ the existing discussion, script, or segment has not covered something. Do not sa
 "one thing we didn't land on" or reopen a completed summary. This exchange will be
 inserted before the existing conclusion; do not write a second conclusion.
 
-Chemistry:
-- Alex drives with the blunt question a listener is forming, then asks the harder follow-up.
-- Jamie is an opinionated equal; give her a sharp human-stakes challenge and one earned,
-  understated sarcastic beat. She may win.
-- Rufus follows money, incentives, permission, or liability with one dry undercut.
-- Let replies follow the evidence: curiosity, agreement, challenge or delight. No required argument or joke quota. No stage directions.
-- Turns are 8-38 words, absolute maximum 55.
+Continue the characters already in this scene. Develop the question they are actually
+exploring, preserving their individual voices and responses to one another. Do not
+reset Alex to moderator, Jamie to prosecutor or Rufus to skeptic. No required sarcasm,
+undercut or manufactured argument. Let the shared friendship brief guide the writing.
+Turns are 8-38 words, absolute maximum 55. No spoken stage directions.
 
 FACT FIREWALL:
 - Use only details in the source records below. Stories are isolated records.
@@ -2263,8 +2278,8 @@ FACT FIREWALL:
 - Ban: Exactly/Absolutely + host name, great question, game-changer, exciting time,
   speaking of, landscape is evolving, lesson, Signal or Static, and generic optimism.
 
-EPISODE ARGUMENT:
-{json.dumps(board, ensure_ascii=False, indent=2)}
+CHARACTER AND SCENE PLAN FOR THIS STORY (planning, not evidence):
+{json.dumps(_scene_plan(board, segment, source[0] if source else {}), ensure_ascii=False)}
 
 SOURCE RECORD FOR THIS STORY ONLY:
 {_story_lines(source)}
@@ -2908,6 +2923,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                        "No invented presence, eyewitness details or interviews. If location is unsupported, "
                        "use 'Rufus, take us to the global desk.' instead.\n" if segment == 3 else "")
                     + ("\nRUFUS DISPATCH BRIEF (planning, not evidence):\n" + json.dumps(board.get("rufus_global_markets_desk") or {}, ensure_ascii=False) if segment == 3 else "")
+                    + "\nCHARACTER AND SCENE PLAN (planning, not evidence):\n"
+                    + json.dumps(_scene_plan(board, segment, stories[segment-2]), ensure_ascii=False)
                     + "\nSOURCE FOR THIS STORY:\n" + _story_lines(stories[segment-2:segment-1])
                     + "\nEXACT SCENE TO REVISE:\n" + scene,
                     model=editor_model, max_tokens=3600)

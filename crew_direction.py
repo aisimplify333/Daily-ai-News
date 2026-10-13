@@ -42,4 +42,21 @@ eyewitness reporting, interviews, invented expenditures or unsourced market fact
 Never speak production notes. Keep the approved cast voices and truthful attribution.
 """.strip()
 
-CREW_DIRECTION = FRIENDS_DIRECTION + "\n\n" + REPORTING_DIRECTION
+SCENE_DIRECTION = """
+WRITE FOR THE CHARACTERS AND THE SCENE:
+Start with what each friend genuinely wants to understand or make the others see
+about this particular story. Give them different ways of noticing and expressing it,
+not assigned sides. Alex explores aloud; Jamie responds personally and directly;
+Rufus notices the revealing detail and can use composed understatement. Any of them
+can surprise the others. If their lines could swap names unchanged, revise the voice.
+Let a friend's actual answer affect what gets said next. Follow an interesting
+reaction, challenge, admission or shared fascination instead of marching through
+three prepared summaries. The conversation should arrive somewhere: a clearer idea,
+a changed question or an honest disagreement. No compulsory reversal or comic beat.
+Use the scene plan as a starting point, not a script to obey. Preserve characterful
+exchanges through expansion and repair; add useful depth through their conversation.
+The editorial room is the setting; only Rufus's explicitly imagined dispatch changes
+that frame. Never invent personal experiences or facts to make a character vivid.
+""".strip()
+
+CREW_DIRECTION = FRIENDS_DIRECTION + "\n\n" + SCENE_DIRECTION + "\n\n" + REPORTING_DIRECTION
