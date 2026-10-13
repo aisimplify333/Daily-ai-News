@@ -44,8 +44,6 @@ def main():
     parser.add_argument('--date', default=dt.datetime.now(dt.timezone.utc).date().isoformat())
     args = parser.parse_args()
     path = Path(f'episode_audio/podcast_{args.date}.mp3')
-    timeline_path = path.with_suffix('.timeline.json')
-    rows = json.loads(timeline_path.read_text()).get('rows', []) if timeline_path.exists() else []
     clip = AudioSegment.from_file(path)
     client = genai.Client(api_key=os.environ['GEMINI_API_KEY'])
     model = os.getenv('AUDIO_REVIEW_MODEL', 'gemini-3.1-flash-lite')
@@ -57,7 +55,6 @@ def main():
     for start, end in windows(len(clip)):
         buf = io.BytesIO()
         clip[start:end].export(buf, format='mp3', bitrate='96k')
-        expected = [r for r in rows if r.get('kind') == 'speech' and float(r.get('start', 0)) < end/1000 and float(r.get('end', 0)) > start/1000]
         prompt = '''Evaluate the AUDIO itself for this three-person conversational news podcast.
 Alex hosts with curiosity and playful leadership; Jamie brings warmth, mischief and
 conviction; Rufus brings restrained dry British wit. Do not infer performance from
@@ -72,18 +69,25 @@ natural_delivery:1-5,cast_connection:1-5,pacing:1-5}, observations:[{seconds:num
 description:string}], defects:[{seconds:number,description:string}]. Use timestamps
 relative to this clip and specific audible evidence. Empty defects is permitted.
 If audio is inaccessible set audio_evaluated:false. This is model review, not human
-listening approval. Context transcript for alignment only:\n''' + json.dumps(expected, ensure_ascii=False)
+listening approval. Do not infer a real studio, microphone technique or human
+recording from clear synthetic speech. Describe only audible qualities.
+''' + f'CLIP duration: {(end-start)/1000:.3f} seconds. All timestamps must be relative to this clip, between 0 and {(end-start)/1000:.3f}. No episode-global timestamps.'
         result = None
+        correction = ''
         for attempt in range(2):
             try:
                 response = client.models.generate_content(model=model,
-                    contents=[types.Part.from_text(text=prompt), types.Part.from_bytes(data=buf.getvalue(), mime_type='audio/mpeg')],
+                    contents=[types.Part.from_text(text=prompt + correction), types.Part.from_bytes(data=buf.getvalue(), mime_type='audio/mpeg')],
                     config=types.GenerateContentConfig(response_mime_type='application/json', temperature=0.2, max_output_tokens=3000))
                 result = validate(json.loads(response.text), (end-start)/1000)
                 break
             except Exception as exc:
+                if isinstance(exc, ValueError):
+                    correction = '\nPrevious response failed local validation: ' + str(exc)[:200] + '. Re-evaluate and return the complete valid JSON object.'
                 if attempt == 1:
                     report['error_type'] = type(exc).__name__
+                    if isinstance(exc, ValueError):
+                        report['validation_error'] = str(exc)[:200]
                     output.write_text(json.dumps(report, indent=2))
                     raise RuntimeError('Rendered audio review incomplete') from None
         result.update(start_seconds=start/1000, end_seconds=end/1000)
