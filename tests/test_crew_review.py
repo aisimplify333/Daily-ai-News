@@ -24,6 +24,18 @@ ALEX: Goodbye.
 
 
 class CrewReviewTests(unittest.TestCase):
+    def test_orphan_sponsor_setup_can_be_removed_without_touching_approved_copy(self):
+        script = SCRIPT.replace('RUFUS: The price is 20 dollars.',
+                                'RUFUS: Less collecting headlines, more knowing what matters?')
+        approved = 'JAMIE: The Ledger supports this show.'
+        old = 'RUFUS: Less collecting headlines, more knowing what matters?\n' + approved
+        result, report = review_final_scenes(script, [], {},
+            lambda _: json.dumps({'edits': [{'segment': 3, 'old': old, 'new': approved}]}),
+            lambda x: x, lambda _: {'failed': []})
+        self.assertEqual(report['accepted_edits'], 1)
+        self.assertIn(approved, result)
+        self.assertNotIn('Less collecting headlines', result)
+
     def test_redundant_number_can_be_cut_before_required_fact_audit(self):
         result, report = self.review([{'segment':3, 'old':'RUFUS: The price is 20 dollars.',
                                        'new':'RUFUS: That is the listed price.'}])

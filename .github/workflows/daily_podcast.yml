@@ -63,11 +63,24 @@ jobs:
       ELEVEN_USE_DIALOGUE_SCENES: "false"
 
     steps:
+      - name: Set episode checkout date
+        id: checkout_date
+        run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
       - name: Check out repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
           ref: main
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/episode_audio/*.mp3
+            !/episode_audio/*.mp4
+            !/.tts_cache/
+            /episode_audio/podcast_${{ steps.checkout_date.outputs.date }}.mp3
+            /episode_audio/clip_${{ steps.checkout_date.outputs.date }}.mp3
+            /episode_audio/clip_${{ steps.checkout_date.outputs.date }}.mp4
+            /episode_audio/show_trailer.mp3
 
       - name: Record current run start
         run: touch "$RUNNER_TEMP/production_run_started"

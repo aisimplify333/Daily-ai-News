@@ -54,3 +54,37 @@ def test_specialist_science_and_primary_research_sources_recognized():
     assert news._source_tier('Nature News', 'https://www.nature.com/articles/example') >= 2
     assert news._source_tier('MIT News', 'https://news.mit.edu/2026/example') == 3
     assert news._source_tier('Unknown', 'https://mit.edu.example.org/article') == 1
+
+
+def test_audio_review_covers_entire_master_and_rejects_unheard_audio():
+    from review_rendered_episode import windows, validate
+    spans = list(windows(1201000))
+    assert spans[0][0] == 0 and spans[-1][1] == 1201000
+    assert all(b[0] < a[1] for a, b in zip(spans, spans[1:]))
+    with pytest.raises(ValueError): validate({'audio_evaluated': False}, 240)
+
+
+def test_sparse_checkout_does_not_delete_historical_media(tmp_path):
+    import subprocess
+    from pathlib import Path
+    repo = tmp_path/'repo'
+    repo.mkdir()
+    def git(*args):
+        return subprocess.run(['git', '-C', str(repo), *args], check=True, capture_output=True, text=True).stdout
+    git('init', '-q')
+    git('config', 'user.name', 'Test')
+    git('config', 'user.email', 'test@example.test')
+    for path in ['main.py', 'episode_audio/podcast_old.mp3', 'episode_audio/podcast_2026-10-12.mp3',
+                 'episode_audio/old.json', '.tts_cache/old.mp3', 'assets/chime.mp3']:
+        f = repo/path; f.parent.mkdir(exist_ok=True, parents=True); f.write_text('fixture')
+    git('add', '.')
+    git('commit', '-qm', 'fixture')
+    git('sparse-checkout', 'set', '--no-cone', '/*', '!/episode_audio/*.mp3', '!/.tts_cache/',
+        '/episode_audio/podcast_2026-10-12.mp3')
+    assert not (repo/'episode_audio/podcast_old.mp3').exists()
+    assert (repo/'episode_audio/podcast_2026-10-12.mp3').exists()
+    assert (repo/'episode_audio/old.json').exists()
+    assert (repo/'assets/chime.mp3').exists()
+    (repo/'main.py').write_text('updated')
+    git('add', '.')
+    assert git('diff', '--cached', '--name-status').strip() == 'M\tmain.py'

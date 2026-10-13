@@ -79,9 +79,6 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                        for start in [script.find(old)]):
                 row['reason'] = 'partial_line'
                 continue
-            if sponsor_text(old) or sponsor_text(new):
-                row['reason'] = 'sponsor_protected'
-                continue
             navigation = ('Rufus, take us on location.', 'Rufus, take us to the global desk.',
                           'Back to the wider story.')
             if any(marker in old and section[1].count(marker)-old.count(marker)+new.count(marker) < 1 for marker in navigation):
@@ -94,6 +91,13 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                 row['reason'] = 'unbounded_expansion'
                 continue
             candidate = normalize(script[:section.start(1)] + section[1].replace(old, new, 1) + script[section.end(1):])
+            # Protect the approved copy, not the entire surrounding edit span.
+            # This permits removing an orphaned ad setup or an identical repeat.
+            approved = {line for line in script.splitlines() if sponsor_text(line)}
+            proposed = {line for line in candidate.splitlines() if sponsor_text(line)}
+            if proposed != approved:
+                row['reason'] = 'sponsor_protected'
+                continue
             before, after = assess(script), assess(candidate)
             new_failures = set(after.get('failed', [])) - set(before.get('failed', []))
             # Permit useful cuts temporarily; the caller replenishes sourced material

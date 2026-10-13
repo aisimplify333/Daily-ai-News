@@ -1,0 +1,70 @@
+name: Rendered episode audio review
+on:
+  workflow_run:
+    workflows: ['Daily Podcast & Socials']
+    types: [completed]
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [AUDIO_REVIEW_RUN_ONCE]
+permissions:
+  contents: read
+concurrency:
+  group: rendered-episode-audio-review
+  cancel-in-progress: false
+jobs:
+  review:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch' || (github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Set episode checkout date
+        id: checkout_date
+        run: |
+          python - <<'PYDATE'
+          import os, re, urllib.request, xml.etree.ElementTree as ET
+          feed = ET.fromstring(urllib.request.urlopen('https://aisimplify333.github.io/Daily-ai-News/feed.xml', timeout=30).read())
+          dates = [m[1] for e in feed.findall('./channel/item/enclosure')
+                   if (m := re.search(r'/podcast_(\d{4}-\d{2}-\d{2})\.mp3$', e.get('url', '')))]
+          if not dates:
+              raise RuntimeError('No published episode found')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as output:
+              output.write('date=' + max(dates) + '\n')
+          PYDATE
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          ref: main
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/episode_audio/*.mp3
+            !/episode_audio/*.mp4
+            !/.tts_cache/
+            /episode_audio/podcast_${{ steps.checkout_date.outputs.date }}.mp3
+            /episode_audio/clip_${{ steps.checkout_date.outputs.date }}.mp3
+            /episode_audio/clip_${{ steps.checkout_date.outputs.date }}.mp4
+            /episode_audio/show_trailer.mp3
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install audio review dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          pip install google-genai pydub
+      - name: Verify public delivery before reviewing
+        run: python verify_publication.py --date ${{ steps.checkout_date.outputs.date }} --attempts 3 --interval 20
+      - name: Review full encoded master in overlapping sections
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python review_rendered_episode.py --date ${{ steps.checkout_date.outputs.date }}
+      - name: Preserve audio observations
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-audio-review
+          path: |
+            rendered_audio_review.json
+            public_delivery_report.json
+          retention-days: 14

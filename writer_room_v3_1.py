@@ -1669,6 +1669,7 @@ def _ensure_connection_elements(
             if in_closing and re.search(
                 r"listener question|question for (?:you|listeners)|Spotify poll|your options|"
                 r"follow (?:\s*The AI Edge|(?:this|the|our) (?:show|podcast)|us wherever)|we.ll have your answers|"
+                r"^For The AI Edge, I['’]m Alex\..*Thanks for listening[.!]|"
                 r"^(?:Thanks for listening|See you tomorrow|Until then)[.! ,]", spoken, re.I
             ):
                 skip_speaker = speaker

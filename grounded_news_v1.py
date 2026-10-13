@@ -281,8 +281,11 @@ Rules:
 - Actively search consequential advances in science, accessibility, education,
   creativity and useful everyday tools as well as risk stories. Rank by significance,
   freshness and evidence, not emotional negativity. No compulsory good-news quota.
-- Prioritize legal/policy moves, major model or product releases, safety/security
-  events, material deals, compute/chip shifts, and changes affecting work or people.
+- Rank actual consequence, fresh evidence, human relevance and explanatory value
+  across ALL desks. Documented useful deployments, creative work, accessibility and
+  scientific discoveries compete on equal footing with policy, security, financing
+  and model launches. Do not treat danger, a famous company, or a large number as
+  automatic evidence that a story is more compelling. Keep the strongest lead.
 - For Rufus's global markets reporting, actively consider Shanghai, Wall Street/
   New York, London, Hong Kong, Japan/Tokyo and Washington/the White House alongside
   other relevant markets, including Singapore, Dubai, Abu Dhabi, Seoul, Taipei,

@@ -15,6 +15,11 @@ CREW CALL — audience connection is part of the journalism:
   something, another challenges or playfully reframes it, the first responds, and
   the discovery moves the story forward. A joke without a response is not chemistry.
   Give Alex a place in the relationship too. Never explain a punchline afterward.
+  Carry that relationship through all three stories: develop a brief playful premise
+  into a response and comeback within each story, rather than saving the cast's
+  personality for the welcome and goodbye. Alex joins the play, not just the handoffs.
+  Tease the colleague's stance with affection; let the target answer back. A topical
+  one-liner followed by more exposition is not a completed relationship exchange.
 - Strong views require different plausible interpretations, not invented conflict.
   Smart sarcasm and playful posturing should expose a claim's absurdity and invite
   a colleague's comeback, never become contempt for the audience or personal cruelty.
