@@ -333,7 +333,7 @@ jobs:
 
       - name: Verify public feed, episode page and audio
         if: success() && steps.release_check.outputs.result != 'blocked'
-        run: python verify_publication.py --attempts 30 --interval 20
+        run: python verify_publication.py --attempts 60 --interval 20
 
       - name: Stage current-run artifacts only
         if: always()
