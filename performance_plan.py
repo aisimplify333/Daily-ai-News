@@ -25,7 +25,8 @@ useful reframing can earn warmth; an absurd observation can be dry or amused. Le
 usefulness earn delight, stakes earn concern, and disagreement earn pushback. Never force
 emotion into every turn or assign delight to harm. Do not use keyword matching. Give Jamie
 contextual direction, not automatic neutral. Sponsor reads are neutral. Laughter is optional,
-not implied by every amused turn. Preserve each host's identity.
+not implied by every amused turn. Preserve each host's identity. Scene briefs are context, not fixed emotions: direct
+the actual reply between friends, never force a cast member back into a permanent role.
 Return a short reason (at most 12 words). IDs are global: do not renumber.
 Direct only TARGET TURNS; neighboring turns are context, not output.
 '''

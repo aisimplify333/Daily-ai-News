@@ -213,8 +213,10 @@ def infer_mood(text: str, speaker: str) -> str:
         return "amused"
     # 5. Pressure — a pointed question. A question is interrogative delivery
     #    regardless of how weighty the topic is, so it outranks concern.
-    if PRESSURE_RE.search(low) or (spk == "ALEX" and body.endswith("?")):
+    if PRESSURE_RE.search(low):
         return "pressure"
+    if spk == "ALEX" and body.endswith("?"):
+        return "curiosity"
     # 6. Concern — real stakes for real people, stated (not asked).
     if CONCERN_RE.search(low):
         return "concern"
@@ -232,22 +234,16 @@ def infer_mood(text: str, speaker: str) -> str:
 # DIRECTION LIBRARY — how each mood should be performed.
 # ----------------------------------------------------------------------------
 PERSONA = {
-    "ALEX": ("Alex — the host and engine of the room. Curious, blunt, high-agency, "
-             "energetic. Keeps the debate moving and presses the question others avoid."),
-    "JAMIE": ("Jamie — the comic catalyst and equal debating partner. Warm, sharp, funny, emotionally present. "
-              "Translates jargon into plain English and makes the stakes land for "
-              "normal listeners. Modern and real; never robotic, never valley-girl, "
-              "Lead the earned laughs, occasional surprised guffaw and sotto-voce snicker; "
-              "vary their intensity, then get straight back to the argument. Never a laugh track."),
-    "RUFUS": ("Rufus — the dry British analyst. Calm, precise, quietly funny, "
-              "brisk and clipped, with a distinct non-rhotic English accent. Tracks money, liability, and regulation. Understatement, "
-              "never theatrics."),
+    "ALEX": "Alex — inquisitive, informal and down-to-earth; enjoys talking with his friends, follows an answer and can take a tease himself.",
+    "JAMIE": "Jamie — passionate, smart, warm and playful; can be delighted, exasperated, mischievous or persuaded. React to her friends, with no compulsory laugh.",
+    "RUFUS": "Rufus — composed, precise and dryly funny, with a distinct non-rhotic English accent. Affectionate mock formality; able to laugh at himself or sincerely admire something.",
 }
 PERSONA_SHORT = {
-    "ALEX": "a blunt, energetic, curious podcast host",
-    "JAMIE": "a warm, sharp, funny, emotionally present podcast co-host",
-    "RUFUS": "a calm, dry, understated British analyst",
+    "ALEX": "an inquisitive, informal podcast host",
+    "JAMIE": "a passionate, playful podcast co-host",
+    "RUFUS": "a composed, dryly funny British podcast co-host",
 }
+
 
 # mood -> (gemini director note, openai instruction overlay)
 MOOD_DIRECTION = {
@@ -348,8 +344,8 @@ quotation marks.
 {persona}
 
 # SCENE
-A premium daily AI debate podcast, The AI Edge. Three hosts argue through the day's
-biggest AI story. The room is fast and alive; you are responding in the moment.
+The AI Edge: three longtime friends discussing the day's AI stories in a podcast
+room. React to your friends in the moment; disagreement can be lively and affection remains.
 
 # DIRECTION FOR THIS LINE  (mood: {mood})
 {note}
@@ -363,10 +359,10 @@ def _openai_instructions(speaker: str, mood: str) -> str:
     spk = (speaker or "").strip().upper()
     performance = {
         "ALEX": (
-            "You are Alex, the high-agency lead host. Use confident, lived-in podcast "
-            "timing: conversational swagger, varied pace, crisp pressure questions, and "
-            "brief pauses before the consequence. Drive the room without sounding like "
-            "a radio announcer or reading copy."
+            "You are Alex, an inquisitive, informal host talking with two longtime friends. "
+            "Use relaxed, lived-in timing and varied pace. Follow the answer with genuine "
+            "curiosity, surprise or playful skepticism. Enjoy the room and take a tease "
+            "yourself. Never sound like an announcer or a constant interrogator."
         ),
         "JAMIE": (
             "You are Jamie, a highly intelligent, opinionated female co-host. Be quick, "
@@ -445,7 +441,7 @@ def _extract_audio_bytes(response: Any) -> bytes:
 
 def _cache_key(text: str, speaker: str, voice: str, model: str, mood: str) -> str:
     raw = json.dumps(
-        {"direction_version": "gemini-cast-v3-distinct-rufus", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
+        {"direction_version": "gemini-cast-v4-friends", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
          "text": _sanitize_spoken_text(text)},
         sort_keys=True,
     )

@@ -2,7 +2,6 @@
 import re
 from collections import Counter
 from dialogue_direction import PERFORMANCE_DIRECTION
-from show_identity import RELATIONSHIP_DIRECTION
 from crew_direction import CREW_DIRECTION
 
 
@@ -19,8 +18,8 @@ EDITORIAL BRIEF — The AI Edge:
 2. Curiosity, delight, disagreement and affection can all move a scene. Seek actual
    useful progress without a positivity quota. Never manufacture danger or hope.
    No permanent villains, designated loser or required change of mind.
-3. Every exchange adds evidence, a revealing example, a genuine objection or a changed
-   implication. If it repeats a settled point, cut it. Do not force one thesis across
+3. Across each scene, develop evidence, a revealing example or a useful implication.
+   Allow brief friendship and humor beats without making every line carry a new fact. If it repeats a settled point, cut it. Do not force one thesis across
    all stories or pad the runtime. Target roughly 40/30/30 discussion time.
 4. Preserve source qualifications. Proposals are not agreements; allegations are not
    findings. A vendor claim is not independent proof. Missing from a short summary
@@ -31,7 +30,7 @@ EDITORIAL BRIEF — The AI Edge:
 6. Explain the headline early and end with a specific answer or honest uncertainty.
    Keep the opening brief, give each story audible navigation, and leave the listener
    more capable. Instructions and automated checks are not entertainment ratings.
-""".strip() + "\n\n" + PERFORMANCE_DIRECTION + "\n\n" + RELATIONSHIP_DIRECTION + "\n\n" + CREW_DIRECTION
+""".strip() + "\n\n" + PERFORMANCE_DIRECTION + "\n\n" + CREW_DIRECTION
 
 
 def story_turns(script):

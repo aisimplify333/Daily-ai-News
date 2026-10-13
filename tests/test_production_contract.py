@@ -181,7 +181,7 @@ class ProductionContractTests(unittest.TestCase):
         ]
         for prompt in prompts:
             self.assertIn(writer.CAST_CONNECTION_DIRECTION, prompt)
-            self.assertIn("NOT a mandatory repeated sequence", prompt)
+            self.assertIn("not a predetermined\nbanter sequence", prompt)
             self.assertIn("Leave sponsor copy clean and sincere", prompt)
             self.assertNotIn("three to five natural British", prompt)
             self.assertNotIn("Give her 4–7", prompt)
@@ -304,7 +304,7 @@ class ProductionContractTests(unittest.TestCase):
         prompt = writer._writer_prompt(STORIES, [], "2026-09-04", BOARD, {})
         self.assertIn("Never invent named listeners", prompt)
         self.assertIn("explicitly hypothetical listener question", prompt)
-        self.assertIn("comic catalyst", prompt)
+        self.assertIn("Jamie is passionate, smart and playful", prompt)
 
     def test_paid_episode_survives_missing_optional_assets_but_not_invalid_rss(self):
         feed = ET.Element("rss")

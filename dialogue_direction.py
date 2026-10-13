@@ -5,44 +5,15 @@ import re
 
 PERFORMANCE_DIRECTION = """
 PERFORMANCE AND DIALOGUE EDIT:
-- Write a conversation that can be acted: each reply follows a particular word,
-  question or implication in the previous turn. Cut generic acknowledgements and
-  explanations of a joke. Preserve every factual qualifier while tightening language.
-- Rufus's English humour is economical understatement, precision, incongruity and
-  mock formality. Notice the small absurd detail inside a serious system. Put the
-  surprising word or image at the end. Deliver as an observation, not an announcement
-  that a joke is coming. Avoid a stream of 'quite', 'splendid', tea and empire jokes.
-  His expertise is credible; he can delight in an invention and laugh at himself.
-- Jamie catches the implication, challenges an exact point, or affectionately turns
-  Rufus's image back on him. Do not answer every joke with another joke or a compulsory
-  laugh. A sincere agreement can be the surprise. Give her joy as well as indignation.
-- Jamie has emotional range, not a permanent prosecutorial voice. Let a useful
-  discovery genuinely delight her; let uncertainty sound curious, a human consequence
-  become quieter and sincere, and a colleague's observation provoke playful disbelief.
-  Write the specific reason for her feeling into the reply. Move between these states
-  as evidence and relationships change, never on a rotation or emotion quota. Short
-  reactions can lead into substantive facts. Avoid shouting, constant outrage, breathy
-  melodrama and compulsory laughter. Do not put delivery labels into spoken dialogue.
-- Alex asks short, consequential questions and follows the answer. He can finish a
-  colleague's thought or make a small joke, then restore focus without summarising
-  what everyone just heard. Give the other hosts ownership of substantial facts.
-- Build dramatic exchanges from a real stake: one host wants a useful outcome,
-  another tests the obstacle, and the answer changes someone's position. Let Jamie
-  move from delight to a pointed challenge or from disbelief to a quiet concession
-  when the evidence earns it. Let Alex press a specific unanswered question; give
-  Rufus an observation that changes the frame. Keep short replies adjacent so the
-  performance can accelerate, then let the consequential fact settle. Do not restart
-  a resolved argument or explain a punchline. Never invent disagreement or facts.
-- Vary scene rhythm: quick exchange, a complete explanation, an unexpected response,
-  then room to absorb it. Never manufacture interruptions or disagreement for a quota.
-  Use an ending em dash only for an intentional unfinished thought that the next host
-  immediately addresses. Never cut off a number, name, negation or safety qualifier.
-- A punchline earns its space through brevity. No written 'pause for laughter', stage
-  directions, canned audience reactions or laughter tracks. No automatic Ha/Wait filler.
-- Before returning the script, silently edit one scene at a time: identify its
-  discovery, preserve the strongest objection, remove repeated explanation, sharpen
-  the best earned observation and ensure the next reply responds. Keep source facts,
-  sponsor wording, story boundaries, continuity and the runtime budget intact.
+Write speakable replies that follow what a friend just said. Allow short reactions,
+a complete explanation, and space for a consequential fact. Pace follows meaning.
+Preserve the strongest personal responses while cutting repeated exposition. Do not
+expand a lively exchange into three essays or explain a punchline after it lands.
+No canned laughter, automatic Ha/Wait filler, or spoken acting labels. A written
+laugh is optional and must be earned. An unfinished thought must receive a response;
+never cut off names, numbers, negations or factual qualifications. Preserve source
+facts, sponsor wording, navigation and runtime. The shared friendship brief defines
+the cast; delivery should not turn a curious question into an interrogation.
 """.strip()
 
 

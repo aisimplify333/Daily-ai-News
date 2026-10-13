@@ -40,7 +40,7 @@ class GeminiTTSHTTPError(RuntimeError):
 
 def payload(text, speaker, mood, voice, note):
     persona = {
-        'ALEX': 'American male host. Resonant lower register, grounded gravitas, warm and conversational. Brisk responsive timing; never a slow announcer.',
+        'ALEX': 'American male host with the established resonant lower register. Relaxed, inquisitive and informal, talking with two longtime friends. Follow the thought with interest, allow surprise and playful disbelief, and let a question sound genuinely curious. Natural varied pace; never a solemn announcer or constant interrogator.',
         'RUFUS': 'Distinct contemporary southern English male voice with consistent non-rhotic British pronunciation. Lighter, drier mid-register than the American bass of Alex; precise consonants and clipped sentence endings. Use brisk conversational phrasing, no languid drawl or lowered announcer register. Underplay dry wit: let the final word land, without explaining the joke. Affectionate mock formality, occasional genuine warmth. Keep this English accent in every sentence, including laughter and serious facts.',
     }.get(speaker, 'Warm conversational co-host.')
     sponsor = 'the ledger' in text.lower() or 't-h-e-l-e-d-g-r' in text.lower()
@@ -48,7 +48,7 @@ def payload(text, speaker, mood, voice, note):
     explicit_laugh = re.match(r'^(?:ha|hah|heh)[.!]+\s*', text, re.I)
     if mood == 'amused' and explicit_laugh and not sponsor:
         spoken = '<laugh> ' + text[explicit_laugh.end():]
-    persona += (' Respond as a colleague in an ongoing exchange. Vary emphasis and pace within the line '
+    persona += (' Respond to a longtime friend in an ongoing exchange. Vary emphasis and pace within the line '
                 'as its meaning changes; keep short reactions quick and serious conclusions grounded. '
                 'A brief laugh only when explicitly cued, then recover into clear speech. '
                 'Keep the established vocal identity; avoid constant intensity or a sales cadence.')

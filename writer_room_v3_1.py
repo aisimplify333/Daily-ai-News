@@ -141,50 +141,10 @@ CALLBACK_RE = re.compile(
     re.IGNORECASE,
 )
 
-CAST_CONNECTION_DIRECTION = """CAST CONNECTION — familiar colleagues, independent minds:
-Keep all three hosts available. Alex follows the audience's question; Jamie is a warm,
-opinionated comic catalyst; Rufus brings English understatement and credible global
-markets/policy expertise. Give him an original observation without a
-  joke count. Let Jamie enjoy progress, Rufus enjoy ingenuity, and Alex enjoy the room.
-Observation, affectionate challenge, comeback and clarification are available shapes,
-NOT a mandatory repeated sequence. No designated loser, mandatory concession, feud,
-catchphrase quota or automatic laugh. Tease ideas and habits, never vulnerable people.
-Build connection through specific responses: pick up a colleague's actual claim or
-word choice, challenge its implication, and let the reply change the next question.
-Give Jamie and Rufus substantive exchanges that do not require Alex to referee each
-turn. Alex contributes a viewpoint and earns the payoff; he is not just a question list.
-They can be briefly irritated with each other, enjoy a clever answer, soften after
-a sharp exchange, and remain friends without declaring it. Let this show in specific
-wording and responsive turns, not repetitive emotional interjections or stage directions.
-Lead with the most consequential verified AI developments of the day; banter must help
-listeners understand what changed, who wins, and what they should do next.
-RUFUS ON LOCATION: retain a short recurring feature inside Segment 3 / Story Two,
-not a sixth segment or a fourth story. Alex gives a brief handoff; Rufus connects a
-source-supported place to the story's concrete evidence and stakes. Jamie tests his
-interpretation and Rufus responds before Alex lands the listener consequence.
-Keep it roughly 45-75 seconds within the existing segment budget. If the story has no
-meaningful geographic angle, use a concise global-desk perspective instead of padding.
-Rufus is a synthetic host: do not claim travel, firsthand observation, interviews,
-local sounds, weather or conversations that the sources do not establish. Frame any
-imagined scene explicitly ('Picture...'); factual descriptions must be attributed.
-Avoid the same location joke or handoff every day. Preserve this feature through edits.
-Make tension about a real tradeoff supported by the sources. Never manufacture facts,
-personal hostility, or certainty to make an argument louder. Allow disagreement to
-remain unresolved when the evidence does not settle it.
-Shape the episode with contrast: brisk challenge, a concise counterexample, an earned
-comic release, then space for the human consequence. Vary this order; do not run the
-same emotional pattern in every story. Joy and curiosity deserve room alongside doubt.
-Write an occasional short, natural laugh response only when a colleague has earned it;
-do not make everyone laugh at their own jokes. No recurring 'Wait' opening or rehearsed
-catchphrase. Let Rufus's quick, dry comeback land without explaining the punchline.
-In each story, seek one self-contained exchange listeners could send to a friend:
-a clear premise, two different viewpoints, a memorable turn and a useful consequence.
-Aim for 20-45 seconds when the material supports it; no quota, padding, invented stakes
-or extra recap. A clip should make sense without the previous five minutes.
-Leave sponsor copy clean and sincere. No bells, comic interruptions or invented use.
-Never invent named listeners, submissions, votes or metrics. An explicitly hypothetical listener question is allowed only when labelled hypothetical. Actual callbacks use the
-supplied history, change meaning with new evidence, and belong after the opening.
-"""
+from crew_direction import FRIENDS_DIRECTION
+
+# Compatibility export; the live prompts receive it once through EDITORIAL_DIRECTION.
+CAST_CONNECTION_DIRECTION = FRIENDS_DIRECTION
 
 
 MAJOR_AI_ACTORS = [
@@ -1323,7 +1283,6 @@ guidance only, never as additional verified facts. Do not recycle yesterday's ar
 because another outlet has written about it. No fabricated personal action on policy
 stories: a concrete development to watch is a legitimate payoff.
 
-{CAST_CONNECTION_DIRECTION}
 {EDITORIAL_DIRECTION}
 
 FIVE SEGMENTS, THREE DISTINCT STORIES:
@@ -2139,7 +2098,6 @@ multiple ALEX labels and call that a conversation. Preserve three separate stori
 
 Weak spots to fix: {json.dumps(assessment.get('soft_flags') or [], ensure_ascii=False)}
 
-{CAST_CONNECTION_DIRECTION}
 
 {EDITORIAL_DIRECTION}
 
@@ -2170,7 +2128,6 @@ Hard requirements:
 - Preserve facts; invent nothing.
 Return the full script only.
 
-{CAST_CONNECTION_DIRECTION}
 
 {EDITORIAL_DIRECTION}
 
@@ -2277,7 +2234,6 @@ def _native_expansion_prompt(
 Segment {segment} of {SHOW_TITLE} on {date_str}. Output only new ALEX:, JAMIE:, or RUFUS:
 lines. Do not output a segment header, music cue, sponsor, intro, recap, or signoff.
 
-{CAST_CONNECTION_DIRECTION}
 
 {EDITORIAL_DIRECTION}
 
@@ -2510,7 +2466,6 @@ def _runtime_condense_prompt(
 {target_words - 100}-{target_words} words. DELETE roughly {cut_words} words of recap,
 repetition, throat-clearing, and duplicate explanation. Do not expand anything.
 
-{CAST_CONNECTION_DIRECTION}
 
 {EDITORIAL_DIRECTION}
 
@@ -2946,7 +2901,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                     "Improve responsive exchanges, plain-English examples and earned warmth. "
                     "Let a specific affectionate jab receive a response where natural; no joke quota. "
                     "Do not turn all three stories into one safety argument.\n"
-                    + CAST_CONNECTION_DIRECTION + "\n" + EDITORIAL_DIRECTION
+                    + EDITORIAL_DIRECTION
                     + ("\nIn this Story 2 include a 100-220 word feature: Alex says 'Rufus, take us on location.' "
                        "Rufus names a sourced location and says Picture or Imagine to frame it honestly. "
                        "Jamie responds to his observation. Alex ends 'Back to the wider story.' "

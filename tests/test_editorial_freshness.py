@@ -47,7 +47,7 @@ class EditorialFreshnessTests(unittest.TestCase):
         self.assertIn("No prescribed winner", prompt)
         self.assertNotIn("JAMIE–RUFUS VALUE COLLISION", prompt)
         self.assertNotIn("four to six distinct dry observations", writer.CAST_CONNECTION_DIRECTION)
-        self.assertIn("without a\n  joke count", writer.CAST_CONNECTION_DIRECTION)
+        self.assertIn("There is no joke count", writer.CAST_CONNECTION_DIRECTION)
 
 
 if __name__ == "__main__":

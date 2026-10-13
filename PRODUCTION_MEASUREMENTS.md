@@ -7,7 +7,7 @@ Keep these evidence types separate. Do not invent a listening rating from test c
 |---|---|
 | Three distinct, well-supported stories from the rolling 48-hour window | `grounded_research_report.json`, `grounded_story_slate.json`; explicit source URLs, dates, rejections, and listener frames |
 | Useful discovery and possibility alongside the strongest lead; no compulsory optimistic story | `final_acceptance_report.json`: `useful_discovery`, with actual script evidence |
-| Reciprocal banter, warmth, dry British wit, Alex participating, Jamie curious and engaged | Final acceptance checks `responsive_banter`, `cast_warmth` plus verified consecutive setup/reply/comeback evidence in each story; Alex joins at least one. Line verification is not proof that a joke lands; actual audio review remains separate |
+| Reciprocal banter, warmth, dry British wit, Alex participating, Jamie curious and engaged | Final acceptance checks `responsive_banter`, `cast_warmth` assess the whole conversation with actual script evidence. No joke quotas or required exchange template. The shared three-friends brief applies to writing, revision and performance; actual audio review remains separate |
 | Rufus's clearly imagined global dispatch: supported setting, studio interaction, dry reply and payoff | `rufus_scene`, `editorial_contract_report.json`, timed assembly markers; 100–220 words is an advisory planning band |
 | One earned ending per story and one closing follow invitation | `single_endings`, `script_aircheck.json` |
 | Material factual errors and numerical comparisons corrected before TTS | `grounded_fact_check.json`; last audit must evaluate the actual repaired script |
