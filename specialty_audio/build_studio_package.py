@@ -154,8 +154,19 @@ Timestamps refer to the demo only. A serious spoken line need not be funny.'''
         parts += [types.Part.from_text(text='ISOLATED CUE: '+name),types.Part.from_bytes(data=(ROOT/row['file']).read_bytes(),mime_type='audio/mpeg')]
     client=genai.Client(api_key=os.environ['GEMINI_API_KEY'])
     response=client.models.generate_content(model='gemini-3.1-flash-lite',contents=parts,
-        config=types.GenerateContentConfig(response_mime_type='application/json',temperature=0.2,max_output_tokens=3000))
+        config=types.GenerateContentConfig(response_mime_type='application/json',temperature=0.2,max_output_tokens=3000,
+            response_schema={'type':'OBJECT','properties':{
+                'audio_evaluated':{'type':'BOOLEAN'},'pass':{'type':'BOOLEAN'},
+                'rufus_distinctive':{'type':'BOOLEAN'},'family_cohesive':{'type':'BOOLEAN'},'speech_clear':{'type':'BOOLEAN'},
+                'observations':{'type':'ARRAY','items':{'type':'OBJECT','properties':{'seconds':{'type':'NUMBER'},'description':{'type':'STRING'}},'required':['seconds','description']}},
+                'defects':{'type':'ARRAY','items':{'type':'STRING'}}},
+                'required':['audio_evaluated','pass','rufus_distinctive','family_cohesive','speech_clear','observations','defects']}))
     result=json.loads(response.text)
+    write('audio_review_response.json', result)
+    if isinstance(result, list) and len(result) == 1:
+        result = result[0]
+    if not isinstance(result, dict):
+        raise ValueError('Expected one review object')
     result.update(basis='automated audio model evaluation; not human listening',model='gemini-3.1-flash-lite',demo_sha256=hashlib.sha256(demo.read_bytes()).hexdigest())
     write('audio_review.json',result)
     return (all(result.get(k) is True for k in ['audio_evaluated','pass','rufus_distinctive','family_cohesive','speech_clear'])
