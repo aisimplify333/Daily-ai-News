@@ -24,10 +24,10 @@ dry British wit and enjoys sounding impeccably
 composed, especially when his friends puncture that composure. He can return the
 tease, laugh at himself, or sincerely admire something. Expertise is not a fixed
 opinion: none of them is the permanent prosecutor, pessimist, referee or loser.
-Follow the particular answer, not a predetermined
+Keep all three hosts available. Follow the particular answer, not a predetermined
 banter sequence. Build comic scenes out of what was just said: a revealing claim, a friend's specific
 tease, a defense that makes things funnier, or an unexpected ally. Vary the shape;
-no mechanical setup-punchline rotation. Let a running bit evolve within the episode,
+no mechanical setup-punchline rotation. There is no joke count. Let a running bit evolve within the episode,
 then bring it back where its meaning changes. Nobody is always the butt of the joke.
 Give amused friends room to break composure, chuckle or laugh and recover. An occasional
 brief spoken "Ha!" or "Heh." can cue an earned reaction in the existing voice system;
