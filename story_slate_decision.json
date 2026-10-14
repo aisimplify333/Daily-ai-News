@@ -1,240 +1,237 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-10-13",
+  "date": "2026-10-14",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
     "changed": true,
     "lookback_episodes": 7,
     "previous_lead_actor": "Meta",
     "previous_argument_family": "models",
-    "original_lead": "Meta Launches Muse Wonder Frontier AI Models",
-    "selected_lead": "Apple launches HomeView, a Siri-powered smart home hub",
+    "original_lead": "Google makes Gemini 4 Argon broadly available in the Gemini app and to developers",
+    "selected_lead": "OpenAI says FBI arrested employee in hidden listening-device case",
     "candidates": [
       {
-        "headline": "Apple launches HomeView, a Siri-powered smart home hub",
+        "headline": "OpenAI says FBI arrested employee in hidden listening-device case",
         "score": 90.0,
-        "actor": "Apple",
-        "argument_family": "infrastructure",
-        "penalties": []
-      },
-      {
-        "headline": "Character.AI files for Chapter 11 bankruptcy and agrees to sell some assets to Disney",
-        "score": 80.0,
-        "actor": "EU",
-        "argument_family": "money",
-        "penalties": []
-      },
-      {
-        "headline": "Alibaba unveils Qwen Glasses N1 as it expands AI into consumer hardware",
-        "score": 70.0,
-        "actor": "EU",
-        "argument_family": "money",
-        "penalties": []
-      },
-      {
-        "headline": "Suki Raises $90 Million Series E for Healthcare AI Agents",
-        "score": 42.0,
-        "actor": "",
-        "argument_family": "models",
-        "penalties": [
-          "same argument family as previous episode"
-        ]
-      },
-      {
-        "headline": "Meta Launches Muse Wonder Frontier AI Models",
-        "score": -18.0,
         "actor": "OpenAI",
+        "argument_family": "security",
+        "penalties": []
+      },
+      {
+        "headline": "Google makes Gemini 4 Argon broadly available in the Gemini app and to developers",
+        "score": 82.0,
+        "actor": "Google",
         "argument_family": "models",
         "penalties": [
-          "near-duplicate recent lead",
           "same argument family as previous episode"
         ]
+      },
+      {
+        "headline": "Reuters says banks are facing tougher AI scrutiny from regulators",
+        "score": 80.0,
+        "actor": "Stability",
+        "argument_family": "security",
+        "penalties": []
+      },
+      {
+        "headline": "Reco Raises $55 Million to Secure AI Agent Infrastructure",
+        "score": 70.0,
+        "actor": "SEC",
+        "argument_family": "security",
+        "penalties": []
+      },
+      {
+        "headline": "Chainguard Introduces Hardened MicroVMs for Coding Agents",
+        "score": 60.0,
+        "actor": "SEC",
+        "argument_family": "security",
+        "penalties": []
       }
     ]
   },
   "selected": [
     {
       "rank": 1,
-      "headline": "Apple launches HomeView, a Siri-powered smart home hub",
-      "publisher": "Apple",
+      "headline": "OpenAI says FBI arrested employee in hidden listening-device case",
+      "publisher": "Reuters",
       "top_event_score": null,
-      "story_age_hours": 1.29,
+      "story_age_hours": 11.91,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-the-new-apple-tv-4k-supercharged-by-siri-ai/"
+      "source_url": "https://www.aol.com/articles/fbi-arrests-former-openai-employee-195912000.html"
     },
     {
       "rank": 2,
-      "headline": "Meta Launches Muse Wonder Frontier AI Models",
-      "publisher": "Meta",
+      "headline": "Google makes Gemini 4 Argon broadly available in the Gemini app and to developers",
+      "publisher": "Google Blog",
       "top_event_score": null,
-      "story_age_hours": 38.34,
+      "story_age_hours": 25.18,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://about.meta.com/technologies/muse-wonder"
+      "source_url": "https://blog.google/innovation-and-ai/products/gemini-app/gemini-4-argon-availability/"
     },
     {
       "rank": 3,
-      "headline": "Character.AI files for Chapter 11 bankruptcy and agrees to sell some assets to Disney",
+      "headline": "Reuters says banks are facing tougher AI scrutiny from regulators",
       "publisher": "Reuters",
       "top_event_score": null,
-      "story_age_hours": 13.91,
+      "story_age_hours": 25.15,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.reuters.com/legal/litigation/characterai-files-bankruptcy-agrees-sell-some-assets-disney-20-million-2026-10-13/"
+      "source_url": "https://live.euronext.com/en/financial-news/exclusive-banking-watchdogs-ramp-ai-scrutiny-stability-fears-mount-sources-say"
     },
     {
       "rank": 4,
-      "headline": "Alibaba unveils Qwen Glasses N1 as it expands AI into consumer hardware",
-      "publisher": "Reuters",
+      "headline": "Reco Raises $55 Million to Secure AI Agent Infrastructure",
+      "publisher": "IT Brief UK",
       "top_event_score": null,
-      "story_age_hours": 3.76,
-      "source_tier": 3,
+      "story_age_hours": 0.68,
+      "source_tier": 1,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.reuters.com/world/china/alibaba-unveils-ai-glasses-gadget-push-2026-10-13/"
+      "source_url": "https://itbrief.com.au/story/reco-raises-55m-to-boost-ai-agent-security"
     },
     {
       "rank": 5,
-      "headline": "Suki Raises $90 Million Series E for Healthcare AI Agents",
-      "publisher": "Business Wire",
+      "headline": "Chainguard Introduces Hardened MicroVMs for Coding Agents",
+      "publisher": "Techzine Global",
       "top_event_score": null,
-      "story_age_hours": 14.34,
+      "story_age_hours": 1.2,
       "source_tier": 1,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.businesswire.com/news/home/20261013000000/en/Suki-Secures-90-Million-to-Build-and-Scale-AI-Agents"
+      "source_url": "https://techzine.eu/news/devops/127455/chainguard-isolates-coding-agents-in-hardened-microvms/"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "Apple launches HomeView, a Siri-powered smart home hub",
-    "central_fight": "Whether the current AI market is maturing into sustainable, specialized tools or simply consolidating through fire-sales and walled gardens.",
-    "opening_question": "Is Apple's new HomeView actually a 'smart' hub, or just a $299 way to make sure we never leave their ecosystem?",
-    "listener_question": "Would you pay $299 for a smart home hub that recognizes you and personalizes your home screen?",
+    "published_title": "OpenAI Security Breach: What the FBI Arrest Means for Your AI Tools",
+    "central_fight": "Whether the rapid integration of AI agents is a manageable evolution of technology or a systemic risk that requires immediate, heavy-handed intervention.",
+    "opening_question": "If you found out your office had a hidden listening device, would you assume it was a corporate spy, a nation-state, or just a very weird prank?",
+    "listener_question": "Would you trust an AI agent to execute multi-step tasks across your work apps if it meant a 20% boost in productivity?",
     "poll_options": [
-      "Yes, if it saves me time",
-      "No, it's too expensive",
-      "No, I don't want a camera watching me",
-      "I'll wait for the reviews"
+      "Yes, I'd trust it completely.",
+      "Only if I can review every step.",
+      "No, the security risk is too high.",
+      "I'm waiting for more real-world data."
     ],
-    "listener_promise": "By the end, you'll know if Apple's new hub is worth your money, how Meta's new agents change your workflow, and why a major AI startup just sold itself for parts.",
+    "listener_promise": "By the end, you'll understand the real-world security risks of AI labs, the practical utility of new agentic tools, and why your bank is suddenly obsessed with AI safety.",
     "positions": {
-      "alex": "Believes the industry is finally shipping tools that solve real problems, even if the business models are messy.",
-      "jamie": "Argues that we are sacrificing privacy and community for 'convenience' that isn't always reliable.",
-      "rufus": "Observes that capital is flowing toward the most resilient players, while the 'hype' startups are being liquidated."
+      "alex": "Believes the industry is maturing by shipping concrete security tools alongside high-level political engagement.",
+      "jamie": "Argues that until systems are legible to the people they affect, these 'safety' launches are just new ways to hide risk.",
+      "rufus": "Observes that the market is betting on speed while offloading liability for accidents to infrastructure and individual users."
     },
     "concession": {
       "host": "alex",
-      "gives_ground_on": "The high price of the HomeView hub makes it a hard sell for the average consumer, regardless of the tech."
+      "gives_ground_on": "Admits that physical security is a glaring, often overlooked gap in the AI lab security model."
     },
-    "who_wins": "Incumbents like Apple and Disney who can absorb technology and users without needing to invent the market from scratch.",
-    "who_is_exposed": "Early-stage AI startups that haven't figured out how to pay for their compute costs.",
-    "normal_person_payoff": "A clearer understanding of which AI products are actually useful today versus which ones are just expensive experiments.",
+    "who_wins": "The security teams currently being forced to audit 'agentic' workflows.",
+    "who_is_exposed": "The individual user who assumes that 'AI-integrated' means 'AI-secured'.",
+    "normal_person_payoff": "You'll know exactly what to look for when your company starts rolling out 'agentic' workflows.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "The preservation of user communities and privacy.",
-      "rufus_value": "The economic reality of sustainable business models and capital efficiency.",
-      "point_of_collision": "Whether a company's failure is a 'tragedy' for its users or a 'market correction' for its investors."
+      "jamie_value": "Transparency and human-centric accountability.",
+      "rufus_value": "Market resilience and the economic cost of regulatory compliance.",
+      "point_of_collision": "Whether mandatory regulatory deadlines are a genuine safety improvement or just expensive bureaucratic friction."
     },
     "rufus_global_markets_desk": {
       "market_or_region": "Wall Street/New York",
-      "source_url": "https://about.meta.com/technologies/muse-wonder",
-      "why_this_location_today": "Meta's shift to enterprise-gated models is a classic Wall Street play to stabilize revenue through recurring subscriptions.",
-      "beat": "financing",
+      "source_url": "https://blog.google/innovation-and-ai/products/gemini-app/gemini-4-argon-availability/",
+      "why_this_location_today": "Google’s product rollouts are a primary driver of tech-sector valuations on the NYSE.",
+      "beat": "market mover",
       "companies_or_assets": [
-        "Meta",
-        "Enterprise AI sector"
+        "Alphabet (Google)",
+        "Tech-sector indices"
       ],
-      "capital_policy_or_infrastructure_move": "The move to gate the most capable 'agentic' models behind a $50-$200/mo subscription tier.",
+      "capital_policy_or_infrastructure_move": "The broad release of Gemini 4 Argon as a consumer product is a direct move to capture the 'agentic' market share.",
       "dated_market_receipts": [
-        "$50/mo and $200/mo subscription tiers, October 2026"
+        "October 13, 2026"
       ]
     },
     "mandatory_receipts": [
-      "$299 for Apple HomeView",
-      "$20 million for Character.AI assets",
-      "$90 million Series E for Suki"
+      "OpenAI confirmed an FBI arrest regarding a hidden listening device.",
+      "Gemini 4 Argon is now available for developers and app users.",
+      "The ECB has mandated that banks submit AI-cybersecurity plans by the end of October."
     ],
     "forwardable_targets": [
-      "If your smart home needs a $299 hub to know who you are, maybe it wasn't that smart to begin with.",
-      "Character.AI's bankruptcy is a reminder that 'high engagement' doesn't always pay the server bills."
+      "Sometimes the most advanced AI in the world is still outsmarted by a 1970s-style listening device.",
+      "If your bank is suddenly asking about your AI security, it’s because the ECB is holding the stopwatch."
     ],
     "story_scenes": [
       {
         "story_index": 1,
-        "source_url": "https://www.apple.com/newsroom/2026/10/apple-unveils-the-new-apple-tv-4k-supercharged-by-siri-ai/",
-        "new_development": "Apple launched HomeView, a $299 smart home hub featuring Siri-powered personalization that recognizes individual household members.",
-        "why_today": "It marks Apple's transition from smart-home speculation to a concrete, priced hardware product shipping in November.",
-        "question": "Does 'recognizing' a user actually improve home utility, or is it just a privacy-heavy gimmick?",
+        "source_url": "https://www.aol.com/articles/fbi-arrests-former-openai-employee-195912000.html",
+        "new_development": "OpenAI confirmed an FBI arrest of an employee following the discovery of a hidden listening device in their office.",
+        "why_today": "The company’s public acknowledgment of an insider threat incident is a rare, high-stakes security disclosure.",
+        "question": "How do we reconcile the 'move fast' culture of AI labs with the reality of physical espionage?",
         "competing_readings": [
-          "A seamless, privacy-first integration for the Apple ecosystem.",
-          "A high-priced, proprietary walled-garden device that ignores broader smart-home standards."
+          "A sign of robust internal security protocols successfully catching a bad actor.",
+          "A terrifying indicator that AI labs are now primary targets for nation-state industrial espionage."
         ],
-        "receipt": "$299 price point with availability starting November 13, 2026.",
-        "unknown": "The extent of third-party device compatibility beyond Apple's immediate ecosystem.",
-        "listener_payoff": "Helps listeners decide whether to wait for this hub or stick with existing, cheaper smart displays.",
-        "exchange_premise": "Alex asks if the facial recognition is a 'creepy' or 'convenient' feature; Rufus notes the $299 cost is a premium tax for that convenience.",
+        "receipt": "The incident involved a hidden listening device found in an OpenAI office.",
+        "unknown": "The specific motive of the employee and whether any proprietary model weights or data were compromised.",
+        "listener_payoff": "Listeners should check if their own employers are updating physical security policies alongside their digital AI-access controls.",
+        "exchange_premise": "Alex asks if a 'listening device' is analog or digital; Jamie notes the irony of AI companies being outsmarted by low-tech bugs; Rufus lands the point that physical security is the forgotten layer of the AI stack.",
         "cast_direction": {
-          "alex": "Wants to know if the 'personalization' actually saves time or just adds a login step to his kitchen.",
-          "jamie": "Focused on the privacy implications of a device that constantly watches the room to identify people.",
-          "rufus": "Interested in whether this is a genuine hub or just a way to lock users into more Apple services."
+          "alex": "Wants to know if this is a 'spy movie' scenario or just a disgruntled employee.",
+          "jamie": "Focuses on the vulnerability of the physical space where the world's most powerful models are built.",
+          "rufus": "Observes the contrast between the high-tech AI software and the low-tech physical bug."
         },
-        "relationship_beat": "Jamie teases Alex about his 'smart' home already being a collection of broken apps.",
-        "scene_movement": "Starts with the hardware specs, moves to the privacy debate, ends with an honest uncertainty about its real-world utility.",
-        "discovery": "The device's ability to tailor the UI to the specific person standing in front of it."
+        "relationship_beat": "Jamie teases Alex for watching too many spy thrillers, while Rufus dryly notes that sometimes the simplest tools are the most effective.",
+        "scene_movement": "Starts with the shock of the news, moves to the implications for AI lab security, and lands on the realization that physical security is often the weakest link.",
+        "discovery": "The fact that even the most advanced AI companies are still vulnerable to physical-world intrusions."
       },
       {
         "story_index": 2,
-        "source_url": "https://about.meta.com/technologies/muse-wonder",
-        "new_development": "Meta released 'Muse Wonder' and 'Muse Wonder Full' models specifically designed for multi-step agentic workflows.",
-        "why_today": "It is the first major frontier model release from Meta that gates its most capable version behind a subscription.",
-        "question": "Can Meta's 'Active Focus' actually solve the 'stuck' problem in automated tasks?",
+        "source_url": "https://blog.google/innovation-and-ai/products/gemini-app/gemini-4-argon-availability/",
+        "new_development": "Google released Gemini 4 Argon to the public app and developer API, featuring asynchronous task execution across 40+ apps.",
+        "why_today": "It marks the transition of a powerful model from a research demo to a daily-use, task-oriented tool.",
+        "question": "Can an AI actually manage your workflow without you having to babysit it?",
         "competing_readings": [
-          "A breakthrough in agentic reliability for developers.",
-          "A strategic move to force power users into a recurring enterprise subscription."
+          "A major productivity leap that finally makes AI agents useful for real work.",
+          "A new layer of complexity that will require more time to manage than it saves."
         ],
-        "receipt": "Muse Wonder Full is restricted to Muse Code subscribers at $50-$200/mo.",
-        "unknown": "Independent benchmarks for 'Active Focus' performance compared to existing frontier models.",
-        "listener_payoff": "Developers can weigh the API costs against the potential for actual task-completion gains.",
-        "exchange_premise": "Rufus explains the 'land-and-expand' strategy; Jamie questions if the 'Active Focus' is just marketing speak for better prompting.",
+        "receipt": "Gemini 4 Argon now supports task execution across more than 40 connected Google apps.",
+        "unknown": "The actual reliability rate of these multi-step tasks in real-world, messy work environments.",
+        "listener_payoff": "Users can test the new 'task mode' to see if it actually reduces manual app-switching.",
+        "exchange_premise": "Alex tries to explain the 'asynchronous' nature of the tool; Jamie wonders if it will delete her emails by mistake; Rufus points out the enterprise-scale implications.",
         "cast_direction": {
-          "alex": "Excited about the potential for agents that don't just chat, but actually 'do' work.",
-          "jamie": "Skeptical of the subscription gating and whether it hides performance issues.",
-          "rufus": "Observes the shift in Meta's business model toward enterprise-grade recurring revenue."
+          "alex": "Excited about the potential to automate his own podcast scheduling.",
+          "jamie": "Skeptical about the '40 apps' claim and the potential for cascading errors.",
+          "rufus": "Interested in how this affects the 'land-and-expand' strategy for enterprise adoption."
         },
-        "relationship_beat": "Rufus reminds Alex of his prediction about Meta's enterprise pivot.",
-        "scene_movement": "Starts with the technical capabilities, moves to the business model, ends with a question about whether 'agentic' is a real shift or just a buzzword.",
-        "discovery": "The 'Active Memory' feature that retains context across long-running sessions."
+        "relationship_beat": "Rufus reminds Alex that 'asynchronous' doesn't mean 'magic', and Jamie jokes about the AI 'helping' her by clearing her inbox entirely.",
+        "scene_movement": "Explores the promise of the new model, debates the reality of its utility, and settles on a practical test for the listener.",
+        "discovery": "The shift toward AI that 'does' rather than just 'talks'."
       },
       {
         "story_index": 3,
-        "source_url": "https://www.reuters.com/legal/litigation/characterai-files-bankruptcy-agrees-sell-some-assets-disney-20-million-2026-10-13/",
-        "new_development": "Character.AI filed for Chapter 11 bankruptcy and agreed to sell assets to Disney for $20 million.",
-        "why_today": "It is a major collapse of a high-profile consumer AI startup, signaling the difficulty of monetizing high-engagement chatbots.",
-        "question": "What does Disney want with a bankrupt AI startup's technology?",
+        "source_url": "https://live.euronext.com/en/financial-news/exclusive-banking-watchdogs-ramp-ai-scrutiny-stability-fears-mount-sources-say",
+        "new_development": "Banking regulators, including the ECB, are mandating that lenders create plans to counter AI-enabled cyber threats by the end of October.",
+        "why_today": "It signals that AI risk is now a formal, supervised component of global financial stability.",
+        "question": "Are banks prepared for the specific, high-speed risks that AI agents introduce to the financial system?",
         "competing_readings": [
-          "A fire-sale rescue that brings AI talent into a massive media ecosystem.",
-          "The beginning of a wind-down for a platform that couldn't balance compute costs with revenue."
+          "A necessary regulatory step to prevent a systemic AI-driven financial collapse.",
+          "A bureaucratic hurdle that will slow down innovation in financial services."
         ],
-        "receipt": "$20 million asset sale to Disney with transition services from former employees.",
-        "unknown": "Whether the platform will remain active for current users after the sale process.",
-        "listener_payoff": "Listeners learn the reality of 'AI hype' versus sustainable business models.",
-        "exchange_premise": "Alex asks if this is the end of 'character' chatbots; Jamie reflects on the loss of a platform that defined a specific corner of AI culture.",
+        "receipt": "The ECB has set an end-October deadline for banks to submit plans to counter AI-enabled cyber threats.",
+        "unknown": "Whether these plans will be effective or just 'check-the-box' compliance exercises.",
+        "listener_payoff": "Listeners in finance should prepare for stricter internal security audits and new AI-specific compliance training.",
+        "exchange_premise": "Rufus explains the regulatory deadline; Alex asks why the ECB is worried about 'rogue agents'; Jamie connects it back to the OpenAI security breach.",
         "cast_direction": {
-          "alex": "Surprised by the low sale price relative to the company's former hype.",
-          "jamie": "Concerned about the users who built communities on the platform.",
-          "rufus": "Analyzes the deal as a classic 'talent-and-IP' acquisition for Disney."
+          "alex": "Wants to know if this will make his banking app slower or more secure.",
+          "jamie": "Appreciates that regulators are finally catching up to the speed of AI deployment.",
+          "rufus": "Analyzes the cost of this compliance for the banking sector."
         },
-        "relationship_beat": "A shared moment of reflection on how quickly 'the next big thing' can reach a bankruptcy court.",
-        "scene_movement": "Starts with the news, moves to the implications for Disney, ends with a somber note on the fragility of AI startups.",
-        "discovery": "The inclusion of transition services from former employees as part of the asset deal."
+        "relationship_beat": "Alex jokes that he's happy his bank is being 'watched', while Rufus notes that 'watched' usually means 'more expensive'.",
+        "scene_movement": "Moves from the news of the deadline to the broader implications for financial stability, ending on the tension between safety and speed.",
+        "discovery": "The realization that AI governance is now moving into the 'supervision' phase of financial regulation."
       }
     ],
     "title_candidates": [
-      "Apple’s New HomeView Hub: Is It Actually Smart or Just More Hardware?",
-      "Meta’s Muse Wonder Models: Can Autonomous Agents Really Handle Your Work?",
-      "Character.AI Files for Bankruptcy: What Happens to Your Favorite Chatbots?"
+      "OpenAI Security Breach: What the FBI Arrest Means for Your AI Tools",
+      "Inside OpenAI's Security Crisis: A New Era for AI Insider Risk",
+      "Is Your AI Data Safe? Why the FBI Just Arrested an OpenAI Employee"
     ],
-    "episode_hook": "Apple just unveiled a $299 smart home hub that claims to recognize you by sight. We’re breaking down if this is the upgrade your house needs or just another screen on your counter.",
+    "episode_hook": "OpenAI just confirmed an FBI arrest involving a hidden listening device in their office. We’re breaking down what this means for the security of the AI tools you use every day.",
     "planning_status": "model_plan",
-    "_episode_date": "2026-10-13"
+    "_episode_date": "2026-10-14"
   }
 }

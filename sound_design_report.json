@@ -1,0 +1,170 @@
+{
+  "basis": "assembly provenance; timestamps scaled to master; not a listening review",
+  "attempts": [
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "asset": "transition.mp3",
+      "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
+      "duration_seconds": 3.0
+    },
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "review_basis": "automated audio review plus encoded-master measurements; not human listening",
+      "assets": {
+        "transition": {
+          "file": "transition.mp3",
+          "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
+          "seconds": 3.0,
+          "dbfs": -21.27,
+          "peak_dbfs": -3.68
+        },
+        "rufus": {
+          "file": "rufus.mp3",
+          "sha256": "bbc21f5229f9527f8f70bd038b9093dc0524f49da221284e1afeb0352ab859b9",
+          "seconds": 3.0,
+          "dbfs": -19.3,
+          "peak_dbfs": -5.21
+        }
+      }
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 64
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 67
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 69
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 70
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 72
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 74
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 78
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 81
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 84
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 87
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 90
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 92
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 95
+    }
+  ],
+  "events": [
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "asset": "transition.mp3",
+      "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
+      "duration_seconds": 3.0,
+      "kind": "transition",
+      "start": 56.176,
+      "end": 59.176
+    },
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "asset": "transition.mp3",
+      "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
+      "duration_seconds": 3.0,
+      "kind": "transition",
+      "start": 381.324,
+      "end": 384.324
+    },
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "asset": "rufus.mp3",
+      "sha256": "bbc21f5229f9527f8f70bd038b9093dc0524f49da221284e1afeb0352ab859b9",
+      "duration_seconds": 3.0,
+      "kind": "rufus_entrance",
+      "start": 470.896,
+      "end": 473.896
+    },
+    {
+      "applied": true,
+      "reason": "mixed",
+      "asset": "city.mp3",
+      "sha256": "065b709588c9beded7fb7a653fcf27ed9212f26decfc97e254638eca2274bc40",
+      "provider": "elevenlabs",
+      "duration_seconds": 5.0,
+      "bed_dbfs": -37.23,
+      "kind": "speech",
+      "start": 474.006,
+      "end": 479.006
+    },
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "asset": "transition.mp3",
+      "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
+      "duration_seconds": 3.0,
+      "kind": "transition",
+      "start": 693.083,
+      "end": 696.083
+    },
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "asset": "transition.mp3",
+      "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
+      "duration_seconds": 3.0,
+      "kind": "transition",
+      "start": 975.41,
+      "end": 978.41
+    }
+  ],
+  "repair": "Corrected cast handoff and added missing reviewed cue and city atmosphere"
+}
