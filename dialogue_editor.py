@@ -53,7 +53,7 @@ def edit_dialogue(script, assessment, request, normalize, assess, runtime_distan
     return script, assessment, report
 
 
-def edit_story_scenes(script, assessment, request_scene, normalize, assess, runtime_distance):
+def edit_story_scenes(script, assessment, request_scene, normalize, assess, runtime_distance, allow_runtime_repair=False):
     """Bounded local revisions: a failed scene never discards successful other scenes."""
     report = {'provider':'anthropic', 'role':'scene_dialogue_editor', 'requested_calls':0,
               'accepted':False, 'listened':False, 'scenes':[]}
@@ -63,21 +63,24 @@ def edit_story_scenes(script, assessment, request_scene, normalize, assess, runt
         if not match:
             continue
         original = match[2]
-        row = {'segment':segment, 'accepted':False}
+        row = {'segment':segment, 'accepted':False, 'original':original, 'input_words':len(original.split())}
         report['requested_calls'] += 1
         try:
             revised = request_scene(segment, original).strip()
+            row.update(candidate=revised, candidate_words=len(revised.split()))
             if not revised or re.search(r'^###\s*SEGMENT', revised, re.M | re.I):
                 row['reason'] = 'empty_or_structural_response'
             elif set(re.findall(r'\b\d[\d,.%]*', revised)) != set(re.findall(r'\b\d[\d,.%]*', original)):
                 row['reason'] = 'numeric_receipts_changed'
-            elif not .98 <= len(revised.split()) / max(1, len(original.split())) <= 1.12:
+            elif not .85 <= len(revised.split()) / max(1, len(original.split())) <= 1.12:
                 row['reason'] = 'scene_word_budget_regression'
             else:
                 candidate = normalize(script[:match.start(2)] + revised + '\n\n' + script[match.end(2):])
                 measured = assess(candidate)
                 new_failures = set(measured.get('failed') or []) - set(assessment.get('failed') or [])
-                if new_failures - {'runtime_word_band'} or runtime_distance(measured) > runtime_distance(assessment):
+                runtime_worse = runtime_distance(measured) > runtime_distance(assessment)
+                row['runtime_repair_pending'] = runtime_worse
+                if new_failures - {'runtime_word_band'} or (runtime_worse and not allow_runtime_repair):
                     row['reason'] = 'episode_structure_or_runtime_regression'
                 else:
                     script, assessment = candidate, measured

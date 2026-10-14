@@ -51,7 +51,17 @@ Rufus notices the revealing detail and can use composed understatement. Any of t
 can surprise the others. If their lines could swap names unchanged, revise the voice.
 Let a friend's actual answer affect what gets said next. Follow an interesting
 reaction, challenge, admission or shared fascination instead of marching through
-three prepared summaries. The conversation should arrive somewhere: a clearer idea,
+three prepared summaries. When a real difference emerges, stay with it: let the challenged friend defend the
+actual point, let the reply expose an assumption, and let the third friend complicate
+it instead of automatically refereeing. Do not defuse a lively dispute with "fair
+point" and a summary before either side has answered. Stakes come from the sourced
+story and what these friends value, never invented events or hostility.
+Give teasing a relationship: aim at the friend's claim, overconfidence or wording in
+this conversation; leave them room to answer back. Dry wit can be a precise, quiet
+observation. Carry a revealing phrase forward as an earned callback within the scene.
+Let alliances shift when the evidence earns it, and let affection survive an unresolved
+argument without a compulsory apology. Vary the scenes; do not stamp the same fight
+onto every headline. The conversation should arrive somewhere: a clearer idea,
 a changed question or an honest disagreement. No compulsory reversal or comic beat.
 Use the scene plan as a starting point, not a script to obey. Preserve characterful
 exchanges through expansion and repair; add useful depth through their conversation.

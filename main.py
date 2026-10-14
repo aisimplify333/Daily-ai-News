@@ -6051,6 +6051,13 @@ def produce_episode() -> None:
             fade_out_ms=TRANSITION_FADE_OUT_MS,
         )
 
+    from specialty_audio.mixer import reviewed_signature
+    signature_audit = {}
+    signature = reviewed_signature(audit=signature_audit)
+    if signature is not None:
+        transition_seg = signature
+    sound_design_attempts = [signature_audit]
+
     # No automatic danger stings based on news keywords.
 
     _safe_print(" >> 🎙️ RECORDING (TTS + assembly)...")
@@ -6084,7 +6091,7 @@ def produce_episode() -> None:
                 if transition_seg is not None:
                     p = run_tmp / f"transition_{uuid.uuid4().hex[:8]}.mp3"
                     transition_seg.export(p, format="mp3", bitrate="192k")
-                    assembly_markers.append({"kind": "transition", "segment": assembly_segment, "start_index": len(concat_files), "end_index": len(concat_files) + 1})
+                    assembly_markers.append({"kind": "transition", "sound_design": dict(signature_audit), "segment": assembly_segment, "start_index": len(concat_files), "end_index": len(concat_files) + 1})
                     concat_files.append(p)
                     concat_files.append(sponsor_pause_path)
                     pending_segment_bed = False
@@ -6185,9 +6192,11 @@ def produce_episode() -> None:
                 voice_seg.export(gained_path, format="mp3", bitrate="192k")
                 final_voice_path = gained_path
 
+            atmosphere_audit = {}
             if speaker == "RUFUS" and assembly_segment == 3 and not rufus_atmosphere_played:
                 atmosphere = mix_reviewed_bed(final_voice_path,
-                    run_tmp / f"rufus_atmosphere_{seg_idx}.mp3", chunk)
+                    run_tmp / f"rufus_atmosphere_{seg_idx}.mp3", chunk, audit=atmosphere_audit)
+                sound_design_attempts.append(dict(atmosphere_audit, speech_chunk=seg_idx))
                 if atmosphere is not None:
                     final_voice_path = atmosphere
                     rufus_atmosphere_played = True
@@ -6247,7 +6256,7 @@ def produce_episode() -> None:
                 next_speaker, next_text = speaker, chunks[chunk_index + 1]
             edit = boundary_pause(chunk, speaker, str(next_text), next_speaker,
                                   performance_mood, INTER_TURN_SILENCE_MS, continuing)
-            assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "performance_mood": performance_mood, "tempo_factor": tempo_factor, "speed": speaker_speed, "level_delta_db": level_delta, "pause_requested_ms": edit["milliseconds"], "pause_reason": edit["reason"], "start_index": speech_start_index, "end_index": len(concat_files)})
+            assembly_markers.append({"kind": "speech", "segment": assembly_segment, "speaker": speaker, "text": chunk, "sound_design": atmosphere_audit, "performance_mood": performance_mood, "tempo_factor": tempo_factor, "speed": speaker_speed, "level_delta_db": level_delta, "pause_requested_ms": edit["milliseconds"], "pause_reason": edit["reason"], "start_index": speech_start_index, "end_index": len(concat_files)})
             if not continuing and entrance_due(speaker, text, assembly_segment, rufus_entrance_played):
                 # Once, after Alex's complete handoff, never under spoken words.
                 rufus_entrance_played = True
@@ -6362,6 +6371,23 @@ def produce_episode() -> None:
         (AUDIO_DIR / f"podcast_{today}.timeline.json").write_text(json.dumps(timeline, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     except Exception as exc:
         _safe_print(f" ⚠️ Measured chapter timing unavailable; using word-share estimate: {exc}")
+
+    try:
+        sound_events = []
+        for row in timeline.get("rows", []):
+            design = row.get("sound_design") or {}
+            if design.get("applied"):
+                sound_events.append(dict(design, start=row["start"],
+                    end=min(row["end"], row["start"] + design["duration_seconds"]),
+                    kind=row["kind"]))
+            elif row.get("kind") == "rufus_entrance":
+                sound_events.append(dict(row, asset="rufus_entrance.mp3", provider="elevenlabs"))
+        Path("sound_design_report.json").write_text(json.dumps({
+            "basis": "assembly provenance; timestamps scaled to master; not a listening review",
+            "attempts": sound_design_attempts, "events": sound_events,
+        }, indent=2) + "\n", encoding="utf-8")
+    except Exception as exc:
+        _safe_print(f" Sound design report unavailable: {type(exc).__name__}")
 
     companion_files = _write_episode_companion_files(
         script,

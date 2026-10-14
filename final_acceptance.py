@@ -30,6 +30,12 @@ just a moderator? Cite actual exchanges and identify where the connection disapp
 There is no joke quota, turn-count template, compulsory comeback or required comic
 exchange in every story. A sincere explanation or unresolved disagreement can work.
 Do not certify a whole episode from an isolated quip; explain the overall pattern.
+In responsive_banter include story_notes for segments 2, 3 and 4: cite the actual
+challenge and response (or a genuinely developing shared discovery), identify where
+it develops or fizzles, and name any long stretch of interchangeable summaries.
+Evaluate sustained engagement across all three scenes, not just the best exchange.
+A challenge followed by "fair point" and a topic change is not a developed dispute.
+These are script observations, never evidence that the rendered delivery sounds good.
 cast_warmth: can they challenge or tease each other while the affection remains?
 Alex is curious and informal, Jamie passionate and playful, Rufus dry and composed
 but able to laugh at himself. They need not announce friendship, reconcile every

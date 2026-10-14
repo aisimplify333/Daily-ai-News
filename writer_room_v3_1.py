@@ -99,6 +99,7 @@ CONTINUITY_MAX_STORED = int(os.getenv("CONTINUITY_MAX_STORED", "150"))
 EDITORIAL_FRESHNESS_LOOKBACK = int(os.getenv("EDITORIAL_FRESHNESS_LOOKBACK", "7"))
 
 EDITORIAL_DISCOVERY_FEEDS = [
+    ("ai_tools", "https://www.techradar.com/feeds/tag/ai"),
     ("major_news", "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22)%20(source%3AReuters%20OR%20source%3ABloomberg%20OR%20source%3ACNBC%20OR%20source%3A%22The%20Wall%20Street%20Journal%22%20OR%20source%3A%22Financial%20Times%22%20OR%20source%3A%22Yahoo%20Finance%22)%20when%3A2d&hl=en-US&gl=US&ceid=US%3Aen"),
     ("broad_news", "https://www.bing.com/news/search?q=%28AI+OR+%22artificial+intelligence%22%29+%28funding+OR+regulation+OR+chips+OR+jobs+OR+research+OR+security%29&format=rss"),
 ]
@@ -1079,6 +1080,9 @@ Do not reorder source records or fabricate additional reporting in this planning
 Keep each story scene under 150 words; keep other JSON fields concise.
 For each scene sketch what each friend wants to understand or get across, what
 specific sourced detail catches their attention, and how their friends might respond.
+Identify the specific interpretation the friends could genuinely disagree about,
+why each would defend it, and which sourced detail could complicate their positions.
+Sketch an opening challenge and the answer it deserves, not a list of insults.
 Identify the conversation's open question and a possible destination. Leave room for
 the dialogue writer to discover a better route. These are character intentions, not
 fixed emotional assignments, compulsory jokes or a prescribed winner. A scene can
@@ -2911,7 +2915,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             def request_scene(segment, scene):
                 return _anthropic_text(
                     g, "Revise ONLY the dialogue below. Return speaker lines, no headers. "
-                    "Keep 98-112% of its word count. Preserve every factual qualification, "
+                    "Keep 85-112% of its word count; cut redundant exposition, preserve live exchanges. Preserve every factual qualification, "
                     "number, attribution, sponsor line and navigation. No new reporting. "
                     "Improve responsive exchanges, plain-English examples and earned warmth. "
                     "Let a specific affectionate jab receive a response where natural; no joke quota. "
@@ -2931,7 +2935,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             script, assessment, editor_report = edit_story_scenes(
                 script, assessment, request_scene=request_scene, normalize=stabilize,
                 assess=lambda candidate: _assess(candidate, stories, board, fuel),
-                runtime_distance=_runtime_distance,
+                runtime_distance=_runtime_distance, allow_runtime_repair=True,
             )
             editor_report["model"] = editor_model
             try:

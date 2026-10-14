@@ -27,3 +27,25 @@ def test_reviewed_mix_preserves_duration_and_corruption_falls_back(tmp_path):
     assert result and abs(len(AudioSegment.from_file(result))-7000) < 30
     bed.write_bytes(b'corrupt')
     assert mix_reviewed_bed(voice, tmp_path/'mixed2.mp3', 'Imagine an office.', tmp_path) is None
+
+
+def test_software_company_and_conference_room_are_office_scenes():
+    assert choose_bed('Picture a midsize software company in New York.') == 'office'
+    assert choose_bed('Imagine a conference room.') == 'office'
+    assert choose_bed('Imagine a conference in London.') == 'conference'
+    assert choose_bed('The software company announced a launch.') is None
+
+
+def test_signature_approval_hash_and_audit(tmp_path):
+    from specialty_audio.mixer import reviewed_signature
+    clip = tmp_path/'signature.wav'
+    Sine(500).to_audio_segment(duration=3000).export(clip, format='wav').close()
+    row = {'name':'edge_signature', 'file':clip.name, 'enabled_in_daily':True,
+           'listening_review':'approved', 'sha256':hashlib.sha256(clip.read_bytes()).hexdigest()}
+    (tmp_path/'manifest.json').write_text(json.dumps({'sounds':[row]}))
+    audit = {}; result = reviewed_signature(tmp_path, audit)
+    assert result is not None and len(result) == 3000 and result.max_dBFS <= -3
+    assert audit['applied'] and audit['sha256'] == row['sha256']
+    clip.write_bytes(b'bad')
+    audit = {}; assert reviewed_signature(tmp_path, audit) is None
+    assert not audit['applied']
