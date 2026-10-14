@@ -1,8 +1,9 @@
 {
-  "status": "attempted",
+  "status": "rejected_http_400",
   "model": "eleven_text_to_sound_v2",
   "brief": "Original three-second character entrance for Rufus, the dry British wit in an AI\npodcast. A crisp soft mechanical tick immediately introduces a memorable three-note\nwarm mallet/electric-piano motif: two poised notes and a cheeky upward final note.\nClean rhythmic identity, confident and witty, rounded low-mid warmth with a clear\nupper-mid attack audible on a phone. Distinct from a generic notification. Finish\nfully within three seconds with a short natural decay. Restrained contemporary\nstudio palette to sit between existing electronic podcast themes and dry speech.\nNo speech, vocals, laughter, crowd, alarms, fanfare, cinematic boom or existing melody.",
   "requested_seconds": 3,
   "maximum_requests": 1,
-  "credit_reservation": 2000
+  "credit_reservation": 2000,
+  "failure_evidence": "GitHub job 115745892147 returned HTTP 400 before any audio; original brief 659 characters exceeds documented 450-character limit."
 }

@@ -10,8 +10,16 @@ def entrance_due(speaker, text, segment, already_played=False):
             bool(re.search(r'Rufus,\s*take us (?:on location|to the global desk)\.', str(text), re.I)))
 
 
-def prepare_entrance(destination, source=None):
+def prepare_entrance(destination, source=None, audit=None):
     from pydub import AudioSegment
+    if source is None:
+        from specialty_audio.studio_package import load_package, asset_audit
+        clips, package = load_package()
+        if clips:
+            clips['rufus'].export(destination, format='mp3', bitrate='192k').close()
+            if audit is not None:
+                audit.update(asset_audit(package, 'rufus'))
+            return Path(destination)
     default_asset = source is None
     source = Path(source) if source else Path(__file__).parent / 'specialty_audio/library/rufus_entrance.mp3'
     try:
@@ -29,6 +37,8 @@ def prepare_entrance(destination, source=None):
         if clip.max_dBFS > -3:
             clip = clip.apply_gain(-3 - clip.max_dBFS)
         clip.fade_in(20).fade_out(120).export(destination, format='mp3', bitrate='192k').close()
+        if audit is not None:
+            audit.update(applied=True, asset=source.name, provider='elevenlabs', duration_seconds=len(clip)/1000, sha256=hashlib.sha256(source.read_bytes()).hexdigest())
         return Path(destination)
     except Exception as exc:
         # No raw provider/file contents in logs. Keep speech even with damaged media.

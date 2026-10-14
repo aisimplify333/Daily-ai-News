@@ -12,14 +12,7 @@ from audio_engineering import inspect_master
 
 ROOT = Path('specialty_audio/studio')
 VERSION = 'ai-edge-studio-v1'
-BRIEF = '''Original three-second character entrance for Rufus, the dry British wit in an AI
-podcast. A crisp soft mechanical tick immediately introduces a memorable three-note
-warm mallet/electric-piano motif: two poised notes and a cheeky upward final note.
-Clean rhythmic identity, confident and witty, rounded low-mid warmth with a clear
-upper-mid attack audible on a phone. Distinct from a generic notification. Finish
-fully within three seconds with a short natural decay. Restrained contemporary
-studio palette to sit between existing electronic podcast themes and dry speech.
-No speech, vocals, laughter, crowd, alarms, fanfare, cinematic boom or existing melody.''' 
+BRIEF = '''Three-second original entrance for a witty British AI pundit: crisp soft tick, then three memorable warm mallet/electric-piano notes, two poised notes and a cheeky rising finish. Confident, dry and playful. Clear phone-speaker attack, rounded warmth, short clean decay. Contemporary podcast palette. No voices, laughter, alarms, fanfare, cinematic boom or existing melody.''' 
 
 
 def write(name, value):
@@ -47,16 +40,21 @@ def export(name, clip, assets):
 def commission():
     ledger = ROOT/'commission.json'
     source = ROOT/'theme_source.mp3'
+    previous = []
+    if len(BRIEF) > 450:
+        raise ValueError('Sound prompt exceeds provider limit')
     if ledger.exists():
         row = json.loads(ledger.read_text())
         if row.get('status') == 'complete' and source.exists() and hashlib.sha256(source.read_bytes()).hexdigest() == row.get('sha256'):
             return source
-        raise RuntimeError('Prior incomplete commission: inspect retained work, no duplicate request')
+        if row.get('status') != 'rejected_http_400':
+            raise RuntimeError('Prior incomplete commission: inspect retained work, no duplicate request')
+        previous = [row]
     key = os.environ['AI_EDGE_PODCAST_ELEVENLABS']
     if get_account(key)['remaining'] < 2000:
         raise RuntimeError('Insufficient allowance for bounded commission')
     row = {'status':'attempted','model':'eleven_text_to_sound_v2','brief':BRIEF,'requested_seconds':3,
-           'maximum_requests':1,'credit_reservation':2000}
+           'maximum_requests':1,'credit_reservation':2000,'previous_rejected_requests':previous}
     write('commission.json',row)
     request = urllib.request.Request('https://api.elevenlabs.io/v1/sound-generation?output_format=mp3_44100_128',
         data=json.dumps({'text':BRIEF,'duration_seconds':3,'prompt_influence':0.5,'model_id':row['model']}).encode(),

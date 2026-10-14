@@ -6056,7 +6056,12 @@ def produce_episode() -> None:
     signature = reviewed_signature(audit=signature_audit)
     if signature is not None:
         transition_seg = signature
-    sound_design_attempts = [signature_audit]
+    from specialty_audio.studio_package import load_package, asset_audit
+    studio_clips, studio_audit = load_package()
+    if studio_clips:
+        transition_seg = studio_clips['transition']
+        signature_audit = asset_audit(studio_audit, 'transition')
+    sound_design_attempts = [signature_audit, studio_audit]
 
     # No automatic danger stings based on news keywords.
 
@@ -6260,9 +6265,11 @@ def produce_episode() -> None:
             if not continuing and entrance_due(speaker, text, assembly_segment, rufus_entrance_played):
                 # Once, after Alex's complete handoff, never under spoken words.
                 rufus_entrance_played = True
-                entrance = prepare_entrance(run_tmp / "rufus_entrance.mp3")
+                entrance_audit = {}
+                entrance = prepare_entrance(run_tmp / "rufus_entrance.mp3", audit=entrance_audit)
+                sound_design_attempts.append(entrance_audit)
                 if entrance is not None:
-                    assembly_markers.append({"kind": "rufus_entrance", "segment": assembly_segment,
+                    assembly_markers.append({"kind": "rufus_entrance", "sound_design": entrance_audit, "segment": assembly_segment,
                                              "start_index": len(concat_files), "end_index": len(concat_files) + 1})
                     concat_files.append(entrance)
             if sponsor_chunk:
