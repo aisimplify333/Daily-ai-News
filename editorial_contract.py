@@ -13,14 +13,16 @@ def feature_status(script):
     content = body.split(start,1)[1].split(RETURN,1)[0] if start in body and RETURN in body else ''
     words = len(re.findall(r"\b[\w'-]+\b", re.sub(r'^(ALEX|JAMIE|RUFUS):','',content,flags=re.M)))
     frame = mode == 'global_desk' or bool(re.search(r'\b(?:picture|imagine)\b',content,re.I))
-    return {'mode':mode, 'word_count':words, 'handoff_and_return':bool(content),
+    return {'mode':mode, 'word_count':words, 'handoff_and_return':bool(content) and bool(re.search(r'^ALEX:.*'+re.escape(start),body,re.M)),
             'clearly_framed':frame, 'duration_in_word_band':100 <= words <= 220,
-            'present': bool(content) and frame and 'RUFUS:' in content and 'JAMIE:' in content}
+            'present': bool(content) and bool(re.search(r'^ALEX:.*'+re.escape(start),body,re.M)) and frame and 'RUFUS:' in content and 'JAMIE:' in content}
 
 def ensure_feature_fallback(script):
     """Label existing reporting as a desk exchange when the generated location scene is absent.
     Never invent a location, presence, observation or interview merely to pass a check.
     """
+    # Assign navigation to Alex even when an editor accidentally puts it in Rufus's line.
+    script = re.sub(r'^(?:JAMIE|RUFUS):[^\n]*(' + re.escape(HANDOFF) + '|' + re.escape(DESK) + r')\s*$', r'ALEX: \1', script, flags=re.M)
     if feature_status(script)['present']:
         return script
     match = re.search(r'(^###\s*SEGMENT\s*3\b[^\n]*\n)(.*?)(?=^###\s*SEGMENT\s*4\b)',script,re.M|re.S|re.I)

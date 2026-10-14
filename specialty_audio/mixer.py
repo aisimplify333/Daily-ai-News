@@ -13,7 +13,7 @@ def choose_bed(text):
                           ('factory', r'factory|manufacturing floor'),
                           ('server_room', r'server room|data cent'),
                           ('legislative_hall', r'legislative hall|parliament|congressional hall'),
-                          ('city', r'sidewalk|street corner')]:
+                          ('city', r'sidewalk|street corner|wall street')]:
         if re.search(pattern, text, re.I):
             return name
     return None

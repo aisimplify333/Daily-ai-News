@@ -41,9 +41,14 @@ class CompletedDeliveryRecoveryTests(unittest.TestCase):
             git('sparse-checkout','set','--no-cone','/*','!/episode_audio/*.mp3','!/.tts_cache/','/episode_audio/today.mp3')
             (root/'.tts_cache').mkdir(exist_ok=True);(root/'.tts_cache/new.mp3').write_text('new cache')
             (root/'episode_audio').mkdir(exist_ok=True);(root/'episode_audio/today.mp3').write_text('master')
-            result=git('add','--','.',':(exclude).tts_cache',':(exclude)_voice_recovery',':(exclude)_run_artifacts',check=False)
+            (root/'episode_audio/show_trailer_candidate_today.mp3').write_text('candidate')
+            result=git('add','--sparse','--','.',':(exclude).tts_cache',':(exclude)_voice_recovery',':(exclude)_run_artifacts',check=False)
             self.assertEqual(result.returncode,0,result.stderr)
-            self.assertEqual(git('diff','--cached','--name-status').stdout.strip(),'A\tepisode_audio/today.mp3')
+            staged=git('diff','--cached','--name-status').stdout
+            self.assertIn('A\tepisode_audio/today.mp3',staged)
+            self.assertIn('A\tepisode_audio/show_trailer_candidate_today.mp3',staged)
+            self.assertNotIn('.tts_cache',staged)
+            self.assertNotIn('old.mp3',staged)
 
 if __name__ == '__main__':
     unittest.main()

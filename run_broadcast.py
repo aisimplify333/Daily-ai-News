@@ -146,7 +146,7 @@ def main() -> None:
     run_command("python distribution_package.py", "Measured chapters and distribution package", allow_fail=True)
     run_command("python episode_pages.py", "Searchable episode pages and sitemap", allow_fail=False)
     print("\n>> UPLOADING TO GITHUB...", flush=True)
-    run_command("git add -- . ':(exclude).tts_cache' ':(exclude)_voice_recovery' ':(exclude)_run_artifacts'", "Staging Files", allow_fail=False)
+    run_command("git add --sparse -- . ':(exclude).tts_cache' ':(exclude)_voice_recovery' ':(exclude)_run_artifacts'", "Staging Files", allow_fail=False)
 
     if not has_staged_changes():
         print(">> ℹ️ No changes staged. Skipping commit and push.", flush=True)
