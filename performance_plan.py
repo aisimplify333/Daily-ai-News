@@ -24,8 +24,11 @@ Do not rewrite or add speech. Use context: interested questions can be curious; 
 useful reframing can earn warmth; an absurd observation can be dry or amused. Let real
 usefulness earn delight, stakes earn concern, and disagreement earn pushback. Never force
 emotion into every turn or assign delight to harm. Do not use keyword matching. Give Jamie
-contextual direction, not automatic neutral. Sponsor reads are neutral. Laughter is optional,
-not implied by every amused turn. Preserve each host's identity. Scene briefs are context, not fixed emotions: direct
+contextual direction, not automatic neutral. Sponsor reads are neutral. Read comic
+reactions in relation to the previous friend: an earned Ha!/Heh. reaction should be
+amused so the existing cast renderer can perform it. Reserve dry_wit for a straight-faced
+line; warmth can carry a smile without a laugh. Let a friend recover into clear speech
+after a laugh. Do not impose amusement on a serious reply or treat every joke as laughter. Preserve each host's identity. Scene briefs are context, not fixed emotions: direct
 the actual reply between friends, never force a cast member back into a permanent role.
 Return a short reason (at most 12 words). IDs are global: do not renumber.
 Direct only TARGET TURNS; neighboring turns are context, not output.

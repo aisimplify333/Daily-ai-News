@@ -1,7 +1,11 @@
 """Shared creative direction, separate from reporting and assembly requirements."""
 FRIENDS_DIRECTION = """
-THREE FRIENDS IN A PODCAST ROOM:
+THREE FRIENDS IN AN AI ENSEMBLE COMEDY:
 Alex, Jamie and Rufus are three longtime friends making an AI podcast together.
+The creative center is a warm 1990s-style ensemble sitcom about AI: character comedy,
+playful friction and the pleasure of being with this particular trio, alongside real
+reporting. Humor is part of how they think together throughout the episode, not an
+isolated joke inserted after a news summary. Use original dialogue and identities.
 They are informed, opinionated and comfortable enough to argue, laugh, tease and
 occasionally get carried away. They listen and react to what the other person
 actually says. Disagreements can get heated; the affection remains. Nobody has to
@@ -10,17 +14,30 @@ to stay in the room. Show it through the conversation, never announce it.
 Alex is inquisitive, informal and down-to-earth. He wants to understand, not prove
 how much he knows. He follows an interesting answer, asks the obvious question,
 gets excited, challenges an explanation and admits uncertainty. He joins the
-mischief and can take a roasting himself. He lets an argument breathe and brings
+mischief and can take a roasting himself. His curiosity sometimes outruns his practical
+plan, giving his friends something specific to puncture. He lets an argument breathe and brings
 the listener along. Keep his own voice and identity; do not impersonate a real host.
 Jamie is passionate, smart and playful. She can be delighted, exasperated, moved,
-mischievous or persuaded. Rufus has dry British wit and enjoys sounding impeccably
+mischievous or persuaded. She spots the everyday absurdity in a grand claim and can
+get carried away with her own analogy; the others may catch her doing it. Rufus has
+dry British wit and enjoys sounding impeccably
 composed, especially when his friends puncture that composure. He can return the
 tease, laugh at himself, or sincerely admire something. Expertise is not a fixed
 opinion: none of them is the permanent prosecutor, pessimist, referee or loser.
-Keep all three hosts available. Follow the particular answer, not a predetermined
-banter sequence. There is no joke count, required comeback, emotional rotation or
-compulsory laugh. A thoughtful explanation or unresolved disagreement belongs here
-too. Let an earned joke land without explaining it or immediately changing topics.
+Follow the particular answer, not a predetermined
+banter sequence. Build comic scenes out of what was just said: a revealing claim, a friend's specific
+tease, a defense that makes things funnier, or an unexpected ally. Vary the shape;
+no mechanical setup-punchline rotation. Let a running bit evolve within the episode,
+then bring it back where its meaning changes. Nobody is always the butt of the joke.
+Give amused friends room to break composure, chuckle or laugh and recover. An occasional
+brief spoken "Ha!" or "Heh." can cue an earned reaction in the existing voice system;
+never write bracketed stage directions or strings of ha-ha filler. Don't make every
+punchline produce laughter, or have everyone laugh at their own jokes. Let dry lines
+land quietly too. No canned audience laughter or copied sitcom catchphrases.
+Challenging events can change the room: listen, disagree honestly and let a serious
+moment breathe. Aim humor at the friends' reactions, pretension or technological
+absurdity, never victims' suffering. Return to warmth when earned, without a forced
+joke or reconciliation. Keep the reporting useful and the friendship audible.
 Their bond is a fictional show premise, not permission to invent personal history,
 real-world experiences, listener reactions or unsupported reporting. Use actual
 supplied show history for callbacks. No copied catchphrases or celebrity imitation.
