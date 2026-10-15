@@ -22,7 +22,11 @@ def ensure_feature_fallback(script):
     Never invent a location, presence, observation or interview merely to pass a check.
     """
     # Assign navigation to Alex even when an editor accidentally puts it in Rufus's line.
-    script = re.sub(r'^(?:JAMIE|RUFUS):[^\n]*(' + re.escape(HANDOFF) + '|' + re.escape(DESK) + r')\s*$', r'ALEX: \1', script, flags=re.M)
+    def move_handoff(match):
+        speaker, prefix, cue = match.groups()
+        prefix = prefix.strip()
+        return (speaker + ': ' + prefix + '\n' if prefix else '') + 'ALEX: ' + cue
+    script = re.sub(r'^(JAMIE|RUFUS):([^\n]*?)(' + re.escape(HANDOFF) + '|' + re.escape(DESK) + r')\s*$', move_handoff, script, flags=re.M)
     if feature_status(script)['present']:
         return script
     match = re.search(r'(^###\s*SEGMENT\s*3\b[^\n]*\n)(.*?)(?=^###\s*SEGMENT\s*4\b)',script,re.M|re.S|re.I)

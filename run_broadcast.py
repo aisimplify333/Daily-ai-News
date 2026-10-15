@@ -115,8 +115,13 @@ def main() -> None:
     # 0) Cheap fail-fast checks. This protects the wallet.
     run_command("python preflight_guard_v3_1.py", "0. Cost-Safe Preflight Guard", allow_fail=False)
 
+    previous_feed = Path("feed.xml").read_bytes()
+
     # 1) Expensive generation only starts after preflight passes.
     run_command("python v3_1_runner.py", "1. V3.1 Studio Pipeline", allow_fail=False)
+
+    from feed_archive import preserve_archive
+    preserve_archive(previous_feed, keep=int(os.getenv("KEEP_LAST_EPISODES", "60")))
 
     # 1B) Clean public generated copy before final guard. This prevents stale legacy copy from wasting a completed episode.
     run_command("python feed_sanitize_v3_1.py", "1B. Public Feed Sanitizer", allow_fail=False)
