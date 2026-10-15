@@ -34,7 +34,50 @@
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
+      "speech_chunk": 48
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 52
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 53
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 56
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 60
+    },
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v1",
+      "provider": "elevenlabs",
+      "asset": "rufus.mp3",
+      "sha256": "bbc21f5229f9527f8f70bd038b9093dc0524f49da221284e1afeb0352ab859b9",
+      "duration_seconds": 3.0
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 63
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
       "speech_chunk": 64
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 65
     },
     {
       "applied": false,
@@ -44,57 +87,22 @@
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 69
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
       "speech_chunk": 70
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 72
+      "speech_chunk": 73
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 74
+      "speech_chunk": 75
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
       "speech_chunk": 78
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 81
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 84
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 87
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 90
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 92
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 95
     }
   ],
   "events": [
@@ -105,9 +113,9 @@
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
       "duration_seconds": 3.0,
-      "kind": "transition",
-      "start": 56.176,
-      "end": 59.176
+      "start": 62.483,
+      "end": 65.483,
+      "kind": "transition"
     },
     {
       "applied": true,
@@ -116,9 +124,9 @@
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
       "duration_seconds": 3.0,
-      "kind": "transition",
-      "start": 381.324,
-      "end": 384.324
+      "start": 376.588,
+      "end": 379.588,
+      "kind": "transition"
     },
     {
       "applied": true,
@@ -127,21 +135,9 @@
       "asset": "rufus.mp3",
       "sha256": "bbc21f5229f9527f8f70bd038b9093dc0524f49da221284e1afeb0352ab859b9",
       "duration_seconds": 3.0,
-      "kind": "rufus_entrance",
-      "start": 470.896,
-      "end": 473.896
-    },
-    {
-      "applied": true,
-      "reason": "mixed",
-      "asset": "city.mp3",
-      "sha256": "065b709588c9beded7fb7a653fcf27ed9212f26decfc97e254638eca2274bc40",
-      "provider": "elevenlabs",
-      "duration_seconds": 5.0,
-      "bed_dbfs": -37.23,
-      "kind": "speech",
-      "start": 474.006,
-      "end": 479.006
+      "start": 560.272,
+      "end": 563.272,
+      "kind": "rufus_entrance"
     },
     {
       "applied": true,
@@ -150,9 +146,9 @@
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
       "duration_seconds": 3.0,
-      "kind": "transition",
-      "start": 693.083,
-      "end": 696.083
+      "start": 744.06,
+      "end": 747.06,
+      "kind": "transition"
     },
     {
       "applied": true,
@@ -161,10 +157,9 @@
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
       "duration_seconds": 3.0,
-      "kind": "transition",
-      "start": 975.41,
-      "end": 978.41
+      "start": 1122.848,
+      "end": 1125.848,
+      "kind": "transition"
     }
-  ],
-  "repair": "Corrected cast handoff and added missing reviewed cue and city atmosphere"
+  ]
 }
