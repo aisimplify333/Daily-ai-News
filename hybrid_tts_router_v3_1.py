@@ -272,7 +272,8 @@ MOOD_DIRECTION = {
     ),
     "concern": (
         "Real stakes for real people. Slow down. More weight, more sincerity. This is "
-        "not abstract — someone's job, health, money, or privacy is on the line.",
+        "not abstract — someone's job, health, money, or privacy is on the line. "
+        "Let the pitch and pace settle without whispering or melodrama.",
         "Slower and weightier, sincere and a little grave — real people are exposed here.",
     ),
     "explainer": (
@@ -283,7 +284,8 @@ MOOD_DIRECTION = {
     ),
     "dry_wit": (
         "Dry, calm, understated British wit. Do not push the joke — let it sit flat. "
-        "The humour is in the restraint and the timing, not the energy.",
+        "The humour is in the restraint and the timing, not the energy. Let the final "
+        "comic word settle with a small downward inflection; do not announce the punchline.",
         "Dry, calm and understated — deliver any irony flat, with restraint; let the "
         "wit sit rather than pushing it.",
     ),
@@ -304,11 +306,11 @@ MOOD_DIRECTION = {
 
 
 MOOD_DIRECTION.update({
-    "delight": ("A useful discovery genuinely delights you. Brighten briefly, then explain why; no sales pitch.",
+    "delight": ("A useful discovery genuinely delights you. Briefly lift energy and pitch on the discovery, then settle into clear explanation; no sales pitch or sing-song delivery.",
                 "Warm, delighted by a concrete useful discovery; stay conversational."),
     "warmth": ("Respond affectionately and sincerely to your colleague. Gentle smile, relaxed conversational energy.",
                "Warm, sincere and affectionate, with a gentle smile."),
-    "curiosity": ("You genuinely want to understand the previous point. Alert, interested, questioning without confrontation.",
+    "curiosity": ("You genuinely want to understand the previous point. Alert and interested; allow a slight rise on genuine uncertainty, not a rise on every sentence. No confrontation.",
                   "Interested and inquisitive; this is genuine curiosity, not an interrogation."),
     "disbelief": ("A specific absurdity surprises you. Brief incredulous emphasis, then recover into the substance.",
                   "Brief, natural disbelief at a specific absurdity; avoid shouting."),
@@ -441,7 +443,7 @@ def _extract_audio_bytes(response: Any) -> bytes:
 
 def _cache_key(text: str, speaker: str, voice: str, model: str, mood: str) -> str:
     raw = json.dumps(
-        {"direction_version": "gemini-cast-v4-friends", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
+        {"direction_version": "gemini-cast-v5-inflection", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
          "text": _sanitize_spoken_text(text)},
         sort_keys=True,
     )

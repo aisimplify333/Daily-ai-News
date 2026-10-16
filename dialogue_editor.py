@@ -53,7 +53,7 @@ def edit_dialogue(script, assessment, request, normalize, assess, runtime_distan
     return script, assessment, report
 
 
-def edit_story_scenes(script, assessment, request_scene, normalize, assess, runtime_distance, allow_runtime_repair=False):
+def edit_story_scenes(script, assessment, request_scene, normalize, assess, runtime_distance, allow_runtime_repair=False, repair_scene=None):
     """Bounded local revisions: a failed scene never discards successful other scenes."""
     report = {'provider':'anthropic', 'role':'scene_dialogue_editor', 'requested_calls':0,
               'accepted':False, 'listened':False, 'scenes':[]}
@@ -64,30 +64,37 @@ def edit_story_scenes(script, assessment, request_scene, normalize, assess, runt
             continue
         original = match[2]
         row = {'segment':segment, 'accepted':False, 'original':original, 'input_words':len(original.split())}
-        report['requested_calls'] += 1
-        try:
-            revised = request_scene(segment, original).strip()
-            row.update(candidate=revised, candidate_words=len(revised.split()))
-            if not revised or re.search(r'^###\s*SEGMENT', revised, re.M | re.I):
-                row['reason'] = 'empty_or_structural_response'
-            elif set(re.findall(r'\b\d[\d,.%]*', revised)) != set(re.findall(r'\b\d[\d,.%]*', original)):
-                row['reason'] = 'numeric_receipts_changed'
-            elif not .85 <= len(revised.split()) / max(1, len(original.split())) <= 1.12:
-                row['reason'] = 'scene_word_budget_regression'
-            else:
-                candidate = normalize(script[:match.start(2)] + revised + '\n\n' + script[match.end(2):])
-                measured = assess(candidate)
-                new_failures = set(measured.get('failed') or []) - set(assessment.get('failed') or [])
-                runtime_worse = runtime_distance(measured) > runtime_distance(assessment)
-                row['runtime_repair_pending'] = runtime_worse
-                if new_failures - {'runtime_word_band'} or (runtime_worse and not allow_runtime_repair):
-                    row['reason'] = 'episode_structure_or_runtime_regression'
+        row['attempts'] = []
+        for attempt in range(2 if repair_scene else 1):
+            report['requested_calls'] += 1
+            try:
+                revised = (request_scene(segment, original) if attempt == 0 else
+                       repair_scene(segment, original, row['candidate'], row['reason'])).strip()
+                row.update(candidate=revised, candidate_words=len(revised.split()))
+                row.pop('runtime_repair_pending', None)
+                if not revised or re.search(r'^###\s*SEGMENT', revised, re.M | re.I):
+                    row['reason'] = 'empty_or_structural_response'
+                elif set(re.findall(r'\b\d[\d,.%]*', revised)) != set(re.findall(r'\b\d[\d,.%]*', original)):
+                    row['reason'] = 'numeric_receipts_changed'
+                elif not .85 <= len(revised.split()) / max(1, len(original.split())) <= 1.12:
+                    row['reason'] = 'scene_word_budget_regression'
                 else:
-                    script, assessment = candidate, measured
-                    row.update(accepted=True, reason='scene_revision_retained')
-                    report['accepted'] = True
-        except Exception as exc:
-            row['reason'] = 'scene_error_' + type(exc).__name__
+                    candidate = normalize(script[:match.start(2)] + revised + '\n\n' + script[match.end(2):])
+                    measured = assess(candidate)
+                    new_failures = set(measured.get('failed') or []) - set(assessment.get('failed') or [])
+                    runtime_worse = runtime_distance(measured) > runtime_distance(assessment)
+                    row['runtime_repair_pending'] = runtime_worse
+                    if new_failures - {'runtime_word_band'} or (runtime_worse and not allow_runtime_repair):
+                        row['reason'] = 'episode_structure_or_runtime_regression'
+                    else:
+                        script, assessment = candidate, measured
+                        row.update(accepted=True, reason='scene_revision_retained')
+                        report['accepted'] = True
+            except Exception as exc:
+                row['reason'] = 'scene_error_' + type(exc).__name__
+            row['attempts'].append({k: v for k, v in row.items() if k not in ('attempts', 'original')})
+            if row['accepted'] or row['reason'].startswith('scene_error_'):
+                break
         report['scenes'].append(row)
     report['reason'] = 'scene_revisions_retained' if report['accepted'] else 'original_scenes_preserved'
     return script, assessment, report

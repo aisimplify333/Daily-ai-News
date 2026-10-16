@@ -22,7 +22,9 @@ def build_plan(script, request, path='performance_plan.json', scene_context=None
 One entry per turn. Allowed moods: ''' + ', '.join(sorted(MOODS)) + '''.
 Do not rewrite or add speech. Use context: interested questions can be curious; a colleague's
 useful reframing can earn warmth; an absurd observation can be dry or amused. Let real
-usefulness earn delight, stakes earn concern, and disagreement earn pushback. Never force
+usefulness earn delight, stakes earn concern, and disagreement earn pushback. Track the emotional turn: a challenge may become an admission, a useful discovery
+may brighten the room, and a serious consequence may quiet it. Rufus is not always dry;
+Alex is not always questioning; Jamie is not always pushing back. Never force
 emotion into every turn or assign delight to harm. Do not use keyword matching. Give Jamie
 contextual direction, not automatic neutral. Sponsor reads are neutral. Read comic
 reactions in relation to the previous friend: an earned Ha!/Heh. reaction should be

@@ -8,7 +8,7 @@ from pathlib import Path
 def choose_bed(text):
     if not re.search(r'\b(?:picture|imagine)\b', text, re.I):
         return None
-    for name, pattern in [('office', r'\b(?:office|boardroom|conference room|software company|developer team)\b'),
+    for name, pattern in [('office', r'\b(?:office|boardroom|conference room|software company|(?:large )?tech company|developer team)\b'),
                           ('conference', r'\b(?:conference|convention)\b'),
                           ('factory', r'factory|manufacturing floor'),
                           ('server_room', r'server room|data cent'),
