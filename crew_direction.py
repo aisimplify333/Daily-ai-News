@@ -61,6 +61,16 @@ Never speak production notes. Keep the approved cast voices and truthful attribu
 
 SCENE_DIRECTION = """
 WRITE FOR THE CHARACTERS AND THE SCENE:
+NORTH STAR: come for consequential AI stories; return for these three friends.
+Let the evidence move the story and the relationship move the conversation.
+A strong tease deserves an answer, not an immediate host summary. Alex can defend
+an interpretation; Jamie can delight in a useful possibility; Rufus can be surprised,
+impressed or gently wrong about an interpretation. No fixed winner or compulsory concession.
+Revisiting a point must add evidence, a counterargument or a new human consequence;
+otherwise cut it. Do not expand runtime by explaining the same conclusion again.
+Never announce that the stories are distinct, the banter is natural, or the show is
+well structured. Those are production goals, not dialogue. Keep the farewell after
+the audience question, sponsor and follow invitation, not before them.
 Start with what each friend genuinely wants to understand or make the others see
 about this particular story. Give them different ways of noticing and expressing it,
 not assigned sides. Alex explores aloud; Jamie responds personally and directly;
