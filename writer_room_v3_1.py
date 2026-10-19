@@ -1132,6 +1132,12 @@ by supplied evidence. Never default to Alex conceding or rotate a designated los
 Use prior positions to avoid repeating yesterday's argument and outcome mechanically.
 
 TITLE CONTRACT:
+- DISCOVERY AND LONGEVITY: Name a recognizable company, person or tool actually in
+  this episode; include a natural AI topic/search phrase and a specific unresolved
+  question or surprising sourced development. Favor understandable evergreen wording
+  over 'today', empty urgency and generic advice promises. No keyword stuffing or
+  irrelevant neuroscience/longevity claims. Treat title appeal as editorial judgment,
+  not measured audience data or a neuroscience-proven formula.
 - Reject funding-first titles like 'New $29 Million Funding for Agentic Data Science'.
   Put the sourced human question first; retain a concrete lead identifier naturally.
   Avoid generic binary endings such as 'Efficiency or Enterprise Risk?'.
@@ -1336,6 +1342,20 @@ reapply the lead's thesis. Preserve the Jamie/Rufus conversational Ledger midrol
 Say 'Our third story' once. Prefer discovery, practical possibility or earned delight
 when the selected facts support it. On serious days offer clarity and agency, not
 fabricated good news. Never turn all three discussions into one warning.
+JAMIE'S TRY THIS — a recurring 2-3 minute feature inside Segment 4, after its main
+story and before the closing segment. Aim for 300-420 additional spoken words when
+the supplied sources support a useful application. Jamie introduces one actual tool
+or research application from the verified stories: what problem it addresses, who
+could use it, and a concrete first step or clearly hypothetical workflow. Alex asks
+the practical question an ordinary listener would ask. Rufus tests one specific
+limitation; Jamie answers it, and any host may surprise the others. Let playful
+exchanges grow from that example, not a fixed optimistic pitch followed by dismissal.
+Do not claim the cast tested anything unless a supplied test record proves it.
+Distinguish a public tool from a research prototype; if unavailable, explain the
+application and what must happen before listeners can use it. Never invent access,
+pricing, features, results or time savings. Use only authoritative story records.
+If there is insufficient sourced material, omit this feature rather than fabricate
+a recommendation. No extra SEGMENT header or music marker; keep five segments.
 ### SEGMENT 5 — Payoff
 Answer the opening question with what we know and what remains uncertain. One useful
 checkable prediction, one listener question, one show-follow CTA. Keep the ending
@@ -1343,7 +1363,9 @@ checkable prediction, one listener question, one show-follow CTA. Keep the endin
 
 LENGTH AND EDIT:
 Target 3,700-4,200 spoken words; acceptable planning range 3,150-4,800. Actual audio
-must meet the 19-26 minute preference and 30 minute ceiling. Depth comes from evidence,
+must meet the 19-26 minute preference and 30 minute ceiling. Jamie's 300-420 word
+feature is additional to the core story discussion when supported; trim repetitive
+analysis to respect the ceiling, never speed up the voices to fit it. Depth comes from evidence,
 examples explicitly labelled hypothetical, a sharper objection or a useful consequence.
 Never pad with recaps. Split the editorial discussion approximately 40/30/30.
 Normal turns 8-30 words, maximum 55. Alex's questions/setups usually 8-25 words.

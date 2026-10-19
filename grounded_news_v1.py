@@ -253,6 +253,13 @@ Return STRICT JSON only:
 
 Return {candidate_count} ranked candidates so validation can retain the best five.
 Rules:
+- For useful tools and applications, capture in the existing verified facts the
+  actual task, intended user, current availability (public, limited or research-only),
+  a documented usage example and a material limitation. Seek accessible AI uses in
+  work, learning, creativity, data science and scientific discovery; include
+  neuroscience or longevity only when fresh, credible evidence warrants coverage.
+  This supports Jamie's short practical feature. Do not invent a use case or confuse
+  a research result with an available consumer tool. Retain the normal freshness gates.
 - Score each editorial_scores dimension from 0 to 5 with conservative editorial judgment.
   These are comparative opinions, not measured audience outcomes. Evidence depth rewards
   concrete supported detail; money raised and company fame alone earn no points.
