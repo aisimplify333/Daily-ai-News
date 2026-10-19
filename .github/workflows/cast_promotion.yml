@@ -62,7 +62,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
-          git sparse-checkout add --no-cone "/episode_audio/podcast_${EPISODE_DATE}.mp3"
+          git sparse-checkout add "/episode_audio/podcast_${EPISODE_DATE}.mp3"
       - name: Render portrait clip
         if: steps.select.outputs.skip != 'true'
         env:
