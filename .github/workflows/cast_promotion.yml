@@ -1,0 +1,89 @@
+name: Cast promotion package
+on:
+  push:
+    branches: [main]
+    paths: ['PROMOTION_RUN_ONCE']
+  workflow_run:
+    workflows: ['Daily Podcast & Socials']
+    types: [completed]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: cast-promotion-package
+  cancel-in-progress: false
+jobs:
+  render:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/episode_audio/*.mp3
+            !/episode_audio/*.mp4
+            !/.tts_cache/
+            /episode_audio/podcast_*.timeline.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Select published episode and reviewed override
+        id: select
+        run: |
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          meta=json.loads(Path('episode_metadata.json').read_text())
+          date=meta['date']
+          output=Path('distribution')/date/'cast-promo'
+          if (output/'cast_clip.mp4').exists():
+              with open(os.environ['GITHUB_OUTPUT'],'a') as f: f.write('skip=true\n')
+              raise SystemExit(0)
+          override=Path('promotion_specs')/(date+'.json')
+          if override.exists():
+              spec=json.loads(override.read_text())
+          else:
+              report=json.loads(Path('promo_assets_report.json').read_text())
+              if report.get('date') != date: raise SystemExit('Stale promo source report')
+              spec=report['clip']
+              spec['display_heading']='THE AI EDGE | Useful AI, lively debate'
+          Path('/tmp/cast-spec.json').write_text(json.dumps(spec))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('date='+date+'\n')
+              f.write('output='+str(output)+'\n')
+          PY
+      - name: Install renderer and fetch unchanged master
+        if: steps.select.outputs.skip != 'true'
+        env:
+          EPISODE_DATE: ${{ steps.select.outputs.date }}
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core
+          git sparse-checkout add --no-cone "/episode_audio/podcast_${EPISODE_DATE}.mp3"
+      - name: Render portrait clip
+        if: steps.select.outputs.skip != 'true'
+        env:
+          EPISODE_DATE: ${{ steps.select.outputs.date }}
+          OUTPUT_DIR: ${{ steps.select.outputs.output }}
+        run: |
+          python render_cast_clip.py "episode_audio/podcast_${EPISODE_DATE}.mp3" /tmp/cast-spec.json assets "$OUTPUT_DIR"
+          rm "$OUTPUT_DIR"/part_*.mp4 "$OUTPUT_DIR"/silent.mp4 "$OUTPUT_DIR"/parts.txt
+      - uses: actions/upload-artifact@v4
+        if: steps.select.outputs.skip != 'true'
+        with:
+          name: cast-promotion-package
+          path: ${{ steps.select.outputs.output }}/
+      - name: Publish downloadable package to project
+        if: steps.select.outputs.skip != 'true'
+        env:
+          OUTPUT_DIR: ${{ steps.select.outputs.output }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$OUTPUT_DIR"
+          git commit -m "Publish cast promotion package; native platform upload still pending"
+          git pull --rebase origin main
+          git push origin main
