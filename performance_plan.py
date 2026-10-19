@@ -26,7 +26,14 @@ usefulness earn delight, stakes earn concern, and disagreement earn pushback. Tr
 may brighten the room, and a serious consequence may quiet it. Rufus is not always dry;
 Alex is not always questioning; Jamie is not always pushing back. Never force
 emotion into every turn or assign delight to harm. Do not use keyword matching. Give Jamie
-contextual direction, not automatic neutral. Sponsor reads are neutral. Read comic
+contextual direction, not automatic neutral.
+In Jamie's Try This feature, give her eager opening and the concrete useful discovery
+delight when the text supports it: she is visibly keen to share this with her friends.
+Use curiosity for exploration, warmth for the human example, amused for earned teasing,
+and explainer for practical steps. Let excitement rise, settle and return at the payoff;
+do not flatten the whole feature to neutral or assign one emotion to every line.
+An empathetic or serious personal scenario must not be performed as a celebratory joke.
+Sponsor reads are neutral. Read comic
 reactions in relation to the previous friend: an earned Ha!/Heh. reaction should be
 amused so the existing cast renderer can perform it. Reserve dry_wit for a straight-faced
 line; warmth can carry a smile without a laugh. Let a friend recover into clear speech

@@ -1344,7 +1344,23 @@ when the selected facts support it. On serious days offer clarity and agency, no
 fabricated good news. Never turn all three discussions into one warning.
 JAMIE'S TRY THIS — a recurring 2-3 minute feature inside Segment 4, after its main
 story and before the closing segment. Aim for 300-420 additional spoken words when
-the supplied sources support a useful application. Jamie introduces one actual tool
+the supplied sources support a useful application.
+Treat this as Jamie's signature discovery/review feature, as recognizable as Rufus's
+on-location dispatch. She eagerly takes the floor with a short conversational invitation
+such as "Okay, I've been looking forward to this one." Vary the wording each episode.
+Make her excitement audible through short lively opening phrases, a specific reason
+she cares, responsive teasing, and a clear explanation. She is excited to share the
+idea, not pretending to have personally used it. Never call a desk review a hands-on test.
+Give the feature a human mini-story: a relatable problem, a sourced tool capability,
+a concrete possible next step, and an honest limit. A real anonymized account requires
+a supplied source or genuine listener submission; preserve its meaning and attribution
+and omit identifying details. If no account exists, create an explicitly hypothetical
+example introduced naturally with "Imagine..." or "Say you're...". Never say "a listener
+wrote in", "someone told me" or imply an actual outcome for an invented scenario.
+No name is needed. Do not manufacture quotes, measured savings or success stories.
+Alex and Rufus react to that person's problem and Jamie's proposed use, with affection,
+a substantive challenge and room for her to answer or tease back.
+Jamie introduces one actual tool
 or research application from the verified stories: what problem it addresses, who
 could use it, and a concrete first step or clearly hypothetical workflow. Alex asks
 the practical question an ordinary listener would ask. Rufus tests one specific
