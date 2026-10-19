@@ -27,18 +27,18 @@ TIER3_PUBLISHERS = {
 TIER2_PUBLISHERS = {
     "the verge", "wired", "ars technica", "techcrunch", "axios",
     "cnbc", "fortune", "the information", "semianalysis",
-    "404 media", "platformer", "mit technology review",
+    "404 media", "platformer", "mit technology review", "techradar",
 }
 TIER3_DOMAINS = {
     "reuters.com", "apnews.com", "bloomberg.com", "ft.com", "wsj.com",
     "nytimes.com", "washingtonpost.com", "openai.com", "anthropic.com",
     "google.com", "blog.google", "deepmind.google", "microsoft.com", "nvidia.com",
-    "meta.com", "apple.com", "amazon.com", "github.com", "cursor.com",
+    "meta.com", "meta.ai", "apple.com", "amazon.com", "github.com", "cursor.com",
     "mit.edu", "stanford.edu", "nasa.gov", "nih.gov", "nsf.gov",
 }
 TIER2_DOMAINS = {
     "theverge.com", "wired.com", "arstechnica.com", "techcrunch.com",
-    "axios.com", "cnbc.com", "fortune.com", "theinformation.com",
+    "techradar.com", "axios.com", "cnbc.com", "fortune.com", "theinformation.com",
     "technologyreview.com", "bbc.com", "bbc.co.uk", "theguardian.com",
     "nature.com", "science.org", "newscientist.com", "scientificamerican.com",
     "spectrum.ieee.org", "statnews.com", "404media.co", "platformer.news",
@@ -237,6 +237,7 @@ Return STRICT JSON only:
       "data_points": ["exact number/date/benchmark only when the source gives it"],
       "limitations_or_qualifiers": ["privacy, availability, geography, access, or safety qualifier"],
       "why_it_matters": "one clearly labeled analytical sentence",
+      "editorial_scores": {{"human_consequence": 0, "novelty": 0, "explanatory_value": 0, "evidence_depth": 0}},
       "editorial_case": {{
         "new_development": "what changed within this reporting window",
         "affected_listener": "who is affected and how, without invented reach",
@@ -252,6 +253,13 @@ Return STRICT JSON only:
 
 Return {candidate_count} ranked candidates so validation can retain the best five.
 Rules:
+- Score each editorial_scores dimension from 0 to 5 with conservative editorial judgment.
+  These are comparative opinions, not measured audience outcomes. Evidence depth rewards
+  concrete supported detail; money raised and company fame alone earn no points.
+- Before ranking, explicitly search official OpenAI, Anthropic, Google/DeepMind,
+  Microsoft, Meta, NVIDIA and Apple releases plus TechRadar and independent reporting.
+  A model launch must explain actual access and a useful change, not just benchmarks.
+  Do not miss a documented useful release because funding or lawsuits appeared first.
 - Rank by the significance of the NEW development, the consequence for people,
   evidence strength and practical or explanatory value. Publisher prestige is a
   credibility signal, never the news event or sufficient reason to lead.
@@ -370,6 +378,11 @@ def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str
             if key in {"new_development", "affected_listener", "why_today", "distinct_question",
                        "new_since_prior_coverage", "practical_payoff"} and isinstance(value, str)
         },
+        "editorial_scores": {
+            key: value for key, value in (raw.get("editorial_scores") or {}).items()
+            if key in {"human_consequence", "novelty", "explanatory_value", "evidence_depth"}
+            and type(value) in (int, float) and 0 <= value <= 5
+        } if isinstance(raw.get("editorial_scores"), dict) else {},
         "story_age_hours": round(max(0.0, age_hours), 2),
         "source_tier": _source_tier(publisher, source_url),
         "grounded": True,

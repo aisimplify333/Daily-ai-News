@@ -6,7 +6,7 @@ def topic_family(story):
     # Classify the actual event headline, not incidental risk words in the summary.
     text = str(story.get("headline") or story.get("title") or "").lower()
     groups = (
-        ("governance", r"\bfcc\b|robocall|\bban\b|lawsuit|antitrust|security council|\bun\b|regulat|legislat|treaty|summit|china talks|ai czar|ai force|diploma|incident alert|governance|safety pact|task force|reporting|policymaker|government|city council|dangers|oversight|subpoena|safety concern"),
+        ("governance", r"\bfcc\b|robocall|\bban\b|lawsuit|\bsue[sd]?\b|external evaluation|employee-level access|antitrust|security council|\bun\b|regulat|legislat|treaty|summit|china talks|ai czar|ai force|diploma|incident alert|governance|safety pact|task force|reporting|policymaker|government|city council|dangers|oversight|subpoena|safety concern"),
         ("science_access", r"medical|clinical|patients?|restore speech|researchers? use|hospital|disabil|accessib|scient|research atlas|genome|protein|education|school|teacher|blind|deaf"),
         ("infrastructure", r"chip|gpu|data cent|power|energy|compute|semiconductor"),
         ("markets", r"funding|raises|raised|earnings|acqui|merger|investment|billion euros|stock"),
@@ -29,7 +29,7 @@ def listener_frame(story):
     risk_angle = re.search(
         r"false (?:homicide|murder|police|crime)|can't reliably|cannot reliably|cutting off|emergency brake|kill.switch|control risks|public fear|worried|worries|debt|false front|deceptive|abuse|blocked|\bfcc\b|political robocall|rogue|unauthori[sz]ed|unapproved|security|cyber|breach|hacks?|"
         r"regulat|oversight|warnings?|dangers?|liability|surveillance|"
-        r"safety|compliance|fraud|lawsuit|antitrust|ban\b", headline)
+        r"safety|compliance|fraud|lawsuit|\bsue[sd]?\b|external evaluation|employee-level access|antitrust|ban\b", headline)
     if risk_angle:
         return "accountability_risk"
     family = topic_family(story)
@@ -42,14 +42,29 @@ def concentrated(stories):
 
 
 def balanced_story_order(stories):
-    """Keep the lead; diversify nearby ranked, comparably sourced alternatives.
+    """Compare fully scored trusted leads; diversify comparably sourced alternatives.
 
     Keep all records. Unknown subjects get no novelty bonus. Never replace a
     trusted story with an untrusted one just to obtain variety.
     """
     if not stories:
         return []
-    chosen, remaining = [dict(stories[0])], [dict(s) for s in stories[1:]]
+    candidates = [dict(s) for s in stories]
+    fields = ("human_consequence", "novelty", "explanatory_value", "evidence_depth")
+    def lead_score(row):
+        scores = row.get("editorial_scores") or {}
+        if not isinstance(scores, dict) or not all(
+            type(scores.get(k)) in (int, float) and 0 <= scores[k] <= 5 for k in fields
+        ):
+            return None
+        return sum(scores[k] * weight for k, weight in zip(fields, (3, 2, 2, 3)))
+    trusted = [i for i, row in enumerate(candidates) if int(row.get("source_tier", 2)) >= 2]
+    # Only compare complete scorecards; missing data must not become a zero score.
+    lead = 0
+    if trusted and all(lead_score(candidates[i]) is not None for i in trusted):
+        lead = max(trusted, key=lambda i: lead_score(candidates[i]))
+    chosen = [candidates.pop(lead)]
+    remaining = candidates
     while remaining and len(chosen) < 3:
         seen = {listener_frame(s) for s in chosen}
         def penalty(pair):

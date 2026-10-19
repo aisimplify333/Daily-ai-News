@@ -49,3 +49,9 @@ def test_signature_approval_hash_and_audit(tmp_path):
     clip.write_bytes(b'bad')
     audit = {}; assert reviewed_signature(tmp_path, audit) is None
     assert not audit['applied']
+
+
+def test_oct15_imagined_tech_company_matches_existing_office_bed():
+    assert choose_bed("Picture this: you're a legal strategist at a large tech company in New York.") == 'office'
+    assert choose_bed('A large tech company announced results.') is None
+    assert choose_bed('Picture the global desk.') is None

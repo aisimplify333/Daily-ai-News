@@ -101,6 +101,10 @@ def demonstrate(assets):
             if mix_reviewed_bed(raw,mixed,row['text'],audit=audit):
                 clip=AudioSegment.from_file(mixed)
             cues.append({'label':'atmosphere_audit','details':audit,'start':len(output)/1000})
+        if row['text'] == 'Welcome to The AI Edge.' and 'welcome_music' in assets:
+            music = AudioSegment.from_file(ROOT/assets['welcome_music']['file'])[:len(clip)]
+            music = level(music, min(-34, clip.dBFS-20)).fade_out(min(800,len(music)))
+            clip = clip.overlay(music)
         append(clip,row['speaker']+': '+row['text'])
         append(AudioSegment.silent(duration=110),'breath')
     for row in rows:
@@ -139,11 +143,11 @@ def demonstrate(assets):
 def review(demo, assets):
     from google import genai
     from google.genai import types
-    prompt='''Listen to this sound-design demonstration and the two isolated internal cues. This is an edited
+    prompt='''Listen to this sound-design demonstration and all isolated candidate assets, including music if present. This is an edited
 remix of October 13 cast audio, not new news. Evaluate AUDIO, not the brief. Return JSON:
 {"audio_evaluated":true,"pass":true,"observations":[{"seconds":0,"description":"specific audible observation"}],
 "defects":[],"rufus_distinctive":true,"family_cohesive":true,"speech_clear":true}.
-Pass only if speech remains clear, cue entrances/exits are clean, the internal cues fit alongside the preserved opening and closing, Rufus's cue is distinguishable from the ordinary transition, and
+Pass only if speech remains clear, cue entrances/exits are clean, the internal cues fit alongside the preserved opening and closing, Rufus's cue is distinguishable from the ordinary transition and is not a horn, brass fanfare or alarm. Any welcome music must be sparse, instrumental, unobtrusive and free of vocals. Require all these conditions, and
 there is no intelligible voice in the instrumental cues, harsh spike, jarring edit,
 masked syllable or obvious audio glitch. Identify concrete defects if any. Do not
 claim human review, audience recognition, million-dollar quality or invent scores.

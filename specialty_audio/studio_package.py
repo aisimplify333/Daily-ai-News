@@ -8,6 +8,11 @@ ROOT = Path(__file__).parent/'studio'
 
 
 def load_package(root=None):
+    if root is None:
+        candidate = ROOT.parent/'studio_v2'
+        clips, audit = load_package(candidate)
+        if clips:
+            return clips, audit
     root = Path(root) if root else ROOT
     try:
         manifest = json.loads((root/'manifest.json').read_text())

@@ -6077,7 +6077,7 @@ def produce_episode() -> None:
     from rufus_audio import entrance_due, prepare_entrance
     rufus_entrance_played = False
     rufus_atmosphere_played = False
-    from specialty_audio.mixer import mix_reviewed_bed
+    from specialty_audio.mixer import mix_reviewed_bed, mix_welcome_music
     for render_index, (speaker, text) in enumerate(render_items):
         if speaker == "MUSIC":
             if not intro_done:
@@ -6220,6 +6220,14 @@ def produce_episode() -> None:
                 pending_intro_bed = False
                 pending_segment_bed = False
 
+            if pending_intro_bed and not sponsor_chunk:
+                welcome_audit = {}
+                welcome_mix = mix_welcome_music(final_voice_path,
+                    run_tmp / f"welcome_music_{seg_idx}.mp3", audit=welcome_audit)
+                sound_design_attempts.append(dict(welcome_audit, speech_chunk=seg_idx))
+                if welcome_mix is not None:
+                    final_voice_path = welcome_mix
+                    pending_intro_bed = False
             speech_start_index = len(concat_files)
             if pending_intro_bed and intro_asset is not None:
                 pending_intro_bed = False

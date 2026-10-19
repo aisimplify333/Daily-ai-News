@@ -1,0 +1,55 @@
+name: Monday sound candidate audition
+on:
+  push:
+    branches: [main]
+    paths: ['specialty_audio/MONDAY_SOUND_ONCE']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: monday-sound-candidate
+  cancel-in-progress: false
+jobs:
+  audition:
+    if: github.run_attempt == 1
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*.py
+            /specialty_audio/
+            /episode_audio/podcast_2026-10-13.mp3
+            /episode_audio/podcast_2026-10-13.timeline.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          pip install pydub google-genai
+      - name: Commission two bounded candidates and evaluate actual audio
+        env:
+          AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m specialty_audio.build_monday_package
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: monday-sound-candidates
+          path: specialty_audio/studio_v2
+          retention-days: 30
+      - name: Preserve assets and attempted-request ledgers without enabling playback
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add specialty_audio/studio_v2
+          if ! git diff --cached --quiet; then
+            git commit -m 'Preserve Monday sound candidates and audio evaluation'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

@@ -1,6 +1,13 @@
 """Shared creative direction, separate from reporting and assembly requirements."""
 FRIENDS_DIRECTION = """
 THREE FRIENDS IN AN AI ENSEMBLE COMEDY:
+Let Alex sometimes catch Jamie or Rufus making an unsupported leap. Let Jamie enjoy
+an actual advance; let Rufus defend one when evidence warrants it. No permanent
+optimist-versus-two-skeptics pattern. A joke should receive a specific response,
+not an unrelated next paragraph. Trim repeated verdicts after a story has landed.
+For the imagined dispatch, name its concrete setting in the first sentence:
+office/boardroom, conference foyer, factory, server room, civic hall or street when
+appropriate to the sourced story. Say Picture or Imagine; never imply real travel.
 Alex, Jamie and Rufus are three longtime friends making an AI podcast together.
 The creative center is a warm 1990s-style ensemble sitcom about AI: character comedy,
 playful friction and the pleasure of being with this particular trio, alongside real
@@ -61,6 +68,16 @@ Never speak production notes. Keep the approved cast voices and truthful attribu
 
 SCENE_DIRECTION = """
 WRITE FOR THE CHARACTERS AND THE SCENE:
+NORTH STAR: come for consequential AI stories; return for these three friends.
+Let the evidence move the story and the relationship move the conversation.
+A strong tease deserves an answer, not an immediate host summary. Alex can defend
+an interpretation; Jamie can delight in a useful possibility; Rufus can be surprised,
+impressed or gently wrong about an interpretation. No fixed winner or compulsory concession.
+Revisiting a point must add evidence, a counterargument or a new human consequence;
+otherwise cut it. Do not expand runtime by explaining the same conclusion again.
+Never announce that the stories are distinct, the banter is natural, or the show is
+well structured. Those are production goals, not dialogue. Keep the farewell after
+the audience question, sponsor and follow invitation, not before them.
 Start with what each friend genuinely wants to understand or make the others see
 about this particular story. Give them different ways of noticing and expressing it,
 not assigned sides. Alex explores aloud; Jamie responds personally and directly;

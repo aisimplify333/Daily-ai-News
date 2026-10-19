@@ -58,6 +58,7 @@ from __future__ import annotations
 
 import datetime as _dt
 import json
+import math
 import os
 import re
 from pathlib import Path
@@ -1131,6 +1132,12 @@ by supplied evidence. Never default to Alex conceding or rotate a designated los
 Use prior positions to avoid repeating yesterday's argument and outcome mechanically.
 
 TITLE CONTRACT:
+- Reject funding-first titles like 'New $29 Million Funding for Agentic Data Science'.
+  Put the sourced human question first; retain a concrete lead identifier naturally.
+  Avoid generic binary endings such as 'Efficiency or Enterprise Risk?'.
+  Ask what a stranger would stop scrolling to understand, without hype or false certainty.
+  The final answer must name a useful finding, limit or decision: never 'we will know
+  more when we know more', 'both sides have a point', or a repeated recap.
 - ATTENTION WITH TRUST: Write for an AI-curious commuter, colleague or family member,
   not a policy filing. Put the concrete development, recognizable actor or personal
   stake in the first few words. Avoid administrative noun stacks such as 'House Data
@@ -1147,6 +1154,11 @@ TITLE CONTRACT:
   explains them. Reject 'AI Policy Shift: What Should Users Watch?' packaging.
   Never invent urgency, market causation or financial losses to sell a title.
 - Sell one specific, evidence-backed listener payoff, not a corporate announcement.
+- A listener unfamiliar with this story should understand the tension immediately.
+  Prefer concrete actors, actions and consequences over publisher-led 'X reports' copy.
+  Make the three candidates different ideas, not synonyms. Avoid jargon and empty alarm.
+  The cold open should dramatize the same sourced question in a short cast exchange;
+  establish the news early and pay off the promise within the episode.
 - Consider a practical decision, a consequential tradeoff, and a useful explanation.
   Return three candidates and select one supported published_title.
 - Name the lead entity and make clear what the listener will understand, decide,
@@ -2912,7 +2924,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         if not recovery and os.getenv("ENABLE_DIALOGUE_EDITOR", "true").lower() == "true":
             from dialogue_editor import edit_story_scenes
             editor_model = os.getenv("DIALOGUE_EDITOR_MODEL", "claude-sonnet-4-6")
-            def request_scene(segment, scene):
+            def request_scene(segment, scene, rejected=None, failure=None):
                 return _anthropic_text(
                     g, "Revise ONLY the dialogue below. Return speaker lines, no headers. "
                     "Keep 85-112% of its word count; cut redundant exposition, preserve live exchanges. Preserve every factual qualification, "
@@ -2930,12 +2942,20 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                     + "\nCHARACTER AND SCENE PLAN (planning, not evidence):\n"
                     + json.dumps(_scene_plan(board, segment, stories[segment-2]), ensure_ascii=False)
                     + "\nSOURCE FOR THIS STORY:\n" + _story_lines(stories[segment-2:segment-1])
+                    + ("\nCORRECTIVE RETRY: the previous candidate was rejected for " + failure
+                       + ". Correct that specific defect while keeping its useful exchanges. "
+                       "Use the ORIGINAL below as factual authority. Preserve its numerical tokens, "
+                       "qualifications, sponsors and navigation. Return only corrected speaker lines. "
+                       "Required word count: " + str(math.ceil(len(scene.split()) * .85))
+                       + " to " + str(int(len(scene.split()) * 1.12))
+                       + " words.\nREJECTED CANDIDATE:\n" + rejected if failure else "")
                     + "\nEXACT SCENE TO REVISE:\n" + scene,
                     model=editor_model, max_tokens=3600)
             script, assessment, editor_report = edit_story_scenes(
                 script, assessment, request_scene=request_scene, normalize=stabilize,
                 assess=lambda candidate: _assess(candidate, stories, board, fuel),
                 runtime_distance=_runtime_distance, allow_runtime_repair=True,
+                repair_scene=request_scene,
             )
             editor_report["model"] = editor_model
             try:

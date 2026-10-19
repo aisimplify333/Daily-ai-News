@@ -8,7 +8,7 @@ from pathlib import Path
 def choose_bed(text):
     if not re.search(r'\b(?:picture|imagine)\b', text, re.I):
         return None
-    for name, pattern in [('office', r'\b(?:office|boardroom|conference room|software company|developer team)\b'),
+    for name, pattern in [('office', r'\b(?:office|boardroom|risk committee meeting|board meeting|conference room|software company|(?:large )?tech company|developer team)\b'),
                           ('conference', r'\b(?:conference|convention)\b'),
                           ('factory', r'factory|manufacturing floor'),
                           ('server_room', r'server room|data cent'),
@@ -81,5 +81,39 @@ def reviewed_signature(root=None, audit=None):
             audit.update(applied=True, reason="signature_loaded", asset=row['file'],
                          sha256=row['sha256'], provider="elevenlabs", duration_seconds=len(clip)/1000)
         return clip.fade_in(20).fade_out(120)
+    except Exception:
+        return None
+
+
+def mix_welcome_music(voice_path, destination, root=None, audit=None):
+    """Only the caller's welcome slot; never an automatic bed under debate."""
+    from pydub import AudioSegment
+    root = Path(root) if root else Path(__file__).parent/'studio_v2'
+    if audit is not None:
+        audit.update(applied=False, reason='welcome_music_unavailable')
+    try:
+        manifest = json.loads((root/'manifest.json').read_text())
+        if manifest.get('enabled_in_daily') is not True or manifest.get('candidate_review_passed') is not True:
+            return None
+        row = manifest['assets']['welcome_music']
+        if Path(row['file']).name != row['file']:
+            return None
+        path = root/row['file']
+        if hashlib.sha256(path.read_bytes()).hexdigest() != row['sha256']:
+            return None
+        voice = AudioSegment.from_file(voice_path)
+        bed = AudioSegment.from_file(path)[:min(7200,len(voice))]
+        if not voice.rms or not bed.rms:
+            return None
+        bed = bed.apply_gain(min(-34,voice.dBFS-20)-bed.dBFS).fade_in(120).fade_out(min(1000,len(bed)))
+        mixed=voice.overlay(bed)
+        if mixed.max_dBFS > -1:
+            mixed=mixed.apply_gain(-1-mixed.max_dBFS)
+        mixed.export(destination,format='mp3',bitrate='192k').close()
+        if audit is not None:
+            audit.update(applied=True,asset=row['file'],provider='elevenlabs',
+                         sha256=row['sha256'],duration_seconds=len(bed)/1000,
+                         bed_dbfs=round(bed.dBFS,2))
+        return Path(destination)
     except Exception:
         return None
