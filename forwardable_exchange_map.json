@@ -3,12 +3,12 @@
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "Is the product the agent, or the power to decide what the agent is allowed to do?"
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?"
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: who can approve, access, trigger, delete, escalate, or spend when an AI agent starts acting."
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk."
     },
     {
       "type": "jamie_human_line",
@@ -23,7 +23,7 @@
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like the remote control for what an AI agent is allowed to touch, approve, buy, or break."
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens."
     },
     {
       "type": "operator_lesson",
@@ -33,65 +33,65 @@
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether permission layer sounds clever. It is who gets caught when it becomes real."
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real."
     }
   ],
   "matches": [
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "Is the product the agent, or the power to decide what the agent is allowed to do?",
-      "matched_line": "Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.",
-      "match_score": 0.61,
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
+      "matched_line": "I'm Alex. With me are Jamie and Rufus. Today: AI agents getting accounts banned, a genuinely exciting materials science breakthrough, and Anthropic's new public benefit fund. What does any of it actually mean? Let's find out.",
+      "match_score": 0.5,
       "forwardable": true
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: who can approve, access, trigger, delete, escalate, or spend when an AI agent starts acting.",
-      "matched_line": "Honest answer: right now, it's a credible efficiency bet with an unverified efficiency claim. The category is real. Autonomous agents handling routine data prep and analysis — that's a legitimate thing software can do. The specific seventy-five percent figure is vendor-provided and hasn't been independently tested. So the risk is real too —",
-      "match_score": 0.5,
-      "forwardable": true
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
+      "matched_line": "If we ever ask who's responsible when an AI agent makes a significant error at work — today's story is a live version of that question with no answer attached.",
+      "match_score": 0.44,
+      "forwardable": false
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "Honest answer: right now, it's a credible efficiency bet with an unverified efficiency claim. The category is real. Autonomous agents handling routine data prep and analysis — that's a legitimate thing software can do. The specific seventy-five percent figure is vendor-provided and hasn't been independently tested. So the risk is real too —",
-      "match_score": 0.49,
-      "forwardable": true
+      "matched_line": "It means the platform's security system does not care about your intentions. If your agent is making requests in bursts at speeds no human could produce, you look like a bot attack. Because you are, technically, producing bot-like traffic.",
+      "match_score": 0.45,
+      "forwardable": false
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "Picture the room where this lands financially. Not a courtroom — a risk committee meeting. Somewhere in San Francisco, possibly with a very expensive whiteboard. The lawsuits were filed October fourteenth, and they immediately create what corporate lawyers call a contingent liability — money you might owe —",
-      "match_score": 0.47,
-      "forwardable": false
+      "matched_line": "Gladly. It's structured as a wholly-owned LLC — limited liability company. Not a foundation, not a 501(c)(3) charity. Wholly owned means Anthropic controls it. The equity can't be used for lobbying or political contributions — that's explicitly prohibited. And the whole thing is pending stockholder approval.",
+      "match_score": 0.48,
+      "forwardable": true
     },
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like the remote control for what an AI agent is allowed to touch, approve, buy, or break.",
-      "matched_line": "Honest answer: right now, it's a credible efficiency bet with an unverified efficiency claim. The category is real. Autonomous agents handling routine data prep and analysis — that's a legitimate thing software can do. The specific seventy-five percent figure is vendor-provided and hasn't been independently tested. So the risk is real too —",
-      "match_score": 0.5,
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
+      "matched_line": "I did. Because it's the kind of thing AI is genuinely well-suited to that most people never hear about. So: multimodal means the system works with more than one type of input at once. Most AI models we talk about are text-in, text-out.",
+      "match_score": 0.48,
       "forwardable": true
     },
     {
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "Okay. The question we opened with: RapidCanvas, twenty-nine million dollars, agentic data science — efficiency or enterprise risk?",
+      "matched_line": "I'm Alex. With me are Jamie and Rufus. Today: AI agents getting accounts banned, a genuinely exciting materials science breakthrough, and Anthropic's new public benefit fund. What does any of it actually mean? Let's find out.",
       "match_score": 0.43,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether permission layer sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "Eight states filed lawsuits against OpenAI yesterday. So \"who's checking the output\" is no longer just a philosophical question.",
-      "match_score": 0.42,
-      "forwardable": false
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
+      "matched_line": "It is. That's not in dispute. The question is whether \"working correctly\" is sufficient when you can't distinguish between a legitimate AI agent a coalition is using for monitoring, and a malicious bot designed to look identical.",
+      "match_score": 0.72,
+      "forwardable": true
     }
   ],
   "minimum_required": 4

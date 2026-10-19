@@ -3,81 +3,88 @@
   "attempts": [
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
-      "duration_seconds": 3.0
+      "duration_seconds": 3
     },
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
-      "review_basis": "automated audio review plus encoded-master measurements; not human listening",
+      "review_basis": "automated audio model plus encoded-master measurements; not human listening",
       "assets": {
         "transition": {
           "file": "transition.mp3",
           "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
-          "seconds": 3.0,
+          "seconds": 3,
           "dbfs": -21.27,
           "peak_dbfs": -3.68
         },
         "rufus": {
           "file": "rufus.mp3",
-          "sha256": "bbc21f5229f9527f8f70bd038b9093dc0524f49da221284e1afeb0352ab859b9",
-          "seconds": 3.0,
-          "dbfs": -19.3,
-          "peak_dbfs": -5.21
+          "sha256": "ffac49903e0a2ca43e3646716f5ab1d1690ba4e96b3d6457c9de7025e6723f8d",
+          "seconds": 3,
+          "dbfs": -20.45,
+          "peak_dbfs": -3.33
+        },
+        "welcome_music": {
+          "file": "welcome_music.mp3",
+          "sha256": "33a30efd319c39535138309c30e3a792c6d8be922314123c9debea8d8142a624",
+          "seconds": 15.047,
+          "dbfs": -32.38,
+          "peak_dbfs": -15.21
         }
       }
     },
     {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 51
+      "applied": true,
+      "reason": "welcome_music_unavailable",
+      "asset": "welcome_music.mp3",
+      "provider": "elevenlabs",
+      "sha256": "33a30efd319c39535138309c30e3a792c6d8be922314123c9debea8d8142a624",
+      "duration_seconds": 2.07,
+      "bed_dbfs": -36.59,
+      "speech_chunk": 4
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 53
+      "speech_chunk": 55
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 56
+      "speech_chunk": 57
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 59
     },
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
       "asset": "rufus.mp3",
-      "sha256": "bbc21f5229f9527f8f70bd038b9093dc0524f49da221284e1afeb0352ab859b9",
-      "duration_seconds": 3.0
+      "sha256": "ffac49903e0a2ca43e3646716f5ab1d1690ba4e96b3d6457c9de7025e6723f8d",
+      "duration_seconds": 3
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 58
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 60
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 62
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 67
+      "speech_chunk": 65
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
       "speech_chunk": 69
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 72
     },
     {
       "applied": false,
@@ -92,63 +99,88 @@
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 80
+      "speech_chunk": 82
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 84
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 86
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 90
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 92
+    },
+    {
+      "applied": false,
+      "reason": "no_approved_matching_asset",
+      "speech_chunk": 95
     }
   ],
   "events": [
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
-      "duration_seconds": 3.0,
-      "start": 62.399,
-      "end": 65.399,
+      "duration_seconds": 3,
+      "start": 63.684,
+      "end": 66.684,
       "kind": "transition"
     },
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
-      "duration_seconds": 3.0,
-      "start": 368.353,
-      "end": 371.353,
+      "duration_seconds": 3,
+      "start": 364.893,
+      "end": 367.893,
       "kind": "transition"
     },
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
       "asset": "rufus.mp3",
-      "sha256": "bbc21f5229f9527f8f70bd038b9093dc0524f49da221284e1afeb0352ab859b9",
-      "duration_seconds": 3.0,
-      "start": 472.037,
-      "end": 475.037,
+      "sha256": "ffac49903e0a2ca43e3646716f5ab1d1690ba4e96b3d6457c9de7025e6723f8d",
+      "duration_seconds": 3,
+      "start": 502.454,
+      "end": 505.454,
       "kind": "rufus_entrance"
     },
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
-      "duration_seconds": 3.0,
-      "start": 656.501,
-      "end": 659.501,
+      "duration_seconds": 3,
+      "start": 777.689,
+      "end": 780.688,
       "kind": "transition"
     },
     {
       "applied": true,
-      "package": "ai-edge-studio-v1",
+      "package": "ai-edge-studio-v2",
       "provider": "elevenlabs",
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
-      "duration_seconds": 3.0,
-      "start": 978.922,
-      "end": 981.922,
+      "duration_seconds": 3,
+      "start": 1038.992,
+      "end": 1041.992,
       "kind": "transition"
     }
   ]
