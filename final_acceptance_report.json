@@ -5,285 +5,451 @@
     {
       "pass": false,
       "failures": [
-        "single_endings: Story 1 fails the single-ending test. At line 52 Jamie delivers what reads as a closing synthesis ('Those two curves are heading straight for each other'). Alex then relaunches at line 53 with 'What does this mean practically for organizations running monitoring agents right now?' \u2014 a fresh discussion-opener \u2014 and lines 54\u201355 deliver near-verbatim repeats of lines 36 and 55's earlier practical takeaway. This is a second discussion restarting after a natural sign-off point, not a brief forward look. The closing block (lines 157\u2013160: listener question, sponsor credit, house tag, follow CTA) is correctly structured as one unified block and does not fail. Story 2 and Story 3 each have single clean endings. The failure is isolated to Story 1's duplicated practical-takeaway sequence."
+        "single_endings: Story endings for stories 1, 2 and 3 are clean with no restarted analysis after a sign-off. The closing block is the problem. Lines 128\u2013129 ('That's October 20th. We'll be back tomorrow. / See you then.') constitute a false ending: a complete sign-off from both Jamie and Alex before the episode has delivered its listener question, sponsor credit, house tag or follow CTA. The approved closing block then begins fresh at line 130 with the listener question, followed by the sponsor credit (line 131), the house tag (line 132) and the follow CTA (line 133). The rubric specifies that an early thanks-for-listening before the final closing block is a false ending; lines 128\u2013129 are exactly that. The approved closing block itself is intact and correctly structured, but the false ending before it causes this check to fail."
       ],
       "checks": {
         "responsive_banter": {
           "pass": true,
           "evidence": [
-            "RUFUS: It was.",
-            "ALEX: So \"bot\" now just means anything that moves faster than a person.",
-            "RUFUS: It's a behavioral category, not a moral one.",
-            "JAMIE: And that's the part that should bother people beyond the tech explanation.",
-            "ALEX: You think they're using the AI explanation as cover?",
-            "JAMIE: I think \"a Claude AI tool did it\" is a cleaner answer than \"our systems suppressed a political group during an election.\"",
-            "RUFUS: Meta says they don't know. Or they haven't said what they know.",
-            "JAMIE: Those are different things.",
-            "RUFUS: Yes they are.",
-            "RUFUS: It's a bit like teaching someone to recognize wine by pairing the taste with the vocabulary, rather than teaching each separately.",
-            "JAMIE: That's actually a good analogy.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "JAMIE: As is \"before the governance is published\" as a reason to dismiss it entirely.",
-            "ALEX: Is there a version where you're both right?",
-            "JAMIE: Ask me again once the governance is published.",
-            "RUFUS: I'll take that as a provisional yes.",
-            "JAMIE: Don't.",
-            "RUFUS: I'll take the partial credit."
+            "JAMIE: And it covers third-party services built on top of DeepSeek. Which is the part that actually has teeth.",
+            "ALEX: Right, because I think most people hear \"ban DeepSeek\" and picture someone deleting an app.",
+            "JAMIE: It's so much messier than that.",
+            "ALEX: Does that logic hold up?",
+            "RUFUS: The threat model is coherent. Whether it describes what actually happens in practice is a different question",
+            "JAMIE: Which is where I want to push back. Because DeepSeek's weights are already out there.",
+            "RUFUS: \u2014 is optimistic. / JAMIE: Generously, yes.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows.",
+            "JAMIE: Right. I may have gotten ahead of myself. / RUFUS: Only slightly.",
+            "JAMIE: So the answer to \"AI agents might do something dangerous\" is \"more AI agents.\" / ALEX: Which sounds ridiculous until you think about the alternative.",
+            "ALEX: Who watches the Guardian Agents?",
+            "JAMIE: Which doesn't really answer it. The monitoring layer is still built by Microsoft and configured by the enterprise.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top. / JAMIE: Perfect. Progress.",
+            "RUFUS: The comparison I keep coming back to is any project management tool that promised to eliminate handoff failures.",
+            "JAMIE: Which is fair. But \"earlier visibility on a cascading failure\" in a drug trial \u2014 where every delay costs millions and potentially affects patient access \u2014 that's not the same as a startup claiming their tool will fix your sprint planning.",
+            "RUFUS: I'll allow it."
           ],
           "evidence_line_numbers": [
-            4,
-            17,
+            12,
+            13,
+            14,
             18,
             19,
-            28,
-            29,
-            32,
-            33,
-            34,
-            66,
-            67,
-            68,
-            69,
-            70,
+            20,
+            23,
+            24,
+            43,
+            44,
+            45,
+            46,
+            83,
+            84,
+            81,
             97,
             98,
-            138,
-            139,
-            140,
-            141,
-            142,
-            149
+            99,
+            117,
+            118,
+            121
           ],
-          "reason": "The overall pattern is genuinely responsive. Alex pushes back and asks real questions rather than moderating (lines 22, 28, 37, 40, 81, 84, 120, 134); Jamie and Rufus react to each other's specific framings rather than queuing monologues. The Seg 2 exchange on Meta's framing (lines 28\u201334) is a real dispute with unresolved tension, not a false reconciliation. Rufus's one-word completion of Jamie's sentence (line 4) and the wine analogy exchange (lines 66\u201370) show genuine listening. The Seg 4 Jamie/Rufus dispute over the LLC structure (lines 129\u2013149) develops across multiple turns with actual pushback on specific wording ('if the governance holds it in place' / 'before the governance is published'). Weak spot: lines 53\u201355 near-duplicate lines 36 and 55, suggesting a seam where the script repeats the practical takeaway verbatim; that stretch is interchangeable summary rather than continued exchange. The pattern overall sustains engagement well enough to pass, with Alex a genuine participant throughout.",
+          "reason": "The episode sustains genuine three-way responsiveness across all segments. Alex asks pointed questions rather than merely moderating (lines 18, 21, 50, 81, 84, 86, 103\u2013112); Jamie challenges Rufus's framing and corrects herself when pressed (lines 20, 43, 45); Rufus volleys back with precision rather than agreement (lines 23, 44, 46, 98). Story 2 has a real concession-and-recovery exchange (Jamie overreaches, Rufus gently corrects, Jamie accepts). Story 3 produces a running argument about whether more agents solve the agent problem that is never fully resolved and lands on a dry punchline (lines 83\u201399). Story 4's extended Orchestra re-examination (lines 103\u2013121) is a shared working-through rather than alternating summary, with Rufus providing the limiting check and Jamie the pushback on stakes. The pattern is not uniform \u2014 the story-3 Rufus setup (lines 40\u201342) is monologue before Jamie re-enters \u2014 but connection is restored quickly and sustained. No long stretches of interchangeable summary are present.",
           "story_notes": {
-            "segment_2": "Challenge: Alex at line 22 argues Meta's system 'doing its job correctly' is defensible. Rufus responds specifically at line 23 that 'working correctly' is insufficient when intent is invisible to the classifier \u2014 Jamie extends this at line 24 with the packet metaphor. The dispute then develops through lines 25\u201334 into a genuine unresolved disagreement about Meta's framing versus accurate reporting. The exchange at lines 30\u201334 ('The missing detail is the most important one\u2026 Meta says they don't know. Or they haven't said what they know. / Those are different things. / Yes they are.') is a concrete developed moment. Fizzles: lines 35\u201336 and 53\u201355 repeat nearly identical practical takeaway language, a long stretch of interchangeable summary with no new friction.",
-            "segment_3": "Challenge: Alex at line 81 raises whether the model 'actually reasons about properties' or is 'a very sophisticated matching engine.' Jamie answers substantively at line 82; Rufus pivots to practical consequences at line 83; Alex pushes back that confident wrong outputs matter (line 84); Jamie concedes the validation point (line 85); Rufus returns to the prospector metaphor (line 86). This is a genuine developing exchange. The wine analogy (lines 66\u201370) produces real playful interaction. Lines 89\u2013106 are denser with shared discovery and light teasing ('She did. We all saw it.' / 'I contain multitudes, Rufus.') which sustains warmth. No long interchangeable stretch in this segment.",
-            "segment_4": "Challenge: Jamie's 'corporate conscience tax' framing (line 129) is a direct provocation; Rufus concedes it as fair but incomplete (line 131); Jamie sharpens the attack (line 132); Rufus reframes what's being asked (line 133); Alex explicitly asks Rufus to 'actually defend it' (line 134). The dispute runs lines 129\u2013149 with specific wording being contested ('if the governance holds it in place' / 'before the governance is published'). The non-resolution ('Ask me again once the governance is published' / 'Don't.') is a legitimate unresolved disagreement, not a false reconciliation. Developed and sustained throughout."
+            "segment_2_story_1_deepseek": "Challenge: Jamie pushes back at line 20 \u2014 the weights are open, local runs bypass the ban's logic, the order cannot cover every quiet integration. Alex sharpens it into a direct question (line 21): 'So is this a security move or a signal?' Rufus engages both readings simultaneously (line 28) rather than choosing sides; Jamie then offers a genuine distinguishing point (line 29) on jurisdictional risk that Rufus concedes (line 30). The dispute develops over six exchanges and lands on an unresolved but well-mapped tension. No fizzle; the story closes with two concrete watch-items that follow from the argument (lines 35\u201336).",
+            "segment_3_story_2_orchestra_bio": "Rufus's scene setup (lines 40\u201342) is a sustained monologue; Jamie re-enters at line 43 with a substantive challenge: tracking dependencies is not fixing the failed batch. Rufus responds precisely (line 44), Jamie concedes the overreach (line 45), and Rufus lands a light dry deflation (line 46). Alex then drives the actual mechanism question (line 47 onward), Jamie provides the most compelling explanation (lines 48\u201351), and Rufus supplies the limiting counter (line 52). The liability question (lines 59\u201362) is raised but not resolved \u2014 a genuine open thread. The story fizzles slightly before the watch-items because neither line 63 nor 64 is clearly attributed in the script header (they appear to be Jamie and Rufus respectively), but the exchange remains distinguishable and purposeful.",
+            "segment_4_story_3_guardian_agents": "Challenge: Jamie's line 83 \u2014 'So the answer to AI agents might do something dangerous is more AI agents' \u2014 is the sharpest challenge in the episode. Alex redirects it rather than dismissing it (line 84), Jamie extends it logically (line 85), and the three build a coherent argument for automated supervision before Rufus articulates the limitation (lines 90\u201392). The liability thread (lines 96\u201399) picks up a prior episode argument and deepens it; Jamie explicitly refuses to let Microsoft's monitoring layer dissolve the question (line 97), and Rufus's dry summary (line 98) followed by Jamie's 'Perfect. Progress.' (line 99) is an earned, unresolved landing. No long stretch of interchangeable summary; the extended Orchestra re-examination (lines 103\u2013121) adds genuine new dimension rather than recapping."
           },
           "verified_evidence": [
-            "RUFUS: It was.",
-            "ALEX: So \"bot\" now just means anything that moves faster than a person.",
-            "RUFUS: It's a behavioral category, not a moral one.",
-            "JAMIE: And that's the part that should bother people beyond the tech explanation.",
-            "ALEX: You think they're using the AI explanation as cover?",
-            "JAMIE: I think \"a Claude AI tool did it\" is a cleaner answer than \"our systems suppressed a political group during an election.\"",
-            "RUFUS: Meta says they don't know. Or they haven't said what they know.",
-            "JAMIE: Those are different things.",
-            "RUFUS: Yes they are.",
-            "RUFUS: It's a bit like teaching someone to recognize wine by pairing the taste with the vocabulary, rather than teaching each separately.",
-            "JAMIE: That's actually a good analogy.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "ALEX: Is there a version where you're both right?",
-            "JAMIE: Ask me again once the governance is published.",
-            "RUFUS: I'll take that as a provisional yes.",
-            "JAMIE: Don't.",
-            "RUFUS: I'll take the partial credit.",
-            "RUFUS: It was.",
-            "ALEX: So \"bot\" now just means anything that moves faster than a person.",
-            "RUFUS: It's a behavioral category, not a moral one.",
-            "JAMIE: And that's the part that should bother people beyond the tech explanation. The account went down during active election-period protests. Ninety minutes during a get-out-the-vote push isn't nothing.",
-            "ALEX: You think they're using the AI explanation as cover?",
-            "JAMIE: I think \"a Claude AI tool did it\" is a cleaner answer than \"our systems suppressed a political group during an election.\" Whether that's intentional framing or just accurate reporting \u2014 I genuinely don't know. But they haven't given us enough to rule either out.",
-            "RUFUS: Meta says they don't know. Or they haven't said what they know.",
-            "JAMIE: Those are different things.",
-            "RUFUS: Yes they are.",
-            "RUFUS: It's a bit like teaching someone to recognize wine by pairing the taste with the vocabulary, rather than teaching each separately.",
-            "JAMIE: That's actually a good analogy.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "RUFUS: As is \"before the governance is published\" as a reason to dismiss it entirely.",
-            "ALEX: Is there a version where you're both right?",
-            "JAMIE: Ask me again once the governance is published.",
-            "RUFUS: I'll take that as a provisional yes.",
-            "JAMIE: Don't.",
-            "RUFUS: I'll take the partial credit."
+            "JAMIE: And it covers third-party services built on top of DeepSeek. Which is the part that actually has teeth.",
+            "ALEX: Right, because I think most people hear \"ban DeepSeek\" and picture someone deleting an app.",
+            "JAMIE: It's so much messier than that.",
+            "ALEX: Does that logic hold up?",
+            "RUFUS: The threat model is coherent. Whether it describes what actually happens in practice is a different question",
+            "JAMIE: Which is where I want to push back. Because DeepSeek's weights are already out there.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things.",
+            "ALEX: Who watches the Guardian Agents?",
+            "JAMIE: Which doesn't really answer it. The monitoring layer is still built by Microsoft and configured by the enterprise.",
+            "RUFUS: The comparison I keep coming back to is any project management tool that promised to eliminate handoff failures.",
+            "JAMIE: Which is fair. But \"earlier visibility on a cascading failure\" in a drug trial \u2014 where every delay costs millions and potentially affects patient access \u2014 that's not the same as a startup claiming their tool will fix your sprint planning.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: And it covers third-party services built on top of DeepSeek. Which is the part that actually has teeth.",
+            "ALEX: Right, because I think most people hear \"ban DeepSeek\" and picture someone deleting an app.",
+            "JAMIE: It's so much messier than that. DeepSeek's weights \u2014 the core of the model \u2014 are open. Developers have been building on top of them for months. So this doesn't just cover the DeepSeek chatbot. It covers anything built using DeepSeek under the hood, wherever those third-party products are running inside federal systems.",
+            "ALEX: Does that logic hold up?",
+            "RUFUS: The threat model is coherent. Whether it describes what actually happens in practice is a different question, and AP's reporting doesn't answer it. What it establishes is that the government decided the risk was real enough to act on without waiting for a specific breach.",
+            "JAMIE: Which is where I want to push back. Because DeepSeek's weights are already out there. You can run DeepSeek locally \u2014 no Chinese server involved, no data leaving your machine. The ban covers products and services, but it cannot cover every fork a developer quietly integrated six months ago.",
+            "RUFUS: \u2014 is optimistic.",
+            "JAMIE: Generously, yes.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "JAMIE: So the answer to \"AI agents might do something dangerous\" is \"more AI agents.\"",
+            "ALEX: Which sounds ridiculous until you think about the alternative.",
+            "ALEX: Who watches the Guardian Agents?",
+            "JAMIE: Which doesn't really answer it. The monitoring layer is still built by Microsoft and configured by the enterprise. The liability question doesn't disappear because you added more agents.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: The comparison I keep coming back to is any project management tool that promised to eliminate handoff failures. Most of them added visibility without changing the underlying coordination culture.",
+            "JAMIE: Which is fair. But \"earlier visibility on a cascading failure\" in a drug trial \u2014 where every delay costs millions and potentially affects patient access \u2014 that's not the same as a startup claiming their tool will fix your sprint planning.",
+            "RUFUS: I'll allow it."
           ]
         },
         "cast_warmth": {
           "pass": true,
           "evidence": [
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "RUFUS: I'll take the partial credit.",
-            "RUFUS: I find this more legible than most.",
-            "JAMIE: He's not wrong.",
-            "ALEX: I know. Deeply irritating."
+            "RUFUS: Only slightly.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "RUFUS: Both of those are real. Which is genuinely alarming.",
+            "JAMIE: Right. I may have gotten ahead of myself. / RUFUS: Only slightly."
           ],
           "evidence_line_numbers": [
+            4,
+            46,
             68,
             69,
-            70,
-            92,
-            93,
-            97,
-            98,
-            149,
-            100,
-            101,
-            102
+            99,
+            121,
+            45
           ],
-          "reason": "Affection is present without being announced. Rufus's self-deprecating 'I already was insufferable. This changes nothing' (line 70) and 'I'm sure I'll return to form shortly' (line 98) show he can laugh at his own composure; Alex and Jamie tease him warmly rather than reverently. The Seg 4 Jamie/Rufus dispute is pointed but not hostile \u2014 Rufus grants Jamie's criticism is fair (line 131) while pushing back on its completeness; Jamie's final 'Don't' (line 142) reads as playful rather than cold. 'He's not wrong. / I know. Deeply irritating.' (lines 101\u2013102) confirms the affection underneath the argument. The characters are distinguishable: Jamie passionate and willing to name a position ('corporate conscience tax'), Rufus dry and structurally precise, Alex genuinely curious and willing to push both.",
+          "reason": "Warmth is carried through texture rather than declaration. Rufus's 'Only slightly' (line 46) is a dry deflation that clearly enjoys Jamie rather than dismisses her. Jamie's Ledger tease (line 68) and Rufus's 'My warmth is very precisely rationed' (line 69) fit the established character register without breaking it. 'I'll allow it' (line 121) closes the Orchestra re-examination with the kind of mock-judicial restraint that signals affection through understatement. Rufus's opening 'Which is genuinely alarming' (line 4) is delivered as shared absurdity, not hostility. Disagreements (lines 20, 43, 97) are substantive and unresolved without any edge of dismissal. The pattern is consistent with the brief: challenge and tease while affection remains legible.",
           "verified_evidence": [
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "RUFUS: I'll take the partial credit.",
-            "RUFUS: I find this more legible than most.",
-            "JAMIE: He's not wrong.",
-            "ALEX: I know. Deeply irritating.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "RUFUS: I'll take the partial credit.",
-            "RUFUS: I find this more legible than most. The problem is specific. The method has a mechanistic explanation. The application is testable. I prefer that to announcements that an AI has become, quote, more helpful.",
-            "JAMIE: He's not wrong.",
-            "ALEX: I know. Deeply irritating. What should listeners watch for?"
+            "RUFUS: Only slightly.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "RUFUS: Both of those are real. Which is genuinely alarming.",
+            "RUFUS: Both of those are real. Which is genuinely alarming.",
+            "RUFUS: Only slightly.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: Right. I may have gotten ahead of myself."
           ]
         },
         "useful_discovery": {
           "pass": true,
           "evidence": [
-            "JAMIE: This one takes 3D atomic crystal structures and natural language descriptions and uses them together.",
-            "JAMIE: You've got massive databases of 3D crystal structures from computational chemistry. Separately, you've got decades of scientific literature describing what materials do, how they behave, what they're good for. Those two bodies of knowledge basically don't talk to each other.",
-            "JAMIE: In plain terms \u2014 you train the model on matching pairs. This structure goes with this description. That structure does not go with that description. Over time it develops a shared language between the atomic picture and the prose.",
-            "JAMIE: Identifying crystals suited for solid-state lithium-ion batteries. Solid-state batteries are the big prize in green energy storage \u2014 safer, potentially more energy-dense than the liquid electrolyte batteries in most devices right now.",
-            "JAMIE: Materials science journals. If the model is doing what's claimed, you'd expect follow-up papers reporting experimental results on specific crystal candidates. That's the signal the research is translating out of the lab."
+            "JAMIE: If Orchestra's agents can monitor those dependencies in real time and flag that a batch failure in week eleven is going to cascade into a six-month delay, that's a real intervention.",
+            "JAMIE: No. But it changes when a decision-maker finds out. Right now they might not know until week fourteen. If they know in week eleven, they might be able to source an alternative or restructure the timeline before it's too late.",
+            "ALEX: The workflow coordination problem Orchestra Bio is built around \u2014 it's not unique to drug trials. The specific thing their agents do is track dependencies across a complex, multi-year program where a failure in one workstream cascades into delays everywhere else.",
+            "JAMIE: If you move the discovery of a critical failure from week fourteen to week eleven in a billion-dollar program, that's not marginal. That's meaningful."
           ],
           "evidence_line_numbers": [
-            59,
-            61,
-            65,
-            72,
-            103
+            49,
+            51,
+            105,
+            120
           ],
-          "reason": "The MIT multimodal AI story delivers a concrete beneficial application: a model that bridges 3D crystal structural databases and scientific prose literature using contrastive learning to identify candidate materials for solid-state batteries. The explanation of contrastive learning (line 65), the specific application to solid-state battery electrolyte discovery (line 72), and the actionable listener signal of watching materials science journals for experimental follow-up (line 103) together constitute a substantive discovery that teaches the listener something they could be curious or excited about beyond any harm or compliance framing.",
+          "reason": "The Orchestra Bio discussion articulates a concrete beneficial application: an AI agent that monitors cascading dependencies in drug-development workflows and moves the discovery of a critical failure from week fourteen to week eleven, potentially allowing teams to restructure timelines or source alternatives before the delay becomes irreversible. The value is explained mechanically (lines 49\u201351, 109\u2013112) and the stakes are grounded in the source record (ten-to-fifteen-year development timelines, billion-dollar programs). Alex explicitly extends the concept beyond biopharma to general knowledge-work dependency management (lines 105\u2013107), giving non-specialist listeners a hook. Limitations are stated (lines 52\u201354, 113\u2013114), but the useful discovery exists independently of them and is not merely a fear or compliance finding.",
           "verified_evidence": [
-            "JAMIE: This one takes 3D atomic crystal structures and natural language descriptions and uses them together.",
-            "JAMIE: In plain terms \u2014 you train the model on matching pairs. This structure goes with this description. That structure does not go with that description. Over time it develops a shared language between the atomic picture and the prose.",
-            "JAMIE: Identifying crystals suited for solid-state lithium-ion batteries. Solid-state batteries are the big prize in green energy storage \u2014 safer, potentially more energy-dense than the liquid electrolyte batteries in most devices right now.",
-            "JAMIE: Materials science journals. If the model is doing what's claimed, you'd expect follow-up papers reporting experimental results on specific crystal candidates. That's the signal the research is translating out of the lab.",
-            "JAMIE: This one takes 3D atomic crystal structures and natural language descriptions and uses them together.",
-            "JAMIE: Exactly. You've got massive databases of 3D crystal structures from computational chemistry. Separately, you've got decades of scientific literature describing what materials do, how they behave, what they're good for. Those two bodies of knowledge basically don't talk to each other.",
-            "JAMIE: In plain terms \u2014 you train the model on matching pairs. This structure goes with this description. That structure does not go with that description. Over time it develops a shared language between the atomic picture and the prose.",
-            "JAMIE: Identifying crystals suited for solid-state lithium-ion batteries. Solid-state batteries are the big prize in green energy storage \u2014 safer, potentially more energy-dense than the liquid electrolyte batteries in most devices right now. Finding the right materials is a massive research bottleneck, and AI is saying \u2014",
-            "JAMIE: Materials science journals. If the model is doing what's claimed, you'd expect follow-up papers reporting experimental results on specific crystal candidates. That's the signal the research is translating out of the lab."
+            "JAMIE: If Orchestra's agents can monitor those dependencies in real time and flag that a batch failure in week eleven is going to cascade into a six-month delay, that's a real intervention.",
+            "JAMIE: No. But it changes when a decision-maker finds out. Right now they might not know until week fourteen. If they know in week eleven, they might be able to source an alternative or restructure the timeline before it's too late.",
+            "ALEX: The workflow coordination problem Orchestra Bio is built around \u2014 it's not unique to drug trials. The specific thing their agents do is track dependencies across a complex, multi-year program where a failure in one workstream cascades into delays everywhere else.",
+            "JAMIE: If you move the discovery of a critical failure from week fourteen to week eleven in a billion-dollar program, that's not marginal. That's meaningful.",
+            "JAMIE: If Orchestra's agents can monitor those dependencies in real time and flag that a batch failure in week eleven is going to cascade into a six-month delay, that's a real intervention.",
+            "JAMIE: No. But it changes when a decision-maker finds out. Right now they might not know until week fourteen. If they know in week eleven, they might be able to source an alternative or restructure the timeline before it's too late.",
+            "ALEX: The workflow coordination problem Orchestra Bio is built around \u2014 it's not unique to drug trials. The specific thing their agents do is track dependencies across a complex, multi-year program where a failure in one workstream cascades into delays everywhere else. That's a category of problem that exists in a lot of knowledge work.",
+            "JAMIE: If you move the discovery of a critical failure from week fourteen to week eleven in a billion-dollar program, that's not marginal. That's meaningful."
           ]
         },
         "rufus_scene": {
           "pass": true,
           "evidence": [
-            "ALEX: Rufus, take us on location.",
-            "RUFUS: The source reporting is from MIT, with no specific geographic location that would put me anywhere useful \u2014 so picture the global desk.",
-            "RUFUS: is that the gap between a research paper and a commercial product is still measured in years. The model is a better prospector. It narrows the field for human researchers and experimental validation to pursue. It doesn't replace the experiments.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "ALEX: One thing I'm still turning over \u2014 the model bridges 3D structure and text, but does it actually reason about properties, or is it a very sophisticated matching engine? Because those feel different to me.",
-            "JAMIE: That's a real distinction.",
-            "RUFUS: The practical question is whether it matters. If the output is a ranked list of candidates a researcher would otherwise have missed, the philosophical status of how it got there is somewhat academic.",
-            "ALEX: Until it confidently ranks a candidate that turns out to be completely wrong.",
+            "ALEX: Our second story. OpenAI announced today that it has acquired a company called Orchestra Bio. Genuinely new territory for them. Rufus, take us to the global desk.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
             "ALEX: Back to the wider story."
           ],
           "evidence_line_numbers": [
-            76,
-            77,
-            79,
-            80,
-            81,
-            82,
-            83,
-            84,
-            99
+            39,
+            43,
+            44,
+            45,
+            46,
+            47
           ],
-          "reason": "The scene opens with Alex's handoff at line 76 and closes at Alex's return line 99. Rufus's setup includes dry wit ('picture the global desk') and a useful payoff (the 'better prospector' framing, line 79). Jamie enters at line 80 with a substantive observation that extends rather than merely agrees with Rufus; Alex then challenges at line 81 with a genuine question about reasoning versus pattern matching; Rufus responds directly at line 83 with a practical reframe; Alex pushes back at line 84. This constitutes a responsive studio exchange with Jamie and Alex both engaging Rufus's specific claims during the scene boundaries. The wit is in the setup ('picture the global desk') and the response framing ('philosophical status\u2026 is somewhat academic'). Payoff is concrete: the prospector analogy clarifies what the model does and does not do.",
+          "reason": "The scene opens at Alex's handoff (line 39) and closes at Alex's 'Back to the wider story' (line 47). Within those boundaries, Jamie challenges Rufus's setup directly (line 43) \u2014 the coordination layer is not the manufacturing fix \u2014 and Rufus responds with a precise correction of Jamie's implied claim (line 44), not a deflection. Jamie concedes the overreach (line 45) and Rufus delivers a dry one-beat deflation (line 46). The wit is in Rufus's economy: 'Only slightly' does exactly the work the rubric describes. The scene's setup (lines 40\u201342) provides a concrete situation (program manager, three continents, forty studies, failed batch cascading to approval delay) with a useful payoff (coordination as the kill-point for treatments). Interaction between Jamie and Rufus occurs before Alex's return line, satisfying the requirement.",
           "verified_evidence": [
-            "ALEX: Rufus, take us on location.",
-            "RUFUS: The source reporting is from MIT, with no specific geographic location that would put me anywhere useful \u2014 so picture the global desk.",
-            "RUFUS: is that the gap between a research paper and a commercial product is still measured in years. The model is a better prospector. It narrows the field for human researchers and experimental validation to pursue. It doesn't replace the experiments.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "ALEX: One thing I'm still turning over \u2014 the model bridges 3D structure and text, but does it actually reason about properties, or is it a very sophisticated matching engine? Because those feel different to me.",
-            "JAMIE: That's a real distinction.",
-            "RUFUS: The practical question is whether it matters. If the output is a ranked list of candidates a researcher would otherwise have missed, the philosophical status of how it got there is somewhat academic.",
-            "ALEX: Until it confidently ranks a candidate that turns out to be completely wrong.",
+            "ALEX: Our second story. OpenAI announced today that it has acquired a company called Orchestra Bio. Genuinely new territory for them. Rufus, take us to the global desk.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
             "ALEX: Back to the wider story.",
-            "ALEX: Rufus, take us on location.",
-            "RUFUS: The source reporting is from MIT, with no specific geographic location that would put me anywhere useful \u2014 so picture the global desk. What I'd say from here is that New York-based venture capital has been moving steadily from pure software toward physical-world AI applications: materials science, battery tech \u2014",
-            "RUFUS: is that the gap between a research paper and a commercial product is still measured in years. The model is a better prospector. It narrows the field for human researchers and experimental validation to pursue. It doesn't replace the experiments.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "ALEX: One thing I'm still turning over \u2014 the model bridges 3D structure and text, but does it actually reason about properties, or is it a very sophisticated matching engine? Because those feel different to me.",
-            "JAMIE: That's a real distinction. Contrastive learning builds a shared representational space \u2014 the model learns that this atomic geometry tends to appear alongside descriptions of high conductivity. Whether that constitutes reasoning or extremely well-organized pattern recognition is genuinely unsettled.",
-            "RUFUS: The practical question is whether it matters. If the output is a ranked list of candidates a researcher would otherwise have missed, the philosophical status of how it got there is somewhat academic.",
-            "ALEX: Until it confidently ranks a candidate that turns out to be completely wrong.",
-            "ALEX: Back to the wider story. You said Rufus found an AI use he actually likes. Is that true?"
+            "ALEX: Our second story. OpenAI announced today that it has acquired a company called Orchestra Bio. Genuinely new territory for them. Rufus, take us to the global desk.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "ALEX: Back to the wider story. So the announcement describes a specific example \u2014 failed manufacturing batch, cascading trial delay. How does an AI agent actually intervene there?"
           ]
         },
         "single_endings": {
           "pass": false,
           "evidence": [
-            "JAMIE: And this is only going to get more common. More organizations deploying agents, platform security getting more sensitive because actual bot attacks are also getting more sophisticated. Those two curves are heading straight for each other.",
-            "ALEX: What does this mean practically for organizations running monitoring agents right now?",
-            "JAMIE: It means the platform's security system does not care about your intentions. If your agent is making requests in bursts at speeds no human could produce, you look like a bot attack. Because you are, technically, producing bot-like traffic.",
-            "RUFUS: And any account in the vicinity of that traffic bears the consequence, regardless of whether it authorised the agent.",
-            "ALEX: Today's question for you: When an AI agent causes a disruption at work, who should be responsible?",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: That's October 20th. We'll be back tomorrow.",
+            "ALEX: See you then.",
+            "ALEX: Today's question for you: If an AI agent makes a mistake that costs your company money, who should be held responsible?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
           ],
           "evidence_line_numbers": [
-            52,
-            53,
-            54,
-            55,
-            157,
-            158,
-            159,
-            160
+            128,
+            129,
+            130,
+            131,
+            132,
+            133
           ],
-          "reason": "Story 1 fails the single-ending test. At line 52 Jamie delivers what reads as a closing synthesis ('Those two curves are heading straight for each other'). Alex then relaunches at line 53 with 'What does this mean practically for organizations running monitoring agents right now?' \u2014 a fresh discussion-opener \u2014 and lines 54\u201355 deliver near-verbatim repeats of lines 36 and 55's earlier practical takeaway. This is a second discussion restarting after a natural sign-off point, not a brief forward look. The closing block (lines 157\u2013160: listener question, sponsor credit, house tag, follow CTA) is correctly structured as one unified block and does not fail. Story 2 and Story 3 each have single clean endings. The failure is isolated to Story 1's duplicated practical-takeaway sequence.",
+          "reason": "Story endings for stories 1, 2 and 3 are clean with no restarted analysis after a sign-off. The closing block is the problem. Lines 128\u2013129 ('That's October 20th. We'll be back tomorrow. / See you then.') constitute a false ending: a complete sign-off from both Jamie and Alex before the episode has delivered its listener question, sponsor credit, house tag or follow CTA. The approved closing block then begins fresh at line 130 with the listener question, followed by the sponsor credit (line 131), the house tag (line 132) and the follow CTA (line 133). The rubric specifies that an early thanks-for-listening before the final closing block is a false ending; lines 128\u2013129 are exactly that. The approved closing block itself is intact and correctly structured, but the false ending before it causes this check to fail.",
           "verified_evidence": [
-            "JAMIE: And this is only going to get more common. More organizations deploying agents, platform security getting more sensitive because actual bot attacks are also getting more sophisticated. Those two curves are heading straight for each other.",
-            "ALEX: What does this mean practically for organizations running monitoring agents right now?",
-            "JAMIE: It means the platform's security system does not care about your intentions. If your agent is making requests in bursts at speeds no human could produce, you look like a bot attack. Because you are, technically, producing bot-like traffic.",
-            "RUFUS: And any account in the vicinity of that traffic bears the consequence, regardless of whether it authorised the agent.",
-            "ALEX: Today's question for you: When an AI agent causes a disruption at work, who should be responsible?",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: That's October 20th. We'll be back tomorrow.",
+            "ALEX: See you then.",
+            "ALEX: Today's question for you: If an AI agent makes a mistake that costs your company money, who should be held responsible?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
-            "JAMIE: And this is only going to get more common. More organizations deploying agents, platform security getting more sensitive because actual bot attacks are also getting more sophisticated. Those two curves are heading straight for each other.",
-            "ALEX: What does this mean practically for organizations running monitoring agents right now?",
-            "JAMIE: It means the platform's security system does not care about your intentions. If your agent is making requests in bursts at speeds no human could produce, you look like a bot attack. Because you are, technically, producing bot-like traffic.",
-            "RUFUS: And any account in the vicinity of that traffic bears the consequence, regardless of whether it authorised the agent.",
-            "ALEX: Today\u2019s question for you: When an AI agent causes a disruption at work, who should be responsible?",
-            "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: That's October 20th. We'll be back tomorrow.",
+            "ALEX: See you then.",
+            "ALEX: Today\u2019s question for you: If an AI agent makes a mistake that costs your company money, who should be held responsible?",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
           ]
         }
       },
-      "feature_word_band_advisory": true,
-      "script_sha256": "17b911dcef449b14814b7d5a8bc2403223ff31597ff8dfa7b41a2035614f5e89"
+      "feature_word_band_advisory": false,
+      "script_sha256": "94c5ccdffce1e2868ad68ee7833b4a356f0c3d08913fefe4e31636d205357d84"
+    },
+    {
+      "pass": false,
+      "failures": [
+        "single_endings: Three failures. First: lines 32 and 33 are identical consecutive Rufus lines \u2014 a duplicated speaker line mid-story, an abandoned fragment that is not an approved ad. Second: Story 2 (Orchestra Bio) ends at line 64 with the acquisition-versus-promise summary, but Alex restarts a full re-examination of the Orchestra Bio story at line 103 after Story 3 has concluded, adding new angles (lines 103-121). This is a second discussion of a story that already had its payoff, not a brief closing synthesis. Third: the show close contains what appear to be two separate closing beats \u2014 Rufus's sponsor credit at line 129 and then Alex's tagline at line 130 followed by a follow CTA at line 131. These three elements together would form the permitted single closing block, but lines 130 and 131 each read as independent sign-offs ('That's The AI Edge' then 'Follow The AI Edge now'), creating the appearance of a doubled ending within the closing block itself."
+      ],
+      "checks": {
+        "responsive_banter": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: And it covers third-party services built on top of DeepSeek. Which is the part that actually has teeth.",
+            "RUFUS: \u2014 is optimistic.",
+            "JAMIE: Generously, yes.",
+            "JAMIE: Though a domestic model's servers being in Palo Alto isn't the same legal and jurisdictional risk as servers subject to Chinese law.",
+            "RUFUS: No, that's a fair distinction.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But 'track dependencies' and 'fix the failed batch' are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "JAMIE: So the answer to 'AI agents might do something dangerous' is 'more AI agents.'",
+            "ALEX: Which sounds ridiculous until you think about the alternative.",
+            "JAMIE: Humans trying to audit machine-speed decisions. That's not feasible.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it."
+          ],
+          "evidence_line_numbers": [
+            12,
+            23,
+            24,
+            29,
+            30,
+            43,
+            44,
+            45,
+            46,
+            83,
+            84,
+            85,
+            98,
+            99,
+            121
+          ],
+          "reason": "Across all three stories the trio genuinely listen and react to each other. In Story 1 Jamie extends Alex's framing on the third-party scope (line 12), then pushes back on enforceability (line 20), Rufus completes Jamie's sentence (line 23), and Jamie concedes a specific point while qualifying it (lines 29-30) \u2014 a real small dispute that develops rather than resolves with a bland 'fair point.' In Story 2 Jamie challenges Rufus's scene on the coordination-versus-fixing distinction (line 43), Rufus corrects precisely (line 44), Jamie concedes (line 45), Rufus needles lightly (line 46). In Story 3 the 'more AI agents' exchange (lines 83-86) is a genuine shared working-through of an absurdity. Alex is a participant throughout: posing the 'security move or signal' question (line 21), pressing 'flagging it isn't fixing it' (line 50), volunteering the dependency-cascade extension in Segment 5 and being challenged on it (lines 103-121). The overall pattern is three people who track what the previous speaker actually said. Weaknesses: line 30 ('fair distinction') nearly ends a dispute before it develops, and the Segment 5 re-examination of Orchestra Bio runs long with interchangeable summaries (lines 113-120) before Rufus's final dry concession rescues it.",
+          "story_notes": {
+            "segment_2_story_1": "Challenge: Jamie at line 20 argues the ban cannot cleanly excise DeepSeek because weights are open and local runs bypass Chinese servers. Response: Rufus at line 28 advances the argument rather than deflecting \u2014 both the security and the political reading can be simultaneously true \u2014 and Jamie at line 29 offers a genuine counter-qualification on jurisdictional risk that Rufus accepts (line 30). The dispute develops across lines 20-30 with a real landing point. It fizzles slightly at line 30 where Rufus concedes and the topic pivots immediately to China's response rather than pressing the enforcement-gap question further.",
+            "segment_3_story_2": "Challenge: Jamie at line 43 distinguishes tracking from fixing. Rufus responds by quoting OpenAI's own claim precisely (line 44), which is a legitimate correction rather than a deflection. Jamie concedes and Rufus's 'only slightly' (line 46) keeps warmth. The Segment 5 re-examination (lines 103-121) revisits the same story with Alex leading; the exchanges about whether the agent knows program-specific dependencies (lines 113-114) add new texture but the section drifts into paired summaries (lines 115-120) before Rufus's closing line reinstates the pattern.",
+            "segment_4_story_3": "Challenge: Jamie at line 83 voices the 'more AI agents' paradox. Alex at line 84 immediately reframes why it isn't absurd, Jamie at line 85 completes the logic. The liability thread (lines 96-99) is the sharpest exchange: Jamie refuses to accept Microsoft's monitoring-layer answer, Rufus characterises the standoff drily, and Jamie's 'Perfect. Progress.' lands as genuine shared frustration rather than a quip. No long interchangeable-summary stretch in this segment."
+          },
+          "verified_evidence": [
+            "JAMIE: And it covers third-party services built on top of DeepSeek. Which is the part that actually has teeth.",
+            "RUFUS: \u2014 is optimistic.",
+            "JAMIE: Generously, yes.",
+            "JAMIE: Though a domestic model's servers being in Palo Alto isn't the same legal and jurisdictional risk as servers subject to Chinese law.",
+            "RUFUS: No, that's a fair distinction.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "ALEX: Which sounds ridiculous until you think about the alternative.",
+            "JAMIE: Humans trying to audit machine-speed decisions. That's not feasible.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: And it covers third-party services built on top of DeepSeek. Which is the part that actually has teeth.",
+            "RUFUS: \u2014 is optimistic.",
+            "JAMIE: Generously, yes.",
+            "JAMIE: Though a domestic model's servers being in Palo Alto isn't the same legal and jurisdictional risk as servers subject to Chinese law.",
+            "RUFUS: No, that's a fair distinction.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "JAMIE: So the answer to \"AI agents might do something dangerous\" is \"more AI agents.\"",
+            "ALEX: Which sounds ridiculous until you think about the alternative.",
+            "JAMIE: Humans trying to audit machine-speed decisions. That's not feasible.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it."
+          ]
+        },
+        "cast_warmth": {
+          "pass": true,
+          "evidence": [
+            "RUFUS: Only slightly.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "ALEX: Which sounds ridiculous until you think about the alternative."
+          ],
+          "evidence_line_numbers": [
+            46,
+            45,
+            98,
+            99,
+            121,
+            68,
+            69,
+            84
+          ],
+          "reason": "Rufus's 'only slightly' (line 46) is affectionate correction, not contempt. Jamie's 'Perfect. Progress.' (line 99) is mock-exasperated solidarity. Rufus's 'My warmth is very precisely rationed' (line 69) is self-aware enough to be self-deprecating. Alex joins teasing naturally at line 84 rather than refereeing. Disagreements (lines 20-30, 97-98) stay analytically sharp without tipping into hostility. The characters are distinct \u2014 Jamie impulsive and then conceding, Rufus precise and drily amused, Alex connective \u2014 and the interactions reflect those personalities rather than rotating through a warmth checklist.",
+          "verified_evidence": [
+            "RUFUS: Only slightly.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "ALEX: Which sounds ridiculous until you think about the alternative.",
+            "RUFUS: Only slightly.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress.",
+            "RUFUS: I'll allow it.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+            "ALEX: Which sounds ridiculous until you think about the alternative."
+          ]
+        },
+        "useful_discovery": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: If Orchestra's agents can monitor those dependencies in real time and flag that a batch failure in week eleven is going to cascade into a six-month delay, that's a real intervention.",
+            "JAMIE: No. But it changes when a decision-maker finds out. Right now they might not know until week fourteen. If they know in week eleven, they might be able to source an alternative or restructure the timeline before it's too late.",
+            "JAMIE: If you move the discovery of a critical failure from week fourteen to week eleven in a billion-dollar program, that's not marginal. That's meaningful.",
+            "ALEX: The stakes raise the value of even a marginal improvement."
+          ],
+          "evidence_line_numbers": [
+            49,
+            51,
+            120,
+            119
+          ],
+          "reason": "The script explains concretely how AI-driven dependency monitoring in drug-trial coordination could move failure detection from week fourteen to week eleven, enabling a decision-maker to source alternatives or restructure timelines before irreversible delay sets in. This is a specific beneficial mechanism \u2014 earlier visibility on cascading failures in a high-stakes workflow \u2014 that teaches the listener something actionable beyond fear of AI or compliance requirements. The OpenAI announcement is the grounded basis; the trio develops it into a concrete illustration of value without overstating it.",
+          "verified_evidence": [
+            "JAMIE: If Orchestra's agents can monitor those dependencies in real time and flag that a batch failure in week eleven is going to cascade into a six-month delay, that's a real intervention.",
+            "JAMIE: No. But it changes when a decision-maker finds out. Right now they might not know until week fourteen. If they know in week eleven, they might be able to source an alternative or restructure the timeline before it's too late.",
+            "JAMIE: If you move the discovery of a critical failure from week fourteen to week eleven in a billion-dollar program, that's not marginal. That's meaningful.",
+            "ALEX: The stakes raise the value of even a marginal improvement.",
+            "JAMIE: If Orchestra's agents can monitor those dependencies in real time and flag that a batch failure in week eleven is going to cascade into a six-month delay, that's a real intervention.",
+            "JAMIE: No. But it changes when a decision-maker finds out. Right now they might not know until week fourteen. If they know in week eleven, they might be able to source an alternative or restructure the timeline before it's too late.",
+            "JAMIE: If you move the discovery of a critical failure from week fourteen to week eleven in a billion-dollar program, that's not marginal. That's meaningful.",
+            "ALEX: The stakes raise the value of even a marginal improvement."
+          ]
+        },
+        "rufus_scene": {
+          "pass": true,
+          "evidence": [
+            "ALEX: Our second story. OpenAI announced today that it has acquired a company called Orchestra Bio. Genuinely new territory for them. Rufus, take us to the global desk.",
+            "RUFUS: Right. No specific location for Orchestra Bio's operations in the supplied reporting, so I'm working from here. But imagine a boardroom where nobody's talking about chat interfaces. The conversation is about the part of drug development that kills promising treatments before they ever reach a patient: the coordination problem.",
+            "RUFUS: Picture a program manager with forty active studies running across three continents \u2014 each with its own timeline, its own manufacturing dependencies, its own regulatory clock. One batch fails quality control in week eleven. That failure doesn't just affect that batch. It delays the trial, which moves the regulatory submission, which moves the approval window \u2014",
+            "RUFUS: which \u2014 worst case \u2014 adds another year before anyone gets the treatment. Orchestra Bio's platform, as OpenAI describes it, tracks and monitors exactly those dependencies. The acquisition brings Orchestra's team and that capability together with Rosalind, which is OpenAI's existing life-sciences toolset.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But 'track dependencies' and 'fix the failed batch' are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "ALEX: Back to the wider story."
+          ],
+          "evidence_line_numbers": [
+            39,
+            40,
+            41,
+            42,
+            43,
+            44,
+            47
+          ],
+          "reason": "Alex's handoff is at line 39. The scene runs through lines 40-44. Jamie challenges Rufus's framing at line 43 (tracking vs. fixing). Rufus responds directly and precisely at line 44. Alex returns at line 47. The setup has dry wit in Rufus's self-aware acknowledgment that he has no location ('so I'm working from here') and builds a concrete cascading-failure scenario. Jamie's challenge and Rufus's reply constitute responsive studio interaction within the scene boundaries. The payoff \u2014 clarifying the coordination-layer vs. manufacturing distinction \u2014 is useful and grounded in the source facts.",
+          "verified_evidence": [
+            "ALEX: Our second story. OpenAI announced today that it has acquired a company called Orchestra Bio. Genuinely new territory for them. Rufus, take us to the global desk.",
+            "RUFUS: Right. No specific location for Orchestra Bio's operations in the supplied reporting, so I'm working from here. But imagine a boardroom where nobody's talking about chat interfaces. The conversation is about the part of drug development that kills promising treatments before they ever reach a patient: the coordination problem.",
+            "RUFUS: Picture a program manager with forty active studies running across three continents \u2014 each with its own timeline, its own manufacturing dependencies, its own regulatory clock. One batch fails quality control in week eleven. That failure doesn't just affect that batch. It delays the trial, which moves the regulatory submission, which moves the approval window \u2014",
+            "RUFUS: which \u2014 worst case \u2014 adds another year before anyone gets the treatment. Orchestra Bio's platform, as OpenAI describes it, tracks and monitors exactly those dependencies. The acquisition brings Orchestra's team and that capability together with Rosalind, which is OpenAI's existing life-sciences toolset.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "ALEX: Back to the wider story.",
+            "ALEX: Our second story. OpenAI announced today that it has acquired a company called Orchestra Bio. Genuinely new territory for them. Rufus, take us to the global desk.",
+            "RUFUS: Right. No specific location for Orchestra Bio's operations in the supplied reporting, so I'm working from here. But imagine a boardroom where nobody's talking about chat interfaces. The conversation is about the part of drug development that kills promising treatments before they ever reach a patient: the coordination problem.",
+            "RUFUS: Picture a program manager with forty active studies running across three continents \u2014 each with its own timeline, its own manufacturing dependencies, its own regulatory clock. One batch fails quality control in week eleven. That failure doesn't just affect that batch. It delays the trial, which moves the regulatory submission, which moves the approval window \u2014",
+            "RUFUS: which \u2014 worst case \u2014 adds another year before anyone gets the treatment. Orchestra Bio's platform, as OpenAI describes it, tracks and monitors exactly those dependencies. The acquisition brings Orchestra's team and that capability together with Rosalind, which is OpenAI's existing life-sciences toolset.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "ALEX: Back to the wider story. So the announcement describes a specific example \u2014 failed manufacturing batch, cascading trial delay. How does an AI agent actually intervene there?"
+          ]
+        },
+        "single_endings": {
+          "pass": false,
+          "evidence": [
+            "RUFUS: Then you need to audit whether DeepSeek is anywhere in your stack. Because if it is, you have a procurement problem.",
+            "RUFUS: Then you need to audit whether DeepSeek is anywhere in your stack. Because if it is, you have a procurement problem.",
+            "ALEX: Right. Okay \u2014 I want to pull on the Orchestra Bio story a bit further, because I think there's something genuinely useful here for people who aren't biopharma researchers.",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
+          ],
+          "evidence_line_numbers": [
+            32,
+            33,
+            103,
+            129,
+            130,
+            131
+          ],
+          "reason": "Three failures. First: lines 32 and 33 are identical consecutive Rufus lines \u2014 a duplicated speaker line mid-story, an abandoned fragment that is not an approved ad. Second: Story 2 (Orchestra Bio) ends at line 64 with the acquisition-versus-promise summary, but Alex restarts a full re-examination of the Orchestra Bio story at line 103 after Story 3 has concluded, adding new angles (lines 103-121). This is a second discussion of a story that already had its payoff, not a brief closing synthesis. Third: the show close contains what appear to be two separate closing beats \u2014 Rufus's sponsor credit at line 129 and then Alex's tagline at line 130 followed by a follow CTA at line 131. These three elements together would form the permitted single closing block, but lines 130 and 131 each read as independent sign-offs ('That's The AI Edge' then 'Follow The AI Edge now'), creating the appearance of a doubled ending within the closing block itself.",
+          "verified_evidence": [
+            "RUFUS: Then you need to audit whether DeepSeek is anywhere in your stack. Because if it is, you have a procurement problem.",
+            "RUFUS: Then you need to audit whether DeepSeek is anywhere in your stack. Because if it is, you have a procurement problem.",
+            "ALEX: Right. Okay \u2014 I want to pull on the Orchestra Bio story a bit further, because I think there's something genuinely useful here for people who aren't biopharma researchers.",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
+            "RUFUS: Because if it is, you have a procurement problem.",
+            "RUFUS: Then you need to audit whether DeepSeek is anywhere in your stack. Because if it is, you have a procurement problem.",
+            "ALEX: Right. Okay \u2014 I want to pull on the Orchestra Bio story a bit further, because I think there's something genuinely useful here for people who aren't biopharma researchers.",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
+          ]
+        }
+      },
+      "feature_word_band_advisory": false,
+      "script_sha256": "1531bfb31ebfb894ef8b68015cd30ad6782431e3664a42a1e8fabe74a1d1befd"
     },
     {
       "pass": true,
@@ -292,302 +458,415 @@
         "responsive_banter": {
           "pass": true,
           "evidence": [
-            "RUFUS: It was.",
-            "RUFUS: It's a behavioral category, not a moral one.",
-            "JAMIE: Those are different things.",
-            "RUFUS: Yes they are.",
-            "RUFUS: A caffeinated human. Not a caffeinated teenager on deadline.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "JAMIE: Don't.",
-            "RUFUS: I'll take the partial credit."
+            "exact complete speaker line"
           ],
+          "reason": "The episode shows genuine three-way exchange across all segments. In Segment 2, Jamie challenges the ban's enforcement reach (line 20), Alex sharpens it into a signal-vs-security question (line 21), Rufus completes Jamie's sentence (line 23), and the compliance-officer thread builds collaboratively across lines 33\u201355. Alex is not merely a moderator: he raises the gap between civilian and intelligence-community authority (line 44), presses 'Does that logic hold up?' (line 18), and contributes his own observation about the Federal Register's scope (line 29). In Segment 3, Jamie challenges whether coordination equals fixing (line 69), Rufus pushes back precisely (line 70), Jamie concedes with self-awareness (line 71), and Rufus's dry 'Only slightly' lands. In Segment 4, Jamie's reframing of insider risk as an authorization problem (line 105) advances the discussion; Alex's 'Who watches the Guardian Agents?' (line 107) is a genuine intellectual contribution, not a prompt. Weak spots: lines 60\u201363 and 126\u2013128 resolve into parallel watch-lists rather than developed argument, and the closing segment (lines 130\u2013134) is largely alternating summaries. Overall pattern is engaged and specific, not interchangeable monologue.",
+          "story_notes": {
+            "segment_2": {
+              "challenge": "Jamie challenges the ban's enforcement surface at line 20: locally-run weights fall outside the order's reach. Alex sharpens this into signal-vs-security at line 21. Rufus adds legal ambiguity at line 31. The thread develops through the compliance-officer conceit (lines 33\u201355), with each speaker adding a layer \u2014 the contractor who did everything right but is exposed through a vendor's vendor (lines 48\u201355). The exchange fizzles into parallel watch-list items at lines 60\u201363, where responses are additive rather than responsive.",
+              "long_summaries": "Lines 60\u201363 are brief enough not to constitute a long stretch of interchangeable summary."
+            },
+            "segment_3": {
+              "challenge": "Jamie's challenge at line 69 \u2014 that tracking dependencies and fixing a failed batch are different things \u2014 is answered directly by Rufus at line 70, and Jamie concedes at line 71. The scene then transitions to Alex's return at line 73. Post-scene discussion at lines 74\u201390 develops the validation question (lines 78\u201381) and the liability question (lines 85\u201388) with genuine back-and-forth. The exchange fizzles at lines 89\u201390, which are parallel predictions rather than a developed disagreement.",
+              "long_summaries": "No long stretch of interchangeable summaries; turns are short and responsive."
+            },
+            "segment_4": {
+              "challenge": "Jamie's reframe at line 103 \u2014 insider risk as authorization problem, not intent \u2014 is engaged by Alex at line 104 and confirmed by Jamie at line 105. The 'more AI agents' quip at line 109 is challenged immediately by Alex at line 110 and resolved by Jamie at line 111. The liability question at lines 122\u2013125 is a genuine unresolved disagreement carried forward from a prior episode, and Jamie's 'Perfect. Progress.' (line 125) is dry shared acknowledgment rather than closure. Watch-list at lines 127\u2013128 is additive, not developed.",
+              "long_summaries": "Lines 98\u2013102 involve Rufus explaining insider risk at some length before Jamie enters, but the explanation is specific and directly challenged; it does not constitute interchangeable summary."
+            }
+          },
           "evidence_line_numbers": [
-            4,
             18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            28,
+            29,
+            30,
+            31,
             33,
             34,
+            48,
+            49,
+            50,
             51,
-            65,
-            66,
-            67,
-            89,
-            90,
-            94,
-            95,
-            139,
-            146
+            52,
+            53,
+            54,
+            55,
+            69,
+            70,
+            71,
+            72,
+            103,
+            104,
+            105,
+            107,
+            108,
+            109,
+            110,
+            111,
+            122,
+            123,
+            124,
+            125
           ],
-          "reason": "The episode sustains genuine three-way engagement throughout. In Segment 2, Alex pushes on whether Meta's system was actually working correctly (line 22), Rufus sharpens the framing (line 23), Jamie adds the political dimension (line 24), and the exchange about 'Meta says they don't know / or they haven't said what they know' (lines 32\u201334) is a real, unresolved distinction that neither party smooths over. Alex is a genuine participant: asking pointed follow-up questions (lines 22, 25, 28, 37, 40), proposing interpretations that get pushed back on, and adding the 'proximity to the traffic, not guilt' formulation (line 43) that advances the conversation. In Segment 3, the wine analogy earns a sincere Jamie acknowledgment and Rufus self-deflation (lines 63\u201367), and Alex's 'reasoning vs. matching engine' challenge (line 78) draws a substantive response rather than agreement. In Segment 4, Jamie's 'corporate conscience tax' framing (line 126) is contested by Rufus (lines 128, 130, 135), Jamie holds the position (lines 129, 139), and the dispute lands unresolved, which is appropriate. The dry wit is character-specific throughout. The overall pattern is responsive: each speaker reacts to what was actually just said rather than delivering prepared turns.",
-          "story_notes": {
-            "segment_2": "Challenge and development: Alex poses the steelman at line 22 ('there's a version of this where Meta's system is actually working correctly'). Rufus accepts the premise and immediately narrows the real question to indistinguishability (line 23). Jamie operationalizes it with the packet analogy (line 24). Alex then pivots to accountability (line 25), which Rufus answers factually (line 26) and Jamie politicizes (line 27). Alex presses further on whether the AI explanation is cover (line 28), and Jamie gives a genuinely hedged answer (line 29) rather than confirming or denying. The exchange develops across roughly lines 22\u201334 and sustains through the collateral-damage thread (lines 39\u201348). No stretch of interchangeable summaries; each speaker adds a distinct angle. Rufus's closing 'Meta's apology restores the record. It doesn't restore the window.' (line 48) is a genuine payoff, not a recap.",
-            "segment_3": "Jamie's passion is established and tested: Alex challenges at line 78 whether the model reasons or pattern-matches. Jamie concedes the distinction is real (line 79). Rufus deflects to pragmatics (line 80), Alex pushes back with the failure-mode concern (line 81), and Jamie anchors the resolution in experimental validation (line 82). Rufus's 'better prospector' formulation (line 83) is then picked up again at line 101, giving the segment a thread. The wine analogy exchange (lines 63\u201367) is character-revealing and brief. Alex's 'the thing that genuinely gets me' at line 91 is a sincere personal engagement rather than a moderator prompt. No long stretch of interchangeable summaries; the contrastive-learning explanation (lines 60\u201362) is slightly expository but is interrupted and developed by Rufus and then Alex. The segment's energy is genuine and sustained.",
-            "segment_4": "Challenge and response: Jamie's 'corporate conscience tax' framing (line 126) is a real provocation. Rufus contests it as incomplete rather than wrong (line 128), Jamie sharpens the LLC-as-tell argument (lines 126\u2013127, 129), Rufus distinguishes withholding judgment from approving in advance (line 130). Alex's 'actually defend it' instruction to Rufus (line 131) produces a substantive defense (lines 132\u2013133) rather than a reversal. Jamie identifies the load-bearing conditional (line 134), Rufus parries (line 135), and the dispute ends genuinely unresolved (lines 137\u2013139). The 'Ask me again once the governance is published / Don't' exchange (lines 137\u2013139) is a clean character beat. No interchangeable summaries; each speaker's position is distinct and maintained."
-          },
           "verified_evidence": [
-            "RUFUS: It was.",
-            "RUFUS: It's a behavioral category, not a moral one.",
-            "JAMIE: Those are different things.",
-            "RUFUS: Yes they are.",
-            "RUFUS: A caffeinated human. Not a caffeinated teenager on deadline.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "JAMIE: Don't.",
-            "RUFUS: I'll take the partial credit.",
-            "RUFUS: It was.",
-            "RUFUS: It's a behavioral category, not a moral one.",
-            "JAMIE: Those are different things.",
-            "RUFUS: Yes they are.",
-            "RUFUS: A caffeinated human. Not a caffeinated teenager on deadline.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "JAMIE: Don't.",
-            "RUFUS: I'll take the partial credit."
+            "ALEX: Does that logic hold up?",
+            "RUFUS: The threat model is coherent. Whether it describes what actually happens in practice is a different question, and AP's reporting doesn't answer it. What it establishes is that the government decided the risk was real enough to act on without waiting for a specific breach.",
+            "JAMIE: Which is where I want to push back. Because DeepSeek's weights are already out there. You can run DeepSeek locally \u2014 no Chinese server involved, no data leaving your machine. The ban covers products and services, but it cannot cover every fork a developer quietly integrated six months ago.",
+            "ALEX: So is this a security move or a signal?",
+            "JAMIE: Both, probably. And I don't think that makes it cynical. The Federal Register notice is a real enforcement mechanism. But the idea that you can cleanly excise one model from a federal IT ecosystem with thousands of contractors and hundreds of third-party tools \u2014",
+            "RUFUS: \u2014 is optimistic.",
+            "JAMIE: Generously, yes.",
+            "RUFUS: Both readings can be true simultaneously, which is precisely what makes it interesting. The threat vector cited \u2014 servers in China \u2014 is a genuine concern. The fact that it applies to DeepSeek and not to a domestic model with equally opaque data practices is a political choice.",
+            "ALEX: One thing I'm still turning over \u2014 the Federal Register notice covers \"products and services.\" That's the procurement side. But DeepSeek's weights are public. A contractor could download them, run them locally, never touch a Chinese server, and technically stay outside what this order prohibits.",
+            "JAMIE: Which means the actual enforcement surface is much smaller than the headline suggests.",
+            "RUFUS: Unless DHS interprets \"products built using DeepSeek\" to include locally-hosted deployments. The notice doesn't appear to resolve that, based on what AP reports.",
+            "JAMIE: Picture an IT compliance officer at a mid-sized federal contractor, staring at an open-source model running entirely on their own servers, no Chinese connection anywhere, and genuinely not knowing whether they're in violation.",
+            "RUFUS: That ambiguity will get litigated or clarified. Probably clarified first through procurement denials, then litigated afterward.",
+            "JAMIE: And here's the thing that keeps nagging me \u2014 the order covers products and third-party services. But DeepSeek's weights have been downloaded by developers worldwide. Some of those developers are US companies building tools federal contractors already use. The supply chain doesn't stop at one layer.",
+            "RUFUS: So the compliance question isn't just \"do we use DeepSeek.\" It's \"do any of our vendors' vendors use DeepSeek.\"",
+            "ALEX: That is a genuinely miserable audit.",
+            "JAMIE: Welcome to modern software procurement. It's turtles with open-source licenses all the way down.",
+            "RUFUS: Heh. And AP's reporting doesn't suggest DHS has published guidance on how deep that audit obligation runs.",
+            "ALEX: So a contractor could do everything right at the top level and still be exposed through a dependency they've never heard of.",
+            "JAMIE: The compliance officer I pictured earlier? She's now on her third coffee and she's drawn a very large diagram.",
+            "RUFUS: With several question marks where the arrows should be.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "JAMIE: The \"insider\" framing is interesting because it quietly drops the requirement of malicious intent. A human insider threat can be a disgruntled employee who steals data. An AI agent insider threat is just an agent that does something it was technically authorized to do but absolutely should not have done.",
+            "ALEX: Which is actually scarier in some ways. There's no bad actor to catch.",
+            "JAMIE: Right. It's an authorization problem, not an intent problem.",
+            "ALEX: Who watches the Guardian Agents?",
+            "RUFUS: That is precisely the right question, and the post doesn't answer it. It does tie this to an earlier framework called Project Perception, which uses what Microsoft calls red, blue and green agents \u2014 attackers, defenders and validators, essentially \u2014 to help security teams identify and respond to risks from other agents.",
+            "JAMIE: So the answer to \"AI agents might do something dangerous\" is \"more AI agents.\"",
+            "ALEX: Which sounds ridiculous until you think about the alternative.",
+            "JAMIE: Humans trying to audit machine-speed decisions. That's not feasible.",
+            "ALEX: I keep coming back to yesterday's question \u2014 who's responsible when an AI agent causes a disruption at work? Microsoft's answer here seems to be: responsibility lives in the monitoring layer.",
+            "JAMIE: Which doesn't really answer it. The monitoring layer is still built by Microsoft and configured by the enterprise. The liability question doesn't disappear because you added more agents.",
+            "RUFUS: That's yesterday's argument, still unresolved, now with a proprietary software layer on top.",
+            "JAMIE: Perfect. Progress."
           ]
         },
         "cast_warmth": {
           "pass": true,
           "evidence": [
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "RUFUS: I'll take the partial credit.",
-            "ALEX: Sound advice in several contexts."
+            "exact complete speaker line"
           ],
+          "reason": "Warmth is present in specific texture rather than announcement. Rufus completes Jamie's sentence at line 23 \u2014 a sign of genuine listening. Jamie concedes 'I may have gotten ahead of myself' at line 71 and Rufus responds 'Only slightly' at line 72, which is dry affection. The sponsor exchange at lines 92\u201395 shows Jamie teasing Rufus about emotional support and Rufus's self-deprecating reply about rationed warmth. Alex's 'Heh. Diplomatic optionality.' at line 42 is a small shared moment. Jamie's compliance-officer callback at line 54 builds on Rufus's question-mark image at line 55, showing mutual tracking. No hostility and no polite alternating monologue dominates; disagreements (lines 20\u201324, 69\u201372, 122\u2013125) remain engaged rather than dropped.",
           "evidence_line_numbers": [
-            65,
-            66,
-            67,
-            89,
-            90,
+            23,
+            41,
+            42,
+            43,
+            54,
+            55,
+            71,
+            72,
+            92,
+            93,
             94,
             95,
-            146,
-            152
+            125
           ],
-          "reason": "Affection is demonstrated through specificity rather than announcement. Rufus's self-deprecation at lines 65 and 67 ('I have them occasionally' / 'I already was insufferable') is calibrated to his dry-composed character and works because Alex's tease (line 66) comes from familiarity, not hostility. Jamie's 'I contain multitudes, Rufus' (line 90) is gently mocking and warmly received in context. Alex's observation that Rufus is unusually enthusiastic (line 94) and Rufus's immediate retreat to form (line 95) reads as an established dynamic rather than a scripted exchange. In Segment 4, the Jamie-Rufus disagreement is pointed but neither dismissive nor personally hostile: Rufus concedes Jamie's criticism is 'fair' (line 128) while holding his own position, and 'I'll take the partial credit' (line 146) is a warm close to a genuine dispute. The characters challenge each other in ways that are consistent with knowing each other well.",
           "verified_evidence": [
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "RUFUS: I'll take the partial credit.",
-            "ALEX: Sound advice in several contexts.",
-            "RUFUS: I have them occasionally.",
-            "ALEX: Don't tell him that.",
-            "RUFUS: I already was insufferable. This changes nothing.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "JAMIE: I contain multitudes, Rufus.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "RUFUS: I'll take the partial credit.",
-            "ALEX: Sound advice in several contexts."
+            "RUFUS: \u2014 is optimistic.",
+            "RUFUS: Or to do nothing and save face simultaneously.",
+            "ALEX: Heh. Diplomatic optionality.",
+            "RUFUS: It's a growth industry.",
+            "JAMIE: The compliance officer I pictured earlier? She's now on her third coffee and she's drawn a very large diagram.",
+            "RUFUS: With several question marks where the arrows should be.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+            "ALEX: I'd start with a better question. The Ledger offers five focused briefings to help you think through what the news means for your next decision.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+            "JAMIE: Perfect. Progress."
           ]
         },
         "useful_discovery": {
           "pass": true,
           "evidence": [
-            "JAMIE: This one takes 3D atomic crystal structures and natural language descriptions and uses them together.",
-            "JAMIE: A materials scientist hunting for a new battery electrolyte has to mentally bridge those two worlds herself. This model learns to bridge them automatically, using something called contrastive learning.",
-            "JAMIE: In plain terms \u2014 you train the model on matching pairs. This structure goes with this description. That structure does not go with that description. Over time it develops a shared language between the atomic picture and the prose.",
-            "JAMIE: Identifying crystals suited for solid-state lithium-ion batteries. Solid-state batteries are the big prize in green energy storage \u2014 safer, potentially more energy-dense than the liquid electrolyte batteries in most devices right now. Finding the right materials is a massive research bottleneck, and AI is saying \u2014 I can scan the atomic database and the literature simultaneously and flag candidates faster.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "RUFUS: A better prospector, as I said. Not a geologist who can tell you what's actually down there."
+            "exact complete speaker line"
           ],
+          "reason": "Two concrete beneficial insights are established from source facts. First, the drug-trial coordination discovery: lines 74\u201377 explain that if Orchestra's agents flag a batch failure in week eleven rather than week fourteen, decision-makers can restructure timelines or source alternatives before the cascade locks in \u2014 a specific, actionable benefit grounded in OpenAI's announced use case. Second, lines 119\u2013121 identify a genuine enterprise control mechanism: a unified agent registry that gives organizations an inventory of which agents exist and what they are authorized to do, which Microsoft says most enterprises currently lack. Both go beyond fear or compliance framing and give listeners something concrete to be curious about.",
           "evidence_line_numbers": [
-            56,
-            60,
-            62,
-            69,
+            74,
+            75,
+            76,
             77,
-            83
+            119,
+            120,
+            121
           ],
-          "reason": "The MIT crystal AI story delivers a concrete, mechanistically explained beneficial application: a multimodal model that bridges 3D atomic structure databases and scientific literature using contrastive learning to accelerate candidate identification for solid-state battery electrolytes. The mechanism (contrastive learning on matched pairs), the specific application domain (solid-state batteries), the research bottleneck addressed (manual cross-referencing of two incompatible knowledge bodies), and the realistic scope (better prospector, not a replacement for experiments) are all explained clearly. The listener learns something specific about how the system works and why it matters to green energy storage, not just that AI is useful. Appropriate caveats (experimental validation still required, paper published in August) are included without undermining the genuine discovery.",
           "verified_evidence": [
-            "JAMIE: This one takes 3D atomic crystal structures and natural language descriptions and uses them together.",
-            "JAMIE: In plain terms \u2014 you train the model on matching pairs. This structure goes with this description. That structure does not go with that description. Over time it develops a shared language between the atomic picture and the prose.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "RUFUS: A better prospector, as I said. Not a geologist who can tell you what's actually down there.",
-            "JAMIE: This one takes 3D atomic crystal structures and natural language descriptions and uses them together.",
-            "JAMIE: Right. A materials scientist hunting for a new battery electrolyte has to mentally bridge those two worlds herself. This model learns to bridge them automatically, using something called contrastive learning.",
-            "JAMIE: In plain terms \u2014 you train the model on matching pairs. This structure goes with this description. That structure does not go with that description. Over time it develops a shared language between the atomic picture and the prose.",
-            "JAMIE: Identifying crystals suited for solid-state lithium-ion batteries. Solid-state batteries are the big prize in green energy storage \u2014 safer, potentially more energy-dense than the liquid electrolyte batteries in most devices right now. Finding the right materials is a massive research bottleneck, and AI is saying \u2014",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "RUFUS: A better prospector, as I said. Not a geologist who can tell you what's actually down there."
+            "JAMIE: This is the part I find genuinely compelling. Trials fail to reach patients not just because the science is hard. They fail because the project management is catastrophically complex \u2014 study timelines, campaign dependencies, regulatory submission windows, manufacturing schedules \u2014 and most of it is still coordinated by humans with spreadsheets and email chains.",
+            "JAMIE: If Orchestra's agents can monitor those dependencies in real time and flag that a batch failure in week eleven is going to cascade into a six-month delay, that's a real intervention.",
+            "ALEX: But flagging it isn't fixing it.",
+            "JAMIE: No. But it changes when a decision-maker finds out. Right now they might not know until week fourteen. If they know in week eleven, they might be able to source an alternative or restructure the timeline before it's too late.",
+            "JAMIE: The unified registry idea \u2014 Microsoft implies it's part of controlling agent sprawl \u2014 is interesting because it centralizes knowledge of which agents exist and what they're authorized to do. That's a control mechanism most enterprises don't have right now.",
+            "ALEX: Most companies don't even have a complete inventory of their AI agents.",
+            "RUFUS: Which is exactly Microsoft's point. If you don't know what agents you have, you definitely can't supervise what they're doing."
           ]
         },
         "rufus_scene": {
           "pass": true,
           "evidence": [
-            "ALEX: Rufus, take us on location.",
-            "RUFUS: The source reporting is from MIT, with no specific geographic location that would put me anywhere useful \u2014 so picture the global desk. What I'd say from here is that New York-based venture capital has been moving steadily from pure software toward physical-world AI applications: materials science, battery tech \u2014 anything that touches the green energy supply chain. The interest in this kind of research isn't purely academic. A model that narrows the candidate field for solid-state battery electrolytes is genuinely attractive to anyone who has watched solid-state battery timelines slip for a decade. The honest read, though \u2014 is that the gap between a research paper and a commercial product is still measured in years. The model is a better prospector. It narrows the field for human researchers and experimental validation to pursue. It doesn't replace the experiments.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "ALEX: One thing I'm still turning over \u2014 the model bridges 3D structure and text, but does it actually reason about properties, or is it a very sophisticated matching engine? Because those feel different to me.",
-            "ALEX: Back to the wider story. You said Rufus found an AI use he actually likes. Is that true?",
-            "RUFUS: I find this more legible than most. The problem is specific. The method has a mechanistic explanation. The application is testable. I prefer that to announcements that an AI has become, quote, more helpful.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly."
+            "exact complete speaker line"
           ],
+          "reason": "Alex hands off at line 65. Rufus builds the coordination-problem scene through lines 66\u201368. Jamie challenges at line 69 \u2014 'The program-manager problem is real, I'll grant that. But track dependencies and fix the failed batch are very different things.' Rufus responds directly and specifically at line 70: 'Which is precisely what OpenAI claims.' Jamie concedes at line 71, and Rufus's 'Only slightly' at line 72 carries dry wit. Alex returns at line 73. The Jamie challenge and Rufus response at lines 69\u201372 fall within the scene boundaries, and Rufus's reply is specific to Jamie's distinction, not a continuation of the monologue. The payoff is the clarification that OpenAI is claiming a coordination layer, not a manufacturing fix \u2014 a useful distinction grounded in the source facts.",
           "evidence_line_numbers": [
-            73,
-            74,
-            75,
-            76,
-            77,
-            78,
-            96,
-            97,
-            89,
-            94,
-            95
+            65,
+            66,
+            67,
+            68,
+            69,
+            70,
+            71,
+            72,
+            73
           ],
-          "reason": "The scene opens at Alex's handoff (line 73) and closes at Alex's 'Back to the wider story' (line 96). Rufus delivers a concrete situated setup \u2014 acknowledging the lack of a specific location while pivoting to VC investment patterns and the commercial context for solid-state battery research \u2014 with dry self-awareness ('picture the global desk'). Dry wit is present in the 'better prospector / not a geologist' formulation (line 83) and in the explicit return to form ('I'm sure I'll return to form shortly,' line 95). Jamie's response at line 77 ('Which is still meaningful') is a direct, substantive reply to Rufus's 'gap between paper and product' point, qualifying rather than simply agreeing. Alex's reasoning-vs-matching challenge (line 78) is posed within the scene boundaries and receives developed responses from both Jamie and Rufus. Alex's teasing callback at line 96 ('You said Rufus found an AI use he actually likes') and Rufus's reply at line 97 constitute an additional responsive exchange within the scene. The scene has a useful payoff: the 'better prospector' framing and the 'legible because specific, testable, and mechanistically explained' standard (line 97) both give the listener a reusable evaluative frame.",
           "verified_evidence": [
-            "ALEX: Rufus, take us on location.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "ALEX: One thing I'm still turning over \u2014 the model bridges 3D structure and text, but does it actually reason about properties, or is it a very sophisticated matching engine? Because those feel different to me.",
-            "ALEX: Back to the wider story. You said Rufus found an AI use he actually likes. Is that true?",
-            "RUFUS: I find this more legible than most. The problem is specific. The method has a mechanistic explanation. The application is testable. I prefer that to announcements that an AI has become, quote, more helpful.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly.",
-            "ALEX: Rufus, take us on location.",
-            "RUFUS: The source reporting is from MIT, with no specific geographic location that would put me anywhere useful \u2014 so picture the global desk. What I'd say from here is that New York-based venture capital has been moving steadily from pure software toward physical-world AI applications: materials science, battery tech \u2014",
-            "RUFUS: anything that touches the green energy supply chain. The interest in this kind of research isn't purely academic. A model that narrows the candidate field for solid-state battery electrolytes is genuinely attractive to anyone who has watched solid-state battery timelines slip for a decade. The honest read, though \u2014",
-            "RUFUS: is that the gap between a research paper and a commercial product is still measured in years. The model is a better prospector. It narrows the field for human researchers and experimental validation to pursue. It doesn't replace the experiments.",
-            "JAMIE: Which is still meaningful. These fields spend enormous time and money just on candidate identification. Shortening that phase is real progress even if everything after it looks the same.",
-            "ALEX: One thing I'm still turning over \u2014 the model bridges 3D structure and text, but does it actually reason about properties, or is it a very sophisticated matching engine? Because those feel different to me.",
-            "ALEX: Back to the wider story. You said Rufus found an AI use he actually likes. Is that true?",
-            "RUFUS: I find this more legible than most. The problem is specific. The method has a mechanistic explanation. The application is testable. I prefer that to announcements that an AI has become, quote, more helpful.",
-            "RUFUS: Heh. She did. We all saw it.",
-            "ALEX: That's the most enthusiastic you've sounded about any AI development in recent memory.",
-            "RUFUS: I'm sure I'll return to form shortly."
+            "ALEX: Our second story. OpenAI announced today that it has acquired a company called Orchestra Bio. Genuinely new territory for them. Rufus, take us to the global desk.",
+            "RUFUS: Right. No specific location for Orchestra Bio's operations in the supplied reporting, so I'm working from here. But imagine a boardroom where nobody's talking about chat interfaces. The conversation is about the part of drug development that kills promising treatments before they ever reach a patient: the coordination problem.",
+            "RUFUS: Picture a program manager with forty active studies running across three continents \u2014 each with its own timeline, its own manufacturing dependencies, its own regulatory clock. One batch fails quality control in week eleven. That failure doesn't just affect that batch. It delays the trial, which moves the regulatory submission, which moves the approval window \u2014",
+            "RUFUS: which \u2014 worst case \u2014 adds another year before anyone gets the treatment. Orchestra Bio's platform, as OpenAI describes it, tracks and monitors exactly those dependencies. The acquisition brings Orchestra's team and that capability together with Rosalind, which is OpenAI's existing life-sciences toolset.",
+            "JAMIE: The program-manager problem is real, I'll grant that. But \"track dependencies\" and \"fix the failed batch\" are very different things. Orchestra isn't manufacturing anything. It's the coordination layer.",
+            "RUFUS: Which is precisely what OpenAI claims. They say it helps scientists manage workflows and move treatments forward sooner. They're not saying the agent runs the experiment.",
+            "JAMIE: Right. I may have gotten ahead of myself.",
+            "RUFUS: Only slightly.",
+            "ALEX: Back to the wider story. So the announcement describes a specific example \u2014 failed manufacturing batch, cascading trial delay. How does an AI agent actually intervene there?"
           ]
         },
         "single_endings": {
           "pass": true,
           "evidence": [
-            "ALEX: Okay. We started today with a question: Meta blamed Claude AI for account bans, so how do you protect your online presence? Here's where we actually land.",
-            "RUFUS: For what it's worth, I'd throttle the agent.",
-            "ALEX: Sound advice in several contexts.",
-            "JAMIE: On that note.",
-            "ALEX: Today's question for you: When an AI agent causes a disruption at work, who should be responsible?",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
-            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
-            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
+            "exact complete speaker line"
           ],
+          "reason": "Story 1 ends with active-order confirmation at line 63; no second discussion follows before the Story 2 handoff at line 65. Story 2 ends with parallel predictions at lines 89\u201390; no restart follows before the sponsor break at line 91. The sponsor exchange at lines 92\u201395 is brief and contained. Story 3 ends with watch-list items at lines 127\u2013128; the closing synthesis at lines 130\u2013134 addresses all three stories together and introduces the listener question at line 135, the sponsor credit at line 136, the house tag at line 137, and the follow CTA at line 138 \u2014 these form one closing block. No early thanks-for-listening appears before this block. No duplicated sponsor setups or abandoned ad fragments are present; the sponsor appears correctly at lines 7\u20138 and again correctly at line 136. All three story endings and the show close are clean.",
           "evidence_line_numbers": [
-            148,
-            151,
-            152,
-            153,
-            154,
-            155,
-            156,
-            157
+            63,
+            89,
+            90,
+            127,
+            128,
+            130,
+            131,
+            132,
+            133,
+            134,
+            135,
+            136,
+            137,
+            138
           ],
-          "reason": "Each of the three story segments ends cleanly without restarting analysis after a sign-off. Segment 2 closes with Rufus's 'The admin access delay is the part that doesn't get enough attention' thread (lines 45\u201348) and the rate-limiting practical note (lines 49\u201352), then transitions without recap. Segment 3 closes with the watch-for guidance (lines 100\u2013103) and moves into a sponsor break that is character-voiced and does not duplicate or fragment the approved ad (lines 104\u2013107). Segment 4 closes with the three-question governance checklist (lines 141\u2013146) and transitions cleanly to Segment 5. The closing block at lines 148\u2013157 contains one synthesis (lines 148\u2013150), one dry Rufus kicker (line 151), one listener question (line 154), one sponsor credit (line 155), the house tag (line 156), and the follow CTA (line 157) \u2014 these function as a single closing block. There is no false early thanks-for-listening before this block, and no duplicated sponsor setup or abandoned ad fragment elsewhere in the script.",
           "verified_evidence": [
-            "ALEX: Okay. We started today with a question: Meta blamed Claude AI for account bans, so how do you protect your online presence? Here's where we actually land.",
-            "RUFUS: For what it's worth, I'd throttle the agent.",
-            "ALEX: Sound advice in several contexts.",
-            "JAMIE: On that note.",
-            "ALEX: Today's question for you: When an AI agent causes a disruption at work, who should be responsible?",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
-            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
-            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
-            "ALEX: Okay. We started today with a question: Meta blamed Claude AI for account bans, so how do you protect your online presence? Here's where we actually land.",
-            "RUFUS: For what it's worth, I'd throttle the agent.",
-            "ALEX: Sound advice in several contexts.",
-            "JAMIE: On that note.",
-            "ALEX: Today\u2019s question for you: When an AI agent causes a disruption at work, who should be responsible?",
-            "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: And AP's reporting doesn't mention any legal challenge or agency pushback. This is an active order.",
+            "JAMIE: Whether OpenAI announces an actual biopharma partner running trials through this stack. An acquisition plus integration is still a promise.",
+            "RUFUS: And whether Rosalind plus Orchestra becomes accessible to biopharma teams or stays a research capability inside OpenAI. Very different things.",
+            "RUFUS: Whether Guardian Agents becomes a shippable control layer inside Microsoft's security stack \u2014 Defender, Sentinel, however they route it \u2014 and whether enterprise security teams actually adopt it or treat it as another Microsoft framework that sounds comprehensive and then lives on a slide deck.",
+            "JAMIE: I'd also watch whether Google or AWS publish their own versions of this framing. If Microsoft moves the conversation toward \"agents as insider risks,\" the rest of the industry has to respond.",
+            "ALEX: Alright. The title of today's episode asked: US bans DeepSeek from federal systems \u2014 what does this mean for your tech?",
+            "RUFUS: What remains uncertain: whether allied governments follow, whether this extends to private-sector contractors, and whether DeepSeek becomes a template for other Chinese AI products facing the same threat-vector argument.",
+            "JAMIE: If you work in federal contracting or you sell software to agencies, today is the day to audit your stack. Not because we're saying you have DeepSeek in there. But because the definition of \"DeepSeek products\" now includes third-party tools built on top of the model \u2014",
+            "JAMIE: and the people responsible for your IT procurement need to know where your dependencies are.",
+            "ALEX: One prediction worth watching: this ban makes it easier, not harder, for the next administration \u2014 whoever that is \u2014 to extend these restrictions. The Federal Register notice creates a documented threat framework. That framework will be cited again.",
+            "ALEX: Today\u2019s question for you: If an AI agent makes a mistake that costs your company money, who should be held responsible?",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
           ]
         }
       },
-      "feature_word_band_advisory": true,
-      "script_sha256": "6874179cff78682469634caf6e6e94d763e999206eaa6d29df6cb1144afdf5d6"
+      "feature_word_band_advisory": false,
+      "script_sha256": "b79741f86d48b8c72c27a8b28464fc28bbfcd565138945166b1158acd5a64f4f"
     }
   ],
   "repair": {
     "basis": "model editorial review plus local safeguards; not listening",
     "listened": false,
     "requested_calls": 1,
-    "accepted_edits": 2,
+    "accepted_edits": 3,
     "edits": [
       {
         "accepted": true,
-        "reason": "Lines 53-55 reopen discussion after Jamie's natural close at 52 and restate the practical takeaway from lines 36 and 41 verbatim. Cut resolves the single-ending failure without dropping below minimum runtime.",
+        "reason": "Collapses the doubled contractor point and removes the duplicate Rufus line into one clean, additive exchange.",
         "segment": 2
       },
       {
         "accepted": true,
-        "reason": "Removes the unsupplied aired-history claim; reframes the callback as a forward-looking hypothetical per production rules.",
+        "reason": "Removes the full second Orchestra Bio discussion that restarts after Story 3 has closed; payoff already landed in segment 3.",
+        "segment": 4
+      },
+      {
+        "accepted": true,
+        "reason": "Merges the two consecutive independent sign-offs into one closing valediction, removing the doubled ending.",
         "segment": 5
       }
     ],
-    "input_sha256": "17b911dcef449b14814b7d5a8bc2403223ff31597ff8dfa7b41a2035614f5e89",
+    "input_sha256": "1531bfb31ebfb894ef8b68015cd30ad6782431e3664a42a1e8fabe74a1d1befd",
     "review_before_repairs": {
       "scenes": [
         {
           "segment": 2,
-          "chemistry": "Present: the trio tracks the 'intent is invisible' idea together and the 'caffeinated teenager' callback earns a real reply. The Rufus/Jamie exchange on Meta's framing ('those are different things') is crisp. Weakened by the duplicated practical-takeaway block at lines 53-55.",
-          "discovery": "Present: 'bot' as a behavioral category not a moral one; collateral suspension of an uninvolved account; the admin-access delay as the underreported harm.",
-          "repetition": "Lines 53-55 reopen a discussion Jamie closed at line 52, then restate lines 36 and 55's practical takeaway almost verbatim. Required repair flags this."
+          "chemistry": "Present: Jamie's open-weights enforcement point genuinely complicates Rufus's threat-vector logic; Palo Alto/Chinese-law exchange is a real correction, not canned.",
+          "discovery": "Present: third-party-services scope surfaces before Alex's summary; Federal Register as future-template framing at line 36 is a genuine addition.",
+          "repetition": "Lines 32\u201333 are identical consecutive Rufus lines; the duplicated fragment must be collapsed into one clean turn."
         },
         {
           "segment": 3,
-          "chemistry": "Present: the wine analogy earns a real reaction chain; Rufus's admission of enthusiasm is punctured by Alex and paid back dryly. Jamie's 'I contain multitudes' lands without a forced laugh.",
-          "discovery": "Present: contrastive learning as translation between two isolated bodies of knowledge; the prospector/geologist distinction; Nature Communications peer review as a credibility marker.",
-          "repetition": "None detected."
+          "chemistry": "Present: Jamie's overreach caught by Rufus with self-aware concession; liability question left genuinely open.",
+          "discovery": "Present: week-eleven/week-fourteen distinction is the scene's sharpest idea, arriving organically.",
+          "repetition": "None detected within segment 3 itself."
         },
         {
           "segment": 4,
-          "chemistry": "Present: Jamie and Rufus sustain a real argument\u2014neither concedes, the alliance shifts line by line. Alex's 'actually defend it' keeps the friction honest. The partial-credit close is earned.",
-          "discovery": "Present: the tiered scaling model as structurally novel; the LLC versus 501(c)(3) distinction as the accountability tell; the three governance questions as the concrete watch-signal.",
-          "repetition": "None detected."
+          "chemistry": "Present: 'who watches the Guardian Agents' is substantively answered; Jamie's authorization-not-intent reframe is a real addition.",
+          "discovery": "Present: unified registry as currently missing enterprise control is concrete. Lines 103\u2013121 restart the Orchestra Bio story after Story 3 has closed, adding angles that belong in segment 3, not here.",
+          "repetition": "Lines 103\u2013121 are a full second discussion of Orchestra Bio after its story already had a payoff and a segment boundary. This is the primary structural defect remaining."
         },
         {
           "segment": 5,
-          "chemistry": "Rufus's 'throttle the agent' lands as a dry callback to Story 1; Alex's reply keeps it open. Brief but functional.",
-          "discovery": "The governance disclosure framed as a falsifiable signal is the clearest editorial payoff of the episode.",
-          "repetition": "None detected."
+          "chemistry": "Functional but thin after the false-ending deletion accepted in prior round.",
+          "discovery": "Alex's Federal Register as forward template is genuinely new. Otherwise correctly summary-mode.",
+          "repetition": "Lines 130 and 131 each read as independent sign-offs ('That's The AI Edge' then 'Follow The AI Edge now'), creating a doubled ending within the closing block."
         }
       ],
-      "rufus_feature": "Scene experience, not merely a label. Rufus names the global desk explicitly, explains the VC capital shift from software to physical-world AI, gives a specific reason the battery timeline matters to investors, and then walks back the hype with 'the gap is still measured in years.' Jamie responds to 'better prospector' with a substantive defence of candidate-narrowing as real value. The studio exchange is responsive. Word count is within the advisory band.",
+      "rufus_feature": "Lines 40\u201342 name a boardroom setting, present a concrete cascading-failure illustration, and return to the studio for a real Jamie pushback and Rufus correction. Functions as an honest imagined dispatch with a responsive exchange, not merely a label.",
       "remaining_issues": [
-        "Story 1 has a duplicated practical-takeaway: lines 53-55 relaunch after Jamie's natural close at line 52 and restate lines 36/41 almost verbatim. This is the only required repair and is addressed in the edits below.",
-        "The segment-5 callback credit ('asked a few weeks ago') references unsupplied aired history; it should be labelled hypothetical or cut per production rules."
+        "Lines 32\u201333: identical consecutive Rufus lines \u2014 the duplicated fragment must be collapsed to one clean turn.",
+        "Lines 103\u2013121: a full re-examination of Orchestra Bio after Story 3 has closed; this second discussion must be removed or its one genuinely new idea (cascading-failure generalisability) folded into segment 3 before the segment boundary.",
+        "Lines 130\u2013131: two consecutive independent sign-offs inside the closing block create a doubled ending; must be merged into one valediction."
       ]
     },
     "remaining_production_language": [],
-    "output_sha256": "6874179cff78682469634caf6e6e94d763e999206eaa6d29df6cb1144afdf5d6",
+    "output_sha256": "7dd665dc1314bd1375732782222c746afcc3d2e8ceaae07968e98b1578f1b1ac",
     "status": "repairs_applied_need_audio_review"
   },
+  "repairs": [
+    {
+      "basis": "model editorial review plus local safeguards; not listening",
+      "listened": false,
+      "requested_calls": 1,
+      "accepted_edits": 2,
+      "edits": [
+        {
+          "accepted": true,
+          "reason": "Merges the doubled contractor point into one clean exchange, removing the restarted half-thought.",
+          "segment": 2
+        },
+        {
+          "accepted": true,
+          "reason": "Deletes false ending before listener question, sponsor credit and follow CTA, as required by the flagged repair.",
+          "segment": 5
+        }
+      ],
+      "input_sha256": "94c5ccdffce1e2868ad68ee7833b4a356f0c3d08913fefe4e31636d205357d84",
+      "review_before_repairs": {
+        "scenes": [
+          {
+            "segment": 2,
+            "chemistry": "Present: Jamie's open-weights enforcement point genuinely complicates Rufus's threat-vector logic; Alex's 'security move or signal' question lands before either friend has resolved it; the Palo Alto/Chinese-law exchange is a real correction, not a canned beat.",
+            "discovery": "Present: the third-party-services scope is surfaced by Jamie before Alex's summary, which is the right order; the Federal Register as future-template framing arrives at line 36 as a genuine addition.",
+            "repetition": "Line 31 ends on 'cold comfort' and line 32 restarts the same contractor point mid-beat, creating a doubled half-thought. Minor but audible."
+          },
+          {
+            "segment": 3,
+            "chemistry": "Present: Jamie's overreach on 'fix the failed batch' is caught by Rufus and she concedes with self-awareness; liability question at line 59 is genuinely unanswered and left open.",
+            "discovery": "Present: the week-eleven/week-fourteen distinction is the scene's sharpest idea and arrives organically through Jamie's defence.",
+            "repetition": "None detected."
+          },
+          {
+            "segment": 4,
+            "chemistry": "Present: 'who watches the Guardian Agents' is Alex's best interjection and Rufus's answer is substantive; Jamie's authorization-not-intent reframe is a real addition. The callback to liability at line 96-98 adds a new consequence rather than restating.",
+            "discovery": "Present: unified registry as a currently missing enterprise control (line 93-95) is a concrete finding, not just colour.",
+            "repetition": "None detected."
+          },
+          {
+            "segment": 5,
+            "chemistry": "Functional but thin: closing lines are accurate summaries rather than voiced reactions. The false ending at lines 128-129 is the flagged structural defect.",
+            "discovery": "Alex's Federal Register as forward template (line 127) is genuinely new. Otherwise the segment is correctly summary-mode.",
+            "repetition": "Lines 128-129 constitute a false ending before the listener question, sponsor credit and follow CTA; the required repair is deletion of those two lines."
+          }
+        ],
+        "rufus_feature": "The boardroom imagined scene (lines 40-42) names the setting and problem clearly, follows with a concrete cascading-failure illustration, and returns to the studio for a real Jamie pushback and Rufus correction. It functions as an honest imagined dispatch with a responsive exchange rather than a mere label.",
+        "remaining_issues": [
+          "Lines 31-32 double the federal-contractor consequence: line 31 lands the point ('cold comfort') and line 32 restarts the same idea as a new question, creating a half-repeated beat that should be merged into one clean turn.",
+          "No remaining structural or reporting issues after the false-ending deletion and the doubled-contractor-line repair."
+        ]
+      },
+      "remaining_production_language": [],
+      "output_sha256": "1531bfb31ebfb894ef8b68015cd30ad6782431e3664a42a1e8fabe74a1d1befd",
+      "status": "repairs_applied_need_audio_review"
+    },
+    {
+      "basis": "model editorial review plus local safeguards; not listening",
+      "listened": false,
+      "requested_calls": 1,
+      "accepted_edits": 3,
+      "edits": [
+        {
+          "accepted": true,
+          "reason": "Collapses the doubled contractor point and removes the duplicate Rufus line into one clean, additive exchange.",
+          "segment": 2
+        },
+        {
+          "accepted": true,
+          "reason": "Removes the full second Orchestra Bio discussion that restarts after Story 3 has closed; payoff already landed in segment 3.",
+          "segment": 4
+        },
+        {
+          "accepted": true,
+          "reason": "Merges the two consecutive independent sign-offs into one closing valediction, removing the doubled ending.",
+          "segment": 5
+        }
+      ],
+      "input_sha256": "1531bfb31ebfb894ef8b68015cd30ad6782431e3664a42a1e8fabe74a1d1befd",
+      "review_before_repairs": {
+        "scenes": [
+          {
+            "segment": 2,
+            "chemistry": "Present: Jamie's open-weights enforcement point genuinely complicates Rufus's threat-vector logic; Palo Alto/Chinese-law exchange is a real correction, not canned.",
+            "discovery": "Present: third-party-services scope surfaces before Alex's summary; Federal Register as future-template framing at line 36 is a genuine addition.",
+            "repetition": "Lines 32\u201333 are identical consecutive Rufus lines; the duplicated fragment must be collapsed into one clean turn."
+          },
+          {
+            "segment": 3,
+            "chemistry": "Present: Jamie's overreach caught by Rufus with self-aware concession; liability question left genuinely open.",
+            "discovery": "Present: week-eleven/week-fourteen distinction is the scene's sharpest idea, arriving organically.",
+            "repetition": "None detected within segment 3 itself."
+          },
+          {
+            "segment": 4,
+            "chemistry": "Present: 'who watches the Guardian Agents' is substantively answered; Jamie's authorization-not-intent reframe is a real addition.",
+            "discovery": "Present: unified registry as currently missing enterprise control is concrete. Lines 103\u2013121 restart the Orchestra Bio story after Story 3 has closed, adding angles that belong in segment 3, not here.",
+            "repetition": "Lines 103\u2013121 are a full second discussion of Orchestra Bio after its story already had a payoff and a segment boundary. This is the primary structural defect remaining."
+          },
+          {
+            "segment": 5,
+            "chemistry": "Functional but thin after the false-ending deletion accepted in prior round.",
+            "discovery": "Alex's Federal Register as forward template is genuinely new. Otherwise correctly summary-mode.",
+            "repetition": "Lines 130 and 131 each read as independent sign-offs ('That's The AI Edge' then 'Follow The AI Edge now'), creating a doubled ending within the closing block."
+          }
+        ],
+        "rufus_feature": "Lines 40\u201342 name a boardroom setting, present a concrete cascading-failure illustration, and return to the studio for a real Jamie pushback and Rufus correction. Functions as an honest imagined dispatch with a responsive exchange, not merely a label.",
+        "remaining_issues": [
+          "Lines 32\u201333: identical consecutive Rufus lines \u2014 the duplicated fragment must be collapsed to one clean turn.",
+          "Lines 103\u2013121: a full re-examination of Orchestra Bio after Story 3 has closed; this second discussion must be removed or its one genuinely new idea (cascading-failure generalisability) folded into segment 3 before the segment boundary.",
+          "Lines 130\u2013131: two consecutive independent sign-offs inside the closing block create a doubled ending; must be merged into one valediction."
+        ]
+      },
+      "remaining_production_language": [],
+      "output_sha256": "7dd665dc1314bd1375732782222c746afcc3d2e8ceaae07968e98b1578f1b1ac",
+      "status": "repairs_applied_need_audio_review"
+    }
+  ],
   "pass": true
 }
