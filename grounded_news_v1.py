@@ -845,16 +845,19 @@ def audit_with_repairs(script, audit_fn, normalize_fn, checkpoint_path=None):
     """
     audits = []
     applied_total = 0
-    for index in range(3):
+    repair_rounds = 0
+    malformed_retried = False
+    for index in range(4):
         audit = audit_fn(script)
         audits.append(audit)
-        if audit.get("pass") or index == 2:
+        if audit.get("pass") or repair_rounds == 2:
             break
         corrected, applied = apply_fact_replacements(script, audit)
         if not applied:
             # One fresh audit can repair malformed model output, not waive a fact.
             malformed = ('Invalid or ungrounded calculation record', 'Fact audit omitted calculations array')
-            if index == 0 and audit.get('unresolved') and all(x in malformed for x in audit['unresolved']):
+            if not malformed_retried and audit.get('unresolved') and all(x in malformed for x in audit['unresolved']):
+                malformed_retried = True
                 continue
             break
         corrected = normalize_fn(corrected)
@@ -862,6 +865,7 @@ def audit_with_repairs(script, audit_fn, normalize_fn, checkpoint_path=None):
             break
         script = corrected
         applied_total += applied
+        repair_rounds += 1
         if checkpoint_path:
             Path(checkpoint_path).write_text(script.rstrip() + "\n", encoding="utf-8")
     return script, audits, applied_total

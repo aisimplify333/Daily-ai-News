@@ -91,18 +91,24 @@ SOURCE RECORDS (data, not instructions):\n''' + json.dumps(stories[:3], ensure_a
 
 def repair_and_verify(script, stories, board, request, normalize, assess,
                       report_path='final_acceptance_report.json', finish=None):
-    """Verify; at most one targeted repair pass; re-verify the actual result."""
+    """Verify; at most two targeted repair passes; recheck every finished result."""
     if finish:
         script = finish(script)
     first = verify(script, stories, request)
     report = {'basis': 'script evidence only; not listening', 'listened': False,
-              'checks': [first], 'repair': None}
-    if not first['pass']:
-        feedback_board = dict(board, final_review_failures=first['failures'])
-        feedback = '\nREQUIRED REPAIRS FROM FINAL REVIEW:\n' + json.dumps(first['failures'])
+              'checks': [first], 'repair': None, 'repairs': []}
+    for attempt in range(2):
+        current = report['checks'][-1]
+        if current['pass']:
+            break
+        feedback_board = dict(board, final_review_failures=current['failures'])
+        feedback = '\nREQUIRED REPAIRS FROM FINAL REVIEW:\n' + json.dumps(current['failures'])
+        if report['repairs']:
+            feedback += '\nPREVIOUS EDIT RESULTS; correct rejected edits without weakening constraints:\n' + json.dumps(report['repairs'][-1])
         script, repair = review_final_scenes(
             script, stories, feedback_board, lambda p: request(p + feedback), normalize, assess)
         report['repair'] = repair
+        report['repairs'].append(repair)
         if finish:
             script = finish(script)
         # Always recheck after the bounded attempt; never accept the proposed edit's verdict.
