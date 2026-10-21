@@ -7,6 +7,16 @@ PERFORMANCE_DIRECTION = """
 PERFORMANCE AND DIALOGUE EDIT:
 Write speakable replies that follow what a friend just said. Allow short reactions,
 a complete explanation, and space for a consequential fact. Pace follows meaning.
+Build audible contrast: brisk short back-and-forth when the friends challenge or
+tease, then a slower, quieter sentence when the human consequence lands. Resume
+with warmth or curiosity rather than holding one dramatic pitch throughout.
+Use contractions, short rebuttals, a deliberate pause before a dry payoff, and
+occasional earned laughter from a friend. Sarcasm targets a claim or the cast's
+pretensions, not vulnerable people. Never add audience laughter or a laugh track.
+A challenge needs an answer and a response to that answer; let the third friend
+complicate the point instead of instantly summarizing it. Preserve useful detail.
+Never say "in the supplied reporting", "the existing discussion", or other
+writer-room instructions on air; attribute uncertainty naturally to the source.
 Preserve the strongest personal responses while cutting repeated exposition. Do not
 expand a lively exchange into three essays or explain a punchline after it lands.
 No canned laughter, automatic Ha/Wait filler, or spoken acting labels. A written
@@ -50,3 +60,4 @@ def boundary_pause(text, speaker, next_text="", next_speaker="", mood="neutral",
     if len(reply.split()) <= 9:
         return {"milliseconds": 65, "reason": "short_reply"}
     return {"milliseconds": 110, "reason": "conversational_handoff"}
+
