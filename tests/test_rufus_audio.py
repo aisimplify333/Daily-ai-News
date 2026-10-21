@@ -1,5 +1,6 @@
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 from pydub import AudioSegment
 from pydub.generators import Sine
@@ -7,6 +8,18 @@ from rufus_audio import entrance_due, prepare_entrance
 
 
 class RufusAudioTests(unittest.TestCase):
+    def test_default_uses_original_transition_and_preserves_its_length(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            source, dest = root/'transition.mp3', root/'entrance.mp3'
+            Sine(440).to_audio_segment(duration=2800).export(source, format='mp3').close()
+            audit = {}
+            with patch('rufus_audio.__file__', str(root/'rufus_audio.py')):
+                self.assertEqual(prepare_entrance(dest, audit=audit), dest)
+            self.assertAlmostEqual(len(AudioSegment.from_file(dest)), 2800, delta=50)
+            self.assertEqual(audit['asset'], 'transition.mp3')
+            self.assertEqual(audit['provider'], 'existing_show_asset')
+
     def test_entrance_only_follows_host_feature_handoff_once(self):
         for text in ('Rufus, take us on location.', 'Rufus, take us to the global desk.'):
             self.assertTrue(entrance_due('ALEX', text, 3))
@@ -28,3 +41,4 @@ class RufusAudioTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
