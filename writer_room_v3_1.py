@@ -1091,6 +1091,15 @@ move through shared fascination as readily as disagreement. Planning notes are n
 spoken or treated as evidence. Use the shared cast brief; do not reduce the characters
 to host, human-stakes prosecutor and financial skeptic.
 
+Rufus also covers major AI conferences when their dated announcements are driving
+today's supplied reporting. Build his dispatch around the actual announcement,
+money/infrastructure/policy stakes, global winners and consequences for listeners.
+Use the sourced event name, location and dates; never infer attendance or invent
+backstage interviews. Conference atmosphere is an imagined production setting.
+Let Alex and Jamie tease his endless travel and conference habits, and let him
+return the joke before landing a concrete, useful insight. No forced conference
+slot when there is no consequential current conference story.
+
 TODAY'S TOP AI EVENTS:
 {_story_lines(stories)}
 

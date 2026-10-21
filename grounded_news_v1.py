@@ -315,6 +315,14 @@ Rules:
   capex, financing, chips, data centers, utilities/power, sovereign investment and
   legislation with a market consequence. Include price or percentage moves only when
   a dated source states the move and timeframe; never infer a stock reaction.
+- During major AI conferences, actively search dated announcements and independent
+  coverage from events such as NVIDIA GTC, Microsoft Build, Google I/O, AWS re:Invent,
+  Dreamforce, Oracle events and relevant global AI/VC summits. This is an open list.
+  Verify the event dates and the announcement's original date against this news cycle.
+  Rufus can cover consequential deals, infrastructure, capital, policy and global
+  competition emerging there: what changed, who benefits and what listeners feel.
+  Select substantive announcements on merit; an event's fame or promotional agenda
+  alone does not earn a story slot. Do not resurrect last year's keynote as new news.
 - Exclude SEO explainers, listicles, commentary presented as news, conference promotion,
   rumor without attribution, and routine content marketing.
 - One event per item. Do not combine unrelated stories into a thesis.
