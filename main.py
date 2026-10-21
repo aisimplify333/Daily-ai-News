@@ -6445,6 +6445,13 @@ def produce_episode() -> None:
     FORWARDABLE_MOMENTS_PATH.write_text(json.dumps(forwardable_moments, indent=2, ensure_ascii=False), encoding="utf-8")
 
     show_notes = build_episode_show_notes(tracking, pack, stories)
+    case_path = BASE_DIR / "jamie_transformation_case.json"
+    if case_path.exists():
+        case = json.loads(case_path.read_text())
+        if case.get("episode_date") == today:
+            show_notes += "\n\nJamie's AI Transformation — source: " + case["source_url"]
+            show_notes += "\nCase date: " + case["case_date"] + "; evidence: " + case["result_basis"]
+
 
     _write_sidecar_meta_for_date(today, title=feed_title, description=show_notes)
 

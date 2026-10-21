@@ -96,6 +96,13 @@ def recover_completed_render(
         })
         return _write_report(base_dir, report)
 
+    script_path = base_dir / f"script_{date_str}.txt"
+    if script_path.exists() and "Jamie, show us the AI transformation." in script_path.read_text():
+        report.update(disposition="held_for_editorial_review",
+                      reason="Additive Jamie feature: preserve full audio without time compression",
+                      duration_after_seconds=round(before, 3))
+        return _write_report(base_dir, report)
+
     target_seconds = max_minutes * 60 - float(
         os.getenv("POST_RENDER_HEADROOM_SECONDS", "10")
     )
@@ -150,3 +157,4 @@ def recover_completed_render(
 if __name__ == "__main__":
     result = recover_completed_render(Path(__file__).parent)
     print(json.dumps(result, ensure_ascii=False, indent=2))
+

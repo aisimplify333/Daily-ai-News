@@ -33,3 +33,16 @@ class JamieTests(unittest.TestCase):
 
 
 if __name__ == '__main__': unittest.main()
+
+class JamieRecoveryTests(unittest.TestCase):
+    def test_completed_feature_is_not_sped_up_to_fit(self):
+        from post_render_recovery import recover_completed_render
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root/'episode_audio').mkdir()
+            (root/'episode_audio/podcast_2026-10-21.mp3').write_bytes(b'x'*1200)
+            (root/'script_2026-10-21.txt').write_text('ALEX: '+HANDOFF)
+            with patch('post_render_recovery._duration_seconds', return_value=34*60), patch('post_render_recovery.subprocess.run') as render:
+                result = recover_completed_render(root, '2026-10-21', 19, 33)
+                self.assertEqual(result['disposition'], 'held_for_editorial_review')
+                render.assert_not_called()

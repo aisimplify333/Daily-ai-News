@@ -21,6 +21,7 @@ jobs:
           sparse-checkout: |
             /*.py
             /requirements.txt
+            /jamie_transformation_case.json
             /tests/
             /.github/
             /specialty_audio/
@@ -56,7 +57,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          for path in specialty_audio/jamie jamie_transformation_case.json jamie_transformation_report.json jamie_rehearsal.json jamie_rehearsal.txt; do
+          for path in specialty_audio/jamie jamie_transformation_case.json jamie_transformation_report.json jamie_transformation_rejected.json jamie_rehearsal.json jamie_rehearsal.txt; do
             if [ -e "$path" ]; then git add --sparse -- "$path"; fi
           done
           if ! git diff --cached --quiet; then
