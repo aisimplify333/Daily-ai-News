@@ -55,3 +55,12 @@ def test_oct15_imagined_tech_company_matches_existing_office_bed():
     assert choose_bed("Picture this: you're a legal strategist at a large tech company in New York.") == 'office'
     assert choose_bed('A large tech company announced results.') is None
     assert choose_bed('Picture the global desk.') is None
+
+
+
+def test_global_dispatch_uses_specific_setting_before_city():
+    assert choose_bed('Imagine Dreamforce in San Francisco.') == 'conference'
+    assert choose_bed('Picture a data center outside Shanghai.') == 'server_room'
+    assert choose_bed('Imagine Parliament in London.') == 'legislative_hall'
+    assert choose_bed('Picture Hong Kong at street level.') == 'city'
+    assert choose_bed('Rufus is in Shanghai.') is None

@@ -26,8 +26,14 @@ def research(date, search):
         saved = json.loads(path.read_text())
         if saved.get('episode_date') == date and valid_case(saved) and source_matches(saved):
             return saved
-    prompt = '''Use live web search and open primary sources. Find ONE documented
-real person or company achieving a concrete beneficial result with AI. This is an
+    prompt = '''Use live web search across varied sources. Find ONE documented
+real person, entrepreneur, small business, creator or company achieving a concrete
+beneficial result with AI. Consider beauty, food, travel, sport, creative work,
+education, accessibility, home tasks and surprising industries, not only big tech.
+Discover through trade press, reputable reporting, interviews, company case studies,
+research and creator demonstrations; trace the actual outcome to its supporting
+source. A specific qualitative result is acceptable: do not require impressive
+percentages or a large-company benchmark. Label personal/vendor accounts accurately. This is an
 evergreen case-study feature, NOT a fourth breaking-news headline. An older case
 is allowed only with its actual date, clear attribution and current availability
 checked today. Prefer a useful, relatable workflow and substantive results, not
@@ -35,7 +41,7 @@ funding, a forecast, a demo claim or an unmeasured promise. Rotate industries an
 avoid recent cases listed below. Never invent an anonymous listener submission.
 Return JSON only with fields: subject, tool, problem, workflow, result,
 result_basis (independent evidence or company/vendor reported), measurement_context,
-case_date, source_url (direct primary-source https URL), source_quote (10-25 exact
+case_date, source_url (direct supporting article, study, interview or case-study https URL), source_quote (10-25 exact
 words from that page supporting the result), limitation,
 listener_action, availability. Include a second corroborating URL when available.
 No invented quantitative uplift, causality, costs, quotes or hands-on experience.
@@ -66,6 +72,13 @@ def source_matches(case):
     """Open the claimed source; a plausible-looking URL is not evidence."""
     import urllib.request
     from bs4 import BeautifulSoup
+    # Retain independently retrieved evidence for sites that reject runner requests.
+    # This file is producer-controlled, never accepted from the research model.
+    evidence_path = Path('jamie_source_evidence') / (hashlib.sha256(case['source_url'].encode()).hexdigest() + '.json')
+    if evidence_path.exists():
+        retained = json.loads(evidence_path.read_text())
+        if retained.get('source_url') == case['source_url'] and retained.get('source_quote') == case.get('source_quote'):
+            return True
     try:
         request = urllib.request.Request(case['source_url'], headers={'User-Agent':'Mozilla/5.0'})
         with urllib.request.urlopen(request, timeout=30) as response:
@@ -93,6 +106,14 @@ Jamie enters delighted to share a discovery. Show the relatable before, actual A
 workflow, reported after, attribution and measurement context. Say when the case
 occurred; do not present an old case as today's news. Identify vendor/company claims
 as such. No invented result, quote, listener submission, personal testing or access.
+This is also the cast's playful playground: Jamie finally has her own segment,
+and Alex and Rufus enjoy giving her affectionate grief about her new star billing.
+Let them poke fun at the relatable scenario and her excitement; Jamie gives as good
+as she gets. Build a small comic exchange that develops, not isolated punchlines.
+Rotate the joke and who gets the last word. No permanent two-against-Jamie pattern,
+forced laughter, humiliation or invented personal experience. A cosmetics example
+can invite jokes about skincare routines and trend-chasing; other cases earn their
+own humor. The joke must leave listeners understanding the useful transformation.
 Alex asks how a normal person could apply the idea. Rufus challenges one specific
 limitation or metric; Jamie answers and can tease him back. Let the third friend
 complicate or join the joke. Include a concrete first step and honest limitation.

@@ -9,11 +9,11 @@ def choose_bed(text):
     if not re.search(r'\b(?:picture|imagine)\b', text, re.I):
         return None
     for name, pattern in [('office', r'\b(?:office|boardroom|risk committee meeting|board meeting|conference room|software company|(?:large )?tech company|developer team)\b'),
-                          ('conference', r'\b(?:conference|convention)\b'),
+                          ('conference', r'\b(?:conference|convention|dreamforce|oracle (?:event|cloudworld)|vc (?:event|summit)|trade show)\b'),
                           ('factory', r'factory|manufacturing floor'),
-                          ('server_room', r'server room|data cent'),
-                          ('legislative_hall', r'legislative hall|parliament|congressional hall'),
-                          ('city', r'sidewalk|street corner|wall street')]:
+                          ('server_room', r'server room|data[ -]?cent' ),
+                          ('legislative_hall', r'legislative hall|parliament|congressional hall|capitol corridor' ),
+                          ('city', r'sidewalk|street corner|wall street|hong kong|shanghai|las vegas|san francisco')]:
         if re.search(pattern, text, re.I):
             return name
     return None
@@ -39,7 +39,7 @@ def mix_reviewed_bed(voice_path, destination, text, root=None, audit=None):
         if hashlib.sha256(data).hexdigest() != row.get('sha256'):
             return None
         voice = AudioSegment.from_file(voice_path)
-        bed = AudioSegment.from_file(root/row['file'])[:min(5000, len(voice))]
+        bed = AudioSegment.from_file(root/row['file'])[:min(10000, len(voice))]
         if not bed.rms or not voice.rms:
             return None
         bed = bed.apply_gain(min(-34, voice.dBFS-16)-bed.dBFS).fade_in(120).fade_out(min(1200,len(bed)))
@@ -117,3 +117,4 @@ def mix_welcome_music(voice_path, destination, root=None, audit=None):
         return Path(destination)
     except Exception:
         return None
+
