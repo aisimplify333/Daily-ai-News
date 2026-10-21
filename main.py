@@ -5994,6 +5994,12 @@ def produce_episode() -> None:
         script_path.write_text(script, encoding="utf-8")
         _safe_print(f"    ✅ Saved script: {script_path.name}")
 
+    from jamie_transformation import status as jamie_status, prepare_cue
+    if not jamie_status(script)['pass']:
+        raise RuntimeError("Final render script is missing Jamie's complete transformation")
+    # Check approved sound before spending on any voices.
+    (BASE_DIR / "_tmp_audio").mkdir(exist_ok=True)
+    prepare_cue(BASE_DIR / "_tmp_audio" / "jamie_preflight.mp3")
     dialogue = iter_dialogue(script)
     render_items = _build_eleven_render_items(dialogue) if AUDIO_BACKEND == "eleven" else merge_dialogue_for_tts(dialogue, max_chars=TTS_MERGE_MAX_CHARS)
 
@@ -6076,6 +6082,7 @@ def produce_episode() -> None:
     pause_assets = {}
     from rufus_audio import entrance_due, prepare_entrance
     rufus_entrance_played = False
+    jamie_entrance_played = False
     rufus_atmosphere_played = False
     from specialty_audio.mixer import mix_reviewed_bed, mix_welcome_music
     for render_index, (speaker, text) in enumerate(render_items):
@@ -6280,6 +6287,15 @@ def produce_episode() -> None:
                     assembly_markers.append({"kind": "rufus_entrance", "sound_design": entrance_audit, "segment": assembly_segment,
                                              "start_index": len(concat_files), "end_index": len(concat_files) + 1})
                     concat_files.append(entrance)
+            from jamie_transformation import HANDOFF as JAMIE_HANDOFF, prepare_cue
+            if not continuing and not jamie_entrance_played and speaker == "ALEX" and JAMIE_HANDOFF in text:
+                jamie_entrance_played = True
+                cue, cue_audit = prepare_cue(run_tmp / "jamie_entrance.mp3")
+                sound_design_attempts.append(cue_audit)
+                assembly_markers.append({"kind": "jamie_entrance", "sound_design": cue_audit,
+                                         "segment": assembly_segment, "start_index": len(concat_files),
+                                         "end_index": len(concat_files) + 1})
+                concat_files.append(cue)
             if sponsor_chunk:
                 concat_files.append(sponsor_pause_path)
             else:
@@ -6330,7 +6346,7 @@ def produce_episode() -> None:
     elif minutes > MAX_MINUTES:
         overage_seconds = int(round((minutes - MAX_MINUTES) * 60))
 
-        if overage_seconds <= OVERAGE_TOLERANCE_SECONDS:
+        if overage_seconds <= OVERAGE_TOLERANCE_SECONDS and "Jamie, show us the AI transformation." not in script:
             _safe_print(
                 f" ⚠️ Episode over by {overage_seconds}s. "
                 f"Time-fitting to {MAX_MINUTES:.2f} minutes without cutting the close or outro."
@@ -6485,4 +6501,5 @@ def produce_episode() -> None:
 
 if __name__ == "__main__":
     produce_episode()
+
 

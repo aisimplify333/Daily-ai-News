@@ -586,6 +586,7 @@ def _fact_check_prompt(script: str, stories: List[Dict[str, Any]], date_str: str
     evidence = [
         {
             "rank": story.get("rank"),
+            "jamie_transformation_case": story.get("jamie_transformation_case"),
             "headline": story.get("headline"),
             "publisher": story.get("publisher"),
             "published_at": story.get("published_at"),
@@ -905,5 +906,6 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
 

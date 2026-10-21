@@ -1,0 +1,66 @@
+name: Jamie transformation readiness
+on:
+  push:
+    branches: [main]
+    paths: ['JAMIE_UPGRADE_RUN_ONCE']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: jamie-transformation-readiness
+  cancel-in-progress: false
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*.py
+            /requirements.txt
+            /tests/
+            /.github/
+            /specialty_audio/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y ffmpeg
+          pip install -r requirements.txt pytest
+      - name: Verify production regressions
+        run: python -m pytest tests -q
+      - name: Commission and evaluate Jamie signature
+        env:
+          AI_EDGE_PODCAST_ELEVENLABS: ${{ secrets.AI_EDGE_PODCAST_ELEVENLABS }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: python -m specialty_audio.build_jamie
+      - name: Rehearse sourced additive feature for next morning
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python rehearse_jamie.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: jamie-readiness
+          path: |
+            specialty_audio/jamie/
+            jamie_transformation_*.json
+            jamie_rehearsal.*
+      - name: Preserve paid assets and case records
+        if: always()
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          for path in specialty_audio/jamie jamie_transformation_case.json jamie_transformation_report.json jamie_rehearsal.json jamie_rehearsal.txt; do
+            if [ -e "$path" ]; then git add --sparse -- "$path"; fi
+          done
+          if ! git diff --cached --quiet; then
+            git commit -m 'Preserve reviewed Jamie jingle and sourced feature rehearsal'
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi

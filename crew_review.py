@@ -7,7 +7,7 @@ from crew_direction import CREW_DIRECTION
 from dialogue_direction import sponsor_text
 
 PRODUCTION_LANGUAGE = re.compile(
-    r"\b(?:scene plan|source packet|source record|writing prompt|word budget|production notes|"
+    r"\b(?:supplied reporting|existing discussion|scene plan|source packet|source record|writing prompt|word budget|production notes|"
     r"accessible (?:excerpt|reporting)|scene we're working from)\b", re.I)
 
 
@@ -120,5 +120,6 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
     report['output_sha256'] = hashlib.sha256(script.encode()).hexdigest()
     report['status'] = 'repairs_applied_need_audio_review' if report['accepted_edits'] else 'no_repairs_applied'
     return script, report
+
 
 

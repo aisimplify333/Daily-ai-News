@@ -1342,36 +1342,8 @@ reapply the lead's thesis. Preserve the Jamie/Rufus conversational Ledger midrol
 Say 'Our third story' once. Prefer discovery, practical possibility or earned delight
 when the selected facts support it. On serious days offer clarity and agency, not
 fabricated good news. Never turn all three discussions into one warning.
-JAMIE'S TRY THIS — a recurring 2-3 minute feature inside Segment 4, after its main
-story and before the closing segment. Aim for 300-420 additional spoken words when
-the supplied sources support a useful application.
-Treat this as Jamie's signature discovery/review feature, as recognizable as Rufus's
-on-location dispatch. She eagerly takes the floor with a short conversational invitation
-such as "Okay, I've been looking forward to this one." Vary the wording each episode.
-Make her excitement audible through short lively opening phrases, a specific reason
-she cares, responsive teasing, and a clear explanation. She is excited to share the
-idea, not pretending to have personally used it. Never call a desk review a hands-on test.
-Give the feature a human mini-story: a relatable problem, a sourced tool capability,
-a concrete possible next step, and an honest limit. A real anonymized account requires
-a supplied source or genuine listener submission; preserve its meaning and attribution
-and omit identifying details. If no account exists, create an explicitly hypothetical
-example introduced naturally with "Imagine..." or "Say you're...". Never say "a listener
-wrote in", "someone told me" or imply an actual outcome for an invented scenario.
-No name is needed. Do not manufacture quotes, measured savings or success stories.
-Alex and Rufus react to that person's problem and Jamie's proposed use, with affection,
-a substantive challenge and room for her to answer or tease back.
-Jamie introduces one actual tool
-or research application from the verified stories: what problem it addresses, who
-could use it, and a concrete first step or clearly hypothetical workflow. Alex asks
-the practical question an ordinary listener would ask. Rufus tests one specific
-limitation; Jamie answers it, and any host may surprise the others. Let playful
-exchanges grow from that example, not a fixed optimistic pitch followed by dismissal.
-Do not claim the cast tested anything unless a supplied test record proves it.
-Distinguish a public tool from a research prototype; if unavailable, explain the
-application and what must happen before listeners can use it. Never invent access,
-pricing, features, results or time savings. Use only authoritative story records.
-If there is insufficient sourced material, omit this feature rather than fabricate
-a recommendation. No extra SEGMENT header or music marker; keep five segments.
+Jamie's AI Transformation is appended separately after this core story. Do not
+write it here or shorten any of the three stories to make room for it.
 ### SEGMENT 5 — Payoff
 Answer the opening question with what we know and what remains uncertain. One useful
 checkable prediction, one listener question, one show-follow CTA. Keep the ending
@@ -1379,9 +1351,9 @@ checkable prediction, one listener question, one show-follow CTA. Keep the endin
 
 LENGTH AND EDIT:
 Target 3,700-4,200 spoken words; acceptable planning range 3,150-4,800. Actual audio
-must meet the 19-26 minute preference and 30 minute ceiling. Jamie's 300-420 word
-feature is additional to the core story discussion when supported; trim repetitive
-analysis to respect the ceiling, never speed up the voices to fit it. Depth comes from evidence,
+core retains its existing length preference. A separately sourced 2-3 minute Jamie
+feature is added afterwards, with a 33-minute total ceiling. Do not remove or shorten
+any core section to accommodate it, and never speed up voices to fit it. Depth comes from evidence,
 examples explicitly labelled hypothetical, a sharper objection or a useful consequence.
 Never pad with recaps. Split the editorial discussion approximately 40/30/30.
 Normal turns 8-30 words, maximum 55. Alex's questions/setups usually 8-25 words.
@@ -1851,6 +1823,9 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     words = _word_count(full)
     min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3150"))
     max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4800"))
+    from jamie_transformation import status as jamie_status
+    if jamie_status(full)['pass']:
+        max_episode_words += 470
 
     segments = len(re.findall(r"^###\s*SEGMENT\s+[1-5]\b", full, flags=re.MULTILINE | re.IGNORECASE))
     music = full.count("[MUSIC]")
@@ -3155,6 +3130,15 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             assess=lambda candidate: _assess(candidate, stories, board, fuel),
             finish=finish_editorial)
 
+        # Add a separately researched case AFTER core runtime editing and acceptance.
+        # All three stories, sponsors, Rufus and closing survive unchanged.
+        from jamie_transformation import research as research_jamie, add_feature, status as jamie_status
+        from grounded_news_v1 import _grounded_text
+        case = research_jamie(date_str, lambda prompt: _grounded_text(prompt, model=GROUNDED_NEWS_MODEL))
+        stories = [dict(story) for story in stories]
+        stories[0]['jamie_transformation_case'] = case
+        script = add_feature(script, case, final_editor_request)
+
         # Required fact verification of the actual final script, after all creative edits.
         try:
             from grounded_news_v1 import audit_with_repairs, fact_check_script
@@ -3198,6 +3182,9 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         script = stabilize(_split_long_turns(script, max_words=55))
         script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
+
+        if not jamie_status(script)['pass']:
+            raise RuntimeError("Jamie transformation did not survive final fact repairs")
 
         # Fact edits must not reopen a weak scene or invalidate the accepted script.
         if total_applied:
@@ -3416,6 +3403,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     g["V3_1_WRITER_ROOM_INSTALLED"] = True
     g["V3_2_HARD_DEBATE_WRITER_ROOM_INSTALLED"] = True
     g["V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"] = True
+
 
 
 

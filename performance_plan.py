@@ -27,7 +27,7 @@ may brighten the room, and a serious consequence may quiet it. Rufus is not alwa
 Alex is not always questioning; Jamie is not always pushing back. Never force
 emotion into every turn or assign delight to harm. Do not use keyword matching. Give Jamie
 contextual direction, not automatic neutral.
-In Jamie's Try This feature, give her eager opening and the concrete useful discovery
+In Jamie's AI Transformation feature, give her eager opening and the concrete useful discovery
 delight when the text supports it: she is visibly keen to share this with her friends.
 Use curiosity for exploration, warmth for the human example, amused for earned teasing,
 and explainer for practical steps. Let excitement rise, settle and return at the payoff;
@@ -129,4 +129,5 @@ def planned_mood(text, speaker, path='performance_plan.json'):
         if len(moods) == 1:
             return next(iter(moods))
     return None
+
 
