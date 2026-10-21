@@ -1,198 +1,245 @@
 {
   "version": "grounded-story-slate-v1",
-  "date": "2026-10-20",
+  "date": "2026-10-21",
   "pass": true,
   "candidate_target": 5,
   "required_air_stories": 3,
   "selected": [
     {
-      "event_key": "deepseek-us-federal-ban-2026-10-20",
-      "headline": "AP reports US ban of DeepSeek from federal civilian agencies, with China warning of retaliation",
-      "title": "AP reports US ban of DeepSeek from federal civilian agencies, with China warning of retaliation",
-      "publisher": "Associated Press",
-      "published": "2026-10-20T09:36:19Z",
-      "published_at": "2026-10-20T09:36:19Z",
-      "source_url": "https://apnews.com/article/us-china-deepseek-ai-ban-2bffa5b0131808735280b2c0e6f0d856",
-      "link": "https://apnews.com/article/us-china-deepseek-ai-ban-2bffa5b0131808735280b2c0e6f0d856",
-      "summary": "The Associated Press reports that China criticized a U.S. ban on DeepSeek products in federal civilian agencies and warned of retaliation. AP says the Department of Homeland Security told agencies to remove DeepSeek products and related third-party services from IT systems, and the order also blocks procurement. The AP report says the Federal Register notice cites multiple threat vectors, including concerns about servers located in China and potential access to sensitive U.S. data. The story places the action in the context of growing U.S.-China distrust over AI.",
+      "event_key": "nvidia-openshell-reference-architecture-2026-10-21",
+      "headline": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents",
+      "title": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents",
+      "publisher": "NVIDIA",
+      "published": "2026-10-21T00:00:00Z",
+      "published_at": "2026-10-21T00:00:00Z",
+      "source_url": "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
+      "link": "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
+      "summary": "NVIDIA announced the OpenShell Reference Architecture for building, containing, observing, and enforcing safe agents on enterprise infrastructure and edge systems. The stack includes Vera Rubin infrastructure, Vera CPUs, OpenShell software, and BlueField DPUs with NVIDIA Sentry for policy enforcement. NVIDIA says the architecture runs on Canonical, Red Hat, and Microsoft Windows environments. The company says Sentry can quarantine agents that move outside their software boundary in milliseconds and can boost agent capacity by up to 20%.",
       "facts": [
-        "AP reports the Department of Homeland Security told federal civilian agencies to remove DeepSeek products and third-party products built using DeepSeek from IT systems.",
-        "AP reports the order also blocks civilian agencies from procuring DeepSeek products and services.",
-        "AP says the Federal Register notice cites multiple threat vectors.",
-        "AP says one cited concern is that DeepSeek’s servers are in China and could expose sensitive U.S. data.",
-        "AP reports China warned of retaliatory measures."
+        "NVIDIA announced OpenShell on October 21, 2026.",
+        "The architecture is designed to build, contain, observe, and enforce safe agents.",
+        "It runs on Canonical, Red Hat, and Microsoft Windows environments.",
+        "NVIDIA says BlueField and Sentry provide in-silicon security enforcement.",
+        "NVIDIA says Sentry can quarantine misbehaving agents in milliseconds.",
+        "NVIDIA says Sentry can boost agent capacity by up to 20%."
       ],
       "data_points": [
-        "2026-10-20T09:36:19Z"
+        "milliseconds",
+        "up to 20%"
       ],
       "limitations_or_qualifiers": [
-        "This is a U.S. federal civilian-agency action; the AP report does not establish a broader consumer ban or global prohibition."
+        "Security and capacity claims are vendor claims; actual performance depends on deployment and workload."
       ],
-      "why_it_matters": "This matters because it is a direct government restriction on an AI system, with immediate procurement and security consequences for public-sector users and broader geopolitical spillovers.",
+      "why_it_matters": "This matters because agent security is becoming a deployment blocker, and NVIDIA is packaging hardware and software controls around that risk.",
       "editorial_case": {
-        "new_development": "Within the reporting window, the U.S. government moved to remove DeepSeek from civilian-agency systems and procurement, while China publicly pushed back.",
-        "affected_listener": "Federal IT buyers, contractors, and listeners tracking U.S.-China AI policy are most affected.",
-        "why_today": "It is a clear policy event with concrete operational consequences, not just rhetoric about AI competition.",
-        "distinct_question": "What exactly did the U.S. government do to DeepSeek, and why does it matter now?",
-        "new_since_prior_coverage": "The new fact is the enforcement action and the public Chinese response inside the window.",
-        "practical_payoff": "Listeners should watch whether other agencies or allied governments follow with similar procurement restrictions."
+        "new_development": "NVIDIA turned agent safety from a policy concern into a bundled infrastructure architecture with enforcement tooling.",
+        "affected_listener": "Enterprise AI teams deploying autonomous agents in regulated or mission-critical environments.",
+        "why_today": "It directly addresses a major current pain point for AI deployment: how to confine agents safely at scale.",
+        "distinct_question": "What does a secure enterprise agent stack look like in practice?",
+        "new_since_prior_coverage": "This is a new product architecture announcement, distinct from general agent-security commentary.",
+        "practical_payoff": "Buyers can compare OpenShell against existing guardrail and observability tooling before scaling agents into production."
       },
       "editorial_scores": {
-        "human_consequence": 5,
+        "human_consequence": 4,
         "novelty": 4,
-        "explanatory_value": 4,
+        "explanatory_value": 5,
         "evidence_depth": 5
       },
-      "story_age_hours": 10.49,
+      "story_age_hours": 13.89,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
       "story_tier": "primary",
-      "topic_family": "governance",
+      "topic_family": "products",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "openai-orchestra-bio-acquisition-2026-10-20",
-      "headline": "OpenAI acquires Orchestra Bio to connect AI models with biopharma workflows",
-      "title": "OpenAI acquires Orchestra Bio to connect AI models with biopharma workflows",
-      "publisher": "OpenAI",
-      "published": "2026-10-20T00:00:00Z",
-      "published_at": "2026-10-20T00:00:00Z",
-      "source_url": "https://openai.com/index/openai-to-acquire-orchestra-bio/",
-      "link": "https://openai.com/index/openai-to-acquire-orchestra-bio/",
-      "summary": "OpenAI says it has acquired Orchestra Bio, a platform for coordinating drug development workflows. The company says it is bringing Orchestra’s team and technology together with its Rosalind life-sciences models and tools. OpenAI says the combined effort is aimed at helping scientists manage the complex work of moving discoveries toward treatments. The post describes use cases such as tracking studies, campaigns, and timeline dependencies across biopharma teams.",
+      "event_key": "google-openai-partnership-cloud",
+      "headline": "Google Cloud integrates OpenAI models into Model Garden",
+      "title": "Google Cloud integrates OpenAI models into Model Garden",
+      "publisher": "Google Cloud",
+      "published": "2026-10-21T00:00:00Z",
+      "published_at": "2026-10-21T00:00:00Z",
+      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaWLvCTv_r_BxYM4sZT3eHABieqsZBYIqPXxS_5_qs-2auFNv5Zp4WoHHZvqLtOdw4Z8_TRV3tlvcXnnRsTTpcvvryV-_U85c0sAui1xz8DOohpSYNFlAj7duzN7XgQIQ-DfU6DSCgQydAwDND4AEsXtcGwlVU4IZY9J-xndqEUMUte04Z62gxBz_ttsLuD6wc7EKITRDt5xHEpjePmmI=",
+      "link": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaWLvCTv_r_BxYM4sZT3eHABieqsZBYIqPXxS_5_qs-2auFNv5Zp4WoHHZvqLtOdw4Z8_TRV3tlvcXnnRsTTpcvvryV-_U85c0sAui1xz8DOohpSYNFlAj7duzN7XgQIQ-DfU6DSCgQydAwDND4AEsXtcGwlVU4IZY9J-xndqEUMUte04Z62gxBz_ttsLuD6wc7EKITRDt5xHEpjePmmI=",
+      "summary": "Google Cloud has added OpenAI's frontier models—GPT-Astra, GPT-6.1 Sol, and GPT-6 Luna—to its Model Garden and Marketplace. This move makes Google the only hyperscale cloud provider to offer access to all three major closed-source LLMs alongside its own Gemini suite. The models are available to select enterprise customers in private preview, with usage billed through existing Google Cloud spending commitments.",
       "facts": [
-        "OpenAI announced the acquisition on October 20, 2026.",
-        "Orchestra Bio is described as a platform that helps biopharma teams coordinate drug development.",
-        "OpenAI says the acquisition brings Orchestra Bio together with Rosalind, its life-sciences models and tools.",
-        "OpenAI says the combined system is meant to help scientists manage workflows and move treatments forward sooner.",
-        "The post says Orchestra’s agents can monitor and track studies and campaigns.",
-        "The post gives an example in which a failed manufacturing batch could delay a clinical trial."
+        "Models added include GPT-Astra, GPT-6.1 Sol, and GPT-6 Luna.",
+        "Google Cloud is the only hyperscale cloud provider offering access to OpenAI, Anthropic, and Google's own closed-source models.",
+        "Customers can purchase and deploy these models via Google Cloud Marketplace and integrate them into existing workflows.",
+        "Models will be available in Gemini for business and the Google Antigravity environment.",
+        "The rollout is currently in private preview for select enterprise customers."
       ],
       "data_points": [
-        "10 to 15 years",
-        "October 20, 2026"
+        "Access to over 200 first-party, third-party, and open-source models on the platform."
       ],
       "limitations_or_qualifiers": [
-        "The post is a company announcement and describes intended uses; it does not establish broad public availability or independent performance results.",
-        "Drug-development workflows are specialized and not described as a consumer product."
+        "Private preview access only at launch; general availability expected in coming weeks."
       ],
-      "why_it_matters": "This matters because it shows a major AI lab moving from model development into direct control of a high-stakes scientific workflow where speed, coordination and traceability can affect real-world medical timelines.",
+      "why_it_matters": "This deal breaks the last major cloud exclusivity barrier for OpenAI and positions Google Cloud as a flexible, model-agnostic infrastructure hub for enterprise AI.",
       "editorial_case": {
-        "new_development": "OpenAI publicly announced that it acquired Orchestra Bio and is folding it into its life-sciences effort on October 20, 2026.",
-        "affected_listener": "Biopharma researchers, program managers and drug-development teams are the people most directly affected by the workflow changes described.",
-        "why_today": "It is a same-day corporate announcement with concrete product/workflow implications rather than a recap or speculative report.",
-        "distinct_question": "How is OpenAI trying to turn frontier AI into a practical drug-development workflow tool?",
-        "new_since_prior_coverage": "New company transaction and product integration; no prior match in the supplied history.",
-        "practical_payoff": "Watch for whether OpenAI turns Rosalind plus Orchestra into a usable biopharma workflow stack, and whether any partner or customer rollout is announced next."
+        "new_development": "Google Cloud has officially begun hosting OpenAI's frontier models, completing a shift where OpenAI models are now available across all three major US cloud providers.",
+        "affected_listener": "Enterprise developers and IT leaders who can now standardize on Google Cloud infrastructure while selecting from a broader palette of model providers.",
+        "why_today": "This marks a definitive shift in the 'hyperscaler' AI wars, signaling that infrastructure providers are prioritizing model availability over platform exclusivity.",
+        "distinct_question": "Can enterprises now reliably switch between competing foundation models without changing their underlying cloud infrastructure?",
+        "new_since_prior_coverage": "Confirmed direct integration with Google Cloud infrastructure and billing, contrasting with previous separate contract arrangements.",
+        "practical_payoff": "Developers can now consolidate AI spending and model management into a single Google Cloud invoice."
       },
       "editorial_scores": {
         "human_consequence": 4,
-        "novelty": 4,
-        "explanatory_value": 5,
-        "evidence_depth": 4
+        "novelty": 3,
+        "explanatory_value": 4,
+        "evidence_depth": 5
       },
-      "story_age_hours": 20.1,
+      "story_age_hours": 13.89,
       "source_tier": 3,
       "grounded": true,
       "rank": 2,
       "story_tier": "primary",
-      "topic_family": "markets",
+      "topic_family": "products",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "microsoft-agentic-insider-guardian-agents-2026-10-19",
-      "headline": "Microsoft says enterprises need guardian agents to manage AI agents as insider risks",
-      "title": "Microsoft says enterprises need guardian agents to manage AI agents as insider risks",
-      "publisher": "Microsoft",
-      "published": "2026-10-19T00:00:00Z",
-      "published_at": "2026-10-19T00:00:00Z",
-      "source_url": "https://blogs.microsoft.com/blog/2026/10/19/securing-the-agentic-insider/",
-      "link": "https://blogs.microsoft.com/blog/2026/10/19/securing-the-agentic-insider/",
-      "summary": "Microsoft argues that enterprises should treat AI agents as insider risks and says they need continuous monitoring. The company introduces the idea of “Guardian Agents” to watch and moderate every action of every agent before it happens. Microsoft ties the proposal to Project Perception, its earlier agentic security system using red, blue and green agents. The post says the approach is designed to secure agents across identity, permissions, data, endpoints, network, cloud and runtime.",
+      "event_key": "nvidia-healthcare-life-sciences-rfd4-proteina-2026-10-21",
+      "headline": "NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows",
+      "title": "NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows",
+      "publisher": "NVIDIA",
+      "published": "2026-10-21T00:00:00Z",
+      "published_at": "2026-10-21T00:00:00Z",
+      "source_url": "https://nvidianews.nvidia.com/news/healthcare-and-life-sciences-leaders-build-on-nvidia-to-advance-drug-discovery-and-expand-patient-care",
+      "link": "https://nvidianews.nvidia.com/news/healthcare-and-life-sciences-leaders-build-on-nvidia-to-advance-drug-discovery-and-expand-patient-care",
+      "summary": "NVIDIA announced collaborations with healthcare and research organizations to advance protein design, drug discovery, and cancer care. The company said the effort includes a newly released open model, RFD4-Proteina, and that Genedata’s AI co-scientist will coordinate protein design and testing in Danaher’s autonomous lab workflow. NVIDIA also said Hologen is combining large medicine models with Nemotron to build AI clinical scientists that turn imaging and clinical data into patient-outcome insights. The announcement is aimed at research and discovery workflows, not consumer health tools.",
       "facts": [
-        "Microsoft published the post on October 19, 2026.",
-        "Microsoft says frontier models cannot be trusted in enterprise settings.",
-        "The post introduces the term “Guardian Agents” for always-on monitoring and moderation.",
-        "Microsoft says its earlier Project Perception system uses red, blue and green agents to help defenders.",
-        "Microsoft says securing agents requires protection across identity, permissions, data, endpoints, network, cloud and runtime.",
-        "The company says agents have become active participants in enterprises."
+        "NVIDIA announced the collaborations on October 21, 2026.",
+        "The announcement includes a newly released open model called RFD4-Proteina.",
+        "Genedata’s AI co-scientist will coordinate protein design and testing in Danaher’s autonomous lab workflow.",
+        "Hologen is combining large medicine models with Nemotron to build AI clinical scientists.",
+        "The stated goal includes advancing drug discovery and patient care."
       ],
       "data_points": [],
       "limitations_or_qualifiers": [
-        "This is a vendor position paper and product framing, not an independent security benchmark.",
-        "No broad customer deployment or pricing is provided in the post."
+        "This is research and enterprise workflow tooling; the announcement does not establish clinical approval or patient-facing availability."
       ],
-      "why_it_matters": "This matters because it reframes AI security from perimeter defense to internal governance of autonomous software that can act inside corporate systems.",
+      "why_it_matters": "This matters because it suggests AI is becoming embedded in scientific and biomedical workflows, where even small efficiency gains can accelerate discovery.",
       "editorial_case": {
-        "new_development": "Microsoft published a new argument and product framing on October 19, 2026 that treats enterprise AI agents as insider threats.",
-        "affected_listener": "IT leaders, security teams and companies deploying AI agents are the primary audience.",
-        "why_today": "It is a fresh, high-signal enterprise security development from a major platform vendor with immediate implications for AI deployment.",
-        "distinct_question": "How should companies secure AI agents once those agents can act inside their systems?",
-        "new_since_prior_coverage": "New framing and new operational controls, not just commentary on prior agent risk.",
-        "practical_payoff": "Security teams should watch whether Microsoft turns Guardian Agents into a shippable control layer inside its security stack."
+        "new_development": "NVIDIA paired a new open model with concrete research workflows in protein design and clinical analysis.",
+        "affected_listener": "Drug-discovery teams, lab operators, and life-sciences researchers.",
+        "why_today": "It is one of the clearest science-oriented AI announcements in the window and has practical implications beyond software.",
+        "distinct_question": "How is AI being used in real scientific and clinical research workflows right now?",
+        "new_since_prior_coverage": "This is a new scientific workflow announcement, not a generic AI-for-health opinion piece.",
+        "practical_payoff": "Researchers can watch whether RFD4-Proteina or the cited lab workflow becomes accessible in their own tooling stacks."
       },
       "editorial_scores": {
         "human_consequence": 4,
         "novelty": 4,
-        "explanatory_value": 5,
+        "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 44.1,
+      "story_age_hours": 13.89,
       "source_tier": 3,
       "grounded": true,
       "rank": 3,
       "story_tier": "primary",
-      "topic_family": "products",
+      "topic_family": "science_access",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "microsoft-project-perception-agentic-insider-2026-10-19",
-      "headline": "Microsoft adds Guardian Agents and unified controls to supervise enterprise AI agents",
-      "title": "Microsoft adds Guardian Agents and unified controls to supervise enterprise AI agents",
-      "publisher": "Microsoft Security Blog",
-      "published": "2026-10-19T00:00:00Z",
-      "published_at": "2026-10-19T00:00:00Z",
-      "source_url": "https://www.microsoft.com/en-us/security/blog/2026/10/19/agents-are-your-newest-insiders-security-must-move-at-their-speed/",
-      "link": "https://www.microsoft.com/en-us/security/blog/2026/10/19/agents-are-your-newest-insiders-security-must-move-at-their-speed/",
-      "summary": "Microsoft says it is extending Project Perception to secure what it calls the agentic insider. The company says Guardian Agents will help security teams operate continuously at machine speed, while Project Perception and Microsoft Agent 365 share signals, context, and a unified registry for agents and risk. Microsoft says the controls span identity, permissions, data, endpoints, network, cloud, and runtime. The post says the system is designed to contain agent authority before action and adapt protection as risk changes.",
+      "event_key": "nvidia-dsx-pod-ai-factories-2026-10-21",
+      "headline": "NVIDIA introduced DSX POD, a modular reference design for faster AI factory deployment in Europe",
+      "title": "NVIDIA introduced DSX POD, a modular reference design for faster AI factory deployment in Europe",
+      "publisher": "NVIDIA",
+      "published": "2026-10-21T00:00:00Z",
+      "published_at": "2026-10-21T00:00:00Z",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-dsx-pod-ai-factories-to-accelerate-europes-infrastructure-deployment",
+      "link": "https://nvidianews.nvidia.com/news/nvidia-introduces-dsx-pod-ai-factories-to-accelerate-europes-infrastructure-deployment",
+      "summary": "NVIDIA announced DSX POD, a reference design for complete Vera Rubin AI factories built by partners inside modular containers and validated before delivery. The company says prepared sites can be cut from a six-month deployment cycle to as little as 14 days. NVIDIA says a partner ecosystem is working on early-2027 delivery worldwide. The announcement is infrastructure-focused rather than a new model release, and it is aimed at customers that need faster production-token capacity.",
       "facts": [
-        "Microsoft says it is extending Project Perception to secure the agentic insider.",
-        "Microsoft says Project Perception and Microsoft Agent 365 share signals, context, and a unified registry for agents and risk.",
-        "Microsoft says Guardian Agents operate continuously at machine speed and scale.",
-        "Microsoft says protection spans identity, permissions, data, endpoints, network, cloud, and runtime.",
-        "Microsoft says the system is designed to minimize and tailor agent authority before action and adjust it as risk changes."
+        "NVIDIA announced DSX POD on October 21, 2026.",
+        "DSX POD is a reference design for complete Vera Rubin AI factories built inside modular containers.",
+        "NVIDIA says deployment at a prepared site can fall from six months to as little as 14 days.",
+        "The units arrive integrated and validated before delivery.",
+        "NVIDIA says partners are working to deliver modular AI factories worldwide in early 2027."
       ],
       "data_points": [
-        "2026-10-19"
+        "six months",
+        "14 days",
+        "early 2027"
       ],
       "limitations_or_qualifiers": [
-        "Microsoft frames this as enterprise security infrastructure; it is not described as a consumer feature and is dependent on organizational deployment and policy controls."
+        "This is a reference design and partner-led deployment plan, not a consumer product; timing and availability depend on site readiness and partner delivery."
       ],
-      "why_it_matters": "This matters because it shows enterprise AI is moving from feature adoption to operational control, which affects how companies deploy agents safely at scale.",
+      "why_it_matters": "This matters because AI capacity is increasingly constrained by infrastructure, and a 14-day deployment claim changes the economics of scaling compute.",
       "editorial_case": {
-        "new_development": "Microsoft turned its earlier agent-security framing into a concrete productized control layer with Guardian Agents and a shared registry on October 19, 2026.",
-        "affected_listener": "IT, security, and compliance teams deploying AI agents inside organizations are the primary audience.",
-        "why_today": "It is a consequential implementation story with immediate relevance for enterprise adoption, not just another warning about AI risk.",
-        "distinct_question": "How are companies supposed to supervise their own AI agents without trusting the models themselves?",
-        "new_since_prior_coverage": "The material new fact is the addition of Guardian Agents and the shared registry/control model, not merely the general idea that agents pose risk.",
-        "practical_payoff": "Organizations can evaluate whether their current agent rollouts need a separate supervision and containment layer."
+        "new_development": "NVIDIA moved from chip and platform messaging to a concrete build-out blueprint for AI factories with compressed deployment time.",
+        "affected_listener": "Cloud operators, datacenter builders, industrial buyers, and governments trying to stand up AI capacity quickly.",
+        "why_today": "It is one of the strongest infrastructure announcements in the window and directly affects the speed of AI expansion.",
+        "distinct_question": "How fast can new AI infrastructure be deployed, and what does NVIDIA’s new factory design change?",
+        "new_since_prior_coverage": "This is a new infrastructure product announcement, not a reprise of earlier Vera Rubin or GTC talking points.",
+        "practical_payoff": "Watch whether the 14-day claim translates into real-world rollouts, especially for European capacity-constrained buyers."
       },
       "editorial_scores": {
-        "human_consequence": 4,
-        "novelty": 4,
-        "explanatory_value": 5,
+        "human_consequence": 3,
+        "novelty": 5,
+        "explanatory_value": 4,
         "evidence_depth": 5
       },
-      "story_age_hours": 44.1,
+      "story_age_hours": 13.89,
       "source_tier": 3,
       "grounded": true,
       "rank": 4,
       "story_tier": "supporting",
-      "topic_family": "products",
+      "topic_family": "other",
+      "story_role": "top_ai_event",
+      "bucket": "grounded_top_ai_event"
+    },
+    {
+      "event_key": "nvidia-nokia-ai-ran-commercial-call-2026-10-21",
+      "headline": "NVIDIA and telecom partners said the first commercial AI-RAN call is live on a commercial network",
+      "title": "NVIDIA and telecom partners said the first commercial AI-RAN call is live on a commercial network",
+      "publisher": "NVIDIA",
+      "published": "2026-10-21T00:00:00Z",
+      "published_at": "2026-10-21T00:00:00Z",
+      "source_url": "https://nvidianews.nvidia.com/news/nvidia-nokia-and-leading-telecom-operators-turn-networks-into-distributed-intelligence-platforms",
+      "link": "https://nvidianews.nvidia.com/news/nvidia-nokia-and-leading-telecom-operators-turn-networks-into-distributed-intelligence-platforms",
+      "summary": "NVIDIA said T-Mobile completed the world’s first AI-RAN call on a commercial network, while BT, Deutsche Telekom, and Elisa announced live-network pilots. The company framed the effort as turning telecom networks into distributed intelligence platforms by adding accelerated computing to data centers, metro sites, and cell sites. NVIDIA also said operators are adopting its Nemotron open models for agentic services and autonomous network operations. The announcement is part of GTC Berlin and is centered on network infrastructure rather than consumer AI applications.",
+      "facts": [
+        "NVIDIA said T-Mobile completed the world’s first AI-RAN call on a commercial network.",
+        "BT, Deutsche Telekom, and Elisa announced AI-RAN pilots on live networks.",
+        "NVIDIA said nine EMEA telecom operators are building or expanding NVIDIA-powered infrastructure.",
+        "The company said operators are adopting Nemotron open models for agentic services.",
+        "The announcement was made at GTC Berlin on October 21, 2026."
+      ],
+      "data_points": [
+        "world’s first",
+        "nine EMEA telecom operators"
+      ],
+      "limitations_or_qualifiers": [
+        "The telecom pilots and infrastructure plans are described in vendor and partner announcements; commercial scale and end-user impact are not yet established."
+      ],
+      "why_it_matters": "This matters because it shows AI is moving into carrier infrastructure, where latency, automation, and network economics can affect everyday connectivity.",
+      "editorial_case": {
+        "new_development": "The story moves AI from cloud and app layers into live telecom network operations and a claimed commercial first call.",
+        "affected_listener": "Mobile users, telecom operators, and enterprise customers relying on network automation and edge services.",
+        "why_today": "It is a substantive network-infrastructure shift with a concrete live-network milestone in the window.",
+        "distinct_question": "Are AI workloads now being embedded directly into telecom networks?",
+        "new_since_prior_coverage": "This is a new live-network deployment milestone, not just a lab demo or conference teaser.",
+        "practical_payoff": "Watch whether carriers expand from pilots into operational AI-RAN deployments and whether performance or cost benefits are documented."
+      },
+      "editorial_scores": {
+        "human_consequence": 4,
+        "novelty": 4,
+        "explanatory_value": 4,
+        "evidence_depth": 5
+      },
+      "story_age_hours": 13.89,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 5,
+      "story_tier": "supporting",
+      "topic_family": "other",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     }

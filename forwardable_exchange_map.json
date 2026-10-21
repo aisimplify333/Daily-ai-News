@@ -3,12 +3,12 @@
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?"
+      "target": "If the AI gets the answer right most of the time, why are we still nervous?"
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk."
+      "target": "The simple version is this: the trail of accountability when an AI-shaped decision helps, harms, approves, denies, or misses something important."
     },
     {
       "type": "jamie_human_line",
@@ -23,7 +23,7 @@
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens."
+      "target": "Think of it like a relay race where the baton is blame; the model, vendor, institution, and human signer all touch it."
     },
     {
       "type": "operator_lesson",
@@ -33,64 +33,64 @@
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real."
+      "target": "The question for tomorrow is not whether liability chain sounds clever. It is who gets caught when it becomes real."
     }
   ],
   "matches": [
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
-      "matched_line": "Today’s question for you: If an AI agent makes a mistake that costs your company money, who should be held responsible?",
-      "match_score": 0.58,
+      "target": "If the AI gets the answer right most of the time, why are we still nervous?",
+      "matched_line": "Today’s question for you: Would you trust your company's AI agents more if they were confined by hardware-level security?",
+      "match_score": 0.44,
       "forwardable": true
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
-      "matched_line": "Which is where I want to push back. Because DeepSeek's weights are already out there. You can run DeepSeek locally — no Chinese server involved, no data leaving your machine. The ban covers products and services, but it cannot cover every fork a developer quietly integrated six months ago.",
-      "match_score": 0.63,
+      "target": "The simple version is this: the trail of accountability when an AI-shaped decision helps, harms, approves, denies, or misses something important.",
+      "matched_line": "Okay, I have one. Not a skincare routine, not a trend serum, but a very glamorous internal AI story from The Estée Lauder Companies, reported by Microsoft on 2025-04-16. They used ConsumerIQ, built with Microsoft Copilot Studio and Azure OpenAI Service, to help teams get consumer research faster across many brands.",
+      "match_score": 0.45,
       "forwardable": true
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "This is the part I find genuinely compelling. Trials fail to reach patients not just because the science is hard. They fail because the project management is catastrophically complex — study timelines, campaign dependencies, regulatory submission windows, manufacturing schedules — and most of it is still coordinated by humans with spreadsheets and email chains.",
-      "match_score": 0.51,
-      "forwardable": false
+      "matched_line": "On OpenShell — the regulatory benchmark question is the real signal. If a financial regulator or a healthcare body starts citing it as a compliance reference, adoption doesn't follow a normal product curve. It follows a mandate curve.",
+      "match_score": 0.55,
+      "forwardable": true
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "The core claim: AI agents have become active participants in enterprises. Not tools waiting for instructions. Active participants. And Microsoft says that means they now need to be treated as insider risks.",
-      "match_score": 0.57,
+      "matched_line": "Which is how you actually sell security to a CFO. You don't lead with \"this prevents disasters.\" You lead with \"20% more throughput, and also the disasters don't happen.\"",
+      "match_score": 0.53,
       "forwardable": true
     },
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
-      "matched_line": "Which is where I want to push back. Because DeepSeek's weights are already out there. You can run DeepSeek locally — no Chinese server involved, no data leaving your machine. The ban covers products and services, but it cannot cover every fork a developer quietly integrated six months ago.",
-      "match_score": 0.57,
-      "forwardable": true
+      "target": "Think of it like a relay race where the baton is blame; the model, vendor, institution, and human signer all touch it.",
+      "matched_line": "Every drug you've ever taken works because it binds to a specific protein in your body. Designing a molecule that fits a protein — like a key fitting a lock — is one of the hardest problems in biology. Used to take years of lab work per candidate. AI can now generate candidates much faster.",
+      "match_score": 0.5,
+      "forwardable": false
     },
     {
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "And AP is clear this is a federal civilian-agency action. Not a consumer ban. But if you sell software to the federal government, you need to audit whether DeepSeek is anywhere in your stack — because if it is, you have a procurement problem.",
-      "match_score": 0.42,
+      "matched_line": "One thing I'm still not clear on — when Sentry quarantines an agent, what actually happens to the work it was doing? Does the task fail, or does something else pick it up?",
+      "match_score": 0.45,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "The threat model is coherent. Whether it describes what actually happens in practice is a different question, and AP's reporting doesn't answer it. What it establishes is that the government decided the risk was real enough to act on without waiting for a specific breach.",
-      "match_score": 0.67,
+      "target": "The question for tomorrow is not whether liability chain sounds clever. It is who gets caught when it becomes real.",
+      "matched_line": "And the 20% capacity claim is how this gets adopted before any mandate arrives. Not fear of the rogue agent. Efficiency on the invoice.",
+      "match_score": 0.57,
       "forwardable": true
     }
   ],

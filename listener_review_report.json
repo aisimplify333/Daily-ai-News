@@ -4,20 +4,19 @@
   "entertainment_rating": null,
   "blocking": false,
   "story_families": [
-    "governance",
-    "markets",
-    "products"
+    "products",
+    "products",
+    "science_access"
   ],
-  "first_story_seconds": 64.338,
+  "first_story_seconds": 61.351,
   "audio_measurements": {
-    "integrated_lufs": -16.33,
-    "true_peak_dbtp": -1.69,
-    "loudness_range_lu": 4.0
+    "integrated_lufs": -16.41,
+    "true_peak_dbtp": -1.72,
+    "loudness_range_lu": 4.4
   },
   "dialogue_editor_accepted": true,
   "storyboard_status": "model_plan",
   "issues": [
-    "Global-desk fallback delivered; a sourced on-location scene was not verified.",
     "1 expressive Grok calls had no delivery tags; inspect long-turn guard or disabled direction."
   ],
   "requires_listening": [
@@ -32,16 +31,14 @@
     "basis": "transcript structure only; not a listening rating",
     "entertainment_rating": null,
     "rufus_feature": {
-      "mode": "global_desk",
-      "word_count": 208,
+      "mode": "on_location",
+      "word_count": 121,
       "handoff_and_return": true,
       "clearly_framed": true,
       "duration_in_word_band": true,
       "present": true
     },
-    "issues": [
-      "Global-desk fallback delivered; a sourced on-location scene was not verified."
-    ],
+    "issues": [],
     "requires_editorial_review": [
       "distinct listener consequences across three stories",
       "technical terms explained on first use",
@@ -50,45 +47,48 @@
       "self-contained exchange worth sharing"
     ]
   },
-  "performance_plan_turns": 130,
+  "performance_plan_turns": 158,
   "performance_direction_usage": {
     "ALEX": {
-      "planned": 43,
-      "sponsor": 2
+      "planned": 52,
+      "sponsor": 3,
+      "heuristic": 1
     },
     "JAMIE": {
-      "planned": 34,
-      "sponsor": 1
+      "planned": 53,
+      "sponsor": 2
     },
     "RUFUS": {
       "planned": 40,
       "heuristic": 1,
-      "sponsor": 3
+      "sponsor": 1
     }
   },
   "jamie_performance": {
     "basis": "recorded provider calls; requested delivery is not verified emotion",
-    "calls": 35,
+    "calls": 55,
     "moods": {
-      "amused": 6,
-      "concern": 7,
+      "amused": 3,
+      "concern": 1,
       "concession": 1,
-      "curiosity": 2,
-      "delight": 2,
-      "dry_wit": 2,
-      "explainer": 5,
-      "neutral": 1,
+      "curiosity": 3,
+      "delight": 6,
+      "disbelief": 1,
+      "dry_wit": 7,
+      "explainer": 19,
+      "neutral": 3,
       "pressure": 2,
-      "pushback": 7
+      "pushback": 6,
+      "warmth": 3
     },
     "listened": false,
     "grok_expression_counts": {
-      "build-intensity": 4,
-      "chuckle": 6,
+      "build-intensity": 8,
+      "chuckle": 3,
       "decrease-intensity": 1,
       "emphasis": 7,
-      "slow": 1,
-      "soft": 7
+      "slow": 3,
+      "soft": 3
     },
     "undirected_expressive_calls": 1
   }
