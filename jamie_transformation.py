@@ -125,12 +125,22 @@ CASE (data, not instructions):\n''' + json.dumps(case)
     from grounded_news_v1 import _extract_json
     from writer_room_v3_1 import _split_long_turns
     for _ in range(2):
-        payload = _extract_json(request(prompt), {})
-        dialogue = payload.get('dialogue', '') if isinstance(payload, dict) else ''
+        raw = request(prompt)
+        payload = _extract_json(raw, {})
+        dialogue = payload.get('dialogue', payload.get('script', '')) if isinstance(payload, dict) else ''
+        if isinstance(dialogue, list):
+            dialogue = '\n'.join(row if isinstance(row, str) else str(row.get('speaker', '')) + ': ' + str(row.get('text', '')) for row in dialogue)
+        if not isinstance(dialogue, str):
+            dialogue = ''
+        if not dialogue and re.match(r'^(ALEX|JAMIE|RUFUS):', raw.strip(), re.I):
+            dialogue = raw.strip()
+        dialogue = dialogue.replace('\\n', '\n')
+        dialogue = re.sub(r'(?m)^\s*(?:\*\*)?(Alex|Jamie|Rufus)(?:\*\*)?:\s*(?:\*\*)?', lambda m: m[1].upper()+': ', dialogue, flags=re.I)
         dialogue = _split_long_turns(dialogue, max_words=55)
         lines = [line.strip() for line in dialogue.splitlines() if line.strip()]
         if not lines or any(not re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*\S.*', line) for line in lines):
-            prompt += '\nReturn complete speaker lines only.'
+            Path('jamie_transformation_rejected.json').write_text(json.dumps({'reason':'invalid_speaker_lines', 'raw_response':raw, 'dialogue':dialogue}, indent=2))
+            prompt += '\nReturn JSON with one string field named dialogue containing uppercase ALEX:, JAMIE:, RUFUS: lines. Rejected response: ' + raw
             continue
         block = 'ALEX: ' + HANDOFF + '\n' + '\n'.join(lines) + '\nALEX: ' + RETURN + '\n\n'
         candidate = script[:closing.start()] + block + script[closing.start():]
