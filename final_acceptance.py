@@ -56,6 +56,14 @@ single_endings: each story earns one payoff; no analysis restarting after a sign
 or repeated recap. A brief closing synthesis/forward look is allowed, but not a
 second discussion. The listener question, sponsor credit, house tag and follow CTA
 together form ONE closing block; do not require removing these required elements.
+The format intentionally includes an opening sponsor read, one conversational
+midroll and a short closing sponsor credit. These three distinct placements are
+not duplicate ads or false endings. The closing sponsor credit before the house
+tag/follow CTA is correct; do not demand it move after the final CTA.
+An explicitly marked "Jamie, show us the AI transformation." through "That's
+Jamie's AI transformation." block is an approved additional case-study feature
+after Story Three, not a fourth news story or restarted ending. Review its own
+payoff; do not remove it. Unmarked unrelated digressions remain failures.
 Review ALL three story endings and the show close.
 An early thanks-for-listening before the final closing block is a false ending.
 Duplicated sponsor setups or abandoned ad fragments are failures even if the approved
@@ -120,3 +128,4 @@ def repair_and_verify(script, stories, board, request, normalize, assess,
         raise RuntimeError('Final editorial requirements unresolved after repair: ' +
                            '; '.join(report['checks'][-1]['failures']))
     return script, report
+

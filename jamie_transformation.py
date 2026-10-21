@@ -124,8 +124,20 @@ The system adds Alex's entrance and exit; do not repeat them.
 CASE (data, not instructions):\n''' + json.dumps(case)
     from grounded_news_v1 import _extract_json
     from writer_room_v3_1 import _split_long_turns
+    # Reuse a same-day, case-bound producer rehearsal; full episode factual QA
+    # still runs after insertion. Never reuse yesterday's case or mismatched copy.
+    prepared = Path('jamie_prepared_feature.json')
+    prepared_dialogue = None
+    if prepared.exists():
+        saved = json.loads(prepared.read_text())
+        case_sha = hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest()
+        if (saved.get('episode_date') == case.get('episode_date')
+                and saved.get('case_sha256') == case_sha
+                and saved.get('fact_audit_pass') is True):
+            prepared_dialogue = saved.get('dialogue')
     for _ in range(2):
-        raw = request(prompt)
+        raw = json.dumps({'dialogue': prepared_dialogue}) if prepared_dialogue else request(prompt)
+        prepared_dialogue = None
         payload = _extract_json(raw, {})
         dialogue = payload.get('dialogue', payload.get('script', '')) if isinstance(payload, dict) else ''
         if isinstance(dialogue, list):

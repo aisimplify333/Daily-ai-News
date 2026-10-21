@@ -3,6 +3,12 @@ import writer_room_v3_1 as writer
 
 
 class SponsorMidrollTests(unittest.TestCase):
+    def test_abandoned_sponsor_setup_without_brand_is_removed(self):
+        script = '### SEGMENT 3 — News\nALEX: Keep the news.\nALEX: A short sponsor break. Jamie, what matters?\n### SEGMENT 4 — Next\nJAMIE: More news.'
+        result = writer._normalize_midroll(script, '2026-10-21')
+        self.assertEqual(result.count('A short sponsor break'), 1)
+        self.assertIn('ALEX: Keep the news.', result)
+
     def test_six_dates_rotate_without_accumulating_ads(self):
         script = '### SEGMENT 3 — Story\nALEX: Keep this news.\n### SEGMENT 4 — Next\nJAMIE: Keep this too.'
         rendered = set()
@@ -38,3 +44,4 @@ class SponsorMidrollTests(unittest.TestCase):
                 self.assertIn('the ledger', line.lower())  # Existing dry-audio routing.
                 self.assertLessEqual(len(line.split()), 55)
             self.assertTrue(70 <= sum(len(line.split()) - 1 for line in treatment) <= 100)
+

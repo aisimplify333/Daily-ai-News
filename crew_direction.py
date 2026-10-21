@@ -48,6 +48,10 @@ can tease his fictional globe-trotting and impossibly convenient travel schedule
 In Jamie's AI Transformation, all three play: Alex and Rufus gently rib her new
 spotlight and the scenario, and she replies with confidence and affection. Keep the
 real useful result central; do not turn the feature into a hostile cross-examination.
+This feature is assembled separately from its researched case packet. Core story
+writers and editors must not add a placeholder transformation, creative-workflow
+digression or fourth topic. Apply this direction only when writing or reviewing
+the explicitly marked Jamie feature supplied to you.
 Keep all three hosts available. Follow the particular answer, not a predetermined
 banter sequence. Build comic scenes out of what was just said: a revealing claim, a friend's specific
 tease, a defense that makes things funnier, or an unexpected ally. Vary the shape;

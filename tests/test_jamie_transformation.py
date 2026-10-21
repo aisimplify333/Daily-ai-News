@@ -7,6 +7,18 @@ from jamie_transformation import add_feature, status, HANDOFF, RETURN, prepare_c
 
 
 class JamieTests(unittest.TestCase):
+    def test_prepared_feature_requires_matching_case(self):
+        import hashlib
+        case = {'episode_date': '2026-10-21', 'subject': 'verified case'}
+        dialogue = '\n'.join(name + ': ' + 'useful ' * 26 for name in ['JAMIE','ALEX','RUFUS'] * 4)
+        saved = {'episode_date': case['episode_date'], 'case_sha256': hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest(), 'fact_audit_pass': True, 'dialogue': dialogue}
+        with tempfile.TemporaryDirectory() as directory, patch('jamie_transformation.Path', side_effect=lambda p: Path(directory)/p):
+            (Path(directory)/'jamie_prepared_feature.json').write_text(json.dumps(saved))
+            result = add_feature('### SEGMENT 5 — Close', case, lambda _: self.fail('verified case should be reused'))
+            self.assertTrue(status(result)['pass'])
+            with self.assertRaisesRegex(RuntimeError, 'called fresh writer'):
+                add_feature('### SEGMENT 5 — Close', dict(case, subject='other case'), lambda _: (_ for _ in ()).throw(RuntimeError('called fresh writer')))
+
     def test_additive_feature_preserves_every_core_line(self):
         core = '### SEGMENT 4 — Story Three\nJAMIE: Keep this story.\n### SEGMENT 5 — Payoff\nALEX: Keep the close.\n'
         dialogue = '\n'.join(name + ': ' + 'useful ' * 26 for name in ['JAMIE','ALEX','RUFUS'] * 4)
@@ -20,8 +32,9 @@ class JamieTests(unittest.TestCase):
     def test_missing_partial_and_oversize_features_rejected(self):
         self.assertFalse(status('ALEX: '+HANDOFF)['pass'])
         self.assertFalse(status('ALEX: '+HANDOFF+'\nJAMIE: short\nALEX: '+RETURN)['pass'])
-        with self.assertRaises(RuntimeError):
-            add_feature('### SEGMENT 5 — Close', {}, lambda _: '{"dialogue":"JAMIE: Too short."}')
+        with tempfile.TemporaryDirectory() as directory, patch('jamie_transformation.Path', side_effect=lambda p: Path(directory)/p):
+            with self.assertRaises(RuntimeError):
+                add_feature('### SEGMENT 5 — Close', {}, lambda _: '{"dialogue":"JAMIE: Too short."}')
         self.assertFalse(valid_case({'subject':'invented'}))
 
     def test_cue_requires_approval_and_matching_hash(self):

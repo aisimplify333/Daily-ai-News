@@ -1517,7 +1517,7 @@ def _normalize_midroll(script: str, date_str: str) -> str:
         # Model-written house ads are replaced by the assembly-owned midroll.
         # Preserve the opening and closing sponsor placements.
         if segment in (2, 3, 4) and SPEAKER_RE.match(line.strip()) and re.search(
-            r"\bthe ledger\b|t-h-e-l-e-d-g-r dot i-o", line, re.I
+            r"\bthe ledger\b|t-h-e-l-e-d-g-r dot i-o|\b(?:a short sponsor break|a word from our sponsor)\b", line, re.I
         ):
             continue
         lines.append(line)
