@@ -1,4 +1,5 @@
 """Shared creative direction, separate from reporting and assembly requirements."""
+from dialogue_direction import PERFORMANCE_DIRECTION
 FRIENDS_DIRECTION = """
 THREE FRIENDS IN AN AI ENSEMBLE COMEDY:
 Let Alex sometimes catch Jamie or Rufus making an unsupported leap. Let Jamie enjoy
@@ -103,4 +104,5 @@ The editorial room is the setting; only Rufus's explicitly imagined dispatch cha
 that frame. Never invent personal experiences or facts to make a character vivid.
 """.strip()
 
-CREW_DIRECTION = FRIENDS_DIRECTION + "\n\n" + SCENE_DIRECTION + "\n\n" + REPORTING_DIRECTION
+CREW_DIRECTION = FRIENDS_DIRECTION + "\n\n" + SCENE_DIRECTION + "\n\n" + REPORTING_DIRECTION + "\n\n" + PERFORMANCE_DIRECTION
+
