@@ -33,6 +33,9 @@ Line numbers are 1-based and refer to NUMBERED FINAL SCRIPT. Do not include line
 numbers in replacement speech. Select complete speaker lines only. New may be an empty
 string to delete a redundant exchange without deleting receipts or navigation.
 Keep review notes concise (at most 40 words per field) and edit reasons under 25 words.
+When REQUIRED REPAIRS FROM FINAL REVIEW is supplied, edit only the failing spans.
+Do not rewrite already-passing scenes or duplicate adjacent dialogue.
+For rufus_scene, include Jamie and Rufus responding BEFORE the return marker.
 Review segments 2,3,4 and editorial closing lines in 5. The supplied runtime headroom is binding: when cuts would
 drop below minimum, replace weak exposition with a substantive sourced exchange
 in the same edit. Do not retain repetition merely to pad runtime. At most 12 small, nonoverlapping edits. Improve the weakest
@@ -120,6 +123,7 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
     report['output_sha256'] = hashlib.sha256(script.encode()).hexdigest()
     report['status'] = 'repairs_applied_need_audio_review' if report['accepted_edits'] else 'no_repairs_applied'
     return script, report
+
 
 
 
