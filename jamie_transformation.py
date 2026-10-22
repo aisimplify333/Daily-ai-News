@@ -30,6 +30,11 @@ def research(date, search):
 real person, entrepreneur, small business, creator or company achieving a concrete
 beneficial result with AI. Consider beauty, food, travel, sport, creative work,
 education, accessibility, home tasks and surprising industries, not only big tech.
+Actively seek agentic AI cases: a real person or business delegating a multi-step
+job, using tools or coordinating actions, with an observed useful result. Explain
+what the agent actually does, where human approval remains, and the before/after
+in everyday terms. Do not relabel ordinary search or chat as autonomous action.
+Keep non-agentic discoveries eligible when their human story is stronger.
 Discover through trade press, reputable reporting, interviews, company case studies,
 research and creator demonstrations; trace the actual outcome to its supporting
 source. A specific qualitative result is acceptable: do not require impressive
@@ -114,6 +119,15 @@ Rotate the joke and who gets the last word. No permanent two-against-Jamie patte
 forced laughter, humiliation or invented personal experience. A cosmetics example
 can invite jokes about skincare routines and trend-chasing; other cases earn their
 own humor. The joke must leave listeners understanding the useful transformation.
+Producer feedback on the aired October 21 debut: the cosmetics-headquarters tease,
+Jamie answering with lipsticks and stakeholders, and Rufus's lipstick-on-a-spreadsheet
+remark worked for the producer. Preserve that responsive mechanism, not those exact
+jokes. Let a tease get a comeback and a third-friend escalation before explaining
+again. Jamie can turn the joke onto Alex or Rufus; occasionally they become allies.
+New cases deserve new comic material. A brief debut callback is optional only when
+it adds something; do not repeat makeup jokes daily or claim audience consensus.
+Use short excited bursts, dry understatement and a slower human-payoff beat where
+natural. Keep the useful workflow clear and the existing additive word budget.
 Alex asks how a normal person could apply the idea. Rufus challenges one specific
 limitation or metric; Jamie answers and can tease him back. Let the third friend
 complicate or join the joke. Include a concrete first step and honest limitation.
