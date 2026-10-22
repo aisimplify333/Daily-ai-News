@@ -1217,6 +1217,14 @@ def _normalize_vertical_bucket(bucket: str) -> str:
 
 
 def broaden_intel_pool() -> List[Dict[str, str]]:
+    # Validated same-day recovery must not wait on unrelated RSS outages.
+    if os.getenv("EPISODE_RECOVERY_DIR", "").strip():
+        from episode_recovery import load_recovery
+        recovery = load_recovery(datetime.date.today().isoformat())
+        if recovery:
+            return [dict(story, title=story.get("headline", ""),
+                         link=story.get("source_url", ""))
+                    for story in recovery["stories"]]
     pool = fetch_rss_items(max_per_feed=12)
     if len(pool) < 20:
         pool = fetch_rss_items(max_per_feed=18)
