@@ -121,6 +121,7 @@ jobs:
             return 'produce';
 
       - name: Restore same-day editorial recovery
+        id: editorial_recovery
         if: steps.release_check.outputs.result == 'produce' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -135,7 +136,7 @@ jobs:
           gh run download "$recovery_run" --repo "$GITHUB_REPOSITORY" \
             --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir _editorial_recovery
           cp _editorial_recovery/script_editorial_blocked.txt "_editorial_recovery/script_fact_repaired_${recovery_date}.txt"
-          echo "EPISODE_RECOVERY_DIR=_editorial_recovery" >> "$GITHUB_ENV"
+          echo "directory=_editorial_recovery" >> "$GITHUB_OUTPUT"
 
       - name: Restore preserved voice cache for supervised recovery
         if: steps.release_check.outputs.result == 'produce'
@@ -230,6 +231,7 @@ jobs:
       - name: Run The AI Edge v3.1 Cost-Safe Hybrid Broadcast
         if: steps.release_check.outputs.result == 'produce'
         env:
+          EPISODE_RECOVERY_DIR: ${{ steps.editorial_recovery.outputs.directory }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           EMAIL_APP_PASSWORD: ${{ secrets.EMAIL_APP_PASSWORD }}
