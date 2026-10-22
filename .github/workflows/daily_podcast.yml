@@ -120,6 +120,23 @@ jobs:
             }
             return 'produce';
 
+      - name: Restore same-day editorial recovery
+        if: steps.release_check.outputs.result == 'produce' && github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          recovery_date="$(sed -n 's/^EDITORIAL_RECOVERY_DATE=//p' PRODUCTION_RUN_ONCE | tail -n 1)"
+          recovery_run="$(sed -n 's/^EDITORIAL_RECOVERY_RUN_ID=\([0-9][0-9]*\)$/\1/p' PRODUCTION_RUN_ONCE | tail -n 1)"
+          if [[ "$recovery_date" != "$(date -u +%F)" || -z "$recovery_run" ]]; then
+            exit 0
+          fi
+          mkdir -p _editorial_recovery
+          gh run download "$recovery_run" --repo "$GITHUB_REPOSITORY" \
+            --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir _editorial_recovery
+          cp _editorial_recovery/script_editorial_blocked.txt "_editorial_recovery/script_fact_repaired_${recovery_date}.txt"
+          echo "EPISODE_RECOVERY_DIR=_editorial_recovery" >> "$GITHUB_ENV"
+
       - name: Restore preserved voice cache for supervised recovery
         if: steps.release_check.outputs.result == 'produce'
         env:
@@ -434,6 +451,7 @@ jobs:
           include-hidden-files: true
           retention-days: 14
           if-no-files-found: ignore
+
 
 
 
