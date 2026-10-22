@@ -1,52 +1,51 @@
 {
-  "date": "2026-10-21",
-  "title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
+  "date": "2026-10-22",
+  "title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
   "listen_url": "https://aisimplify333.github.io/Daily-ai-News/listen/",
-  "minutes": 22.68,
-  "audio_file": "podcast_2026-10-21.mp3",
-  "audio_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-10-21.mp3",
+  "minutes": 22.25,
+  "audio_file": "podcast_2026-10-22.mp3",
+  "audio_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-10-22.mp3",
   "stories": [
     {
       "event_key": "nvidia-openshell-reference-architecture-2026-10-21",
-      "headline": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents",
-      "title": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents",
+      "headline": "NVIDIA launches OpenShell, a reference architecture for safe AI agents",
+      "title": "NVIDIA launches OpenShell, a reference architecture for safe AI agents",
       "publisher": "NVIDIA",
       "published": "2026-10-21T00:00:00Z",
       "published_at": "2026-10-21T00:00:00Z",
       "source_url": "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
       "link": "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
-      "summary": "NVIDIA announced the OpenShell Reference Architecture for building, containing, observing, and enforcing safe agents on enterprise infrastructure and edge systems. The stack includes Vera Rubin infrastructure, Vera CPUs, OpenShell software, and BlueField DPUs with NVIDIA Sentry for policy enforcement. NVIDIA says the architecture runs on Canonical, Red Hat, and Microsoft Windows environments. The company says Sentry can quarantine agents that move outside their software boundary in milliseconds and can boost agent capacity by up to 20%.",
+      "summary": "NVIDIA announced OpenShell, a reference architecture for building, observing, and enforcing safe AI agents across enterprise infrastructure and edge systems. The company says the stack combines OpenShell secure runtime software with Vera Rubin infrastructure, Vera CPUs, and BlueField-4 DPUs running NVIDIA Sentry. NVIDIA also said multiple security and enterprise vendors are integrating support for the architecture. The product is aimed at governance and containment rather than a new general-purpose model.",
       "facts": [
-        "NVIDIA announced OpenShell on October 21, 2026.",
-        "The architecture is designed to build, contain, observe, and enforce safe agents.",
-        "It runs on Canonical, Red Hat, and Microsoft Windows environments.",
-        "NVIDIA says BlueField and Sentry provide in-silicon security enforcement.",
-        "NVIDIA says Sentry can quarantine misbehaving agents in milliseconds.",
-        "NVIDIA says Sentry can boost agent capacity by up to 20%."
+        "NVIDIA announced OpenShell as a reference architecture for safe AI agents.",
+        "NVIDIA said the architecture combines OpenShell secure runtime software, Vera Rubin infrastructure, Vera CPUs, and BlueField-4 DPUs.",
+        "NVIDIA said the architecture is for enterprise infrastructure and edge systems.",
+        "NVIDIA said security providers including 1Password, Check Point, CrowdStrike, Cisco, F5, Fortinet, Microsoft, Okta, Palo Alto Networks, TrendAI and Zscaler are integrating support.",
+        "NVIDIA says OpenShell is intended to build, contain, observe and enforce safe agents at industrial scale."
       ],
       "data_points": [
-        "milliseconds",
-        "up to 20%"
+        "Published October 21, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Security and capacity claims are vendor claims; actual performance depends on deployment and workload."
+        "OpenShell is an infrastructure architecture, not a consumer app.",
+        "Vendor claims about scale and safety are not independent validation."
       ],
-      "why_it_matters": "This matters because agent security is becoming a deployment blocker, and NVIDIA is packaging hardware and software controls around that risk.",
+      "why_it_matters": "It targets one of the fastest-growing AI deployment problems: how to govern agentic systems that can act across files, apps, and infrastructure.",
       "editorial_case": {
-        "new_development": "NVIDIA turned agent safety from a policy concern into a bundled infrastructure architecture with enforcement tooling.",
-        "affected_listener": "Enterprise AI teams deploying autonomous agents in regulated or mission-critical environments.",
-        "why_today": "It directly addresses a major current pain point for AI deployment: how to confine agents safely at scale.",
-        "distinct_question": "What does a secure enterprise agent stack look like in practice?",
-        "new_since_prior_coverage": "This is a new product architecture announcement, distinct from general agent-security commentary.",
-        "practical_payoff": "Buyers can compare OpenShell against existing guardrail and observability tooling before scaling agents into production."
+        "new_development": "NVIDIA moved from chips into a full agent-governance architecture with partner integrations.",
+        "affected_listener": "Enterprise security teams, platform engineers, and companies deploying autonomous agents.",
+        "why_today": "This is a major infrastructure announcement with direct relevance to safe deployment of AI agents.",
+        "distinct_question": "How are enterprises supposed to contain and supervise autonomous agents in production?",
+        "new_since_prior_coverage": "This is a new product architecture announcement, distinct from earlier general agent-security discussion.",
+        "practical_payoff": "Watch whether OpenShell becomes a standard runtime choice for agent deployments across vendors."
       },
       "editorial_scores": {
         "human_consequence": 4,
-        "novelty": 4,
+        "novelty": 5,
         "explanatory_value": 5,
-        "evidence_depth": 5
+        "evidence_depth": 4
       },
-      "story_age_hours": 13.89,
+      "story_age_hours": 40.89,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
@@ -56,186 +55,188 @@
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "google-openai-partnership-cloud",
-      "headline": "Google Cloud integrates OpenAI models into Model Garden",
-      "title": "Google Cloud integrates OpenAI models into Model Garden",
+      "event_key": "google-cloud-agent-compute-governance",
+      "headline": "Google Cloud Introduces Agent Compute Engine and Governance Framework",
+      "title": "Google Cloud Introduces Agent Compute Engine and Governance Framework",
       "publisher": "Google Cloud",
-      "published": "2026-10-21T00:00:00Z",
-      "published_at": "2026-10-21T00:00:00Z",
-      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaWLvCTv_r_BxYM4sZT3eHABieqsZBYIqPXxS_5_qs-2auFNv5Zp4WoHHZvqLtOdw4Z8_TRV3tlvcXnnRsTTpcvvryV-_U85c0sAui1xz8DOohpSYNFlAj7duzN7XgQIQ-DfU6DSCgQydAwDND4AEsXtcGwlVU4IZY9J-xndqEUMUte04Z62gxBz_ttsLuD6wc7EKITRDt5xHEpjePmmI=",
-      "link": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaWLvCTv_r_BxYM4sZT3eHABieqsZBYIqPXxS_5_qs-2auFNv5Zp4WoHHZvqLtOdw4Z8_TRV3tlvcXnnRsTTpcvvryV-_U85c0sAui1xz8DOohpSYNFlAj7duzN7XgQIQ-DfU6DSCgQydAwDND4AEsXtcGwlVU4IZY9J-xndqEUMUte04Z62gxBz_ttsLuD6wc7EKITRDt5xHEpjePmmI=",
-      "summary": "Google Cloud has added OpenAI's frontier models—GPT-Astra, GPT-6.1 Sol, and GPT-6 Luna—to its Model Garden and Marketplace. This move makes Google the only hyperscale cloud provider to offer access to all three major closed-source LLMs alongside its own Gemini suite. The models are available to select enterprise customers in private preview, with usage billed through existing Google Cloud spending commitments.",
+      "published": "2026-10-22T13:19:15Z",
+      "published_at": "2026-10-22T13:19:15Z",
+      "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
+      "link": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
+      "summary": "Google Cloud has launched the Agent Compute Engine, a new platform layer designed to help enterprises build, deploy, and manage AI agents at scale. The release focuses on adding governance, security, and orchestration tools to the Gemini Agent platform. It aims to solve the problem of 'agent sprawl' by allowing organizations to monitor and regulate AI agents in production environments.",
       "facts": [
-        "Models added include GPT-Astra, GPT-6.1 Sol, and GPT-6 Luna.",
-        "Google Cloud is the only hyperscale cloud provider offering access to OpenAI, Anthropic, and Google's own closed-source models.",
-        "Customers can purchase and deploy these models via Google Cloud Marketplace and integrate them into existing workflows.",
-        "Models will be available in Gemini for business and the Google Antigravity environment.",
-        "The rollout is currently in private preview for select enterprise customers."
+        "Agent Compute Engine is now available for enterprise Google Cloud users.",
+        "Includes new tools for monitoring and governing AI agent behavior.",
+        "Designed to integrate with existing Google Cloud security workflows.",
+        "Aims to reduce the complexity of managing multi-agent systems.",
+        "Supports real-time API streaming within the ecosystem."
       ],
       "data_points": [
-        "Access to over 200 first-party, third-party, and open-source models on the platform."
+        "The release includes expanded streaming capabilities for API Gateway."
       ],
       "limitations_or_qualifiers": [
-        "Private preview access only at launch; general availability expected in coming weeks."
+        "Requires active Google Cloud Platform account; enterprise-level features may require specific service tiers."
       ],
-      "why_it_matters": "This deal breaks the last major cloud exclusivity barrier for OpenAI and positions Google Cloud as a flexible, model-agnostic infrastructure hub for enterprise AI.",
+      "why_it_matters": "This represents the industry's pivot from 'AI prototyping' to 'AI production,' where governance and security are now prioritized over raw model capability.",
       "editorial_case": {
-        "new_development": "Google Cloud has officially begun hosting OpenAI's frontier models, completing a shift where OpenAI models are now available across all three major US cloud providers.",
-        "affected_listener": "Enterprise developers and IT leaders who can now standardize on Google Cloud infrastructure while selecting from a broader palette of model providers.",
-        "why_today": "This marks a definitive shift in the 'hyperscaler' AI wars, signaling that infrastructure providers are prioritizing model availability over platform exclusivity.",
-        "distinct_question": "Can enterprises now reliably switch between competing foundation models without changing their underlying cloud infrastructure?",
-        "new_since_prior_coverage": "Confirmed direct integration with Google Cloud infrastructure and billing, contrasting with previous separate contract arrangements.",
-        "practical_payoff": "Developers can now consolidate AI spending and model management into a single Google Cloud invoice."
+        "new_development": "Official public launch of the Agent Compute Engine.",
+        "affected_listener": "Enterprise IT leaders and developers managing the shift from simple chatbots to autonomous agents.",
+        "why_today": "It defines the new standard for how AI agents will actually function in a work environment.",
+        "distinct_question": "How do companies maintain control when thousands of AI agents start working independently?",
+        "new_since_prior_coverage": "This is a new, concrete product release replacing earlier, broader conceptual announcements.",
+        "practical_payoff": "IT teams can now adopt a unified framework for monitoring agent activity, potentially reducing security risk."
       },
       "editorial_scores": {
         "human_consequence": 4,
         "novelty": 3,
-        "explanatory_value": 4,
+        "explanatory_value": 5,
         "evidence_depth": 5
       },
-      "story_age_hours": 13.89,
+      "story_age_hours": 3.57,
       "source_tier": 3,
       "grounded": true,
       "rank": 2,
       "story_tier": "primary",
-      "topic_family": "products",
+      "topic_family": "governance",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "nvidia-healthcare-life-sciences-rfd4-proteina-2026-10-21",
-      "headline": "NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows",
-      "title": "NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows",
-      "publisher": "NVIDIA",
-      "published": "2026-10-21T00:00:00Z",
-      "published_at": "2026-10-21T00:00:00Z",
-      "source_url": "https://nvidianews.nvidia.com/news/healthcare-and-life-sciences-leaders-build-on-nvidia-to-advance-drug-discovery-and-expand-patient-care",
-      "link": "https://nvidianews.nvidia.com/news/healthcare-and-life-sciences-leaders-build-on-nvidia-to-advance-drug-discovery-and-expand-patient-care",
-      "summary": "NVIDIA announced collaborations with healthcare and research organizations to advance protein design, drug discovery, and cancer care. The company said the effort includes a newly released open model, RFD4-Proteina, and that Genedata’s AI co-scientist will coordinate protein design and testing in Danaher’s autonomous lab workflow. NVIDIA also said Hologen is combining large medicine models with Nemotron to build AI clinical scientists that turn imaging and clinical data into patient-outcome insights. The announcement is aimed at research and discovery workflows, not consumer health tools.",
+      "event_key": "meta-q3-2026-earnings-ai-capex",
+      "headline": "Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results",
+      "title": "Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results",
+      "publisher": "Bloomberg",
+      "published": "2026-10-22T13:43:49Z",
+      "published_at": "2026-10-22T13:43:49Z",
+      "source_url": "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs",
+      "link": "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs",
+      "summary": "Meta shares declined in early trading as investors reacted to the company's commitment to significantly higher capital expenditures for AI infrastructure. While the company reported strong Q3 results and growth for its new Muse AI models, the market remains concerned about the long-term ROI of massive AI-driven spending. The reporting highlights a growing tension between short-term financial performance and the aggressive, capital-intensive pursuit of generative AI dominance.",
       "facts": [
-        "NVIDIA announced the collaborations on October 21, 2026.",
-        "The announcement includes a newly released open model called RFD4-Proteina.",
-        "Genedata’s AI co-scientist will coordinate protein design and testing in Danaher’s autonomous lab workflow.",
-        "Hologen is combining large medicine models with Nemotron to build AI clinical scientists.",
-        "The stated goal includes advancing drug discovery and patient care."
+        "Meta reported Q3 earnings that beat expectations.",
+        "Meta is increasing capital expenditure budgets specifically to support AI infrastructure.",
+        "Market sentiment reacted negatively due to concerns over sustained, high-cost AI investment.",
+        "Muse AI models are showing growth in user adoption.",
+        "Meta's CFO emphasized that corporate customers are a primary target for new AI offerings."
       ],
-      "data_points": [],
+      "data_points": [
+        "Meta shares fell approximately 3% following the announcement."
+      ],
       "limitations_or_qualifiers": [
-        "This is research and enterprise workflow tooling; the announcement does not establish clinical approval or patient-facing availability."
+        "Market impact is focused on equity valuation; long-term operational success remains speculative."
       ],
-      "why_it_matters": "This matters because it suggests AI is becoming embedded in scientific and biomedical workflows, where even small efficiency gains can accelerate discovery.",
+      "why_it_matters": "This shift signals a cooling in the 'AI gold rush' as Wall Street begins to prioritize immediate fiscal discipline over speculative long-term growth.",
       "editorial_case": {
-        "new_development": "NVIDIA paired a new open model with concrete research workflows in protein design and clinical analysis.",
-        "affected_listener": "Drug-discovery teams, lab operators, and life-sciences researchers.",
-        "why_today": "It is one of the clearest science-oriented AI announcements in the window and has practical implications beyond software.",
-        "distinct_question": "How is AI being used in real scientific and clinical research workflows right now?",
-        "new_since_prior_coverage": "This is a new scientific workflow announcement, not a generic AI-for-health opinion piece.",
-        "practical_payoff": "Researchers can watch whether RFD4-Proteina or the cited lab workflow becomes accessible in their own tooling stacks."
+        "new_development": "Meta's official Q3 disclosure of increased AI capital expenditure guidance.",
+        "affected_listener": "Investors and tech professionals tracking the sustainability of the current AI infrastructure boom.",
+        "why_today": "This is the primary market-moving event of the 48-hour window, providing concrete data on the 'AI spending' narrative.",
+        "distinct_question": "Is the massive corporate investment in AI finally hitting a wall of investor skepticism?",
+        "new_since_prior_coverage": "Provides specific Q3 financial data and revised guidance that was previously theoretical.",
+        "practical_payoff": "Watch tech sector capex reports to see if other hyperscalers follow Meta's spending trajectory."
       },
       "editorial_scores": {
-        "human_consequence": 4,
+        "human_consequence": 3,
         "novelty": 4,
         "explanatory_value": 4,
-        "evidence_depth": 4
+        "evidence_depth": 5
       },
-      "story_age_hours": 13.89,
+      "story_age_hours": 3.16,
       "source_tier": 3,
       "grounded": true,
       "rank": 3,
       "story_tier": "primary",
-      "topic_family": "science_access",
-      "story_role": "top_ai_event",
-      "bucket": "grounded_top_ai_event"
-    },
-    {
-      "event_key": "nvidia-dsx-pod-ai-factories-2026-10-21",
-      "headline": "NVIDIA introduced DSX POD, a modular reference design for faster AI factory deployment in Europe",
-      "title": "NVIDIA introduced DSX POD, a modular reference design for faster AI factory deployment in Europe",
-      "publisher": "NVIDIA",
-      "published": "2026-10-21T00:00:00Z",
-      "published_at": "2026-10-21T00:00:00Z",
-      "source_url": "https://nvidianews.nvidia.com/news/nvidia-introduces-dsx-pod-ai-factories-to-accelerate-europes-infrastructure-deployment",
-      "link": "https://nvidianews.nvidia.com/news/nvidia-introduces-dsx-pod-ai-factories-to-accelerate-europes-infrastructure-deployment",
-      "summary": "NVIDIA announced DSX POD, a reference design for complete Vera Rubin AI factories built by partners inside modular containers and validated before delivery. The company says prepared sites can be cut from a six-month deployment cycle to as little as 14 days. NVIDIA says a partner ecosystem is working on early-2027 delivery worldwide. The announcement is infrastructure-focused rather than a new model release, and it is aimed at customers that need faster production-token capacity.",
-      "facts": [
-        "NVIDIA announced DSX POD on October 21, 2026.",
-        "DSX POD is a reference design for complete Vera Rubin AI factories built inside modular containers.",
-        "NVIDIA says deployment at a prepared site can fall from six months to as little as 14 days.",
-        "The units arrive integrated and validated before delivery.",
-        "NVIDIA says partners are working to deliver modular AI factories worldwide in early 2027."
-      ],
-      "data_points": [
-        "six months",
-        "14 days",
-        "early 2027"
-      ],
-      "limitations_or_qualifiers": [
-        "This is a reference design and partner-led deployment plan, not a consumer product; timing and availability depend on site readiness and partner delivery."
-      ],
-      "why_it_matters": "This matters because AI capacity is increasingly constrained by infrastructure, and a 14-day deployment claim changes the economics of scaling compute.",
-      "editorial_case": {
-        "new_development": "NVIDIA moved from chip and platform messaging to a concrete build-out blueprint for AI factories with compressed deployment time.",
-        "affected_listener": "Cloud operators, datacenter builders, industrial buyers, and governments trying to stand up AI capacity quickly.",
-        "why_today": "It is one of the strongest infrastructure announcements in the window and directly affects the speed of AI expansion.",
-        "distinct_question": "How fast can new AI infrastructure be deployed, and what does NVIDIA’s new factory design change?",
-        "new_since_prior_coverage": "This is a new infrastructure product announcement, not a reprise of earlier Vera Rubin or GTC talking points.",
-        "practical_payoff": "Watch whether the 14-day claim translates into real-world rollouts, especially for European capacity-constrained buyers."
-      },
-      "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 5,
-        "explanatory_value": 4,
-        "evidence_depth": 5
-      },
-      "story_age_hours": 13.89,
-      "source_tier": 3,
-      "grounded": true,
-      "rank": 4,
-      "story_tier": "supporting",
       "topic_family": "other",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "nvidia-nokia-ai-ran-commercial-call-2026-10-21",
-      "headline": "NVIDIA and telecom partners said the first commercial AI-RAN call is live on a commercial network",
-      "title": "NVIDIA and telecom partners said the first commercial AI-RAN call is live on a commercial network",
-      "publisher": "NVIDIA",
+      "event_key": "microsoft-agentic-insider-perception-2026-10-21",
+      "headline": "Microsoft outlines a security approach for 'agentic insiders' and continuous agent supervision",
+      "title": "Microsoft outlines a security approach for 'agentic insiders' and continuous agent supervision",
+      "publisher": "Microsoft",
       "published": "2026-10-21T00:00:00Z",
       "published_at": "2026-10-21T00:00:00Z",
-      "source_url": "https://nvidianews.nvidia.com/news/nvidia-nokia-and-leading-telecom-operators-turn-networks-into-distributed-intelligence-platforms",
-      "link": "https://nvidianews.nvidia.com/news/nvidia-nokia-and-leading-telecom-operators-turn-networks-into-distributed-intelligence-platforms",
-      "summary": "NVIDIA said T-Mobile completed the world’s first AI-RAN call on a commercial network, while BT, Deutsche Telekom, and Elisa announced live-network pilots. The company framed the effort as turning telecom networks into distributed intelligence platforms by adding accelerated computing to data centers, metro sites, and cell sites. NVIDIA also said operators are adopting its Nemotron open models for agentic services and autonomous network operations. The announcement is part of GTC Berlin and is centered on network infrastructure rather than consumer AI applications.",
+      "source_url": "https://news.microsoft.com/source/emea/2026/10/securing-the-agentic-insider/",
+      "link": "https://news.microsoft.com/source/emea/2026/10/securing-the-agentic-insider/",
+      "summary": "Microsoft said it is treating enterprise AI agents as “agentic insiders” and proposed a security approach centered on continuous supervision. The company says its Perception system can discover and manage agents, assess their risk dynamically, and use Guardian Agents to supervise them in real time. Microsoft framed the approach as combining deterministic security controls with non-deterministic AI systems. The announcement focuses on governance and risk management inside organizations that give agents access to data and systems.",
       "facts": [
-        "NVIDIA said T-Mobile completed the world’s first AI-RAN call on a commercial network.",
-        "BT, Deutsche Telekom, and Elisa announced AI-RAN pilots on live networks.",
-        "NVIDIA said nine EMEA telecom operators are building or expanding NVIDIA-powered infrastructure.",
-        "The company said operators are adopting Nemotron open models for agentic services.",
-        "The announcement was made at GTC Berlin on October 21, 2026."
+        "Microsoft described enterprise AI agents as 'agentic insiders'.",
+        "Microsoft said its Perception system discovers and manages agents.",
+        "Microsoft said Perception dynamically assesses agent risk and enables Guardian Agents to supervise and respond in real time.",
+        "Microsoft framed the approach as combining deterministic controls with non-deterministic AI systems."
       ],
       "data_points": [
-        "world’s first",
-        "nine EMEA telecom operators"
+        "Published October 21, 2026"
       ],
       "limitations_or_qualifiers": [
-        "The telecom pilots and infrastructure plans are described in vendor and partner announcements; commercial scale and end-user impact are not yet established."
+        "This is a security framework announcement, not a product availability release for consumers.",
+        "Effectiveness depends on implementation inside enterprise environments."
       ],
-      "why_it_matters": "This matters because it shows AI is moving into carrier infrastructure, where latency, automation, and network economics can affect everyday connectivity.",
+      "why_it_matters": "It addresses the practical problem of how to let AI agents work inside companies without giving them unchecked access to systems and data.",
       "editorial_case": {
-        "new_development": "The story moves AI from cloud and app layers into live telecom network operations and a claimed commercial first call.",
-        "affected_listener": "Mobile users, telecom operators, and enterprise customers relying on network automation and edge services.",
-        "why_today": "It is a substantive network-infrastructure shift with a concrete live-network milestone in the window.",
-        "distinct_question": "Are AI workloads now being embedded directly into telecom networks?",
-        "new_since_prior_coverage": "This is a new live-network deployment milestone, not just a lab demo or conference teaser.",
-        "practical_payoff": "Watch whether carriers expand from pilots into operational AI-RAN deployments and whether performance or cost benefits are documented."
+        "new_development": "Microsoft publicly defined a governance model for supervising AI agents as internal actors with risk-bearing access.",
+        "affected_listener": "IT, security, compliance, and operations teams deploying AI agents at work.",
+        "why_today": "It is a timely answer to a real operational bottleneck as agent deployments expand.",
+        "distinct_question": "How do companies supervise AI agents that can access internal systems and make decisions?",
+        "new_since_prior_coverage": "This is new framing and architecture in the window, not a repeat of prior broad AI-security commentary.",
+        "practical_payoff": "Watch for Perception-related controls appearing in Microsoft enterprise security products and partner workflows."
       },
       "editorial_scores": {
         "human_consequence": 4,
         "novelty": 4,
-        "explanatory_value": 4,
-        "evidence_depth": 5
+        "explanatory_value": 5,
+        "evidence_depth": 4
       },
-      "story_age_hours": 13.89,
+      "story_age_hours": 40.89,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 4,
+      "story_tier": "supporting",
+      "topic_family": "products",
+      "story_role": "top_ai_event",
+      "bucket": "grounded_top_ai_event"
+    },
+    {
+      "event_key": "meta-q3-2026-muse-accounts-spending-2026-10-21",
+      "headline": "Meta says Muse has passed 10 million accounts as investors focus on rising AI spending",
+      "title": "Meta says Muse has passed 10 million accounts as investors focus on rising AI spending",
+      "publisher": "Associated Press",
+      "published": "2026-10-21T22:04:24Z",
+      "published_at": "2026-10-21T22:04:24Z",
+      "source_url": "https://apnews.com/article/13ecd6c459e39a3602f302bcc2412fe9",
+      "link": "https://apnews.com/article/13ecd6c459e39a3602f302bcc2412fe9",
+      "summary": "Meta reported quarterly results and said Muse accounts have topped 10 million. The company said it expects to keep investing aggressively in its core business and AI efforts. AP reported that investors were also focused on higher AI spending plans rather than only the earnings beat. The story is partly a financial market reaction, but it also includes a concrete usage milestone for Meta’s AI products.",
+      "facts": [
+        "Meta said Muse accounts have topped 10 million.",
+        "Meta reported net income of $9.86 billion and earnings per share of $3.83 for the July-September period.",
+        "Meta said it expects to continue investing aggressively in its core and AI businesses.",
+        "AP reported that investors focused on higher AI spending plans."
+      ],
+      "data_points": [
+        "10 million Muse accounts",
+        "$9.86 billion net income",
+        "$3.83 per share",
+        "July-September period"
+      ],
+      "limitations_or_qualifiers": [
+        "The account figure is a company-reported milestone.",
+        "The story does not establish paid conversion or retained usage."
+      ],
+      "why_it_matters": "It shows a major consumer AI product reaching scale while also highlighting the cost pressure that can come with AI expansion.",
+      "editorial_case": {
+        "new_development": "Meta paired a usage milestone with updated spending emphasis in its latest earnings report.",
+        "affected_listener": "Consumers using Meta AI products and investors watching the company’s AI economics.",
+        "why_today": "It combines evidence of real product uptake with a live debate over the cost of AI growth.",
+        "distinct_question": "Is Meta’s AI strategy producing scale that can justify the spending?",
+        "new_since_prior_coverage": "The new fact is the 10 million-account milestone and current earnings context.",
+        "practical_payoff": "Watch whether Muse usage growth keeps pace with Meta’s capital and operating costs."
+      },
+      "editorial_scores": {
+        "human_consequence": 3,
+        "novelty": 3,
+        "explanatory_value": 4,
+        "evidence_depth": 4
+      },
+      "story_age_hours": 18.82,
       "source_tier": 3,
       "grounded": true,
       "rank": 5,
@@ -246,212 +247,211 @@
     }
   ],
   "marketing_pack": {
-    "title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
-    "yt_title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
-    "youtube_title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
-    "spotify_title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
-    "hook": "NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.",
-    "show_notes_hook": "NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.",
-    "description": "NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.\n\nAlex, Jamie, and Rufus debate the biggest artificial intelligence news from the last 24–48 hours, with three distinct stories, competing perspectives and practical takeaways.\n\nWhat we covered:\n• NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents\n• Google Cloud integrates OpenAI models into Model Garden\n• NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows\n\nWhat changed. Who wins. What you do next.\n\nThe Edge: what changed, who wins, who is exposed, and what to watch next.\n\nListener question: Would you trust your company's AI agents more if they were confined by hardware-level security?\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nSubscribe to TheLEDGR for decision-grade AI signal: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge",
-    "show_notes": "NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.\n\nAlex, Jamie, and Rufus debate the biggest artificial intelligence news from the last 24–48 hours, with three distinct stories, competing perspectives and practical takeaways.\n\nWhat we covered:\n• NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents\n• Google Cloud integrates OpenAI models into Model Garden\n• NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows\n\nWhat changed. Who wins. What you do next.\n\nThe Edge: what changed, who wins, who is exposed, and what to watch next.\n\nListener question: Would you trust your company's AI agents more if they were confined by hardware-level security?\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nSubscribe to TheLEDGR for decision-grade AI signal: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge",
-    "yt_description": "NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.\n\nAlex, Jamie, and Rufus debate the biggest artificial intelligence news from the last 24–48 hours, with three distinct stories, competing perspectives and practical takeaways.\n\nWhat we covered:\n• NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents\n• Google Cloud integrates OpenAI models into Model Garden\n• NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows\n\nWhat changed. Who wins. What you do next.\n\nThe Edge: what changed, who wins, who is exposed, and what to watch next.\n\nListener question: Would you trust your company's AI agents more if they were confined by hardware-level security?\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nSubscribe to TheLEDGR for decision-grade AI signal: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge",
+    "title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+    "yt_title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+    "youtube_title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+    "spotify_title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+    "hook": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.",
+    "show_notes_hook": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.",
+    "description": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.\n\nAlex, Jamie, and Rufus debate the biggest artificial intelligence news from the last 24–48 hours, with three distinct stories, competing perspectives and practical takeaways.\n\nWhat we covered:\n• NVIDIA launches OpenShell, a reference architecture for safe AI agents\n• Google Cloud Introduces Agent Compute Engine and Governance Framework\n• Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results\n\nWhat changed. Who wins. What you do next.\n\nThe Edge: what changed, who wins, who is exposed, and what to watch next.\n\nListener question: If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nSubscribe to TheLEDGR for decision-grade AI signal: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge",
+    "show_notes": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.\n\nAlex, Jamie, and Rufus debate the biggest artificial intelligence news from the last 24–48 hours, with three distinct stories, competing perspectives and practical takeaways.\n\nWhat we covered:\n• NVIDIA launches OpenShell, a reference architecture for safe AI agents\n• Google Cloud Introduces Agent Compute Engine and Governance Framework\n• Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results\n\nWhat changed. Who wins. What you do next.\n\nThe Edge: what changed, who wins, who is exposed, and what to watch next.\n\nListener question: If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nSubscribe to TheLEDGR for decision-grade AI signal: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge",
+    "yt_description": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.\n\nAlex, Jamie, and Rufus debate the biggest artificial intelligence news from the last 24–48 hours, with three distinct stories, competing perspectives and practical takeaways.\n\nWhat we covered:\n• NVIDIA launches OpenShell, a reference architecture for safe AI agents\n• Google Cloud Introduces Agent Compute Engine and Governance Framework\n• Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results\n\nWhat changed. Who wins. What you do next.\n\nThe Edge: what changed, who wins, who is exposed, and what to watch next.\n\nListener question: If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nSubscribe to TheLEDGR for decision-grade AI signal: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge",
     "listener_promise": "What changed. Who wins. What you do next.",
     "profile_bio": "Daily AI news with Alex, Jamie and Rufus. What changed. Who wins. What you do next.",
     "episode_blurb": "Alex, Jamie and Rufus tell you what changed in AI, who wins, and what you do next.",
     "tomorrow_tease": "Tomorrow: not which AI headline was loudest, but which one quietly changed the rules.",
-    "listener_question": "Would you trust your company's AI agents more if they were confined by hardware-level security?",
+    "listener_question": "If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o",
     "poll_options": [
-      "Yes, hardware is more reliable than software.",
-      "No, it's just another 'black box' to manage.",
-      "I'd need to see the audit logs first.",
-      "I don't trust agents regardless of the security."
+      "The developer who built it",
+      "The manager who deployed it",
+      "The company as a whole",
+      "It depends on the mistake"
     ],
-    "tweet1": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard\n\nNVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.\n\nListen: https://aisimplify333.github.io/Daily-ai-News/listen/?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=episode_listen&model_version=podcast-growth-v3.2-hard-debate-top-ai-events",
-    "tweet2": "What changed. Who wins. What you do next.\n\nFollow The AI Edge: https://aisimplify333.github.io/Daily-ai-News/listen/?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=episode_listen&model_version=podcast-growth-v3.2-hard-debate-top-ai-events\n\n#AI #TheAIEdge #AINews",
-    "seo_keywords": "AI news, artificial intelligence, OpenAI, Google, Gemini, Microsoft, NVIDIA, AI agents, AI regulation, AI infrastructure, healthcare AI",
+    "tweet1": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents\n\nNVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.\n\nListen: https://aisimplify333.github.io/Daily-ai-News/listen/?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=episode_listen&model_version=podcast-growth-v3.2-hard-debate-top-ai-events",
+    "tweet2": "What changed. Who wins. What you do next.\n\nFollow The AI Edge: https://aisimplify333.github.io/Daily-ai-News/listen/?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=episode_listen&model_version=podcast-growth-v3.2-hard-debate-top-ai-events\n\n#AI #TheAIEdge #AINews",
+    "seo_keywords": "AI news, artificial intelligence, Google, Gemini, Microsoft, NVIDIA, Meta, AI agents, AI security, AI infrastructure",
     "hashtags": "#AI #TheAIEdge #AINews #AIAgents #AISecurity #HealthAI",
     "title_candidates_v3_3": {
       "format": "hard_debate_hybrid",
-      "published_title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
+      "published_title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
       "central_fight": "Whether the industry's push for integrated, AI-first infrastructure is solving real problems or just creating new, vendor-locked dependencies.",
-      "opening_question": "If we're putting AI security in the silicon and AI models in every cloud, are we building a safer future or just a more fragile one?",
-      "listener_question": "Would you trust your company's AI agents more if they were confined by hardware-level security?",
+      "opening_question": "If we're already struggling to manage our own emails, how are we supposed to manage a thousand autonomous agents working on our behalf?",
+      "listener_question": "If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o",
       "poll_options": [
-        "Yes, hardware is more reliable than software.",
-        "No, it's just another 'black box' to manage.",
-        "I'd need to see the audit logs first.",
-        "I don't trust agents regardless of the security."
+        "The developer who built it",
+        "The manager who deployed it",
+        "The company as a whole",
+        "It depends on the mistake"
       ],
-      "listener_promise": "By the end, you'll know exactly how NVIDIA and Google are changing the infrastructure of AI and what that means for your own tech stack.",
+      "listener_promise": "By the end, you'll know how to distinguish between 'AI security' as a product and 'AI governance' as a practice, and why the market is finally getting nervous about the cost of building it all.",
       "positions": {
-        "alex": "Cautiously optimistic about the utility of these tools, but worried about the long-term complexity.",
-        "jamie": "Skeptical of the marketing hype and focused on the real-world accountability of these systems.",
-        "rufus": "Views these developments as the inevitable, rational maturation of the AI market."
+        "alex": "Believes we are in a 'growing pains' phase where we have to build the tools to manage the agents we've already unleashed.",
+        "jamie": "Argues that we are rushing to build 'safety' layers that are really just new ways to hide the fact that we don't fully understand how these agents work.",
+        "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
       },
       "concession": {
         "host": "alex",
-        "gives_ground_on": "The necessity of hardware-level security for scaling autonomous agents in enterprise environments."
+        "gives_ground_on": "Admits that adding more hardware layers might just be a way to avoid fixing the underlying model opacity."
       },
-      "who_wins": "Enterprise IT departments that can now standardize their AI stack.",
-      "who_is_exposed": "Small-scale developers who might get priced out by complex, bundled infrastructure.",
-      "normal_person_payoff": "Expect more reliable AI-driven services as infrastructure becomes more robust.",
+      "who_wins": "The infrastructure providers who are successfully positioning themselves as the 'security' layer for the entire AI ecosystem.",
+      "who_is_exposed": "Companies that are deploying AI agents without a clear governance framework, hoping the 'safety' tools will do the work for them.",
+      "normal_person_payoff": "You'll understand why your company's IT department is suddenly talking about 'agentic insiders' and why you might see more 'security' prompts when you use AI tools.",
       "jamie_rufus_value_conflict": {
-        "jamie_value": "Legibility and transparency of AI systems.",
-        "rufus_value": "Efficiency and scalability of global infrastructure.",
-        "point_of_collision": "Whether 'black box' security layers are a feature or a bug."
+        "jamie_value": "Human accountability and the need for legible, understandable systems.",
+        "rufus_value": "Market resilience and the rational, capital-intensive maturation of AI infrastructure.",
+        "point_of_collision": "Whether 'safety' is a real outcome or just a market-friendly label for 'risk management'."
       },
       "rufus_global_markets_desk": {
         "market_or_region": "Wall Street/New York",
-        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaWLvCTv_r_BxYM4sZT3eHABieqsZBYIqPXxS_5_qs-2auFNv5Zp4WoHHZvqLtOdw4Z8_TRV3tlvcXnnRsTTpcvvryV-_U85c0sAui1xz8DOohpSYNFlAj7duzN7XgQIQ-DfU6DSCgQydAwDND4AEsXtcGwlVU4IZY9J-xndqEUMUte04Z62gxBz_ttsLuD6wc7EKITRDt5xHEpjePmmI=",
-        "why_this_location_today": "Google Cloud's strategy is being driven by the need to capture enterprise AI spend from competitors.",
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
+        "why_this_location_today": "Google Cloud's enterprise strategy is being heavily scrutinized by New York-based institutional investors looking for sustainable AI revenue.",
         "beat": "market mover",
         "companies_or_assets": [
           "Google",
-          "OpenAI",
           "Cloud Infrastructure Sector"
         ],
-        "capital_policy_or_infrastructure_move": "The integration of OpenAI models into Google Cloud Marketplace to consolidate enterprise AI billing.",
+        "capital_policy_or_infrastructure_move": "The shift of capital toward 'Agent Compute' platforms as a way to lock in enterprise AI spending.",
         "dated_market_receipts": [
-          "October 21, 2026 (Integration announcement)"
+          "October 2026 (Launch timeframe)"
         ]
       },
       "mandatory_receipts": [
-        "NVIDIA announced OpenShell on October 21, 2026.",
-        "Google Cloud now hosts GPT-Astra, GPT-6.1 Sol, and GPT-6 Luna.",
-        "T-Mobile completed the first commercial AI-RAN call."
+        "NVIDIA OpenShell integrates Vera Rubin infrastructure and BlueField-4 DPUs.",
+        "Google Cloud's Agent Compute Engine aims to solve 'agent sprawl' in enterprise environments.",
+        "Meta reported 10 million Muse accounts but saw shares fall 3% on high AI spending concerns."
       ],
       "forwardable_targets": [
-        "If your AI agent needs a 'kill switch' in the silicon, maybe it shouldn't be running in the first place.",
-        "Google Cloud is now the Switzerland of AI, letting you run everyone's models under one invoice."
+        "If you're building an AI agent, you're not just building software—you're building an 'agentic insider' that needs a security guard.",
+        "The market is finally asking the right question: is this AI growth actually profitable, or are we just burning cash to see how many agents we can spin up?"
       ],
       "story_scenes": [
         {
           "story_index": 1,
           "source_url": "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
-          "new_development": "NVIDIA launched OpenShell, a reference architecture that bundles agent security and observability directly into the infrastructure stack.",
-          "why_today": "It shifts agent safety from a software-layer policy to a hardware-enforced boundary.",
-          "question": "Does hardware-level containment actually solve the 'rogue agent' problem, or just add another layer of complexity?",
+          "new_development": "NVIDIA introduced OpenShell, a reference architecture for governing and containing AI agents using specific hardware and runtime software.",
+          "why_today": "It marks a shift from general AI hardware to a standardized, vendor-backed security layer for autonomous agents.",
+          "question": "Does adding a hardware-level 'security guard' actually make agents safer, or just harder to manage?",
           "competing_readings": [
-            "It provides a necessary, standardized safety net for mission-critical enterprise AI.",
-            "It creates vendor lock-in by forcing security into a specific hardware stack."
+            "A necessary infrastructure evolution for enterprise-scale AI adoption.",
+            "A move to lock customers into the NVIDIA hardware and software ecosystem."
           ],
-          "receipt": "NVIDIA claims Sentry can quarantine misbehaving agents in milliseconds and boost capacity by 20%.",
-          "unknown": "Whether these performance gains hold up in heterogeneous, multi-cloud environments.",
-          "listener_payoff": "IT leaders can now evaluate if their current agent security is better handled at the silicon level.",
-          "exchange_premise": "Alex asks if a 'quarantine' button for AI is a feature or a panic switch; Rufus explains the cost of not having one.",
+          "receipt": "OpenShell integrates Vera Rubin infrastructure, Vera CPUs, and BlueField-4 DPUs with security support from vendors like CrowdStrike and Microsoft.",
+          "unknown": "Whether this architecture will be performant enough for real-time, high-frequency agent tasks.",
+          "listener_payoff": "IT and security teams can now evaluate if their current infrastructure aligns with this new industry-standard approach to agent containment.",
+          "exchange_premise": "Alex asks if this is a 'safety net' or 'bureaucracy'; Jamie counters that it's just another layer of vendor lock-in; Rufus notes the market is willing to pay for the illusion of control.",
           "cast_direction": {
-            "alex": "Wants to know if this makes agents safer or just harder to debug.",
-            "jamie": "Focuses on whether this is a real solution or just 'AI bureaucracy' in a box.",
-            "rufus": "Interested in the 20% capacity boost as a financial incentive for adoption."
+            "alex": "Wants to know if this actually stops an agent from making a bad decision or just records it doing so.",
+            "jamie": "Focuses on the list of partners and whether this is a genuine security move or a marketing play.",
+            "rufus": "Interested in how this architecture forces companies to buy more specialized NVIDIA hardware to achieve 'safety'."
           },
-          "relationship_beat": "Jamie teases Alex for wanting a 'kill switch' for his own AI experiments.",
-          "scene_movement": "Starts with the technical reality of agent containment and moves toward the trade-off between speed and control.",
-          "discovery": "The potential for hardware-level enforcement to actually simplify the developer's security burden."
+          "relationship_beat": "Alex teases Rufus about his 'inevitable maturation' theory; Rufus laughs and admits that 'maturation' is just a polite word for 'expensive'.",
+          "scene_movement": "Starts with the technical promise of OpenShell, moves to the cost of implementation, and ends with an honest question about whether security can ever be 'solved' by a single vendor.",
+          "discovery": "The integration of security vendors like 1Password and Okta suggests this is a serious attempt at identity-based agent governance."
         },
         {
           "story_index": 2,
-          "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQGaWLvCTv_r_BxYM4sZT3eHABieqsZBYIqPXxS_5_qs-2auFNv5Zp4WoHHZvqLtOdw4Z8_TRV3tlvcXnnRsTTpcvvryV-_U85c0sAui1xz8DOohpSYNFlAj7duzN7XgQIQ-DfU6DSCgQydAwDND4AEsXtcGwlVU4IZY9J-xndqEUMUte04Z62gxBz_ttsLuD6wc7EKITRDt5xHEpjePmmI=",
-          "new_development": "Google Cloud now hosts OpenAI's frontier models, making it the only hyperscaler to offer access to all three major closed-source LLM suites.",
-          "why_today": "It marks a definitive end to platform exclusivity for top-tier AI models.",
-          "question": "Does this make the underlying cloud provider irrelevant to the model you choose?",
+          "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
+          "new_development": "Google Cloud launched the Agent Compute Engine to orchestrate and govern AI agents at scale.",
+          "why_today": "It provides a concrete platform for managing 'agent sprawl' in enterprise environments.",
+          "question": "Can a single platform layer effectively manage the chaos of thousands of independent agents?",
           "competing_readings": [
-            "It empowers developers to pick the best model for the job without switching clouds.",
-            "It commoditizes the cloud provider, turning them into a mere 'model pipe'."
+            "A vital tool for IT leaders to regain control over AI deployments.",
+            "Another layer of complexity that will eventually require its own management tools."
           ],
-          "receipt": "Google Cloud now supports GPT-Astra, GPT-6.1 Sol, and GPT-6 Luna.",
-          "unknown": "How billing and performance parity will compare across different cloud environments.",
-          "listener_payoff": "Developers can consolidate their AI spending into a single Google Cloud invoice.",
-          "exchange_premise": "Rufus explains why this is a win for enterprise procurement, while Alex wonders if it kills the 'Google vs. OpenAI' rivalry.",
+          "receipt": "The engine includes new monitoring and governance tools specifically for the Gemini Agent platform.",
+          "unknown": "How the engine handles interoperability with agents built outside the Google ecosystem.",
+          "listener_payoff": "Developers and IT leaders can now look for a unified framework to monitor agent activity, potentially reducing security risks.",
+          "exchange_premise": "Jamie questions if 'agent sprawl' is a real problem or a manufactured one; Alex wonders if this is the 'operating system' for agents.",
           "cast_direction": {
-            "alex": "Surprised that Google is playing nice with its biggest competitor.",
-            "jamie": "Delighted by the prospect of easier model switching.",
-            "rufus": "Focuses on the consolidation of enterprise AI spend."
+            "alex": "Excited about the potential for a 'dashboard' to see what agents are doing.",
+            "jamie": "Skeptical that a platform can fix bad agent design.",
+            "rufus": "Observes that Google is trying to become the 'landlord' of enterprise AI agents."
           },
-          "relationship_beat": "Rufus gently reminds Alex that 'playing nice' is just a standard business move in a mature market.",
-          "scene_movement": "From the shock of the partnership to the practical reality of enterprise procurement.",
-          "discovery": "The shift toward model-agnostic infrastructure."
+          "relationship_beat": "Jamie teases Alex for wanting a dashboard for everything; Alex admits he just likes seeing the lights blink.",
+          "scene_movement": "Explores the tension between wanting control and the reality of decentralized agent development.",
+          "discovery": "The focus on real-time API streaming indicates this is built for high-speed, production-grade agent interactions."
         },
         {
           "story_index": 3,
-          "source_url": "https://nvidianews.nvidia.com/news/nvidia-nokia-and-leading-telecom-operators-turn-networks-into-distributed-intelligence-platforms",
-          "new_development": "T-Mobile completed the first commercial AI-RAN call, integrating AI compute directly into telecom networks.",
-          "why_today": "It moves AI from the cloud to the edge of the physical network.",
-          "question": "Will this actually improve network performance, or is it just 'AI-washing' existing infrastructure?",
+          "source_url": "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs",
+          "new_development": "Meta reported strong Q3 earnings and 10 million Muse accounts, but shares fell due to concerns over rising AI capital expenditures.",
+          "why_today": "It provides the first major market-moving data point on the sustainability of massive AI infrastructure spending.",
+          "question": "Is the growth of AI users actually translating into the kind of revenue that justifies these massive costs?",
           "competing_readings": [
-            "It creates a more efficient, self-optimizing network.",
-            "It adds unnecessary complexity and security risk to critical infrastructure."
+            "Meta is building the foundation for long-term dominance.",
+            "The market is finally realizing that AI spending might not have a short-term ROI."
           ],
-          "receipt": "Nine EMEA telecom operators are building or expanding NVIDIA-powered infrastructure.",
-          "unknown": "The actual latency and cost benefits for the end user.",
-          "listener_payoff": "Understand that your future mobile network might be running on AI-optimized silicon.",
-          "exchange_premise": "Jamie asks if this means her phone will finally stop dropping calls in the elevator; Rufus explains the reality of AI-RAN.",
+          "receipt": "Meta shares fell approximately 3% despite beating Q3 earnings expectations.",
+          "unknown": "Whether Muse account growth will sustain itself without massive, ongoing marketing and infrastructure investment.",
+          "listener_payoff": "Investors and tech professionals can now track how other hyperscalers respond to Meta’s spending trajectory.",
+          "exchange_premise": "Rufus explains the market reaction; Alex asks if 10 million users is a lot or a little for Meta; Jamie points out that users don't pay the electricity bill.",
           "cast_direction": {
-            "alex": "Interested in the 'distributed intelligence' concept.",
-            "jamie": "Skeptical of the 'AI-RAN' marketing term.",
-            "rufus": "Focuses on the massive infrastructure investment by telecom giants."
+            "alex": "Surprised that 10 million users didn't make the stock go up.",
+            "jamie": "Interested in whether these users are actually doing anything useful.",
+            "rufus": "Focuses on the 'capital expenditure' narrative as the real story here."
           },
-          "relationship_beat": "Alex jokes about the irony of needing AI to make a phone call.",
-          "scene_movement": "Starts with the promise of better connectivity and lands on the reality of infrastructure deployment.",
-          "discovery": "The potential for AI to manage network traffic in real-time."
+          "relationship_beat": "Rufus gently reminds Alex that the market cares about margins, not user counts; Alex concedes that he's a 'user, not a shareholder'.",
+          "scene_movement": "Moves from the excitement of the 10 million milestone to the cold reality of the 3% stock drop.",
+          "discovery": "The tension between 'Muse growth' and 'AI costs' is the defining narrative for the next quarter of tech earnings."
         }
       ],
       "title_candidates": [
-        "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
-        "Can Google Cloud’s OpenAI Integration Finally Simplify Your AI Infrastructure Spending?",
-        "Are AI-Powered Telecom Networks Ready for Real-World Commercial Use?"
+        "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+        "Can NVIDIA’s OpenShell Stop AI Agent Sprawl in Your Workplace?",
+        "Is NVIDIA’s New Agent-Governance Architecture a Security Breakthrough or Just More Complexity?"
       ],
-      "episode_hook": "NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.",
+      "episode_hook": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.",
       "planning_status": "model_plan",
-      "_episode_date": "2026-10-21"
+      "_episode_date": "2026-10-22"
     }
   },
-  "duration_seconds": 1361,
-  "show_notes": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard. NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts mean for your next project.\n\nWhat we covered:\n• NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents\n• Google Cloud integrates OpenAI models into Model Garden\n• NVIDIA said healthcare partners are using a new open protein-design model and AI clinical scientist workflows\n\nThree distinct AI stories, with lively debate, useful discoveries and practical takeaways.\n\nListener question: Would you trust your company's AI agents more if they were confined by hardware-level security?\n\nWhat to watch tomorrow: not which AI headline was loudest, but which one quietly changed the rules.\n\nAlex, Jamie and Rufus tell you what changed in AI, who wins, and what you do next.\n\nWhat changed. Who wins. What you do next.\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nThis episode is brought to you by TheLEDGR — decision-grade AI signal for people who cannot afford to be late.\nSubscribe to TheLEDGR: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge\nIf AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.\nTheLEDGR helps you make better decisions faster, cut through noise, and walk into your day sharper.\n\nJamie's AI Transformation — source: https://www.microsoft.com/en/customers/story/23488-the-estee-lauder-companies-microsoft-copilot-studio\nCase date: 2025-04-16; evidence: Microsoft customer story with customer testimony; vendor-reported, not an independent benchmark.",
+  "duration_seconds": 1335,
+  "show_notes": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents. NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.\n\nWhat we covered:\n• NVIDIA launches OpenShell, a reference architecture for safe AI agents\n• Google Cloud Introduces Agent Compute Engine and Governance Framework\n• Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results\n\nThree distinct AI stories, with lively debate, useful discoveries and practical takeaways.\n\nListener question: If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o\n\nWhat to watch tomorrow: not which AI headline was loudest, but which one quietly changed the rules.\n\nAlex, Jamie and Rufus tell you what changed in AI, who wins, and what you do next.\n\nWhat changed. Who wins. What you do next.\n\nFollow The AI Edge on Spotify for a new AI news and analysis episode every weekday.\n\nThis episode is brought to you by TheLEDGR — decision-grade AI signal for people who cannot afford to be late.\nSubscribe to TheLEDGR: https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=daily_ai_edge\nIf AI affects your work, your team, your company, your product roadmap, or your career, you should be reading TheLEDGR.\nTheLEDGR helps you make better decisions faster, cut through noise, and walk into your day sharper.\n\nJamie's AI Transformation — source: https://blogs.microsoft.com/blog/2025/01/28/the-value-of-ai-how-microsofts-customers-and-partners-are-creating-differentiated-ai-solutions-to-reinvent-how-they-do-business-today/\nCase date: 2025-01-28; evidence: Microsoft/vendor-reported results with customer testimony; not an independent benchmark.",
   "tracking": {
-    "campaign": "podcast-2026-10-21-nvidias-openshell-architecture-how-enter",
-    "listen": "https://aisimplify333.github.io/Daily-ai-News/listen/?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=episode_listen&model_version=podcast-growth-v3.2-hard-debate-top-ai-events",
-    "subscribe_intro": "https://theledgr.io?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=intro_cta&cta_style=career",
-    "subscribe_show_notes": "https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=show_notes_cta&cta_style=career",
-    "subscribe_clip_primary": "https://theledgr.io?utm_source=podcast&utm_medium=short_video&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=clip_primary&clip_style=operator_take",
-    "subscribe_clip_secondary": "https://theledgr.io?utm_source=podcast&utm_medium=short_video&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=clip_secondary&clip_style=operator_take",
-    "subscribe_linkedin": "https://theledgr.io?utm_source=podcast&utm_medium=linkedin&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=linkedin_post",
-    "subscribe_x": "https://theledgr.io?utm_source=podcast&utm_medium=x&utm_campaign=podcast-2026-10-21-nvidias-openshell-architecture-how-enter&utm_content=x_post",
+    "campaign": "podcast-2026-10-22-nvidias-openshell-architecture-how-enter",
+    "listen": "https://aisimplify333.github.io/Daily-ai-News/listen/?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=episode_listen&model_version=podcast-growth-v3.2-hard-debate-top-ai-events",
+    "subscribe_intro": "https://theledgr.io?utm_source=podcast&utm_medium=audio&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=intro_cta&cta_style=career",
+    "subscribe_show_notes": "https://theledgr.io?utm_source=podcast&utm_medium=show_notes&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=show_notes_cta&cta_style=career",
+    "subscribe_clip_primary": "https://theledgr.io?utm_source=podcast&utm_medium=short_video&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=clip_primary&clip_style=today_lesson",
+    "subscribe_clip_secondary": "https://theledgr.io?utm_source=podcast&utm_medium=short_video&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=clip_secondary&clip_style=today_lesson",
+    "subscribe_linkedin": "https://theledgr.io?utm_source=podcast&utm_medium=linkedin&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=linkedin_post",
+    "subscribe_x": "https://theledgr.io?utm_source=podcast&utm_medium=x&utm_campaign=podcast-2026-10-22-nvidias-openshell-architecture-how-enter&utm_content=x_post",
     "experiments": {
-      "title_style": "power_shift",
+      "title_style": "hard_number",
       "cta_style": "career",
-      "sponsor_style": "readout",
-      "clip_style": "operator_take",
+      "sponsor_style": "career_edge",
+      "clip_style": "today_lesson",
       "voice_profile": "mike_archer_eryn_dialogue"
     }
   },
   "experiments": {
-    "title_style": "power_shift",
+    "title_style": "hard_number",
     "cta_style": "career",
-    "sponsor_style": "readout",
-    "clip_style": "operator_take",
+    "sponsor_style": "career_edge",
+    "clip_style": "today_lesson",
     "voice_profile": "mike_archer_eryn_dialogue"
   },
   "model_version": "podcast-growth-v3.2-hard-debate-top-ai-events",
   "forwardable_moments": [
     {
+      "speaker": "ALEX",
+      "text": "Right? But it's not. OpenShell is a reference architecture — a blueprint telling enterprises exactly how to build, watch over, and enforce rules on their AI agents. It combines something called the OpenShell secure runtime with NVIDIA's Vera Rubin infrastructure, Vera CPUs, and BlueField-4 DPUs running a security layer called NVIDIA Sentry.",
+      "score": 9
+    },
+    {
       "speaker": "JAMIE",
-      "text": "Okay, I have one. Not a skincare routine, not a trend serum, but a very glamorous internal AI story from The Estée Lauder Companies, reported by Microsoft on 2025-04-16. They used ConsumerIQ, built with Microsoft Copilot Studio and Azure OpenAI Service, to help teams get consumer research faster across many brands.",
+      "text": "That's the thing investors actually care about, right? Not \"do people use it\" but \"do people pay for it in a way that covers the cost of the electricity.\"",
       "score": 9
     },
     {
       "speaker": "RUFUS",
-      "text": "The other number worth noting — NVIDIA claims this boosts agent capacity by up to 20%.",
-      "score": 10
+      "text": "The edge deployment case is actually where the BlueField-4 DPU argument gets more interesting, not less. If the security checkpoint lives on the chip rather than routing back to a central server, you could theoretically get the latency down.",
+      "score": 8
     },
     {
       "speaker": "ALEX",
       "text": "Follow The AI Edge now. Join us tomorrow for what changes next.",
       "score": 7
-    },
-    {
-      "speaker": "RUFUS",
-      "text": "Which is how you actually sell security to a CFO. You don't lead with \"this prevents disasters.\" You lead with \"20% more throughput, and also the disasters don't happen.\"",
-      "score": 10
     }
   ],
   "learning_promise": {
@@ -468,25 +468,25 @@
     ]
   },
   "episode_aircheck": {
-    "date": "2026-10-21",
+    "date": "2026-10-22",
     "show": "The AI Edge",
     "target_band": "88-95",
     "pass": true,
-    "lead_heat": 30.0,
+    "lead_heat": 34.0,
     "receipt_scores": [
-      7,
-      6,
-      7,
       8,
-      4
+      5,
+      6,
+      8,
+      10
     ],
-    "summary_heavy_ratio": 0.013,
+    "summary_heavy_ratio": 0.018,
     "duplicate_family_risk": false,
     "blank_story_slot": false,
-    "forwardable_count": 5,
+    "forwardable_count": 8,
     "forwardable_target_hits": 6,
     "sponsor": {
-      "date": "2026-10-21",
+      "date": "2026-10-22",
       "TheLEDGR_Readout_present": false,
       "brand_present": true,
       "spoken_url_present": true,
@@ -494,39 +494,39 @@
       "main_read_present": true,
       "main_read_speaker": "ALEX",
       "rotating_end_tag_present": true,
-      "rotating_end_tag_speaker": "JAMIE",
+      "rotating_end_tag_speaker": "RUFUS",
       "sponsor_bed_expected": false,
       "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
       "readout_answers": {
         "what_changed": true,
         "who_wins": true,
         "who_is_exposed": false,
-        "operator_tomorrow": false
+        "operator_tomorrow": true
       },
-      "sponsor_tone_score": 6,
-      "strongest_story": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents"
+      "sponsor_tone_score": 7,
+      "strongest_story": "NVIDIA launches OpenShell, a reference architecture for safe AI agents"
     },
     "lesson_card": {
       "show_name": "The AI Edge",
-      "concept": "liability chain",
-      "plain_english": "the trail of accountability when an AI-shaped decision helps, harms, approves, denies, or misses something important",
-      "big_question": "If the AI gets the answer right most of the time, why are we still nervous?",
-      "simple_analogy": "a relay race where the baton is blame; the model, vendor, institution, and human signer all touch it",
+      "concept": "agent surface area",
+      "plain_english": "every tool, server, connector, and permission an agent can touch becomes a new place for risk",
+      "big_question": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
+      "simple_analogy": "giving an intern keys to every room in the building and then acting surprised when a door opens",
       "common_misunderstanding": "People focus on the launch. The useful question is who gains control, who inherits risk, and what changes tomorrow.",
-      "hard_receipt": "milliseconds",
-      "listener_payoff": "By the end, listeners should understand liability chain well enough to explain why today's AI story matters tomorrow.",
+      "hard_receipt": "The provided story snippet is thin on hard numbers; the honest move is to say that and analyze consequence.",
+      "listener_payoff": "By the end, listeners should understand agent surface area well enough to explain why today's AI story matters tomorrow.",
       "operator_lesson": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "episode_spine": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents is not just a breakthrough story; it is a liability-chain story about who owns the mistake.",
+      "episode_spine": "NVIDIA launches OpenShell, a reference architecture for safe AI agents shows that every new agent connector also creates a new place for risk.",
       "titles": {
-        "spotify_title": "Today’s AI Lesson: Liability Chain",
-        "youtube_title": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents — The Lesson",
-        "social_hook": "Most people read the AI headline. The useful part is the lesson underneath.",
-        "operator_title": "Today’s AI Lesson: Liability Chain",
-        "archive_title": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents — Liability Chain Explained"
+        "spotify_title": "The Hidden Attack Surface Inside AI Agents",
+        "youtube_title": "Your AI Agent Can Act. That Means It Can Break Things.",
+        "social_hook": "Every connector an AI agent touches becomes a new door someone has to lock.",
+        "operator_title": "Today’s AI Lesson: Agent Surface Area",
+        "archive_title": "NVIDIA launches OpenShell, a reference architecture for safe AI agents — Agent Surface Area Explained"
       }
     },
-    "title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
-    "description_first_180": "NVIDIA is moving agent security directly into the hardware, and Google is finally letting you run OpenAI models on their cloud. We're breaking down what these infrastructure shifts",
+    "title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+    "description_first_180": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem",
     "note": "Structural compliance only. No listening or audience rating has been performed.",
     "v3_3_assessment": {
       "version": "v3.3-connection-first",
@@ -547,7 +547,7 @@
         "sponsor_cta_exactly_once": true,
         "rotating_sponsor_end_tag": true,
         "listener_question_present": true,
-        "prior_listener_question_or_poll_acknowledged": true,
+        "prior_listener_question_or_poll_acknowledged": false,
         "show_follow_cta_present": true,
         "single_show_cta": true,
         "listener_promise_present": true,
@@ -567,10 +567,12 @@
         "continuity_callback": true
       },
       "soft_flags": [
-        "alex_extended_exposition (64 words before substantive reply)",
-        "repeated_stale_phrase: 'consequence before consensus catches up'"
+        "alex_extended_exposition (107 words before substantive reply)",
+        "advisory_prior_listener_question_or_poll_acknowledged",
+        "repeated_stale_phrase: 'consequence before consensus catches up'",
+        "repeated_stale_phrase: 'the consequence before consensus catches up'"
       ],
-      "keyword_signal": 100,
+      "keyword_signal": 97,
       "keyword_signal_note": "Informational only. Real quality = listener retention in Spotify/Apple analytics, not this number.",
       "score": null,
       "target": 84,
@@ -579,31 +581,31 @@
           "basis": "transcript heuristics only; no listening or audience measurement",
           "blocking": false,
           "story_words": {
-            "2": 896,
-            "3": 856,
-            "4": 1163
+            "2": 993,
+            "3": 830,
+            "4": 1097
           },
           "story_word_shares": {
-            "2": 0.307,
-            "3": 0.294,
-            "4": 0.399
+            "2": 0.34,
+            "3": 0.284,
+            "4": 0.376
           },
           "repeated_sentences": [],
           "flags": []
         },
-        "words": 3739,
+        "words": 3643,
         "runtime_word_band": [
           3150,
           5270
         ],
-        "speaker_lines": 158,
+        "speaker_lines": 164,
         "segments": 5,
-        "receipts": 19,
+        "receipts": 18,
         "concessions": 0,
         "callback_present": true,
         "show_follow_cta_count": 1,
         "competing_show_cta": false,
-        "listener_memory_acknowledged": true,
+        "listener_memory_acknowledged": false,
         "shareable_exchange": {
           "passed": true,
           "segment": 2,
@@ -619,51 +621,45 @@
             {
               "segment": 2,
               "block": 5,
-              "speaker": "RUFUS",
-              "text": "Which is exactly the right thing to watch. A reference architecture performs beautifully in the reference environment."
-            },
-            {
-              "segment": 2,
-              "block": 5,
               "speaker": "ALEX",
-              "text": "So for anyone building or buying enterprise AI right now — what do you do with this?"
+              "text": "On announcement day. Which is different from in production."
             },
             {
               "segment": 2,
               "block": 5,
               "speaker": "RUFUS",
-              "text": "You use it as a benchmark. Whatever agent security tooling you're currently running — software guardrails, observability platforms — you now have a hardware-enforced option to measure against."
+              "text": "A vendor claim about scale and safety is not independent validation. NVIDIA says this. The partners say they're integrating. Whether it works as described in a live enterprise environment is a separate question."
             },
             {
               "segment": 2,
               "block": 5,
               "speaker": "JAMIE",
-              "text": "And if you're in a regulated industry — finance, healthcare, defense — the millisecond quarantine claim is worth testing seriously, because an agent acting outside its bounds in those environments is not a theoretical cost."
+              "text": "And that's the real continuity here — yesterday we had an unresolved argument about whether this would be a genuine security advance or expensive AI bureaucracy. Now we have the actual product."
             },
             {
               "segment": 2,
               "block": 5,
               "speaker": "ALEX",
-              "text": "NVIDIA says the capacity gain is \"up to\" 20%, which is a ceiling, not a floor."
+              "text": "We do. And honestly, it moves the needle. Not because it solves the problem — it doesn't — but because doing governance at the hardware layer with identity verification is more than most enterprises have right now."
             }
           ],
           "test": "Would this exact exchange make sense and feel worth sending without the full episode?"
         },
-        "alex_questions": 23,
-        "jamie_reactions": 5,
+        "alex_questions": 11,
+        "jamie_reactions": 3,
         "jamie_comic_beats": 0,
-        "rufus_dry_lines": 3,
-        "friction_beats": 4,
-        "interruptions": 55,
+        "rufus_dry_lines": 2,
+        "friction_beats": 5,
+        "interruptions": 66,
         "jamie_rufus_exchange_segments": [
           2,
           3,
           4
         ],
         "spoken_production_language": false,
-        "max_turn_words": 54,
-        "max_alex_exposition_words": 64,
-        "title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
+        "max_turn_words": 55,
+        "max_alex_exposition_words": 107,
+        "title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
         "lead_actor": "NVIDIA"
       }
     },
@@ -705,7 +701,7 @@
       "sponsor_cta_exactly_once": true,
       "rotating_sponsor_end_tag": true,
       "listener_question_present": true,
-      "prior_listener_question_or_poll_acknowledged": true,
+      "prior_listener_question_or_poll_acknowledged": false,
       "show_follow_cta_present": true,
       "single_show_cta": true,
       "listener_promise_present": true,
@@ -724,12 +720,12 @@
       "temporal_consistency": true,
       "continuity_callback": true
     },
-    "keyword_signal": 100,
+    "keyword_signal": 97,
     "passed": true,
     "failed": []
   },
   "sponsor_delivery_report": {
-    "date": "2026-10-21",
+    "date": "2026-10-22",
     "TheLEDGR_Readout_present": false,
     "brand_present": true,
     "spoken_url_present": true,
@@ -737,77 +733,77 @@
     "main_read_present": true,
     "main_read_speaker": "ALEX",
     "rotating_end_tag_present": true,
-    "rotating_end_tag_speaker": "JAMIE",
+    "rotating_end_tag_speaker": "RUFUS",
     "sponsor_bed_expected": false,
     "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
     "readout_answers": {
       "what_changed": true,
       "who_wins": true,
       "who_is_exposed": false,
-      "operator_tomorrow": false
+      "operator_tomorrow": true
     },
-    "sponsor_tone_score": 6,
-    "strongest_story": "NVIDIA launched OpenShell, a reference architecture for safe enterprise AI agents"
+    "sponsor_tone_score": 7,
+    "strongest_story": "NVIDIA launches OpenShell, a reference architecture for safe AI agents"
   },
   "listener_poll": {
     "version": "the-ai-edge-listener-poll-v1",
-    "date": "2026-10-21",
-    "episode_title": "NVIDIA’s OpenShell Architecture: How Enterprise Agents Get Their Own Security Guard",
-    "question": "Would you trust your company's AI agents more if they were confined by hardware-level security?",
+    "date": "2026-10-22",
+    "episode_title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+    "question": "If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o",
     "options": [
-      "Yes, hardware is more reliable than software.",
-      "No, it's just another 'black box' to manage.",
-      "I'd need to see the audit logs first.",
-      "I don't trust agents regardless of the security."
+      "The developer who built it",
+      "The manager who deployed it",
+      "The company as a whole",
+      "It depends on the mistake"
     ],
     "multiple_choice": false,
     "status": "ready_for_spotify_creators"
   },
   "companion_files": {
-    "transcript": "podcast_2026-10-21.txt",
-    "chapters": "podcast_2026-10-21.chapters.json"
+    "transcript": "podcast_2026-10-22.txt",
+    "chapters": "podcast_2026-10-22.chapters.json"
   },
   "audio_qa": {
     "version": "the-ai-edge-audio-qa-v1",
     "passed": true,
     "intro_present": true,
     "outro_present": true,
-    "outro_tail_dbfs": -16.76,
+    "outro_tail_dbfs": -16.96,
     "outro_tail_minimum_dbfs": -32.0,
     "transition_count": 4,
     "script_transition_markers": 4,
     "transition_measurements": [
       {
         "segment": 2,
-        "start": 61.351,
-        "end": 64.351,
-        "dbfs": -22.62,
+        "start": 65.044,
+        "end": 68.044,
+        "dbfs": -22.85,
         "audible_level": true
       },
       {
         "segment": 3,
-        "start": 399.103,
-        "end": 402.103,
-        "dbfs": -22.24,
+        "start": 466.311,
+        "end": 469.311,
+        "dbfs": -22.55,
         "audible_level": true
       },
       {
         "segment": 4,
-        "start": 755.482,
-        "end": 758.482,
-        "dbfs": -22.25,
+        "start": 808.736,
+        "end": 811.736,
+        "dbfs": -22.41,
         "audible_level": true
       },
       {
         "segment": 5,
-        "start": 1207.747,
-        "end": 1210.747,
-        "dbfs": -22.09,
+        "start": 1217.305,
+        "end": 1220.305,
+        "dbfs": -22.34,
         "audible_level": true
       }
     ],
     "expected_transition_count": 4,
-    "estimated_program_dynamic_range_db": 9.68,
+    "estimated_program_dynamic_range_db": 9.78,
     "note": "Completed audio is preserved on failure; this report never triggers a second paid render."
   }
 }

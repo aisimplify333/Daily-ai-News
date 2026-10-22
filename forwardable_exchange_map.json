@@ -3,12 +3,12 @@
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "If the AI gets the answer right most of the time, why are we still nervous?"
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?"
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: the trail of accountability when an AI-shaped decision helps, harms, approves, denies, or misses something important."
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk."
     },
     {
       "type": "jamie_human_line",
@@ -23,7 +23,7 @@
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like a relay race where the baton is blame; the model, vendor, institution, and human signer all touch it."
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens."
     },
     {
       "type": "operator_lesson",
@@ -33,64 +33,64 @@
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether liability chain sounds clever. It is who gets caught when it becomes real."
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real."
     }
   ],
   "matches": [
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "If the AI gets the answer right most of the time, why are we still nervous?",
-      "matched_line": "Today’s question for you: Would you trust your company's AI agents more if they were confined by hardware-level security?",
-      "match_score": 0.44,
-      "forwardable": true
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
+      "matched_line": "Today’s question for you: if your company deployed an AI agent that made a costly mistake, who carries the accountability — the engineer who built it, the manager who approved it, or the vendor who sold the governance layer? Let us know.",
+      "match_score": 0.62,
+      "forwardable": false
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: the trail of accountability when an AI-shaped decision helps, harms, approves, denies, or misses something important.",
-      "matched_line": "Okay, I have one. Not a skincare routine, not a trend serum, but a very glamorous internal AI story from The Estée Lauder Companies, reported by Microsoft on 2025-04-16. They used ConsumerIQ, built with Microsoft Copilot Studio and Azure OpenAI Service, to help teams get consumer research faster across many brands.",
-      "match_score": 0.45,
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
+      "matched_line": "So the identity verification piece — 1Password, Okta — how does that even work at the edge? Is the agent authenticating every action against a cloud service?",
+      "match_score": 0.59,
       "forwardable": true
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "On OpenShell — the regulatory benchmark question is the real signal. If a financial regulator or a healthcare body starts citing it as a compliance reference, adoption doesn't follow a normal product curve. It follows a mandate curve.",
-      "match_score": 0.55,
+      "matched_line": "So the identity verification piece — 1Password, Okta — how does that even work at the edge? Is the agent authenticating every action against a cloud service?",
+      "match_score": 0.47,
       "forwardable": true
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "Which is how you actually sell security to a CFO. You don't lead with \"this prevents disasters.\" You lead with \"20% more throughput, and also the disasters don't happen.\"",
-      "match_score": 0.53,
+      "matched_line": "The edge deployment case is actually where the BlueField-4 DPU argument gets more interesting, not less. If the security checkpoint lives on the chip rather than routing back to a central server, you could theoretically get the latency down.",
+      "match_score": 0.52,
       "forwardable": true
     },
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like a relay race where the baton is blame; the model, vendor, institution, and human signer all touch it.",
-      "matched_line": "Every drug you've ever taken works because it binds to a specific protein in your body. Designing a molecule that fits a protein — like a key fitting a lock — is one of the hardest problems in biology. Used to take years of lab work per candidate. AI can now generate candidates much faster.",
-      "match_score": 0.5,
-      "forwardable": false
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
+      "matched_line": "Twenty to thirty minutes per case, according to Microsoft's January 2025 account. Now they have a Copilot Studio agent that collects the relevant information, analyses it, and hands a structured summary to a human investigator.",
+      "match_score": 0.53,
+      "forwardable": true
     },
     {
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "One thing I'm still not clear on — when Sentry quarantines an agent, what actually happens to the work it was doing? Does the task fail, or does something else pick it up?",
-      "match_score": 0.45,
+      "matched_line": "We do. And honestly, it moves the needle. Not because it solves the problem — it doesn't — but because doing governance at the hardware layer with identity verification is more than most enterprises have right now.",
+      "match_score": 0.48,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether liability chain sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "And the 20% capacity claim is how this gets adopted before any mandate arrives. Not fear of the rogue agent. Efficiency on the invoice.",
-      "match_score": 0.57,
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
+      "matched_line": "Which is a fair version of the question. The capex for AI infrastructure is not theoretical. It's data centers, it's power contracts, it's chips. Those are real sunk costs. The question is the revenue multiple on the other side.",
+      "match_score": 0.67,
       "forwardable": true
     }
   ],

@@ -1,118 +1,85 @@
 {
-  "date": "2026-10-21",
+  "date": "2026-10-22",
   "new_tts_calls": 0,
-  "warnings": [],
+  "warnings": [
+    "Trailer beats do not fit 60–90 seconds cleanly; prepared trailer script remains available."
+  ],
   "publication": "assets_only_not_uploaded_to_spotify",
   "clip": {
-    "start": 347.089,
-    "end": 381.32,
-    "seconds": 34.231,
+    "start": 195.452,
+    "end": 238.862,
+    "seconds": 43.41,
     "score": 6,
     "turns": [
       {
         "kind": "speech",
         "segment": 2,
         "speaker": "ALEX",
-        "text": "So for anyone building or buying enterprise AI right now — what do you do with this?",
+        "text": "On announcement day. Which is different from in production.",
         "sound_design": {},
-        "performance_mood": "curiosity",
-        "tempo_factor": 1.0,
-        "speed": 1.01,
-        "level_delta_db": 0.0,
-        "pause_requested_ms": 85,
-        "pause_reason": "question_to_answer",
-        "start": 347.089,
-        "end": 352.746
+        "performance_mood": "explainer",
+        "tempo_factor": 0.975,
+        "speed": 0.98475,
+        "level_delta_db": -0.25,
+        "pause_requested_ms": 110,
+        "pause_reason": "conversational_handoff",
+        "start": 195.452,
+        "end": 199.89
       },
       {
         "kind": "speech",
         "segment": 2,
         "speaker": "RUFUS",
-        "text": "You use it as a benchmark. Whatever agent security tooling you're currently running — software guardrails, observability platforms — you now have a hardware-enforced option to measure against.",
+        "text": "A vendor claim about scale and safety is not independent validation. NVIDIA says this. The partners say they're integrating. Whether it works as described in a live enterprise environment is a separate question.",
         "sound_design": {},
-        "performance_mood": "explainer",
+        "performance_mood": "concern",
         "tempo_factor": 0.975,
         "speed": 1.092,
         "level_delta_db": -0.25,
-        "pause_requested_ms": 110,
-        "pause_reason": "conversational_handoff",
-        "start": 352.831,
-        "end": 363.94
+        "pause_requested_ms": 180,
+        "pause_reason": "reflective_response",
+        "start": 200.0,
+        "end": 213.001
       },
       {
         "kind": "speech",
         "segment": 2,
         "speaker": "JAMIE",
-        "text": "And if you're in a regulated industry — finance, healthcare, defense — the millisecond quarantine claim is worth testing seriously, because an agent acting outside its bounds in those environments is not a theoretical cost.",
+        "text": "And that's the real continuity here — yesterday we had an unresolved argument about whether this would be a genuine security advance or expensive AI bureaucracy. Now we have the actual product.",
         "sound_design": {},
-        "performance_mood": "concern",
+        "performance_mood": "curiosity",
         "tempo_factor": 1.0,
         "speed": 1.05,
         "level_delta_db": 0.0,
-        "pause_requested_ms": 180,
-        "pause_reason": "reflective_response",
-        "start": 364.05,
-        "end": 375.823
+        "pause_requested_ms": 110,
+        "pause_reason": "conversational_handoff",
+        "start": 213.181,
+        "end": 225.943
       },
       {
         "kind": "speech",
         "segment": 2,
         "speaker": "ALEX",
-        "text": "NVIDIA says the capacity gain is \"up to\" 20%, which is a ceiling, not a floor.",
+        "text": "We do. And honestly, it moves the needle. Not because it solves the problem — it doesn't — but because doing governance at the hardware layer with identity verification is more than most enterprises have right now.",
         "sound_design": {},
-        "performance_mood": "pushback",
-        "tempo_factor": 1.04,
-        "speed": 1.0504,
-        "level_delta_db": 0.35,
+        "performance_mood": "explainer",
+        "tempo_factor": 0.975,
+        "speed": 0.98475,
+        "level_delta_db": -0.25,
         "pause_requested_ms": 110,
         "pause_reason": "conversational_handoff",
-        "start": 376.003,
-        "end": 381.32
+        "start": 226.053,
+        "end": 238.862
       }
     ],
-    "audio": "clip_2026-10-21.mp3",
-    "captions": "clip_2026-10-21.vtt",
+    "audio": "clip_2026-10-22.mp3",
+    "captions": "clip_2026-10-22.vtt",
     "caption_timing": "measured-turn-boundaries-with-estimated-word-groups",
     "needs_editorial_review": true,
-    "video": "clip_2026-10-21.mp4"
+    "video": "clip_2026-10-22.mp4"
   },
   "existing_trailer": {
     "status": "preserved",
     "audio": "show_trailer.mp3"
-  },
-  "trailer": {
-    "status": "candidate_requires_listening_not_published",
-    "audio": "show_trailer_candidate_2026-10-21.mp3",
-    "seconds": 79.012,
-    "source_ranges": [
-      [
-        0.0,
-        9.471
-      ],
-      [
-        23.84,
-        28.34
-      ],
-      [
-        28.44,
-        38.727
-      ],
-      [
-        64.671,
-        69.691
-      ],
-      [
-        347.089,
-        381.32
-      ],
-      [
-        1337.122,
-        1346.625
-      ],
-      [
-        1346.825,
-        1352.825
-      ]
-    ]
   }
 }

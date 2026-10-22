@@ -1,0 +1,243 @@
+{
+  "version": "v3.3-grounded-top-ai-events-no-sector-quota",
+  "date": "2026-10-22",
+  "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
+  "editorial_freshness": {
+    "changed": true,
+    "lookback_episodes": 7,
+    "previous_lead_actor": "NVIDIA",
+    "previous_argument_family": "security",
+    "original_lead": "NVIDIA launches OpenShell, a reference architecture for safe AI agents",
+    "selected_lead": "Google Cloud Introduces Agent Compute Engine and Governance Framework",
+    "candidates": [
+      {
+        "headline": "Google Cloud Introduces Agent Compute Engine and Governance Framework",
+        "score": 72.0,
+        "actor": "Google",
+        "argument_family": "security",
+        "penalties": [
+          "same argument family as previous episode"
+        ]
+      },
+      {
+        "headline": "Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results",
+        "score": 71.0,
+        "actor": "Meta",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "Microsoft outlines a security approach for 'agentic insiders' and continuous agent supervision",
+        "score": 52.0,
+        "actor": "Microsoft",
+        "argument_family": "security",
+        "penalties": [
+          "same argument family as previous episode"
+        ]
+      },
+      {
+        "headline": "Meta says Muse has passed 10 million accounts as investors focus on rising AI spending",
+        "score": 51.0,
+        "actor": "Meta",
+        "argument_family": "consumer",
+        "penalties": []
+      },
+      {
+        "headline": "NVIDIA launches OpenShell, a reference architecture for safe AI agents",
+        "score": -60.0,
+        "actor": "NVIDIA",
+        "argument_family": "security",
+        "penalties": [
+          "near-duplicate recent lead",
+          "same lead actor as previous episode",
+          "same argument family as previous episode"
+        ]
+      }
+    ]
+  },
+  "selected": [
+    {
+      "rank": 1,
+      "headline": "NVIDIA launches OpenShell, a reference architecture for safe AI agents",
+      "publisher": "NVIDIA",
+      "top_event_score": null,
+      "story_age_hours": 40.89,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://nvidianews.nvidia.com/news/openshell-reference-architecture"
+    },
+    {
+      "rank": 2,
+      "headline": "Google Cloud Introduces Agent Compute Engine and Governance Framework",
+      "publisher": "Google Cloud",
+      "top_event_score": null,
+      "story_age_hours": 3.57,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance"
+    },
+    {
+      "rank": 3,
+      "headline": "Meta Faces Investor Skepticism as AI Spending Escalates Following Q3 Results",
+      "publisher": "Bloomberg",
+      "top_event_score": null,
+      "story_age_hours": 3.16,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs"
+    },
+    {
+      "rank": 4,
+      "headline": "Microsoft outlines a security approach for 'agentic insiders' and continuous agent supervision",
+      "publisher": "Microsoft",
+      "top_event_score": null,
+      "story_age_hours": 40.89,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://news.microsoft.com/source/emea/2026/10/securing-the-agentic-insider/"
+    },
+    {
+      "rank": 5,
+      "headline": "Meta says Muse has passed 10 million accounts as investors focus on rising AI spending",
+      "publisher": "Associated Press",
+      "top_event_score": null,
+      "story_age_hours": 18.82,
+      "source_tier": 3,
+      "bucket_original": "grounded_top_ai_event",
+      "source_url": "https://apnews.com/article/13ecd6c459e39a3602f302bcc2412fe9"
+    }
+  ],
+  "v3_3_debate_board": {
+    "format": "hard_debate_hybrid",
+    "published_title": "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+    "central_fight": "Whether the industry's push for integrated, AI-first infrastructure is solving real problems or just creating new, vendor-locked dependencies.",
+    "opening_question": "If we're already struggling to manage our own emails, how are we supposed to manage a thousand autonomous agents working on our behalf?",
+    "listener_question": "If your company deployed an AI agent that made a mistake, who should be responsible: the person who built it, or the person who turned it o",
+    "poll_options": [
+      "The developer who built it",
+      "The manager who deployed it",
+      "The company as a whole",
+      "It depends on the mistake"
+    ],
+    "listener_promise": "By the end, you'll know how to distinguish between 'AI security' as a product and 'AI governance' as a practice, and why the market is finally getting nervous about the cost of building it all.",
+    "positions": {
+      "alex": "Believes we are in a 'growing pains' phase where we have to build the tools to manage the agents we've already unleashed.",
+      "jamie": "Argues that we are rushing to build 'safety' layers that are really just new ways to hide the fact that we don't fully understand how these agents work.",
+      "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
+    },
+    "concession": {
+      "host": "alex",
+      "gives_ground_on": "Admits that adding more hardware layers might just be a way to avoid fixing the underlying model opacity."
+    },
+    "who_wins": "The infrastructure providers who are successfully positioning themselves as the 'security' layer for the entire AI ecosystem.",
+    "who_is_exposed": "Companies that are deploying AI agents without a clear governance framework, hoping the 'safety' tools will do the work for them.",
+    "normal_person_payoff": "You'll understand why your company's IT department is suddenly talking about 'agentic insiders' and why you might see more 'security' prompts when you use AI tools.",
+    "jamie_rufus_value_conflict": {
+      "jamie_value": "Human accountability and the need for legible, understandable systems.",
+      "rufus_value": "Market resilience and the rational, capital-intensive maturation of AI infrastructure.",
+      "point_of_collision": "Whether 'safety' is a real outcome or just a market-friendly label for 'risk management'."
+    },
+    "rufus_global_markets_desk": {
+      "market_or_region": "Wall Street/New York",
+      "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
+      "why_this_location_today": "Google Cloud's enterprise strategy is being heavily scrutinized by New York-based institutional investors looking for sustainable AI revenue.",
+      "beat": "market mover",
+      "companies_or_assets": [
+        "Google",
+        "Cloud Infrastructure Sector"
+      ],
+      "capital_policy_or_infrastructure_move": "The shift of capital toward 'Agent Compute' platforms as a way to lock in enterprise AI spending.",
+      "dated_market_receipts": [
+        "October 2026 (Launch timeframe)"
+      ]
+    },
+    "mandatory_receipts": [
+      "NVIDIA OpenShell integrates Vera Rubin infrastructure and BlueField-4 DPUs.",
+      "Google Cloud's Agent Compute Engine aims to solve 'agent sprawl' in enterprise environments.",
+      "Meta reported 10 million Muse accounts but saw shares fall 3% on high AI spending concerns."
+    ],
+    "forwardable_targets": [
+      "If you're building an AI agent, you're not just building software—you're building an 'agentic insider' that needs a security guard.",
+      "The market is finally asking the right question: is this AI growth actually profitable, or are we just burning cash to see how many agents we can spin up?"
+    ],
+    "story_scenes": [
+      {
+        "story_index": 1,
+        "source_url": "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
+        "new_development": "NVIDIA introduced OpenShell, a reference architecture for governing and containing AI agents using specific hardware and runtime software.",
+        "why_today": "It marks a shift from general AI hardware to a standardized, vendor-backed security layer for autonomous agents.",
+        "question": "Does adding a hardware-level 'security guard' actually make agents safer, or just harder to manage?",
+        "competing_readings": [
+          "A necessary infrastructure evolution for enterprise-scale AI adoption.",
+          "A move to lock customers into the NVIDIA hardware and software ecosystem."
+        ],
+        "receipt": "OpenShell integrates Vera Rubin infrastructure, Vera CPUs, and BlueField-4 DPUs with security support from vendors like CrowdStrike and Microsoft.",
+        "unknown": "Whether this architecture will be performant enough for real-time, high-frequency agent tasks.",
+        "listener_payoff": "IT and security teams can now evaluate if their current infrastructure aligns with this new industry-standard approach to agent containment.",
+        "exchange_premise": "Alex asks if this is a 'safety net' or 'bureaucracy'; Jamie counters that it's just another layer of vendor lock-in; Rufus notes the market is willing to pay for the illusion of control.",
+        "cast_direction": {
+          "alex": "Wants to know if this actually stops an agent from making a bad decision or just records it doing so.",
+          "jamie": "Focuses on the list of partners and whether this is a genuine security move or a marketing play.",
+          "rufus": "Interested in how this architecture forces companies to buy more specialized NVIDIA hardware to achieve 'safety'."
+        },
+        "relationship_beat": "Alex teases Rufus about his 'inevitable maturation' theory; Rufus laughs and admits that 'maturation' is just a polite word for 'expensive'.",
+        "scene_movement": "Starts with the technical promise of OpenShell, moves to the cost of implementation, and ends with an honest question about whether security can ever be 'solved' by a single vendor.",
+        "discovery": "The integration of security vendors like 1Password and Okta suggests this is a serious attempt at identity-based agent governance."
+      },
+      {
+        "story_index": 2,
+        "source_url": "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
+        "new_development": "Google Cloud launched the Agent Compute Engine to orchestrate and govern AI agents at scale.",
+        "why_today": "It provides a concrete platform for managing 'agent sprawl' in enterprise environments.",
+        "question": "Can a single platform layer effectively manage the chaos of thousands of independent agents?",
+        "competing_readings": [
+          "A vital tool for IT leaders to regain control over AI deployments.",
+          "Another layer of complexity that will eventually require its own management tools."
+        ],
+        "receipt": "The engine includes new monitoring and governance tools specifically for the Gemini Agent platform.",
+        "unknown": "How the engine handles interoperability with agents built outside the Google ecosystem.",
+        "listener_payoff": "Developers and IT leaders can now look for a unified framework to monitor agent activity, potentially reducing security risks.",
+        "exchange_premise": "Jamie questions if 'agent sprawl' is a real problem or a manufactured one; Alex wonders if this is the 'operating system' for agents.",
+        "cast_direction": {
+          "alex": "Excited about the potential for a 'dashboard' to see what agents are doing.",
+          "jamie": "Skeptical that a platform can fix bad agent design.",
+          "rufus": "Observes that Google is trying to become the 'landlord' of enterprise AI agents."
+        },
+        "relationship_beat": "Jamie teases Alex for wanting a dashboard for everything; Alex admits he just likes seeing the lights blink.",
+        "scene_movement": "Explores the tension between wanting control and the reality of decentralized agent development.",
+        "discovery": "The focus on real-time API streaming indicates this is built for high-speed, production-grade agent interactions."
+      },
+      {
+        "story_index": 3,
+        "source_url": "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs",
+        "new_development": "Meta reported strong Q3 earnings and 10 million Muse accounts, but shares fell due to concerns over rising AI capital expenditures.",
+        "why_today": "It provides the first major market-moving data point on the sustainability of massive AI infrastructure spending.",
+        "question": "Is the growth of AI users actually translating into the kind of revenue that justifies these massive costs?",
+        "competing_readings": [
+          "Meta is building the foundation for long-term dominance.",
+          "The market is finally realizing that AI spending might not have a short-term ROI."
+        ],
+        "receipt": "Meta shares fell approximately 3% despite beating Q3 earnings expectations.",
+        "unknown": "Whether Muse account growth will sustain itself without massive, ongoing marketing and infrastructure investment.",
+        "listener_payoff": "Investors and tech professionals can now track how other hyperscalers respond to Meta’s spending trajectory.",
+        "exchange_premise": "Rufus explains the market reaction; Alex asks if 10 million users is a lot or a little for Meta; Jamie points out that users don't pay the electricity bill.",
+        "cast_direction": {
+          "alex": "Surprised that 10 million users didn't make the stock go up.",
+          "jamie": "Interested in whether these users are actually doing anything useful.",
+          "rufus": "Focuses on the 'capital expenditure' narrative as the real story here."
+        },
+        "relationship_beat": "Rufus gently reminds Alex that the market cares about margins, not user counts; Alex concedes that he's a 'user, not a shareholder'.",
+        "scene_movement": "Moves from the excitement of the 10 million milestone to the cold reality of the 3% stock drop.",
+        "discovery": "The tension between 'Muse growth' and 'AI costs' is the defining narrative for the next quarter of tech earnings."
+      }
+    ],
+    "title_candidates": [
+      "NVIDIA’s OpenShell Architecture: How Enterprises Can Finally Supervise Autonomous AI Agents",
+      "Can NVIDIA’s OpenShell Stop AI Agent Sprawl in Your Workplace?",
+      "Is NVIDIA’s New Agent-Governance Architecture a Security Breakthrough or Just More Complexity?"
+    ],
+    "episode_hook": "NVIDIA just launched a new blueprint for keeping AI agents under control. We’re breaking down what this means for your company’s security and whether it actually solves the problem of autonomous agents running wild.",
+    "planning_status": "model_plan",
+    "_episode_date": "2026-10-22"
+  }
+}

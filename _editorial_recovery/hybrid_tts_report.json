@@ -1,0 +1,46 @@
+{
+  "version": "v4-grok-jamie-mood-aware-router",
+  "routing": {
+    "ALEX": "gemini",
+    "JAMIE": "grok",
+    "RUFUS": "gemini",
+    "ELEVENLABS": "disabled"
+  },
+  "grok_primary_voice": "ursa",
+  "grok_fallback_voice": "celeste",
+  "gemini_model": "gemini-3.8-flash-tts",
+  "openai_tts_model": "gpt-4o-mini-tts",
+  "installed": true,
+  "patched": [
+    "tts_to_file",
+    "_render_spoken_chunk_to_file",
+    "_speaker_audio_backend"
+  ],
+  "calls": [],
+  "fallbacks": [],
+  "mood_distribution": {},
+  "jamie_expression_distribution": {},
+  "characters_by_speaker": {
+    "ALEX": 0,
+    "JAMIE": 0,
+    "RUFUS": 0
+  },
+  "jamie_chars_requested": 0,
+  "jamie_cache_hits": 0,
+  "jamie_gemini_successes": 0,
+  "jamie_gemini_failures": 0,
+  "gemini_successes": 0,
+  "openai_router_calls": 0,
+  "openai_passthrough_calls": 0,
+  "jamie_gemini_verified": false,
+  "jamie_grok_successes": 0,
+  "jamie_grok_episode_successes": 0,
+  "jamie_grok_failures": 0,
+  "jamie_grok_primary_successes": 0,
+  "jamie_grok_fallback_successes": 0,
+  "jamie_grok_cost_estimate_usd": 0.0,
+  "jamie_primary_verified": false,
+  "router_owned_openai": true,
+  "openai_client_available": true,
+  "total_characters_rendered": 0
+}

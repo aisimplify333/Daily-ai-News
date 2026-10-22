@@ -1,0 +1,89 @@
+{
+  "basis": "model editorial review plus local safeguards; not listening",
+  "listened": false,
+  "requested_calls": 1,
+  "accepted_edits": 8,
+  "edits": [
+    {
+      "accepted": true,
+      "reason": "Removes redundant 'honest open question' framing that the following lines already deliver more sharply.",
+      "segment": 2
+    },
+    {
+      "accepted": true,
+      "reason": "Removes spoken production-navigation phrase 'Back to the wider story'; preserves the content.",
+      "segment": 3
+    },
+    {
+      "accepted": true,
+      "reason": "Duplicate sponsor bridge; line 112 carries the approved copy. Removing line 109 eliminates the near-identical repeat.",
+      "segment": 3
+    },
+    {
+      "accepted": true,
+      "reason": "Removes the spoken episode-title recap, which is a production note not a host line. The synthesis follows naturally from the story.",
+      "segment": 5
+    },
+    {
+      "accepted": true,
+      "reason": "Replaces broken fragment lines 151–153 with a complete, source-grounded three-way closing exchange that gives each character a distinct forward-looking point.",
+      "segment": 5
+    },
+    {
+      "accepted": true,
+      "reason": "Farewell must follow the audience question, sponsor, and CTA per required order. Removing here; restored after line 160.",
+      "segment": 5
+    },
+    {
+      "accepted": true,
+      "reason": "Completes the cut-off audience question and ties it directly to the episode's governance theme.",
+      "segment": 5
+    },
+    {
+      "accepted": true,
+      "reason": "Restores the farewell after the CTA, placing it in the correct required order: question → sponsor → follow CTA → farewell.",
+      "segment": 5
+    }
+  ],
+  "input_sha256": "7b213030debe6798e6cb7760b04cd3c9e481b11303d8d3493223a998cd4ef45e",
+  "review_before_repairs": {
+    "scenes": [
+      {
+        "segment": 2,
+        "chemistry": "Strong: the DPU exchange, Jamie's 'records the crime' line, and Rufus's identity-layer defence all land as genuine conversation. The callback to 'maturation / expensive' lands cleanly. Friendship audible throughout.",
+        "discovery": "Present: the identity-authentication angle (1Password, Okta as constraint not just logging) and the edge-latency problem are both developed through conversation rather than summary.",
+        "repetition": "Lines 56 and 62–63 both land 'watch the implementation details / a five-year story' verdicts within eight lines. One can be trimmed."
+      },
+      {
+        "segment": 3,
+        "chemistry": "Good: the landlord metaphor, Jamie's dashboard tease and Rufus's vendor-renewal composure bit all develop organically. Jamie and Rufus push each other productively.",
+        "discovery": "Present: real-time API streaming as a production-grade signal is drawn out by Alex at line 90, and the monitoring-as-bottleneck question follows genuinely.",
+        "repetition": "Lines 109 and 112 repeat nearly identical sponsor bridge copy ('Think about what matters... link in show notes') within three lines. One must be cut. Lines 78 and 83 both say 'Back to the wider story' — the second is a writer's navigation note spoken aloud and should be removed."
+      },
+      {
+        "segment": 4,
+        "chemistry": "Strong: Jamie's credit-card-statement line, Rufus's 'nervous not panicked' distinction and 'ceremonial' payoff are all specific and earned. Alex's synthesis at 140–141 lands without lecturing.",
+        "discovery": "Present: the sector-wide repricing frame at 134–136 genuinely advances the story beyond the Meta-specific headline.",
+        "repetition": "None significant within the segment."
+      },
+      {
+        "segment": 5,
+        "chemistry": "Closing is warm and moves briskly. Lines 151–153 are broken: Rufus at 151 seems to answer an unheard prompt, Jamie at 152 arrives from nowhere, then Rufus at 153 continues a sentence with no beginning. The listener question at 157 is cut off mid-sentence. The farewell at 154–156 precedes the sponsor and CTA, violating the required order.",
+        "discovery": "Jamie's governance-as-practice distinction (147–148) is the segment's genuine insight and should be preserved.",
+        "repetition": "Lines 151–153 are fragment debris, not a running bit. Line 157 is incomplete."
+      }
+    ],
+    "rufus_feature": "The midtown Manhattan conference-room image at lines 76–79 opens with a concrete setting and a specific investor question about recurring revenue. The studio exchange that follows (80–101) is genuinely responsive — Jamie pushes on ecosystem lock-in, Rufus concedes the interoperability unknown, the vendor-renewal bit emerges from what was just said. This is an honest imagined scene with a live studio return, not merely a labelled dispatch.",
+    "remaining_issues": [
+      "Lines 151–153 are broken fragment dialogue with no coherent referent; they must be replaced with a complete exchange.",
+      "Line 157 cuts off mid-sentence — the audience question is unfinished and undeliverable.",
+      "Lines 154–156 (farewell) appear before the sponsor read at 158 and the CTA at 160, violating the required closing order: question → sponsor → follow CTA → farewell.",
+      "Duplicate sponsor bridge at lines 109 and 112 repeats near-identical copy; one must be removed.",
+      "Line 83 opens 'Back to the wider story' — a production navigation note spoken aloud; remove it.",
+      "Lines 56 and 62–63 deliver near-identical 'watch the implementation / five-year story' verdicts within eight lines; trim line 56 to avoid the double landing."
+    ]
+  },
+  "remaining_production_language": [],
+  "output_sha256": "f6922e804f5b6bf96670b1e7ad37740e4ae46d0de547cfda6e42b840bbce1471",
+  "status": "repairs_applied_need_audio_review"
+}
