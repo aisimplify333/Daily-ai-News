@@ -1277,8 +1277,8 @@ Return exactly this JSON:
     question = re.sub(r"\s+", " ", str(default.get("listener_question") or "")).strip()
     if not question:
         question = str(default.get("central_fight") or _central_fight(stories)).strip()
-    question = question[:139].rstrip(" .") + ("?" if not question.endswith("?") else "")
-    default["listener_question"] = question[:140]
+    # Spoken questions must remain complete; platform length limits belong in packaging.
+    default["listener_question"] = question.rstrip(" .?!") + "?"
     poll_options = [
         re.sub(r"\s+", " ", str(option)).strip()[:60]
         for option in (default.get("poll_options") or [])
@@ -1670,9 +1670,9 @@ def _ensure_connection_elements(
         match = SPEAKER_RE.match(line.strip())
         if match:
             speaker, spoken = match.group(1).upper(), match.group(2)
-            if in_closing and (spoken.strip() == board_question or re.match(r"Today[’']s question for you:", spoken, re.I)):
+            if in_closing and (spoken.strip() == board_question or re.match(r"Today[’']s question(?: for (?:you|listeners))?:", spoken, re.I)):
                 if not closing_question_seen:
-                    cleaned.append("ALEX: Today’s question for you: " + (board_question or re.sub(r"^Today[’']s question for you:\s*", "", spoken, flags=re.I)))
+                    cleaned.append("ALEX: Today’s question for you: " + re.sub(r"^Today[’']s question(?: for (?:you|listeners))?:\s*", "", spoken, flags=re.I))
                     closing_question_seen = True
                 continue
             if in_closing and re.search(r"that[’']s The AI Edge|we[’']ll see you tomorrow|t-h-e-l-e-d-g-r dot i-o", spoken, re.I):
@@ -1709,9 +1709,9 @@ def _ensure_connection_elements(
     question = re.sub(
         r"\s+", " ", str(board.get("listener_question") or _central_fight(stories))
     ).strip()
-    question = question[:139].rstrip(" .") + ("?" if not question.endswith("?") else "")
+    question = question.rstrip(" .?!") + "?"
     closing_lines = [
-        *([] if closing_question_seen else [f"ALEX: Today’s question for you: {question[:140]}"]),
+        *([] if closing_question_seen else [f"ALEX: Today’s question for you: {question}"]),
         f"{tag_speaker}: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
         "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
         "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
@@ -3412,6 +3412,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     g["V3_1_WRITER_ROOM_INSTALLED"] = True
     g["V3_2_HARD_DEBATE_WRITER_ROOM_INSTALLED"] = True
     g["V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"] = True
+
 
 
 
