@@ -21,17 +21,47 @@ def ensure_feature_fallback(script):
     """Label existing reporting as a desk exchange when the generated location scene is absent.
     Never invent a location, presence, observation or interview merely to pass a check.
     """
+    # Canonicalize punctuation before deciding a natural handoff is missing.
+    script = re.sub(r'^ALEX:\s*(?:That\x27s a real distinction\.\s*)?Rufus\s*[,—–-]\s*take us on location\.',
+                    'ALEX: ' + HANDOFF, script, flags=re.M | re.I)
     # Assign navigation to Alex even when an editor accidentally puts it in Rufus's line.
     def move_handoff(match):
         speaker, prefix, cue = match.groups()
         prefix = prefix.strip()
         return (speaker + ': ' + prefix + '\n' if prefix else '') + 'ALEX: ' + cue
     script = re.sub(r'^(JAMIE|RUFUS):([^\n]*?)(' + re.escape(HANDOFF) + '|' + re.escape(DESK) + r')\s*$', move_handoff, script, flags=re.M)
+    if HANDOFF in script and DESK in script:
+        script = re.sub(r'^ALEX: ' + re.escape(DESK) + r'\s*\n', '', script, flags=re.M)
     if feature_status(script)['present']:
         return script
     match = re.search(r'(^###\s*SEGMENT\s*3\b[^\n]*\n)(.*?)(?=^###\s*SEGMENT\s*4\b)',script,re.M|re.S|re.I)
     if not match:
         return script
+    # A return placed before an existing challenge cuts the scene in half.
+    # Move only that marker, preserving every substantive line and its order.
+    if (HANDOFF in match[2] or DESK in match[2]) and RETURN in match[2]:
+        lines = match[2].splitlines()
+        if HANDOFF in match[2]:
+            lines = [line for line in lines if line.strip() != 'ALEX: ' + DESK]
+        start = next(i for i, line in enumerate(lines) if HANDOFF in line or DESK in line)
+        end = next((i for i in range(start + 1, len(lines)) if lines[i].strip() == 'ALEX: ' + RETURN), None)
+        if end is not None:
+            jamie_seen = False
+            reply = None
+            for i in range(start + 1, len(lines)):
+                if i > end and ('The Ledger' in lines[i] or i - end > 8):
+                    break
+                if lines[i].startswith('JAMIE:'):
+                    jamie_seen = True
+                elif jamie_seen and lines[i].startswith('RUFUS:'):
+                    reply = i
+                    break
+            if reply is not None and reply > end:
+                lines.insert(reply + 1, lines[end])
+                del lines[end]
+            rebuilt = script[:match.start(2)] + '\n'.join(lines) + '\n\n' + script[match.end(2):]
+            if feature_status(rebuilt)['present']:
+                return rebuilt
     if (HANDOFF in match[2] or DESK in match[2]) and RETURN not in match[2]:
         lines = match[2].splitlines()
         handoff = next(i for i,line in enumerate(lines) if HANDOFF in line or DESK in line)
@@ -79,5 +109,6 @@ def audit(script):
             'requires_editorial_review':['distinct listener consequences across three stories',
                 'technical terms explained on first use','everyday examples',
                 'responsive warmth, humor and changed viewpoints','self-contained exchange worth sharing']}
+
 
 
