@@ -44,7 +44,7 @@ is allowed only with its actual date, clear attribution and current availability
 checked today. Prefer a useful, relatable workflow and substantive results, not
 funding, a forecast, a demo claim or an unmeasured promise. Rotate industries and
 avoid recent cases listed below. Never invent an anonymous listener submission.
-Return JSON only with fields: subject, tool, problem, workflow, result,
+Return JSON {"cases": [up to three DISTINCT candidate objects]} with each candidate's fields: subject, tool, problem, workflow, result,
 result_basis (independent evidence or company/vendor reported), measurement_context,
 case_date, source_url (direct supporting article, study, interview or case-study https URL), source_quote (10-25 exact
 words from that page supporting the result), limitation,
@@ -55,14 +55,22 @@ Episode date: ''' + date
     if path.exists():
         prompt += '\nPrevious case to avoid: ' + path.read_text()
     from grounded_news_v1 import _extract_json
+    attempts = []
     for _ in range(2):
-        case = _extract_json(search(prompt), {})
-        if isinstance(case, dict):
+        payload = _extract_json(search(prompt), {})
+        cases = payload.get('cases', [payload]) if isinstance(payload, dict) else []
+        for case in cases[:3] if isinstance(cases, list) else []:
+            if not isinstance(case, dict):
+                continue
             case['episode_date'] = date
-            if valid_case(case) and source_matches(case):
+            reason = 'missing_required_fields' if not valid_case(case) else (
+                '' if source_matches(case) else 'source_unreachable_or_exact_quote_not_found')
+            attempts.append({'case': case, 'reason': reason or 'verified'})
+            Path('jamie_research_report.json').write_text(json.dumps({'date': date, 'attempts': attempts}, indent=2) + '\n')
+            if not reason:
                 path.write_text(json.dumps(case, indent=2) + '\n')
                 return case
-        prompt += '\nRecovery: supply every required field and a verified direct source.'
+        prompt += '\nRecovery: find DIFFERENT directly accessible sources; do not repeat rejected URLs. Use a 10-25 word exact quote actually visible on the source page. Validation results: ' + json.dumps(attempts)
     raise RuntimeError('Jamie case research unresolved; no fabricated success story')
 
 
