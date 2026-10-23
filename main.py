@@ -6110,8 +6110,11 @@ def produce_episode() -> None:
                 assembly_markers.append({"kind": "segment", "segment": assembly_segment, "start_index": len(concat_files)})
                 if transition_seg is not None:
                     p = run_tmp / f"transition_{uuid.uuid4().hex[:8]}.mp3"
-                    transition_seg.export(p, format="mp3", bitrate="192k")
-                    assembly_markers.append({"kind": "transition", "sound_design": dict(signature_audit), "segment": assembly_segment, "start_index": len(concat_files), "end_index": len(concat_files) + 1})
+                    from transition_variation import story_transition
+                    transition_take, transition_audit = story_transition(
+                        transition_seg, signature_audit, assembly_segment, today)
+                    transition_take.export(p, format="mp3", bitrate="192k")
+                    assembly_markers.append({"kind": "transition", "sound_design": transition_audit, "segment": assembly_segment, "start_index": len(concat_files), "end_index": len(concat_files) + 1})
                     concat_files.append(p)
                     concat_files.append(sponsor_pause_path)
                     pending_segment_bed = False
@@ -6516,5 +6519,6 @@ def produce_episode() -> None:
 
 if __name__ == "__main__":
     produce_episode()
+
 
 
