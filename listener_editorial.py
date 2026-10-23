@@ -30,6 +30,16 @@ EDITORIAL BRIEF — The AI Edge:
 6. Explain the headline early and end with a specific answer or honest uncertainty.
    Keep the opening brief, give each story audible navigation, and leave the listener
    more capable. Instructions and automated checks are not entertainment ratings.
+7. Daily freshness includes the argument and the jokes. Do not replay yesterday's
+   launch as today's discovery or claim 'now we have the actual product' unless a
+   separately sourced new release establishes that change. A callback is brief,
+   accurately dated, and earns its place with a new fact. Avoid recycling recent
+   quips such as 'professionally enthusiastic'; write reactions to this story.
+8. After a concern is answered, move to the strongest remaining evidence or concrete
+   example. Do not restart the same vendor-lock-in/governance debate under three
+   different headlines. Let one host explain a thought, then have a colleague respond
+   to its actual implication. Favor warm, specific humor over generic skeptical filler.
+   End each discussion once its question is answered; do not pad to a word target.
 """.strip() + "\n\n" + PERFORMANCE_DIRECTION + "\n\n" + CREW_DIRECTION
 
 
@@ -91,4 +101,5 @@ def expansion_segment(script):
         return None
     weights = {2: .4, 3: .3, 4: .3}
     return min(available, key=lambda segment: counts[segment] / weights[segment])
+
 
