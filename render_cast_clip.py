@@ -41,18 +41,18 @@ def render(master, spec_path, portraits, output):
         duration=(rows[i+1]['start'] if i+1<len(rows) else end)-row['start']
         asset=Path(portraits)/f"{row['speaker'].lower()}_master.png"
         part=out/f'part_{i}.mp4'; parts.append(part)
-        filt="scale=720:880:force_original_aspect_ratio=decrease,pad=720:1280:(ow-iw)/2:145:color=0x101827,setsar=1"
+        filt="scale=1080:1320:force_original_aspect_ratio=decrease,pad=1080:1920:(ow-iw)/2:218:color=0x101827,setsar=1"
         run('ffmpeg','-y','-v','error','-loop','1','-i',asset,'-t',duration,'-vf',filt,'-an','-r','25','-c:v','libx264','-preset','fast','-crf','24','-pix_fmt','yuv420p',part)
     (out/'parts.txt').write_text(''.join(f"file '{p.name}'\n" for p in parts))
     run('ffmpeg','-y','-v','error','-f','concat','-safe','0','-i',out/'parts.txt','-c','copy',out/'silent.mp4')
     heading = spec.get('display_heading', 'THE AI EDGE | Useful AI, lively debate')
     (out/'heading.txt').write_text('\n'.join(textwrap.wrap(heading, 37)))
-    header="drawtext=textfile="+str(out/'heading.txt')+":fontcolor=white:fontsize=30:x=(w-tw)/2:y=40:line_spacing=8"
-    footer="drawtext=text='THE AI EDGE  |  Follow for useful AI':fontcolor=white:fontsize=25:x=(w-tw)/2:y=1220"
-    filt=header+','+footer+",subtitles="+str(out/'captions.vtt')+":force_style='FontName=DejaVu Sans,FontSize=12,MarginV=60,Outline=2'"
+    header="drawtext=textfile="+str(out/'heading.txt')+":fontcolor=white:fontsize=44:x=(w-tw)/2:y=60:line_spacing=10"
+    footer="drawtext=text='THE AI EDGE  |  Follow for useful AI':fontcolor=white:fontsize=36:x=(w-tw)/2:y=1830"
+    filt=header+','+footer+",subtitles="+str(out/'captions.vtt')+":force_style='FontName=DejaVu Sans,FontSize=18,MarginV=90,Outline=3'"
     target=out/'cast_clip.mp4'
     run('ffmpeg','-y','-v','error','-i',out/'silent.mp4','-ss',start,'-i',Path(master).resolve(),'-t',end-start,'-map','0:v','-map','1:a','-vf',filt,'-c:v','libx264','-crf','23','-preset','fast','-c:a','aac','-b:a','192k','-movflags','+faststart',target)
-    (out/'review.json').write_text(json.dumps({'source_start':start,'source_end':end,'duration':end-start,'format':'720x1280 portrait cuts; not lip-synced video','caption_timing':'measured turns, estimated word groups','publication':'not_uploaded_to_spotify','editorial_selection':'continuous explanation, analogy, response and punchline; no unanswered ending'},indent=2))
+    (out/'review.json').write_text(json.dumps({'source_start':start,'source_end':end,'duration':end-start,'format':'1080x1920 portrait cuts; not lip-synced video','caption_timing':'measured turns, estimated word groups','publication':'not_uploaded_to_spotify','editorial_selection':'continuous explanation, analogy, response and punchline; no unanswered ending'},indent=2))
     print(target)
 
 
