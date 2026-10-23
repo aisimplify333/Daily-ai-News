@@ -438,7 +438,10 @@ def build_grounded_story_slate(
     editorial_history = _extract_json(editorial_history_json, [])
     if not isinstance(editorial_history, list):
         editorial_history = []
+    from episode_freshness import published_history, repeated_story
+    aired_history = published_history(date_str)
     prompt = _story_prompt(date_str, candidate_count, now, editorial_history[:7])
+    prompt += "\nALREADY AIRED: exclude these events; search different developments, not new angles on the same announcement: " + json.dumps(aired_history)
     # Date-scoped editor leads aid discovery only; every candidate still goes
     # through live source verification, freshness, duplication and fact checks.
     try:
@@ -501,6 +504,9 @@ def build_grounded_story_slate(
                         reason = "malformed_fields"
                     if not story and not reason:
                         reason = "normalization_failed"
+                if story and repeated_story(story, aired_history):
+                    reason = "previously_aired_event"
+                    story = None
                 if story:
                     key = re.sub(r"[^a-z0-9]+", " ", story["headline"].lower()).strip()
                     url = story["source_url"].split("?")[0].split("#")[0].rstrip("/")
@@ -914,6 +920,7 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
 
 
 
