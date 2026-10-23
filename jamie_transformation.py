@@ -57,7 +57,15 @@ Episode date: ''' + date
     from grounded_news_v1 import _extract_json
     attempts = []
     for _ in range(2):
-        payload = _extract_json(search(prompt), {})
+        try:
+            payload = _extract_json(search(prompt), {})
+        except Exception as exc:
+            # A transient search failure must use the remaining bounded attempt.
+            # Record the type only: provider messages may include request details.
+            attempts.append({'reason': 'research_provider_error', 'error_type': type(exc).__name__})
+            Path('jamie_research_report.json').write_text(json.dumps({'date': date, 'attempts': attempts}, indent=2) + '\n')
+            prompt += '\nThe prior research request failed. Retry live research with directly accessible sources.'
+            continue
         cases = payload.get('cases', [payload]) if isinstance(payload, dict) else []
         for case in cases[:3] if isinstance(cases, list) else []:
             if not isinstance(case, dict):
@@ -84,6 +92,7 @@ def valid_case(case):
 def source_matches(case):
     """Open the claimed source; a plausible-looking URL is not evidence."""
     import urllib.request
+    import unicodedata
     from bs4 import BeautifulSoup
     # Retain independently retrieved evidence for sites that reject runner requests.
     # This file is producer-controlled, never accepted from the research model.
@@ -97,7 +106,11 @@ def source_matches(case):
         with urllib.request.urlopen(request, timeout=30) as response:
             raw = response.read(3_000_000).decode('utf-8', errors='replace')
         text = BeautifulSoup(raw, 'html.parser').get_text(' ', strip=True)
-        normalize = lambda value: re.sub(r'\s+', ' ', value).strip().lower()
+        def normalize(value):
+            # HTML typography is not a factual mismatch; retain every word/number.
+            value = unicodedata.normalize('NFKC', value)
+            value = value.translate(str.maketrans({'’': "'", '‘': "'", '“': '"', '”': '"', '\u00ad': ''}))
+            return re.sub(r'\s+', ' ', value).strip().casefold()
         quote = case['source_quote']
         return 10 <= len(quote.split()) <= 25 and normalize(quote) in normalize(text)
     except Exception:
