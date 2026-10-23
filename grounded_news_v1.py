@@ -345,6 +345,11 @@ Rules:
 
 
 def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str, Any]]:
+    # Search absence is not a news event, even when wrapped in a complete schema.
+    evidence = " ".join(str(raw.get(k, "")) for k in
+                        ("headline", "summary", "limitations_or_qualifiers"))
+    if re.search(r"negative finding|should not be treated as news|no (?:clearly |verified )?new .*?(?:announcement|development).*?(?:found|verified)|search result qualifier", evidence, re.I):
+        return None
     headline = str(raw.get("headline") or "").strip()
     publisher = str(raw.get("publisher") or "").strip()
     published_at = str(raw.get("published_at") or "").strip()
@@ -366,7 +371,8 @@ def _normalize_story(raw: Dict[str, Any], now: dt.datetime) -> Optional[Dict[str
     if not all((headline, publisher, source_url, summary, published)):
         return None
     if (not source_url.startswith("https://") or "news.google.com" in source_url
-            or urlparse(source_url).path.strip("/").lower() in {"", "news", "blog", "technology", "news/safety-alignment"}):
+            or urlparse(source_url).path.strip("/").lower() in {"", "news", "blog", "technology", "news/safety-alignment"}
+            or "archive" in urlparse(source_url).path.strip("/").lower().split("/")):
         return None
     age_hours = (now - published).total_seconds() / 3600.0
     if age_hours < -6 or age_hours > MAX_AGE_HOURS:
@@ -482,6 +488,7 @@ def build_grounded_story_slate(
                     # A focused final request is not another sprawling eight-story brief.
                     # Preserve the output contract and dates while searching specific leads.
                     refill = _story_prompt(date_str, 3, now, editorial_history[:3])
+                    refill += "\nALREADY AIRED: exclude these events, including alternate headlines and URLs: " + json.dumps(aired_history)
                     refill += "\nTARGETED SOURCE RECOVERY: return up to THREE additional verified events only. Search specific article titles below first, then science/accessibility and documented everyday/workplace uses. Include direct article URLs and actual source dates. Do not return publisher homepages or rewrite old dates."
                     refill += "\nACCEPTED (retain, do not repeat unless upgrading a weak source): " + json.dumps([
                         {"headline": s["headline"], "source_url": s["source_url"], "source_tier": s["source_tier"]} for s in normalized])
