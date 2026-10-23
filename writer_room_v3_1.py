@@ -2844,6 +2844,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         from editorial_selection import concentrated
         if concentrated(selected):
             raise RuntimeError("Final story order repeats one listener frame; research recovery required")
+        from episode_freshness import assert_fresh_episode
+        assert_fresh_episode(selected, episode_date)
         last_selected = selected
         try:
             path = g.get("STORY_SLATE_DECISION_PATH") or Path("story_slate_decision.json")
@@ -2885,6 +2887,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         from episode_recovery import load_recovery
         recovery = load_recovery(date_str)
         board = recovery["board"] if recovery else _preproduction(g, stories, date_str, fuel)
+        from episode_freshness import assert_fresh_episode
+        assert_fresh_episode(stories, date_str, board.get("published_title", ""))
         board["_episode_date"] = date_str
         last_board = board
 
@@ -3412,6 +3416,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     g["V3_1_WRITER_ROOM_INSTALLED"] = True
     g["V3_2_HARD_DEBATE_WRITER_ROOM_INSTALLED"] = True
     g["V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"] = True
+
 
 
 
