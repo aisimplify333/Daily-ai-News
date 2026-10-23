@@ -24,7 +24,10 @@ def load_recovery(date_str):
         age = (now - published).total_seconds() / 3600
         if not -6 <= age <= 48 or not story.get("grounded") or not story.get("facts"):
             raise ValueError("Recovery source is stale or incomplete; fresh research required")
+    from episode_freshness import assert_fresh_episode
+    assert_fresh_episode(stories, date_str, board["published_title"])
     script = (root / f"script_fact_repaired_{date_str}.txt").read_text()
     if not script.strip():
         raise ValueError("Empty recovery script")
     return {"stories": stories, "board": board, "script": script}
+
