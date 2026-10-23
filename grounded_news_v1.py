@@ -439,7 +439,7 @@ def build_grounded_story_slate(
     if not isinstance(editorial_history, list):
         editorial_history = []
     from episode_freshness import published_history, repeated_story
-    aired_history = published_history(date_str)
+    aired_history = published_history(date_str, root=Path("."))
     prompt = _story_prompt(date_str, candidate_count, now, editorial_history[:7])
     prompt += "\nALREADY AIRED: exclude these events; search different developments, not new angles on the same announcement: " + json.dumps(aired_history)
     # Date-scoped editor leads aid discovery only; every candidate still goes
