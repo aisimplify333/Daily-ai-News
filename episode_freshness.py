@@ -26,6 +26,11 @@ def same_headline(a, b):
 
 def canonical_url(value):
     parts = urlsplit(str(value or ""))
+    # AP serves the same article with either an ID-only or descriptive slug URL.
+    if parts.netloc.lower().removeprefix("www.") == "apnews.com":
+        article_id = re.search(r"/article/(?:[^/]*-)?([a-f0-9]{32})/?$", parts.path, re.I)
+        if article_id:
+            return "apnews.com/article/" + article_id[1].lower()
     return (parts.netloc.lower() + parts.path.rstrip("/")).lower() if parts.netloc else ""
 
 
