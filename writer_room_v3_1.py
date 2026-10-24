@@ -2387,7 +2387,7 @@ def _expand_segment_four(
             tail_start = section_start[-1].end()
             payoff = re.search(
                 r"^(?:ALEX|JAMIE|RUFUS):\s*(?:So (?:the takeaway|that.s the takeaway)|That.s the practical payoff|"
-                r"What do listeners watch|The takeaway|The practical watch|Here.s what to watch|Quick break|After the break|"
+                r"(?:So )?(?:the|that.s the) thing to (?:actually )?watch|What do listeners watch|The takeaway|The practical watch|Here.s what to watch|Quick break|After the break|"
                 r"Let.s (?:move|turn)|One quick continuity note)\b",
                 script[tail_start:insertion], re.I | re.M)
             if payoff:
