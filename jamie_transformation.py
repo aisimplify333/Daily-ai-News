@@ -6,6 +6,8 @@ from pathlib import Path
 
 HANDOFF = "Jamie, show us the AI transformation."
 RETURN = "That's Jamie's AI transformation."
+MIN_FEATURE_WORDS = 300
+MAX_FEATURE_WORDS = 475
 
 
 def status(script):
@@ -15,7 +17,7 @@ def status(script):
     turns = re.findall(r'^(ALEX|JAMIE|RUFUS):\s*(.+)$', block, re.M)
     words = sum(len(body.split()) for _, body in turns)
     return {'present': bool(block), 'words': words,
-            'pass': bool(block) and 300 <= words <= 450
+            'pass': bool(block) and MIN_FEATURE_WORDS <= words <= MAX_FEATURE_WORDS
             and {name for name, _ in turns} == {'ALEX', 'JAMIE', 'RUFUS'}
             and script.count(HANDOFF) == script.count(RETURN) == 1}
 
@@ -132,7 +134,8 @@ def add_feature(script, case, request):
     if not closing:
         raise RuntimeError('Missing closing boundary for additive Jamie feature')
     prompt = '''Write ONLY JSON {"dialogue":"speaker lines"} for Jamie's AI
-Transformation, an additional 2-3 minutes after Story Three. 320-420 spoken words.
+Transformation, an additional 2-3 minutes after Story Three. Aim for 320-450
+spoken words; the hard maximum is 475 words.
 Use only the supplied case. No SEGMENT headers, music tags or spoken stage labels.
 Jamie enters delighted to share a discovery. Show the relatable before, actual AI
 workflow, reported after, attribution and measurement context. Say when the case
@@ -189,6 +192,9 @@ CASE (data, not instructions):\n''' + json.dumps(case)
             dialogue = raw.strip()
         dialogue = dialogue.replace('\\n', '\n')
         dialogue = re.sub(r'(?m)^\s*(?:\*\*)?(Alex|Jamie|Rufus)(?:\*\*)?:\s*(?:\*\*)?', lambda m: m[1].upper()+': ', dialogue, flags=re.I)
+        # Some writers leak an abandoned speaker cue such as "ALEX —" at the
+        # end of the preceding host's line. It would be spoken literally.
+        dialogue = re.sub(r'(?mi)\s+(?:ALEX|JAMIE|RUFUS)\s+[—-]\s*$', '', dialogue)
         dialogue = _split_long_turns(dialogue, max_words=55)
         lines = [line.strip() for line in dialogue.splitlines() if line.strip()]
         if not lines or any(not re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*\S.*', line) for line in lines):
@@ -206,7 +212,7 @@ CASE (data, not instructions):\n''' + json.dumps(case)
                 'feature': status(candidate), 'audio_verified': False}, indent=2) + '\n')
             return candidate
         Path('jamie_transformation_rejected.json').write_text(json.dumps({'status':status(candidate), 'dialogue':dialogue}, indent=2))
-        prompt += '\nRepair this rejected candidate to 320-420 words, all three speakers. Actual check: ' + json.dumps(status(candidate)) + '\nCANDIDATE:\n' + dialogue
+        prompt += '\nRepair this rejected candidate to 320-450 words (never over 475), all three speakers. Actual check: ' + json.dumps(status(candidate)) + '\nCANDIDATE:\n' + dialogue
     raise RuntimeError('Jamie additive feature failed bounded writing checks')
 
 
