@@ -1,6 +1,3 @@
-Warning: truncated output (original token count: 74641)
-Total output lines: 6525
-
 # -*- coding: utf-8 -*-
 """
 The AI Signal Room by TheLEDGR (fully automated)
@@ -2874,7 +2871,1265 @@ def extract_forwardable_moments(script: str, stories: Optional[List[Dict[str, st
     for c in candidates:
         if len(out) >= max_items:
             break
-  …14641 tokens truncated…    s = s.replace("AI", "A.I.")
+        norm = normalize_text(str(c["text"]))
+        if norm in used_norms:
+            continue
+        if len(out) < 2 and int(c["anchor_hits"]) == 0:
+            continue
+        if len(out) < 2 and int(c["score"]) < 8:
+            continue
+        if len(out) < 3 and c["speaker"] in used_speakers and len({str(x["speaker"]) for x in candidates}) > 1:
+            continue
+        out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
+        used_speakers.add(str(c["speaker"]))
+        used_norms.add(norm)
+
+    if len(out) < max_items:
+        for c in candidates:
+            if len(out) >= max_items:
+                break
+            norm = normalize_text(str(c["text"]))
+            if norm in used_norms:
+                continue
+            out.append({"speaker": c["speaker"], "text": c["text"], "score": c["score"]})
+            used_norms.add(norm)
+
+    return out[:max_items]
+
+
+def _is_theledgr_sponsor(sponsor: Dict[str, str]) -> bool:
+
+    return (sponsor.get("name") or "").strip().lower() == "theledgr"
+
+
+def _sponsor_prompt_lines(sponsor: Dict[str, str]) -> str:
+    name = (sponsor.get("name") or "Sponsor").strip()
+    tagline = (sponsor.get("tagline") or "").strip()
+    cta = (sponsor.get("cta") or "").strip()
+    if _is_theledgr_sponsor(sponsor):
+        return (
+            f"Sponsor: {name}\n"
+            f"Tagline: {tagline}\n"
+            f"CTA: {cta}\n"
+            "- Keep the read improvisational, native, and interesting. It should feel like the hosts are riffing, not switching into ad voice.\n"
+            "- Alex should ad-lib the setup or analogy, but he must still land the value proposition and the CTA cleanly.\n"
+            "- Keep it to 2-4 tight sentences.\n"
+            "- Make the sponsor feel useful, loved, and premium, not salesy. It should sound like something the hosts genuinely value and are happy to plug because it helps the audience.\n"
+            f"- Alex must say the brand as 'The Ledger' and the URL exactly as {THELEDGR_SPOKEN_URL}.\n"
+        )
+    return (
+        f"Sponsor: {name}\n"
+        f"Tagline: {tagline}\n"
+        f"CTA: {cta}\n"
+        "- This is a paid sponsor. Keep it improvisational and native to the conversation, but still hit the sponsor name, core value, and CTA clearly once.\n"
+        "- Do not invent claims beyond the provided sponsor fields.\n"
+        "- Keep it to 2-4 tight sentences and make it sound premium and interesting, not stiff.\n"
+    )
+
+
+
+
+
+
+
+def _episode_learning_concept(stories: List[Dict[str, str]]) -> str:
+    blob = " ".join([_story_display_headline(s) + " " + (s.get("why_shocking") or "") for s in stories[:5]]).lower()
+    if any(k in blob for k in ["mcp", "security", "vulnerability", "code execution", "breach", "attack"]):
+        return "agent surface area"
+    if any(k in blob for k in ["permission", "workflow", "agent", "copilot", "assistant"]):
+        return "permission layer"
+    if any(k in blob for k in ["health", "clinical", "patient", "medicine", "hospital"]):
+        return "clinical risk transfer"
+    if any(k in blob for k in ["bank", "finance", "aml", "fraud", "compliance"]):
+        return "liability chain"
+    if any(k in blob for k in ["chip", "gpu", "compute", "datacenter", "inference"]):
+        return "compute bottleneck"
+    if any(k in blob for k in ["model", "benchmark", "openai", "anthropic", "deepmind", "gemini"]):
+        return "model moat"
+    return "leverage shift"
+
+
+def build_episode_learning_promise(stories: List[Dict[str, str]]) -> Dict[str, object]:
+    concept = _episode_learning_concept(stories)
+    spine = _episode_spine(stories) if "_episode_spine" in globals() else "AI is moving from headline noise to operator consequence."
+    glossary = {
+        "permission layer": "who can approve, access, trigger, delete, escalate, or spend when an AI agent starts acting",
+        "agent surface area": "every tool, server, connector, and permission an agent can touch becomes a new place for risk",
+        "clinical risk transfer": "the moment AI moves from advice to care workflow, responsibility shifts onto doctors, hospitals, vendors, and patients",
+        "liability chain": "the trail of accountability when an automated decision causes financial, legal, or operational damage",
+        "compute bottleneck": "the constraint created when demand for intelligence outruns chips, power, data centers, or inference economics",
+        "model moat": "the advantage a lab builds when its model, data, distribution, and ecosystem make it hard to replace",
+        "leverage shift": "the hidden power change underneath a headline: who gains control, who loses options, and who has to react",
+    }
+    mental_model = glossary.get(concept, glossary["leverage shift"])
+    promise = {
+        "concept": concept,
+        "plain_english": mental_model,
+        "listener_promise": f"By the end of this episode, the listener should understand {concept}: {mental_model}.",
+        "operator_lesson": "Do not ask only what launched. Ask who gains control, who inherits risk, and what decision changes tomorrow.",
+        "episode_spine": spine,
+        "teaching_moves_required": [
+            "Alex asks the obvious listener question",
+            "Jamie explains the concept in plain English",
+            "Rufus gives a receipt, money trail, or dry undercut",
+            "The hosts turn the concept into an operator lesson",
+        ],
+    }
+    try:
+        LEARNING_PROMISE_PATH.write_text(json.dumps(promise, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    return promise
+
+
+def _learning_promise_prompt(stories: List[Dict[str, str]]) -> str:
+    promise = build_episode_learning_promise(stories)
+    return (
+        "EPISODE LEARNING PROMISE:\n"
+        f"- Concept the audience must learn: {promise['concept']}\n"
+        f"- Plain English version: {promise['plain_english']}\n"
+        f"- Listener promise: {promise['listener_promise']}\n"
+        f"- Operator lesson: {promise['operator_lesson']}\n"
+        "- Teach it through banter, not a lecture. Alex asks the obvious question, Jamie translates, Rufus adds the receipt or dry undercut.\n"
+        "- At least once, use a memorable analogy that makes the concept stick.\n"
+    )
+
+
+def _script_has_learning_arc(script: str, stories: List[Dict[str, str]]) -> bool:
+    low = (script or "").lower()
+    concept = _episode_learning_concept(stories).lower()
+    teaching_phrases = [
+        "simple version", "plain english", "think of it like", "part people miss", "operator lesson",
+        "mental model", "what that means", "the mistake", "so wait", "explain", "means",
+    ]
+    return concept in low and sum(1 for p in teaching_phrases if p in low) >= 2
+
+
+def _append_teaching_arc_fallback_if_needed(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
+    if _script_has_learning_arc(script, stories):
+        return script
+    promise = build_episode_learning_promise(stories)
+    addon = [
+        "ALEX: Wait — before we wrap this, give me the simple version. What did we actually learn today?",
+        f"JAMIE: The useful mental model is {promise['concept']}. In plain English, it means {promise['plain_english']}.",
+        "RUFUS: [dry laugh] Which is a marvellous way of saying the shiny bit gets the applause and the boring control layer gets the money.",
+        f"ALEX: So the operator lesson is: {promise['operator_lesson']}",
+        "JAMIE: Exactly. That is the reason this matters tomorrow, not just today.",
+    ]
+    marker = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    if not marker:
+        return (script.rstrip() + "\n" + "\n".join(addon)).strip()
+    # Insert near the beginning of Segment 5, after the marker and first spoken setup if possible.
+    lines = script.splitlines()
+    seg5_idx = next((i for i, ln in enumerate(lines) if re.match(r"^###\s*SEGMENT\s*5\b", ln.strip(), flags=re.IGNORECASE)), None)
+    if seg5_idx is None:
+        return (script.rstrip() + "\n" + "\n".join(addon)).strip()
+    insert_at = min(len(lines), seg5_idx + 2)
+    lines[insert_at:insert_at] = addon
+    return "\n".join(lines).strip()
+
+def build_forwardable_targets(stories: List[Dict[str, str]]) -> List[Dict[str, str]]:
+    top = stories[0] if stories else {}
+    h1 = _headline_title_core(top) if "_headline_title_core" in globals() else (_story_display_headline(top) or "today's AI shift")
+    entity = _story_entity_key(top) or "the biggest AI player"
+    targets = [
+        {"type": "alex_pressure_question", "speaker": "ALEX", "target": f"Wait — if {entity} wins the permission layer, who owns the decision when the AI acts?"},
+        {"type": "jamie_human_consequence", "speaker": "JAMIE", "target": "The uncomfortable part is this does not stay in a demo. It lands on budgets, patients, developers, and somebody's name on the approval chain."},
+        {"type": "rufus_dry_undercut", "speaker": "RUFUS", "target": "Splendid. We have automated the work and preserved the blame. Very efficient, in the bleakest possible sense."},
+        {"type": "power_shift", "speaker": "ALEX", "target": f"The story is not the announcement. The story is the power shift underneath {h1}."},
+        {"type": "tomorrow_tension", "speaker": "JAMIE", "target": "Tomorrow morning, the serious question is not who launched something. It is who has to change the plan because of it."},
+        {"type": "comic_learning_beat", "speaker": "RUFUS", "target": "That is not a workflow. That is a tiny intern with root access and no adult supervision."},
+    ]
+    return targets
+
+def _forwardable_targets_prompt(stories: List[Dict[str, str]]) -> str:
+    targets = build_forwardable_targets(stories)
+    try:
+        FORWARDABLE_TARGETS_PATH.write_text(json.dumps(targets, indent=2, ensure_ascii=False), encoding="utf-8")
+    except Exception:
+        pass
+    lines = ["MANDATORY FORWARDABLE MOMENTS TO NATURALLY WEAVE INTO THE EPISODE:"]
+    for t in targets:
+        lines.append(f"- {t['speaker']} / {t['type']}: {t['target']}")
+    lines.append("These should sound natural, not copy-pasted. Use the meaning even if you rephrase.")
+    return "\n".join(lines)
+
+
+def _find_insert_after_music(lines: List[str]) -> int:
+    for idx, line in enumerate(lines):
+        if line.strip().upper() == "[MUSIC]":
+            return idx + 1
+    return 1 if lines else 0
+
+
+
+def _build_theledgr_readout_lines(stories: List[Dict[str, str]], date_str: str) -> List[str]:
+    top = stories[0] if stories else {}
+    title = _headline_title_core(top) if "_headline_title_core" in globals() else (_story_display_headline(top) or "today's AI move")
+    win_entity = _story_entity_key(top) or "whoever controls the next AI workflow"
+    return [
+        "ALEX: The Ledger Readout — this is the part The Ledger exists for. Headlines tell you what launched. The Ledger tells you what it changes.",
+        f"JAMIE: What changed: {title}. Who wins: the operators who see the second-order consequence before budget, workflow, or risk decisions harden.",
+        f"RUFUS: Who is exposed? Anyone treating this like a press release instead of a leverage shift. Very brave, in the way standing under a piano is brave.",
+        f"ALEX: What serious operators do tomorrow: read The Ledger, pressure-test the roadmap, and ask where the liability lands. Subscribe at {THELEDGR_SPOKEN_URL}.",
+    ]
+
+def ensure_theledgr_readout(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
+    low = (script or "").lower()
+    has_readout = "theledgr readout" in low or "the ledger readout" in low
+    has_url = bool(THELEDGR_URL_RE.search(low))
+    if has_readout and has_url:
+        return script
+    lines = (script or "").splitlines()
+    insert_at = _find_insert_after_music(lines)
+    readout_lines = _build_theledgr_readout_lines(stories, date_str)
+    # Avoid duplicating the plain fallback sponsor if it was already inserted right after [MUSIC].
+    lines[insert_at:insert_at] = readout_lines
+    return "\n".join(lines).strip()
+
+
+def _append_forwardable_fallbacks_if_needed(script: str, stories: List[Dict[str, str]]) -> str:
+    moments = extract_forwardable_moments(script, stories=stories, max_items=FORWARDABLE_MIN_PER_EPISODE)
+    if len(moments) >= FORWARDABLE_MIN_PER_EPISODE:
+        return script
+    targets = build_forwardable_targets(stories)
+    addon = ["### SEGMENT 4"]
+    for t in targets[: max(1, FORWARDABLE_MIN_PER_EPISODE - len(moments))]:
+        addon.append(f"{t['speaker']}: {t['target']}")
+    m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    block = "\n".join(addon[1:]).strip()
+    if m and block:
+        return (script[:m.start()].rstrip() + "\n" + block + "\n\n" + script[m.start():].lstrip()).strip()
+    return (script.rstrip() + "\n" + block).strip()
+
+
+def build_forwardable_exchange_map(script: str, stories: List[Dict[str, str]]) -> Dict[str, object]:
+    targets = build_forwardable_targets(stories)
+    lines = [ln.strip() for ln in (script or "").splitlines() if SPEAKER_RE.match(ln.strip())]
+    mapped = []
+    for t in targets:
+        speaker = t["speaker"]
+        target_norm = normalize_text(t["target"])
+        best = ""
+        best_score = 0.0
+        target_tokens = set(target_norm.split())
+        for ln in lines:
+            m = SPEAKER_RE.match(ln)
+            if not m or m.group(1).upper() != speaker:
+                continue
+            spoken = m.group(2).strip()
+            tokens = set(normalize_text(spoken).split())
+            overlap = len(tokens & target_tokens) / max(1, len(target_tokens))
+            score = overlap + (_forwardable_line_score(spoken) / 20.0)
+            if score > best_score:
+                best_score = score
+                best = spoken
+        mapped.append({
+            "type": t["type"],
+            "speaker": speaker,
+            "target": t["target"],
+            "matched_line": best,
+            "match_score": round(best_score, 2),
+            "forwardable": bool(best and _forwardable_line_score(best) >= 5),
+        })
+    return {"targets": targets, "matches": mapped, "minimum_required": FORWARDABLE_MIN_PER_EPISODE}
+
+
+def build_sponsor_delivery_report(script: str, stories: List[Dict[str, str]], date_str: str) -> Dict[str, object]:
+    low = (script or "").lower()
+    has_name = bool(THELEDGR_NAME_RE.search(low))
+    has_url = bool(THELEDGR_URL_RE.search(low))
+    has_readout = "theledgr readout" in low or "the ledger readout" in low
+    main_read_present = bool(re.search(
+        r"^ALEX:\s*Today[’']s episode is brought to you by The Ledger\b",
+        script or "",
+        flags=re.IGNORECASE | re.MULTILINE,
+    ))
+    end_tag_match = re.search(
+        r"^(JAMIE|RUFUS):\s*A quick final note: today[’']s episode was brought to you by The Ledger\b",
+        script or "",
+        flags=re.IGNORECASE | re.MULTILINE,
+    )
+    answers = {
+        "what_changed": "what changed" in low or any((_headline_title_core(s) if "_headline_title_core" in globals() else s.get("headline", "")).lower()[:20] in low for s in stories[:1]),
+        "who_wins": "who wins" in low or "wins" in low,
+        "who_is_exposed": "exposed" in low,
+        "operator_tomorrow": "tomorrow" in low and ("operator" in low or "roadmap" in low or "budget" in low),
+    }
+    score = 0
+    score += 2 if has_name else 0
+    score += 2 if has_url else 0
+    score += 3 if has_readout else 0
+    score += sum(1 for v in answers.values() if v)
+    return {
+        "date": date_str,
+        "TheLEDGR_Readout_present": has_readout,
+        "brand_present": has_name,
+        "spoken_url_present": has_url,
+        "cta_present": bool(re.search(r"\b(subscribe|read|go to|visit)\b", low)),
+        "main_read_present": main_read_present,
+        "main_read_speaker": "ALEX" if main_read_present else None,
+        "rotating_end_tag_present": bool(end_tag_match),
+        "rotating_end_tag_speaker": end_tag_match.group(1).upper() if end_tag_match else None,
+        "sponsor_bed_expected": False,
+        "sponsor_audio_style": "dry_voice_with_separate_boundary_pauses",
+        "readout_answers": answers,
+        "sponsor_tone_score": min(10, score),
+        "strongest_story": stories[0].get("headline") if stories else "",
+    }
+
+
+
+def build_episode_aircheck(script: str, stories: List[Dict[str, str]], pack: Dict[str, str], sponsors: List[Dict[str, str]], date_str: str) -> Dict[str, object]:
+    title = pack.get("yt_title") or ""
+    desc = pack.get("show_notes_hook") or pack.get("yt_description") or ""
+    moments = extract_forwardable_moments(script, stories=stories, max_items=6)
+    sponsor = build_sponsor_delivery_report(script, stories, date_str)
+    clean_stories = _dedupe_story_families([_coerce_story_record(dict(s)) for s in stories if _story_display_headline(s)])
+    buckets = {_normalize_vertical_bucket(s.get("bucket", "")) for s in clean_stories}
+    lead_heat = _ai_heat_score(clean_stories[0]) if clean_stories else 0.0
+    receipt_scores = [_receipt_quality_score(s) for s in clean_stories[:5]]
+    duplicate_family_risk = len(clean_stories) < len([s for s in stories if _story_display_headline(s)])
+    blank_story_slot = len(clean_stories) < min(5, len(stories)) or any(not _story_display_headline(s) for s in stories[:5])
+    targets = build_forwardable_exchange_map(script, clean_stories)
+    target_hits = sum(1 for m in targets.get("matches", []) if m.get("forwardable"))
+    checks = {
+        "lead_story_heat": lead_heat >= 46.0,
+        "lead_receipts": bool(receipt_scores and receipt_scores[0] >= 3),
+        "story_variety": len(buckets) >= 3,
+        "no_duplicate_story_family": not duplicate_family_risk,
+        "no_blank_story_slots": not blank_story_slot,
+        "title_quality": bool(title and not BAD_TITLE_FRAGMENT_RE.search(title) and len(title) >= 28),
+        "description_quality": bool(desc and not BAD_MARKETING_OPENERS_RE.search(desc) and not BAD_TITLE_FRAGMENT_RE.search(desc) and len(desc) >= 90),
+        "sponsor_quality": sponsor.get("TheLEDGR_Readout_present") and sponsor.get("spoken_url_present") and sponsor.get("brand_present"),
+        "forwardable_moments": len(moments) >= FORWARDABLE_MIN_PER_EPISODE and target_hits >= 3,
+        "learning_arc": _script_has_learning_arc(script, clean_stories),
+        "cast_chemistry": all(name in script for name in ["ALEX:", "JAMIE:", "RUFUS:"]) and ("[" in script or "come on" in script.lower() or "lovely" in script.lower() or "splendid" in script.lower()),
+        "malformed_metadata": not (BAD_TITLE_FRAGMENT_RE.search(title or "") or BAD_MARKETING_OPENERS_RE.search(desc or "")),
+    }
+    score = round(100.0 * sum(1 for v in checks.values() if v) / max(1, len(checks)), 1)
+    # Hard caps: a show with weak heat, thin receipts, duplicate families, or blank story slots cannot grade itself as excellent.
+    caps = []
+    if not checks["lead_story_heat"]:
+        caps.append(74.0)
+    if not checks["lead_receipts"]:
+        caps.append(72.0)
+    if not checks["no_duplicate_story_family"]:
+        caps.append(68.0)
+    if not checks["no_blank_story_slots"]:
+        caps.append(64.0)
+    if min(receipt_scores or [0]) < 2:
+        caps.append(76.0)
+    if not checks.get("learning_arc"):
+        caps.append(75.0)
+    if caps:
+        score = round(min(score, min(caps)), 1)
+    return {
+        "date": date_str,
+        "score": score,
+        "pass": score >= 75.0,
+        "checks": checks,
+        "lead_heat": lead_heat,
+        "receipt_scores": receipt_scores,
+        "duplicate_family_risk": duplicate_family_risk,
+        "blank_story_slot": blank_story_slot,
+        "forwardable_count": len(moments),
+        "forwardable_target_hits": target_hits,
+        "sponsor": sponsor,
+        "learning_promise": build_episode_learning_promise(clean_stories),
+        "title": title,
+        "description_first_180": (desc or "")[:180],
+        "note": "Strict v2.26 teaching-arc aircheck. Lead heat, receipts, blank slots, duplicate story families, and missing learning arc cap the score before TTS/audio.",
+    }
+
+def _episode_spine(stories: List[Dict[str, str]]) -> str:
+    if not stories:
+        return "Today's AI story is moving from headline noise to operator consequence."
+    blob = " ".join([_story_display_headline(s) + " " + (s.get("why_shocking") or "") for s in stories[:5]]).lower()
+    if "security" in blob or "vulnerability" in blob or "code execution" in blob:
+        return "AI is moving from helpful assistant to active attack surface; the question is who controls it and who gets blamed."
+    if "health" in blob or "clinical" in blob or "patient" in blob:
+        return "AI is moving into higher-stakes human systems; the question is whether governance can catch up before liability does."
+    if "agent" in blob or "workflow" in blob or "copilot" in blob:
+        return "AI agents are moving from demos to permission layers; the real fight is control, liability, and leverage."
+    if "chip" in blob or "gpu" in blob or "compute" in blob:
+        return "The model race is becoming an infrastructure race; intelligence now depends on who can afford the next answer."
+    return "The headline is not the product launch; the real story is who gained leverage and who has to react tomorrow."
+
+
+def _segment_prompt(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
+                    stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
+    sponsor_1 = sponsors[0] if len(sponsors) > 0 else {"name": "Sponsor", "tagline": "", "cta": ""}
+    sponsor_2 = sponsors[1] if len(sponsors) > 1 else {"name": "Sponsor", "tagline": "", "cta": ""}
+    sponsor_3 = sponsors[2] if len(sponsors) > 2 else {"name": "Sponsor", "tagline": "", "cta": ""}
+
+    extra = ""
+    if seg_num in (1, 2, 3, 4):
+        extra += (
+            "- DO NOT sign off.\n"
+            "- DO NOT say goodbye, thanks for listening, until tomorrow, or anything that sounds like the end of the show.\n"
+            "- Keep the energy open and forward-moving. This is not the close.\n"
+            "- CRITICAL: avoid dead monologues, but do NOT rotate turns so fast that nobody can build a case. Let Jamie and Rufus occasionally hold 2-4 connected turns when sharpening an argument.\n"
+            "- Include at least one interruption, one real emotional reaction, and one line that could be clipped and shared.\n"
+            "- Keep dialogue alive, conflict-aware, and writer-room sharp, but allow arguments to breathe before Alex cuts back in.\n"
+            "- Alex should feel stronger by speaking less often and landing harder when he does step in.\n"
+            "- Every segment needs one line that sounds like a text message someone would forward.\n"
+        )
+
+    if seg_num == 1:
+        extra += (
+            "Start mid-argument (hook). Then a standalone line: [MUSIC]. "
+            "Immediately after [MUSIC], Alex must deliver a short, premium TheLEDGR sponsor line before the welcome and lineup.\n"
+            "- The sponsor should feel useful, sharp, loved, and native to the show, not like a generic ad break. The hosts should sound like they enjoy giving this plug because it pays the bills and helps the audience.\n"
+            f"- Alex must say the brand as 'The Ledger' and the URL exactly as {THELEDGR_SPOKEN_URL}.\n"
+            "- The sponsor must make listeners feel that TheLEDGR helps them make better daily decisions, cut through noise, and stay ahead at work.\n"
+            "- In the cold open and lineup, say at least 3 explicit numbers, dates, dollar amounts, or benchmark figures out loud naturally.\n"
+            "- Alex should ask the listener-question everybody is already thinking.\n"
+            "- Alex must sound like a Joe Rogan-style instigator: curious, amused, slightly dangerous, and pushing the room forward without sounding rushed.\n"
+            "- Include at least one interruption, one laugh/smirk beat, and one line with genuine tomorrow tension.\n"
+            "- Alex must welcome the audience and set up the rest of the episode, not close it.\n"
+        )
+    elif seg_num == 2:
+        extra += (
+            "Alex, Jamie and Rufus may all participate; let Rufus challenge Jamie's human-impact argument when relevant.\n"
+            "- Alex must open the segment with a clear setup or turn, then give Jamie room to make the case.\n"
+            "- Jamie must not sound like a presenter. She must react to Alex in real time, cut in naturally, and help create banter.\n"
+            "- Include at least two moments where Jamie interrupts, challenges, or reframes Alex in a warm but confident way.\n"
+            "- Jamie should sound emotionally alive: amused, incredulous, impressed, concerned, or lightly offended when the line calls for it.\n"
+            "- Give Alex and Jamie enough room to actually shape the story before the next interruption. Jamie should sound grounded, highly credible, and formidable next to Alex.\n"
+            "- Jamie must land at least one line that feels personal, dangerous, absurd, or darkly funny.\n"
+        )
+    elif seg_num == 3:
+        extra += (
+            "Alex must throw to Rufus in the first spoken exchange, then Rufus takes over.\n"
+            "Rufus should sound like he is on location somewhere real in the world before landing the core receipt.\n"
+            "He must connect the money, the politics, and the geopolitical consequence.\n"
+            "Give Alex and Rufus enough runway to build the argument before the next interruption.\n"
+            "Include at least one dry British quip or undercut that only Rufus would say, and one memorable British turn of phrase.\n"
+            "If a sponsor beat appears in this segment, Rufus should lead it and make it feel premium, sly, and genuinely approving rather than dutiful.\n"
+            "Jamie must challenge Rufus at least once before the segment ends, and their exchange should include one sarcastic jab or dry undercut before Alex regains control.\n"
+            "This segment should hand momentum forward, not sound like the end of the episode.\n"
+            f"Sponsor: {sponsor_1['name']}\n"
+            f"Tagline: {sponsor_1.get('tagline','')}\n"
+            f"CTA: {sponsor_1.get('cta','')}\n"
+        )
+    elif seg_num == 4:
+        extra += (
+            "Alex must tee up the turn. Include ONE woven-in host-read sponsor naturally if it fits the conversation, and make it feel warm, premium, and happily plugged rather than obligated.\n"
+            f"Sponsor: {sponsor_2['name']}\n"
+            f"Tagline: {sponsor_2.get('tagline','')}\n"
+            f"CTA: {sponsor_2.get('cta','')}\n"
+            "- Jamie should lead the sponsor beat in this segment if it appears, and it should feel intelligent, native, and genuinely enthusiastic.\n"
+            "- Include one callback to something said earlier in the episode.\n"
+            "- Jamie must actively play off both Alex and Rufus. She should challenge Rufus if he becomes too cold or purely strategic.\n"
+            "- Jamie and Rufus must have one genuine sparring exchange with wit, sarcasm, and a little amusement before Alex cuts through it.\n"
+            "- Include one moment where Jamie reacts with genuine offense, disbelief, or frustration at the human cost of the story.\n"
+            "- Include one quick interjection and one listener-facing 'pick a side' question.\n"
+            "- This segment must contain one line strong enough that a listener would forward it.\n"
+        )
+    elif seg_num == 5:
+        extra += (
+            "Alex must open the closing segment and land the practical takeaway.\n"
+            "Jamie should leave the audience with the human implication and must sound emotionally invested, not polished.\n"
+            "She should respond directly to Rufus if he lands a cynical or detached prediction.\n"
+            "Rufus should leave one sharp, slightly cynical prediction.\n"
+            "Before the close, Jamie and Rufus should have one final teasing disagreement or sharp exchange that shows their chemistry.\n"
+            "End with a final micro sponsor tag or aside only if it feels native and genuinely warm toward the sponsor.\n"
+            "The final 2-3 lines must make tomorrow feel necessary.\n"
+            "- End on an unresolved edge, not a tidy summary.\n"
+            f"Sponsor: {sponsor_3['name']}\n"
+            f"Tagline: {sponsor_3.get('tagline','')}\n"
+            f"CTA: {sponsor_3.get('cta','')}\n"
+        )
+
+    story_block = _story_block(stories)
+    assignment = _segment_assignment(seg_num)
+    receipts_warning = _hard_receipt_instruction(stories)
+    forwardable_targets = _forwardable_targets_prompt(stories)
+    episode_spine = _episode_spine(stories)
+    learning_promise = _learning_promise_prompt(stories)
+
+    return f"""
+You are writing a DAILY podcast episode called "The AI Edge" for {date_str}.
+This is ONLY {_segment_header(seg_num)} of the episode.
+
+PERSONAS:
+- ALEX (Host): Joe Rogan-style host energy. Swagger, curiosity, challenge, amused dominance, and real room control. He asks the listener-question everybody is already thinking, calls out weak framing, cuts through waffle, and gets a handle on the room when Jamie and Rufus start running. He does not interject on every beat; when the exchange is getting good, he lets it breathe for a few turns before cutting back in.
+- JAMIE (Co-host): extremely intelligent, polished, emotionally alive, and fast. She makes AI feel human, reacts like a real person, and can sound sharp, incredulous, or frustrated when the story deserves it. She should sound grounded, credible, and formidable.
+- RUFUS (Analyst): British dry wit, finance/policy/regulatory edge, always tracking the money, incentives, and geopolitical consequence. He keeps his unique British sayings, is the receipts machine, and often lands the funniest or most devastating line in the room.
+
+{_strict_dialogue_rules()}
+
+SEGMENT REQUIREMENTS:
+- The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
+- Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target} words).
+- Avoid filler openers like “let’s dive in”.
+- Use many labeled turns with variation in length. This should feel interrupted and alive, but key arguments must have enough room to land before Alex cuts back in.
+- Segment 1 must give Jamie and Rufus real air, not just cameo lines.
+- Segment 3 must give Rufus multiple separate lines so his on-location frame and British wit are audible.
+- Segments 4 and 5 must keep all three hosts active.
+- Every segment should contain at least one line that sounds memorable enough to share.
+
+DATA REQUIREMENTS (non-negotiable):
+- For every story you discuss in THIS segment, you MUST speak at least 2 explicit data points
+  (numbers/dates/amounts) from the provided "Data points" lines in TODAY'S STORIES.
+- Mention the publisher at least once when introducing a story.
+- Do NOT invent numbers. If a story has "No explicit figures in snippet", say that plainly.
+- If a story is thin on hard numbers, pivot to consequence, incentives, regulation, customers, developers, patients, or market impact.
+
+EPISODE SPINE:
+{episode_spine}
+
+{learning_promise}
+
+WHAT THIS SEGMENT MUST DO:
+{assignment}
+
+RECEIPTS STANDARD:
+{receipts_warning}
+
+FORWARDABLE / HUMOR TARGETS:
+{forwardable_targets}
+
+SPECIAL INSTRUCTIONS FOR THIS SEGMENT:
+{extra}
+
+{_forwardable_targets_prompt(stories)}
+
+TODAY'S STORIES:
+{story_block}
+
+NOW OUTPUT ONLY THIS SEGMENT.
+""".strip()
+
+
+def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words_max: int) -> List[str]:
+
+    issues: List[str] = []
+    if not seg_text.strip().startswith(_segment_header(seg_num)):
+        issues.append(f"Segment {seg_num} missing required first line '{_segment_header(seg_num)}'.")
+
+    for ln in seg_text.splitlines():
+        line = ln.strip()
+        if not line:
+            continue
+        if line.startswith("###") or line.upper() == "[MUSIC]":
+            continue
+        if not SPEAKER_RE.match(line):
+            issues.append("Found non-labeled spoken line(s).")
+            break
+
+    wc = _word_count(seg_text)
+    if wc < seg_words_min:
+        issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
+    if wc > seg_words_max:
+        issues.append(f"Segment too long ({wc} words). Maximum is {seg_words_max}.")
+
+    if seg_num == 1:
+        lines = [l.strip() for l in seg_text.splitlines() if l.strip()]
+        try:
+            music_idx = next(i for i, l in enumerate(lines) if l.upper() == "[MUSIC]")
+        except StopIteration:
+            issues.append("Segment 1 missing required [MUSIC] marker.")
+            music_idx = None
+
+        if music_idx is not None:
+            pre_music_dialogue = [l for l in lines[1:music_idx] if SPEAKER_RE.match(l)]
+            if len(pre_music_dialogue) < MIN_COLD_OPEN_LINES:
+                issues.append(
+                    f"Cold open too short before [MUSIC] ({len(pre_music_dialogue)} lines). Minimum is {MIN_COLD_OPEN_LINES}."
+                )
+
+    if _digit_count(seg_text) < MIN_DIGITS_PER_SEGMENT:
+        issues.append(
+            f"Low numeric density in segment (digits={_digit_count(seg_text)}). Minimum is {MIN_DIGITS_PER_SEGMENT}."
+        )
+    if seg_num < 5 and EARLY_SIGNOFF_RE.search(seg_text or ""):
+        issues.append(f"Segment {seg_num} contains premature sign-off language.")
+
+    if seg_num < 5:
+        spoken_lines = [l.strip() for l in seg_text.splitlines() if SPEAKER_RE.match(l.strip())]
+        tail_lines = spoken_lines[-4:]
+        if any(SOFT_SEGMENT_END_RE.search(re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", x, flags=re.IGNORECASE)) for x in tail_lines):
+            issues.append(f"Segment {seg_num} ends like a mini-wrap instead of pushing forward.")
+
+    if _max_consecutive_speaker_lines(seg_text) > MAX_CONSECUTIVE_SAME_SPEAKER_LINES:
+        issues.append("Too much monologue or sequential turn-taking. Break up consecutive same-speaker lines.")
+
+    if _long_spoken_line_count(seg_text, MAX_SPOKEN_WORDS_PER_LINE) > 2:
+        issues.append("Too many overly long spoken lines. Keep the room punchier and more interruptible.")
+
+    counts = _speaker_line_counts(seg_text)
+    if counts.get("ALEX", 0) < 4:
+        issues.append("Alex is not active enough in this segment. He must drive the room.")
+    if seg_num == 1 and min(counts.get("JAMIE", 0), counts.get("RUFUS", 0)) < 2:
+        issues.append("Segment 1 needs real contributions from both Jamie and Rufus, not cameo lines.")
+    if seg_num == 2 and min(counts.get("ALEX", 0), counts.get("JAMIE", 0)) < 6:
+        issues.append("Segment 2 needs more active back-and-forth from both Alex and Jamie.")
+    if seg_num == 3 and counts.get("RUFUS", 0) < 7:
+        issues.append("Segment 3 needs more Rufus lines so his on-location scene and dry wit actually land.")
+    if seg_num == 3 and counts.get("ALEX", 0) < 4:
+        issues.append("Segment 3 still needs Alex actively steering Rufus, not disappearing.")
+    if seg_num in (4, 5) and min(counts.get("ALEX", 0), counts.get("JAMIE", 0), counts.get("RUFUS", 0)) < 4:
+        issues.append("All three hosts need to stay actively in the scene in this segment.")
+
+    if _cue_count(seg_text, INTERRUPTION_CUE_RE) < MIN_INTERRUPTION_CUES_PER_SEGMENT:
+        issues.append("Not enough interruption or control cues. The scene feels too polite.")
+
+    reaction_target = MIN_REACTION_CUES_PER_SEGMENT if seg_num < 5 else max(1, MIN_REACTION_CUES_PER_SEGMENT - 1)
+    if _cue_count(seg_text, REACTION_CUE_RE) < reaction_target:
+        issues.append("Not enough audible realism cues. Add sparse laughs, scoffs, huffs, or disbelief beats.")
+
+    if _cue_count(seg_text, ALEX_CONTROL_CUE_RE) < MIN_ALEX_CONTROL_CUES_PER_SEGMENT:
+        issues.append("Alex does not seize control clearly enough in this segment.")
+
+    if seg_num == 3 and re.search(r"\b(?:from|here in|out here in|on the ground in|joining us from)\b", seg_text, flags=re.IGNORECASE) is None:
+        issues.append("Segment 3 is missing Rufus's on-location frame.")
+    return issues
+
+
+def _segment_repair_prompt(seg_num: int, seg_words_min: int, seg_words_target: int,
+                           issues: List[str], seg_text: str) -> str:
+    seg_specific = ""
+    if seg_num == 2:
+        seg_specific = (
+            "- SEGMENT 2 allows ALEX, JAMIE and RUFUS to exchange views.\n"
+            "- Delete ANY RUFUS lines and do NOT reintroduce RUFUS.\n"
+        )
+
+    signoff_fix = ""
+    if any("premature sign-off" in (x or "").lower() for x in issues):
+        signoff_fix = (
+            "- Remove all goodbye, wrap-up, end-of-show, or tomorrow-style language.\n"
+            "- Keep the segment open and forward-moving.\n"
+        )
+
+    excerpt = _json_safe_text(seg_text, max_chars=5000)
+
+    return f"""
+You are repairing ONLY {_segment_header(seg_num)} for "The AI Edge".
+
+CURRENT ISSUES:
+{chr(10).join([f"- {x}" for x in issues])}
+
+NON-NEGOTIABLE:
+- First line MUST be exactly "{_segment_header(seg_num)}"
+- Output MUST be dialogue lines only with EXACT labels: ALEX:, JAMIE:, RUFUS:
+- Every spoken line MUST start with one of those labels.
+{seg_specific}{signoff_fix}- Keep lines SHORT, punchy, and spoken.
+- Avoid monologues. Force more turns, interruptions, reactions, and contrast.
+- Segment must be at least {seg_words_min} words and should target about {seg_words_target}.
+
+SEGMENT EXCERPT TO REPAIR:
+{excerpt}
+""".strip()
+
+def _sanitize_dialogue_only(text: str, allowed_speakers: Optional[set] = None) -> str:
+    if not text:
+        return ""
+    out: List[str] = []
+    last_speaker: Optional[str] = None
+
+    for raw in text.replace("\r\n", "\n").replace("\r", "\n").split("\n"):
+        line = raw.strip()
+        if not line:
+            continue
+
+        if line.startswith("###"):
+            out.append(line)
+            last_speaker = None
+            continue
+
+        if line.upper() == "[MUSIC]":
+            out.append("[MUSIC]")
+            last_speaker = None
+            continue
+
+        m = SPEAKER_RE.match(line)
+        if m:
+            spk = m.group(1).upper()
+            txt = m.group(2).strip()
+            if allowed_speakers is not None and spk not in allowed_speakers:
+                last_speaker = None
+                continue
+            if txt:
+                out.append(f"{spk}: {txt}")
+                last_speaker = spk
+            else:
+                last_speaker = None
+            continue
+
+        if last_speaker:
+            if allowed_speakers is not None and last_speaker not in allowed_speakers:
+                continue
+            out.append(f"{last_speaker}: {line}")
+
+    return "\n".join(out).strip()
+
+
+def _generate_segment(seg_num: int, seg_words_min: int, seg_words_target: int, date_str: str,
+                      stories: List[Dict[str, str]], sponsors: List[Dict[str, str]]) -> str:
+    seg_words_max = max(seg_words_min + 120, int(seg_words_target * 1.10))
+    prompt = _segment_prompt(seg_num, seg_words_min, seg_words_target, date_str, stories, sponsors)
+    seg_text = ""
+
+    for attempt in range(1, SEGMENT_ATTEMPTS + 1):
+        seg_text = generate_text(prompt, temperature=0.72, max_tokens=2200)
+
+        if seg_num == 2:
+            seg_text = _sanitize_segment_speakers(seg_text, allowed={"ALEX", "JAMIE"})
+            if not seg_text.strip().startswith(_segment_header(seg_num)):
+                seg_text = f"{_segment_header(seg_num)}\n{seg_text}".strip()
+
+        wc = _word_count(seg_text)
+        issues = _segment_validate(seg_text, seg_num, seg_words_min, seg_words_max)
+        _safe_print(
+            f"    ✍️ Segment {seg_num} attempt {attempt}/{SEGMENT_ATTEMPTS} "
+            f"(min {seg_words_min}, max {seg_words_max}): {wc} words"
+        )
+
+        if not issues:
+            return seg_text.strip()
+
+        prompt = _segment_repair_prompt(seg_num, seg_words_min, seg_words_target, issues, seg_text)
+
+    # Last-resort trim if the model keeps overshooting.
+    if _word_count(seg_text) > seg_words_max:
+        lines = seg_text.splitlines()
+        kept = []
+        word_total = 0
+        for line in lines:
+            kept.append(line)
+            if not line.strip().startswith("###"):
+                word_total += len(re.findall(r"\b\w+\b", line))
+            if word_total >= seg_words_max:
+                break
+        seg_text = "\n".join(kept).strip()
+
+    return seg_text.strip()
+
+
+def _trim_script_to_max_words(script: str, max_words: int) -> str:
+    if _word_count(script) <= max_words:
+        return script
+
+    trimmed = script.strip()
+    while _word_count(trimmed) > max_words:
+        tl = trimmed.splitlines()
+        removed = False
+        for k in range(len(tl) - 1, 0, -1):
+            if SPEAKER_RE.match(tl[k].strip()):
+                del tl[k]
+                removed = True
+                break
+        trimmed = "\n".join(tl).strip()
+        if not removed or len(tl) < 80:
+            break
+    return trimmed
+
+
+def _pad_script_to_min_words(script: str, min_words: int, stories: List[Dict[str, str]], date_str: str) -> str:
+    wc = _word_count(script)
+    if wc >= min_words:
+        return script
+
+    need = min_words - wc
+    add_words = min(900, max(260, need + 160))
+    story_block = _story_block(stories)
+
+    m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    if not m:
+        return script
+
+    prompt = f"""
+Write an ADD-ON block to extend SEGMENT 4 of "The AI Edge" ({date_str}).
+
+RULES:
+- Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
+- NO segment markers.
+- Add ~{add_words} words.
+- MUST include at least 6 explicit data points from the story block below.
+
+STORY BLOCK:
+{story_block}
+""".strip()
+
+    addon = generate_text(prompt, temperature=0.65, max_tokens=1800)
+    addon = _sanitize_dialogue_only(addon)
+
+    insert_at = m.start()
+    return (script[:insert_at].rstrip() + "\n" + addon.strip() + "\n\n" + script[insert_at:].lstrip()).strip()
+
+
+def validate_script(script: str, stories: Optional[List[Dict[str, str]]] = None) -> List[str]:
+    issues: List[str] = []
+    for i in range(1, 6):
+        if not re.search(rf"^###\s*SEGMENT\s*{i}\b", script, flags=re.IGNORECASE | re.MULTILINE):
+            issues.append(f"Missing segment marker: ### SEGMENT {i}")
+
+    for ln in script.splitlines():
+        line = ln.strip()
+        if not line:
+            continue
+        if line.startswith("###") or line.upper() == "[MUSIC]":
+            continue
+        if not SPEAKER_RE.match(line):
+            issues.append("Found non-labeled spoken line(s).")
+            break
+
+    min_words, _, max_words = _script_targets()
+    wc = _word_count(script)
+    if wc < min_words:
+        issues.append(f"Script too short ({wc} words). Minimum is {min_words}.")
+    if wc > max_words:
+        issues.append(f"Script too long ({wc} words). Maximum is {max_words}.")
+
+    if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
+        issues.append("Contains non-dialogue formatting blocks.")
+
+    # Editorial heuristics must not veto a structurally valid daily episode.
+    # The writer's shareable_exchange.json assesses the approved multi-host clip;
+    # this older detector counts individual lines and is advisory only.
+    try:
+        moment_count = len(extract_forwardable_moments(
+            script, stories=stories, max_items=FORWARDABLE_MIN_PER_EPISODE
+        ))
+        if moment_count < FORWARDABLE_MIN_PER_EPISODE:
+            _safe_print(f"Advisory: legacy detector found {moment_count} forwardable lines; continuing production. See shareable_exchange.json.")
+    except Exception as exc:
+        _safe_print(f"Advisory: legacy forwardable-line detector unavailable ({type(exc).__name__}); continuing production.")
+    return issues
+
+
+def enforce_episode_numeric_density(script: str, stories: List[Dict[str, str]], date_str: str) -> str:
+    if _digit_count(script) >= MIN_DIGITS_PER_EPISODE:
+        return script
+
+    deficit = MIN_DIGITS_PER_EPISODE - _digit_count(script)
+    add_words = min(900, max(320, deficit * 6))
+    story_block = _story_block(stories)
+
+    prompt = f"""
+Write a DATA-DUMP add-on for SEGMENT 4 of "The AI Edge" ({date_str}).
+
+NON-NEGOTIABLE:
+- Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
+- Use story DATA POINTS (numbers/dates/amounts must appear).
+- Add ~{add_words} words.
+- MUST include at least 12 distinct numeric tokens overall.
+
+STORY BLOCK:
+{story_block}
+""".strip()
+
+    addon = generate_text(prompt, temperature=0.55, max_tokens=1800)
+    addon = _sanitize_dialogue_only(addon)
+
+    m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
+    if not m:
+        script2 = (script.rstrip() + "\n" + addon.strip()).strip()
+    else:
+        script2 = (script[:m.start()].rstrip() + "\n" + addon.strip() + "\n\n" + script[m.start():].lstrip()).strip()
+
+    min_words, _, max_words = _script_targets()
+    if _word_count(script2) > max_words:
+        script2 = _trim_script_to_max_words(script2, max_words=max_words)
+
+    return _sanitize_dialogue_only(script2)
+
+
+
+def _strip_premature_signoffs(script: str) -> str:
+    """
+    Remove premature wrap-up / goodbye language from segments 1-4 only.
+    Leave segment 5 alone so the real final sign-off still works.
+    """
+    if not script or "### SEGMENT" not in script:
+        return script
+
+    premature_patterns = [
+        r"\bthat'?s all for now\b",
+        r"\bthat'?s it for (?:today|now)\b",
+        r"\buntil next time\b",
+        r"\bsee you tomorrow\b",
+        r"\bsee you next time\b",
+        r"\bthanks for listening\b",
+        r"\bthat does it for us\b",
+        r"\bwe'?re out\b",
+        r"\bgood night\b",
+        r"\bcoming up tomorrow\b",
+        r"\bwe'?ll be back\b",
+        r"\bdon'?t go anywhere\b",
+        r"\bafter the break\b",
+        r"\bstick with us\b",
+        r"\bthat'?s the show\b",
+        r"\bthat wraps (?:it|us) up\b",
+        r"\bwe'?ll leave it there\b",
+        r"\bbottom line\b",
+        r"\bthe takeaway(?: here)?\b",
+        r"\bthat'?s the takeaway\b",
+        r"\bthat'?s where this lands\b",
+        r"\bthat'?s what this means\b",
+        r"\bwe'?ll see\b",
+        r"\btime will tell\b",
+    ]
+    soft_wrap_patterns = [
+        r"\bthat'?s the real takeaway\b",
+        r"\bthat'?s the point\b",
+        r"\bthat'?s the bottom line\b",
+        r"\bnet[- ]net\b",
+        r"\band that'?s why this matters\b",
+        r"\bso that'?s where we land\b",
+        r"\bwe'll be watching that\b",
+        r"\bthat'?s where this gets interesting\b",
+    ]
+
+    parts = re.split(r"(?=^### SEGMENT\s+\d+\b)", script, flags=re.MULTILINE)
+    cleaned_parts = []
+
+    for part in parts:
+        match = re.match(r"^### SEGMENT\s+(\d+)\b", part.strip(), flags=re.MULTILINE)
+        if not match:
+            cleaned_parts.append(part)
+            continue
+
+        seg_num = int(match.group(1))
+        if seg_num >= 5:
+            cleaned_parts.append(part)
+            continue
+
+        kept_lines = []
+        for line in part.splitlines():
+            stripped = line.strip()
+
+            if re.match(r"^(ALEX|JAMIE|RUFUS)\s*:", stripped, flags=re.IGNORECASE):
+                spoken = re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", stripped, flags=re.IGNORECASE)
+                if any(re.search(pat, spoken, flags=re.IGNORECASE) for pat in premature_patterns):
+                    continue
+
+            kept_lines.append(line)
+
+        for idx in range(len(kept_lines) - 1, -1, -1):
+            stripped = kept_lines[idx].strip()
+            if not re.match(r"^(ALEX|JAMIE|RUFUS)\s*:", stripped, flags=re.IGNORECASE):
+                continue
+            spoken = re.sub(r"^(ALEX|JAMIE|RUFUS)\s*:\s*", "", stripped, flags=re.IGNORECASE)
+            if any(re.search(pat, spoken, flags=re.IGNORECASE) for pat in soft_wrap_patterns):
+                del kept_lines[idx]
+
+        cleaned_parts.append("\n".join(kept_lines).rstrip())
+
+    return "\n".join(p for p in cleaned_parts if p is not None).strip() + "\n"
+
+
+def generate_episode_script(stories: List[Dict[str, str]], sponsors: List[Dict[str, str]], date_str: str) -> str:
+    seg_targets = _segment_word_targets()
+    seg_mins = [max(300, int(t * 0.82)) for t in seg_targets]
+
+    _safe_print(" >> ✍️ WRITING FULL EPISODE (SEGMENTED)...")
+    segments: List[str] = []
+    for i in range(1, 6):
+        seg = _generate_segment(i, seg_mins[i - 1], seg_targets[i - 1], date_str, stories, sponsors)
+        seg = _sanitize_dialogue_only(seg, allowed_speakers={"ALEX", "JAMIE"} if i == 2 else None)
+        segments.append(seg)
+
+    script = "\n\n".join(segments).strip()
+    script = _sanitize_dialogue_only(script)
+    script = enforce_temporal_consistency(script, date_str)
+    script = _strip_premature_signoffs(script)
+    script = ensure_sponsor_delivery(script, sponsors)
+    script = ensure_theledgr_readout(script, stories, date_str)
+    script = _append_forwardable_fallbacks_if_needed(script, stories)
+    script = enforce_temporal_consistency(script, date_str)
+
+    min_words, _, max_words = _script_targets()
+    if _word_count(script) > max_words:
+        script = _trim_script_to_max_words(script, max_words=max_words)
+    if _word_count(script) < min_words:
+        script = _pad_script_to_min_words(script, min_words=min_words, stories=stories, date_str=date_str)
+
+    script = _sanitize_dialogue_only(script)
+    script = enforce_temporal_consistency(script, date_str)
+    issues = validate_script(script, stories=stories)
+    issues.extend(_sponsor_validation_issues(script, sponsors))
+    stale_lines = _stale_future_lines(script, date_str)
+    if stale_lines:
+        issues.append("Episode still contains stale future-year references relative to the episode date.")
+    if issues:
+        raise RuntimeError("Final script validation failed:\n" + "\n".join(issues))
+    return script
+
+
+# ----------------------------
+# DIALOGUE PARSING + AUTO-TRANSITIONS
+# ----------------------------
+SEGMENT_MARKER_RE = re.compile(r"^###\s*SEGMENT\s*(\d+)\b", re.IGNORECASE)
+
+def iter_dialogue(script: str) -> List[Tuple[str, str]]:
+    """
+    Parses dialogue into (speaker, text) tuples.
+    Also injects a [MUSIC] marker automatically BEFORE segments 2..5 (if enabled),
+    so transitions are never forgotten even when the script writer misses them.
+    """
+    out: List[Tuple[str, str]] = []
+    current_speaker: Optional[str] = None
+    buf: List[str] = []
+    seen_first_segment = False
+    last_emitted_was_music = False
+    transitions_used = 0
+
+    def flush() -> None:
+        nonlocal current_speaker, buf, last_emitted_was_music
+        if current_speaker and buf:
+            out.append((current_speaker, " ".join(buf).strip()))
+            last_emitted_was_music = False
+        current_speaker = None
+        buf = []
+
+    for raw_line in script.splitlines():
+        line = raw_line.strip()
+        if not line:
+            continue
+
+        mseg = SEGMENT_MARKER_RE.match(line)
+        if mseg:
+            flush()
+            seg_num = int(mseg.group(1))
+            if (
+                TRANSITION_EVERY_SEGMENT
+                and seen_first_segment
+                and seg_num in TRANSITION_SEGMENTS
+                and transitions_used < TRANSITION_MAX_PER_EPISODE
+                and not last_emitted_was_music
+            ):
+                out.append(("MUSIC", "[MUSIC]"))
+                last_emitted_was_music = True
+                transitions_used += 1
+            seen_first_segment = True
+            continue
+
+        if line.upper() == "[MUSIC]":
+            flush()
+            out.append(("MUSIC", "[MUSIC]"))
+            last_emitted_was_music = True
+            continue
+
+        m = SPEAKER_RE.match(line)
+        if m:
+            flush()
+            current_speaker = m.group(1).upper()
+            buf = [m.group(2).strip()]
+            continue
+
+        if current_speaker:
+            buf.append(line)
+
+    flush()
+    return out
+
+
+
+def _tts_merge_max_chars(speaker: str) -> int:
+    if (speaker or "").upper() == "JAMIE":
+        return JAMIE_TTS_MERGE_MAX_CHARS
+    return TTS_MERGE_MAX_CHARS
+
+
+def _tts_chunk_max_chars(speaker: str) -> int:
+    if (speaker or "").upper() == "JAMIE":
+        return JAMIE_TTS_CHUNK_MAX_CHARS
+    return TTS_CHUNK_MAX_CHARS
+
+
+def merge_dialogue_for_tts(dialogue: List[Tuple[str, str]], max_chars: int = 2400) -> List[Tuple[str, str]]:
+    merged: List[Tuple[str, str]] = []
+    cur_spk: Optional[str] = None
+    cur_txt: List[str] = []
+
+    def flush() -> None:
+        nonlocal cur_spk, cur_txt
+        if cur_spk and cur_txt:
+            merged.append((cur_spk, "\n".join(cur_txt).strip()))
+        cur_spk = None
+        cur_txt = []
+
+    for spk, txt in dialogue:
+        if spk == "MUSIC":
+            flush()
+            merged.append(("MUSIC", "[MUSIC]"))
+            continue
+
+        if cur_spk is None:
+            cur_spk = spk
+            cur_txt = [txt]
+            continue
+
+        if spk != cur_spk:
+            flush()
+            cur_spk = spk
+            cur_txt = [txt]
+            continue
+
+        candidate = ("\n".join(cur_txt) + "\n" + txt).strip()
+        speaker_limit = _tts_merge_max_chars(spk)
+        current_blob = " ".join(cur_txt)
+        sponsor_markers = ("the ledger", "t-h-e-l-e-d-g-r", "subscribe")
+        current_is_sponsor = any(marker in current_blob.lower() for marker in sponsor_markers)
+        next_is_sponsor = any(marker in (txt or "").lower() for marker in sponsor_markers)
+        if current_is_sponsor != next_is_sponsor:
+            flush()
+            cur_spk = spk
+            cur_txt = [txt]
+            continue
+        force_break = (
+            is_forwardable_line_text(txt)
+            or is_forwardable_line_text(current_blob)
+            or INTERRUPTION_CUE_RE.search(txt or "") is not None
+            or REACTION_CUE_RE.search(txt or "") is not None
+            or len(re.findall(r"\b\w+\b", txt or "")) <= 8
+        )
+        if force_break:
+            flush()
+            cur_spk = spk
+            cur_txt = [txt]
+        elif len(candidate) <= speaker_limit:
+            cur_txt.append(txt)
+        else:
+            flush()
+            cur_spk = spk
+            cur_txt = [txt]
+
+    flush()
+    return merged
+
+# ----------------------------
+# TTS + STITCHING
+# ----------------------------
+def chunk_text(s: str, max_chars: int = 2800) -> List[str]:
+    s = re.sub(r"\s+", " ", s).strip()
+    if len(s) <= max_chars:
+        return [s]
+    chunks: List[str] = []
+    while len(s) > max_chars:
+        cut = s.rfind(". ", 0, max_chars)
+        if cut < 600:
+            cut = max_chars
+        chunks.append(s[:cut].strip())
+        s = s[cut:].strip()
+    if s:
+        chunks.append(s)
+    return chunks
+
+
+
+
+
+def _eleven_can_fallback_speaker(speaker: str) -> bool:
+    return ELEVEN_FALLBACK_TO_OPENAI and (speaker or "").upper() in ELEVEN_FALLBACK_SPEAKERS
+
+
+def _should_fallback_from_eleven_error(err: Exception) -> bool:
+    status = None
+    response = getattr(err, "response", None)
+    if response is not None:
+        status = getattr(response, "status_code", None)
+    msg = str(err or "").lower()
+    hints = [
+        "unauthorized", "insufficient", "credit", "quota", "payment",
+        "access denied", "voice not found", "forbidden", "account", "subscription"
+    ]
+    if status in {401, 402, 403, 429}:
+        return True
+    return any(h in msg for h in hints)
+
+
+def _activate_eleven_fallback(speaker: str, reason: str = "") -> None:
+    global _ELEVEN_FORCE_OPENAI_GLOBAL, _ELEVEN_FALLBACK_NOTICE_EMITTED
+    spk = (speaker or "").upper()
+    if not _eleven_can_fallback_speaker(spk):
+        return
+    _ELEVEN_FORCE_OPENAI_GLOBAL = True
+    _ELEVEN_FORCE_OPENAI_SPEAKERS.update(ELEVEN_FALLBACK_SPEAKERS)
+    if not _ELEVEN_FALLBACK_NOTICE_EMITTED:
+        detail = f" ({reason})" if reason else ""
+        _safe_print(f"    ⚠️ ElevenLabs unavailable{detail}. Falling back to OpenAI voices for Jamie and Rufus.")
+        _ELEVEN_FALLBACK_NOTICE_EMITTED = True
+
+
+def _speaker_audio_backend(speaker: str) -> str:
+    spk = (speaker or "").upper()
+    if spk == "ALEX" and ALEX_USE_OPENAI:
+        return "openai"
+    if spk in _ELEVEN_FORCE_OPENAI_SPEAKERS or (_ELEVEN_FORCE_OPENAI_GLOBAL and _eleven_can_fallback_speaker(spk)):
+        return "openai"
+    if AUDIO_BACKEND == "eleven":
+        if not ELEVEN_API_KEY and _eleven_can_fallback_speaker(spk):
+            return "openai"
+        return "eleven"
+    return "openai"
+
+
+def _eleven_headers() -> Dict[str, str]:
+    if not ELEVEN_API_KEY:
+        raise RuntimeError("AI_EDGE_PODCAST_ELEVENLABS is missing. Add it to GitHub Secrets / env.")
+    return {
+        "xi-api-key": ELEVEN_API_KEY,
+        "Content-Type": "application/json",
+        "Accept": "audio/mpeg",
+    }
+
+
+def _eleven_voice_id(speaker: str) -> str:
+    mapping = {
+        "ALEX": ELEVEN_VOICE_ID_ALEX,
+        "JAMIE": ELEVEN_VOICE_ID_JAMIE,
+        "RUFUS": ELEVEN_VOICE_ID_RUFUS,
+    }
+    voice_id = mapping.get((speaker or "").upper(), "")
+    if not voice_id or voice_id.startswith("REPLACE_"):
+        raise RuntimeError(f"Missing ElevenLabs voice ID for {speaker}. Set ELEVEN_VOICE_ID_{speaker.upper()} in GitHub Secrets / env.")
+    return voice_id
+
+
+def _eleven_model_id(speaker: str) -> str:
+    return {
+        "ALEX": ELEVEN_MODEL_ALEX,
+        "JAMIE": ELEVEN_MODEL_JAMIE,
+        "RUFUS": ELEVEN_MODEL_RUFUS,
+    }.get((speaker or "").upper(), "eleven_v3")
+
+
+def _eleven_voice_settings(speaker: str) -> Dict[str, float | bool]:
+    spk = (speaker or "").upper()
+    if spk == "ALEX":
+        return {
+            "stability": ELEVEN_STABILITY_ALEX,
+            "similarity_boost": ELEVEN_SIMILARITY_ALEX,
+            "style": ELEVEN_STYLE_ALEX,
+            "speed": ALEX_SPEED,
+            "use_speaker_boost": ELEVEN_USE_SPEAKER_BOOST,
+        }
+    if spk == "JAMIE":
+        return {
+            "stability": ELEVEN_STABILITY_JAMIE,
+            "similarity_boost": ELEVEN_SIMILARITY_JAMIE,
+            "style": ELEVEN_STYLE_JAMIE,
+            "speed": JAMIE_SPEED,
+            "use_speaker_boost": ELEVEN_USE_SPEAKER_BOOST,
+        }
+    return {
+        "stability": ELEVEN_STABILITY_RUFUS,
+        "similarity_boost": ELEVEN_SIMILARITY_RUFUS,
+        "style": ELEVEN_STYLE_RUFUS,
+        "speed": RUFUS_SPEED,
+        "use_speaker_boost": ELEVEN_USE_SPEAKER_BOOST,
+    }
+
+
+def _speech_friendly_text(text: str) -> str:
+    s = _strip_meta_prompt_leak(text)
+    s = re.sub(r"\s+", " ", s or "").strip()
+    s = s.replace("AI", "A.I.")
     s = s.replace("EHR", "E.H.R.")
     s = s.replace("API", "A.P.I.")
     s = s.replace("GPU", "G.P.U.")
