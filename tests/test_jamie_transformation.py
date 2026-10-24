@@ -37,6 +37,28 @@ class JamieTests(unittest.TestCase):
                 add_feature('### SEGMENT 5 — Close', {}, lambda _: '{"dialogue":"JAMIE: Too short."}')
         self.assertFalse(valid_case({'subject':'invented'}))
 
+    def test_feature_word_tolerance_accepts_three_minute_exchange_only(self):
+        def block(words_per_host):
+            dialogue = '\n'.join(
+                name + ': ' + 'useful ' * words_per_host
+                for name in ('JAMIE', 'ALEX', 'RUFUS')
+            )
+            return 'ALEX: ' + HANDOFF + '\n' + dialogue + '\nALEX: ' + RETURN
+        self.assertTrue(status(block(150))['pass'])
+        self.assertFalse(status(block(157))['pass'])
+
+    def test_abandoned_inline_speaker_cue_is_not_spoken(self):
+        core = '### SEGMENT 5 — Close\nALEX: Keep the close.\n'
+        dialogue = '\n'.join(
+            name + ': ' + ('useful ' * 25) + ('ALEX —' if i == 0 else '')
+            for i, name in enumerate(['JAMIE', 'ALEX', 'RUFUS'] * 4)
+        )
+        with tempfile.TemporaryDirectory() as directory, patch(
+            'jamie_transformation.Path', side_effect=lambda p: Path(directory) / p
+        ):
+            result = add_feature(core, {}, lambda _: json.dumps({'dialogue': dialogue}))
+        self.assertNotIn(' ALEX —\n', result)
+
     def test_cue_requires_approval_and_matching_hash(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
