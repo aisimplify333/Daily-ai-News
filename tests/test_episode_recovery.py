@@ -7,6 +7,11 @@ import unittest
 from unittest.mock import patch
 
 import episode_recovery as recovery
+
+
+def test_production_date_honors_explicit_recovery_date(monkeypatch):
+    monkeypatch.setenv("RECOVERY_RUN_DATE", "2026-10-23")
+    assert recovery.production_date() == "2026-10-23"
 import writer_room_v3_1 as writer
 from test_production_contract import SCRIPT, STORIES, BOARD
 
