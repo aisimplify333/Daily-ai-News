@@ -11,6 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlparse
+from zoneinfo import ZoneInfo
 
 DEFAULT_MODEL = os.getenv("GROUNDED_NEWS_MODEL", "gemini-3.1-flash-lite").strip()
 FALLBACK_MODEL = os.getenv("GROUNDED_NEWS_FALLBACK_MODEL", "gpt-5.4-mini").strip()
@@ -22,7 +23,7 @@ TIER3_PUBLISHERS = {
     "financial times", "wall street journal", "the new york times",
     "the washington post", "openai", "anthropic", "google",
     "google deepmind", "microsoft", "nvidia", "meta", "apple",
-    "amazon", "aws", "github", "cursor",
+    "amazon", "aws", "github", "cursor", "gov.uk", "moonshot ai",
 }
 TIER2_PUBLISHERS = {
     "the verge", "wired", "ars technica", "techcrunch", "axios",
@@ -35,7 +36,27 @@ TIER3_DOMAINS = {
     "google.com", "blog.google", "deepmind.google", "microsoft.com", "nvidia.com",
     "meta.com", "meta.ai", "apple.com", "amazon.com", "github.com", "cursor.com",
     "mit.edu", "stanford.edu", "nasa.gov", "nih.gov", "nsf.gov",
+    "gov.uk", "moonshot.cn",
 }
+
+
+def _research_now(date_str: str) -> dt.datetime:
+    """Freeze a late recovery at the requested New York broadcast-day cutoff."""
+    now = dt.datetime.now(dt.timezone.utc)
+    if os.getenv("RECOVERY_RUN_DATE", "").strip() != date_str:
+        return now
+    try:
+        episode_date = dt.date.fromisoformat(date_str)
+    except ValueError:
+        return now
+    zone = ZoneInfo("America/New_York")
+    local_today = now.astimezone(zone).date()
+    if episode_date >= local_today:
+        return now
+    next_midnight = dt.datetime.combine(
+        episode_date + dt.timedelta(days=1), dt.time.min, tzinfo=zone
+    )
+    return next_midnight.astimezone(dt.timezone.utc) - dt.timedelta(microseconds=1)
 TIER2_DOMAINS = {
     "theverge.com", "wired.com", "arstechnica.com", "techcrunch.com",
     "businessinsider.com", "straitstimes.com", "techradar.com", "axios.com", "cnbc.com", "fortune.com", "theinformation.com",
@@ -436,7 +457,7 @@ def build_grounded_story_slate(
     discovery_json: str = "[]",
     editorial_history_json: str = "[]",
 ) -> List[Dict[str, Any]]:
-    now = dt.datetime.now(dt.timezone.utc)
+    now = _research_now(date_str)
     candidate_count = max(n + 3, 8)
     if n < 1:
         raise ValueError("n must be positive")
