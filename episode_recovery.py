@@ -6,6 +6,15 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 
+def production_date():
+    """Return the explicitly pinned recovery date or the New York broadcast date."""
+    requested = os.getenv("RECOVERY_RUN_DATE", "").strip()
+    if requested:
+        dt.date.fromisoformat(requested)
+        return requested
+    return dt.datetime.now(ZoneInfo("America/New_York")).date().isoformat()
+
+
 def load_recovery(date_str):
     folder = os.getenv("EPISODE_RECOVERY_DIR", "").strip()
     if not folder:
