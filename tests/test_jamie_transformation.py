@@ -85,6 +85,29 @@ class JamieTests(unittest.TestCase):
         self.assertIn('\nRUFUS: Third thought.', result)
         self.assertIn('Delete repetition', prompts[1])
 
+    def test_contractions_do_not_bypass_turn_length_split(self):
+        core = '### SEGMENT 5 — Close\nALEX: Keep the close.\n'
+        long_turn = (
+            "JAMIE: Pick one step in your support process that assumes the customer can see "
+            "something — a screen, a label, a button — and ask whether someone who can't see "
+            "would get stuck there. Then test it with affected users and measure whether they "
+            "resolved their issue and whether reaching a human when they needed one was easy."
+        )
+        filler = '\n'.join(
+            name + ': ' + ('useful ' * 25)
+            for name in ('ALEX', 'RUFUS', 'JAMIE', 'ALEX', 'RUFUS', 'JAMIE',
+                         'ALEX', 'RUFUS', 'JAMIE', 'ALEX')
+        )
+        dialogue = long_turn + '\n' + filler
+        with tempfile.TemporaryDirectory() as directory, patch(
+            'jamie_transformation.Path', side_effect=lambda p: Path(directory) / p
+        ):
+            result = add_feature(core, {}, lambda _: json.dumps({'dialogue': dialogue}))
+        feature = result[result.index('ALEX: ' + HANDOFF):result.index('ALEX: ' + RETURN)]
+        for line in feature.splitlines():
+            if line.startswith(('ALEX:', 'JAMIE:', 'RUFUS:')):
+                self.assertLessEqual(len(line.split()) - 1, 55)
+
     def test_cue_requires_approval_and_matching_hash(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
