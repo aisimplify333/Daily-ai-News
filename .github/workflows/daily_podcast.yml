@@ -84,6 +84,29 @@ jobs:
             /episode_audio/clip_${{ steps.checkout_date.outputs.date }}.mp4
             /episode_audio/show_trailer.mp3
 
+      - name: Resolve requested episode date
+        run: |
+          set -euo pipefail
+          episode_date="$(date +%F)"
+          if [[ "$GITHUB_EVENT_NAME" == "push" ]]; then
+            requested="$(sed -n 's/^RECOVERY_RUN_DATE=//p' PRODUCTION_RUN_ONCE | tail -n 1)"
+            if [[ -n "$requested" ]]; then
+              python - "$requested" <<'PY'
+          import datetime as dt
+          import sys
+          from zoneinfo import ZoneInfo
+          requested = dt.date.fromisoformat(sys.argv[1])
+          today = dt.datetime.now(ZoneInfo("America/New_York")).date()
+          age = (today - requested).days
+          if age not in (0, 1) or requested.weekday() >= 5:
+              raise SystemExit("Recovery date must be today or the immediately prior weekday")
+          PY
+              episode_date="$requested"
+            fi
+          fi
+          echo "RECOVERY_RUN_DATE=$episode_date" >> "$GITHUB_ENV"
+          git sparse-checkout add "/episode_audio/podcast_${episode_date}.mp3"
+
       - name: Record current run start
         run: touch "$RUNNER_TEMP/production_run_started"
 
@@ -95,7 +118,7 @@ jobs:
           result-encoding: string
           script: |
             const fs = require('fs');
-            const today = new Intl.DateTimeFormat('en-CA', {timeZone: 'America/New_York', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date());
+            const today = process.env.RECOVERY_RUN_DATE || new Intl.DateTimeFormat('en-CA', {timeZone: 'America/New_York', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date());
             const audio = 'episode_audio/podcast_' + today + '.mp3';
             const feed = fs.readFileSync('feed.xml', 'utf8');
             if (feed.includes('podcast_' + today + '.mp3') && fs.existsSync(audio) && fs.statSync(audio).size > 1000) {
@@ -130,7 +153,7 @@ jobs:
           set -euo pipefail
           recovery_date="$(sed -n 's/^EDITORIAL_RECOVERY_DATE=//p' PRODUCTION_RUN_ONCE | tail -n 1)"
           recovery_run="$(sed -n 's/^EDITORIAL_RECOVERY_RUN_ID=\([0-9][0-9]*\)$/\1/p' PRODUCTION_RUN_ONCE | tail -n 1)"
-          if [[ "$recovery_date" != "$(date +%F)" || -z "$recovery_run" ]]; then
+          if [[ "$recovery_date" != "$RECOVERY_RUN_DATE" || -z "$recovery_run" ]]; then
             exit 0
           fi
           mkdir -p _editorial_recovery
@@ -372,14 +395,14 @@ jobs:
 
       - name: Verify public feed, episode page and audio
         if: success() && steps.release_check.outputs.result != 'blocked'
-        run: python verify_publication.py --date "$(date +%F)" --attempts 60 --interval 20
+        run: python verify_publication.py --date "$RECOVERY_RUN_DATE" --attempts 60 --interval 20
 
       - name: Stage current-run artifacts only
         if: always()
         run: |
           set -euo pipefail
           mkdir -p _run_artifacts
-          today="$(date +%F)"
+          today="$RECOVERY_RUN_DATE"
           for file in \
             feed.xml \
             preflight_report_v3_1.json \
