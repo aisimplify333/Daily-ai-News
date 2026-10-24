@@ -22,6 +22,7 @@ import datetime
 from pathlib import Path
 
 from pydub import AudioSegment
+from episode_recovery import production_date
 
 MIN_MINUTES = float(os.getenv("MIN_MINUTES", os.getenv("MIN_EPISODE_MINUTES", "19")))
 MAX_MINUTES = float(os.getenv("MAX_MINUTES", "26"))
@@ -56,7 +57,7 @@ def configure_git_identity() -> None:
 
 def get_latest_mp3(audio_dir: str = "episode_audio") -> Path | None:
     audio_path = Path(audio_dir)
-    expected = audio_path / f"podcast_{datetime.date.today().isoformat()}.mp3"
+    expected = audio_path / f"podcast_{production_date()}.mp3"
     if expected.exists():
         return expected
     files = sorted(audio_path.glob("podcast_*.mp3"), key=lambda p: p.name, reverse=True)
