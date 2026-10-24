@@ -206,6 +206,14 @@ class RecoveryTests(unittest.TestCase):
         self.assertIn("2026-09-06T22:09:00+00:00", prompt)
         self.assertIn("2026-09-08T22:09:00+00:00", prompt)
 
+    def test_late_recovery_freezes_at_broadcast_day_end(self):
+        with patch.dict(os.environ, {"RECOVERY_RUN_DATE": "2026-10-23"}), patch.object(
+            news.dt, "datetime", wraps=news.dt.datetime
+        ) as clock:
+            clock.now.return_value = dt.datetime(2026, 10, 24, 7, 0, tzinfo=dt.timezone.utc)
+            cutoff = news._research_now("2026-10-23")
+        self.assertEqual(cutoff, dt.datetime(2026, 10, 24, 3, 59, 59, 999999, tzinfo=dt.timezone.utc))
+
     def test_installed_production_selector_passes_rss_to_research(self):
         import writer_room_v3_1 as writer
         namespace = {}
