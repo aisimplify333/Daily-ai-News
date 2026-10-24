@@ -56,6 +56,11 @@ def test_specialist_science_and_primary_research_sources_recognized():
     assert news._source_tier('Unknown', 'https://mit.edu.example.org/article') == 1
 
 
+def test_official_government_and_vendor_sources_are_trusted():
+    assert news._source_tier('GOV.UK', 'https://www.gov.uk/government/news/example') == 3
+    assert news._source_tier('Moonshot AI', 'https://kimi.moonshot.cn/pro') == 3
+
+
 def test_audio_review_covers_entire_master_and_rejects_unheard_audio():
     from review_rendered_episode import windows, validate
     spans = list(windows(1201000))
