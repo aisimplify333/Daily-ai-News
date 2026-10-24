@@ -1,52 +1,123 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-22",
+  "date": "2026-10-23",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-22",
-    "pass": true,
+    "date": "2026-10-23",
+    "pass": false,
     "unresolved": [],
     "calculation_records": [],
-    "critical_errors": [],
-    "warnings": [],
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "OpenAI identified Brotli compression exploit CVE-2026-111497 during hardening",
+        "evidence_quote": "We’re also continuing our broader work to improve kernel security, including fixes for CVE-2026-74753, CVE-2026-80521, and CVE-2026-80841.",
+        "exact_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit, CVE-2026-111497 — using red-teaming agents they deployed specifically to look for escape routes.",
+        "replacement_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit — using red-teaming agents they deployed specifically to look for escape routes.",
+        "reason": "The script names the wrong CVE. The supplied source records mention a Brotli vulnerability, but the OpenAI source only lists unrelated CVEs and does not support CVE-2026-111497 for this incident.",
+        "source_url": "https://openai.com/index/securing-our-frontier-model-training-environment/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Sundial served OpenAI, Character, and Gamma as clients",
+        "evidence_quote": "Sundial previously served clients including OpenAI, Character, and Gamma.",
+        "exact_line": "JAMIE: But Sundial was serving OpenAI and Character as clients. Meta just bought a tool that its competitors were using.",
+        "replacement_line": "JAMIE: But Sundial was serving OpenAI, Character, and Gamma as clients. Meta just bought a tool that its competitors were using.",
+        "reason": "The supplied Axios source says Sundial served OpenAI, Character, and Gamma, not just 'Character'. The line is also missing Gamma, which is a factual omission in a list of clients.",
+        "source_url": "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial"
+      }
+    ],
+    "warnings": [
+      "The script’s OpenAI incident description is broadly supported, but the extra detail about a specific Brotli CVE is not supported by the provided sources.",
+      "The script says the episode is dated October 23, 2026; the supplied sources confirm the published dates of the three stories are October 23, 2026, but the Be My Eyes case study is historical and undated rather than a same-day launch.",
+      "The Be My Eyes figures are vendor-reported case-study metrics; they are supported, but they are not independent measurements."
+    ],
     "verified_source_urls": [
-      "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
-      "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
-      "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs",
-      "https://blogs.microsoft.com/blog/2025/01/28/the-value-of-ai-how-microsofts-customers-and-partners-are-creating-differentiated-ai-solutions-to-reinvent-how-they-do-business-today/"
+      "https://openai.com/index/securing-our-frontier-model-training-environment/",
+      "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
+      "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
+      "https://www.bemyeyes.com/business/microsoft-case-study/"
+    ],
+    "recovery_from": [
+      "The script asserts Sundial raised $23 million, but the provided source record explicitly states the startup raised $23 million prior to acquisition."
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-22",
+      "date": "2026-10-23",
+      "pass": false,
+      "unresolved": [],
+      "calculation_records": [],
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "OpenAI identified Brotli compression exploit CVE-2026-111497 during hardening",
+          "evidence_quote": "We’re also continuing our broader work to improve kernel security, including fixes for CVE-2026-74753, CVE-2026-80521, and CVE-2026-80841.",
+          "exact_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit, CVE-2026-111497 — using red-teaming agents they deployed specifically to look for escape routes.",
+          "replacement_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit — using red-teaming agents they deployed specifically to look for escape routes.",
+          "reason": "The script names the wrong CVE. The supplied source records mention a Brotli vulnerability, but the OpenAI source only lists unrelated CVEs and does not support CVE-2026-111497 for this incident.",
+          "source_url": "https://openai.com/index/securing-our-frontier-model-training-environment/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Sundial served OpenAI, Character, and Gamma as clients",
+          "evidence_quote": "Sundial previously served clients including OpenAI, Character, and Gamma.",
+          "exact_line": "JAMIE: But Sundial was serving OpenAI and Character as clients. Meta just bought a tool that its competitors were using.",
+          "replacement_line": "JAMIE: But Sundial was serving OpenAI, Character, and Gamma as clients. Meta just bought a tool that its competitors were using.",
+          "reason": "The supplied Axios source says Sundial served OpenAI, Character, and Gamma, not just 'Character'. The line is also missing Gamma, which is a factual omission in a list of clients.",
+          "source_url": "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial"
+        }
+      ],
+      "warnings": [
+        "The script’s OpenAI incident description is broadly supported, but the extra detail about a specific Brotli CVE is not supported by the provided sources.",
+        "The script says the episode is dated October 23, 2026; the supplied sources confirm the published dates of the three stories are October 23, 2026, but the Be My Eyes case study is historical and undated rather than a same-day launch.",
+        "The Be My Eyes figures are vendor-reported case-study metrics; they are supported, but they are not independent measurements."
+      ],
+      "verified_source_urls": [
+        "https://openai.com/index/securing-our-frontier-model-training-environment/",
+        "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
+        "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
+        "https://www.bemyeyes.com/business/microsoft-case-study/"
+      ],
+      "recovery_from": [
+        "The script asserts Sundial raised $23 million, but the provided source record explicitly states the startup raised $23 million prior to acquisition."
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-10-23",
       "pass": true,
       "unresolved": [],
       "calculation_records": [],
       "critical_errors": [],
-      "warnings": [],
+      "warnings": [
+        "The podcast mentions a 'Brotli compression exploit' (CVE-2026-111497) as part of OpenAI's security incident. While the source notes this was identified by red-teaming agents during the hardening process, it is not explicitly categorized as the *reason* for the DNS misconfiguration incident, but rather a vulnerability discovered during the subsequent security pause."
+      ],
       "verified_source_urls": [
-        "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
-        "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
-        "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs",
-        "https://blogs.microsoft.com/blog/2025/01/28/the-value-of-ai-how-microsofts-customers-and-partners-are-creating-differentiated-ai-solutions-to-reinvent-how-they-do-business-today/"
+        "https://openai.com/index/securing-our-frontier-model-training-environment/",
+        "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
+        "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
+        "https://www.bemyeyes.com/business/microsoft-case-study/"
       ]
     }
   ],
-  "replacements_applied": 0,
+  "replacements_applied": 2,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-22",
+    "date": "2026-10-23",
     "pass": true,
     "unresolved": [],
     "calculation_records": [],
     "critical_errors": [],
-    "warnings": [],
+    "warnings": [
+      "The podcast mentions a 'Brotli compression exploit' (CVE-2026-111497) as part of OpenAI's security incident. While the source notes this was identified by red-teaming agents during the hardening process, it is not explicitly categorized as the *reason* for the DNS misconfiguration incident, but rather a vulnerability discovered during the subsequent security pause."
+    ],
     "verified_source_urls": [
-      "https://nvidianews.nvidia.com/news/openshell-reference-architecture",
-      "https://cloud.google.com/blog/products/ai-machine-learning/introducing-agent-compute-engine-and-expanding-agent-governance",
-      "https://www.bloomberg.com/news/articles/2026-10-22/meta-falls-as-investors-balance-muse-growth-with-rising-ai-costs",
-      "https://blogs.microsoft.com/blog/2025/01/28/the-value-of-ai-how-microsofts-customers-and-partners-are-creating-differentiated-ai-solutions-to-reinvent-how-they-do-business-today/"
+      "https://openai.com/index/securing-our-frontier-model-training-environment/",
+      "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
+      "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
+      "https://www.bemyeyes.com/business/microsoft-case-study/"
     ]
   },
   "pass": true,

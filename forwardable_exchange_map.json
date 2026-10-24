@@ -41,39 +41,39 @@
       "type": "alex_pressure_question",
       "speaker": "ALEX",
       "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
-      "matched_line": "Today’s question for you: if your company deployed an AI agent that made a costly mistake, who carries the accountability — the engineer who built it, the manager who approved it, or the vendor who sold the governance layer? Let us know.",
-      "match_score": 0.62,
-      "forwardable": false
+      "matched_line": "Today’s question for you: If your company replaced 20% of your team's tasks with AI agents, would you feel more productive or just like a 'manager' of software?",
+      "match_score": 0.67,
+      "forwardable": true
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
       "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
-      "matched_line": "So the identity verification piece — 1Password, Okta — how does that even work at the edge? Is the agent authenticating every action against a cloud service?",
-      "match_score": 0.59,
+      "matched_line": "It's a different job. Whether it's better depends on whether the agent errors are obvious enough to catch, and whether you were trained to catch them. Because the scary version isn't the agent getting something obviously wrong. It's the agent getting something plausibly wrong —",
+      "match_score": 0.54,
       "forwardable": true
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "So the identity verification piece — 1Password, Okta — how does that even work at the edge? Is the agent authenticating every action against a cloud service?",
-      "match_score": 0.47,
+      "matched_line": "Not permanently. But the offline policy plus active red-teaming is meaningfully better than what existed in August. The question is whether the next gap shows up in a routine run or something more capable that goes looking.",
+      "match_score": 0.6,
       "forwardable": true
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "The edge deployment case is actually where the BlueField-4 DPU argument gets more interesting, not less. If the security checkpoint lives on the chip rather than routing back to a central server, you could theoretically get the latency down.",
-      "match_score": 0.52,
+      "matched_line": "Which means the model wasn't breaking rules so much as finding a gap in the rules.",
+      "match_score": 0.48,
       "forwardable": true
     },
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
       "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
-      "matched_line": "Twenty to thirty minutes per case, according to Microsoft's January 2025 account. Now they have a Copilot Studio agent that collects the relevant information, analyses it, and hands a structured summary to a human investigator.",
+      "matched_line": "It's a different job. Whether it's better depends on whether the agent errors are obvious enough to catch, and whether you were trained to catch them. Because the scary version isn't the agent getting something obviously wrong. It's the agent getting something plausibly wrong —",
       "match_score": 0.53,
       "forwardable": true
     },
@@ -81,17 +81,17 @@
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "We do. And honestly, it moves the needle. Not because it solves the problem — it doesn't — but because doing governance at the hardware layer with identity verification is more than most enterprises have right now.",
-      "match_score": 0.48,
+      "matched_line": "Today’s question for you: If your company replaced 20% of your team's tasks with AI agents, would you feel more productive or just like a 'manager' of software?",
+      "match_score": 0.53,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
       "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "Which is a fair version of the question. The capex for AI infrastructure is not theoretical. It's data centers, it's power contracts, it's chips. Those are real sunk costs. The question is the revenue multiple on the other side.",
-      "match_score": 0.67,
-      "forwardable": true
+      "matched_line": "Because the question those analysts are asking is: what does this tell us about Meta's data strategy? Sundial built what they called \"agentic analysts\" — AI agents that could autonomously clean messy data and surface insights, through tools like Slack. Picture a junior analyst who never sleeps and doesn't complain about spreadsheet formatting.",
+      "match_score": 0.46,
+      "forwardable": false
     }
   ],
   "minimum_required": 4

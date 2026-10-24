@@ -5,18 +5,20 @@
   "blocking": false,
   "story_families": [
     "products",
-    "governance",
+    "markets",
     "other"
   ],
-  "first_story_seconds": 65.044,
+  "first_story_seconds": 68.171,
   "audio_measurements": {
-    "integrated_lufs": -16.52,
-    "true_peak_dbtp": -1.72,
-    "loudness_range_lu": 4.2
+    "integrated_lufs": -16.55,
+    "true_peak_dbtp": -1.71,
+    "loudness_range_lu": 4.0
   },
   "dialogue_editor_accepted": true,
   "storyboard_status": "model_plan",
-  "issues": [],
+  "issues": [
+    "Global-desk fallback delivered; a sourced on-location scene was not verified."
+  ],
   "requires_listening": [
     "responsive chemistry",
     "comic timing",
@@ -29,14 +31,16 @@
     "basis": "transcript structure only; not a listening rating",
     "entertainment_rating": null,
     "rufus_feature": {
-      "mode": "on_location",
-      "word_count": 160,
+      "mode": "global_desk",
+      "word_count": 112,
       "handoff_and_return": true,
       "clearly_framed": true,
       "duration_in_word_band": true,
       "present": true
     },
-    "issues": [],
+    "issues": [
+      "Global-desk fallback delivered; a sourced on-location scene was not verified."
+    ],
     "requires_editorial_review": [
       "distinct listener consequences across three stories",
       "technical terms explained on first use",
@@ -45,50 +49,46 @@
       "self-contained exchange worth sharing"
     ]
   },
-  "performance_plan_turns": 165,
+  "performance_plan_turns": 179,
   "performance_direction_usage": {
     "ALEX": {
-      "planned": 50,
-      "sponsor": 1,
-      "heuristic": 3
+      "planned": 53,
+      "heuristic": 1,
+      "sponsor": 1
     },
     "JAMIE": {
-      "planned": 46,
-      "sponsor": 2,
-      "heuristic": 2
+      "planned": 63,
+      "sponsor": 4
     },
     "RUFUS": {
-      "planned": 47,
-      "heuristic": 1,
+      "planned": 49,
       "sponsor": 2
     }
   },
   "jamie_performance": {
     "basis": "recorded provider calls; requested delivery is not verified emotion",
-    "calls": 50,
+    "calls": 67,
     "moods": {
-      "amused": 10,
-      "concern": 5,
-      "concession": 1,
-      "curiosity": 4,
-      "delight": 2,
-      "dry_wit": 5,
-      "explainer": 6,
-      "interruption": 1,
-      "neutral": 4,
-      "pressure": 3,
+      "amused": 7,
+      "concern": 8,
+      "concession": 3,
+      "curiosity": 5,
+      "delight": 5,
+      "dry_wit": 8,
+      "explainer": 10,
+      "neutral": 5,
+      "pressure": 2,
       "pushback": 8,
-      "warmth": 1
+      "warmth": 6
     },
     "listened": false,
     "grok_expression_counts": {
-      "build-intensity": 5,
-      "chuckle": 10,
-      "decrease-intensity": 1,
+      "build-intensity": 7,
+      "chuckle": 7,
+      "decrease-intensity": 3,
       "emphasis": 8,
-      "fast": 1,
-      "slow": 4,
-      "soft": 6
+      "slow": 5,
+      "soft": 14
     },
     "undirected_expressive_calls": 0
   }
