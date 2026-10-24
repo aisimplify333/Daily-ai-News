@@ -37,6 +37,12 @@ in everyday terms. Do not relabel ordinary search or chat as autonomous action.
 Keep non-agentic discoveries eligible when their human story is stronger.
 Discover through trade press, reputable reporting, interviews, company case studies,
 research and creator demonstrations; trace the actual outcome to its supporting
+source. Include Salesforce customer stories, Agentforce case studies and Dreamforce
+session archives as additional discovery routes, particularly when other searches
+struggle. Keep the search broad across vendors and industries. Prefer surprising,
+relatable benefits that invite a specific question, affectionate tease and comeback;
+never invent results to manufacture banter. Label vendor evidence and historical dates.
+Trace every outcome to its supporting
 source. A specific qualitative result is acceptable: do not require impressive
 percentages or a large-company benchmark. Label personal/vendor accounts accurately. This is an
 evergreen case-study feature, NOT a fourth breaking-news headline. An older case
