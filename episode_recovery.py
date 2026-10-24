@@ -3,6 +3,7 @@ import datetime as dt
 import json
 import os
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 
 def load_recovery(date_str):
@@ -13,7 +14,7 @@ def load_recovery(date_str):
     slate = json.loads((root / "grounded_story_slate.json").read_text())
     decision = json.loads((root / "story_slate_decision.json").read_text())
     now = dt.datetime.now(dt.timezone.utc)
-    if date_str != dt.date.today().isoformat() or slate.get("date") != date_str or decision.get("date") != date_str:
+    if date_str != now.astimezone(ZoneInfo('America/New_York')).date().isoformat() or slate.get("date") != date_str or decision.get("date") != date_str:
         raise ValueError("Recovery requires today's matching dated research and storyboard")
     stories = slate.get("selected", [])
     board = decision.get("v3_3_debate_board", {})
