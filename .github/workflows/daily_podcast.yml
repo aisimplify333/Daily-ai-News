@@ -31,6 +31,7 @@ jobs:
     timeout-minutes: 180
 
     env:
+      TZ: "America/New_York"
       SAVE_SCRIPT: "true"
       PODCAST_SHOW_TITLE: "The AI Edge"
       PODCAST_SHOW_DESCRIPTION: "The AI Edge is the weekday artificial intelligence news and analysis podcast where Alex, Jamie, and Rufus tell you what changed in AI, who wins, and what you do next. Each episode debates three distinct AI stories from the last 24–48 hours, with clear transitions, competing perspectives and practical takeaways. Follow The AI Edge for new episodes Monday through Friday. What changed. Who wins. What you do next."
@@ -66,7 +67,7 @@ jobs:
     steps:
       - name: Set episode checkout date
         id: checkout_date
-        run: echo "date=$(date -u +%F)" >> "$GITHUB_OUTPUT"
+        run: echo "date=$(date +%F)" >> "$GITHUB_OUTPUT"
       - name: Check out repository
         uses: actions/checkout@v4
         with:
@@ -94,7 +95,7 @@ jobs:
           result-encoding: string
           script: |
             const fs = require('fs');
-            const today = new Date().toISOString().slice(0, 10);
+            const today = new Intl.DateTimeFormat('en-CA', {timeZone: 'America/New_York', year:'numeric', month:'2-digit', day:'2-digit'}).format(new Date());
             const audio = 'episode_audio/podcast_' + today + '.mp3';
             const feed = fs.readFileSync('feed.xml', 'utf8');
             if (feed.includes('podcast_' + today + '.mp3') && fs.existsSync(audio) && fs.statSync(audio).size > 1000) {
@@ -129,7 +130,7 @@ jobs:
           set -euo pipefail
           recovery_date="$(sed -n 's/^EDITORIAL_RECOVERY_DATE=//p' PRODUCTION_RUN_ONCE | tail -n 1)"
           recovery_run="$(sed -n 's/^EDITORIAL_RECOVERY_RUN_ID=\([0-9][0-9]*\)$/\1/p' PRODUCTION_RUN_ONCE | tail -n 1)"
-          if [[ "$recovery_date" != "$(date -u +%F)" || -z "$recovery_run" ]]; then
+          if [[ "$recovery_date" != "$(date +%F)" || -z "$recovery_run" ]]; then
             exit 0
           fi
           mkdir -p _editorial_recovery
@@ -371,14 +372,14 @@ jobs:
 
       - name: Verify public feed, episode page and audio
         if: success() && steps.release_check.outputs.result != 'blocked'
-        run: python verify_publication.py --attempts 60 --interval 20
+        run: python verify_publication.py --date "$(date +%F)" --attempts 60 --interval 20
 
       - name: Stage current-run artifacts only
         if: always()
         run: |
           set -euo pipefail
           mkdir -p _run_artifacts
-          today="$(date -u +%F)"
+          today="$(date +%F)"
           for file in \
             feed.xml \
             preflight_report_v3_1.json \
