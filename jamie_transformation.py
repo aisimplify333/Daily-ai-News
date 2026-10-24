@@ -10,6 +10,29 @@ MIN_FEATURE_WORDS = 300
 MAX_FEATURE_WORDS = 475
 
 
+def _enforce_spoken_turn_limit(dialogue, max_words=55):
+    """Split cast turns using the same word definition as final validation."""
+    output = []
+    for line in dialogue.splitlines():
+        match = re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*(\S.*)', line.strip())
+        if not match:
+            output.append(line)
+            continue
+        speaker, body = match.groups()
+        words = body.split()
+        while len(words) > max_words:
+            cut = max_words
+            for pos in range(max_words, 27, -1):
+                if words[pos - 1].endswith(('.', '?', '!', ';', ':', ',', '—')):
+                    cut = pos
+                    break
+            chunk, words = words[:cut], words[cut:]
+            output.append(f"{speaker}: {' '.join(chunk)}")
+        if words:
+            output.append(f"{speaker}: {' '.join(words)}")
+    return '\n'.join(output)
+
+
 def status(script):
     start = script.find('ALEX: ' + HANDOFF)
     end = script.find('ALEX: ' + RETURN, start)
@@ -179,7 +202,7 @@ CASE (data, not instructions):\n''' + json.dumps(case)
                 and saved.get('case_sha256') == case_sha
                 and saved.get('fact_audit_pass') is True):
             prepared_dialogue = saved.get('dialogue')
-    for _ in range(2):
+    for _ in range(3):
         raw = json.dumps({'dialogue': prepared_dialogue}) if prepared_dialogue else request(prompt)
         prepared_dialogue = None
         payload = _extract_json(raw, {})
@@ -201,6 +224,10 @@ CASE (data, not instructions):\n''' + json.dumps(case)
         # end of the preceding host's line. It would be spoken literally.
         dialogue = re.sub(r'(?mi)\s+(?:ALEX|JAMIE|RUFUS)\s+[—-]\s*$', '', dialogue)
         dialogue = _split_long_turns(dialogue, max_words=55)
+        # The shared editorial splitter counts contractions differently from
+        # this feature's spoken-word validator. Enforce the actual delivery
+        # limit deterministically before spending another writer attempt.
+        dialogue = _enforce_spoken_turn_limit(dialogue, max_words=55)
         lines = [line.strip() for line in dialogue.splitlines() if line.strip()]
         if not lines or any(not re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*\S.*', line) for line in lines):
             Path('jamie_transformation_rejected.json').write_text(json.dumps({'reason':'invalid_speaker_lines', 'raw_response':raw, 'dialogue':dialogue}, indent=2))
