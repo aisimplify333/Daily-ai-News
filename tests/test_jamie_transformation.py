@@ -59,6 +59,32 @@ class JamieTests(unittest.TestCase):
             result = add_feature(core, {}, lambda _: json.dumps({'dialogue': dialogue}))
         self.assertNotIn(' ALEX —\n', result)
 
+    def test_inline_cast_labels_split_and_oversize_gets_focused_compression(self):
+        core = '### SEGMENT 5 — Close\nALEX: Keep the close.\n'
+        oversized = '\n'.join(
+            name + ': ' + ('useful ' * 48)
+            for name in ('JAMIE', 'ALEX', 'RUFUS') * 4
+        )
+        concise = '\n'.join(
+            name + ': ' + ('useful ' * 26)
+            for name in ('JAMIE', 'ALEX', 'RUFUS') * 4
+        )
+        replies = [json.dumps({'dialogue': oversized}), json.dumps({
+            'dialogue': 'JAMIE: First thought. Alex: Second thought. Rufus: Third thought.\n' + concise
+        })]
+        prompts = []
+        def request(prompt):
+            prompts.append(prompt)
+            return replies.pop(0)
+        with tempfile.TemporaryDirectory() as directory, patch(
+            'jamie_transformation.Path', side_effect=lambda p: Path(directory) / p
+        ):
+            result = add_feature(core, {}, request)
+        self.assertTrue(status(result)['pass'])
+        self.assertIn('\nALEX: Second thought.', result)
+        self.assertIn('\nRUFUS: Third thought.', result)
+        self.assertIn('Delete repetition', prompts[1])
+
     def test_cue_requires_approval_and_matching_hash(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
