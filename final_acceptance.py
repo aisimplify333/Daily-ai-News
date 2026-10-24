@@ -60,6 +60,9 @@ The format intentionally includes an opening sponsor read, one conversational
 midroll and a short closing sponsor credit. These three distinct placements are
 not duplicate ads or false endings. The closing sponsor credit before the house
 tag/follow CTA is correct; do not demand it move after the final CTA.
+Any of Alex, Jamie or Rufus may deliver that short closing credit. A change of
+speaker or the words 'brought to you by' do not make an approved placement a
+duplicate. Identify an extra placement or an actual repeated ad fragment to fail it.
 An explicitly marked "Jamie, show us the AI transformation." through "That's
 Jamie's AI transformation." block is an approved additional case-study feature
 after Story Three, not a fourth news story or restarted ending. Review its own
