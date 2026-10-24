@@ -28,6 +28,7 @@ import sys
 import traceback
 from pathlib import Path
 from typing import Any, Dict
+from episode_recovery import production_date
 
 BASE_DIR = Path(__file__).parent
 MAIN_PATH = BASE_DIR / "main.py"
@@ -175,7 +176,7 @@ def _reusable_episode_audio(g: Dict[str, Any]) -> Path | None:
     if g.get("FORCE_REBUILD", False):
         return None
     audio_dir = Path(g.get("AUDIO_DIR") or BASE_DIR / "episode_audio")
-    audio_path = audio_dir / f"podcast_{_dt.date.today().isoformat()}.mp3"
+    audio_path = audio_dir / f"podcast_{production_date()}.mp3"
     check = g.get("_file_ok_min_bytes")
     if audio_path.exists() and callable(check) and check(audio_path):
         return audio_path
