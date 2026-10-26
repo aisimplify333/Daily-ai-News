@@ -443,10 +443,33 @@ def _same_news_event(left: Dict[str, Any], right: Dict[str, Any]) -> bool:
     if key and key == right.get("event_key"):
         return True
     excluded = {"AI", "The", "New", "US", "UK", "EU", "A", "An"}
+
     def names(story):
         return {word for word in re.findall(r"\b[A-Z][A-Za-z0-9-]*\b", story["headline"])
                 if word not in excluded}
-    return len(names(left) & names(right)) >= 2
+
+    if len(names(left) & names(right)) >= 2:
+        return True
+
+    # Grounded providers can describe the same event with different event keys
+    # and headline casing. Catch near-identical event headlines without merging
+    # unrelated stories about the same company.
+    stopwords = {
+        "a", "an", "and", "as", "at", "by", "for", "from", "in", "into",
+        "of", "on", "the", "to", "with", "ai",
+    }
+
+    def event_tokens(story):
+        return {
+            token for token in re.findall(r"[a-z0-9]+", story["headline"].lower())
+            if token not in stopwords and len(token) > 1
+        }
+
+    left_tokens = event_tokens(left)
+    right_tokens = event_tokens(right)
+    shared = left_tokens & right_tokens
+    union = left_tokens | right_tokens
+    return len(shared) >= 4 and bool(union) and len(shared) / len(union) >= 0.65
 
 
 @lru_cache(maxsize=8)
