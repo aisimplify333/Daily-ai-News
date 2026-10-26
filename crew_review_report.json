@@ -6,7 +6,7 @@
   "edits": [
     {
       "accepted": true,
-      "reason": "Replaces three identical verdict turns with a grounded exchange that advances the containment argument using a new framing.",
+      "reason": "Removes doubled conclusion; keeps the watch-point and the 60B callback without restating both in three more turns.",
       "segment": 2
     },
     {
@@ -18,45 +18,46 @@
     },
     {
       "accepted": true,
-      "reason": "Removes duplicate production-stub 'Back to the wider story' that appeared a second time; preserves the live question.",
+      "reason": "Removes the repeated Alex restatement at line 90; consolidates the close into Jamie's line so 'for now' lands once as Rufus's dry closer.",
       "segment": 3
     },
     {
       "accepted": true,
-      "reason": "Replaces near-verbatim story recaps with three distinct sharp observations and concrete watch items; eliminates repeated verdict language.",
-      "segment": 5
+      "reason": "Alex's 'reluctant to call it a verdict' duplicates the point already landed at 116-119; Rufus's line earns the beat without the setup.",
+      "segment": 4
     }
   ],
-  "input_sha256": "dceae7b5d6bdf55460f80478406fe498fe4159b4821ed2fbf012e348f7222ee5",
+  "input_sha256": "52cacdf6f72196b7680f486f3f6901a4b06858da6c2d2e8c620a1e300beebd29",
   "review_before_repairs": {
     "scenes": [
       {
         "segment": 2,
-        "chemistry": "Strong: the DNS explanation lands naturally, Jamie's 'snake eating itself' gets a dry Rufus payoff, and the containment debate has genuine friction without a forced resolution.",
-        "discovery": "Present: red-teaming agents finding the Brotli CVE is surfaced as the specific sophisticated detail; Rufus's competitive-cost framing adds a second lens.",
-        "repetition": "Lines 41-47 revisit the 'can you sandbox it' conclusion three times in quick succession without adding new evidence; the ending drags."
+        "chemistry": "Strong: the preferred-stock exchange (lines 15-29) has genuine back-and-forth; Rufus's 'rationing my approval' lands quietly and Jamie answers it. The non-voting Class C thread (47-52) is a real discovery the friends work through together.",
+        "discovery": "Present: the convertible preferred as a middle-path risk instrument is explained through the conversation, not delivered as a lecture. The dilution-versus-growth-pie framing emerges from Alex's challenge rather than being pre-announced.",
+        "repetition": "Lines 53-60 re-state the 'watch whether it closes' conclusion that was already clear at line 57; the finale at 57-60 covers the same ground twice in four lines."
       },
       {
         "segment": 3,
-        "chemistry": "Good: Jamie's restaurant analogy earns a genuine Rufus concession; the OpenAI-as-client detail lands well. The double 'Back to the wider story' marker (lines 54 and 60) is a production artifact that reads on air.",
-        "discovery": "Present: exclusivity-as-signal and the tangled-plumbing observation are both specific and sourced.",
-        "repetition": "Line 54 ('Back to the wider story') is a navigation stub that survived into dialogue; line 60 repeats it. One must be cut."
+        "chemistry": "Good: the Roomba analogy (70-72) earns a real reaction; Rufus and Jamie's exchange on 'publicly available' (78-79) is a genuine pushback-and-response. Lines 86-92 slow down well when the governance consequence lands.",
+        "discovery": "Present: the distinction between 'data was public' and 'model had undirected agency' is sharpened through Jamie's challenge (80-83) rather than stated once and abandoned.",
+        "repetition": "Lines 90-92 ('finding out through disclosures'/'for now'/'for now') close the segment twice; the second 'for now' echo is a beat that works, but the Alex line before it restates the conclusion already reached at 85."
       },
       {
         "segment": 4,
-        "chemistry": "Best in episode: the shareable exchange (lines 106-111) is crisp and the Jamie feature flows into it without a seam. Rufus's aviation-complacency callback is well-placed.",
-        "discovery": "Strong: the skills-gap-forming-now observation (line 143) is the episode's most original synthesis and is earned by the prior exchange.",
-        "repetition": "None detected within segment. Line 119 ('Quick break') is a mild pacing interrupt but functional."
+        "chemistry": "Solid: the bakery analogy (120) is a Jamie original that lands without over-explanation; Rufus's Hollywood-third-act line (132-134) is a genuine dry bit with a satisfying closer from Jamie. Alex's honest 'would I watch it' (130) is a good personal moment.",
+        "discovery": "Partial: the 'process as pitch vs story as pitch' distinction (111-113) is the real insight but is slightly restated at 121-122 without adding to it.",
+        "repetition": "Lines 123-125 and 127-129 both reach the same landing ('one data point, not a verdict' / 'hybrid gets made in 18 months') without the second adding a new consequence; minor."
       }
     ],
-    "rufus_feature": "The Wall Street imagined dispatch (lines 51-57) opens with a concrete setting and a named character action, and Jamie's challenge ('how is that a Wall Street story') receives a direct answer with the agentic-analyst analogy. The studio exchange continues responsively through line 80. Qualifies as an honest imagined scene with a reactive studio exchange, not merely a label.",
+    "rufus_feature": "The Wall Street compliance floor (lines 74-79) is an explicitly imagined scene with a concrete setting named in the first sentence. Rufus delivers sourced reasoning and Jamie pushes back on 'publicly available' before the return. The studio exchange is responsive rather than scripted. Meets the brief adequately, though the four-paragraph Rufus monologue (74-77) is long before Jamie gets the pushback in.",
     "remaining_issues": [
-      "Lines 41-46: three consecutive summary turns on the same containment conclusion without new evidence; runtime is inside band so replace with a substantive exchange rather than delete.",
-      "Line 54: spoken production-stub 'Back to the wider story' appears mid-Rufus turn, interrupting the imagined scene before it has landed.",
-      "Lines 147-153: closing segment restates each story's conclusion almost verbatim from earlier verdicts; the OpenAI and Anthropic summaries add no new framing."
+      "Segment 2 closes with a doubled conclusion (lines 57-60): Alex states the watch-point, then Jamie and Rufus restate it in two more turns with no new information.",
+      "Segment 3 lines 85-92: Alex's governance-gap line and the paired 'for now' are an earned quiet close, but the Alex line at 90 restates what was already concluded at 85, adding no new evidence or consequence.",
+      "Rufus's feature monologue (74-77) runs four uninterrupted paragraphs before Jamie's first reply; the imagined scene would gain from a shorter Rufus opening with the studio exchange starting sooner.",
+      "Segment 4 lines 123-125 lightly duplicate the 'one film, not a verdict' conclusion that follows naturally from 116-119; minor but cuttable without dropping below the runtime floor."
     ]
   },
   "remaining_production_language": [],
-  "output_sha256": "ce01ce0ba74f51672af27a6827ac962eef4feeea0f164bb1e5804d7b23f21f9b",
+  "output_sha256": "8332e0ba58dcc23a2839b42be0f25d047db4cf2cbd168279e092e1aae17cfc61",
   "status": "repairs_applied_need_audio_review"
 }

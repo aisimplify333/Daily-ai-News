@@ -4,20 +4,20 @@
   "entertainment_rating": null,
   "blocking": false,
   "story_families": [
-    "products",
     "markets",
-    "other"
+    "other",
+    "markets"
   ],
-  "first_story_seconds": 68.171,
+  "first_story_seconds": 71.342,
   "audio_measurements": {
-    "integrated_lufs": -16.55,
-    "true_peak_dbtp": -1.71,
-    "loudness_range_lu": 4.0
+    "integrated_lufs": -16.41,
+    "true_peak_dbtp": -1.68,
+    "loudness_range_lu": 4.1
   },
   "dialogue_editor_accepted": true,
   "storyboard_status": "model_plan",
   "issues": [
-    "Global-desk fallback delivered; a sourced on-location scene was not verified."
+    "Rufus feature outside its 100-220 word budget."
   ],
   "requires_listening": [
     "responsive chemistry",
@@ -31,15 +31,15 @@
     "basis": "transcript structure only; not a listening rating",
     "entertainment_rating": null,
     "rufus_feature": {
-      "mode": "global_desk",
-      "word_count": 112,
+      "mode": "on_location",
+      "word_count": 241,
       "handoff_and_return": true,
       "clearly_framed": true,
-      "duration_in_word_band": true,
+      "duration_in_word_band": false,
       "present": true
     },
     "issues": [
-      "Global-desk fallback delivered; a sourced on-location scene was not verified."
+      "Rufus feature outside its 100-220 word budget."
     ],
     "requires_editorial_review": [
       "distinct listener consequences across three stories",
@@ -49,46 +49,46 @@
       "self-contained exchange worth sharing"
     ]
   },
-  "performance_plan_turns": 179,
+  "performance_plan_turns": 171,
   "performance_direction_usage": {
-    "ALEX": {
-      "planned": 53,
-      "heuristic": 1,
-      "sponsor": 1
+    "RUFUS": {
+      "planned": 50,
+      "heuristic": 2,
+      "sponsor": 3
     },
     "JAMIE": {
-      "planned": 63,
-      "sponsor": 4
+      "planned": 52,
+      "sponsor": 1
     },
-    "RUFUS": {
-      "planned": 49,
+    "ALEX": {
+      "planned": 52,
+      "heuristic": 2,
       "sponsor": 2
     }
   },
   "jamie_performance": {
     "basis": "recorded provider calls; requested delivery is not verified emotion",
-    "calls": 67,
+    "calls": 53,
     "moods": {
-      "amused": 7,
-      "concern": 8,
+      "amused": 9,
+      "concern": 4,
       "concession": 3,
-      "curiosity": 5,
-      "delight": 5,
-      "dry_wit": 8,
-      "explainer": 10,
-      "neutral": 5,
-      "pressure": 2,
-      "pushback": 8,
-      "warmth": 6
+      "curiosity": 6,
+      "delight": 7,
+      "dry_wit": 1,
+      "explainer": 8,
+      "neutral": 8,
+      "pushback": 6,
+      "warmth": 1
     },
     "listened": false,
     "grok_expression_counts": {
       "build-intensity": 7,
-      "chuckle": 7,
+      "chuckle": 9,
       "decrease-intensity": 3,
-      "emphasis": 8,
-      "slow": 5,
-      "soft": 14
+      "emphasis": 6,
+      "slow": 6,
+      "soft": 5
     },
     "undirected_expressive_calls": 0
   }

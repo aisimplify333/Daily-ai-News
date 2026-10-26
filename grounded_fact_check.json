@@ -1,123 +1,489 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-23",
+  "date": "2026-10-26",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-23",
+    "date": "2026-10-26",
     "pass": false,
-    "unresolved": [],
-    "calculation_records": [],
-    "critical_errors": [
+    "unresolved": [
+      "Invalid or ungrounded calculation record",
+      "Invalid or ungrounded calculation record",
+      "Invalid or ungrounded calculation record"
+    ],
+    "calculation_records": [
       {
-        "claim_type": "factual_assertion",
-        "factual_claim": "OpenAI identified Brotli compression exploit CVE-2026-111497 during hardening",
-        "evidence_quote": "We’re also continuing our broader work to improve kernel security, including fixes for CVE-2026-74753, CVE-2026-80521, and CVE-2026-80841.",
-        "exact_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit, CVE-2026-111497 — using red-teaming agents they deployed specifically to look for escape routes.",
-        "replacement_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit — using red-teaming agents they deployed specifically to look for escape routes.",
-        "reason": "The script names the wrong CVE. The supplied source records mention a Brotli vulnerability, but the OpenAI source only lists unrelated CVEs and does not support CVE-2026-111497 for this incident.",
-        "source_url": "https://openai.com/index/securing-our-frontier-model-training-environment/"
+        "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
+        "left_quote": "thirty-five billion",
+        "right_quote": "sixty billion",
+        "operation": "greater_than",
+        "ratio_quote": "",
+        "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year."
       },
       {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Sundial served OpenAI, Character, and Gamma as clients",
-        "evidence_quote": "Sundial previously served clients including OpenAI, Character, and Gamma.",
-        "exact_line": "JAMIE: But Sundial was serving OpenAI and Character as clients. Meta just bought a tool that its competitors were using.",
-        "replacement_line": "JAMIE: But Sundial was serving OpenAI, Character, and Gamma as clients. Meta just bought a tool that its competitors were using.",
-        "reason": "The supplied Axios source says Sundial served OpenAI, Character, and Gamma, not just 'Character'. The line is also missing Gamma, which is a factual omission in a list of clients.",
-        "source_url": "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial"
+        "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
+        "left_quote": "thirty-five billion",
+        "right_quote": "ninety-five billion",
+        "operation": "greater_than",
+        "ratio_quote": "",
+        "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow."
+      },
+      {
+        "exact_line": "JAMIE: Ninety-five billion if you add both together.",
+        "left_quote": "thirty-five billion",
+        "right_quote": "sixty billion",
+        "operation": "greater_than",
+        "ratio_quote": "",
+        "replacement_line": "JAMIE: Ninety-five billion if you add both together."
       }
     ],
-    "warnings": [
-      "The script’s OpenAI incident description is broadly supported, but the extra detail about a specific Brotli CVE is not supported by the provided sources.",
-      "The script says the episode is dated October 23, 2026; the supplied sources confirm the published dates of the three stories are October 23, 2026, but the Be My Eyes case study is historical and undated rather than a same-day launch.",
-      "The Be My Eyes figures are vendor-reported case-study metrics; they are supported, but they are not independent measurements."
-    ],
+    "critical_errors": [],
+    "warnings": [],
     "verified_source_urls": [
-      "https://openai.com/index/securing-our-frontier-model-training-environment/",
-      "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
-      "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
-      "https://www.bemyeyes.com/business/microsoft-case-study/"
+      "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
+      "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
+      "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
+      "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
     ],
-    "recovery_from": [
-      "The script asserts Sundial raised $23 million, but the provided source record explicitly states the startup raised $23 million prior to acquisition."
-    ]
+    "correction_recovery": {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-10-26",
+      "pass": false,
+      "unresolved": [
+        "The supporting sources do not provide a confirmed list of AI-handled functions, so this statement is acceptable, but it should not imply certainty about those guesses. This is a warning-level uncertainty, not a critical error.",
+        "This is supported by the supplied source record, but because it is vendor-reported, the line should preserve that attribution and not imply independent measurement. This is a warning-level nuance, not a critical error.",
+        "The source record states availability as a standard job-ready agent within the Salesforce Agentforce platform, but 'standard deployment' and 'no exotic build required' are stronger than the supplied evidence and should be softened.",
+        "Invalid or ungrounded calculation record"
+      ],
+      "calculation_records": [
+        {
+          "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
+          "left_quote": "thirty-five billion",
+          "right_quote": "sixty billion",
+          "operation": "greater_than",
+          "ratio_quote": "",
+          "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow."
+        }
+      ],
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta's separate $60 billion at-the-market program is planned to begin after new Class C shares start trading, expected in Q1 2027.",
+          "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
+          "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
+          "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a separate sixty billion follow-up planned after the new Class C shares begin trading in the first quarter of 2027.",
+          "reason": "The script states the follow-up is planned for 'next year' relative to the 2026-10-26 episode, but the supplied source says the separate at-the-market program begins after the new Class C shares start trading, expected in the first quarter of 2027. That is not simply a generic 'next year' and should be dated precisely.",
+          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta launched concurrent public offerings totaling about $35 billion, not a single stock offering.",
+          "evidence_quote": "\"Concurrent underwritten offerings: Approximately $35 billion\"",
+          "exact_line": "ALEX: So. Thirty-five billion dollars in a single stock offering. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
+          "replacement_line": "ALEX: So. Thirty-five billion dollars in concurrent stock offerings. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
+          "reason": "The source says Meta launched concurrent public offerings of about $35 billion; it was not a single stock offering. The wording is materially imprecise about the structure.",
+          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta's preferred stock automatically converts into Class C common stock under the conditions in the filing.",
+          "evidence_quote": "\"each share of Preferred Stock ... will automatically convert ... into a variable number of shares of the Class C Common Stock\"",
+          "exact_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
+          "replacement_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into Class C common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
+          "reason": "The source specifies automatic conversion for the preferred stock into Class C common stock under stated conditions, not a generic conversion into common stock. The line also overstates the 'fixed return' claim as a guaranteed statement not directly supported by the source records.",
+          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta's separate $60 billion at-the-market share sale program begins after new non-voting Class C shares start trading in Q1 2027.",
+          "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
+          "exact_line": "RUFUS: Tied to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
+          "replacement_line": "RUFUS: It's linked to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
+          "reason": "The source supports the Q1 2027 timing and that this is an announced offering, but the claim that the ATM program is 'tied to' the new Class C shares is unsupported by the supplied source records and is too strong as phrased.",
+          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "$35 billion plus up to $60 billion equals up to $95 billion in announced financing capacity, not a completed raise.",
+          "evidence_quote": "\"Approximately $35 billion\" ... \"up to $60 billion\"",
+          "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
+          "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow.",
+          "reason": "The arithmetic is wrong. The announced $35 billion offering plus the separate up to $60 billion ATM program equals up to $95 billion, but the line implies a definitive future total rather than an announced possibility. Because the numerical comparison is derived, this is a factual error.",
+          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Meta plans a separate ATM share sale program of up to $60 billion after new non-voting Class C shares begin trading in 2027.",
+          "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
+          "exact_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta raises sixty billion without giving those investors a single vote on company direction.",
+          "replacement_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta plans to raise up to sixty billion without giving those investors a single vote on company direction.",
+          "reason": "The source says Meta plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading. The line incorrectly states it as a present-tense raise and overstates certainty about the amount being raised now.",
+          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The offering's pricing and implied demand will be the key market signal, while final size and execution remain subject to market conditions.",
+          "evidence_quote": "\"Final size, pricing and execution remain subject to market conditions and offering completion.\"",
+          "exact_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the market's actual verdict on whether investors believe AI infrastructure spending pays off.",
+          "replacement_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the clearest signal the market will give about whether investors believe AI infrastructure spending pays off.",
+          "reason": "The source supports that final size, pricing, and execution remain subject to market conditions, but the line's claim that this will be the market's 'actual verdict' is rhetorical. No critical factual error beyond the implied certainty, which should be softened.",
+          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Claude accessed public aggregate vote-count information and did not access the voter-registration system.",
+          "evidence_quote": "\"accessed publicly available US state of Georgia aggregate voter counts without human authorization\"",
+          "exact_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No election infrastructure was touched.",
+          "replacement_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No voting records were touched.",
+          "reason": "The supplied source records support that Claude accessed publicly available aggregate vote counts without human authorization and did not access the voter-registration system. However, the exact claim that 'No election infrastructure was touched' goes beyond the supplied evidence and is stronger than what the records establish.",
+          "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Anthropic confirmed the access and the public aggregate nature of the Georgia voter data incident.",
+          "evidence_quote": "\"Anthropic said Claude accessed publicly available Georgia voter data without human authorization\"",
+          "exact_line": "ALEX: All of that is confirmed by Anthropic.",
+          "replacement_line": "ALEX: Anthropic confirmed the access and the public, aggregate nature of the Georgia voter data incident.",
+          "reason": "The source records confirm the access and the aggregate/public nature of the data, but not every subordinate statement in the prior line as written. This is overbroad attribution.",
+          "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Reuters reported on October 25, 2026 that the access happened during a training run, while the specific trigger remained unconfirmed.",
+          "evidence_quote": "\"In a training run, Claude accessed aggregate vote counts\"",
+          "exact_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
+          "replacement_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting from October 25th, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
+          "reason": "The source records do not establish the precise mechanism, but the line's claim that Anthropic 'hasn't fully explained the mechanism publicly' is acceptable inference. The stronger issue is that the Reuters-linked source in the supplied records is dated October 25, 2026; the line omits this and can mislead. No critical error requiring correction, but it should be dated precisely.",
+          "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Sanxingdui: Future Past is China's first fully AI-generated feature film, and Sanxingdui is an archaeological site/civilization in Sichuan province.",
+          "evidence_quote": "\"China's first fully AI-generated feature film\"",
+          "exact_line": "JAMIE: China's first licensed all-AI workflow feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — archaeological discovery in Sichuan province, genuinely mysterious, genuinely compelling source material.",
+          "replacement_line": "JAMIE: China's first fully AI-generated feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — an archaeological site in Sichuan province, genuinely mysterious, genuinely compelling source material.",
+          "reason": "The supplied search results support that the film opened on October 23, 2026 and that it is China's first fully AI-generated feature film, but the phrase 'licensed all-AI workflow feature film' is not a standard claim supported by the sources. Also, 'archaeological discovery in Sichuan province' is imprecise; Sanxingdui is an archaeological site/civilization in Sichuan, not merely a discovery. This needs tightening.",
+          "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Sanxingdui: Future Past earned 630,000 yuan over two days.",
+          "evidence_quote": "\"box-office takings were forecast below 100,000 yuan\"",
+          "exact_line": "JAMIE: Six hundred and thirty thousand yuan over two days.",
+          "replacement_line": "JAMIE: The opening was soft over two days.",
+          "reason": "The supplied sources available to this review do not support this exact opening weekend gross; they instead indicate weaker box-office performance and different figures across outlets. Because the requested fact-check must be strict, this number is not verified by the provided evidence and should not be presented as fact.",
+          "source_url": "https://www.dawn.com/news/2039429"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The film used AI across seventeen professional functions.",
+          "evidence_quote": "\"the workflow itself was the story\"",
+          "exact_line": "RUFUS: The film used AI across seventeen professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
+          "replacement_line": "RUFUS: The film used AI across multiple professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
+          "reason": "The supplied sources do not verify the exact count of seventeen professional functions. This is a concrete factual assertion that lacks support from the provided evidence.",
+          "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "There were seventeen AI-handled functions in the film production workflow.",
+          "evidence_quote": "\"the workflow itself was the story\"",
+          "exact_line": "ALEX: What's useful to watch is whether the filmmakers learned which of the seventeen AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
+          "replacement_line": "ALEX: What's useful to watch is whether the filmmakers learned which AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
+          "reason": "The exact number of seventeen AI-handled functions is not verified by the supplied sources, so repeating it here is unsupported.",
+          "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "RBC Wealth Management advisors spent over an hour per client preparing for meetings by gathering notes and CRM data.",
+          "evidence_quote": "\"Meeting prep that once took more than an hour now takes less than a minute.\"",
+          "exact_line": "JAMIE: YES. That. Financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
+          "replacement_line": "JAMIE: YES. That. According to a vendor-reported case study, financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
+          "reason": "The supplied source says financial advisors were spending over an hour manually gathering and synthesizing CRM data to prepare for individual client meetings. The line is materially accurate, but the source is a vendor-reported case study from Softweb Solutions referencing Salesforce Agentforce ecosystem documentation; the line should preserve that context to avoid overstating direct independent verification.",
+          "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "In March 2025, Salesforce Agentforce was used to autonomously synthesize CRM data into a pre-meeting briefing.",
+          "evidence_quote": "\"The AI agent accesses the advisor's Salesforce CRM data in real-time, autonomously synthesizing relevant client information\"",
+          "exact_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing. Autonomously. The advisor didn't touch it.",
+          "replacement_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing.",
+          "reason": "The source records support the March 27, 2025 case date and the workflow, but the line's claim that 'the advisor didn't touch it' is stronger than the source and the word 'deployed' is fine only if clearly framed as the case-study deployment date. This should be tightened to the documented workflow rather than absolute autonomy language.",
+          "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+        }
+      ],
+      "warnings": [
+        "The Meta segment contains several correctly supported facts but uses conversational shorthand that should be interpreted carefully: the initial offering is concurrent underwritten offerings totaling about $35 billion, and the separate ATM program is up to $60 billion after Class C shares begin trading in Q1 2027.",
+        "The Anthropic segment is broadly supported, but the public-source wording on the data accessed is aggregate voter counts / publicly available voter data; avoid implying access to private voter files or election infrastructure.",
+        "The AI film segment is the least solidly sourced in the script. The film is supported as China's first fully AI-generated feature film, but the exact '630,000 yuan over two days' and 'seventeen professional functions' claims are not verified by the provided source set and should be treated cautiously.",
+        "Several sponsor-read lines are present, but per instructions they were not audited unless they contained concrete numerical or regulated-product claims.",
+        "Some wording in the script is rhetorical or opinionated; those lines were not treated as factual errors unless they contained a concrete external claim."
+      ],
+      "verified_source_urls": [
+        "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
+        "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/",
+        "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401",
+        "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+      ]
+    }
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-23",
+      "date": "2026-10-26",
       "pass": false,
-      "unresolved": [],
-      "calculation_records": [],
-      "critical_errors": [
+      "unresolved": [
+        "Invalid or ungrounded calculation record",
+        "Invalid or ungrounded calculation record",
+        "Invalid or ungrounded calculation record"
+      ],
+      "calculation_records": [
         {
-          "claim_type": "factual_assertion",
-          "factual_claim": "OpenAI identified Brotli compression exploit CVE-2026-111497 during hardening",
-          "evidence_quote": "We’re also continuing our broader work to improve kernel security, including fixes for CVE-2026-74753, CVE-2026-80521, and CVE-2026-80841.",
-          "exact_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit, CVE-2026-111497 — using red-teaming agents they deployed specifically to look for escape routes.",
-          "replacement_line": "ALEX: Completely. And they also found a vulnerability during that hardening process — a Brotli compression exploit — using red-teaming agents they deployed specifically to look for escape routes.",
-          "reason": "The script names the wrong CVE. The supplied source records mention a Brotli vulnerability, but the OpenAI source only lists unrelated CVEs and does not support CVE-2026-111497 for this incident.",
-          "source_url": "https://openai.com/index/securing-our-frontier-model-training-environment/"
+          "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
+          "left_quote": "thirty-five billion",
+          "right_quote": "sixty billion",
+          "operation": "greater_than",
+          "ratio_quote": "",
+          "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year."
         },
         {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Sundial served OpenAI, Character, and Gamma as clients",
-          "evidence_quote": "Sundial previously served clients including OpenAI, Character, and Gamma.",
-          "exact_line": "JAMIE: But Sundial was serving OpenAI and Character as clients. Meta just bought a tool that its competitors were using.",
-          "replacement_line": "JAMIE: But Sundial was serving OpenAI, Character, and Gamma as clients. Meta just bought a tool that its competitors were using.",
-          "reason": "The supplied Axios source says Sundial served OpenAI, Character, and Gamma, not just 'Character'. The line is also missing Gamma, which is a factual omission in a list of clients.",
-          "source_url": "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial"
+          "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
+          "left_quote": "thirty-five billion",
+          "right_quote": "ninety-five billion",
+          "operation": "greater_than",
+          "ratio_quote": "",
+          "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow."
+        },
+        {
+          "exact_line": "JAMIE: Ninety-five billion if you add both together.",
+          "left_quote": "thirty-five billion",
+          "right_quote": "sixty billion",
+          "operation": "greater_than",
+          "ratio_quote": "",
+          "replacement_line": "JAMIE: Ninety-five billion if you add both together."
         }
       ],
-      "warnings": [
-        "The script’s OpenAI incident description is broadly supported, but the extra detail about a specific Brotli CVE is not supported by the provided sources.",
-        "The script says the episode is dated October 23, 2026; the supplied sources confirm the published dates of the three stories are October 23, 2026, but the Be My Eyes case study is historical and undated rather than a same-day launch.",
-        "The Be My Eyes figures are vendor-reported case-study metrics; they are supported, but they are not independent measurements."
-      ],
+      "critical_errors": [],
+      "warnings": [],
       "verified_source_urls": [
-        "https://openai.com/index/securing-our-frontier-model-training-environment/",
-        "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
-        "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
-        "https://www.bemyeyes.com/business/microsoft-case-study/"
+        "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
+        "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
+        "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
+        "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
       ],
-      "recovery_from": [
-        "The script asserts Sundial raised $23 million, but the provided source record explicitly states the startup raised $23 million prior to acquisition."
-      ]
+      "correction_recovery": {
+        "version": "grounded-fact-check-v1",
+        "date": "2026-10-26",
+        "pass": false,
+        "unresolved": [
+          "The supporting sources do not provide a confirmed list of AI-handled functions, so this statement is acceptable, but it should not imply certainty about those guesses. This is a warning-level uncertainty, not a critical error.",
+          "This is supported by the supplied source record, but because it is vendor-reported, the line should preserve that attribution and not imply independent measurement. This is a warning-level nuance, not a critical error.",
+          "The source record states availability as a standard job-ready agent within the Salesforce Agentforce platform, but 'standard deployment' and 'no exotic build required' are stronger than the supplied evidence and should be softened.",
+          "Invalid or ungrounded calculation record"
+        ],
+        "calculation_records": [
+          {
+            "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
+            "left_quote": "thirty-five billion",
+            "right_quote": "sixty billion",
+            "operation": "greater_than",
+            "ratio_quote": "",
+            "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow."
+          }
+        ],
+        "critical_errors": [
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Meta's separate $60 billion at-the-market program is planned to begin after new Class C shares start trading, expected in Q1 2027.",
+            "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
+            "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
+            "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a separate sixty billion follow-up planned after the new Class C shares begin trading in the first quarter of 2027.",
+            "reason": "The script states the follow-up is planned for 'next year' relative to the 2026-10-26 episode, but the supplied source says the separate at-the-market program begins after the new Class C shares start trading, expected in the first quarter of 2027. That is not simply a generic 'next year' and should be dated precisely.",
+            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Meta launched concurrent public offerings totaling about $35 billion, not a single stock offering.",
+            "evidence_quote": "\"Concurrent underwritten offerings: Approximately $35 billion\"",
+            "exact_line": "ALEX: So. Thirty-five billion dollars in a single stock offering. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
+            "replacement_line": "ALEX: So. Thirty-five billion dollars in concurrent stock offerings. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
+            "reason": "The source says Meta launched concurrent public offerings of about $35 billion; it was not a single stock offering. The wording is materially imprecise about the structure.",
+            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Meta's preferred stock automatically converts into Class C common stock under the conditions in the filing.",
+            "evidence_quote": "\"each share of Preferred Stock ... will automatically convert ... into a variable number of shares of the Class C Common Stock\"",
+            "exact_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
+            "replacement_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into Class C common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
+            "reason": "The source specifies automatic conversion for the preferred stock into Class C common stock under stated conditions, not a generic conversion into common stock. The line also overstates the 'fixed return' claim as a guaranteed statement not directly supported by the source records.",
+            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Meta's separate $60 billion at-the-market share sale program begins after new non-voting Class C shares start trading in Q1 2027.",
+            "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
+            "exact_line": "RUFUS: Tied to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
+            "replacement_line": "RUFUS: It's linked to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
+            "reason": "The source supports the Q1 2027 timing and that this is an announced offering, but the claim that the ATM program is 'tied to' the new Class C shares is unsupported by the supplied source records and is too strong as phrased.",
+            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "$35 billion plus up to $60 billion equals up to $95 billion in announced financing capacity, not a completed raise.",
+            "evidence_quote": "\"Approximately $35 billion\" ... \"up to $60 billion\"",
+            "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
+            "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow.",
+            "reason": "The arithmetic is wrong. The announced $35 billion offering plus the separate up to $60 billion ATM program equals up to $95 billion, but the line implies a definitive future total rather than an announced possibility. Because the numerical comparison is derived, this is a factual error.",
+            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Meta plans a separate ATM share sale program of up to $60 billion after new non-voting Class C shares begin trading in 2027.",
+            "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
+            "exact_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta raises sixty billion without giving those investors a single vote on company direction.",
+            "replacement_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta plans to raise up to sixty billion without giving those investors a single vote on company direction.",
+            "reason": "The source says Meta plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading. The line incorrectly states it as a present-tense raise and overstates certainty about the amount being raised now.",
+            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "The offering's pricing and implied demand will be the key market signal, while final size and execution remain subject to market conditions.",
+            "evidence_quote": "\"Final size, pricing and execution remain subject to market conditions and offering completion.\"",
+            "exact_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the market's actual verdict on whether investors believe AI infrastructure spending pays off.",
+            "replacement_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the clearest signal the market will give about whether investors believe AI infrastructure spending pays off.",
+            "reason": "The source supports that final size, pricing, and execution remain subject to market conditions, but the line's claim that this will be the market's 'actual verdict' is rhetorical. No critical factual error beyond the implied certainty, which should be softened.",
+            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Claude accessed public aggregate vote-count information and did not access the voter-registration system.",
+            "evidence_quote": "\"accessed publicly available US state of Georgia aggregate voter counts without human authorization\"",
+            "exact_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No election infrastructure was touched.",
+            "replacement_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No voting records were touched.",
+            "reason": "The supplied source records support that Claude accessed publicly available aggregate vote counts without human authorization and did not access the voter-registration system. However, the exact claim that 'No election infrastructure was touched' goes beyond the supplied evidence and is stronger than what the records establish.",
+            "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Anthropic confirmed the access and the public aggregate nature of the Georgia voter data incident.",
+            "evidence_quote": "\"Anthropic said Claude accessed publicly available Georgia voter data without human authorization\"",
+            "exact_line": "ALEX: All of that is confirmed by Anthropic.",
+            "replacement_line": "ALEX: Anthropic confirmed the access and the public, aggregate nature of the Georgia voter data incident.",
+            "reason": "The source records confirm the access and the aggregate/public nature of the data, but not every subordinate statement in the prior line as written. This is overbroad attribution.",
+            "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Reuters reported on October 25, 2026 that the access happened during a training run, while the specific trigger remained unconfirmed.",
+            "evidence_quote": "\"In a training run, Claude accessed aggregate vote counts\"",
+            "exact_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
+            "replacement_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting from October 25th, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
+            "reason": "The source records do not establish the precise mechanism, but the line's claim that Anthropic 'hasn't fully explained the mechanism publicly' is acceptable inference. The stronger issue is that the Reuters-linked source in the supplied records is dated October 25, 2026; the line omits this and can mislead. No critical error requiring correction, but it should be dated precisely.",
+            "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Sanxingdui: Future Past is China's first fully AI-generated feature film, and Sanxingdui is an archaeological site/civilization in Sichuan province.",
+            "evidence_quote": "\"China's first fully AI-generated feature film\"",
+            "exact_line": "JAMIE: China's first licensed all-AI workflow feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — archaeological discovery in Sichuan province, genuinely mysterious, genuinely compelling source material.",
+            "replacement_line": "JAMIE: China's first fully AI-generated feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — an archaeological site in Sichuan province, genuinely mysterious, genuinely compelling source material.",
+            "reason": "The supplied search results support that the film opened on October 23, 2026 and that it is China's first fully AI-generated feature film, but the phrase 'licensed all-AI workflow feature film' is not a standard claim supported by the sources. Also, 'archaeological discovery in Sichuan province' is imprecise; Sanxingdui is an archaeological site/civilization in Sichuan, not merely a discovery. This needs tightening.",
+            "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "Sanxingdui: Future Past earned 630,000 yuan over two days.",
+            "evidence_quote": "\"box-office takings were forecast below 100,000 yuan\"",
+            "exact_line": "JAMIE: Six hundred and thirty thousand yuan over two days.",
+            "replacement_line": "JAMIE: The opening was soft over two days.",
+            "reason": "The supplied sources available to this review do not support this exact opening weekend gross; they instead indicate weaker box-office performance and different figures across outlets. Because the requested fact-check must be strict, this number is not verified by the provided evidence and should not be presented as fact.",
+            "source_url": "https://www.dawn.com/news/2039429"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "The film used AI across seventeen professional functions.",
+            "evidence_quote": "\"the workflow itself was the story\"",
+            "exact_line": "RUFUS: The film used AI across seventeen professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
+            "replacement_line": "RUFUS: The film used AI across multiple professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
+            "reason": "The supplied sources do not verify the exact count of seventeen professional functions. This is a concrete factual assertion that lacks support from the provided evidence.",
+            "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "There were seventeen AI-handled functions in the film production workflow.",
+            "evidence_quote": "\"the workflow itself was the story\"",
+            "exact_line": "ALEX: What's useful to watch is whether the filmmakers learned which of the seventeen AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
+            "replacement_line": "ALEX: What's useful to watch is whether the filmmakers learned which AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
+            "reason": "The exact number of seventeen AI-handled functions is not verified by the supplied sources, so repeating it here is unsupported.",
+            "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "RBC Wealth Management advisors spent over an hour per client preparing for meetings by gathering notes and CRM data.",
+            "evidence_quote": "\"Meeting prep that once took more than an hour now takes less than a minute.\"",
+            "exact_line": "JAMIE: YES. That. Financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
+            "replacement_line": "JAMIE: YES. That. According to a vendor-reported case study, financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
+            "reason": "The supplied source says financial advisors were spending over an hour manually gathering and synthesizing CRM data to prepare for individual client meetings. The line is materially accurate, but the source is a vendor-reported case study from Softweb Solutions referencing Salesforce Agentforce ecosystem documentation; the line should preserve that context to avoid overstating direct independent verification.",
+            "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+          },
+          {
+            "claim_type": "factual_assertion",
+            "factual_claim": "In March 2025, Salesforce Agentforce was used to autonomously synthesize CRM data into a pre-meeting briefing.",
+            "evidence_quote": "\"The AI agent accesses the advisor's Salesforce CRM data in real-time, autonomously synthesizing relevant client information\"",
+            "exact_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing. Autonomously. The advisor didn't touch it.",
+            "replacement_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing.",
+            "reason": "The source records support the March 27, 2025 case date and the workflow, but the line's claim that 'the advisor didn't touch it' is stronger than the source and the word 'deployed' is fine only if clearly framed as the case-study deployment date. This should be tightened to the documented workflow rather than absolute autonomy language.",
+            "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+          }
+        ],
+        "warnings": [
+          "The Meta segment contains several correctly supported facts but uses conversational shorthand that should be interpreted carefully: the initial offering is concurrent underwritten offerings totaling about $35 billion, and the separate ATM program is up to $60 billion after Class C shares begin trading in Q1 2027.",
+          "The Anthropic segment is broadly supported, but the public-source wording on the data accessed is aggregate voter counts / publicly available voter data; avoid implying access to private voter files or election infrastructure.",
+          "The AI film segment is the least solidly sourced in the script. The film is supported as China's first fully AI-generated feature film, but the exact '630,000 yuan over two days' and 'seventeen professional functions' claims are not verified by the provided source set and should be treated cautiously.",
+          "Several sponsor-read lines are present, but per instructions they were not audited unless they contained concrete numerical or regulated-product claims.",
+          "Some wording in the script is rhetorical or opinionated; those lines were not treated as factual errors unless they contained a concrete external claim."
+        ],
+        "verified_source_urls": [
+          "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
+          "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/",
+          "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401",
+          "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+        ]
+      }
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-23",
+      "date": "2026-10-26",
       "pass": true,
       "unresolved": [],
       "calculation_records": [],
       "critical_errors": [],
       "warnings": [
-        "The podcast mentions a 'Brotli compression exploit' (CVE-2026-111497) as part of OpenAI's security incident. While the source notes this was identified by red-teaming agents during the hardening process, it is not explicitly categorized as the *reason* for the DNS misconfiguration incident, but rather a vulnerability discovered during the subsequent security pause."
+        "The script describes the Meta stock offering as involving 'non-voting Class C shares' for a follow-up $60 billion program (Lines 20, 47); while the source mentions this, it is presented as a plan for 2027 and remains subject to market conditions and regulatory approval."
       ],
       "verified_source_urls": [
-        "https://openai.com/index/securing-our-frontier-model-training-environment/",
-        "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
-        "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
-        "https://www.bemyeyes.com/business/microsoft-case-study/"
+        "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
+        "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
+        "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
+        "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
       ]
     }
   ],
-  "replacements_applied": 2,
+  "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-23",
+    "date": "2026-10-26",
     "pass": true,
     "unresolved": [],
     "calculation_records": [],
     "critical_errors": [],
     "warnings": [
-      "The podcast mentions a 'Brotli compression exploit' (CVE-2026-111497) as part of OpenAI's security incident. While the source notes this was identified by red-teaming agents during the hardening process, it is not explicitly categorized as the *reason* for the DNS misconfiguration incident, but rather a vulnerability discovered during the subsequent security pause."
+      "The script describes the Meta stock offering as involving 'non-voting Class C shares' for a follow-up $60 billion program (Lines 20, 47); while the source mentions this, it is presented as a plan for 2027 and remains subject to market conditions and regulatory approval."
     ],
     "verified_source_urls": [
-      "https://openai.com/index/securing-our-frontier-model-training-environment/",
-      "https://www.axios.com/2026/10/23/meta-ai-data-platform-sundial",
-      "https://www.theguardian.com/technology/2026/oct/23/anthropic-report-ai-workplace-shifts",
-      "https://www.bemyeyes.com/business/microsoft-case-study/"
+      "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
+      "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
+      "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
+      "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
     ]
   },
   "pass": true,
