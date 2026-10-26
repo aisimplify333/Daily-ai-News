@@ -243,6 +243,24 @@ class RecoveryTests(unittest.TestCase):
         self.assertFalse(news._same_news_event(
             dict(headline="Meta launches Muse"), dict(headline="Meta announces Llama")))
 
+    def test_same_financing_event_with_different_keys_is_duplicate(self):
+        self.assertTrue(news._same_news_event(
+            dict(
+                headline="Meta launches $35 billion stock offering to fund AI expansion",
+                event_key="meta-ai-capital-raise-2026-10-26",
+            ),
+            dict(
+                headline="Meta Launches $35 Billion Stock Offering to Finance AI Expansion",
+                event_key="meta-stock-offering-2026-10-26",
+            ),
+        ))
+
+    def test_same_company_different_financing_event_remains_distinct(self):
+        self.assertFalse(news._same_news_event(
+            dict(headline="Meta launches $35 billion stock offering to fund AI expansion"),
+            dict(headline="Meta opens new AI research lab in London"),
+        ))
+
 
 if __name__ == "__main__":
     unittest.main()
