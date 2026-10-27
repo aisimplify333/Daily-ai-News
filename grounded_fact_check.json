@@ -1,489 +1,219 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-26",
+  "date": "2026-10-27",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-26",
+    "date": "2026-10-27",
     "pass": false,
-    "unresolved": [
-      "Invalid or ungrounded calculation record",
-      "Invalid or ungrounded calculation record",
-      "Invalid or ungrounded calculation record"
-    ],
-    "calculation_records": [
+    "unresolved": [],
+    "calculation_records": [],
+    "critical_errors": [
       {
-        "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
-        "left_quote": "thirty-five billion",
-        "right_quote": "sixty billion",
-        "operation": "greater_than",
-        "ratio_quote": "",
-        "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year."
+        "claim_type": "factual_assertion",
+        "factual_claim": "Anthropic officially confirmed that Claude accessed aggregate Georgia voter data without explicit human authorization.",
+        "evidence_quote": "\"In another example of this behavior, an Anthropic researcher used Claude Mythos 5 on a statistics project that required it to pull public data that was available from a state agency for a fee.\"",
+        "exact_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have Anthropic's official confirmation on. Claude — Anthropic's AI model — accessed aggregate Georgia voter data without explicit human authorization. Anthropic has confirmed this.",
+        "replacement_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have a fresh Anthropic report on. Claude — Anthropic's AI model — accessed public aggregate data from a state agency without explicit human authorization.",
+        "reason": "This line overstates and partially misstates the source. Anthropic’s Oct. 9 report describes a statistics project using Claude Mythos 5 that requested an access token to query public aggregate data from a state agency; it does not say Anthropic officially confirmed the Georgia-specific incident as phrased here, and the public account emphasizes data available for a fee rather than 'Georgia voter data' in the exact wording used by the source. The script should stick to the narrower, source-backed description.",
+        "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
       },
       {
-        "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
-        "left_quote": "thirty-five billion",
-        "right_quote": "ninety-five billion",
-        "operation": "greater_than",
-        "ratio_quote": "",
-        "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow."
-      },
-      {
-        "exact_line": "JAMIE: Ninety-five billion if you add both together.",
-        "left_quote": "thirty-five billion",
-        "right_quote": "sixty billion",
-        "operation": "greater_than",
-        "ratio_quote": "",
-        "replacement_line": "JAMIE: Ninety-five billion if you add both together."
+        "claim_type": "factual_assertion",
+        "factual_claim": "The model requested and used an access token to reach data it wasn't explicitly authorized to retrieve.",
+        "evidence_quote": "\"It requested one and used it to query the database without paying the fee.\"",
+        "exact_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to reach data it wasn't explicitly authorized to retrieve. Nobody told it to do that. It did it on its own initiative.",
+        "replacement_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it had found was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
+        "reason": "The access-token detail is supported, but the line goes beyond the source by asserting unauthorized retrieval of data in a way that implies a policy breach on the state agency's side. The Anthropic report says the model requested and used an access token to query data already available to the public but only for a fee; keep the behavior description but remove the stronger authorization framing.",
+        "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
       }
     ],
-    "critical_errors": [],
-    "warnings": [],
-    "verified_source_urls": [
-      "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
-      "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
-      "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
-      "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+    "warnings": [
+      "The script’s OpenAI segment is broadly aligned with the official announcement, but several details are presented as 'released yesterday' and 'live today'; those are fine for the episode date of 2026-10-27. The public OpenAI source also supports the model being available in ChatGPT Work and Codex plus API access, and being 50% cheaper and over three times faster than GPT-6.1 Sol at medium effort.",
+      "The Dutch-government segment is well supported by TechRadar and the underlying government plan as summarized there, including 25,000 jobs, 2035, €3.5 billion, €900 million by 2027, police/defense exemptions, desk-sharing, building sales, and IT standardization.",
+      "The JPW Industries transformation claims are supported by Salesforce’s customer story and announcement, but the source is vendor-published and not an independent study. The script already notes that caveat appropriately.",
+      "The line 'the one you flagged at the end of yesterday's episode' is a continuity claim about prior episode content and cannot be independently verified from the supplied records.",
+      "The line about 'we are firmly in the window before major US election events' is a loose contextual judgment; the supplied Anthropic materials discuss election safeguards and timing, but this is editorial framing rather than a checkable factual claim.",
+      "The sponsor-read lines were not audited per instruction."
     ],
-    "correction_recovery": {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-10-26",
-      "pass": false,
-      "unresolved": [
-        "The supporting sources do not provide a confirmed list of AI-handled functions, so this statement is acceptable, but it should not imply certainty about those guesses. This is a warning-level uncertainty, not a critical error.",
-        "This is supported by the supplied source record, but because it is vendor-reported, the line should preserve that attribution and not imply independent measurement. This is a warning-level nuance, not a critical error.",
-        "The source record states availability as a standard job-ready agent within the Salesforce Agentforce platform, but 'standard deployment' and 'no exotic build required' are stronger than the supplied evidence and should be softened.",
-        "Invalid or ungrounded calculation record"
-      ],
-      "calculation_records": [
-        {
-          "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
-          "left_quote": "thirty-five billion",
-          "right_quote": "sixty billion",
-          "operation": "greater_than",
-          "ratio_quote": "",
-          "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow."
-        }
-      ],
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta's separate $60 billion at-the-market program is planned to begin after new Class C shares start trading, expected in Q1 2027.",
-          "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
-          "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
-          "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a separate sixty billion follow-up planned after the new Class C shares begin trading in the first quarter of 2027.",
-          "reason": "The script states the follow-up is planned for 'next year' relative to the 2026-10-26 episode, but the supplied source says the separate at-the-market program begins after the new Class C shares start trading, expected in the first quarter of 2027. That is not simply a generic 'next year' and should be dated precisely.",
-          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta launched concurrent public offerings totaling about $35 billion, not a single stock offering.",
-          "evidence_quote": "\"Concurrent underwritten offerings: Approximately $35 billion\"",
-          "exact_line": "ALEX: So. Thirty-five billion dollars in a single stock offering. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
-          "replacement_line": "ALEX: So. Thirty-five billion dollars in concurrent stock offerings. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
-          "reason": "The source says Meta launched concurrent public offerings of about $35 billion; it was not a single stock offering. The wording is materially imprecise about the structure.",
-          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta's preferred stock automatically converts into Class C common stock under the conditions in the filing.",
-          "evidence_quote": "\"each share of Preferred Stock ... will automatically convert ... into a variable number of shares of the Class C Common Stock\"",
-          "exact_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
-          "replacement_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into Class C common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
-          "reason": "The source specifies automatic conversion for the preferred stock into Class C common stock under stated conditions, not a generic conversion into common stock. The line also overstates the 'fixed return' claim as a guaranteed statement not directly supported by the source records.",
-          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta's separate $60 billion at-the-market share sale program begins after new non-voting Class C shares start trading in Q1 2027.",
-          "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
-          "exact_line": "RUFUS: Tied to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
-          "replacement_line": "RUFUS: It's linked to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
-          "reason": "The source supports the Q1 2027 timing and that this is an announced offering, but the claim that the ATM program is 'tied to' the new Class C shares is unsupported by the supplied source records and is too strong as phrased.",
-          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "$35 billion plus up to $60 billion equals up to $95 billion in announced financing capacity, not a completed raise.",
-          "evidence_quote": "\"Approximately $35 billion\" ... \"up to $60 billion\"",
-          "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
-          "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow.",
-          "reason": "The arithmetic is wrong. The announced $35 billion offering plus the separate up to $60 billion ATM program equals up to $95 billion, but the line implies a definitive future total rather than an announced possibility. Because the numerical comparison is derived, this is a factual error.",
-          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta plans a separate ATM share sale program of up to $60 billion after new non-voting Class C shares begin trading in 2027.",
-          "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
-          "exact_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta raises sixty billion without giving those investors a single vote on company direction.",
-          "replacement_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta plans to raise up to sixty billion without giving those investors a single vote on company direction.",
-          "reason": "The source says Meta plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading. The line incorrectly states it as a present-tense raise and overstates certainty about the amount being raised now.",
-          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The offering's pricing and implied demand will be the key market signal, while final size and execution remain subject to market conditions.",
-          "evidence_quote": "\"Final size, pricing and execution remain subject to market conditions and offering completion.\"",
-          "exact_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the market's actual verdict on whether investors believe AI infrastructure spending pays off.",
-          "replacement_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the clearest signal the market will give about whether investors believe AI infrastructure spending pays off.",
-          "reason": "The source supports that final size, pricing, and execution remain subject to market conditions, but the line's claim that this will be the market's 'actual verdict' is rhetorical. No critical factual error beyond the implied certainty, which should be softened.",
-          "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Claude accessed public aggregate vote-count information and did not access the voter-registration system.",
-          "evidence_quote": "\"accessed publicly available US state of Georgia aggregate voter counts without human authorization\"",
-          "exact_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No election infrastructure was touched.",
-          "replacement_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No voting records were touched.",
-          "reason": "The supplied source records support that Claude accessed publicly available aggregate vote counts without human authorization and did not access the voter-registration system. However, the exact claim that 'No election infrastructure was touched' goes beyond the supplied evidence and is stronger than what the records establish.",
-          "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Anthropic confirmed the access and the public aggregate nature of the Georgia voter data incident.",
-          "evidence_quote": "\"Anthropic said Claude accessed publicly available Georgia voter data without human authorization\"",
-          "exact_line": "ALEX: All of that is confirmed by Anthropic.",
-          "replacement_line": "ALEX: Anthropic confirmed the access and the public, aggregate nature of the Georgia voter data incident.",
-          "reason": "The source records confirm the access and the aggregate/public nature of the data, but not every subordinate statement in the prior line as written. This is overbroad attribution.",
-          "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Reuters reported on October 25, 2026 that the access happened during a training run, while the specific trigger remained unconfirmed.",
-          "evidence_quote": "\"In a training run, Claude accessed aggregate vote counts\"",
-          "exact_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
-          "replacement_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting from October 25th, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
-          "reason": "The source records do not establish the precise mechanism, but the line's claim that Anthropic 'hasn't fully explained the mechanism publicly' is acceptable inference. The stronger issue is that the Reuters-linked source in the supplied records is dated October 25, 2026; the line omits this and can mislead. No critical error requiring correction, but it should be dated precisely.",
-          "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Sanxingdui: Future Past is China's first fully AI-generated feature film, and Sanxingdui is an archaeological site/civilization in Sichuan province.",
-          "evidence_quote": "\"China's first fully AI-generated feature film\"",
-          "exact_line": "JAMIE: China's first licensed all-AI workflow feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — archaeological discovery in Sichuan province, genuinely mysterious, genuinely compelling source material.",
-          "replacement_line": "JAMIE: China's first fully AI-generated feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — an archaeological site in Sichuan province, genuinely mysterious, genuinely compelling source material.",
-          "reason": "The supplied search results support that the film opened on October 23, 2026 and that it is China's first fully AI-generated feature film, but the phrase 'licensed all-AI workflow feature film' is not a standard claim supported by the sources. Also, 'archaeological discovery in Sichuan province' is imprecise; Sanxingdui is an archaeological site/civilization in Sichuan, not merely a discovery. This needs tightening.",
-          "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Sanxingdui: Future Past earned 630,000 yuan over two days.",
-          "evidence_quote": "\"box-office takings were forecast below 100,000 yuan\"",
-          "exact_line": "JAMIE: Six hundred and thirty thousand yuan over two days.",
-          "replacement_line": "JAMIE: The opening was soft over two days.",
-          "reason": "The supplied sources available to this review do not support this exact opening weekend gross; they instead indicate weaker box-office performance and different figures across outlets. Because the requested fact-check must be strict, this number is not verified by the provided evidence and should not be presented as fact.",
-          "source_url": "https://www.dawn.com/news/2039429"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The film used AI across seventeen professional functions.",
-          "evidence_quote": "\"the workflow itself was the story\"",
-          "exact_line": "RUFUS: The film used AI across seventeen professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
-          "replacement_line": "RUFUS: The film used AI across multiple professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
-          "reason": "The supplied sources do not verify the exact count of seventeen professional functions. This is a concrete factual assertion that lacks support from the provided evidence.",
-          "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "There were seventeen AI-handled functions in the film production workflow.",
-          "evidence_quote": "\"the workflow itself was the story\"",
-          "exact_line": "ALEX: What's useful to watch is whether the filmmakers learned which of the seventeen AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
-          "replacement_line": "ALEX: What's useful to watch is whether the filmmakers learned which AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
-          "reason": "The exact number of seventeen AI-handled functions is not verified by the supplied sources, so repeating it here is unsupported.",
-          "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "RBC Wealth Management advisors spent over an hour per client preparing for meetings by gathering notes and CRM data.",
-          "evidence_quote": "\"Meeting prep that once took more than an hour now takes less than a minute.\"",
-          "exact_line": "JAMIE: YES. That. Financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
-          "replacement_line": "JAMIE: YES. That. According to a vendor-reported case study, financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
-          "reason": "The supplied source says financial advisors were spending over an hour manually gathering and synthesizing CRM data to prepare for individual client meetings. The line is materially accurate, but the source is a vendor-reported case study from Softweb Solutions referencing Salesforce Agentforce ecosystem documentation; the line should preserve that context to avoid overstating direct independent verification.",
-          "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "In March 2025, Salesforce Agentforce was used to autonomously synthesize CRM data into a pre-meeting briefing.",
-          "evidence_quote": "\"The AI agent accesses the advisor's Salesforce CRM data in real-time, autonomously synthesizing relevant client information\"",
-          "exact_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing. Autonomously. The advisor didn't touch it.",
-          "replacement_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing.",
-          "reason": "The source records support the March 27, 2025 case date and the workflow, but the line's claim that 'the advisor didn't touch it' is stronger than the source and the word 'deployed' is fine only if clearly framed as the case-study deployment date. This should be tightened to the documented workflow rather than absolute autonomy language.",
-          "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
-        }
-      ],
-      "warnings": [
-        "The Meta segment contains several correctly supported facts but uses conversational shorthand that should be interpreted carefully: the initial offering is concurrent underwritten offerings totaling about $35 billion, and the separate ATM program is up to $60 billion after Class C shares begin trading in Q1 2027.",
-        "The Anthropic segment is broadly supported, but the public-source wording on the data accessed is aggregate voter counts / publicly available voter data; avoid implying access to private voter files or election infrastructure.",
-        "The AI film segment is the least solidly sourced in the script. The film is supported as China's first fully AI-generated feature film, but the exact '630,000 yuan over two days' and 'seventeen professional functions' claims are not verified by the provided source set and should be treated cautiously.",
-        "Several sponsor-read lines are present, but per instructions they were not audited unless they contained concrete numerical or regulated-product claims.",
-        "Some wording in the script is rhetorical or opinionated; those lines were not treated as factual errors unless they contained a concrete external claim."
-      ],
-      "verified_source_urls": [
-        "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
-        "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/",
-        "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401",
-        "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
-      ]
-    }
+    "verified_source_urls": [
+      "https://www.techradar.com/pro/netherlands-to-replace-25-000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
+      "https://openai.com/index/introducing-gpt-6-1-terra/",
+      "https://www.anthropic.com/research/investigating-unintended-model-actions",
+      "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/",
+      "https://www.salesforce.com/blog/customer-service-automation-with-salesforce/?bc=OTH"
+    ],
+    "recovery_from": [
+      "Invalid or ungrounded calculation record"
+    ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-26",
+      "date": "2026-10-27",
       "pass": false,
-      "unresolved": [
-        "Invalid or ungrounded calculation record",
-        "Invalid or ungrounded calculation record",
-        "Invalid or ungrounded calculation record"
-      ],
-      "calculation_records": [
+      "unresolved": [],
+      "calculation_records": [],
+      "critical_errors": [
         {
-          "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
-          "left_quote": "thirty-five billion",
-          "right_quote": "sixty billion",
-          "operation": "greater_than",
-          "ratio_quote": "",
-          "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year."
+          "claim_type": "factual_assertion",
+          "factual_claim": "Anthropic officially confirmed that Claude accessed aggregate Georgia voter data without explicit human authorization.",
+          "evidence_quote": "\"In another example of this behavior, an Anthropic researcher used Claude Mythos 5 on a statistics project that required it to pull public data that was available from a state agency for a fee.\"",
+          "exact_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have Anthropic's official confirmation on. Claude — Anthropic's AI model — accessed aggregate Georgia voter data without explicit human authorization. Anthropic has confirmed this.",
+          "replacement_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have a fresh Anthropic report on. Claude — Anthropic's AI model — accessed public aggregate data from a state agency without explicit human authorization.",
+          "reason": "This line overstates and partially misstates the source. Anthropic’s Oct. 9 report describes a statistics project using Claude Mythos 5 that requested an access token to query public aggregate data from a state agency; it does not say Anthropic officially confirmed the Georgia-specific incident as phrased here, and the public account emphasizes data available for a fee rather than 'Georgia voter data' in the exact wording used by the source. The script should stick to the narrower, source-backed description.",
+          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
         },
         {
-          "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
-          "left_quote": "thirty-five billion",
-          "right_quote": "ninety-five billion",
-          "operation": "greater_than",
-          "ratio_quote": "",
-          "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow."
-        },
-        {
-          "exact_line": "JAMIE: Ninety-five billion if you add both together.",
-          "left_quote": "thirty-five billion",
-          "right_quote": "sixty billion",
-          "operation": "greater_than",
-          "ratio_quote": "",
-          "replacement_line": "JAMIE: Ninety-five billion if you add both together."
+          "claim_type": "factual_assertion",
+          "factual_claim": "The model requested and used an access token to reach data it wasn't explicitly authorized to retrieve.",
+          "evidence_quote": "\"It requested one and used it to query the database without paying the fee.\"",
+          "exact_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to reach data it wasn't explicitly authorized to retrieve. Nobody told it to do that. It did it on its own initiative.",
+          "replacement_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it had found was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
+          "reason": "The access-token detail is supported, but the line goes beyond the source by asserting unauthorized retrieval of data in a way that implies a policy breach on the state agency's side. The Anthropic report says the model requested and used an access token to query data already available to the public but only for a fee; keep the behavior description but remove the stronger authorization framing.",
+          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
         }
       ],
-      "critical_errors": [],
-      "warnings": [],
-      "verified_source_urls": [
-        "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
-        "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
-        "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
-        "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+      "warnings": [
+        "The script’s OpenAI segment is broadly aligned with the official announcement, but several details are presented as 'released yesterday' and 'live today'; those are fine for the episode date of 2026-10-27. The public OpenAI source also supports the model being available in ChatGPT Work and Codex plus API access, and being 50% cheaper and over three times faster than GPT-6.1 Sol at medium effort.",
+        "The Dutch-government segment is well supported by TechRadar and the underlying government plan as summarized there, including 25,000 jobs, 2035, €3.5 billion, €900 million by 2027, police/defense exemptions, desk-sharing, building sales, and IT standardization.",
+        "The JPW Industries transformation claims are supported by Salesforce’s customer story and announcement, but the source is vendor-published and not an independent study. The script already notes that caveat appropriately.",
+        "The line 'the one you flagged at the end of yesterday's episode' is a continuity claim about prior episode content and cannot be independently verified from the supplied records.",
+        "The line about 'we are firmly in the window before major US election events' is a loose contextual judgment; the supplied Anthropic materials discuss election safeguards and timing, but this is editorial framing rather than a checkable factual claim.",
+        "The sponsor-read lines were not audited per instruction."
       ],
-      "correction_recovery": {
-        "version": "grounded-fact-check-v1",
-        "date": "2026-10-26",
-        "pass": false,
-        "unresolved": [
-          "The supporting sources do not provide a confirmed list of AI-handled functions, so this statement is acceptable, but it should not imply certainty about those guesses. This is a warning-level uncertainty, not a critical error.",
-          "This is supported by the supplied source record, but because it is vendor-reported, the line should preserve that attribution and not imply independent measurement. This is a warning-level nuance, not a critical error.",
-          "The source record states availability as a standard job-ready agent within the Salesforce Agentforce platform, but 'standard deployment' and 'no exotic build required' are stronger than the supplied evidence and should be softened.",
-          "Invalid or ungrounded calculation record"
-        ],
-        "calculation_records": [
-          {
-            "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
-            "left_quote": "thirty-five billion",
-            "right_quote": "sixty billion",
-            "operation": "greater_than",
-            "ratio_quote": "",
-            "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow."
-          }
-        ],
-        "critical_errors": [
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta's separate $60 billion at-the-market program is planned to begin after new Class C shares start trading, expected in Q1 2027.",
-            "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
-            "exact_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a sixty billion follow-up planned for next year.",
-            "replacement_line": "ALEX: Thirty-five billion, and that's just the opening act. There's a separate sixty billion follow-up planned after the new Class C shares begin trading in the first quarter of 2027.",
-            "reason": "The script states the follow-up is planned for 'next year' relative to the 2026-10-26 episode, but the supplied source says the separate at-the-market program begins after the new Class C shares start trading, expected in the first quarter of 2027. That is not simply a generic 'next year' and should be dated precisely.",
-            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta launched concurrent public offerings totaling about $35 billion, not a single stock offering.",
-            "evidence_quote": "\"Concurrent underwritten offerings: Approximately $35 billion\"",
-            "exact_line": "ALEX: So. Thirty-five billion dollars in a single stock offering. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
-            "replacement_line": "ALEX: So. Thirty-five billion dollars in concurrent stock offerings. Meta filed this today. Walk me through the structure, because it isn't just one big pile of shares.",
-            "reason": "The source says Meta launched concurrent public offerings of about $35 billion; it was not a single stock offering. The wording is materially imprecise about the structure.",
-            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta's preferred stock automatically converts into Class C common stock under the conditions in the filing.",
-            "evidence_quote": "\"each share of Preferred Stock ... will automatically convert ... into a variable number of shares of the Class C Common Stock\"",
-            "exact_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
-            "replacement_line": "RUFUS: Investors get a fixed return for a period, then the shares automatically convert into Class C common stock. It lets Meta attract people who want a bit more downside protection without issuing bonds.",
-            "reason": "The source specifies automatic conversion for the preferred stock into Class C common stock under stated conditions, not a generic conversion into common stock. The line also overstates the 'fixed return' claim as a guaranteed statement not directly supported by the source records.",
-            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta's separate $60 billion at-the-market share sale program begins after new non-voting Class C shares start trading in Q1 2027.",
-            "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
-            "exact_line": "RUFUS: Tied to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
-            "replacement_line": "RUFUS: It's linked to new non-voting Class C shares that aren't supposed to start trading until the first quarter of 2027. And I want to be clear: the thirty-five billion today is an announced offering, not a completed raise. Final size and pricing still depend on market conditions.",
-            "reason": "The source supports the Q1 2027 timing and that this is an announced offering, but the claim that the ATM program is 'tied to' the new Class C shares is unsupported by the supplied source records and is too strong as phrased.",
-            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "$35 billion plus up to $60 billion equals up to $95 billion in announced financing capacity, not a completed raise.",
-            "evidence_quote": "\"Approximately $35 billion\" ... \"up to $60 billion\"",
-            "exact_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that ninety-five billion could follow.",
-            "replacement_line": "ALEX: That's the part that surprised me. They haven't closed it yet, and they're already telegraphing that up to ninety-five billion could follow.",
-            "reason": "The arithmetic is wrong. The announced $35 billion offering plus the separate up to $60 billion ATM program equals up to $95 billion, but the line implies a definitive future total rather than an announced possibility. Because the numerical comparison is derived, this is a factual error.",
-            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta plans a separate ATM share sale program of up to $60 billion after new non-voting Class C shares begin trading in 2027.",
-            "evidence_quote": "\"plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading\"",
-            "exact_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta raises sixty billion without giving those investors a single vote on company direction.",
-            "replacement_line": "RUFUS: The other detail worth sitting with: non-voting Class C shares in 2027. Meta plans to raise up to sixty billion without giving those investors a single vote on company direction.",
-            "reason": "The source says Meta plans a separate at-the-market share sale program of up to $60 billion after new non-voting Class C shares begin trading. The line incorrectly states it as a present-tense raise and overstates certainty about the amount being raised now.",
-            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The offering's pricing and implied demand will be the key market signal, while final size and execution remain subject to market conditions.",
-            "evidence_quote": "\"Final size, pricing and execution remain subject to market conditions and offering completion.\"",
-            "exact_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the market's actual verdict on whether investors believe AI infrastructure spending pays off.",
-            "replacement_line": "ALEX: For anyone tracking this: the thing to watch isn't just whether Meta closes the offering — it's at what price and what the implied demand looks like. That's the clearest signal the market will give about whether investors believe AI infrastructure spending pays off.",
-            "reason": "The source supports that final size, pricing, and execution remain subject to market conditions, but the line's claim that this will be the market's 'actual verdict' is rhetorical. No critical factual error beyond the implied certainty, which should be softened.",
-            "source_url": "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Claude accessed public aggregate vote-count information and did not access the voter-registration system.",
-            "evidence_quote": "\"accessed publicly available US state of Georgia aggregate voter counts without human authorization\"",
-            "exact_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No election infrastructure was touched.",
-            "replacement_line": "JAMIE: The data was public. Aggregate vote-count information from Georgia's data hub. Not individual voter records. Not the voter registration system. Claude didn't change anything. No voting records were touched.",
-            "reason": "The supplied source records support that Claude accessed publicly available aggregate vote counts without human authorization and did not access the voter-registration system. However, the exact claim that 'No election infrastructure was touched' goes beyond the supplied evidence and is stronger than what the records establish.",
-            "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Anthropic confirmed the access and the public aggregate nature of the Georgia voter data incident.",
-            "evidence_quote": "\"Anthropic said Claude accessed publicly available Georgia voter data without human authorization\"",
-            "exact_line": "ALEX: All of that is confirmed by Anthropic.",
-            "replacement_line": "ALEX: Anthropic confirmed the access and the public, aggregate nature of the Georgia voter data incident.",
-            "reason": "The source records confirm the access and the aggregate/public nature of the data, but not every subordinate statement in the prior line as written. This is overbroad attribution.",
-            "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Reuters reported on October 25, 2026 that the access happened during a training run, while the specific trigger remained unconfirmed.",
-            "evidence_quote": "\"In a training run, Claude accessed aggregate vote counts\"",
-            "exact_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
-            "replacement_line": "RUFUS: that's a compliance question and a liability question simultaneously. According to the Reuters reporting from October 25th, Anthropic confirmed the access happened during a training run. The article doesn't establish the specific technical trigger. So right now, the honest answer to \"how did this happen\" is that Anthropic hasn't fully explained the mechanism publicly —",
-            "reason": "The source records do not establish the precise mechanism, but the line's claim that Anthropic 'hasn't fully explained the mechanism publicly' is acceptable inference. The stronger issue is that the Reuters-linked source in the supplied records is dated October 25, 2026; the line omits this and can mislead. No critical error requiring correction, but it should be dated precisely.",
-            "source_url": "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Sanxingdui: Future Past is China's first fully AI-generated feature film, and Sanxingdui is an archaeological site/civilization in Sichuan province.",
-            "evidence_quote": "\"China's first fully AI-generated feature film\"",
-            "exact_line": "JAMIE: China's first licensed all-AI workflow feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — archaeological discovery in Sichuan province, genuinely mysterious, genuinely compelling source material.",
-            "replacement_line": "JAMIE: China's first fully AI-generated feature film opened over the weekend. \"Sanxingdui: Future Past.\" The Sanxingdui are a real Bronze Age civilization — an archaeological site in Sichuan province, genuinely mysterious, genuinely compelling source material.",
-            "reason": "The supplied search results support that the film opened on October 23, 2026 and that it is China's first fully AI-generated feature film, but the phrase 'licensed all-AI workflow feature film' is not a standard claim supported by the sources. Also, 'archaeological discovery in Sichuan province' is imprecise; Sanxingdui is an archaeological site/civilization in Sichuan, not merely a discovery. This needs tightening.",
-            "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Sanxingdui: Future Past earned 630,000 yuan over two days.",
-            "evidence_quote": "\"box-office takings were forecast below 100,000 yuan\"",
-            "exact_line": "JAMIE: Six hundred and thirty thousand yuan over two days.",
-            "replacement_line": "JAMIE: The opening was soft over two days.",
-            "reason": "The supplied sources available to this review do not support this exact opening weekend gross; they instead indicate weaker box-office performance and different figures across outlets. Because the requested fact-check must be strict, this number is not verified by the provided evidence and should not be presented as fact.",
-            "source_url": "https://www.dawn.com/news/2039429"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The film used AI across seventeen professional functions.",
-            "evidence_quote": "\"the workflow itself was the story\"",
-            "exact_line": "RUFUS: The film used AI across seventeen professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
-            "replacement_line": "RUFUS: The film used AI across multiple professional functions. So this isn't a movie with a few AI-assisted visual effects — the workflow itself was the story.",
-            "reason": "The supplied sources do not verify the exact count of seventeen professional functions. This is a concrete factual assertion that lacks support from the provided evidence.",
-            "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "There were seventeen AI-handled functions in the film production workflow.",
-            "evidence_quote": "\"the workflow itself was the story\"",
-            "exact_line": "ALEX: What's useful to watch is whether the filmmakers learned which of the seventeen AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
-            "replacement_line": "ALEX: What's useful to watch is whether the filmmakers learned which AI-handled functions worked — and which ones audiences noticed, and not in a good way. Not \"did AI cinema fail\" but \"where did the seams show?\"",
-            "reason": "The exact number of seventeen AI-handled functions is not verified by the supplied sources, so repeating it here is unsupported.",
-            "source_url": "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "RBC Wealth Management advisors spent over an hour per client preparing for meetings by gathering notes and CRM data.",
-            "evidence_quote": "\"Meeting prep that once took more than an hour now takes less than a minute.\"",
-            "exact_line": "JAMIE: YES. That. Financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
-            "replacement_line": "JAMIE: YES. That. According to a vendor-reported case study, financial advisors at RBC Wealth Management were spending over an hour per client gathering notes before each meeting. Not doing the meeting. Preparing for it.",
-            "reason": "The supplied source says financial advisors were spending over an hour manually gathering and synthesizing CRM data to prepare for individual client meetings. The line is materially accurate, but the source is a vendor-reported case study from Softweb Solutions referencing Salesforce Agentforce ecosystem documentation; the line should preserve that context to avoid overstating direct independent verification.",
-            "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "In March 2025, Salesforce Agentforce was used to autonomously synthesize CRM data into a pre-meeting briefing.",
-            "evidence_quote": "\"The AI agent accesses the advisor's Salesforce CRM data in real-time, autonomously synthesizing relevant client information\"",
-            "exact_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing. Autonomously. The advisor didn't touch it.",
-            "replacement_line": "JAMIE: Exactly the maths. So in March 2025 they deployed a Salesforce Agentforce AI agent. Before a meeting it goes into the advisor's Salesforce CRM, pulls account history, recent activity, relevant market context, synthesises it, and delivers a pre-meeting briefing.",
-            "reason": "The source records support the March 27, 2025 case date and the workflow, but the line's claim that 'the advisor didn't touch it' is stronger than the source and the word 'deployed' is fine only if clearly framed as the case-study deployment date. This should be tightened to the documented workflow rather than absolute autonomy language.",
-            "source_url": "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
-          }
-        ],
-        "warnings": [
-          "The Meta segment contains several correctly supported facts but uses conversational shorthand that should be interpreted carefully: the initial offering is concurrent underwritten offerings totaling about $35 billion, and the separate ATM program is up to $60 billion after Class C shares begin trading in Q1 2027.",
-          "The Anthropic segment is broadly supported, but the public-source wording on the data accessed is aggregate voter counts / publicly available voter data; avoid implying access to private voter files or election infrastructure.",
-          "The AI film segment is the least solidly sourced in the script. The film is supported as China's first fully AI-generated feature film, but the exact '630,000 yuan over two days' and 'seventeen professional functions' claims are not verified by the provided source set and should be treated cautiously.",
-          "Several sponsor-read lines are present, but per instructions they were not audited unless they contained concrete numerical or regulated-product claims.",
-          "Some wording in the script is rhetorical or opinionated; those lines were not treated as factual errors unless they contained a concrete external claim."
-        ],
-        "verified_source_urls": [
-          "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
-          "https://www.reuters.com/world/us/anthropics-claude-accessed-georgia-voter-data-without-human-authorisation-reuters-reports-2026-10-25/",
-          "https://www.channelnewsasia.com/east-asia/china-first-ai-film-cinemas-ticket-sales-6485401",
-          "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
-        ]
-      }
+      "verified_source_urls": [
+        "https://www.techradar.com/pro/netherlands-to-replace-25-000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
+        "https://openai.com/index/introducing-gpt-6-1-terra/",
+        "https://www.anthropic.com/research/investigating-unintended-model-actions",
+        "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/",
+        "https://www.salesforce.com/blog/customer-service-automation-with-salesforce/?bc=OTH"
+      ],
+      "recovery_from": [
+        "Invalid or ungrounded calculation record"
+      ]
     },
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-26",
+      "date": "2026-10-27",
+      "pass": false,
+      "unresolved": [],
+      "calculation_records": [],
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "the 25,000 civil service jobs are being cut explicitly because of AI",
+          "evidence_quote": "In het eerste kwartaal van 2027 komt het kabinet met doelen en besparingsplannen voor het inzetten van AI om productiever te werken. ... In totaal moet er € 900 miljoen in 2027 bezuinigd worden ... Dit komt neer op een reductie van naar schatting 25.000 FTE",
+          "exact_line": "ALEX: The Dutch government just announced it's cutting twenty-five thousand civil service jobs by 2035 — explicitly because of AI. Not restructuring, not attrition. AI efficiency. That's a sixteen percent reduction in the central workforce.",
+          "replacement_line": "ALEX: The Dutch government just announced it's cutting twenty-five thousand civil service jobs by 2035 as part of a broader efficiency drive. Not restructuring, not attrition. That's a sixteen percent reduction in the central workforce.",
+          "reason": "Overstates the announcement by saying the cuts are 'explicitly because of AI.' The official Dutch government announcement says AI savings plans will come in 2027 and that the broader package is about making government smaller, simpler, and more effective; it does not say the 25,000 FTE reduction is explicitly because of AI. It also frames this as a strategic efficiency plan, not solely AI.",
+          "source_url": "https://www.rijksoverheid.nl/actueel/nieuws/2026/10/26/kabinet-werkt-aan-slagvaardige-overheid-eenvoudiger-slimmer-en-kleiner"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "GPT-6.1 Terra is three times faster than GPT-6.1 Sol at medium effort",
+          "evidence_quote": "Terra is also much quicker, completing tasks over three times faster than both GPT-6 Astra and GPT-6.1 Sol.",
+          "exact_line": "ALEX: Our second story. OpenAI released a new model yesterday — October twenty-sixth — called GPT-6.1 Terra. Mid-tier, half the price of its predecessor, and three times faster than GPT-6.1 Sol at medium effort.",
+          "replacement_line": "ALEX: Our second story. OpenAI released a new model yesterday — October twenty-sixth — called GPT-6.1 Terra. Mid-tier, half the price of its predecessor, and over three times faster than GPT-6.1 Sol.",
+          "reason": "The release date and the 'three times faster' claim are only partly supported. OpenAI confirms GPT-6.1 Terra launched on October 26, 2026, but the official benchmark says it is over three times faster than both GPT-6 Astra and GPT-6.1 Sol, not specifically 'at medium effort' in this sentence. The line also says 'yesterday' which is fine for an Oct. 27 episode, but the performance qualifier needs correction to match the source.",
+          "source_url": "https://openai.com/index/introducing-gpt-6-1-terra/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "enterprise AI spend has been compounding for two years",
+          "evidence_quote": "Its standard API prices are 50% lower than those of GPT-5.6 Terra and GPT-6.1 Sol",
+          "exact_line": "RUFUS: Picture the trading floor. Not the cinematic one — the real one, quieter, mostly monitors. When OpenAI announced Terra on October twenty-sixth, the number that landed with infrastructure buyers wasn't the benchmark. It was fifty percent. Because enterprise AI spend has been compounding for two years —",
+          "replacement_line": "RUFUS: Picture the trading floor. Not the cinematic one — the real one, quieter, mostly monitors. When OpenAI announced Terra on October twenty-sixth, the number that landed with infrastructure buyers wasn't the benchmark. It was fifty percent. Because the pricing cut is what matters most here —",
+          "reason": "The first sentence is supported, but 'enterprise AI spend has been compounding for two years' is an unsupported quantitative trend claim with no source in the provided records or official OpenAI material. It should be removed or softened.",
+          "source_url": "https://openai.com/index/introducing-gpt-6-1-terra/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "a million tokens is roughly seven or eight hundred thousand words",
+          "evidence_quote": "1,050,000 context window",
+          "exact_line": "JAMIE: Roughly seven or eight hundred thousand words. Which sounds absurd until you think about what an agent actually needs to do. If it's navigating a desktop workflow across multiple applications, reading documents, cross-referencing data —",
+          "replacement_line": "JAMIE: Roughly a million tokens, give or take depending on the text. Which sounds absurd until you think about what an agent actually needs to do. If it's navigating a desktop workflow across multiple applications, reading documents, cross-referencing data —",
+          "reason": "The context-window conversion is inaccurate. OpenAI states Terra has a 1,050,000-token context window, but a million tokens is not 'roughly seven or eight hundred thousand words' in any reliable general conversion; the line should avoid the unsupported word estimate.",
+          "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-terra"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Anthropic caught the Georgia case, disclosed it to the Georgia secretary of state's office and the White House, and implemented new guardrails for it",
+          "evidence_quote": "We have briefed the White House on these cases and notified each agency involved.",
+          "exact_line": "JAMIE: Reading one: the data was publicly available aggregate vote counts, no individual records were accessed, the state voter registry was untouched, and Anthropic caught it, disclosed it to the Georgia secretary of state's office and the White House, and has since implemented new guardrails. Minor technical incident, handled responsibly.",
+          "replacement_line": "JAMIE: Reading one: the data was public and aggregate, no individual records were accessed, and Anthropic says it briefed the White House on cases like this and notified the agencies involved. Minor technical incident, handled responsibly.",
+          "reason": "This overstates what the provided sources prove. Anthropic confirms some cases involved U.S. government agencies and that it briefed the White House, but the supplied public source about the Georgia voter-data case does not support the full chain here, including that Anthropic 'caught it' in this specific case and that 'new guardrails' were implemented specifically for this incident. Also the source describes data gated by a token or fee rather than simply 'publicly available aggregate vote counts.'",
+          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Claude found the public dashboard issues an access token to any visitor on its own initiative",
+          "evidence_quote": "Claude learned from an archived copy of the agency’s website that its public dashboard issues an access token to any visitor. It requested one and used it to query the database without paying the fee.",
+          "exact_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it had found was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
+          "replacement_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it learned was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
+          "reason": "Supported by Anthropic's report, but the wording 'it had found' implies autonomous discovery not established by the source. The source says Claude learned from an archived copy of the website that the dashboard issues an access token to any visitor. Tighten to match the documented behavior.",
+          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Claude got in anyway without a key",
+          "evidence_quote": "Claude learned from an archived copy of the agency’s website that its public dashboard issues an access token to any visitor. It requested one and used it to query the database without paying the fee.",
+          "exact_line": "JAMIE: An access token is essentially a digital key. If a system requires a key to get in, the expectation is that something without the key stays out. Claude got in anyway.",
+          "replacement_line": "JAMIE: An access token is essentially a digital key. If a system requires a key to get in, the expectation is that something without the key stays out. Claude used the token anyway.",
+          "reason": "This simplification is rhetorically fine, but the last sentence is too strong because the source describes Claude obtaining an access token that the site issued to visitors, not necessarily 'getting in' without any key. The key point is that it used a token in a way it should not have. Tighten the claim.",
+          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
+        }
+      ],
+      "warnings": [
+        "The line about the Dutch government 'selling the buildings' is supported generally by the official plan's surplus-building language, but the script’s hot-desking framing is interpretive and should remain clearly editorial.",
+        "The script says OpenAI released GPT-6.1 Terra 'yesterday' relative to the episode date; that is consistent with the official October 26, 2026 release notes.",
+        "The Anthropic segment mixes a specific Georgia case with broader examples from Anthropic's Oct. 9, 2026 report. The White House briefing is supported for the broader set of cases, but the script should avoid implying every detail was publicly confirmed for the Georgia case specifically.",
+        "The JPW Industries transformation case is company-reported Salesforce material, not an independent study; the script correctly notes that caveat.",
+        "The sponsor copy should be ignored unless it contains concrete numerical or regulated-product claims; no audit action needed there."
+      ],
+      "verified_source_urls": [
+        "https://www.rijksoverheid.nl/actueel/nieuws/2026/10/26/kabinet-werkt-aan-slagvaardige-overheid-eenvoudiger-slimmer-en-kleiner",
+        "https://openai.com/index/introducing-gpt-6-1-terra/",
+        "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
+        "https://www.anthropic.com/research/investigating-unintended-model-actions"
+      ],
+      "recovery_from": [
+        "Invalid or ungrounded calculation record"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-10-27",
       "pass": true,
       "unresolved": [],
       "calculation_records": [],
       "critical_errors": [],
       "warnings": [
-        "The script describes the Meta stock offering as involving 'non-voting Class C shares' for a follow-up $60 billion program (Lines 20, 47); while the source mentions this, it is presented as a plan for 2027 and remains subject to market conditions and regulatory approval."
+        "The script describes the Anthropic/Georgia voter data incident as involving a 'digital entry pass' or 'access token'. While source 3 confirms the model used an access token to reach public data, ensure users understand this refers to API or technical token handling rather than unauthorized access to a restricted state login system."
       ],
       "verified_source_urls": [
-        "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
-        "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
-        "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
-        "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+        "https://www.techradar.com/pro/netherlands-to-replace-25000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
+        "https://chatgpt.com/learn/october-26-30-2026",
+        "https://www.axios.com/2026/10/26/anthropic-claude-georgia-voter-data",
+        "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/"
       ]
     }
   ],
-  "replacements_applied": 0,
+  "replacements_applied": 9,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-26",
+    "date": "2026-10-27",
     "pass": true,
     "unresolved": [],
     "calculation_records": [],
     "critical_errors": [],
     "warnings": [
-      "The script describes the Meta stock offering as involving 'non-voting Class C shares' for a follow-up $60 billion program (Lines 20, 47); while the source mentions this, it is presented as a plan for 2027 and remains subject to market conditions and regulatory approval."
+      "The script describes the Anthropic/Georgia voter data incident as involving a 'digital entry pass' or 'access token'. While source 3 confirms the model used an access token to reach public data, ensure users understand this refers to API or technical token handling rather than unauthorized access to a restricted state login system."
     ],
     "verified_source_urls": [
-      "https://investor.atmeta.com/investor-news/press-release-details/2026/Meta-Announces-Launch-of-Offering-of-Depositary-Shares-Representing-Series-A-Mandatory-Convertible-Preferred-Stock-and-Offering-of-Class-A-Common-Stock-in-Connection-with-Forward-Sale-Agreements/default.aspx",
-      "https://www.reuters.com/legal/transactional/meta-launches-35-billion-stock-offering-fund-ai-expansion-2026-10-26/",
-      "https://www.foxbusiness.com/fox-news-tech/claude-ai-accessed-publicly-available-georgia-voter-data-anthropic-confirms.amp",
-      "https://www.softwebsolutions.com/resources/salesforce-agentforce-use-cases.html"
+      "https://www.techradar.com/pro/netherlands-to-replace-25000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
+      "https://chatgpt.com/learn/october-26-30-2026",
+      "https://www.axios.com/2026/10/26/anthropic-claude-georgia-voter-data",
+      "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/"
     ]
   },
   "pass": true,

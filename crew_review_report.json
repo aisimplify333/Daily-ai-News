@@ -2,62 +2,89 @@
   "basis": "model editorial review plus local safeguards; not listening",
   "listened": false,
   "requested_calls": 1,
-  "accepted_edits": 3,
+  "accepted_edits": 6,
   "edits": [
     {
       "accepted": true,
-      "reason": "Removes doubled conclusion; keeps the watch-point and the 60B callback without restating both in three more turns.",
+      "reason": "Removes the echo of 'That's generous' / 'That's diplomatic' from line 23; keeps Alex's voice.",
       "segment": 2
     },
     {
-      "accepted": false,
-      "reason": "new_structural_or_runtime_failure",
-      "new_failures": [
-        "no_monologue_bloat"
-      ]
+      "accepted": true,
+      "reason": "Replaces repeated 'no implementation detail' verdict with a specific gap; advances rather than restates.",
+      "segment": 2
     },
     {
       "accepted": true,
-      "reason": "Removes the repeated Alex restatement at line 90; consolidates the close into Jamie's line so 'for now' lands once as Rufus's dry closer.",
+      "reason": "Names the competitive pressure with sourced context; 'they find one' payoff preserved.",
       "segment": 3
     },
     {
+      "accepted": false,
+      "reason": "nonunique_or_wrong_scene"
+    },
+    {
       "accepted": true,
-      "reason": "Alex's 'reluctant to call it a verdict' duplicates the point already landed at 116-119; Rufus's line earns the beat without the setup.",
+      "reason": "Replaces three restatements of price/speed conclusion with the accuracy question raised at line 61 but never resolved; keeps the sourced uncertainty.",
+      "segment": 3
+    },
+    {
+      "accepted": false,
+      "reason": "feature_navigation_protected"
+    },
+    {
+      "accepted": false,
+      "reason": "nonunique_or_wrong_scene"
+    },
+    {
+      "accepted": true,
+      "reason": "Replaces repeated 'public data mitigates severity' restatement with the policy-escalation consequence that follows from line 98.",
       "segment": 4
+    },
+    {
+      "accepted": true,
+      "reason": "Replaces three-story bullet recap with a single connecting idea; preserves actionable closes without repeating individual story verdicts.",
+      "segment": 5
     }
   ],
-  "input_sha256": "52cacdf6f72196b7680f486f3f6901a4b06858da6c2d2e8c620a1e300beebd29",
+  "input_sha256": "d4c71acb823d7637f0f061721e872211d54b16cd36dd5ebeb3f192cc309462ab",
   "review_before_repairs": {
     "scenes": [
       {
         "segment": 2,
-        "chemistry": "Strong: the preferred-stock exchange (lines 15-29) has genuine back-and-forth; Rufus's 'rationing my approval' lands quietly and Jamie answers it. The non-voting Class C thread (47-52) is a real discovery the friends work through together.",
-        "discovery": "Present: the convertible preferred as a middle-path risk instrument is explained through the conversation, not delivered as a lecture. The dilution-versus-growth-pie framing emerges from Alex's challenge rather than being pre-announced.",
-        "repetition": "Lines 53-60 re-state the 'watch whether it closes' conclusion that was already clear at line 57; the finale at 57-60 covers the same ground twice in four lines."
+        "chemistry": "Strong in places — the 'one notch' exchange and Rufus/Jamie on institutional memory land well. The Jamie-revises-alarm moment is genuinely earned.",
+        "discovery": "The building-sales detail is surfaced naturally and pays off. Advisory-council risk is developed through conversation rather than summary.",
+        "repetition": "Lines 41 and 47 both restate 'we don't know the implementation / won't know for years' after the point has already settled at line 48. Line 40 ('That's diplomatic') echoes line 23 too closely."
       },
       {
         "segment": 3,
-        "chemistry": "Good: the Roomba analogy (70-72) earns a real reaction; Rufus and Jamie's exchange on 'publicly available' (78-79) is a genuine pushback-and-response. Lines 86-92 slow down well when the governance consequence lands.",
-        "discovery": "Present: the distinction between 'data was public' and 'model had undirected agency' is sharpened through Jamie's challenge (80-83) rather than stated once and abandoned.",
-        "repetition": "Lines 90-92 ('finding out through disclosures'/'for now'/'for now') close the segment twice; the second 'for now' echo is a beat that works, but the Alex line before it restates the conclusion already reached at 85."
+        "chemistry": "The sports-car/commute exchange (78-81) is the best trio moment in the segment. Context-window explanation flows naturally between all three.",
+        "discovery": "Terra-as-product-tier read (line 77) is Jamie's strongest original observation. Computer-use angle developed across multiple turns rather than stated once.",
+        "repetition": "Lines 82-83 restate the cost/speed conclusion already established at lines 53-55 and 64. Line 84 then adds a third restatement of the same point about mid-tier adoption."
       },
       {
         "segment": 4,
-        "chemistry": "Solid: the bakery analogy (120) is a Jamie original that lands without over-explanation; Rufus's Hollywood-third-act line (132-134) is a genuine dry bit with a satisfying closer from Jamie. Alex's honest 'would I watch it' (130) is a good personal moment.",
-        "discovery": "Partial: the 'process as pitch vs story as pitch' distinction (111-113) is the real insight but is slightly restated at 121-122 without adding to it.",
-        "repetition": "Lines 123-125 and 127-129 both reach the same landing ('one data point, not a verdict' / 'hybrid gets made in 18 months') without the second adding a new consequence; minor."
+        "chemistry": "The contractor/warehouse analogy (113-117) is the sharpest scene in the episode. Rufus's 'initiative' line (103) earns a genuine beat. Jamie's facilities-management tease (118) lands cleanly.",
+        "discovery": "The distinction between permissions architecture and value alignment (104-105) is the episode's clearest analytical advance. White House disclosure as policy escalator is well handled.",
+        "repetition": "Line 110 re-explains the 'public data mitigates severity' argument that was already resolved at lines 106-108. No new evidence added."
+      },
+      {
+        "segment": 5,
+        "chemistry": "Closing loop on the Dutch question works. Rufus's honest hedge (122) is appropriately non-conclusive. Jamie's 'real skepticism, not about the ambition' is well-phrased.",
+        "discovery": "The 2027 figure as near-term test was already named in segment 2 (line 48); its reappearance here as the closer is earned because it's now the editorial verdict rather than a prediction.",
+        "repetition": "Lines 126-128 list all three stories' conclusions sequentially in a way that recaps rather than closes. The 'who wins' framing repeats the Dutch and Terra conclusions without adding consequence."
       }
     ],
-    "rufus_feature": "The Wall Street compliance floor (lines 74-79) is an explicitly imagined scene with a concrete setting named in the first sentence. Rufus delivers sourced reasoning and Jamie pushes back on 'publicly available' before the return. The studio exchange is responsive rather than scripted. Meets the brief adequately, though the four-paragraph Rufus monologue (74-77) is long before Jamie gets the pushback in.",
+    "rufus_feature": "The Wall Street dispatch (lines 57-59) opens well — 'the quieter trading floor, mostly monitors' — but the studio exchange after the return is missing. Jamie's accuracy challenge (line 60) and Rufus's concession (line 61) function as a responsive exchange, but they are not marked or framed as a return from the feature; they read as ordinary segment dialogue. The imagined scene needs a cleaner return beat so the feature has a distinct arc.",
     "remaining_issues": [
-      "Segment 2 closes with a doubled conclusion (lines 57-60): Alex states the watch-point, then Jamie and Rufus restate it in two more turns with no new information.",
-      "Segment 3 lines 85-92: Alex's governance-gap line and the paired 'for now' are an earned quiet close, but the Alex line at 90 restates what was already concluded at 85, adding no new evidence or consequence.",
-      "Rufus's feature monologue (74-77) runs four uninterrupted paragraphs before Jamie's first reply; the imagined scene would gain from a shorter Rufus opening with the studio exchange starting sooner.",
-      "Segment 4 lines 123-125 lightly duplicate the 'one film, not a verdict' conclusion that follows naturally from 116-119; minor but cuttable without dropping below the runtime floor."
+      "Lines 82-84 restate the Terra price/speed conclusion three times after it was established at lines 53-55; replace with a sourced exchange on the accuracy question that was flagged but not answered.",
+      "Line 110 reopens the 'public data mitigates severity' argument without new evidence; cut or replace with the policy-escalation consequence.",
+      "Lines 126-128 close by listing all three story conclusions as bullet-point recap rather than landing on a single consequential idea; trim the recap and sharpen the ending.",
+      "The Rufus feature lacks an explicit return marker and a brief studio exchange before the segment resumes; needs one anchoring return line.",
+      "Line 40 ('That's diplomatic') repeats the same beat as line 23 ('That's generous') too closely within the same scene."
     ]
   },
   "remaining_production_language": [],
-  "output_sha256": "8332e0ba58dcc23a2839b42be0f25d047db4cf2cbd168279e092e1aae17cfc61",
+  "output_sha256": "8931c3908f22827e35951b00a4603b94a7f390a40d7be2b34ff8487298c6cc97",
   "status": "repairs_applied_need_audio_review"
 }
