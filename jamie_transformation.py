@@ -102,14 +102,15 @@ Episode date: ''' + date
             if not isinstance(case, dict):
                 continue
             case['episode_date'] = date
+            diagnostics = {}
             reason = 'missing_required_fields' if not valid_case(case) else (
-                '' if source_matches(case) else 'source_unreachable_or_exact_quote_not_found')
+                '' if source_matches(case, diagnostics) else diagnostics.get('reason', 'source_unreachable_or_exact_quote_not_found'))
             attempts.append({'case': case, 'reason': reason or 'verified'})
             Path('jamie_research_report.json').write_text(json.dumps({'date': date, 'attempts': attempts}, indent=2) + '\n')
             if not reason:
                 path.write_text(json.dumps(case, indent=2) + '\n')
                 return case
-        prompt += '\nRecovery: find DIFFERENT directly accessible sources; do not repeat rejected URLs. Use a 10-25 word exact quote actually visible on the source page. Validation results: ' + json.dumps(attempts)
+        prompt += '\nRecovery: correct invalid URLs using the exact canonical link returned by live search. For source_http_404 find the actual article URL; for source_quote_not_found extract a verbatim passage, not a paraphrase. Find DIFFERENT directly accessible sources; do not repeat rejected URLs. Use a 10-25 word exact quote actually visible on the source page. Validation results: ' + json.dumps(attempts)
     raise RuntimeError('Jamie case research unresolved; no fabricated success story')
 
 
@@ -120,9 +121,11 @@ def valid_case(case):
         re.match(r'https://[^/]+/.+', str(case.get('source_url', ''))))
 
 
-def source_matches(case):
+def source_matches(case, diagnostics=None):
     """Open the claimed source; a plausible-looking URL is not evidence."""
     import urllib.request
+    import urllib.error
+    diagnostics = diagnostics if diagnostics is not None else {}
     import unicodedata
     from bs4 import BeautifulSoup
     # Retain independently retrieved evidence for sites that reject runner requests.
@@ -143,8 +146,23 @@ def source_matches(case):
             value = value.translate(str.maketrans({'’': "'", '‘': "'", '“': '"', '”': '"', '\u00ad': ''}))
             return re.sub(r'\s+', ' ', value).strip().casefold()
         quote = case['source_quote']
-        return 10 <= len(quote.split()) <= 25 and normalize(quote) in normalize(text)
-    except Exception:
+        words = quote.split()
+        if not 10 <= len(words) <= 60:
+            diagnostics['reason'] = 'source_quote_length_out_of_range'
+            return False
+        if normalize(quote) not in normalize(text):
+            diagnostics['reason'] = 'source_quote_not_found'
+            return False
+        # Verify the WHOLE claim first. Only then retain a bounded exact excerpt.
+        # Never accept a matching prefix when later words or numbers disagree.
+        if len(words) > 25:
+            case['source_quote'] = ' '.join(words[:25])
+        return True
+    except urllib.error.HTTPError as exc:
+        diagnostics['reason'] = 'source_http_' + str(exc.code)
+        return False
+    except Exception as exc:
+        diagnostics['reason'] = 'source_fetch_' + type(exc).__name__
         return False
 
 
@@ -271,3 +289,4 @@ def prepare_cue(destination, root=None):
     clip.export(destination, format='mp3', bitrate='192k').close()
     return Path(destination), dict(applied=True, asset='jamie.mp3', provider='elevenlabs',
                                   sha256=manifest['sha256'], duration_seconds=len(clip)/1000)
+
