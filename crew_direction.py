@@ -2,6 +2,21 @@
 from dialogue_direction import PERFORMANCE_DIRECTION
 FRIENDS_DIRECTION = """
 THREE FRIENDS IN AN AI ENSEMBLE COMEDY:
+VARIETY AND ENERGY — OCTOBER 28 OWNER DIRECTION:
+Before drafting, compare the supplied recent five episodes: avoid repeating their
+analogies, opening questions, punchline structures, transitions and emotional arcs.
+Do not recycle the sports-car/commute joke. A callback must develop an aired idea,
+not replay its punchline. If history is missing, flag that to editorial review.
+Vary who notices the opportunity, who challenges it and who gets the final insight.
+Let Jamie be quietly thoughtful as well as delighted; let Rufus show dry excitement
+when the financial idea earns it; let Alex be playful, surprised or skeptical.
+Within each episode, contrast lively discovery with calm explanation and sincere
+concern. Excitement should respond to a specific useful fact, not generic hype.
+Vary turn lengths, interruptions in thought, pauses and comic timing naturally;
+never force a fight, laugh, reversal or identical three-host rotation per story.
+Preserve the approved voices and exact established opening/closing. Production
+review should name repeated wording or scene patterns and revise them before audio.
+
 Let Alex sometimes catch Jamie or Rufus making an unsupported leap. Let Jamie enjoy
 an actual advance; let Rufus defend one when evidence warrants it. No permanent
 optimist-versus-two-skeptics pattern. A joke should receive a specific response,
