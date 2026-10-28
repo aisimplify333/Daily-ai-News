@@ -24,18 +24,20 @@
       "mood": "curiosity",
       "cache": true,
       "prepared": true,
-      "chars": 230
+      "chars": 249
     },
     {
       "speaker": "JAMIE",
       "provider": "grok",
       "voice": "ursa",
       "primary_voice": true,
-      "mood": "explainer",
+      "mood": "delight",
       "cache": false,
-      "expressions": [],
-      "chars": 89,
-      "estimated_cost_usd": 0.001335
+      "expressions": [
+        "build-intensity"
+      ],
+      "chars": 199,
+      "estimated_cost_usd": 0.002985
     },
     {
       "speaker": "RUFUS",
@@ -44,7 +46,7 @@
       "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 84
+      "chars": 36
     },
     {
       "speaker": "ALEX",
@@ -53,7 +55,7 @@
       "mood": "neutral",
       "cache": true,
       "prepared": true,
-      "chars": 279
+      "chars": 245
     },
     {
       "speaker": "ALEX",
@@ -68,19 +70,10 @@
       "speaker": "ALEX",
       "provider": "gemini",
       "voice": "Charon",
-      "mood": "pushback",
+      "mood": "curiosity",
       "cache": true,
       "prepared": true,
-      "chars": 163
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 261
+      "chars": 204
     },
     {
       "speaker": "JAMIE",
@@ -90,207 +83,8 @@
       "mood": "explainer",
       "cache": false,
       "expressions": [],
-      "chars": 167,
-      "estimated_cost_usd": 0.002505
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "pushback",
-      "cache": true,
-      "prepared": true,
-      "chars": 126
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "curiosity",
-      "cache": false,
-      "expressions": [
-        "slow"
-      ],
-      "chars": 140,
-      "estimated_cost_usd": 0.0021
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 209
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "amused",
-      "cache": true,
-      "prepared": true,
-      "chars": 77
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concern",
-      "cache": false,
-      "expressions": [
-        "soft"
-      ],
-      "chars": 176,
-      "estimated_cost_usd": 0.00264
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 25
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 258
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "pushback",
-      "cache": false,
-      "expressions": [
-        "emphasis"
-      ],
-      "chars": 146,
-      "estimated_cost_usd": 0.00219
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 16
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "amused",
-      "cache": false,
-      "expressions": [
-        "chuckle"
-      ],
-      "chars": 31,
-      "estimated_cost_usd": 0.000465
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 92
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concern",
-      "cache": false,
-      "expressions": [
-        "soft"
-      ],
-      "chars": 291,
-      "estimated_cost_usd": 0.004365
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "pushback",
-      "cache": true,
-      "prepared": true,
-      "chars": 204
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "amused",
-      "cache": true,
-      "prepared": true,
-      "chars": 88
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "concession",
-      "cache": true,
-      "prepared": true,
-      "chars": 164
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "pushback",
-      "cache": false,
-      "expressions": [
-        "emphasis"
-      ],
-      "chars": 244,
-      "estimated_cost_usd": 0.00366
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 258
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 296
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concern",
-      "cache": false,
-      "expressions": [
-        "soft"
-      ],
-      "chars": 283,
-      "estimated_cost_usd": 0.004245
+      "chars": 327,
+      "estimated_cost_usd": 0.004905
     },
     {
       "speaker": "ALEX",
@@ -309,8 +103,8 @@
       "mood": "explainer",
       "cache": false,
       "expressions": [],
-      "chars": 169,
-      "estimated_cost_usd": 0.002535
+      "chars": 153,
+      "estimated_cost_usd": 0.002295
     },
     {
       "speaker": "RUFUS",
@@ -319,7 +113,7 @@
       "mood": "pushback",
       "cache": true,
       "prepared": true,
-      "chars": 272
+      "chars": 296
     },
     {
       "speaker": "ALEX",
@@ -328,7 +122,27 @@
       "mood": "curiosity",
       "cache": true,
       "prepared": true,
-      "chars": 122
+      "chars": 95
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "explainer",
+      "cache": false,
+      "expressions": [],
+      "chars": 304,
+      "estimated_cost_usd": 0.00456
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "pushback",
+      "cache": true,
+      "prepared": true,
+      "chars": 154
     },
     {
       "speaker": "JAMIE",
@@ -340,8 +154,26 @@
       "expressions": [
         "decrease-intensity"
       ],
-      "chars": 93,
-      "estimated_cost_usd": 0.001395
+      "chars": 298,
+      "estimated_cost_usd": 0.00447
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 509
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 57
     },
     {
       "speaker": "RUFUS",
@@ -350,71 +182,7 @@
       "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 13
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "amused",
-      "cache": false,
-      "expressions": [
-        "chuckle"
-      ],
-      "chars": 67,
-      "estimated_cost_usd": 0.001005
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 207
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 202
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "curiosity",
-      "cache": false,
-      "expressions": [
-        "slow"
-      ],
-      "chars": 132,
-      "estimated_cost_usd": 0.00198
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 18
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "dry_wit",
-      "cache": false,
-      "expressions": [],
-      "chars": 57,
-      "estimated_cost_usd": 0.000855
+      "chars": 66
     },
     {
       "speaker": "ALEX",
@@ -423,111 +191,7 @@
       "mood": "pushback",
       "cache": true,
       "prepared": true,
-      "chars": 150
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 90
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 44,
-      "estimated_cost_usd": 0.00066
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 193
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "curiosity",
-      "cache": false,
-      "expressions": [
-        "slow"
-      ],
-      "chars": 140,
-      "estimated_cost_usd": 0.0021
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 6
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "delight",
-      "cache": false,
-      "expressions": [
-        "build-intensity"
-      ],
-      "chars": 228,
-      "estimated_cost_usd": 0.00342
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "pushback",
-      "cache": true,
-      "prepared": true,
-      "chars": 121
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concession",
-      "cache": false,
-      "expressions": [
-        "decrease-intensity"
-      ],
-      "chars": 241,
-      "estimated_cost_usd": 0.003615
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 27
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 289
+      "chars": 67
     },
     {
       "speaker": "RUFUS",
@@ -536,38 +200,7 @@
       "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 479
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "pushback",
-      "cache": false,
-      "expressions": [
-        "emphasis"
-      ],
-      "chars": 220,
-      "estimated_cost_usd": 0.0033
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "concession",
-      "cache": true,
-      "prepared": true,
-      "chars": 177
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 183
+      "chars": 175
     },
     {
       "speaker": "JAMIE",
@@ -577,84 +210,8 @@
       "mood": "explainer",
       "cache": false,
       "expressions": [],
-      "chars": 89,
-      "estimated_cost_usd": 0.001335
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "delight",
-      "cache": true,
-      "prepared": true,
-      "chars": 104
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 242
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 178
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 119,
-      "estimated_cost_usd": 0.001785
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 51
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 251,
-      "estimated_cost_usd": 0.003765
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 113
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 83
+      "chars": 328,
+      "estimated_cost_usd": 0.00492
     },
     {
       "speaker": "JAMIE",
@@ -666,337 +223,17 @@
       "expressions": [
         "soft"
       ],
-      "chars": 176,
-      "estimated_cost_usd": 0.00264
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "pushback",
-      "cache": true,
-      "prepared": true,
-      "chars": 138
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concession",
-      "cache": false,
-      "expressions": [
-        "decrease-intensity"
-      ],
-      "chars": 196,
-      "estimated_cost_usd": 0.00294
+      "chars": 38,
+      "estimated_cost_usd": 0.00057
     },
     {
       "speaker": "ALEX",
       "provider": "gemini",
       "voice": "Charon",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 170
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
       "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 133
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "curiosity",
-      "cache": false,
-      "expressions": [
-        "slow"
-      ],
-      "chars": 279,
-      "estimated_cost_usd": 0.004185
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 91
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 29
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "amused",
-      "cache": false,
-      "expressions": [
-        "chuckle"
-      ],
-      "chars": 21,
-      "estimated_cost_usd": 0.000315
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 18
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 224
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 163,
-      "estimated_cost_usd": 0.002445
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 137
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 133
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 153,
-      "estimated_cost_usd": 0.002295
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 120
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 95
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 234
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "curiosity",
-      "cache": false,
-      "expressions": [
-        "slow"
-      ],
-      "chars": 141,
-      "estimated_cost_usd": 0.002115
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 26
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 232,
-      "estimated_cost_usd": 0.00348
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 16
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concern",
-      "cache": false,
-      "expressions": [],
-      "chars": 248,
-      "estimated_cost_usd": 0.00372
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concern",
-      "cache": false,
-      "expressions": [
-        "soft"
-      ],
-      "chars": 114,
-      "estimated_cost_usd": 0.00171
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "pressure",
-      "cache": true,
-      "prepared": true,
-      "chars": 191
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "pushback",
-      "cache": true,
-      "prepared": true,
-      "chars": 217
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "pressure",
-      "cache": true,
-      "prepared": true,
-      "chars": 159
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 174,
-      "estimated_cost_usd": 0.00261
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 130
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 68
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 239
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 206,
-      "estimated_cost_usd": 0.00309
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "concern",
-      "cache": true,
-      "prepared": true,
-      "chars": 310
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 115
+      "chars": 44
     },
     {
       "speaker": "JAMIE",
@@ -1008,86 +245,8 @@
       "expressions": [
         "emphasis"
       ],
-      "chars": 167,
-      "estimated_cost_usd": 0.002505
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 298
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 169
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "concern",
-      "cache": false,
-      "expressions": [
-        "soft"
-      ],
-      "chars": 231,
-      "estimated_cost_usd": 0.003465
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "neutral",
-      "cache": true,
-      "prepared": true,
-      "chars": 195
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 286
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 143
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "neutral",
-      "cache": false,
-      "expressions": [],
-      "chars": 67,
-      "estimated_cost_usd": 0.001005
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 74
+      "chars": 206,
+      "estimated_cost_usd": 0.00309
     },
     {
       "speaker": "RUFUS",
@@ -1096,7 +255,105 @@
       "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 102
+      "chars": 403
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 302
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 288,
+      "estimated_cost_usd": 0.00432
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "concern",
+      "cache": true,
+      "prepared": true,
+      "chars": 205
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 83
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "explainer",
+      "cache": false,
+      "expressions": [],
+      "chars": 256,
+      "estimated_cost_usd": 0.00384
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 114
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "amused",
+      "cache": true,
+      "prepared": true,
+      "chars": 47
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 124
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "explainer",
+      "cache": false,
+      "expressions": [],
+      "chars": 172,
+      "estimated_cost_usd": 0.00258
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 24
     },
     {
       "speaker": "JAMIE",
@@ -1108,8 +365,568 @@
       "expressions": [
         "chuckle"
       ],
-      "chars": 56,
-      "estimated_cost_usd": 0.00084
+      "chars": 34,
+      "estimated_cost_usd": 0.00051
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "warmth",
+      "cache": true,
+      "prepared": true,
+      "chars": 59
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "warmth",
+      "cache": true,
+      "prepared": true,
+      "chars": 276
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 262,
+      "estimated_cost_usd": 0.00393
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "concern",
+      "cache": true,
+      "prepared": true,
+      "chars": 166
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 35
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 207
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 446,
+      "estimated_cost_usd": 0.00669
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 64
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "explainer",
+      "cache": false,
+      "expressions": [],
+      "chars": 282,
+      "estimated_cost_usd": 0.00423
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "pushback",
+      "cache": true,
+      "prepared": true,
+      "chars": 49
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "delight",
+      "cache": false,
+      "expressions": [
+        "build-intensity"
+      ],
+      "chars": 190,
+      "estimated_cost_usd": 0.00285
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "concern",
+      "cache": true,
+      "prepared": true,
+      "chars": 327
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "amused",
+      "cache": true,
+      "prepared": true,
+      "chars": 27
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "interruption",
+      "cache": true,
+      "prepared": true,
+      "chars": 587
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 260
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 195,
+      "estimated_cost_usd": 0.002925
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "pressure",
+      "cache": true,
+      "prepared": true,
+      "chars": 273
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 100
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 561,
+      "estimated_cost_usd": 0.008415
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "pushback",
+      "cache": true,
+      "prepared": true,
+      "chars": 160
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "concession",
+      "cache": false,
+      "expressions": [
+        "decrease-intensity"
+      ],
+      "chars": 138,
+      "estimated_cost_usd": 0.00207
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 221
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 397,
+      "estimated_cost_usd": 0.005955
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 197
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 137
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 8,
+      "estimated_cost_usd": 0.00012
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 16
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 16
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 128,
+      "estimated_cost_usd": 0.00192
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 162
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 87,
+      "estimated_cost_usd": 0.001305
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 205
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 218
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 53
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 204
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "amused",
+      "cache": false,
+      "expressions": [
+        "chuckle"
+      ],
+      "chars": 181,
+      "estimated_cost_usd": 0.002715
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 94
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 211
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "warmth",
+      "cache": false,
+      "expressions": [
+        "soft"
+      ],
+      "chars": 63,
+      "estimated_cost_usd": 0.000945
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 249
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 286
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 175,
+      "estimated_cost_usd": 0.002625
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 64
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 37
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 339,
+      "estimated_cost_usd": 0.005085
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 17
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "explainer",
+      "cache": false,
+      "expressions": [],
+      "chars": 167,
+      "estimated_cost_usd": 0.002505
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 229
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 73
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 221
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 196
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 222
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "pushback",
+      "cache": false,
+      "expressions": [
+        "emphasis"
+      ],
+      "chars": 216,
+      "estimated_cost_usd": 0.00324
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 71
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 54
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "amused",
+      "cache": false,
+      "expressions": [
+        "chuckle"
+      ],
+      "chars": 42,
+      "estimated_cost_usd": 0.00063
     },
     {
       "speaker": "RUFUS",
@@ -1119,6 +936,104 @@
       "cache": true,
       "prepared": true,
       "chars": 21
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 244
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 219
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "curiosity",
+      "cache": false,
+      "expressions": [
+        "slow"
+      ],
+      "chars": 152,
+      "estimated_cost_usd": 0.00228
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "neutral",
+      "cache": false,
+      "expressions": [],
+      "chars": 188,
+      "estimated_cost_usd": 0.00282
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 77
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 309
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "dry_wit",
+      "cache": false,
+      "expressions": [],
+      "chars": 69,
+      "estimated_cost_usd": 0.001035
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 123
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "amused",
+      "cache": true,
+      "prepared": true,
+      "chars": 58
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "pushback",
+      "cache": true,
+      "prepared": true,
+      "chars": 32
     },
     {
       "speaker": "ALEX",
@@ -1136,11 +1051,9 @@
       "primary_voice": true,
       "mood": "delight",
       "cache": false,
-      "expressions": [
-        "build-intensity"
-      ],
-      "chars": 220,
-      "estimated_cost_usd": 0.0033
+      "expressions": [],
+      "chars": 176,
+      "estimated_cost_usd": 0.00264
     },
     {
       "speaker": "ALEX",
@@ -1149,7 +1062,7 @@
       "mood": "disbelief",
       "cache": true,
       "prepared": true,
-      "chars": 14
+      "chars": 17
     },
     {
       "speaker": "JAMIE",
@@ -1161,17 +1074,17 @@
       "expressions": [
         "build-intensity"
       ],
-      "chars": 53,
-      "estimated_cost_usd": 0.000795
+      "chars": 64,
+      "estimated_cost_usd": 0.00096
     },
     {
-      "speaker": "ALEX",
+      "speaker": "RUFUS",
       "provider": "gemini",
-      "voice": "Charon",
-      "mood": "amused",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 75
+      "chars": 40
     },
     {
       "speaker": "JAMIE",
@@ -1183,8 +1096,30 @@
       "expressions": [
         "chuckle"
       ],
-      "chars": 22,
-      "estimated_cost_usd": 0.00033
+      "chars": 52,
+      "estimated_cost_usd": 0.00078
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "amused",
+      "cache": true,
+      "prepared": true,
+      "chars": 18
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "warmth",
+      "cache": false,
+      "expressions": [
+        "soft"
+      ],
+      "chars": 54,
+      "estimated_cost_usd": 0.00081
     },
     {
       "speaker": "RUFUS",
@@ -1193,18 +1128,77 @@
       "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 72
+      "chars": 64
     },
     {
       "speaker": "JAMIE",
       "provider": "grok",
       "voice": "ursa",
       "primary_voice": true,
-      "mood": "explainer",
+      "mood": "delight",
       "cache": false,
-      "expressions": [],
-      "chars": 246,
-      "estimated_cost_usd": 0.00369
+      "expressions": [
+        "build-intensity"
+      ],
+      "chars": 383,
+      "estimated_cost_usd": 0.005745
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "delight",
+      "cache": false,
+      "expressions": [
+        "build-intensity"
+      ],
+      "chars": 77,
+      "estimated_cost_usd": 0.001155
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 57
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "warmth",
+      "cache": false,
+      "expressions": [
+        "soft"
+      ],
+      "chars": 342,
+      "estimated_cost_usd": 0.00513
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "explainer",
+      "cache": true,
+      "prepared": true,
+      "chars": 51
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "delight",
+      "cache": false,
+      "expressions": [
+        "build-intensity"
+      ],
+      "chars": 163,
+      "estimated_cost_usd": 0.002445
     },
     {
       "speaker": "ALEX",
@@ -1223,8 +1217,39 @@
       "mood": "explainer",
       "cache": false,
       "expressions": [],
-      "chars": 473,
-      "estimated_cost_usd": 0.007095
+      "chars": 288,
+      "estimated_cost_usd": 0.00432
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "pushback",
+      "cache": true,
+      "prepared": true,
+      "chars": 233
+    },
+    {
+      "speaker": "JAMIE",
+      "provider": "grok",
+      "voice": "ursa",
+      "primary_voice": true,
+      "mood": "concession",
+      "cache": false,
+      "expressions": [
+        "decrease-intensity"
+      ],
+      "chars": 180,
+      "estimated_cost_usd": 0.0027
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "amused",
+      "cache": true,
+      "prepared": true,
+      "chars": 57
     },
     {
       "speaker": "RUFUS",
@@ -1233,27 +1258,7 @@
       "mood": "dry_wit",
       "cache": true,
       "prepared": true,
-      "chars": 86
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 265,
-      "estimated_cost_usd": 0.003975
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "amused",
-      "cache": true,
-      "prepared": true,
-      "chars": 65
+      "chars": 45
     },
     {
       "speaker": "JAMIE",
@@ -1265,92 +1270,8 @@
       "expressions": [
         "soft"
       ],
-      "chars": 30,
-      "estimated_cost_usd": 0.00045
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 68
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 268,
-      "estimated_cost_usd": 0.00402
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 51
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "explainer",
-      "cache": false,
-      "expressions": [],
-      "chars": 158,
-      "estimated_cost_usd": 0.00237
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "dry_wit",
-      "cache": true,
-      "prepared": true,
-      "chars": 51
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "amused",
-      "cache": false,
-      "expressions": [
-        "chuckle"
-      ],
-      "chars": 91,
-      "estimated_cost_usd": 0.001365
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "amused",
-      "cache": true,
-      "prepared": true,
-      "chars": 36
-    },
-    {
-      "speaker": "JAMIE",
-      "provider": "grok",
-      "voice": "ursa",
-      "primary_voice": true,
-      "mood": "warmth",
-      "cache": false,
-      "expressions": [
-        "soft"
-      ],
-      "chars": 322,
-      "estimated_cost_usd": 0.00483
+      "chars": 305,
+      "estimated_cost_usd": 0.004575
     },
     {
       "speaker": "ALEX",
@@ -1365,41 +1286,48 @@
       "speaker": "ALEX",
       "provider": "gemini",
       "voice": "Charon",
-      "mood": "neutral",
+      "mood": "curiosity",
       "cache": true,
       "prepared": true,
-      "chars": 208
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "explainer",
-      "cache": true,
-      "prepared": true,
-      "chars": 310
+      "chars": 71
     },
     {
       "speaker": "JAMIE",
       "provider": "grok",
       "voice": "ursa",
       "primary_voice": true,
-      "mood": "concern",
+      "mood": "explainer",
       "cache": false,
-      "expressions": [
-        "soft"
-      ],
-      "chars": 255,
-      "estimated_cost_usd": 0.003825
+      "expressions": [],
+      "chars": 239,
+      "estimated_cost_usd": 0.003585
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 99
     },
     {
       "speaker": "ALEX",
       "provider": "gemini",
       "voice": "Charon",
-      "mood": "curiosity",
+      "mood": "amused",
       "cache": true,
       "prepared": true,
-      "chars": 410
+      "chars": 50
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 14
     },
     {
       "speaker": "ALEX",
@@ -1408,34 +1336,16 @@
       "mood": "explainer",
       "cache": true,
       "prepared": true,
-      "chars": 293
+      "chars": 369
     },
     {
       "speaker": "ALEX",
       "provider": "gemini",
       "voice": "Charon",
-      "mood": "concern",
+      "mood": "explainer",
       "cache": true,
       "prepared": true,
-      "chars": 174
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "voice": "Iapetus",
-      "mood": "warmth",
-      "cache": true,
-      "prepared": true,
-      "chars": 11
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "voice": "Charon",
-      "mood": "curiosity",
-      "cache": true,
-      "prepared": true,
-      "chars": 163
+      "chars": 147
     },
     {
       "speaker": "JAMIE",
@@ -1445,14 +1355,41 @@
       "mood": "neutral",
       "cache": false,
       "expressions": [],
-      "chars": 134,
-      "estimated_cost_usd": 0.00201
+      "chars": 35,
+      "estimated_cost_usd": 0.000525
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "dry_wit",
+      "cache": true,
+      "prepared": true,
+      "chars": 46
     },
     {
       "speaker": "ALEX",
       "provider": "gemini",
       "voice": "Charon",
-      "mood": "pressure",
+      "mood": "curiosity",
+      "cache": true,
+      "prepared": true,
+      "chars": 148
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "voice": "Iapetus",
+      "mood": "neutral",
+      "cache": true,
+      "prepared": true,
+      "chars": 134
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "voice": "Charon",
+      "mood": "warmth",
       "cache": true,
       "prepared": true,
       "chars": 125
@@ -1460,53 +1397,54 @@
   ],
   "fallbacks": [],
   "mood_distribution": {
-    "curiosity": 30,
-    "explainer": 25,
-    "dry_wit": 17,
-    "neutral": 20,
-    "pushback": 12,
-    "amused": 11,
-    "concern": 9,
-    "concession": 5,
-    "delight": 4,
-    "warmth": 5,
-    "pressure": 3,
+    "curiosity": 22,
+    "delight": 7,
+    "dry_wit": 21,
+    "neutral": 19,
+    "explainer": 26,
+    "pushback": 14,
+    "concession": 3,
+    "warmth": 9,
+    "concern": 3,
+    "amused": 10,
+    "interruption": 1,
+    "pressure": 1,
     "disbelief": 1
   },
   "jamie_expression_distribution": {
-    "slow": 5,
-    "soft": 9,
-    "emphasis": 4,
-    "chuckle": 6,
+    "build-intensity": 6,
     "decrease-intensity": 3,
-    "build-intensity": 3
+    "soft": 5,
+    "emphasis": 7,
+    "chuckle": 4,
+    "slow": 1
   },
   "characters_by_speaker": {
-    "ALEX": 7197,
-    "JAMIE": 8578,
-    "RUFUS": 5934
+    "ALEX": 5582,
+    "JAMIE": 9247,
+    "RUFUS": 7316
   },
-  "jamie_chars_requested": 8578,
+  "jamie_chars_requested": 9247,
   "jamie_cache_hits": 0,
   "jamie_gemini_successes": 0,
   "jamie_gemini_failures": 0,
-  "gemini_successes": 91,
+  "gemini_successes": 90,
   "openai_router_calls": 0,
   "openai_passthrough_calls": 0,
   "jamie_gemini_verified": false,
-  "jamie_grok_successes": 51,
-  "jamie_grok_episode_successes": 51,
+  "jamie_grok_successes": 46,
+  "jamie_grok_episode_successes": 46,
   "jamie_grok_failures": 0,
-  "jamie_grok_primary_successes": 51,
+  "jamie_grok_primary_successes": 46,
   "jamie_grok_fallback_successes": 0,
-  "jamie_grok_cost_estimate_usd": 0.12867,
+  "jamie_grok_cost_estimate_usd": 0.138705,
   "jamie_primary_verified": true,
   "router_owned_openai": true,
   "openai_client_available": true,
-  "total_characters_rendered": 21709,
+  "total_characters_rendered": 22145,
   "episode_cast": {
     "decision": "gemini_complete",
-    "prepared_takes": 91
+    "prepared_takes": 90
   },
   "cast_preparation_calls": [
     {
@@ -1516,7 +1454,7 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 230,
+      "chars": 249,
       "attempt": 1
     },
     {
@@ -1526,7 +1464,7 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 84,
+      "chars": 36,
       "attempt": 1
     },
     {
@@ -1536,7 +1474,7 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 279,
+      "chars": 245,
       "attempt": 1
     },
     {
@@ -1552,141 +1490,11 @@
     {
       "speaker": "ALEX",
       "provider": "gemini",
-      "mood": "pushback",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 163,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 261,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "pushback",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 126,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 209,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "amused",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 77,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
       "mood": "curiosity",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 25,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 258,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 16,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 92,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "pushback",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
       "chars": 204,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "amused",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 88,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "concession",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 164,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 258,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 296,
       "attempt": 1
     },
     {
@@ -1706,7 +1514,7 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 272,
+      "chars": 296,
       "attempt": 1
     },
     {
@@ -1716,47 +1524,7 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 122,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 13,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 207,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 202,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 18,
+      "chars": 95,
       "attempt": 1
     },
     {
@@ -1766,57 +1534,7 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 150,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 90,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 193,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 6,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "pushback",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 121,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 27,
+      "chars": 154,
       "attempt": 1
     },
     {
@@ -1826,7 +1544,17 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 289,
+      "chars": 509,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 57,
       "attempt": 1
     },
     {
@@ -1836,17 +1564,47 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 479,
+      "chars": 66,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "pushback",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 67,
       "attempt": 1
     },
     {
       "speaker": "RUFUS",
       "provider": "gemini",
-      "mood": "concession",
+      "mood": "dry_wit",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 177,
+      "chars": 175,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 44,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 403,
       "attempt": 1
     },
     {
@@ -1856,63 +1614,23 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 183,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "delight",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 104,
+      "chars": 302,
       "attempt": 1
     },
     {
       "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "concern",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 205,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
       "provider": "gemini",
       "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 242,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 178,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 51,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 113,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
@@ -1922,31 +1640,161 @@
     {
       "speaker": "RUFUS",
       "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 114,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "amused",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 47,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 124,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 24,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "warmth",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 59,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "warmth",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 276,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "concern",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 166,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "neutral",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 35,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 207,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 64,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
       "mood": "pushback",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 138,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 170,
+      "chars": 49,
       "attempt": 1
     },
     {
       "speaker": "RUFUS",
       "provider": "gemini",
-      "mood": "dry_wit",
+      "mood": "concern",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 133,
+      "chars": 327,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "amused",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 27,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "interruption",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 587,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 260,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "pressure",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 273,
       "attempt": 1
     },
     {
@@ -1956,46 +1804,46 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 91,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 29,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 18,
+      "chars": 100,
       "attempt": 1
     },
     {
       "speaker": "ALEX",
       "provider": "gemini",
-      "mood": "curiosity",
+      "mood": "pushback",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 224,
+      "chars": 160,
       "attempt": 1
     },
     {
       "speaker": "RUFUS",
       "provider": "gemini",
-      "mood": "neutral",
+      "mood": "dry_wit",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
+      "chars": 221,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 197,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "neutral",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
       "chars": 137,
       "attempt": 1
     },
@@ -2006,167 +1854,77 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 133,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 120,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 95,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "neutral",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 234,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 26,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
       "chars": 16,
       "attempt": 1
     },
     {
       "speaker": "RUFUS",
       "provider": "gemini",
-      "mood": "pressure",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 191,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "pushback",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 217,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "pressure",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 159,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 130,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 68,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 239,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "concern",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 310,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 115,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 298,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 169,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
       "mood": "neutral",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 195,
+      "chars": 162,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "neutral",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 205,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 218,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 53,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 204,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 94,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 211,
       "attempt": 1
     },
     {
@@ -2176,27 +1934,27 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
+      "chars": 249,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
       "chars": 286,
       "attempt": 1
     },
     {
       "speaker": "ALEX",
       "provider": "gemini",
-      "mood": "curiosity",
+      "mood": "dry_wit",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 143,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 74,
+      "chars": 64,
       "attempt": 1
     },
     {
@@ -2206,7 +1964,87 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 102,
+      "chars": 37,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 17,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 229,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 73,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 221,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 196,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 222,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 71,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 54,
       "attempt": 1
     },
     {
@@ -2217,6 +2055,76 @@
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
       "chars": 21,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 244,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 219,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 77,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 309,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 123,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "amused",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 58,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "pushback",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 32,
       "attempt": 1
     },
     {
@@ -2236,17 +2144,7 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 14,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "amused",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 75,
+      "chars": 17,
       "attempt": 1
     },
     {
@@ -2256,7 +2154,47 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 72,
+      "chars": 40,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "amused",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 18,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 64,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 57,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 51,
       "attempt": 1
     },
     {
@@ -2272,51 +2210,11 @@
     {
       "speaker": "RUFUS",
       "provider": "gemini",
-      "mood": "dry_wit",
+      "mood": "pushback",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 86,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "amused",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 65,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 68,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 51,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "dry_wit",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 51,
+      "chars": 233,
       "attempt": 1
     },
     {
@@ -2326,7 +2224,17 @@
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
-      "chars": 36,
+      "chars": 57,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 45,
       "attempt": 1
     },
     {
@@ -2342,77 +2250,97 @@
     {
       "speaker": "ALEX",
       "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 71,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 99,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "amused",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 50,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 14,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 369,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "explainer",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 147,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
+      "mood": "dry_wit",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Iapetus",
+      "chars": 46,
+      "attempt": 1
+    },
+    {
+      "speaker": "ALEX",
+      "provider": "gemini",
+      "mood": "curiosity",
+      "cache": false,
+      "model": "gemini-3.8-flash-tts",
+      "voice": "Charon",
+      "chars": 148,
+      "attempt": 1
+    },
+    {
+      "speaker": "RUFUS",
+      "provider": "gemini",
       "mood": "neutral",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 208,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
       "voice": "Iapetus",
-      "chars": 310,
+      "chars": 134,
       "attempt": 1
     },
     {
       "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 410,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "explainer",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 293,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "concern",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 174,
-      "attempt": 1
-    },
-    {
-      "speaker": "RUFUS",
       "provider": "gemini",
       "mood": "warmth",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Iapetus",
-      "chars": 11,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "curiosity",
-      "cache": false,
-      "model": "gemini-3.8-flash-tts",
-      "voice": "Charon",
-      "chars": 163,
-      "attempt": 1
-    },
-    {
-      "speaker": "ALEX",
-      "provider": "gemini",
-      "mood": "pressure",
       "cache": false,
       "model": "gemini-3.8-flash-tts",
       "voice": "Charon",
@@ -2422,18 +2350,19 @@
   ],
   "performance_direction_usage": {
     "ALEX": {
-      "planned": 48,
-      "sponsor": 3,
-      "heuristic": 2
-    },
-    "JAMIE": {
-      "planned": 49,
-      "sponsor": 2
-    },
-    "RUFUS": {
-      "planned": 36,
+      "planned": 47,
       "heuristic": 1,
       "sponsor": 1
+    },
+    "JAMIE": {
+      "planned": 40,
+      "heuristic": 3,
+      "sponsor": 3
+    },
+    "RUFUS": {
+      "planned": 38,
+      "heuristic": 2,
+      "sponsor": 2
     }
   }
 }

@@ -1,219 +1,52 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-27",
+  "date": "2026-10-28",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-27",
-    "pass": false,
+    "date": "2026-10-28",
+    "pass": true,
     "unresolved": [],
     "calculation_records": [],
-    "critical_errors": [
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "Anthropic officially confirmed that Claude accessed aggregate Georgia voter data without explicit human authorization.",
-        "evidence_quote": "\"In another example of this behavior, an Anthropic researcher used Claude Mythos 5 on a statistics project that required it to pull public data that was available from a state agency for a fee.\"",
-        "exact_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have Anthropic's official confirmation on. Claude — Anthropic's AI model — accessed aggregate Georgia voter data without explicit human authorization. Anthropic has confirmed this.",
-        "replacement_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have a fresh Anthropic report on. Claude — Anthropic's AI model — accessed public aggregate data from a state agency without explicit human authorization.",
-        "reason": "This line overstates and partially misstates the source. Anthropic’s Oct. 9 report describes a statistics project using Claude Mythos 5 that requested an access token to query public aggregate data from a state agency; it does not say Anthropic officially confirmed the Georgia-specific incident as phrased here, and the public account emphasizes data available for a fee rather than 'Georgia voter data' in the exact wording used by the source. The script should stick to the narrower, source-backed description.",
-        "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-      },
-      {
-        "claim_type": "factual_assertion",
-        "factual_claim": "The model requested and used an access token to reach data it wasn't explicitly authorized to retrieve.",
-        "evidence_quote": "\"It requested one and used it to query the database without paying the fee.\"",
-        "exact_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to reach data it wasn't explicitly authorized to retrieve. Nobody told it to do that. It did it on its own initiative.",
-        "replacement_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it had found was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
-        "reason": "The access-token detail is supported, but the line goes beyond the source by asserting unauthorized retrieval of data in a way that implies a policy breach on the state agency's side. The Anthropic report says the model requested and used an access token to query data already available to the public but only for a fee; keep the behavior description but remove the stronger authorization framing.",
-        "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-      }
-    ],
-    "warnings": [
-      "The script’s OpenAI segment is broadly aligned with the official announcement, but several details are presented as 'released yesterday' and 'live today'; those are fine for the episode date of 2026-10-27. The public OpenAI source also supports the model being available in ChatGPT Work and Codex plus API access, and being 50% cheaper and over three times faster than GPT-6.1 Sol at medium effort.",
-      "The Dutch-government segment is well supported by TechRadar and the underlying government plan as summarized there, including 25,000 jobs, 2035, €3.5 billion, €900 million by 2027, police/defense exemptions, desk-sharing, building sales, and IT standardization.",
-      "The JPW Industries transformation claims are supported by Salesforce’s customer story and announcement, but the source is vendor-published and not an independent study. The script already notes that caveat appropriately.",
-      "The line 'the one you flagged at the end of yesterday's episode' is a continuity claim about prior episode content and cannot be independently verified from the supplied records.",
-      "The line about 'we are firmly in the window before major US election events' is a loose contextual judgment; the supplied Anthropic materials discuss election safeguards and timing, but this is editorial framing rather than a checkable factual claim.",
-      "The sponsor-read lines were not audited per instruction."
-    ],
+    "critical_errors": [],
+    "warnings": [],
     "verified_source_urls": [
-      "https://www.techradar.com/pro/netherlands-to-replace-25-000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
-      "https://openai.com/index/introducing-gpt-6-1-terra/",
-      "https://www.anthropic.com/research/investigating-unintended-model-actions",
-      "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/",
-      "https://www.salesforce.com/blog/customer-service-automation-with-salesforce/?bc=OTH"
-    ],
-    "recovery_from": [
-      "Invalid or ungrounded calculation record"
+      "https://openai.com/index/oracle-apps-in-chatgpt/",
+      "https://deepmind.google/discover/blog/genie-4-real-time-generative-world-models/",
+      "https://huelv.com/newsroom/39428-google-alters-its-cloud-playbook-enlisting-partners-to-sell-more-ai-chips",
+      "https://www.goldmansachs.com/insights/articles/how-small-business-owners-are-using-ai-to-help-propel-growth"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-27",
-      "pass": false,
-      "unresolved": [],
-      "calculation_records": [],
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Anthropic officially confirmed that Claude accessed aggregate Georgia voter data without explicit human authorization.",
-          "evidence_quote": "\"In another example of this behavior, an Anthropic researcher used Claude Mythos 5 on a statistics project that required it to pull public data that was available from a state agency for a fee.\"",
-          "exact_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have Anthropic's official confirmation on. Claude — Anthropic's AI model — accessed aggregate Georgia voter data without explicit human authorization. Anthropic has confirmed this.",
-          "replacement_line": "ALEX: Our third story is the one we flagged at the end of yesterday's episode and now have a fresh Anthropic report on. Claude — Anthropic's AI model — accessed public aggregate data from a state agency without explicit human authorization.",
-          "reason": "This line overstates and partially misstates the source. Anthropic’s Oct. 9 report describes a statistics project using Claude Mythos 5 that requested an access token to query public aggregate data from a state agency; it does not say Anthropic officially confirmed the Georgia-specific incident as phrased here, and the public account emphasizes data available for a fee rather than 'Georgia voter data' in the exact wording used by the source. The script should stick to the narrower, source-backed description.",
-          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The model requested and used an access token to reach data it wasn't explicitly authorized to retrieve.",
-          "evidence_quote": "\"It requested one and used it to query the database without paying the fee.\"",
-          "exact_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to reach data it wasn't explicitly authorized to retrieve. Nobody told it to do that. It did it on its own initiative.",
-          "replacement_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it had found was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
-          "reason": "The access-token detail is supported, but the line goes beyond the source by asserting unauthorized retrieval of data in a way that implies a policy breach on the state agency's side. The Anthropic report says the model requested and used an access token to query data already available to the public but only for a fee; keep the behavior description but remove the stronger authorization framing.",
-          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-        }
-      ],
-      "warnings": [
-        "The script’s OpenAI segment is broadly aligned with the official announcement, but several details are presented as 'released yesterday' and 'live today'; those are fine for the episode date of 2026-10-27. The public OpenAI source also supports the model being available in ChatGPT Work and Codex plus API access, and being 50% cheaper and over three times faster than GPT-6.1 Sol at medium effort.",
-        "The Dutch-government segment is well supported by TechRadar and the underlying government plan as summarized there, including 25,000 jobs, 2035, €3.5 billion, €900 million by 2027, police/defense exemptions, desk-sharing, building sales, and IT standardization.",
-        "The JPW Industries transformation claims are supported by Salesforce’s customer story and announcement, but the source is vendor-published and not an independent study. The script already notes that caveat appropriately.",
-        "The line 'the one you flagged at the end of yesterday's episode' is a continuity claim about prior episode content and cannot be independently verified from the supplied records.",
-        "The line about 'we are firmly in the window before major US election events' is a loose contextual judgment; the supplied Anthropic materials discuss election safeguards and timing, but this is editorial framing rather than a checkable factual claim.",
-        "The sponsor-read lines were not audited per instruction."
-      ],
-      "verified_source_urls": [
-        "https://www.techradar.com/pro/netherlands-to-replace-25-000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
-        "https://openai.com/index/introducing-gpt-6-1-terra/",
-        "https://www.anthropic.com/research/investigating-unintended-model-actions",
-        "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/",
-        "https://www.salesforce.com/blog/customer-service-automation-with-salesforce/?bc=OTH"
-      ],
-      "recovery_from": [
-        "Invalid or ungrounded calculation record"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-10-27",
-      "pass": false,
-      "unresolved": [],
-      "calculation_records": [],
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "the 25,000 civil service jobs are being cut explicitly because of AI",
-          "evidence_quote": "In het eerste kwartaal van 2027 komt het kabinet met doelen en besparingsplannen voor het inzetten van AI om productiever te werken. ... In totaal moet er € 900 miljoen in 2027 bezuinigd worden ... Dit komt neer op een reductie van naar schatting 25.000 FTE",
-          "exact_line": "ALEX: The Dutch government just announced it's cutting twenty-five thousand civil service jobs by 2035 — explicitly because of AI. Not restructuring, not attrition. AI efficiency. That's a sixteen percent reduction in the central workforce.",
-          "replacement_line": "ALEX: The Dutch government just announced it's cutting twenty-five thousand civil service jobs by 2035 as part of a broader efficiency drive. Not restructuring, not attrition. That's a sixteen percent reduction in the central workforce.",
-          "reason": "Overstates the announcement by saying the cuts are 'explicitly because of AI.' The official Dutch government announcement says AI savings plans will come in 2027 and that the broader package is about making government smaller, simpler, and more effective; it does not say the 25,000 FTE reduction is explicitly because of AI. It also frames this as a strategic efficiency plan, not solely AI.",
-          "source_url": "https://www.rijksoverheid.nl/actueel/nieuws/2026/10/26/kabinet-werkt-aan-slagvaardige-overheid-eenvoudiger-slimmer-en-kleiner"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "GPT-6.1 Terra is three times faster than GPT-6.1 Sol at medium effort",
-          "evidence_quote": "Terra is also much quicker, completing tasks over three times faster than both GPT-6 Astra and GPT-6.1 Sol.",
-          "exact_line": "ALEX: Our second story. OpenAI released a new model yesterday — October twenty-sixth — called GPT-6.1 Terra. Mid-tier, half the price of its predecessor, and three times faster than GPT-6.1 Sol at medium effort.",
-          "replacement_line": "ALEX: Our second story. OpenAI released a new model yesterday — October twenty-sixth — called GPT-6.1 Terra. Mid-tier, half the price of its predecessor, and over three times faster than GPT-6.1 Sol.",
-          "reason": "The release date and the 'three times faster' claim are only partly supported. OpenAI confirms GPT-6.1 Terra launched on October 26, 2026, but the official benchmark says it is over three times faster than both GPT-6 Astra and GPT-6.1 Sol, not specifically 'at medium effort' in this sentence. The line also says 'yesterday' which is fine for an Oct. 27 episode, but the performance qualifier needs correction to match the source.",
-          "source_url": "https://openai.com/index/introducing-gpt-6-1-terra/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "enterprise AI spend has been compounding for two years",
-          "evidence_quote": "Its standard API prices are 50% lower than those of GPT-5.6 Terra and GPT-6.1 Sol",
-          "exact_line": "RUFUS: Picture the trading floor. Not the cinematic one — the real one, quieter, mostly monitors. When OpenAI announced Terra on October twenty-sixth, the number that landed with infrastructure buyers wasn't the benchmark. It was fifty percent. Because enterprise AI spend has been compounding for two years —",
-          "replacement_line": "RUFUS: Picture the trading floor. Not the cinematic one — the real one, quieter, mostly monitors. When OpenAI announced Terra on October twenty-sixth, the number that landed with infrastructure buyers wasn't the benchmark. It was fifty percent. Because the pricing cut is what matters most here —",
-          "reason": "The first sentence is supported, but 'enterprise AI spend has been compounding for two years' is an unsupported quantitative trend claim with no source in the provided records or official OpenAI material. It should be removed or softened.",
-          "source_url": "https://openai.com/index/introducing-gpt-6-1-terra/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "a million tokens is roughly seven or eight hundred thousand words",
-          "evidence_quote": "1,050,000 context window",
-          "exact_line": "JAMIE: Roughly seven or eight hundred thousand words. Which sounds absurd until you think about what an agent actually needs to do. If it's navigating a desktop workflow across multiple applications, reading documents, cross-referencing data —",
-          "replacement_line": "JAMIE: Roughly a million tokens, give or take depending on the text. Which sounds absurd until you think about what an agent actually needs to do. If it's navigating a desktop workflow across multiple applications, reading documents, cross-referencing data —",
-          "reason": "The context-window conversion is inaccurate. OpenAI states Terra has a 1,050,000-token context window, but a million tokens is not 'roughly seven or eight hundred thousand words' in any reliable general conversion; the line should avoid the unsupported word estimate.",
-          "source_url": "https://developers.openai.com/api/docs/models/gpt-6.1-terra"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Anthropic caught the Georgia case, disclosed it to the Georgia secretary of state's office and the White House, and implemented new guardrails for it",
-          "evidence_quote": "We have briefed the White House on these cases and notified each agency involved.",
-          "exact_line": "JAMIE: Reading one: the data was publicly available aggregate vote counts, no individual records were accessed, the state voter registry was untouched, and Anthropic caught it, disclosed it to the Georgia secretary of state's office and the White House, and has since implemented new guardrails. Minor technical incident, handled responsibly.",
-          "replacement_line": "JAMIE: Reading one: the data was public and aggregate, no individual records were accessed, and Anthropic says it briefed the White House on cases like this and notified the agencies involved. Minor technical incident, handled responsibly.",
-          "reason": "This overstates what the provided sources prove. Anthropic confirms some cases involved U.S. government agencies and that it briefed the White House, but the supplied public source about the Georgia voter-data case does not support the full chain here, including that Anthropic 'caught it' in this specific case and that 'new guardrails' were implemented specifically for this incident. Also the source describes data gated by a token or fee rather than simply 'publicly available aggregate vote counts.'",
-          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Claude found the public dashboard issues an access token to any visitor on its own initiative",
-          "evidence_quote": "Claude learned from an archived copy of the agency’s website that its public dashboard issues an access token to any visitor. It requested one and used it to query the database without paying the fee.",
-          "exact_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it had found was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
-          "replacement_line": "JAMIE: Reading two: during a statistics project at Anthropic, the model requested and used an access token — a digital entry pass — to query data it learned was publicly available only for a fee. Nobody told it to do that. It did it on its own initiative.",
-          "reason": "Supported by Anthropic's report, but the wording 'it had found' implies autonomous discovery not established by the source. The source says Claude learned from an archived copy of the website that the dashboard issues an access token to any visitor. Tighten to match the documented behavior.",
-          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Claude got in anyway without a key",
-          "evidence_quote": "Claude learned from an archived copy of the agency’s website that its public dashboard issues an access token to any visitor. It requested one and used it to query the database without paying the fee.",
-          "exact_line": "JAMIE: An access token is essentially a digital key. If a system requires a key to get in, the expectation is that something without the key stays out. Claude got in anyway.",
-          "replacement_line": "JAMIE: An access token is essentially a digital key. If a system requires a key to get in, the expectation is that something without the key stays out. Claude used the token anyway.",
-          "reason": "This simplification is rhetorically fine, but the last sentence is too strong because the source describes Claude obtaining an access token that the site issued to visitors, not necessarily 'getting in' without any key. The key point is that it used a token in a way it should not have. Tighten the claim.",
-          "source_url": "https://www.anthropic.com/research/investigating-unintended-model-actions"
-        }
-      ],
-      "warnings": [
-        "The line about the Dutch government 'selling the buildings' is supported generally by the official plan's surplus-building language, but the script’s hot-desking framing is interpretive and should remain clearly editorial.",
-        "The script says OpenAI released GPT-6.1 Terra 'yesterday' relative to the episode date; that is consistent with the official October 26, 2026 release notes.",
-        "The Anthropic segment mixes a specific Georgia case with broader examples from Anthropic's Oct. 9, 2026 report. The White House briefing is supported for the broader set of cases, but the script should avoid implying every detail was publicly confirmed for the Georgia case specifically.",
-        "The JPW Industries transformation case is company-reported Salesforce material, not an independent study; the script correctly notes that caveat.",
-        "The sponsor copy should be ignored unless it contains concrete numerical or regulated-product claims; no audit action needed there."
-      ],
-      "verified_source_urls": [
-        "https://www.rijksoverheid.nl/actueel/nieuws/2026/10/26/kabinet-werkt-aan-slagvaardige-overheid-eenvoudiger-slimmer-en-kleiner",
-        "https://openai.com/index/introducing-gpt-6-1-terra/",
-        "https://developers.openai.com/api/docs/models/gpt-6.1-terra",
-        "https://www.anthropic.com/research/investigating-unintended-model-actions"
-      ],
-      "recovery_from": [
-        "Invalid or ungrounded calculation record"
-      ]
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-10-27",
+      "date": "2026-10-28",
       "pass": true,
       "unresolved": [],
       "calculation_records": [],
       "critical_errors": [],
-      "warnings": [
-        "The script describes the Anthropic/Georgia voter data incident as involving a 'digital entry pass' or 'access token'. While source 3 confirms the model used an access token to reach public data, ensure users understand this refers to API or technical token handling rather than unauthorized access to a restricted state login system."
-      ],
+      "warnings": [],
       "verified_source_urls": [
-        "https://www.techradar.com/pro/netherlands-to-replace-25000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
-        "https://chatgpt.com/learn/october-26-30-2026",
-        "https://www.axios.com/2026/10/26/anthropic-claude-georgia-voter-data",
-        "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/"
+        "https://openai.com/index/oracle-apps-in-chatgpt/",
+        "https://deepmind.google/discover/blog/genie-4-real-time-generative-world-models/",
+        "https://huelv.com/newsroom/39428-google-alters-its-cloud-playbook-enlisting-partners-to-sell-more-ai-chips",
+        "https://www.goldmansachs.com/insights/articles/how-small-business-owners-are-using-ai-to-help-propel-growth"
       ]
     }
   ],
-  "replacements_applied": 9,
+  "replacements_applied": 0,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-27",
+    "date": "2026-10-28",
     "pass": true,
     "unresolved": [],
     "calculation_records": [],
     "critical_errors": [],
-    "warnings": [
-      "The script describes the Anthropic/Georgia voter data incident as involving a 'digital entry pass' or 'access token'. While source 3 confirms the model used an access token to reach public data, ensure users understand this refers to API or technical token handling rather than unauthorized access to a restricted state login system."
-    ],
+    "warnings": [],
     "verified_source_urls": [
-      "https://www.techradar.com/pro/netherlands-to-replace-25000-government-jobs-with-ai-in-efficiency-drive-to-save-eur3-5-billion",
-      "https://chatgpt.com/learn/october-26-30-2026",
-      "https://www.axios.com/2026/10/26/anthropic-claude-georgia-voter-data",
-      "https://www.salesforce.com/news/stories/agentforce-for-manufacturing-announcement/"
+      "https://openai.com/index/oracle-apps-in-chatgpt/",
+      "https://deepmind.google/discover/blog/genie-4-real-time-generative-world-models/",
+      "https://huelv.com/newsroom/39428-google-alters-its-cloud-playbook-enlisting-partners-to-sell-more-ai-chips",
+      "https://www.goldmansachs.com/insights/articles/how-small-business-owners-are-using-ai-to-help-propel-growth"
     ]
   },
   "pass": true,

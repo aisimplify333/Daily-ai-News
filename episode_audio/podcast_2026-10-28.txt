@@ -1,0 +1,166 @@
+Can Oracle’s New App Composer Make AI Agents Useful for Your Daily Workflow?
+2026-10-28
+
+
+SEGMENT 1 — OpenAI expands Oracle partnership to put ChatGPT Work, Codex, and OpenAI
+
+ALEX: Oracle just became a shopping aisle for OpenAI. ChatGPT Work, Codex, the full API — Oracle customers in the U.S. can buy them today using cloud credits they already have. That's not a pilot. That's a distribution deal dressed up as a product launch.
+JAMIE: And there's an App Composer. You can build actual custom apps with Codex against your own internal data. I did not have "Oracle as an AI app studio" on my calendar.
+RUFUS: Nobody did. That's rather the point.
+[Intro music]
+ALEX: Welcome to The AI Edge.
+ALEX: You're listening to The AI Edge. I'm Alex, with Jamie and Rufus. Today: Oracle as your AI procurement desk, DeepMind's world model that now has ears, and Google moving its custom chips through partners. Let's get into it.
+ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this fast, knowing what happened is not enough; you need to know what changes your next decision.
+ALEX: The Ledger turns the day’s noise into five focused briefings for people who need the consequence before consensus catches up. Subscribe at T-H-E-L-E-D-G-R dot I-O.
+
+SEGMENT 2 — Story 1: OpenAI expands Oracle partnership to put ChatGPT Work, Codex
+
+ALEX: So Oracle and OpenAI announced this on October 27th. ChatGPT Work, Codex, and OpenAI's APIs are now available through Oracle Marketplace. U.S. customers, existing cloud credits. But what actually changed?
+JAMIE: The procurement path changed. That sounds boring but it's genuinely significant. Before this, if you were an Oracle shop — your ERP, your supply chain, your HR system all running on Oracle — and you wanted to add AI, you'd have a separate conversation with OpenAI. Separate contract, separate billing, separate security review.
+ALEX: And now it's the same invoice.
+JAMIE: Same invoice, same credits, same approval chain. In a large organization that's the difference between a six-month pilot and something live next quarter.
+RUFUS: I want to be precise about that. The announcement describes Oracle customers purchasing access through Oracle Marketplace — a meaningful reduction in deal friction. But it's the U.S. only, at this point. And "live next quarter" is doing some optimistic work in the context of enterprise software.
+ALEX: Fair. But the App Composer — can we talk about that? Because that's the part that surprised me.
+JAMIE: So Oracle is describing something called App Composer, which lets teams build custom applications using Codex and other AI tools, connected to approved Oracle data and workflows, and then share those apps across the organization. That's not just buying a subscription. That's actually building something.
+ALEX: Okay, but "approved Oracle data and workflows" — who's approving? Because the pitch sounds like "your own internal data," but the guardrails are Oracle's.
+JAMIE: That's the right question. The announcement says teams build apps against approved Oracle data and workflows, which implies a governance layer. Whether that layer is transparent to the people actually using the app — I don't know from what's been announced.
+RUFUS: And here's where I'd add something that isn't purely technical. The value proposition Oracle is making isn't really about the AI. It's about the data estate. If your company's business logic already lives in Oracle — your inventory, your financials, your customer records —
+RUFUS: then an AI that can act on that data without a lengthy integration project is genuinely valuable. The question isn't whether Codex is good. It's whether Oracle becomes the gravity well that keeps your AI decisions inside its ecosystem.
+ALEX: So the AI is almost secondary to the infrastructure play.
+RUFUS: For the CIO making the procurement decision, almost certainly yes.
+ALEX: But doesn't that describe every enterprise software deal ever made?
+RUFUS: It does. And every one of them has eventually produced a very expensive migration project for whoever came after. I'm not saying it's wrong. I'm saying the pattern is legible.
+JAMIE: I think there are two genuinely different ways to read App Composer, though. One is that it empowers teams who'd never had the budget or the developer resources to build internal tools. Imagine a logistics coordinator who can describe a workflow in plain language and have Codex generate a working app against their Oracle data.
+JAMIE: That's real, if it works.
+ALEX: If it works is doing some lifting there too.
+JAMIE: The other reading is that it's a black box you feed your company's data into and trust that what comes out is correct. The announcement doesn't tell us much about how you'd verify that.
+RUFUS: The announcement says the goal is to let "people and AI agents work across business applications in one connected environment." That phrase — AI agents — is doing significant work. An agent isn't just autocomplete. It's something that takes actions autonomously on your systems. The actual performance of these agents against complex —
+RUFUS: proprietary enterprise data is not established by the announcement.
+ALEX: So the App Composer builds apps using Codex against approved Oracle data. But Codex is a code-generation model. Most people building these apps aren't developers. Does App Composer generate the code invisibly and hand the user a finished tool — or does someone still have to review what Codex produced?
+JAMIE: That's the gap in the announcement. It says teams build apps with Codex and share them across the organization. Whether that means a non-developer describes what they want and the app appears, or whether someone still has to review the generated code — we don't know.
+RUFUS: And that distinction matters enormously for liability. An autonomous agent taking actions against your financial records is a different risk profile than a developer reviewing Codex output before it ships.
+ALEX: So the question of who actually verifies what Codex produced — that's not answered.
+JAMIE: Not from what's been announced. And in a large organization, "approved Oracle data" could mean a governance committee signed off on which datasets the app can touch. It doesn't necessarily mean anyone reviewed the logic of what the app does with that data.
+RUFUS: Which is precisely the kind of detail that surfaces eighteen months after deployment, not at the signing ceremony.
+ALEX: That's almost reassuring in its predictability.
+RUFUS: Enterprise software has always been better at the announcement than the aftermath. This isn't a criticism — it's a schedule.
+JAMIE: That's what we know. What we don't know is whether those apps perform reliably against actual enterprise data, which tends to be incomplete, inconsistently formatted, and —
+RUFUS: Politically complicated.
+JAMIE: I was going to say that.
+RUFUS: I know. It's my favourite qualifier in enterprise software.
+ALEX: Picture an IT director who spent eighteen months getting ChatGPT access approved through InfoSec. This deal might have saved her twelve of those months. That's the concrete win. Whether the app she builds actually does what it's supposed to do — that's still an open question.
+JAMIE: And that's the honest answer. Possibly yes, especially if you're in an organization that runs heavily on Oracle and has been blocked by procurement friction. But the practical utility of the agents themselves — that's what buyers need to test, not just purchase.
+RUFUS: One flag: the purchasing path is U.S. only. International Oracle customers are watching this develop. The procurement shortcut isn't equally available everywhere yet.
+ALEX: Good flag. Okay — our second story.
+
+SEGMENT 3 — Story 2: Google DeepMind Releases Genie 4 World Model With Real-Time
+
+ALEX: Google DeepMind released Genie 4 this week. I need someone to explain what a "generative world model with real-time interactive audio" actually means, because every word in that phrase is doing serious work.
+JAMIE: Okay, so a world model is a system that generates a simulated environment — not just an image, but a space you can interact with. You prompt it, it builds a room or a landscape, you can navigate it, change it. DeepMind's been building toward this. What's new with Genie 4 is two things —
+JAMIE: real-time editing, meaning you can steer the environment while it's running, not just at setup, and integrated audio that reacts to what's happening visually.
+ALEX: So if a door opens in the simulation, the sound changes with it?
+JAMIE: Right. Not a pre-baked sound effect sitting in a file somewhere. Audio synthesis that responds to the visual state as it changes. DeepMind says the latency on that synchronization is lower than previous versions, though they haven't published a specific millisecond figure publicly.
+ALEX: "Lower than before" is doing a lot of work there.
+JAMIE: It is! But the capability itself — a world where the soundscape tracks the visuals in real time — that's genuinely new. Previous versions were visual only.
+RUFUS: I want to bring in the infrastructure angle because it's unavoidable. DeepMind confirms this requires specific GPU infrastructure for real-time inference. It's currently available only to selected researchers and enterprise partners. So when we say "real-time," we mean real-time if you have the compute that most people don't.
+ALEX: Rufus, take us on location.
+RUFUS: Picture the floor of a Wall Street technology investment conference — not a gaming expo, not a research summit, but the kind of room where people are deciding whether GPU infrastructure is a bet worth making at scale. Someone stands up and says —
+RUFUS: DeepMind just released a model that generates a responsive audio-visual world in real time, and it requires specific high-end GPU infrastructure to run. The room doesn't applaud the creativity. It immediately asks: whose chips? How many? What's the capital expenditure? Because a world model that demands serious compute at inference time —
+RUFUS: meaning the running of the model, not just the training of it — is a signal about where infrastructure spending goes next. The companies supplying that compute, or competing to, are watching Genie 4 not for the storytelling but for the order book implications.
+JAMIE: I want to push back slightly. You're framing it purely as an infrastructure cost story, but this is a controlled research access program — not a blank check for GPU spending.
+RUFUS: I'm not disputing the access restrictions. I'm saying the people who'd eventually fund scaling something like this are already running the numbers on what real-time multimodal inference costs at volume. The research phase is exactly when that calculation starts, not after.
+ALEX: Back to the wider story. Jamie, you said "creative prototyping" — what does that actually look like?
+JAMIE: Imagine a game developer building a prototype city environment. Normally you'd need separate teams — visual artists, sound designers, level designers — working for months. With something like Genie 4, you describe the environment, steer it interactively while it generates, and have a working audio-visual prototype to show a publisher much faster.
+JAMIE: The model lets users steer generative worlds through interactive prompts. That's what gets me genuinely excited — it compresses the distance between an idea and something you can actually put in front of someone.
+ALEX: But if a developer doesn't have access to the specific GPU infrastructure required — and most indie developers don't — what does Genie 4 mean to them right now?
+JAMIE: Right now? It's a benchmark. It tells them what's coming. It doesn't change their workflow today.
+RUFUS: Which is an honest answer. The path from "selected access" to "something an indie studio can afford" runs through the same cloud commodity pricing argument that's played out with every major model release for three years.
+JAMIE: True. And the thing I keep coming back to is that the list of people who'd want this is longer than the list of people who can currently run it. Architecture firms, training simulators, filmmakers doing pre-visualization — if you can steer a world and have the soundscape respond —
+JAMIE: that's not just a game development tool. That's a new way to rehearse, prototype and simulate.
+RUFUS: And that gap between who wants it and who can afford it is precisely what makes it a compelling infrastructure investment thesis. Which is exactly why that room I was imagining is paying attention.
+ALEX: So the discovery is real — a world model with reactive audio in real time is genuinely new. The practical access is just narrow, for now.
+JAMIE: For now.
+ALEX: Our third story.
+ALEX: Our third story.
+JAMIE: A short sponsor break for The Ledger. Rufus, can we agree that people need something more useful than another argument about AI?
+RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite. The Ledger offers five focused briefings to help connect news with decisions.
+JAMIE: The Ledger. Briefings there, exquisite disagreements here. Right, let's get back to it.
+
+SEGMENT 4 — Story 3: Google starts widening TPU distribution through partners as
+
+ALEX: Okay, chips. CNBC reported October 28th that Google is changing how it sells its custom AI chips — TPUs, Tensor Processing Units — by enlisting partners to distribute them. Oracle is one of those partners.
+RUFUS: The TPU is Google's alternative to Nvidia's GPUs for running AI workloads. Google's been using them internally for years. The question has always been: can they sell them commercially at scale, outside their own cloud?
+ALEX: And the answer has largely been: not really, not yet.
+RUFUS: Not at the scale Nvidia commands. So what CNBC is describing is Google deciding that relying only on its own cloud isn't working fast enough. They're opening partner channels. Oracle is the named example.
+JAMIE: Oracle is also becoming a distribution point for OpenAI's products this week. It's simultaneously a Google chip reseller and an OpenAI storefront. Oracle is having a week.
+ALEX: Rufus, is that a conflict? Or is Oracle just positioning itself as the enterprise supermarket?
+RUFUS: It means Oracle understands that the margin in the next five years is in being where AI buying decisions get made, not in being the AI company itself. Chips, models, APIs — they want to be the procurement layer.
+JAMIE: The enterprise supermarket. That's actually right.
+ALEX: But here's the harder question. Nvidia has CUDA — that's the software layer developers use to write code that runs on Nvidia chips. It's been around nearly twenty years. There's an enormous existing base built on it. Google's ecosystem is different.
+RUFUS: That's the central adoption challenge. The CNBC story frames this as a distribution and infrastructure play against Nvidia-centric buying patterns. What it doesn't resolve is whether software developers will actually migrate their workloads given how embedded Nvidia's stack already is.
+JAMIE: So you can put TPUs in Oracle's catalog, but if your team's code assumes Nvidia's environment, you've got a migration project before you have a chip swap.
+ALEX: And migration projects in enterprise software have a reputation.
+RUFUS: Several reputations. None flattering.
+JAMIE: But I'd push back on framing this as Google being desperate. If you're an enterprise buyer who's been told Nvidia lead times are long — which has been a genuine constraint — having another credible option available through your existing Oracle relationship is useful. Even if you never fully switch, you have leverage.
+ALEX: The option value.
+JAMIE: Exactly. You don't need everyone running on TPUs for the distribution deal to matter. You need enough buyers considering it seriously to shift the negotiating dynamic.
+RUFUS: And that's the thing infrastructure planners should actually be watching. Not "are TPUs better than Nvidia GPUs?" But: "does a second serious procurement path change what I can negotiate with Nvidia?" Probably yes, at the margin.
+ALEX: Is there anything in the reporting on pricing or performance comparisons?
+RUFUS: No. CNBC frames this as a market strategy and channel distribution move. Specific pricing, benchmarks against Nvidia — not in what's been reported. Anyone making a purchasing decision here would need their own evaluation.
+ALEX: One thing I keep circling back to — Google has been running TPUs internally for years. Does that actually tell us anything about how they perform for workloads Google wasn't designing them around?
+RUFUS: It tells you they're proven at scale under controlled conditions. Whether they handle the diversity of enterprise workloads — which are messier, more varied, less optimized — that's genuinely untested at commercial volume.
+JAMIE: And that's the migration risk nobody's pricing in. It's not just "will my code run." It's "will it run *well enough* that I don't spend six months debugging something that worked fine on Nvidia."
+ALEX: So the Oracle listing gives you access. It doesn't give you confidence.
+RUFUS: Access and confidence are, again, different documents.
+JAMIE: He's going to put that on a mug.
+RUFUS: I've earned it today.
+ALEX: But here's what I find genuinely interesting — Google choosing Oracle specifically. Oracle has enterprise credibility in industries where Google Cloud historically hasn't. Finance, healthcare-adjacent workloads, government-adjacent procurement.
+RUFUS: That's the non-obvious part of the channel strategy. It's not just distribution. It's credibility transfer. Oracle's existing relationships carry Google's chips into rooms where Google wouldn't have been the first call.
+JAMIE: Which means TPU adoption might happen sideways — not because a developer chose them, but because a procurement team already trusted Oracle.
+JAMIE: Which is the honest state of the story. It's a structural change in how Google is trying to sell TPUs. Whether it works commercially — that's what you watch over the next several quarters.
+ALEX: Oracle showing up in both stories on the same day — that can't be accidental.
+RUFUS: It isn't. The margin in the next five years goes to whoever sits between the enterprise buyer and every AI purchasing decision. Models, chips, APIs — Oracle wants to own that layer. Whether being the very busy middle is a durable business or just an excellent week — that's what the next twelve months answer.
+JAMIE: Middle layers have historically done very well in technology markets.
+RUFUS: Right up until they don't.
+RUFUS: Middle layers have historically done very well in technology markets. Right up until they don't.
+ALEX: And on that characteristically reassuring note from Rufus.
+RUFUS: I said they do well. I meant it.
+ALEX: Jamie, show us the AI transformation.
+JAMIE: Okay, I have officially found my new favourite small business owner, and her name is Marie Hunter, and she runs an oil company, and she built her own AI agent named Billi Jean.
+ALEX: Wait, Billi Jean?
+JAMIE: Billi Jean. Named. The agent.
+RUFUS: Is it her agent, or is it not her agent?
+JAMIE: That joke is older than oil itself, Rufus.
+ALEX: I mean, he had to.
+JAMIE: You were supposed to be on my side today.
+RUFUS: I'm always on your side. Billi Jean, however, answers to no one.
+JAMIE: Okay, here's why this is actually great. Marie Hunter owns KRG Oil Company. She and a colleague originally built Billi Jean just to handle emails. Reasonable, boring, useful. But then she started giving the agent new instructions: ingest our financial data, look at this pivot idea, specifically adding solar infrastructure to existing fuel tanks —
+JAMIE: and build me a strategic growth blueprint.
+ALEX: So she handed it a business question instead of an inbox.
+JAMIE: Exactly. And Marie reported this in a Goldman Sachs interview for their ten thousand small businesses programme, so this is her account of what happened. She says rather than just analysing the cost of customising a few tanks for select customers, the agent came back with an ambitious blueprint for an entirely new product line.
+RUFUS: Force multiplier is the phrase people use for that.
+JAMIE: The company owner used exactly that phrase, yes. One person, one agent, scope that would normally require a whole planning team.
+ALEX: So how does a normal person even start something like that?
+JAMIE: Pick one recurring financial or strategic task you keep putting off because it takes too long. A market comparison, a margin analysis, a pivot evaluation. Draft the agent's instructions yourself, feed it your data, and let it produce options for your review before you commit to anything.
+RUFUS: My challenge: we don't know how Billi Jean's logic was built internally. The implementation details weren't publicly disclosed. So you can take inspiration from the outcome without assuming your first attempt produces the same scope.
+JAMIE: Completely fair. Start narrow. One question, one data set, one draft output. You're building the muscle, not cloning Billi Jean on day one.
+ALEX: Which is probably for the best. One Billi Jean is enough.
+RUFUS: The world has a Billi Jean carrying capacity.
+JAMIE: And yet somehow both of you are still here. The case is from a Goldman Sachs interview published this month, link in the notes. The actual payoff here is this: Marie Hunter treated her agent as a thinking partner for strategy, not just a task runner. That reframe is the thing worth stealing.
+ALEX: That's Jamie's AI transformation.
+
+SEGMENT 5 — The Edge: What Changed and What Happens Next
+
+ALEX: Title question. Oracle's App Composer — useful for your daily workflow?
+JAMIE: If you're an Oracle shop that's been blocked by procurement friction, the path to access just got shorter. That's real. Whether the agents perform against the messy data your organization actually has — that's what you test after you sign.
+RUFUS: The announcement is about access. It is not a performance guarantee. Those are different documents.
+ALEX: Different documents with the same logo on the top.
+RUFUS: Almost always.
+ALEX: Watching list. For the Oracle-OpenAI integration: whether enterprise teams report actual productivity gains, or whether the friction just moved from procurement to deployment. For Genie 4: whether the access program widens to more developers, and how quickly GPU costs need to drop before it reaches studios that aren't Google-adjacent. For Google TPUs through Oracle —
+ALEX: watch the next few quarters of cloud infrastructure purchasing decisions to see if TPUs show up as a real alternative or remain a negotiating chip.
+JAMIE: The Ledger midroll, then we're out.
+RUFUS: Tomorrow's episode exists. That's not nothing.
+ALEX: Today’s question for you: Would you prefer your AI tools to be integrated into your existing software or kept as separate, specialized applications?
+RUFUS: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.
+ALEX: What changed. Who wins. What you do next. That’s The AI Edge.
+ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.
