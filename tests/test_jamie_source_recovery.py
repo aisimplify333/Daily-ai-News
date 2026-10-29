@@ -28,3 +28,16 @@ def test_source_typography_normalization_does_not_change_numbers(tmp_path, monke
         assert source_matches(case)
         case['source_quote'] = case['source_quote'].replace('four', 'two')
         assert not source_matches(case)
+
+
+def test_published_history_and_vendor_aliases(tmp_path, monkeypatch):
+    from jamie_transformation import recent_features, repeated_vendor, HANDOFF, RETURN
+    monkeypatch.chdir(tmp_path)
+    archive = tmp_path / 'episode_audio'
+    archive.mkdir()
+    (archive / 'podcast_2026-10-28.txt').write_text(HANDOFF + '\nJAMIE: Salesforce helped this retailer.\n' + RETURN)
+    (archive / 'podcast_2026-10-29.txt').write_text('No feature in this script')
+    history = recent_features()
+    assert len(history) == 1
+    assert repeated_vendor({'tool': 'Agentforce'}, history)
+    assert not repeated_vendor({'tool': 'NotebookLM'}, history)
