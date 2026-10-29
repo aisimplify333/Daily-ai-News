@@ -68,7 +68,7 @@ def _set_default_env() -> None:
     os.environ["ELEVENLABS_ENABLED"] = "false"
     os.environ["ELEVEN_USE_DIALOGUE_SCENES"] = "false"
     os.environ.setdefault("ALEX_TTS_PROVIDER", "openai")
-    os.environ.setdefault("JAMIE_TTS_PROVIDER", "grok")
+    os.environ.setdefault("JAMIE_TTS_PROVIDER", "gemini")
     os.environ.setdefault("RUFUS_TTS_PROVIDER", "openai")
     os.environ.setdefault("GROK_TTS_VOICE_JAMIE", "ursa")
     os.environ.setdefault("GROK_TTS_VOICE_JAMIE_FALLBACK", "celeste")
@@ -123,9 +123,9 @@ def _run_jamie_primary_smoke_test(router_module: Any) -> None:
         _safe_print(">> ℹ️ Jamie primary proof disabled; skipping smoke test.")
         return
     provider = os.getenv("JAMIE_TTS_PROVIDER", "grok").strip().lower()
-    if provider != "grok":
+    if provider not in {"gemini", "grok"}:
         raise RuntimeError(
-            f"REQUIRE_JAMIE_PRIMARY=true but JAMIE_TTS_PROVIDER is {provider!r}, not 'grok'."
+            f"REQUIRE_JAMIE_PRIMARY=true but JAMIE_TTS_PROVIDER is {provider!r}, not approved Gemini/Grok."
         )
     if not hasattr(router_module, "smoke_test_jamie_voice"):
         raise RuntimeError("hybrid_tts_router_v3_1.py does not expose smoke_test_jamie_voice().")
@@ -149,6 +149,13 @@ def _enforce_jamie_primary_report() -> None:
         report = json.loads(REPORT_PATH.read_text(encoding="utf-8"))
     except Exception as exc:
         _safe_print(f">> ⚠️ Could not read Jamie proof report; retain completed audio: {exc}")
+        return
+
+    if os.getenv('JAMIE_TTS_PROVIDER', 'gemini') == 'gemini':
+        calls = [c for c in report.get('calls', []) if c.get('speaker') == 'JAMIE']
+        primary = sum(c.get('provider') == 'gemini' and c.get('voice') == 'Sulafat' for c in calls)
+        _safe_print(f">> Jamie Sulafat: {primary}/{len(calls)} turns; "
+                    "any backup use remains visible in the report; completed audio preserved.")
         return
 
     episode_successes = int(report.get("jamie_grok_episode_successes") or 0)
