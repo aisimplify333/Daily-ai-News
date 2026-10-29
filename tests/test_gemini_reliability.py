@@ -32,3 +32,18 @@ class ReliabilityTests(unittest.TestCase):
                     with self.assertRaisesRegex(RuntimeError, 'approved Gemini voice unavailable'):
                         router.route_text_to_file('A test sentence.', 'ALEX', Path('unused.mp3'))
                     old.assert_not_called()
+
+    def test_jamie_sulafat_primary_and_sticky_ursa_backup(self):
+        import copy
+        with patch.dict(os.environ, {'JAMIE_TTS_PROVIDER': 'gemini'}), patch.dict(router._RT, {}, clear=True), patch.object(router, 'STATS', copy.deepcopy(router.STATS)), patch.object(router, '_write_report'):
+            with patch.object(router, '_gemini_tts_to_file') as gemini, patch('grok_tts_v4.render_jamie') as grok:
+                router.route_text_to_file('A useful discovery.', 'JAMIE', Path('unused.mp3'))
+                gemini.assert_called_once()
+                grok.assert_not_called()
+                gemini.side_effect = RuntimeError('unavailable')
+                grok.return_value = {'characters': 10, 'voice': 'ursa', 'primary_voice': True}
+                router.route_text_to_file('Another discovery.', 'JAMIE', Path('unused.mp3'))
+                router.route_text_to_file('A warm reply.', 'JAMIE', Path('unused.mp3'))
+                self.assertEqual(gemini.call_count, 2)
+                self.assertEqual(grok.call_count, 2)
+                self.assertEqual(router._provider_for('JAMIE'), 'grok')
