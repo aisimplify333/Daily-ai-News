@@ -3,12 +3,12 @@
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "Is the best model enough, or is the real moat distribution and control?"
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?"
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: the advantage a lab builds when its model, data, distribution, and ecosystem make it hard to replace."
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk."
     },
     {
       "type": "jamie_human_line",
@@ -23,7 +23,7 @@
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like a castle built from distribution, data, habit, and switching costs instead of stone."
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens."
     },
     {
       "type": "operator_lesson",
@@ -33,64 +33,64 @@
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether model moat sounds clever. It is who gets caught when it becomes real."
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real."
     }
   ],
   "matches": [
     {
       "type": "alex_pressure_question",
       "speaker": "ALEX",
-      "target": "Is the best model enough, or is the real moat distribution and control?",
-      "matched_line": "So the App Composer builds apps using Codex against approved Oracle data. But Codex is a code-generation model. Most people building these apps aren't developers. Does App Composer generate the code invisibly and hand the user a finished tool — or does someone still have to review what Codex produced?",
-      "match_score": 0.65,
-      "forwardable": false
+      "target": "If an AI agent can touch more tools, does that make it more useful or more dangerous?",
+      "matched_line": "One thing I'm still turning over — Carbon builds on Argon, Google says it's designed for cybersecurity defense. But what does that actually mean architecturally? Is it fine-tuned on security data, or is \"cybersecurity-focused\" just the use case they're marketing it toward?",
+      "match_score": 0.52,
+      "forwardable": true
     },
     {
       "type": "jamie_simple_version",
       "speaker": "JAMIE",
-      "target": "The simple version is this: the advantage a lab builds when its model, data, distribution, and ecosystem make it hard to replace.",
-      "matched_line": "That's the gap in the announcement. It says teams build apps with Codex and share them across the organization. Whether that means a non-developer describes what they want and the app appears, or whether someone still has to review the generated code — we don't know.",
-      "match_score": 0.54,
+      "target": "The simple version is this: every tool, server, connector, and permission an agent can touch becomes a new place for risk.",
+      "matched_line": "And the capex story connects here in a way that's easy to miss. Two of the biggest AI spenders in the world just told investors they're not accelerating infrastructure growth. That's not a crisis, but it is a demand for efficiency. More deliberate model deployment, staged access, pricing designed for high-volume repetitive tasks —",
+      "match_score": 0.49,
       "forwardable": true
     },
     {
       "type": "jamie_human_line",
       "speaker": "JAMIE",
       "target": "The scary part is not the average result. It is the person, patient, team, or company living inside the exception.",
-      "matched_line": "Which means TPU adoption might happen sideways — not because a developer chose them, but because a procurement team already trusted Oracle.",
-      "match_score": 0.53,
+      "matched_line": "And the capex story connects here in a way that's easy to miss. Two of the biggest AI spenders in the world just told investors they're not accelerating infrastructure growth. That's not a crisis, but it is a demand for efficiency. More deliberate model deployment, staged access, pricing designed for high-volume repetitive tasks —",
+      "match_score": 0.5,
       "forwardable": true
     },
     {
       "type": "rufus_undercut",
       "speaker": "RUFUS",
       "target": "Lovely. We have automated the decision and preserved the blame. Very efficient, in the bleakest possible sense.",
-      "matched_line": "I want to bring in the infrastructure angle because it's unavoidable. DeepMind confirms this requires specific GPU infrastructure for real-time inference. It's currently available only to selected researchers and enterprise partners. So when we say \"real-time,\" we mean real-time if you have the compute that most people don't.",
-      "match_score": 0.53,
-      "forwardable": false
+      "matched_line": "I'd watch for reports from developers over the next few weeks about whether they notice model quality differences on different task types. That's the real-world data we don't have yet.",
+      "match_score": 0.5,
+      "forwardable": true
     },
     {
       "type": "analogy_line",
       "speaker": "JAMIE",
-      "target": "Think of it like a castle built from distribution, data, habit, and switching costs instead of stone.",
-      "matched_line": "I think there are two genuinely different ways to read App Composer, though. One is that it empowers teams who'd never had the budget or the developer resources to build internal tools. Imagine a logistics coordinator who can describe a workflow in plain language and have Codex generate a working app against their Oracle data.",
-      "match_score": 0.51,
-      "forwardable": false
+      "target": "Think of it like giving an intern keys to every room in the building and then acting surprised when a door opens.",
+      "matched_line": "And the capex story connects here in a way that's easy to miss. Two of the biggest AI spenders in the world just told investors they're not accelerating infrastructure growth. That's not a crisis, but it is a demand for efficiency. More deliberate model deployment, staged access, pricing designed for high-volume repetitive tasks —",
+      "match_score": 0.57,
+      "forwardable": true
     },
     {
       "type": "operator_lesson",
       "speaker": "ALEX",
       "target": "Do not ask only what launched. Ask what new permission, risk, cost, or accountability chain just appeared.",
-      "matched_line": "But if a developer doesn't have access to the specific GPU infrastructure required — and most indie developers don't — what does Genie 4 mean to them right now?",
-      "match_score": 0.52,
+      "matched_line": "One thing I'm still turning over — Carbon builds on Argon, Google says it's designed for cybersecurity defense. But what does that actually mean architecturally? Is it fine-tuned on security data, or is \"cybersecurity-focused\" just the use case they're marketing it toward?",
+      "match_score": 0.45,
       "forwardable": true
     },
     {
       "type": "final_button",
       "speaker": "RUFUS",
-      "target": "The question for tomorrow is not whether model moat sounds clever. It is who gets caught when it becomes real.",
-      "matched_line": "meaning the running of the model, not just the training of it — is a signal about where infrastructure spending goes next. The companies supplying that compute, or competing to, are watching Genie 4 not for the storytelling but for the order book implications.",
-      "match_score": 0.73,
+      "target": "The question for tomorrow is not whether agent surface area sounds clever. It is who gets caught when it becomes real.",
+      "matched_line": "Correct. Which is exactly what makes the next few quarters interesting. The question isn't whether they can build more data centers. It's whether investors believe existing capacity will generate the revenue that justifies everything already built.",
+      "match_score": 0.56,
       "forwardable": true
     }
   ],

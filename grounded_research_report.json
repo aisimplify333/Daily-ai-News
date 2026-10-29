@@ -1,148 +1,146 @@
 {
-  "episode_date": "2026-10-28",
+  "episode_date": "2026-10-29",
   "discovery_seed_count": 40,
-  "window_start": "2026-10-26T13:06:23.987050+00:00",
-  "window_end": "2026-10-28T13:06:23.987050+00:00",
+  "window_start": "2026-10-27T13:12:48.440106+00:00",
+  "window_end": "2026-10-29T13:12:48.440106+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {},
       "rejected_examples": [],
-      "candidates": 3,
-      "accepted_total": 3,
-      "trusted_total": 1
+      "candidates": 5,
+      "accepted_total": 5,
+      "trusted_total": 2
     },
     {
       "stage": "alternate_refill",
       "rejections": {
-        "outside_freshness_window": 5
+        "duplicate_event": 3,
+        "outside_freshness_window": 1
       },
       "rejected_examples": [
         {
-          "headline": "NVIDIA and Meta expand their Muse collaboration and discuss additional agency-security infrastructure",
-          "published_at": "2026-10-26T00:00:00Z",
-          "reason": "outside_freshness_window"
+          "headline": "Google opens a Connected Apps Platform for Search and Gemini developers",
+          "published_at": "2026-10-28T00:00:00Z",
+          "reason": "duplicate_event"
         },
         {
-          "headline": "Microsoft unveils Windows hybrid-intelligence and Execution Containers for AI agents",
-          "published_at": "2026-10-07T00:00:00Z",
-          "reason": "outside_freshness_window"
+          "headline": "GitHub launches Copilot Fusion with local-and-cloud model routing",
+          "published_at": "2026-10-28T00:00:00Z",
+          "reason": "duplicate_event"
         },
         {
-          "headline": "Anthropic updates its Usage Policy to address longer-running, more independent Claude behavior",
-          "published_at": "2026-10-08T00:00:00Z",
-          "reason": "outside_freshness_window"
+          "headline": "Google launches Gemini 4 Carbon for cyber defenders with stronger security benchmarks",
+          "published_at": "2026-10-28T14:12:00Z",
+          "reason": "duplicate_event"
         },
         {
-          "headline": "OpenAI says GPT-6.1 Terra brings faster computer use and lower pricing",
-          "published_at": "2026-10-26T00:00:00Z",
-          "reason": "outside_freshness_window"
-        },
-        {
-          "headline": "Microsoft says a China-aligned actor used an AI penetration-testing framework in a large supply-chain attack",
-          "published_at": "2026-10-23T10:30:00Z",
+          "headline": "Google opens Guided Vision in Gemini Live for blind and low-vision users",
+          "published_at": "2026-10-01T00:00:00Z",
           "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
-      "accepted_total": 6,
-      "trusted_total": 4
+      "source_upgrades": 1,
+      "accepted_total": 8,
+      "trusted_total": 5
     }
   ],
   "status": "ready",
   "topic_families": [
-    "other",
+    "security",
     "products",
-    "infrastructure"
+    "markets"
   ],
   "concentrated_slate": false,
   "validated_candidates": [
     {
-      "event_key": "openai-oracle-enterprise-apps-chatgpt-work-codex-2026-10-27",
-      "headline": "OpenAI expands Oracle partnership to put ChatGPT Work, Codex, and OpenAI APIs into Oracle\u2019s enterprise software stack",
-      "title": "OpenAI expands Oracle partnership to put ChatGPT Work, Codex, and OpenAI APIs into Oracle\u2019s enterprise software stack",
-      "publisher": "OpenAI",
-      "published": "2026-10-27T00:00:00Z",
-      "published_at": "2026-10-27T00:00:00Z",
-      "source_url": "https://openai.com/index/oracle-apps-in-chatgpt/",
-      "link": "https://openai.com/index/oracle-apps-in-chatgpt/",
-      "summary": "OpenAI and Oracle announced an expanded partnership on October 27, 2026 to connect Oracle business applications with ChatGPT Work, Codex, and OpenAI APIs. OpenAI says the goal is to let people and AI agents work across business applications in one connected environment. Oracle customers in the U.S. can buy access to OpenAI products through Oracle Marketplace using existing procurement processes and Oracle Cloud credits. Oracle also described an App Composer for building apps with Codex and other AI tools against approved Oracle data and workflows.",
+      "event_key": "google-gemini-4-carbon-launch-2026-10-28",
+      "headline": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
+      "title": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
+      "publisher": "Google DeepMind",
+      "published": "2026-10-28T00:00:00Z",
+      "published_at": "2026-10-28T00:00:00Z",
+      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "link": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
+      "summary": "Google DeepMind announced Gemini 4 Carbon on October 28, 2026 as its next frontier model. Google says Carbon is its strongest model yet for cybersecurity and long-horizon tasks, and it builds on Gemini 4 Argon. The company said access starts this week with a subset of cyber defenders and will expand gradually to trusted partners before wider developer, business, and consumer access. Google also said the model launches at the same introductory price as Argon.",
       "facts": [
-        "Announced on October 27, 2026.",
-        "Oracle customers in the U.S. can purchase access to the OpenAI API, Codex, and ChatGPT Work through Oracle Marketplace.",
-        "Oracle App Composer is designed to help teams build apps with Codex and other AI tools, connect them to approved Oracle data and workflows, and share them across the organization.",
-        "The partnership is framed around business applications and AI agents working in one connected environment."
+        "Announced October 28, 2026.",
+        "Google says Carbon is the next frontier model after Gemini 4 Argon.",
+        "Initial access is limited to a subset of cyber defenders, then trusted partners through the Fairwind Program.",
+        "Google says the model is designed for cybersecurity defense and long-horizon agentic workflows."
       ],
       "data_points": [
-        "October 27, 2026"
+        "Oct 28, 2026",
+        "$2 per million input tokens",
+        "$10 per million output tokens",
+        "95% off cached input tokens"
       ],
       "limitations_or_qualifiers": [
-        "The purchase pathway described is for Oracle customers in the U.S.",
-        "The announcement is about enterprise workflows, not general consumer access."
+        "Initial access is limited; not broadly available to developers, businesses, or consumers at launch.",
+        "Google says it will phase access gradually and continue guardrail testing before wider release."
       ],
-      "why_it_matters": "This matters because it moves AI from chat into the enterprise systems where work is actually executed, bought, and governed.",
+      "why_it_matters": "This matters because it pairs a major new model with a concrete, restricted access path that affects security teams first and broader AI competition soon after.",
       "editorial_case": {
-        "new_development": "OpenAI and Oracle turned their existing relationship into a distribution and workflow integration story for enterprise AI use.",
-        "affected_listener": "Enterprise IT, business software buyers, and workers who use Oracle-backed systems.",
-        "why_today": "It is a concrete enterprise-access release with immediate procurement and workflow implications.",
-        "distinct_question": "How do AI tools get embedded into the systems companies already use to run operations?",
-        "new_since_prior_coverage": "The material new fact is the October 27 enterprise integration and U.S. purchasing path through Oracle Marketplace.",
-        "practical_payoff": "Buyers can watch whether Oracle becomes a lower-friction route for deploying ChatGPT Work and Codex inside business operations."
+        "new_development": "Google moved from announcing Gemini 4 Argon to launching Gemini 4 Carbon with a more security-focused positioning and a staged access plan.",
+        "affected_listener": "Cyber defenders, enterprise security teams, and AI developers watching frontier-model access.",
+        "why_today": "It is one of the clearest model launches in the window and it answers what changed, who can use it now, and how Google is sequencing access.",
+        "distinct_question": "What does Gemini 4 Carbon actually do, and who can use it right now?",
+        "new_since_prior_coverage": "Compared with prior Gemini 4 coverage, the material new fact is Carbon's launch, the cyber-defender rollout, and its pricing/access details.",
+        "practical_payoff": "Security teams can watch whether Carbon becomes a deployable tool for vulnerability finding and patching, not just a benchmark winner."
       },
       "editorial_scores": {
         "human_consequence": 4,
-        "novelty": 4,
+        "novelty": 5,
         "explanatory_value": 5,
         "evidence_depth": 5
       },
-      "story_age_hours": 37.11,
+      "story_age_hours": 37.21,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
       "story_tier": "primary",
-      "topic_family": "other"
+      "topic_family": "security"
     },
     {
-      "event_key": "google-deepmind-genie-4-launch",
-      "headline": "Google DeepMind Releases Genie 4 World Model With Real-Time Editing and Audio",
-      "title": "Google DeepMind Releases Genie 4 World Model With Real-Time Editing and Audio",
-      "publisher": "DeepMind",
-      "published": "2026-10-28T08:30:00Z",
-      "published_at": "2026-10-28T08:30:00Z",
-      "source_url": "https://deepmind.google/discover/blog/genie-4-real-time-generative-world-models/",
-      "link": "https://deepmind.google/discover/blog/genie-4-real-time-generative-world-models/",
-      "summary": "Google DeepMind has unveiled Genie 4, a new generative world model capable of real-time interactive environment creation, now featuring integrated audio synthesis. Unlike its predecessor, Genie 4 supports native high-fidelity audio generation that reacts dynamically to visual changes in the simulation. This model is currently available to selected researchers and enterprise partners for testing virtual world simulation and creative prototyping.",
+      "event_key": "github-copilot-fusion-multi-model-launch",
+      "headline": "GitHub Launches Copilot Fusion for Multi-Model AI Coding",
+      "title": "GitHub Launches Copilot Fusion for Multi-Model AI Coding",
+      "publisher": "GitHub",
+      "published": "2026-10-29T07:38:00Z",
+      "published_at": "2026-10-29T07:38:00Z",
+      "source_url": "https://www.neowin.net/news/github-copilot-fusion-combines-multiple-ai-models-to-write-better-code-at-lower-cost/",
+      "link": "https://www.neowin.net/news/github-copilot-fusion-combines-multiple-ai-models-to-write-better-code-at-lower-cost/",
+      "summary": "GitHub has introduced 'Copilot Fusion,' a new capability that enables the use of multiple AI models for code generation, rather than relying on a single model. By dynamically selecting models based on complexity and cost, GitHub aims to improve code quality while reducing compute overhead. The system is designed to route specific coding tasks to the most efficient model available within the GitHub ecosystem.",
       "facts": [
-        "Genie 4 enables real-time editing of generated environments.",
-        "Integrated audio synthesis responds to visual state changes.",
-        "Model allows users to 'steer' generative worlds via interactive prompts.",
-        "Available to research partners and select enterprise clients.",
-        "Demonstrates lower latency in visual-audio synchronization compared to previous versions."
+        "GitHub Copilot Fusion allows developers to utilize multiple AI models simultaneously.",
+        "The system dynamically routes coding tasks to optimize for both quality and cost.",
+        "Reduces compute overhead by matching model capabilities to task complexity.",
+        "Aims to enhance coding efficiency for enterprise and individual developers."
       ],
       "data_points": [
-        "Real-time editing capability",
-        "Integrated audio synthesis"
+        "Introduced on October 29, 2026."
       ],
       "limitations_or_qualifiers": [
-        "Currently limited to researchers and enterprise partners.",
-        "Requires specific GPU infrastructure for real-time inference."
+        "Requires active GitHub Copilot subscription.",
+        "Performance depends on the selection of integrated models."
       ],
-      "why_it_matters": "The integration of audio with real-time world modeling marks a significant step toward fully immersive, reactive AI-driven simulation platforms.",
+      "why_it_matters": "This marks a strategic shift toward model-agnostic development tools, reducing vendor lock-in for enterprise software engineering.",
       "editorial_case": {
-        "new_development": "First release of a multimodal world model with natively integrated, reactive audio.",
-        "affected_listener": "Game developers, simulators, and creative technologists.",
-        "why_today": "Represents the bleeding edge of world modeling before major earnings calls.",
-        "distinct_question": "Can we generate responsive, interactive audio-visual environments in real-time?",
-        "new_since_prior_coverage": "New model release; prior coverage focused on visual-only world models.",
-        "practical_payoff": "Provides a new benchmark for simulation speed and interactivity."
+        "new_development": "First multi-model routing integration for a major coding assistant.",
+        "affected_listener": "Software engineers and dev-ops teams looking to optimize AI-assisted coding costs.",
+        "why_today": "Represents the next phase of agentic coding tools\u2014optimization over mere generation.",
+        "distinct_question": "Can we improve code assistant performance by swapping models on the fly?",
+        "new_since_prior_coverage": "New feature launch, distinct from previous single-model iterations.",
+        "practical_payoff": "Developers can expect potentially lower subscription or compute costs for standard coding tasks."
       },
       "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 5,
+        "human_consequence": 4,
+        "novelty": 4,
         "explanatory_value": 4,
-        "evidence_depth": 4
+        "evidence_depth": 3
       },
-      "story_age_hours": 4.61,
+      "story_age_hours": 5.58,
       "source_tier": 3,
       "grounded": true,
       "rank": 2,
@@ -150,182 +148,186 @@
       "topic_family": "products"
     },
     {
-      "event_key": "google-tpu-partner-distribution-oracle-cloud-2026-10-28",
-      "headline": "Google starts widening TPU distribution through partners as Oracle adds Google chips to its AI cloud menu",
-      "title": "Google starts widening TPU distribution through partners as Oracle adds Google chips to its AI cloud menu",
+      "event_key": "google-microsoft-capex-forecast-delay",
+      "headline": "Google and Microsoft Delay Capital Expenditure Forecasts in Q3 Earnings",
+      "title": "Google and Microsoft Delay Capital Expenditure Forecasts in Q3 Earnings",
       "publisher": "CNBC",
-      "published": "2026-10-28T07:00:00Z",
-      "published_at": "2026-10-28T07:00:00Z",
-      "source_url": "https://huelv.com/newsroom/39428-google-alters-its-cloud-playbook-enlisting-partners-to-sell-more-ai-chips",
-      "link": "https://huelv.com/newsroom/39428-google-alters-its-cloud-playbook-enlisting-partners-to-sell-more-ai-chips",
-      "summary": "CNBC reported on October 28, 2026 that Google is changing its cloud strategy by enlisting partners to sell more of its custom Tensor Processing Units. The report says Oracle is one of the channels Google is using to expand TPU distribution. This is a market-facing infrastructure move, not a model launch, and it is aimed at broadening the commercial reach of Google\u2019s AI chip business. The development comes as cloud and chip vendors compete to supply AI workloads beyond Nvidia-centric buying patterns.",
+      "published": "2026-10-29T11:30:01Z",
+      "published_at": "2026-10-29T11:30:01Z",
+      "source_url": "https://www.cnbc.com/2026/10/29/ai-build-out-hits-snag-as-google-and-microsoft-put-off-raising-capex-forecasts.html",
+      "link": "https://www.cnbc.com/2026/10/29/ai-build-out-hits-snag-as-google-and-microsoft-put-off-raising-capex-forecasts.html",
+      "summary": "Google and Microsoft have opted not to raise their capital expenditure forecasts for the upcoming quarter following their Q3 earnings reports. Analysts suggest this reflects a cautious approach to the 'AI build-out' as firms look to better align expensive infrastructure investments with tangible revenue returns. The decision highlights emerging market concerns regarding the sustainability of current AI spending levels.",
       "facts": [
-        "Reported on October 28, 2026.",
-        "Google is enlisting partners to sell more of its custom Tensor Processing Units.",
-        "Oracle is being used as another avenue for selling TPUs.",
-        "The story is about a cloud and chip distribution strategy, not a new model release."
+        "Google and Microsoft did not increase capex forecasts in Q3.",
+        "Reflects a cautious strategy regarding AI infrastructure expansion.",
+        "Investors are looking for clearer revenue returns on existing AI spend.",
+        "Signals a potential slowdown or reassessment of AI infrastructure growth."
       ],
       "data_points": [
-        "October 28, 2026"
+        "Reported October 29, 2026."
       ],
       "limitations_or_qualifiers": [
-        "This is a reported market strategy, not a standalone Google press release in the source set provided.",
-        "The article frame is infrastructure and channel distribution rather than consumer AI access."
+        "Market analysis based on earnings report data.",
+        "Does not constitute a permanent halt to infrastructure investment."
       ],
-      "why_it_matters": "This matters because chip distribution determines who can scale AI systems and at what cost, which can reshape the AI hardware market.",
+      "why_it_matters": "This suggests that the 'AI boom' may be shifting from a phase of unchecked expansion to one of disciplined financial accountability.",
       "editorial_case": {
-        "new_development": "Google appears to be broadening TPU sales through partners instead of relying only on direct cloud channels.",
-        "affected_listener": "Cloud buyers, AI infrastructure planners, and chip-market watchers.",
-        "why_today": "It changes the competitive structure of AI infrastructure supply, which is a live market question now.",
-        "distinct_question": "How is Google trying to commercialize TPUs beyond its own cloud?",
-        "new_since_prior_coverage": "The new fact is partner-led TPU distribution through Oracle reported on October 28, 2026.",
-        "practical_payoff": "Watch whether more AI buyers begin treating Google TPUs as a mainstream alternative procurement path."
-      },
-      "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 4,
-        "explanatory_value": 5,
-        "evidence_depth": 4
-      },
-      "story_age_hours": 6.11,
-      "source_tier": 2,
-      "grounded": true,
-      "rank": 3,
-      "story_tier": "primary",
-      "topic_family": "infrastructure"
-    },
-    {
-      "event_key": "meta-ai-spending-financing-earnings-october-2026",
-      "headline": "Meta\u2019s AI spending pressure and financing strategy intensify after Q3 results",
-      "title": "Meta\u2019s AI spending pressure and financing strategy intensify after Q3 results",
-      "publisher": "Reuters",
-      "published": "2026-10-27T06:05:00Z",
-      "published_at": "2026-10-27T06:05:00Z",
-      "source_url": "https://www.investing.com/news/economy-news/big-tech-earnings-a-test-of-the-ai-boom-amid-market-turmoil-4974716",
-      "link": "https://www.investing.com/news/economy-news/big-tech-earnings-a-test-of-the-ai-boom-amid-market-turmoil-4974716",
-      "summary": "Reuters reported on October 27, 2026 that Big Tech earnings were becoming a test of the AI boom as investors weigh cloud growth against rising AI spending. The report says concerns about capital expenditure and free cash flow are shaping reactions to Meta and other large technology firms. It also notes that the market is watching whether cloud revenue can keep up with the cost of AI infrastructure. This is a financial consequence story, not a new AI product launch.",
-      "facts": [
-        "Published on October 27, 2026.",
-        "Reuters says Big Tech earnings were being treated as a test of the AI boom.",
-        "The report says investors are focused on whether cloud growth can fund rising AI capital expenditure.",
-        "The piece frames Meta and other large tech firms around rising AI spending and free cash flow pressure."
-      ],
-      "data_points": [
-        "October 27, 2026"
-      ],
-      "limitations_or_qualifiers": [
-        "This is market reporting, not a direct corporate product announcement.",
-        "The Reuters article is accessed via syndication on Investing.com in the source set provided."
-      ],
-      "why_it_matters": "This matters because AI expansion is now a capital-markets story as much as a product story.",
-      "editorial_case": {
-        "new_development": "Markets are explicitly pricing the cost of AI buildout into major tech earnings expectations.",
-        "affected_listener": "Investors, tech workers, and anyone watching the economics of AI infrastructure.",
-        "why_today": "It explains why AI spending is becoming a live financial constraint rather than a hypothetical future issue.",
-        "distinct_question": "Can Big Tech keep funding AI expansion without damaging free cash flow?",
-        "new_since_prior_coverage": "The new fact is the October 27 Reuters framing of earnings as a test of the AI boom.",
-        "practical_payoff": "Watch whether cloud growth and monetization justify continued capex or force more financing and restructuring."
-      },
-      "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 3,
-        "explanatory_value": 4,
-        "evidence_depth": 4
-      },
-      "story_age_hours": 31.02,
-      "source_tier": 3,
-      "grounded": true,
-      "rank": 4,
-      "story_tier": "supporting",
-      "topic_family": "other"
-    },
-    {
-      "event_key": "cisco-ai-agent-detection-tool",
-      "headline": "Cisco Open Sources Tool for Detecting AI Agents on Hacking Sprees",
-      "title": "Cisco Open Sources Tool for Detecting AI Agents on Hacking Sprees",
-      "publisher": "The Register",
-      "published": "2026-10-28T00:00:00Z",
-      "published_at": "2026-10-28T00:00:00Z",
-      "source_url": "https://www.theregister.com/2026/10/28/cisco_open_sources_ai_agent_detector/",
-      "link": "https://www.theregister.com/2026/10/28/cisco_open_sources_ai_agent_detector/",
-      "summary": "Cisco has open-sourced a new security tool designed to identify and flag autonomous AI agents performing malicious activity on enterprise networks. The tool uses behavioral heuristics to distinguish between legitimate automated tasks and high-velocity hacking attempts, such as automated vulnerability exploitation. It is intended to integrate with existing Security Operations Center (SOC) workflows to provide real-time alerts.",
-      "facts": [
-        "Tool is open-source and available for enterprise deployment.",
-        "Detects behavioral patterns characteristic of autonomous hacking agents.",
-        "Integrates with standard network logging and SOC monitoring tools.",
-        "Focuses on identifying unauthorized AI agents in corporate environments.",
-        "Developed in response to rising agentic cybersecurity threats."
-      ],
-      "data_points": [],
-      "limitations_or_qualifiers": [
-        "Requires active network monitoring and logging integration.",
-        "Effectiveness depends on the baseline behavior models set by the user."
-      ],
-      "why_it_matters": "As autonomous agents become a primary vector for cyberattacks, this tool provides a critical defense layer for enterprises needing to verify agent intent.",
-      "editorial_case": {
-        "new_development": "First enterprise-grade open-source defense tool specifically for agentic threats.",
-        "affected_listener": "IT security teams and CISOs managing AI agent risk.",
-        "why_today": "Addresses the immediate, documented surge in AI-led cybersecurity incidents.",
-        "distinct_question": "How do we distinguish between an automated agent and a malicious attacker?",
-        "new_since_prior_coverage": "New tool availability; prior coverage discussed the threat, not the solution.",
-        "practical_payoff": "Enterprises can deploy this to harden their networks against agentic attacks."
+        "new_development": "Financial signal indicating a cooling off of AI capex growth.",
+        "affected_listener": "Investors, tech market observers, infrastructure planners.",
+        "why_today": "Crucial market context for anyone watching the tech sector.",
+        "distinct_question": "Are tech giants hitting a limit in how much they can spend on AI?",
+        "new_since_prior_coverage": "This is a direct report on earnings and fiscal guidance.",
+        "practical_payoff": "Expect heightened investor pressure on AI profitability in the next few quarters."
       },
       "editorial_scores": {
         "human_consequence": 4,
         "novelty": 3,
-        "explanatory_value": 4,
-        "evidence_depth": 3
+        "explanatory_value": 5,
+        "evidence_depth": 4
       },
-      "story_age_hours": 13.11,
-      "source_tier": 1,
+      "story_age_hours": 1.71,
+      "source_tier": 2,
+      "grounded": true,
+      "rank": 3,
+      "story_tier": "primary",
+      "topic_family": "markets"
+    },
+    {
+      "event_key": "openai-servicenow-enterprise-workflows-2026-10-28",
+      "headline": "OpenAI and ServiceNow deepen enterprise integration across workflows, security, and agentic development",
+      "title": "OpenAI and ServiceNow deepen enterprise integration across workflows, security, and agentic development",
+      "publisher": "OpenAI",
+      "published": "2026-10-28T00:00:00Z",
+      "published_at": "2026-10-28T00:00:00Z",
+      "source_url": "https://openai.com/index/openai-servicenow-partnership-expansion/",
+      "link": "https://openai.com/index/openai-servicenow-partnership-expansion/",
+      "summary": "OpenAI and ServiceNow announced an expanded partnership on October 28, 2026. The companies said the goal is to bring OpenAI models and agents more deeply into ServiceNow products and to connect ServiceNow workflows with ChatGPT and Codex. OpenAI said the integration includes a new ServiceNow connection inside ChatGPT so users can investigate issues and take actions without leaving the chat. ServiceNow said its MCP plugin is available in the OpenAI marketplace, with enhanced capabilities expected by the end of 2026.",
+      "facts": [
+        "Announced October 28, 2026.",
+        "ServiceNow workflows will connect with ChatGPT and Codex.",
+        "A new ServiceNow integration in ChatGPT lets users find similar incidents, assess change risk, and update a ServiceNow record without leaving ChatGPT.",
+        "ServiceNow says its MCP plugin is already available in the OpenAI marketplace."
+      ],
+      "data_points": [
+        "October 28, 2026",
+        "end of 2026"
+      ],
+      "limitations_or_qualifiers": [
+        "The announcement is enterprise-focused, not consumer-facing.",
+        "Enhanced capabilities are expected later, not fully delivered at launch."
+      ],
+      "why_it_matters": "This matters because it moves AI from conversation into governed enterprise actions in one of the biggest workflow platforms in business software.",
+      "editorial_case": {
+        "new_development": "The partnership moved from general collaboration to a concrete workflow integration across development, security, and operations.",
+        "affected_listener": "Enterprise IT teams, ServiceNow customers, and workers who rely on ServiceNow workflows.",
+        "why_today": "It is a fresh, high-signal enterprise release with clear user-facing workflow changes and a distribution channel in the OpenAI marketplace.",
+        "distinct_question": "How do AI assistants get embedded into the systems companies already use to run operations?",
+        "new_since_prior_coverage": "The material new fact is the October 28 expansion and the specific ChatGPT-to-ServiceNow action path.",
+        "practical_payoff": "Buyers can monitor whether this lowers friction for incident handling and workflow automation inside regulated enterprise environments."
+      },
+      "editorial_scores": {
+        "human_consequence": 4,
+        "novelty": 4,
+        "explanatory_value": 5,
+        "evidence_depth": 5
+      },
+      "story_age_hours": 37.21,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 4,
+      "story_tier": "supporting",
+      "topic_family": "products"
+    },
+    {
+      "event_key": "google-singapore-health-ai-partnership-2026-10-29",
+      "headline": "Google deepens Singapore health AI partnership and opens a new research hub",
+      "title": "Google deepens Singapore health AI partnership and opens a new research hub",
+      "publisher": "Google",
+      "published": "2026-10-29T00:00:00Z",
+      "published_at": "2026-10-29T00:00:00Z",
+      "source_url": "https://blog.google/innovation-and-ai/technology/health/google-for-health-summit-singapore/",
+      "link": "https://blog.google/innovation-and-ai/technology/health/google-for-health-summit-singapore/",
+      "summary": "Google announced on October 29, 2026 that it is deepening its partnership with Singapore to deploy frontier AI across the health system. The company said it is opening a new Google Research hub and supporting frontline clinicians, medical research, and proactive health tools. Google.org and Google DeepMind are contributing $7 million to the Philanthropy Asia Alliance\u2019s Health for Human Potential Coalition, including $1 million for PathGen, an AI platform for detecting disease threats and sharing public-health data while preserving sovereignty. The announcement frames the effort around research, care delivery, and public-health intelligence.",
+      "facts": [
+        "Announced October 29, 2026.",
+        "Google is opening a new Google Research hub in Singapore.",
+        "Google.org and Google DeepMind are contributing $7 million to the Health for Human Potential Coalition.",
+        "$1 million is earmarked for PathGen."
+      ],
+      "data_points": [
+        "October 29, 2026",
+        "$7 million",
+        "$1 million"
+      ],
+      "limitations_or_qualifiers": [
+        "The announcement is specific to Singapore and its public-health context.",
+        "PathGen is described as protecting in-country data sovereignty."
+      ],
+      "why_it_matters": "This matters because it is a rare AI story that combines research, public health, and national deployment in one dated announcement.",
+      "editorial_case": {
+        "new_development": "Google moved from general health AI work to a country-specific partnership and research hub in Singapore.",
+        "affected_listener": "Singapore health agencies, clinicians, researchers, and public-health users.",
+        "why_today": "It is the clearest fresh science-and-public-interest announcement in the window that is not just a model or capex story.",
+        "distinct_question": "How is frontier AI being applied in a national health system right now?",
+        "new_since_prior_coverage": "The material new fact is the Singapore partnership, new research hub, and disclosed funding amounts.",
+        "practical_payoff": "Observers can watch whether the partnership produces deployable health tools and public-health data infrastructure."
+      },
+      "editorial_scores": {
+        "human_consequence": 5,
+        "novelty": 4,
+        "explanatory_value": 4,
+        "evidence_depth": 4
+      },
+      "story_age_hours": 13.21,
+      "source_tier": 3,
       "grounded": true,
       "rank": 5,
       "story_tier": "supporting",
-      "topic_family": "products"
+      "topic_family": "other"
     }
   ],
   "selected_editorial_cases": [
     {
-      "headline": "OpenAI expands Oracle partnership to put ChatGPT Work, Codex, and OpenAI APIs into Oracle\u2019s enterprise software stack",
-      "source_url": "https://openai.com/index/oracle-apps-in-chatgpt/",
+      "headline": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
+      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "OpenAI and Oracle turned their existing relationship into a distribution and workflow integration story for enterprise AI use.",
-        "affected_listener": "Enterprise IT, business software buyers, and workers who use Oracle-backed systems.",
-        "why_today": "It is a concrete enterprise-access release with immediate procurement and workflow implications.",
-        "distinct_question": "How do AI tools get embedded into the systems companies already use to run operations?",
-        "new_since_prior_coverage": "The material new fact is the October 27 enterprise integration and U.S. purchasing path through Oracle Marketplace.",
-        "practical_payoff": "Buyers can watch whether Oracle becomes a lower-friction route for deploying ChatGPT Work and Codex inside business operations."
+        "new_development": "Google moved from announcing Gemini 4 Argon to launching Gemini 4 Carbon with a more security-focused positioning and a staged access plan.",
+        "affected_listener": "Cyber defenders, enterprise security teams, and AI developers watching frontier-model access.",
+        "why_today": "It is one of the clearest model launches in the window and it answers what changed, who can use it now, and how Google is sequencing access.",
+        "distinct_question": "What does Gemini 4 Carbon actually do, and who can use it right now?",
+        "new_since_prior_coverage": "Compared with prior Gemini 4 coverage, the material new fact is Carbon's launch, the cyber-defender rollout, and its pricing/access details.",
+        "practical_payoff": "Security teams can watch whether Carbon becomes a deployable tool for vulnerability finding and patching, not just a benchmark winner."
       }
     },
     {
-      "headline": "Google DeepMind Releases Genie 4 World Model With Real-Time Editing and Audio",
-      "source_url": "https://deepmind.google/discover/blog/genie-4-real-time-generative-world-models/",
+      "headline": "GitHub Launches Copilot Fusion for Multi-Model AI Coding",
+      "source_url": "https://www.neowin.net/news/github-copilot-fusion-combines-multiple-ai-models-to-write-better-code-at-lower-cost/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "First release of a multimodal world model with natively integrated, reactive audio.",
-        "affected_listener": "Game developers, simulators, and creative technologists.",
-        "why_today": "Represents the bleeding edge of world modeling before major earnings calls.",
-        "distinct_question": "Can we generate responsive, interactive audio-visual environments in real-time?",
-        "new_since_prior_coverage": "New model release; prior coverage focused on visual-only world models.",
-        "practical_payoff": "Provides a new benchmark for simulation speed and interactivity."
+        "new_development": "First multi-model routing integration for a major coding assistant.",
+        "affected_listener": "Software engineers and dev-ops teams looking to optimize AI-assisted coding costs.",
+        "why_today": "Represents the next phase of agentic coding tools\u2014optimization over mere generation.",
+        "distinct_question": "Can we improve code assistant performance by swapping models on the fly?",
+        "new_since_prior_coverage": "New feature launch, distinct from previous single-model iterations.",
+        "practical_payoff": "Developers can expect potentially lower subscription or compute costs for standard coding tasks."
       }
     },
     {
-      "headline": "Google starts widening TPU distribution through partners as Oracle adds Google chips to its AI cloud menu",
-      "source_url": "https://huelv.com/newsroom/39428-google-alters-its-cloud-playbook-enlisting-partners-to-sell-more-ai-chips",
+      "headline": "Google and Microsoft Delay Capital Expenditure Forecasts in Q3 Earnings",
+      "source_url": "https://www.cnbc.com/2026/10/29/ai-build-out-hits-snag-as-google-and-microsoft-put-off-raising-capex-forecasts.html",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google appears to be broadening TPU sales through partners instead of relying only on direct cloud channels.",
-        "affected_listener": "Cloud buyers, AI infrastructure planners, and chip-market watchers.",
-        "why_today": "It changes the competitive structure of AI infrastructure supply, which is a live market question now.",
-        "distinct_question": "How is Google trying to commercialize TPUs beyond its own cloud?",
-        "new_since_prior_coverage": "The new fact is partner-led TPU distribution through Oracle reported on October 28, 2026.",
-        "practical_payoff": "Watch whether more AI buyers begin treating Google TPUs as a mainstream alternative procurement path."
+        "new_development": "Financial signal indicating a cooling off of AI capex growth.",
+        "affected_listener": "Investors, tech market observers, infrastructure planners.",
+        "why_today": "Crucial market context for anyone watching the tech sector.",
+        "distinct_question": "Are tech giants hitting a limit in how much they can spend on AI?",
+        "new_since_prior_coverage": "This is a direct report on earnings and fiscal guidance.",
+        "practical_payoff": "Expect heightened investor pressure on AI profitability in the next few quarters."
       }
     }
   ],
   "listener_frames": [
-    "other",
+    "accountability_risk",
     "products",
-    "infrastructure"
+    "markets"
   ],
   "candidate_target": 5,
   "required_air_stories": 3,
