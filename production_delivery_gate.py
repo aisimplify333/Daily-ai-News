@@ -279,8 +279,9 @@ def main() -> int:
 
     tts_report = load_json(Path("hybrid_tts_report.json"))
     if tts_report:
-        if int(tts_report.get("jamie_grok_episode_successes") or 0) <= 0:
-            warn("jamie_grok_voice_not_confirmed_completed_master_preserved")
+        jamie_calls = [c for c in tts_report.get('calls', []) if c.get('speaker') == 'JAMIE']
+        if not any(c.get('provider') == 'gemini' and c.get('voice') == 'Sulafat' for c in jamie_calls) and int(tts_report.get("jamie_grok_episode_successes") or 0) <= 0:
+            warn("jamie_approved_voice_not_confirmed_completed_master_preserved")
         moods = tts_report.get("mood_distribution") if isinstance(tts_report.get("mood_distribution"), dict) else {}
         active_moods = sum(1 for count in moods.values() if int(count or 0) > 0)
         if active_moods < 5:
