@@ -164,6 +164,8 @@ def main() -> None:
         fail("growth_overlay_v3_1.py is not the v3.2 top-events scoring overlay")
 
     production_contract = {
+        'GEMINI_TTS_VOICE_JAMIE: "Sulafat"': "Jamie Sulafat is not configured",
+        'JAMIE_FALLBACK_PROVIDER: "grok"': "Jamie Grok backup is not configured",
         'TRANSITION_EVERY_SEGMENT: "true"': "segment transitions are not enabled",
         'TRANSITION_SEGMENTS: "2,3,4,5"': "all four segment boundaries are not configured",
         'OUTRO_TARGET_DBFS: "-16.5"': "audible outro target is not configured",
@@ -183,15 +185,15 @@ def main() -> None:
         bad_env.append("AUDIO_BACKEND must not be eleven")
     if os.getenv("ELEVENLABS_ENABLED", "false").strip().lower() in ("true", "1", "yes"):
         bad_env.append("ELEVENLABS_ENABLED must be false")
-    if os.getenv("JAMIE_TTS_PROVIDER", "grok").strip().lower() != "grok":
-        bad_env.append("JAMIE_TTS_PROVIDER must be grok")
+    if os.getenv("JAMIE_TTS_PROVIDER", "gemini").strip().lower() not in {"gemini", "grok"}:
+        bad_env.append("JAMIE_TTS_PROVIDER must be approved Gemini or Grok")
     if bad_env:
         fail("; ".join(bad_env))
 
     print(">> ✅ COST-SAFE PREFLIGHT PASSED", flush=True)
     print(">> ✅ Creative format: approved hard-debate human program (v3.2/v3.3)", flush=True)
     print(">> ✅ Story selection: top AI events, no forced sector quota", flush=True)
-    print(">> ✅ TTS routing: Jamie Grok Ursa + Celeste fallback + OpenAI provider fallback; Alex/Rufus OpenAI", flush=True)
+    print(">> ✅ TTS routing: Jamie Gemini Sulafat with Grok Ursa backup; Alex/Rufus configured voices", flush=True)
     print(">> ✅ Preflight guard v3.2.2 — v3.3 connection-first lineage accepted", flush=True)
 
 
