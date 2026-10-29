@@ -40,6 +40,7 @@ class GeminiTTSHTTPError(RuntimeError):
 
 def payload(text, speaker, mood, voice, note):
     persona = {
+        'JAMIE': 'Adult American female co-host, warm, quick-witted and opinionated. You respect Alex and Rufus and enjoy teasing them as equals. React to their thought rather than reading a speech. Let a discovery lift your pitch and tempo briefly, let skepticism sharpen one phrase, then soften into a sincere human payoff. Underplay sarcasm with a smile; never constant excitement, breathless delivery or a promotional voice. Keep the American accent even when delivering dry wit.',
         'ALEX': 'American male host with the established resonant lower register. Relaxed, inquisitive and informal, talking with two longtime friends. Follow the thought with interest, allow surprise and playful disbelief, and let a question sound genuinely curious. Natural varied pace; never a solemn announcer or constant interrogator.',
         'RUFUS': 'Distinct contemporary southern English male voice with consistent non-rhotic British pronunciation. Lighter, drier mid-register than the American bass of Alex; precise consonants and clipped sentence endings. Use brisk conversational phrasing, no languid drawl or lowered announcer register. Underplay dry wit: let the final word land, without explaining the joke. Affectionate mock formality, occasional genuine warmth. Keep this English accent in every sentence, including laughter and serious facts.',
     }.get(speaker, 'Warm conversational co-host.')
@@ -52,6 +53,8 @@ def payload(text, speaker, mood, voice, note):
                 'as its meaning changes; keep short reactions quick and serious conclusions grounded. '
                 'A brief laugh only when explicitly cued, then recover into clear speech. '
                 'Keep the established vocal identity; avoid constant intensity or a sales cadence.')
+    if speaker == 'JAMIE':
+        note = note.replace('British wit', 'American conversational wit')
     style = persona + ' ' + ( 'Sincere, clear sponsor read; no laughter.' if sponsor else note)
     return {'contents': [{'role': 'user', 'parts': [{'text': spoken, 'speech_metadata': {'style': style}}]}],
             'generationConfig': {'responseModalities': ['AUDIO'],
