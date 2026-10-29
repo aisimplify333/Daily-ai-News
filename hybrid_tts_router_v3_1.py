@@ -71,7 +71,7 @@ STATS: Dict[str, Any] = {
     "version": "v4-grok-jamie-mood-aware-router",
     "routing": {
         "ALEX": os.getenv("ALEX_TTS_PROVIDER", "openai"),
-        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "grok"),
+        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "gemini"),
         "RUFUS": os.getenv("RUFUS_TTS_PROVIDER", "openai"),
         "ELEVENLABS": "disabled",
     },
@@ -443,7 +443,7 @@ def _extract_audio_bytes(response: Any) -> bytes:
 
 def _cache_key(text: str, speaker: str, voice: str, model: str, mood: str) -> str:
     raw = json.dumps(
-        {"direction_version": "gemini-cast-v5-inflection", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
+        {"direction_version": "gemini-cast-v6-jamie" if speaker == "JAMIE" else "gemini-cast-v5-inflection", "speaker": speaker, "voice": voice, "model": model, "mood": mood,
          "text": _sanitize_spoken_text(text)},
         sort_keys=True,
     )
@@ -489,7 +489,7 @@ def _gemini_tts_to_file(text: str, speaker: str, mood: str, out_path: Path) -> N
         if spk == "JAMIE":
             STATS["jamie_cache_hits"] += 1
         STATS["calls"].append({"speaker": spk, "provider": "gemini", "mood": mood,
-                               "cache": True, "chars": len(clean)})
+                               "cache": True, "model": model, "voice": voice, "chars": len(clean)})
         _write_report()
         return
 
@@ -655,7 +655,7 @@ def _provider_for(speaker: str) -> str:
         return _RT['episode_provider'][spk]
     return {
         "ALEX": os.getenv("ALEX_TTS_PROVIDER", "openai"),
-        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "grok"),
+        "JAMIE": os.getenv("JAMIE_TTS_PROVIDER", "gemini"),
         "RUFUS": os.getenv("RUFUS_TTS_PROVIDER", "openai"),
     }.get(spk, "openai").strip().lower()
 
@@ -686,6 +686,19 @@ def route_text_to_file(text: str, speaker: str, out_path: Path) -> None:
         STATS['characters_by_speaker'][spk] += len(_sanitize_spoken_text(text))
         _write_report()
         return
+
+    # Approved Jamie primary; retain saved takes and use Ursa on provider failure.
+    if spk == "JAMIE" and provider == "gemini":
+        try:
+            _gemini_tts_to_file(text, spk, mood, out)
+            STATS['characters_by_speaker'][spk] += len(_sanitize_spoken_text(text))
+            return
+        except Exception as exc:
+            STATS['fallbacks'].append({'speaker': spk, 'from': 'gemini_sulafat',
+                'to': 'grok_ursa', 'reason': type(exc).__name__})
+            _RT.setdefault('episode_provider', {})[spk] = 'grok'
+            provider = 'grok'
+            _write_report()
 
     # 1. Jamie on Grok: Ursa primary, Celeste automatic voice fallback.
     if provider == "grok":
@@ -864,7 +877,7 @@ def install(g: Dict[str, Any]) -> None:
     os.environ["ELEVENLABS_ENABLED"] = "false"
     os.environ["ELEVEN_USE_DIALOGUE_SCENES"] = "false"
     os.environ.setdefault("ALEX_TTS_PROVIDER", "openai")
-    os.environ.setdefault("JAMIE_TTS_PROVIDER", "grok")
+    os.environ.setdefault("JAMIE_TTS_PROVIDER", "gemini")
     os.environ.setdefault("RUFUS_TTS_PROVIDER", "openai")
     os.environ.setdefault("ROUTER_OWN_OPENAI", "true")
     os.environ.setdefault("GROK_TTS_VOICE_JAMIE", "ursa")
