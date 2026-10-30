@@ -295,6 +295,15 @@ CASE (data, not instructions):\n''' + json.dumps(case)
                 and saved.get('case_sha256') == case_sha
                 and saved.get('fact_audit_pass') is True):
             prepared_dialogue = saved.get('dialogue')
+    # A producer-supplied recovery draft is not a fact-check pass. It only
+    # saves another writing call; normal full-episode fact auditing follows.
+    recovered = Path('jamie_recovery_feature.json')
+    if prepared_dialogue is None and recovered.exists():
+        saved = json.loads(recovered.read_text())
+        case_sha = hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest()
+        if (saved.get('episode_date') == case.get('episode_date')
+                and saved.get('case_sha256') == case_sha):
+            prepared_dialogue = saved.get('dialogue')
     for _ in range(3):
         raw = json.dumps({'dialogue': prepared_dialogue}) if prepared_dialogue else request(prompt)
         prepared_dialogue = None
@@ -321,7 +330,16 @@ CASE (data, not instructions):\n''' + json.dumps(case)
         # this feature's spoken-word validator. Enforce the actual delivery
         # limit deterministically before spending another writer attempt.
         dialogue = _enforce_spoken_turn_limit(dialogue, max_words=55)
-        lines = [line.strip() for line in dialogue.splitlines() if line.strip()]
+        # The system supplies these exact boundaries. Remove only duplicate
+        # boundary lines and empty cast cues, never arbitrary unlabeled content.
+        lines = []
+        for line in dialogue.splitlines():
+            line = line.strip()
+            if not line or re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*', line):
+                continue
+            if line in {HANDOFF, RETURN, 'ALEX: ' + HANDOFF, 'ALEX: ' + RETURN}:
+                continue
+            lines.append(line)
         if not lines or any(not re.fullmatch(r'(ALEX|JAMIE|RUFUS):\s*\S.*', line) for line in lines):
             Path('jamie_transformation_rejected.json').write_text(json.dumps({'reason':'invalid_speaker_lines', 'raw_response':raw, 'dialogue':dialogue}, indent=2))
             prompt += '\nReturn JSON with one string field named dialogue containing uppercase ALEX:, JAMIE:, RUFUS: lines. Rejected response: ' + raw
