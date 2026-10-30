@@ -41,3 +41,23 @@ def test_published_history_and_vendor_aliases(tmp_path, monkeypatch):
     assert len(history) == 1
     assert repeated_vendor({'tool': 'Agentforce'}, history)
     assert not repeated_vendor({'tool': 'NotebookLM'}, history)
+
+
+def test_inventory_is_date_bounded_and_keeps_hypothetical_label(tmp_path, monkeypatch):
+    from jamie_transformation import select_inventory
+    monkeypatch.chdir(tmp_path)
+    case = {'subject':'New idea','feature_mode':'hypothetical_capability','verified_on':'2026-10-30','review_by':'2026-11-06'}
+    (tmp_path/'jamie_feature_inventory.json').write_text(json.dumps({'candidates':[case]}))
+    with patch('jamie_transformation.valid_case', return_value=True), patch('jamie_transformation.source_matches', return_value=True):
+        result = select_inventory('2026-10-30', [])
+        assert result['feature_mode'] == 'hypothetical_capability'
+        assert select_inventory('2026-11-07', []) is None
+        assert select_inventory('2026-10-30', [{'dialogue':'We tried New idea'}]) is None
+
+
+def test_exhausted_research_uses_verified_inventory(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    fallback = {'subject':'Verified capability','episode_date':'2026-10-30'}
+    with patch('jamie_transformation.select_inventory', return_value=fallback):
+        assert research('2026-10-30', lambda _: '{"unavailable":true}') == fallback
+    assert json.loads((tmp_path/'jamie_research_report.json').read_text())['fallback'] == 'verified_editorial_inventory'
