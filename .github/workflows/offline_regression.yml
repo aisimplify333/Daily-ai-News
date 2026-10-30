@@ -1,0 +1,39 @@
+name: Offline production regression checks
+on:
+  push:
+    branches: [main]
+    paths: ['**.py', 'tests/**', 'requirements.txt', '.github/workflows/**']
+  pull_request:
+    paths: ['**.py', 'tests/**', 'requirements.txt', '.github/workflows/**']
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: offline-production-checks-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  regression:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            /*
+            !/episode_audio/*.mp3
+            !/episode_audio/*.mp4
+            !/.tts_cache/
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install offline test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install pytest requests beautifulsoup4 pydub python-dotenv openai pyyaml feedparser
+      - name: Run full offline suite and production contract
+        run: |
+          python -m pytest -q
+          python preflight_guard_v3_1.py
+# No provider credentials, production runner, publishing or paid generation.
