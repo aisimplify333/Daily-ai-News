@@ -75,9 +75,15 @@ def research(date, search):
         saved = json.loads(path.read_text())
         if saved.get('episode_date') == date and valid_case(saved) and source_matches(saved):
             return saved
-    prompt = '''Use live web search across varied sources. Find ONE documented
-real person, entrepreneur, small business, creator or company achieving a concrete
-beneficial result with AI. Consider beauty, food, travel, sport, creative work,
+    prompt = '''Use live web search across varied sources. Find ONE engaging AI transformation.
+Choose a documented real outcome OR a verified tool capability with an explicitly
+hypothetical example OR a source-backed practical technique. Do not require a
+corporate customer case or measured ROI. Fictional examples must be labeled hypothetical.
+Explore everyday rescues, small-business calls/reception, creative playgrounds,
+healthcare administration (not diagnosis), agents versus chaos, useful failures,
+corporate discoveries and would-you-use-this debates. Include current Oracle AI World
+and SAP TechEd releases alongside other vendors and independent tools when relevant.
+Choose for usefulness, surprise and novelty, not a fixed weekday rotation. Consider beauty, food, travel, sport, creative work,
 education, accessibility, home tasks and surprising industries, not only big tech.
 Actively seek agentic AI cases: a real person or business delegating a multi-step
 job, using tools or coordinating actions, with an observed useful result. Explain
@@ -93,12 +99,12 @@ never invent results to manufacture banter. Label vendor evidence and historical
 Trace every outcome to its supporting
 source. A specific qualitative result is acceptable: do not require impressive
 percentages or a large-company benchmark. Label personal/vendor accounts accurately. This is an
-evergreen case-study feature, NOT a fourth breaking-news headline. An older case
+evergreen practical feature, NOT a fourth breaking-news headline. An older case
 is allowed only with its actual date, clear attribution and current availability
 checked today. Prefer a useful, relatable workflow and substantive results, not
-funding, a forecast, a demo claim or an unmeasured promise. Rotate industries and
+funding or an unmeasured promise presented as a proven outcome. Announced capabilities are eligible when their rollout limits are explicit; hypothetical applications are not customer results. Rotate industries and
 avoid recent cases listed below. Never invent an anonymous listener submission.
-Return JSON {"cases": [up to three DISTINCT candidate objects]} with each candidate's fields: subject, tool, problem, workflow, result,
+Return JSON {"cases": [up to three DISTINCT candidate objects]} with each candidate's fields: feature_mode (real_case, hypothetical_capability or practical_technique), subject, tool, problem, workflow, result,
 result_basis (independent evidence or company/vendor reported), measurement_context,
 case_date, source_url (direct supporting article, study, interview or case-study https URL), source_quote (10-25 exact
 words from that page supporting the result), limitation,
@@ -139,7 +145,39 @@ Episode date: ''' + date
                 path.write_text(json.dumps(case, indent=2) + '\n')
                 return case
         prompt += '\nRecovery: correct invalid URLs using the exact canonical link returned by live search. For source_http_404 find the actual article URL; for source_quote_not_found extract a verbatim passage, not a paraphrase. Find DIFFERENT directly accessible sources; do not repeat rejected URLs. Use a 10-25 word exact quote actually visible on the source page. Validation results: ' + json.dumps(attempts)
-    raise RuntimeError('Jamie case research unresolved; no fabricated success story')
+    # Producer-verified, date-bounded inventory is a fallback, not invented evidence.
+    case = select_inventory(date, history)
+    if case:
+        path.write_text(json.dumps(case, indent=2) + '\n')
+        Path('jamie_research_report.json').write_text(json.dumps({'date': date,
+            'attempts': attempts, 'fallback': 'verified_editorial_inventory',
+            'selected': case['subject']}, indent=2) + '\n')
+        return case
+    raise RuntimeError('Jamie feature research unresolved: no verified capability or case available')
+
+
+def select_inventory(date, history):
+    """Prefer unused verified options; never turn an illustration into a result."""
+    import datetime as dt
+    inventory = Path('jamie_feature_inventory.json')
+    if not inventory.exists():
+        return None
+    recent = ' '.join(row['dialogue'] for row in history).casefold()
+    choices = json.loads(inventory.read_text()).get('candidates', [])
+    choices = sorted(choices, key=lambda c: (repeated_vendor(c, history),
+        str(c.get('subject', '')).casefold() in recent))
+    for item in choices:
+        try:
+            if not dt.date.fromisoformat(item['verified_on']) <= dt.date.fromisoformat(date) <= dt.date.fromisoformat(item['review_by']):
+                continue
+        except (KeyError, ValueError):
+            continue
+        if item.get('subject', '').casefold() in recent:
+            continue
+        case = dict(item, episode_date=date)
+        if valid_case(case) and source_matches(case):
+            return case
+    return None
 
 
 def valid_case(case):
@@ -205,9 +243,13 @@ def add_feature(script, case, request):
     prompt = '''Write ONLY JSON {"dialogue":"speaker lines"} for Jamie's AI
 Transformation, an additional 2-3 minutes after Story Three. Aim for 320-450
 spoken words; the hard maximum is 475 words.
-Use only the supplied case. No SEGMENT headers, music tags or spoken stage labels.
+Use only the supplied case. For feature_mode hypothetical_capability or practical_technique,
+explicitly say the scenario is hypothetical; describe a proposed workflow, never a
+customer result, hands-on test, claimed saving or demonstrated outcome. Preserve
+limited/early-adopter/announced availability. For healthcare use administrative
+examples only. No SEGMENT headers, music tags or spoken stage labels.
 Jamie brings her own clear, evidence-grounded take on why this discovery matters. Show the relatable before, actual AI
-workflow, reported after, attribution and measurement context. Say when the case
+workflow, attribution and evidence limits. Use a reported after-state only for a real_case; otherwise explain the proposed benefit without claiming results. Say when the case
 occurred; do not present an old case as today's news. Identify vendor/company claims
 as such. No invented result, quote, listener submission, personal testing or access.
 This is also the cast's playful playground: Jamie finally has her own segment,
