@@ -353,11 +353,19 @@ class ProductionContractTests(unittest.TestCase):
             audio = runner._reusable_episode_audio({"FORCE_REBUILD": False, "_file_ok_min_bytes": lambda path: True})
             self.assertIsNotNone(audio)
             self.assertIsNone(runner._reusable_episode_audio({"FORCE_REBUILD": True}))
-        with patch.dict(os.environ, {"REQUIRE_JAMIE_PRIMARY": "true"}):
-            with patch.object(Path, "exists", return_value=True), patch.object(Path, "read_text", return_value='{"jamie_grok_episode_successes": 0}'):
-                with contextlib.redirect_stdout(io.StringIO()) as captured:
-                    runner._enforce_jamie_primary_report()
-        self.assertIn("retain completed", captured.getvalue())
+        # This is a preservation contract, not a contract on log wording.
+        for provider in ("gemini", "grok"):
+            with self.subTest(provider=provider), tempfile.TemporaryDirectory() as directory:
+                master = Path(directory) / "completed.mp3"
+                original = b"preserved paid audio"
+                master.write_bytes(original)
+                report = Path(directory) / "report.json"
+                report.write_text('{"jamie_grok_episode_successes": 0, "calls": []}')
+                with patch.dict(os.environ, {"REQUIRE_JAMIE_PRIMARY": "true", "JAMIE_TTS_PROVIDER": provider}), patch.object(runner, "REPORT_PATH", report), patch.object(runner, "_run_jamie_primary_smoke_test") as paid_smoke:
+                    with contextlib.redirect_stdout(io.StringIO()):
+                        self.assertIsNone(runner._enforce_jamie_primary_report())
+                    paid_smoke.assert_not_called()
+                self.assertEqual(master.read_bytes(), original)
 
     def test_connection_normalization_is_idempotent(self):
         first = final_script()
