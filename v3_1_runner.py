@@ -155,7 +155,7 @@ def _enforce_jamie_primary_report() -> None:
         calls = [c for c in report.get('calls', []) if c.get('speaker') == 'JAMIE']
         primary = sum(c.get('provider') == 'gemini' and c.get('voice') == 'Sulafat' for c in calls)
         _safe_print(f">> Jamie Sulafat: {primary}/{len(calls)} turns; "
-                    "any backup use remains visible in the report; completed audio preserved.")
+                    "any backup use remains visible in the report; retain completed audio.")
         return
 
     episode_successes = int(report.get("jamie_grok_episode_successes") or 0)
