@@ -61,3 +61,35 @@ def test_exhausted_research_uses_verified_inventory(tmp_path, monkeypatch):
     with patch('jamie_transformation.select_inventory', return_value=fallback):
         assert research('2026-10-30', lambda _: '{"unavailable":true}') == fallback
     assert json.loads((tmp_path/'jamie_research_report.json').read_text())['fallback'] == 'verified_editorial_inventory'
+
+
+def test_duplicate_boundaries_and_empty_cues_do_not_trigger_paid_rewrite(tmp_path, monkeypatch):
+    from jamie_transformation import add_feature, status, HANDOFF, RETURN
+    monkeypatch.chdir(tmp_path)
+    dialogue = HANDOFF + '\n' + '\n'.join(name + ': ' + 'useful ' * 26 for name in ['JAMIE','ALEX','RUFUS'] * 4) + '\nALEX: \n' + RETURN
+    calls = []
+    def request(prompt):
+        calls.append(prompt)
+        return json.dumps({'dialogue': dialogue})
+    result = add_feature('### SEGMENT 5 — Close', {}, request)
+    assert status(result)['pass']
+    assert len(calls) == 1
+    assert result.count(HANDOFF) == result.count(RETURN) == 1
+
+
+def test_recovery_draft_requires_same_case_and_date(tmp_path, monkeypatch):
+    import hashlib
+    from jamie_transformation import add_feature, status
+    monkeypatch.chdir(tmp_path)
+    case = {'episode_date':'2026-10-30', 'subject':'verified capability'}
+    dialogue = '\n'.join(name + ': ' + 'useful ' * 26 for name in ['JAMIE','ALEX','RUFUS'] * 4)
+    (tmp_path/'jamie_recovery_feature.json').write_text(json.dumps({
+        'episode_date':case['episode_date'],
+        'case_sha256':hashlib.sha256(json.dumps(case, sort_keys=True).encode()).hexdigest(),
+        'dialogue':dialogue}))
+    def no_paid_call(_):
+        raise AssertionError('writer called')
+    assert status(add_feature('### SEGMENT 5 — Close', case, no_paid_call))['pass']
+    import pytest
+    with pytest.raises(AssertionError, match='writer called'):
+        add_feature('### SEGMENT 5 — Close', dict(case, episode_date='2026-11-02'), no_paid_call)
