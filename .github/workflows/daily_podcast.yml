@@ -165,7 +165,14 @@ jobs:
           mkdir -p _editorial_recovery
           gh run download "$recovery_run" --repo "$GITHUB_REPOSITORY" \
             --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir _editorial_recovery
-          cp _editorial_recovery/script_editorial_blocked.txt "_editorial_recovery/script_fact_repaired_${recovery_date}.txt"
+          if [[ -f _editorial_recovery/script_editorial_blocked.txt ]]; then
+            cp _editorial_recovery/script_editorial_blocked.txt "_editorial_recovery/script_fact_repaired_${recovery_date}.txt"
+          elif [[ -f "_editorial_recovery/script_fact_candidate_${recovery_date}.txt" ]]; then
+            cp "_editorial_recovery/script_fact_candidate_${recovery_date}.txt" "_editorial_recovery/script_fact_repaired_${recovery_date}.txt"
+          else
+            echo "No reusable editorial checkpoint in the selected run" >&2
+            exit 1
+          fi
           echo "directory=_editorial_recovery" >> "$GITHUB_OUTPUT"
 
       - name: Restore preserved voice cache for supervised recovery
