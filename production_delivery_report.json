@@ -4,25 +4,25 @@
   "cost": "zero-model-calls",
   "feed": "feed.xml",
   "newest_episode": {
-    "title": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
-    "description_chars": 1693,
-    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-10-29.mp3",
-    "pub_date": "Thu, 29 Oct 2026 12:00:00 -0000",
-    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-10-29.mp3"
+    "title": "Mistral’s New Frontier Model Weights: Why Local Control Matters for Cybersecurity",
+    "description_chars": 2083,
+    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-10-30.mp3",
+    "pub_date": "Fri, 30 Oct 2026 12:00:00 -0000",
+    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-10-30.mp3"
   },
-  "audio_path": "episode_audio/podcast_2026-10-29.mp3",
-  "duration_minutes": 21.14,
+  "audio_path": "episode_audio/podcast_2026-10-30.mp3",
+  "duration_minutes": 21.99,
   "cost_metrics": {
-    "tts_characters_total": 21338,
+    "tts_characters_total": 21426,
     "tts_characters_by_speaker": {
-      "ALEX": 5176,
-      "JAMIE": 9639,
-      "RUFUS": 6523
+      "ALEX": 6540,
+      "JAMIE": 7170,
+      "RUFUS": 7716
     },
-    "grok_estimated_cost_usd": 0.050505,
+    "grok_estimated_cost_usd": 0.0,
     "grok_cache_hits": 0,
-    "fallback_count": 35,
-    "provider_calls": 150
+    "fallback_count": 0,
+    "provider_calls": 152
   },
   "checks": {
     "stop_scroll_title": "passed",
@@ -36,6 +36,10 @@
     "audio_window": "passed"
   },
   "failures": [],
-  "warnings": [],
+  "warnings": [
+    {
+      "reason": "itunes_summary_differs_from_description"
+    }
+  ],
   "recovery": "Completed audio is preserved. Repair packaging and rerun this gate; do not regenerate TTS."
 }
