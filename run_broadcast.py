@@ -106,6 +106,23 @@ def maybe_run_post_push_publisher() -> None:
     run_command("python social_publisher.py", "Post-push Social Publisher", allow_fail=True)
 
 
+def push_completed_episode(branch: str = BRANCH) -> None:
+    """Retry non-fast-forward pushes without rerunning production or force-pushing."""
+    for attempt in range(3):
+        result = subprocess.run(["git", "push", "origin", branch], text=True, capture_output=True)
+        if result.returncode == 0:
+            print(result.stdout + result.stderr, flush=True)
+            return
+        detail = result.stdout + result.stderr
+        if attempt == 2 or not any(reason in detail for reason in ("fetch first", "non-fast-forward")):
+            raise RuntimeError("Completed episode retained; publication push failed: " + detail)
+        subprocess.run(["git", "fetch", "origin", branch], check=True)
+        merged = subprocess.run(["git", "rebase", "origin/" + branch])
+        if merged.returncode:
+            subprocess.run(["git", "rebase", "--abort"], check=True)
+            raise RuntimeError("Completed episode retained; concurrent edits need manual merge.")
+
+
 def main() -> None:
     print("===================================================", flush=True)
     print("   THE AI EDGE — v3.1 COST-SAFE BROADCAST", flush=True)
@@ -158,7 +175,7 @@ def main() -> None:
         print(">> ℹ️ No changes staged. Skipping commit and push.", flush=True)
     else:
         run_command('git commit -m "The AI Edge v3.1: Cost-safe episode"', "Committing", allow_fail=False)
-        run_command(f"git push origin {BRANCH}", "Pushing to Live", allow_fail=False)
+        push_completed_episode()
 
     print(f"\n>> ⏳ BUFFERING {RSS_BUFFER_SECONDS}s for RSS propagation...", flush=True)
     time.sleep(RSS_BUFFER_SECONDS)
