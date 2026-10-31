@@ -24,10 +24,10 @@ jobs:
             !/episode_audio/*.mp3
             !/episode_audio/*.mp4
             !/.tts_cache/
-            /episode_audio/podcast_2026-10-13.mp3
-            /episode_audio/podcast_2026-10-14.mp3
-            /episode_audio/clip_2026-10-14.mp3
-            /episode_audio/clip_2026-10-14.mp4
+            /episode_audio/podcast_2026-10-29.mp3
+            /episode_audio/podcast_2026-10-30.mp3
+            /episode_audio/clip_2026-10-30.mp3
+            /episode_audio/clip_2026-10-30.mp4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -35,29 +35,28 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download 38533183014 --repo "$GITHUB_REPOSITORY" --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir /tmp/completed_episode
-          python recover_completed_episode.py --source /tmp/completed_episode --date 2026-10-14 --sha256 76b1a66c27ff84f0ad55c1d21f808b51a7b8eb6874b6786b5bc2e6c61fd8ca14
+          gh run download 41125300728 --repo "$GITHUB_REPOSITORY" --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir /tmp/completed_episode
+          sha256sum /tmp/completed_episode/podcast_2026-10-30.mp3 > /tmp/master.sha256
+          master_sha="$(cut -d ' ' -f1 /tmp/master.sha256)"
+          python recover_completed_episode.py --source /tmp/completed_episode --date 2026-10-30 --sha256 "$master_sha"
       - name: Validate delivery package and rebuild episode pages
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y ffmpeg
-          pip install pydub feedparser requests google-genai
-          python repair_oct14_sound.py
+          pip install pydub feedparser requests
           python production_delivery_gate.py --feed feed.xml --min-minutes 19 --max-minutes 30
           python episode_pages.py
-      - name: Review repaired full master
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: python review_rendered_episode.py --date 2026-10-14
       - name: Publish recovered episode
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add --sparse -- . ':(exclude).tts_cache' ':(exclude)_voice_recovery' ':(exclude)_run_artifacts'
-          git commit -m 'Publish completed October 14 episode recovered after staging failure'
+          git commit -m 'Publish preserved October 30 Sulafat episode after push conflict'
+          git fetch origin main
+          git rebase origin/main
           git push origin main
       - name: Verify public feed page and MP3
-        run: python verify_publication.py --date 2026-10-14 --attempts 60 --interval 20
+        run: python verify_publication.py --date 2026-10-30 --attempts 60 --interval 20
       - uses: actions/upload-artifact@v4
         if: always()
         with:
