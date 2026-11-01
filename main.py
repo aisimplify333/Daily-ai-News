@@ -4344,7 +4344,7 @@ def _eleven_tts_to_file(text: str, speaker: str, out_path: Path) -> None:
 def _generate_sound_effect_file(prompt: str, out_path: Path, *, duration_seconds: float | None = None, loop: bool = False, prompt_influence: float = 0.35) -> None:
     payload = {
         "text": prompt,
-        "model_id": "eleven_text_to_sound_v2",
+        "model_id": "eleven_text_to_sound_v3",
         "loop": loop,
         "prompt_influence": prompt_influence,
     }

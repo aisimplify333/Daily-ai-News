@@ -53,7 +53,7 @@ def commission():
     key = os.environ['AI_EDGE_PODCAST_ELEVENLABS']
     if get_account(key)['remaining'] < 2000:
         raise RuntimeError('Insufficient allowance for bounded commission')
-    row = {'status':'attempted','model':'eleven_text_to_sound_v2','brief':BRIEF,'requested_seconds':3,
+    row = {'status':'attempted','model':'eleven_text_to_sound_v3','brief':BRIEF,'requested_seconds':3,
            'maximum_requests':1,'credit_reservation':2000,'previous_rejected_requests':previous}
     write('commission.json',row)
     request = urllib.request.Request('https://api.elevenlabs.io/v1/sound-generation?output_format=mp3_44100_128',

@@ -8,7 +8,7 @@ import urllib.request
 from pydub import AudioSegment
 
 ROOT = Path('specialty_audio/library')
-MODEL = 'eleven_text_to_sound_v2'
+MODEL = 'eleven_text_to_sound_v3'
 MAX_CREDITS = 10000
 # A conservative reservation per short SFX request, not a provider price quote.
 RESERVATION = 1000
