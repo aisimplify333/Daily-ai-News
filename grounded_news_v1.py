@@ -726,6 +726,13 @@ Rules:
   hypotheticals as factual errors merely because the sources do not prove the opinion.
 - Reserve critical_errors for a materially false, contradicted, fabricated, stale, or
   misleading factual assertion. Put attribution nuance or extra context in warnings.
+- PUBLICATION THRESHOLD: warnings never block release. Do not label a true but
+  less precise statement false: "more than five times" is compatible with 5.3 times.
+  Equivalent paraphrases, conversational wording and omitted nonessential detail
+  belong in warnings. A proposed test metric is not a claim of measured results.
+  "No proven saving in this hypothetical case" does not claim a measured saving.
+  Keep materially different datasets, invented dates/quotes, false causal claims,
+  unsupported availability and missing material access restrictions blocking.
 - Every replacement must preserve the exact speaker label and conversational intent.
 - line_number is the 1-based index in NUMBERED SCRIPT LINES, including headings and
   blank lines. Copy exact_line verbatim from that line. Do not include the number
@@ -879,7 +886,9 @@ def _validate_fact_payload(script, payload, date_str):
     return {
         "version": "grounded-fact-check-v1",
         "date": date_str,
-        "pass": payload["pass"] and not clean_errors and not unresolved,
+        "pass": (payload["pass"] or (bool(errors) and all(
+            isinstance(item, dict) and item.get("claim_type") == "opinion"
+            for item in errors))) and not clean_errors and not unresolved,
         "unresolved": unresolved,
         "calculation_records": payload.get("calculations"),
         "critical_errors": clean_errors,
