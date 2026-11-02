@@ -1411,6 +1411,8 @@ SPONSORS (preserve exact approved opener, midroll and rotating end tag; invent n
 {json.dumps(sponsors, ensure_ascii=False)}
 The opening read starts: Today's episode is brought to you by The Ledger.
 The spoken URL appears once: T-H-E-L-E-D-G-R dot I-O.
+The sponsor's written brand and domain are THELEDGR.io. There is no E between G and R.
+After the spelled URL, say: That's LEDGR, with no E between G and R. Never add an extra E when spelling the domain.
 Keep sponsor reads sincere; no laughter underneath.
 """.strip()
 
@@ -1543,7 +1545,7 @@ def _normalize_primary_sponsor(script: str) -> str:
         "next decision.\n"
         "ALEX: The Ledger turns the day’s noise into five focused briefings for people "
         "who need the consequence before consensus catches up. Subscribe at "
-        "T-H-E-L-E-D-G-R dot I-O."
+        "T-H-E-L-E-D-G-R dot I-O. That’s LEDGR, with no E between G and R."
     )
     lines = (script or "").splitlines()
     cleaned: List[str] = []
