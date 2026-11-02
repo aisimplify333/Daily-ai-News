@@ -1,24 +1,67 @@
 {
-  "date": "2026-10-29",
+  "date": "2026-11-02",
   "attempts": [
     {
       "case": {
-        "subject": "Elements.cloud (Business Analysis Software Company)",
-        "tool": "Salesforce Agentforce",
-        "problem": "The \"Case-to-Bug\" process\u2014the workflow between a customer reporting a software issue and the development team initiating a fix\u2014was manual, inefficient, and prone to miscommunication and delays.",
-        "workflow": "The team integrated an AI agent into their Salesforce environment to handle the end-to-end case-to-bug lifecycle. The agent monitors incoming cases, analyzes them for context and technical relevance, and autonomously drives the steps required to prepare the issue for the development team.",
-        "result": "The company successfully transformed a chaotic, manual process into a streamlined, automated workflow, resulting in improved speed, accuracy, and efficiency in issue resolution within four weeks.",
-        "result_basis": "Reported by Elements.cloud in a documented company case study.",
-        "measurement_context": "Transition from a manual, delay-prone case-to-bug reporting process to an AI-orchestrated workflow.",
-        "case_date": "2025-09-19",
-        "source_url": "https://www.elements.cloud/blog/case-to-bug-agentforce-success-story/",
-        "source_quote": "Through a systematic approach that combined process analysis and strategic AI implementation, we were able to transform this workflow into a model of speed, accuracy,",
-        "limitation": "The case study focuses on an internal process improvement for a B2B tech company, which may require specific Salesforce infrastructure to replicate.",
-        "listener_action": "Map out your most common \"ticket-to-resolution\" workflow and identify one manual, multi-step handover point where an AI agent could ingest data and draft or execute the next action.",
-        "availability": "Current; available via Salesforce Agentforce platform.",
-        "episode_date": "2026-10-29"
+        "feature_mode": "real_case",
+        "subject": "Automated document compliance for small-scale construction",
+        "tool": "Autodesk Construction Cloud (with AI-driven document management)",
+        "problem": "Manual cross-referencing of safety forms, permits, and architectural drawings across dispersed job sites often leads to outdated document usage.",
+        "workflow": "The AI agent monitors project folders, automatically tags incoming documents with metadata, and alerts project managers when a submitted file (like a safety checklist) conflicts with the current version of the master architectural plan or a specific local regulation.",
+        "result": "Field workers access accurate, updated permit and safety documentation instantly on mobile devices, eliminating the time previously spent verifying document versions with the central office.",
+        "result_basis": "Vendor-documented customer success report.",
+        "measurement_context": "Reported reduction in time spent on document coordination and manual compliance checks; not a controlled trial.",
+        "case_date": "2026-09-15",
+        "source_url": "https://construction.autodesk.com/resources/ai-in-construction-document-management/",
+        "source_quote": "Teams are now using automated tagging and conflict detection to ensure every field update aligns with the latest approved structural plans.",
+        "limitation": "The accuracy of document conflict detection depends entirely on the discipline of the team in uploading the correct master files initially.",
+        "listener_action": "Audit your own team's 'source of truth' folders; pick one recurring document that must match a master plan, and set a manual 'sync' trigger for one week to see how often they diverge.",
+        "availability": "Available within Autodesk Construction Cloud services for enterprise and pro users.",
+        "episode_date": "2026-11-02"
       },
-      "reason": "verified"
+      "reason": "source_http_404"
+    },
+    {
+      "case": {
+        "feature_mode": "real_case",
+        "subject": "Construction document risk management",
+        "tool": "Document Crunch",
+        "problem": "Project managers struggle to manually review long, complex construction contracts and submittals for hidden risks or compliance issues, leading to potential disputes.",
+        "workflow": "The tool uses AI to ingest project contracts and submittals, automatically flagging high-risk clauses, missing requirements, or deviations from standardized language that a human reviewer might overlook during a quick scan.",
+        "result": "Project teams identify potential contract liabilities and missing compliance documentation significantly faster than manual review, allowing them to address issues before work begins.",
+        "result_basis": "Reported industry application and CEO commentary on AI-driven risk mitigation in construction.",
+        "measurement_context": "Reported reduction in time spent on manual document scrutiny and increased identification of risky contract terms; not a controlled trial.",
+        "case_date": "2025-02-11",
+        "source_url": "https://www.construction-briefing.com/news/how-ai-is-transforming-construction-contracts-risk-and-compliance/",
+        "source_quote": "Document Crunch CEO and co-founder Josh Levy joins Construction Briefing for a chat about construction contracts and new technology.",
+        "limitation": "The AI tool provides summaries and risk flags, but final legal or project-specific decisions remain the responsibility of qualified human professionals.",
+        "listener_action": "Take one standard contract or safety submittal, list the top three risk factors you look for, and test whether your team agrees on those definitions.",
+        "availability": "Generally available for AEC firms as a specialized risk management platform.",
+        "episode_date": "2026-11-02"
+      },
+      "reason": "source_fetch_URLError"
+    },
+    {
+      "case": {
+        "feature_mode": "real_case",
+        "subject": "Construction document risk management",
+        "tool": "Document Crunch",
+        "problem": "Project teams faced significant bottlenecks manually reviewing complex, dense construction contracts and specifications, often leading to overlooked risks and inconsistent project standards.",
+        "workflow": "Project teams upload contracts, specifications, and drawings into the platform; CrunchAI automatically scans the documents, cross-references clauses against company-specific risk checklists, and provides summarized insights with direct citations to the source text.",
+        "result": "Contractors like Hill & Wilkinson and Marksmen GC achieved up to 75% faster review times, allowing teams to identify scope gaps and potential liabilities before work begins rather than during construction.",
+        "result_basis": "Company-reported case study data verified via public customer success documentation.",
+        "measurement_context": "Reported reduction in time spent on document review and risk identification compared to previous manual processes; not a controlled scientific study.",
+        "case_date": "2025-12-10",
+        "source_url": "https://www.documentcrunch.com/resources/case-studies/how-hill-wilkinson-cut-document-review-times-down-by-75-and-empowered-their-project-teams",
+        "source_quote": "Hill & Wilkinson used Document Crunch to standardize reviews for RFPs, specs, and contracts, giving every team a consistent way to identify risk",
+        "limitation": "The tool identifies potential issues and risks, but final legal and project-specific decision-making remains with the human professional.",
+        "listener_action": "Pick a single standard contract or specification document, identify three 'must-have' safety or payment clauses, and see how long it takes to manually verify their presence versus using a simple AI summary tool.",
+        "availability": "Generally available for AEC (Architecture, Engineering, and Construction) firms.",
+        "episode_date": "2026-11-02"
+      },
+      "reason": "source_http_404"
     }
-  ]
+  ],
+  "fallback": "verified_editorial_inventory",
+  "selected": "The missing approval chase"
 }

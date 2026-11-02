@@ -1,58 +1,287 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-10-30",
+  "date": "2026-11-02",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-30",
-    "pass": true,
+    "date": "2026-11-02",
+    "pass": false,
     "unresolved": [],
     "calculation_records": [],
-    "critical_errors": [],
+    "critical_errors": [
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Google will turn Jules to read-only after November 11, 2026 and wind it down on December 31, 2026; a ready replacement is not confirmed.",
+        "evidence_quote": "“After November 11, 2026, we will be turning Jules to read-only until the end of the year.”",
+        "exact_line": "ALEX: Google is killing Jules. December 31st, full shutdown. If you've built anything with it, you have until November 11th — that's nine days — before it goes read-only. And the replacement isn't ready yet.",
+        "replacement_line": "ALEX: Google is winding down Jules. It goes read-only after November 11th, and shuts down on December 31st. The replacement experience still isn't fully defined yet.",
+        "reason": "The date math is wrong for the episode date. November 2, 2026 to November 11, 2026 is nine days if counted inclusively only in casual speech, but as an interval it is 9 days after today, not 'you have until' in the strict deadline sense; more importantly, the script implies the replacement is not ready, while the official changelog only says Google is moving learnings into Antigravity and does not confirm a ready replacement experience. The line also should say Jules is turning read-only after November 11 and shutting down December 31, 2026, not 'killing' it as a factual summary is fine but needs the precise deadline framing.",
+        "source_url": "https://jules.google/docs/changelog/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "LinearB analyzed 2.7 million pull requests across 253 engineering organizations.",
+        "evidence_quote": "“drawn from 2.7 million pull requests and 83,000 developers across 253 engineering organizations”",
+        "exact_line": "ALEX: Right. They analyzed 2.7 million pull requests across 250 organizations, and AI-assisted ones are 2.6 times larger than human-written ones. At the 75th percentile.",
+        "replacement_line": "ALEX: Right. They analyzed 2.7 million pull requests across 253 organizations, and AI-assisted ones are 2.6 times larger than human-written ones. At the 75th percentile.",
+        "reason": "The organization count is off by one relative to the supplied source record and official LinearB source. The benchmark source says 2.7 million pull requests across 253 engineering organizations, not 250. The rest of the sentence is supported.",
+        "source_url": "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "LinearB's dataset covered 253 organizations, and the pickup-time gap is 5.3x for agentic AI PRs.",
+        "evidence_quote": "“drawn from 2.7 million pull requests and 83,000 developers across 253 engineering organizations”",
+        "exact_line": "RUFUS: Ha. Although — the 250 organizations in LinearB's dataset. That's a reasonably specific sample. Not the whole industry, but enough that the five-times figure isn't anecdote.",
+        "replacement_line": "RUFUS: Ha. Although — the 253 organizations in LinearB's dataset. That's a reasonably specific sample. Not the whole industry, but enough that the five-times figure isn't anecdote.",
+        "reason": "The dataset size is inaccurate and the inference rests on the wrong figure. The official LinearB source says 253 organizations, not 250, and the report's AI review-pickup figure is 5.3x longer for agentic AI PRs rather than a generic 'five-times' figure. This is a factual quantitative claim, not just rhetoric.",
+        "source_url": "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "LinearB's research dataset included 253 engineering organizations.",
+        "evidence_quote": "“drawn from 2.7 million pull requests and 83,000 developers across 253 engineering organizations”",
+        "exact_line": "RUFUS: The thing worth flagging is that this dataset came from LinearB's own research. Two-point-seven million pull requests is substantial, but we don't know how the 250 organizations were selected — whether they opted in, were recruited, or represent a particular kind of engineering culture.",
+        "replacement_line": "RUFUS: The thing worth flagging is that this dataset came from LinearB's own research. Two-point-seven million pull requests is substantial, but we don't know how the 253 organizations were selected — whether they opted in, were recruited, or represent a particular kind of engineering culture.",
+        "reason": "The dataset size is wrong. The source says 253 organizations, not 250. The rest is acceptable as uncertainty/warning, but the numeric factual assertion must be corrected.",
+        "source_url": "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Most firms running AI agents today only have logs and manual, slow reconstruction of agent actions.",
+        "evidence_quote": "“preserving the evidence required by security, compliance and operations teams.”",
+        "exact_line": "RUFUS: and the regulator's question isn't \"did the agent have access?\" It's \"what did it actually do, in sequence, on this account, on this date?\" And the answer — in most firms running agents right now — is: we have logs, but reconstructing the narrative is manual, slow work.",
+        "replacement_line": "RUFUS: and the regulator's question isn't \"did the agent have access?\" It's \"what did it actually do, in sequence, on this account, on this date?\" And many firms are still struggling to reconstruct that narrative manually.",
+        "reason": "This overstates a generalized current industry fact without support from the source records. The PR Newswire release says SMARE preserves evidence for security, compliance and operations teams, but it does not establish that 'most firms running agents right now' have only manual, slow reconstruction. That causal/generalized claim should be narrowed or removed.",
+        "source_url": "https://www.prnewswire.com/news-releases/ebix-partners-with-intentyx-to-bring-ai-agent-security-and-governance-to-regulated-industries-302924191.html"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Organizations that deployed agents through 2025 and early 2026 are about to hit their first serious compliance review cycles.",
+        "evidence_quote": "“SMARE can identify policy violations, unusual behavior and behavioral drift, while preserving the evidence required by security, compliance and operations teams.”",
+        "exact_line": "RUFUS: Which tracks. Organizations that deployed agents through 2025 and early 2026 are about to hit their first serious compliance review cycles. The regulator's question tends to arrive around the same time as the invoice.",
+        "replacement_line": "RUFUS: Which tracks. Organizations that deployed agents through 2025 and early 2026 may now be thinking harder about compliance review cycles. The regulator's question tends to arrive around the same time as the invoice.",
+        "reason": "The timing claim is speculative and unsupported. No supplied source establishes that organizations deploying agents through 2025 and early 2026 are 'about to hit' first serious compliance review cycles. This is an inference, not a verified fact, and should be softened or removed.",
+        "source_url": "https://www.prnewswire.com/news-releases/ebix-partners-with-intentyx-to-bring-ai-agent-security-and-governance-to-regulated-industries-302924191.html"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The Ledger provides five focused briefings.",
+        "evidence_quote": "No supporting excerpt in the supplied source records.",
+        "exact_line": "JAMIE: Asking what changes for you. The Ledger brings five focused briefings to that question, connecting the news with decisions about your work and your team.",
+        "replacement_line": "JAMIE: Asking what changes for you. The Ledger connects the news with decisions about your work and your team.",
+        "reason": "This is a sponsor/product claim about The Ledger, and the instruction says to ignore the sponsor read unless it makes a concrete numerical or regulated-product claim. Here 'five focused briefings' is a concrete numerical claim in an ad read that is not independently verified by the supplied sources. Because the script is to be fact-checked strictly, this is unsupported and should be treated as a warning or removed from the transcript if used in a correction set.",
+        "source_url": "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Google is shaping products across Google, including its agent-first platform, Google Antigravity.",
+        "evidence_quote": "“those learnings are shaping products across Google, including our agent-first platform, Google Antigravity.”",
+        "exact_line": "ALEX: Let me lay out the timeline. November 11th — that's nine days from today — Jules goes read-only. You can no longer run new tasks. December 31st, it shuts down completely. According to the official Jules changelog, Google is folding the project into something internally called \"Antigravity.\"",
+        "replacement_line": "ALEX: Let me lay out the timeline. November 11th — that's nine days from today — Jules goes read-only. You can no longer run new tasks. December 31st, it shuts down completely. According to the official Jules changelog, Google says the learnings are shaping its agent-first platform, Google Antigravity.",
+        "reason": "The date language is imprecise but mostly supported; however, 'you can no longer run new tasks' is supported by the changelog's 'continue finishing up sessions' and read-only state, but the line says 'According to the official Jules changelog' and the source only says it is turning Jules to read-only and that learnings are shaping Google Antigravity. More importantly, 'folding the project into something internally called Antigravity' overstates the source, which identifies it as Google's agent-first platform, not necessarily an internal project name. The line should be softened to reflect that Antigravity is the named platform/product, not simply an internal code name.",
+        "source_url": "https://jules.google/docs/changelog/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Jules users can export everything only before November 11, 2026, and cannot run new exports after read-only begins.",
+        "evidence_quote": "“You can now export everything Jules knows about your work into a local folder: account settings, environment variables, scheduled tasks, connected repositories, memories, setup scripts, and every session, including its prompt, plan, full activity log, and code patches.”",
+        "exact_line": "ALEX: Which is the practical action right now. Users can export everything: session history, prompts, plans, activity logs, code patches, repository connections. All of it is exportable. But only before November 11th, when it goes read-only. After that, you can still read your history, but you cannot run new exports —",
+        "replacement_line": "ALEX: Which is the practical action right now. Users can export a lot of their Jules data, including session history, prompts, plans, activity logs, code patches, and repository connections. Google says to do that before November 11th, when Jules becomes read-only.",
+        "reason": "The export list is incomplete and slightly inaccurate relative to the official changelog, which includes account settings, environment variables, scheduled tasks, connected repositories, memories, setup scripts, every session, prompt, plan, full activity log, and code patches. The claim that exports can only happen before November 11 is also not stated; the changelog says you have until November 11 to continue finishing sessions and will be turned read-only after that, but it does not specify export cutoff or that post-read-only exports are impossible. This is a materially misleading claim about user access and deadlines.",
+        "source_url": "https://jules.google/docs/changelog/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "Customers in the Joule Studio early adopter program can design and run n8n workflows in Joule Studio, with broader availability to follow.",
+        "evidence_quote": "“Customers in the Joule Studio early adopter program also can design and run n8n workflows in Joule Studio, with broader availability to follow.”",
+        "exact_line": "JAMIE: Look, the scenario is hypothetical, but the frustration is extremely real. SAP announced on October twenty-seventh that early adopters in the Joule Studio program can now design and run n8n workflows inside Joule Studio itself. Broader availability to follow, their words, not mine.",
+        "replacement_line": "JAMIE: Look, the scenario is hypothetical, but the frustration is extremely real. SAP says customers in the Joule Studio early adopter program can now design and run n8n workflows inside Joule Studio itself. Broader availability is still to follow, their words, not mine.",
+        "reason": "The date is wrong. The supplied SAP source is dated in late October 2026 but the exact published date in the source record is October 27 only indirectly; the source record states verified on 2026-10-30 and the article concerns SAP TechEd. More importantly, the official source also says SAP customers' data remains their data and SAP does not share customer data to train or improve LLMs, which is not mentioned here. However, the key correction is that the line should avoid implying an October 27 announcement if not directly sourced by the verified record; the supported statement is simply that customers in the Joule Studio early adopter program can design and run n8n workflows, with broader availability to follow.",
+        "source_url": "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+      },
+      {
+        "claim_type": "factual_assertion",
+        "factual_claim": "The workflow is hypothetical and based on a vendor-documented early-adopter capability, not a measured customer outcome.",
+        "evidence_quote": "“A proposed demonstration, not a measured customer outcome.”",
+        "exact_line": "JAMIE: Correct, and I will say that plainly. This is a vendor-documented capability applied to a synthetic scenario. No measured savings, no real implementation, no outcome to report. SAP's claim is that the tooling exists for early adopters. The workflow is our illustration of what it could address.",
+        "replacement_line": "JAMIE: Correct, and I will say that plainly. This is a vendor-documented capability applied to a synthetic scenario. No measured savings, no real implementation, no outcome to report. SAP says the tooling exists for early adopters. The workflow is our illustration of what it could address.",
+        "reason": "This is mostly supported by the supplied source record, which explicitly marks the case as hypothetical and untested. However, 'SAP's claim is that the tooling exists for early adopters' should be anchored more precisely to the SAP source and not imply broader availability or customer outcome. This is a warning-level nuance, not a pass/fail error, because the line is overall accurate.",
+        "source_url": "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+      }
+    ],
     "warnings": [
-      "While the script correctly notes the 47% token efficiency claim for Mistral Large 4, the source document explicitly states this is a vendor claim without independent benchmarking."
+      "The sponsor read about The Ledger should generally be ignored per instructions unless it makes a concrete numerical or regulated-product claim; line 87 is unsupported as written and is best treated as noncritical unless your review policy requires sponsor verification.",
+      "The script repeatedly uses 'today' and 'nine days from today'; because the episode date is 2026-11-02, the deadline language should be interpreted against that absolute date.",
+      "The LinearB reporting is internally inconsistent in the script: the source record mentions 250 organizations, but the official LinearB benchmark source supports 253 organizations and 5.3x pickup delay. Use the official source over the summary record.",
+      "The Jules shutdown story is supported, but the exact export scope in the script is incomplete compared with the official changelog; the changelog lists account settings, environment variables, scheduled tasks, connected repositories, memories, setup scripts, prompts, plans, full activity logs, and code patches.",
+      "The SAP n8n/Joule Studio segment is correctly framed as hypothetical and early-adopter only; any wording that implies general availability or real customer impact should be avoided."
     ],
     "verified_source_urls": [
-      "https://techcrunch.com/2026/10/29/mistral-releases-weights-for-its-trillion-parameter-ai-model-targeting-cybersecurity/",
-      "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/",
-      "https://www.bloomberg.com/news/articles/2026-10-30/amazon-taps-80-billion-supplier-loan-facility-to-help-fund-ai",
-      "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+      "https://jules.google/docs/changelog/",
+      "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block",
+      "https://www.prnewswire.com/news-releases/ebix-partners-with-intentyx-to-bring-ai-agent-security-and-governance-to-regulated-industries-302924191.html",
+      "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+    ],
+    "recovery_from": [
+      "Invalid or ungrounded calculation record",
+      "Invalid or ungrounded calculation record"
     ]
   },
   "audit_passes": [
     {
       "version": "grounded-fact-check-v1",
-      "date": "2026-10-30",
+      "date": "2026-11-02",
+      "pass": false,
+      "unresolved": [],
+      "calculation_records": [],
+      "critical_errors": [
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Google will turn Jules to read-only after November 11, 2026 and wind it down on December 31, 2026; a ready replacement is not confirmed.",
+          "evidence_quote": "“After November 11, 2026, we will be turning Jules to read-only until the end of the year.”",
+          "exact_line": "ALEX: Google is killing Jules. December 31st, full shutdown. If you've built anything with it, you have until November 11th — that's nine days — before it goes read-only. And the replacement isn't ready yet.",
+          "replacement_line": "ALEX: Google is winding down Jules. It goes read-only after November 11th, and shuts down on December 31st. The replacement experience still isn't fully defined yet.",
+          "reason": "The date math is wrong for the episode date. November 2, 2026 to November 11, 2026 is nine days if counted inclusively only in casual speech, but as an interval it is 9 days after today, not 'you have until' in the strict deadline sense; more importantly, the script implies the replacement is not ready, while the official changelog only says Google is moving learnings into Antigravity and does not confirm a ready replacement experience. The line also should say Jules is turning read-only after November 11 and shutting down December 31, 2026, not 'killing' it as a factual summary is fine but needs the precise deadline framing.",
+          "source_url": "https://jules.google/docs/changelog/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "LinearB analyzed 2.7 million pull requests across 253 engineering organizations.",
+          "evidence_quote": "“drawn from 2.7 million pull requests and 83,000 developers across 253 engineering organizations”",
+          "exact_line": "ALEX: Right. They analyzed 2.7 million pull requests across 250 organizations, and AI-assisted ones are 2.6 times larger than human-written ones. At the 75th percentile.",
+          "replacement_line": "ALEX: Right. They analyzed 2.7 million pull requests across 253 organizations, and AI-assisted ones are 2.6 times larger than human-written ones. At the 75th percentile.",
+          "reason": "The organization count is off by one relative to the supplied source record and official LinearB source. The benchmark source says 2.7 million pull requests across 253 engineering organizations, not 250. The rest of the sentence is supported.",
+          "source_url": "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "LinearB's dataset covered 253 organizations, and the pickup-time gap is 5.3x for agentic AI PRs.",
+          "evidence_quote": "“drawn from 2.7 million pull requests and 83,000 developers across 253 engineering organizations”",
+          "exact_line": "RUFUS: Ha. Although — the 250 organizations in LinearB's dataset. That's a reasonably specific sample. Not the whole industry, but enough that the five-times figure isn't anecdote.",
+          "replacement_line": "RUFUS: Ha. Although — the 253 organizations in LinearB's dataset. That's a reasonably specific sample. Not the whole industry, but enough that the five-times figure isn't anecdote.",
+          "reason": "The dataset size is inaccurate and the inference rests on the wrong figure. The official LinearB source says 253 organizations, not 250, and the report's AI review-pickup figure is 5.3x longer for agentic AI PRs rather than a generic 'five-times' figure. This is a factual quantitative claim, not just rhetoric.",
+          "source_url": "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "LinearB's research dataset included 253 engineering organizations.",
+          "evidence_quote": "“drawn from 2.7 million pull requests and 83,000 developers across 253 engineering organizations”",
+          "exact_line": "RUFUS: The thing worth flagging is that this dataset came from LinearB's own research. Two-point-seven million pull requests is substantial, but we don't know how the 250 organizations were selected — whether they opted in, were recruited, or represent a particular kind of engineering culture.",
+          "replacement_line": "RUFUS: The thing worth flagging is that this dataset came from LinearB's own research. Two-point-seven million pull requests is substantial, but we don't know how the 253 organizations were selected — whether they opted in, were recruited, or represent a particular kind of engineering culture.",
+          "reason": "The dataset size is wrong. The source says 253 organizations, not 250. The rest is acceptable as uncertainty/warning, but the numeric factual assertion must be corrected.",
+          "source_url": "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Most firms running AI agents today only have logs and manual, slow reconstruction of agent actions.",
+          "evidence_quote": "“preserving the evidence required by security, compliance and operations teams.”",
+          "exact_line": "RUFUS: and the regulator's question isn't \"did the agent have access?\" It's \"what did it actually do, in sequence, on this account, on this date?\" And the answer — in most firms running agents right now — is: we have logs, but reconstructing the narrative is manual, slow work.",
+          "replacement_line": "RUFUS: and the regulator's question isn't \"did the agent have access?\" It's \"what did it actually do, in sequence, on this account, on this date?\" And many firms are still struggling to reconstruct that narrative manually.",
+          "reason": "This overstates a generalized current industry fact without support from the source records. The PR Newswire release says SMARE preserves evidence for security, compliance and operations teams, but it does not establish that 'most firms running agents right now' have only manual, slow reconstruction. That causal/generalized claim should be narrowed or removed.",
+          "source_url": "https://www.prnewswire.com/news-releases/ebix-partners-with-intentyx-to-bring-ai-agent-security-and-governance-to-regulated-industries-302924191.html"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Organizations that deployed agents through 2025 and early 2026 are about to hit their first serious compliance review cycles.",
+          "evidence_quote": "“SMARE can identify policy violations, unusual behavior and behavioral drift, while preserving the evidence required by security, compliance and operations teams.”",
+          "exact_line": "RUFUS: Which tracks. Organizations that deployed agents through 2025 and early 2026 are about to hit their first serious compliance review cycles. The regulator's question tends to arrive around the same time as the invoice.",
+          "replacement_line": "RUFUS: Which tracks. Organizations that deployed agents through 2025 and early 2026 may now be thinking harder about compliance review cycles. The regulator's question tends to arrive around the same time as the invoice.",
+          "reason": "The timing claim is speculative and unsupported. No supplied source establishes that organizations deploying agents through 2025 and early 2026 are 'about to hit' first serious compliance review cycles. This is an inference, not a verified fact, and should be softened or removed.",
+          "source_url": "https://www.prnewswire.com/news-releases/ebix-partners-with-intentyx-to-bring-ai-agent-security-and-governance-to-regulated-industries-302924191.html"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The Ledger provides five focused briefings.",
+          "evidence_quote": "No supporting excerpt in the supplied source records.",
+          "exact_line": "JAMIE: Asking what changes for you. The Ledger brings five focused briefings to that question, connecting the news with decisions about your work and your team.",
+          "replacement_line": "JAMIE: Asking what changes for you. The Ledger connects the news with decisions about your work and your team.",
+          "reason": "This is a sponsor/product claim about The Ledger, and the instruction says to ignore the sponsor read unless it makes a concrete numerical or regulated-product claim. Here 'five focused briefings' is a concrete numerical claim in an ad read that is not independently verified by the supplied sources. Because the script is to be fact-checked strictly, this is unsupported and should be treated as a warning or removed from the transcript if used in a correction set.",
+          "source_url": "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Google is shaping products across Google, including its agent-first platform, Google Antigravity.",
+          "evidence_quote": "“those learnings are shaping products across Google, including our agent-first platform, Google Antigravity.”",
+          "exact_line": "ALEX: Let me lay out the timeline. November 11th — that's nine days from today — Jules goes read-only. You can no longer run new tasks. December 31st, it shuts down completely. According to the official Jules changelog, Google is folding the project into something internally called \"Antigravity.\"",
+          "replacement_line": "ALEX: Let me lay out the timeline. November 11th — that's nine days from today — Jules goes read-only. You can no longer run new tasks. December 31st, it shuts down completely. According to the official Jules changelog, Google says the learnings are shaping its agent-first platform, Google Antigravity.",
+          "reason": "The date language is imprecise but mostly supported; however, 'you can no longer run new tasks' is supported by the changelog's 'continue finishing up sessions' and read-only state, but the line says 'According to the official Jules changelog' and the source only says it is turning Jules to read-only and that learnings are shaping Google Antigravity. More importantly, 'folding the project into something internally called Antigravity' overstates the source, which identifies it as Google's agent-first platform, not necessarily an internal project name. The line should be softened to reflect that Antigravity is the named platform/product, not simply an internal code name.",
+          "source_url": "https://jules.google/docs/changelog/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Jules users can export everything only before November 11, 2026, and cannot run new exports after read-only begins.",
+          "evidence_quote": "“You can now export everything Jules knows about your work into a local folder: account settings, environment variables, scheduled tasks, connected repositories, memories, setup scripts, and every session, including its prompt, plan, full activity log, and code patches.”",
+          "exact_line": "ALEX: Which is the practical action right now. Users can export everything: session history, prompts, plans, activity logs, code patches, repository connections. All of it is exportable. But only before November 11th, when it goes read-only. After that, you can still read your history, but you cannot run new exports —",
+          "replacement_line": "ALEX: Which is the practical action right now. Users can export a lot of their Jules data, including session history, prompts, plans, activity logs, code patches, and repository connections. Google says to do that before November 11th, when Jules becomes read-only.",
+          "reason": "The export list is incomplete and slightly inaccurate relative to the official changelog, which includes account settings, environment variables, scheduled tasks, connected repositories, memories, setup scripts, every session, prompt, plan, full activity log, and code patches. The claim that exports can only happen before November 11 is also not stated; the changelog says you have until November 11 to continue finishing sessions and will be turned read-only after that, but it does not specify export cutoff or that post-read-only exports are impossible. This is a materially misleading claim about user access and deadlines.",
+          "source_url": "https://jules.google/docs/changelog/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "Customers in the Joule Studio early adopter program can design and run n8n workflows in Joule Studio, with broader availability to follow.",
+          "evidence_quote": "“Customers in the Joule Studio early adopter program also can design and run n8n workflows in Joule Studio, with broader availability to follow.”",
+          "exact_line": "JAMIE: Look, the scenario is hypothetical, but the frustration is extremely real. SAP announced on October twenty-seventh that early adopters in the Joule Studio program can now design and run n8n workflows inside Joule Studio itself. Broader availability to follow, their words, not mine.",
+          "replacement_line": "JAMIE: Look, the scenario is hypothetical, but the frustration is extremely real. SAP says customers in the Joule Studio early adopter program can now design and run n8n workflows inside Joule Studio itself. Broader availability is still to follow, their words, not mine.",
+          "reason": "The date is wrong. The supplied SAP source is dated in late October 2026 but the exact published date in the source record is October 27 only indirectly; the source record states verified on 2026-10-30 and the article concerns SAP TechEd. More importantly, the official source also says SAP customers' data remains their data and SAP does not share customer data to train or improve LLMs, which is not mentioned here. However, the key correction is that the line should avoid implying an October 27 announcement if not directly sourced by the verified record; the supported statement is simply that customers in the Joule Studio early adopter program can design and run n8n workflows, with broader availability to follow.",
+          "source_url": "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+        },
+        {
+          "claim_type": "factual_assertion",
+          "factual_claim": "The workflow is hypothetical and based on a vendor-documented early-adopter capability, not a measured customer outcome.",
+          "evidence_quote": "“A proposed demonstration, not a measured customer outcome.”",
+          "exact_line": "JAMIE: Correct, and I will say that plainly. This is a vendor-documented capability applied to a synthetic scenario. No measured savings, no real implementation, no outcome to report. SAP's claim is that the tooling exists for early adopters. The workflow is our illustration of what it could address.",
+          "replacement_line": "JAMIE: Correct, and I will say that plainly. This is a vendor-documented capability applied to a synthetic scenario. No measured savings, no real implementation, no outcome to report. SAP says the tooling exists for early adopters. The workflow is our illustration of what it could address.",
+          "reason": "This is mostly supported by the supplied source record, which explicitly marks the case as hypothetical and untested. However, 'SAP's claim is that the tooling exists for early adopters' should be anchored more precisely to the SAP source and not imply broader availability or customer outcome. This is a warning-level nuance, not a pass/fail error, because the line is overall accurate.",
+          "source_url": "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+        }
+      ],
+      "warnings": [
+        "The sponsor read about The Ledger should generally be ignored per instructions unless it makes a concrete numerical or regulated-product claim; line 87 is unsupported as written and is best treated as noncritical unless your review policy requires sponsor verification.",
+        "The script repeatedly uses 'today' and 'nine days from today'; because the episode date is 2026-11-02, the deadline language should be interpreted against that absolute date.",
+        "The LinearB reporting is internally inconsistent in the script: the source record mentions 250 organizations, but the official LinearB benchmark source supports 253 organizations and 5.3x pickup delay. Use the official source over the summary record.",
+        "The Jules shutdown story is supported, but the exact export scope in the script is incomplete compared with the official changelog; the changelog lists account settings, environment variables, scheduled tasks, connected repositories, memories, setup scripts, prompts, plans, full activity logs, and code patches.",
+        "The SAP n8n/Joule Studio segment is correctly framed as hypothetical and early-adopter only; any wording that implies general availability or real customer impact should be avoided."
+      ],
+      "verified_source_urls": [
+        "https://jules.google/docs/changelog/",
+        "https://linearb.io/resources/ai-engineering-productivity-gap?trk=article-ssr-frontend-pulse_little-text-block",
+        "https://www.prnewswire.com/news-releases/ebix-partners-with-intentyx-to-bring-ai-agent-security-and-governance-to-regulated-industries-302924191.html",
+        "https://news.sap.com/hk/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+      ],
+      "recovery_from": [
+        "Invalid or ungrounded calculation record",
+        "Invalid or ungrounded calculation record"
+      ]
+    },
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-11-02",
       "pass": true,
       "unresolved": [],
       "calculation_records": [],
       "critical_errors": [],
-      "warnings": [
-        "While the script correctly notes the 47% token efficiency claim for Mistral Large 4, the source document explicitly states this is a vendor claim without independent benchmarking."
-      ],
+      "warnings": [],
       "verified_source_urls": [
-        "https://techcrunch.com/2026/10/29/mistral-releases-weights-for-its-trillion-parameter-ai-model-targeting-cybersecurity/",
-        "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/",
-        "https://www.bloomberg.com/news/articles/2026-10-30/amazon-taps-80-billion-supplier-loan-facility-to-help-fund-ai",
-        "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+        "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/",
+        "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFa67a6gcB1PpanJZsys2Q6ttZKfnViVGXLJUT2Rt2aUMfppFwYlp6RyT5P3DWi6CHmJGB9DzIWZmb3Dwu5WNGFfFOtOPlUakRWlFpawu3DPyTBf_5qF2avOmmPzH-XEX8PaHHA-r4boUgonoaJCMepD0PJU2bVqteSpwWKqIvOoqGxwy66_4ULe0DzU7KQHNCnYjQHRhwkAj5-QgmkvIJIoTlTDGYitWAufo3XL-F6r3c3UoKXc0eJfZFAKvO9lZk9KsxEF8JiQ2EakHm0z2z0xP0DGtuzTskpfe016g9R4iHhFkL1MDff19xbe0zBUcoCw8O_ZA==",
+        "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpMrcN2s_2HOn2Ly5klFwFOB885ZovvD6sIx7-oq2qL07ftz80MXY2lX-xQSjzcJqjCbQ9hd_g7jqaEIQCGE4g_9lAdmO1ErmVTlW-VuZnhy7lWf9FSaZVUeV44c2zabXnqAJczduQwJ2Qij8g7lp2arcaWNTn7BIuS98r4poI9vf5oq6vbLvS7YJVYLyK0EV8owbKrjuGuOIA54pfet9r7Iup_bVr_-b6qtk_UlASMQiPTZsvOqKs9zuTlHB1YkVY9uY0-bWb02QlybQ=",
+        "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHBtxIfm8r8ZQFYDbSv61zHu9DKZzfffJfTduoSKeZglibijG8s_mbnyzThBa8BSYW7SYcGq1GTFCZs5ccE5f4acZlpcLXVMqf_xUIFIYq6DJo8lnAlj7xT81XQvXqOQuzaH_swKCN0v_utEpwPHUMxS8zyOzQOwYwBiWRk0H-Og5kC6as7TRkSx3BPkjG2LkyMHqScHZ4BPcl0fYzv_F4YJbLHug24D-Z5drCst6FgquMZ"
       ]
     }
   ],
-  "replacements_applied": 0,
+  "replacements_applied": 11,
   "final": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-10-30",
+    "date": "2026-11-02",
     "pass": true,
     "unresolved": [],
     "calculation_records": [],
     "critical_errors": [],
-    "warnings": [
-      "While the script correctly notes the 47% token efficiency claim for Mistral Large 4, the source document explicitly states this is a vendor claim without independent benchmarking."
-    ],
+    "warnings": [],
     "verified_source_urls": [
-      "https://techcrunch.com/2026/10/29/mistral-releases-weights-for-its-trillion-parameter-ai-model-targeting-cybersecurity/",
-      "https://techcrunch.com/2026/10/30/zests-new-ai-agent-finds-restaurants-and-books-reservations-over-text/",
-      "https://www.bloomberg.com/news/articles/2026-10-30/amazon-taps-80-billion-supplier-loan-facility-to-help-fund-ai",
-      "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+      "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/",
+      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFa67a6gcB1PpanJZsys2Q6ttZKfnViVGXLJUT2Rt2aUMfppFwYlp6RyT5P3DWi6CHmJGB9DzIWZmb3Dwu5WNGFfFOtOPlUakRWlFpawu3DPyTBf_5qF2avOmmPzH-XEX8PaHHA-r4boUgonoaJCMepD0PJU2bVqteSpwWKqIvOoqGxwy66_4ULe0DzU7KQHNCnYjQHRhwkAj5-QgmkvIJIoTlTDGYitWAufo3XL-F6r3c3UoKXc0eJfZFAKvO9lZk9KsxEF8JiQ2EakHm0z2z0xP0DGtuzTskpfe016g9R4iHhFkL1MDff19xbe0zBUcoCw8O_ZA==",
+      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpMrcN2s_2HOn2Ly5klFwFOB885ZovvD6sIx7-oq2qL07ftz80MXY2lX-xQSjzcJqjCbQ9hd_g7jqaEIQCGE4g_9lAdmO1ErmVTlW-VuZnhy7lWf9FSaZVUeV44c2zabXnqAJczduQwJ2Qij8g7lp2arcaWNTn7BIuS98r4poI9vf5oq6vbLvS7YJVYLyK0EV8owbKrjuGuOIA54pfet9r7Iup_bVr_-b6qtk_UlASMQiPTZsvOqKs9zuTlHB1YkVY9uY0-bWb02QlybQ=",
+      "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHBtxIfm8r8ZQFYDbSv61zHu9DKZzfffJfTduoSKeZglibijG8s_mbnyzThBa8BSYW7SYcGq1GTFCZs5ccE5f4acZlpcLXVMqf_xUIFIYq6DJo8lnAlj7xT81XQvXqOQuzaH_swKCN0v_utEpwPHUMxS8zyOzQOwYwBiWRk0H-Og5kC6as7TRkSx3BPkjG2LkyMHqScHZ4BPcl0fYzv_F4YJbLHug24D-Z5drCst6FgquMZ"
     ]
   },
   "pass": true,
