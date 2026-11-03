@@ -509,6 +509,18 @@ def _gemini_text(g: Dict[str, Any], prompt: str, model: str, max_tokens: int = 2
             resp = client.models.generate_content(model=model, contents=prompt)
         return str(getattr(resp, "text", "") or "").strip()
     except Exception as e:
+        # Depleted prepaid credit is not a transient model outage. Avoid spending
+        # on downstream writing when the approved cast cannot be rendered.
+        billing_depleted = "prepayment credits are depleted" in str(e).lower()
+        gemini_cast_required = any(
+            os.getenv(name, "").lower() == "gemini"
+            for name in ("ALEX_TTS_PROVIDER", "JAMIE_TTS_PROVIDER", "RUFUS_TTS_PROVIDER")
+        )
+        if billing_depleted and gemini_cast_required:
+            raise RuntimeError(
+                "Gemini prepaid credits depleted; approved cast unavailable. "
+                "Preserve research and restore billing before recovery."
+            ) from e
         _safe_print(g, f" ⚠️ Gemini call failed on {model}: {e}")
         return ""
 
