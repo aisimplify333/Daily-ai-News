@@ -4,7 +4,7 @@ on:
   schedule:
     # Avoid GitHub's documented top-of-hour schedule congestion. This is a
     # requested start time, not an exact-time delivery guarantee.
-    # Delivery target: BY 07:30 America/New_York, not a 07:30 start.
+    # Delivery target: BY 06:30 America/New_York, not a 06:30 start.
     # Staggered attempts cover DST: 06:17 UTC = 02:17 EDT / 01:17 EST;
     # 10:17 UTC = 06:17 EDT / 05:17 EST. Duplicate/date guards make
     # later starts no-ops once the day's episode is published.
