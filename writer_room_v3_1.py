@@ -1540,12 +1540,11 @@ def _normalize_midroll(script: str, date_str: str) -> str:
 def _normalize_primary_sponsor(script: str) -> str:
     """Place one concise house read at the first natural break before Segment 2."""
     sponsor_lines = (
-        "ALEX: Today’s episode is brought to you by The Ledger. When AI news moves this "
-        "fast, knowing what happened is not enough; you need to know what changes your "
-        "next decision.\n"
-        "ALEX: The Ledger turns the day’s noise into five focused briefings for people "
-        "who need the consequence before consensus catches up. Subscribe at "
-        "T-H-E-L-E-D-G-R dot I-O. That’s LEDGR, with no E between G and R."
+        "ALEX: Today’s episode is brought to you by The Ledger. What changed in AI, "
+        "and what does it mean for your next decision?\n"
+        "ALEX: The Ledger turns the noise into five focused briefings. Subscribe at "
+        "T-H-E-L-E-D-G-R dot I-O. That’s LEDGR, with no E between G and R. "
+        "Find the link in our show notes."
     )
     lines = (script or "").splitlines()
     cleaned: List[str] = []
