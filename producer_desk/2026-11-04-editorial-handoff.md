@@ -45,3 +45,44 @@ Jamie's practical candidate: Claude Artifacts turns a fictional picnic roster in
 Source: https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them
 
 Next priorities: verify November 4 public delivery; check final factual wording and correct November 3 availability/scope claims; replace repetitive feature/clip selection based on real published history and measured audio boundaries.
+
+
+## November 4 release verification and producer follow-up
+Supersedes the earlier in-progress status above. Production 41801357997 succeeded; Pages 41809958417 succeeded. Downstream public verification at 2026-11-04T10:01:25Z confirmed dated page, RSS and audio, i.e. 05:01 Eastern, ahead of 06:30. Independently downloaded HTTP200 MP3 (33,034,221 bytes), ffprobe1376.400 seconds (22:56). This was supervised recovery, not proof of five autonomous on-time releases. No duplicate generation or replacement master initiated.
+RSS pubDate remains nominal12:00UTC (07:00Eastern), later than the delivery deadline despite early public availability. This is a feed metadata defect/risk for clients that defer future-dated items; Spotify propagation is unverified. Change date-only noon defaults in main.py/update_feed.py to an explicit release timestamp in a separately verified metadata repair, preserving archived GUID/enclosure identities.
+
+### Measured sound and actual cast
+Charon/Sulafat/Iapetus all Gemini,160 successful renders,21,909 characters,zero fallbacks. Full cost unknown;107 prepared Alex/Rufus takes are included, not additional assembly spending. Master -16.29LUFS,-1.72dBTP,3.3LU range. Four ElevenLabs transitions at0:58,6:25,12:34,20:35; ElevenLabs Jamie entrance17:35 and7.2-second welcome bed. Rufus entrance7:32 is original show asset. NO applied location ambience in this report: all attempted location matches failed. Imagined bank scene occurs earlier than the generic global-desk handoff, so correct placement/detection together before calling this fixed. Preserve intro/outro and master.
+Rendered review41811283963 covered0–700seconds then failed after bounded retries: invalid clip-relative timestamp. Artifact13311703324 preserves partial observations. Do not label full review passed or infer absence of flaws from generic5/5 model scores. No human/assistant listening performed.
+Cast promo41811284231 rendered and preserved artifact13312671763, then GitHub returned Internal Server Error on git push. This is an asset deployment failure, not episode production failure. Marketing can recover the saved package without regeneration; no native marketing actions performed here.
+
+### Script and fact findings
+Jamie practical feature now varies away from Salesforce/SAP: fictional Claude picnic checklist, about2:57 between entrance and next segment. Potato-salad/dip banter is reciprocal, respectful and returns to a useful test. Preserve that structure, vary scenario next time. Caveat is repeated too often; one clear fictional/unperformed disclaimer plus one limitation is enough.
+Five segments remain, but story2 heading says Anthropic watermark while most dialogue discusses infostealers. This adds an unlisted fourth news topic and muddles hierarchy. Either substantiate/select security as its own story next cycle or remove the unselected detour before TTS.
+AMD: one reported quarterly charge is not proof of a perpetual billion-dollar-per-quarter cost. Cash/noncash/warrant treatment and price pass-through need direct filing verification; current title implies personal budget consequences more strongly than the episode establishes. Avoid promoting these extrapolations as facts.
+NVIDIA: script repeatedly says the post has no time-saved figures. Primary source DOES report workload speedups (Applied10x/35x, COMSOLup10x, Siemens17x and Advantesthours-to-minutes). These are vendor-reported workload claims, not independent whole-fab yield proof. Correct that distinction.
+Anthropic: November3 release notes explicitly identify covered models and a Sonnet sampling exception; script's claim that scope is unstated is too broad. Do not infer platform-call/time tracking from a text watermark without supporting documentation.
+Security: blanket password-reset/token persistence claims across ChatGPT/Claude/Codex are not supported by the four URLs in the passed fact report. Verify each provider's session behavior before reuse. Passed model check is not independent substantiation.
+Presentation: two back-to-back introductions to Jamie; an orphaned 'quick one for the Ledger midroll' line after the sponsor already ran; Tuesday reference in Wednesday episode. Closing 'tomorrow' is correct for Wednesday. Repeated charge and evidence-limit explanations crowd out new information.
+Memory updated with Rufus's prediction, but check_after remains vague; store an actual resolution date after clarifying calendar versus fiscal quarters. Positions extracted are broader than spoken lines; do not treat every extracted position as a verbatim cast commitment.
+
+### Narrow code action
+Commit537dfd7 tightens existing factual-audit instructions for single-quarter versus recurring charges, platform-specific session assertions including inserted stories, and absent-versus-vendor-reported numerical evidence. Python AST parsing passed. This is a prompt improvement, not proof these defects can never recur; no factual guards weakened, no extra production run, no paid master altered.
+
+### Marketing editorial readiness
+Existing32.925-second clip1:01–1:34 has a clear entity but repeats the premise without a useful answer or comic payoff. Not approved for acquisition promotion on editorial grounds. Recommend recutting the picnic exchange with its setup and duplicate-test payoff from measured timeline; no invented hands-on success. Original trailer preserved;78.084-second candidate remains unreviewed/unpublished. Do not imply Spotify-native publication.
+All notes here are public editorial evidence, not private audience analytics.
+
+### Next production proposals (refresh facts before selection)
+Three alternative title candidates for the same fresh, unaired Launchpad angle:
+1. Microsoft and NVIDIA's AI Launchpad: Who Gets In?
+2. Microsoft and NVIDIA Offer AI Startups a Route to Customers—Who Qualifies?
+3. Building an AI Business? Inside Microsoft and NVIDIA's New Launchpad
+Scope: established software products in UK/Ireland; applicationsNov3–27; selected cohortearly2027. No guaranteed funding or sales. Source:
+https://ukstories.microsoft.com/features/microsoft-and-nvidia-launch-frontier-launchpad-to-boost-next-wave-of-ai-focused-software-firms-across-uk-ireland/
+Recheck freshness and aired history at production; do not force yesterday's story.
+
+Jamie next practical candidate: Copilot in Excel helps a fictional small theatre compare costume/lighting/props budgets with a simple chart. Synthetic ten-row table; deliberately wrong total; Jamie asks Copilot to propose a formula and chart, then manually checks the arithmetic. Rufus challenges the chandelier budget; Alex asks what action the chart changes. This is a proposed test, not a measured result or new launch; eligible subscription/account required. Avoid repeating the picnic/checklist scenario.
+https://excel.cloud.microsoft/create/en/copilot-in-excel/
+
+Next priorities: correct factual scope and unselected story drift before tomorrow's TTS; align Rufus imagined-location cue with actual mixed audio; repair future-dated feed metadata and recover saved review/promo outputs without regenerating the show.
