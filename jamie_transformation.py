@@ -45,10 +45,12 @@ def status(script):
             and script.count(HANDOFF) == script.count(RETURN) == 1}
 
 
-def recent_features():
+def recent_features(before_date=None):
     """Use published transcripts, not unproduced research, as creative memory."""
     rows = []
     for path in sorted(Path('episode_audio').glob('podcast_*.txt'), reverse=True):
+        if before_date and path.stem.removeprefix('podcast_') >= before_date:
+            continue
         text = path.read_text(errors='replace')
         start = text.find(HANDOFF)
         end = text.find(RETURN, start)
@@ -71,10 +73,12 @@ def repeated_vendor(case, history):
 
 
 def research(date, search):
+    history = recent_features(before_date=date)
     path = Path('jamie_transformation_case.json')
     if path.exists():
         saved = json.loads(path.read_text())
-        if saved.get('episode_date') == date and valid_case(saved) and source_matches(saved):
+        if (saved.get('episode_date') == date and valid_case(saved)
+                and not repeated_vendor(saved, history) and source_matches(saved)):
             return saved
     prompt = '''Use live web search across varied sources. Find ONE engaging AI transformation.
 Choose a documented real outcome OR a verified tool capability with an explicitly
@@ -115,7 +119,6 @@ If no verified case is found return {"unavailable":true}.
 Episode date: ''' + date
     if path.exists():
         prompt += '\nPrevious case to avoid: ' + path.read_text()
-    history = recent_features()
     prompt += '\nLast ten published features: ' + json.dumps(history)
     prompt += '\nChoose a different vendor, human problem and industry from the latest feature. Avoid all recently covered cases; do not just swap customers of the same platform.'
     from grounded_news_v1 import _extract_json
@@ -173,7 +176,7 @@ def select_inventory(date, history):
                 continue
         except (KeyError, ValueError):
             continue
-        if item.get('subject', '').casefold() in recent:
+        if repeated_vendor(item, history) or item.get('subject', '').casefold() in recent:
             continue
         case = dict(item, episode_date=date)
         if valid_case(case) and source_matches(case):
