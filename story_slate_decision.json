@@ -1,50 +1,52 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-10-29",
+  "date": "2026-11-03",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
-    "changed": false,
+    "changed": true,
     "lookback_episodes": 7,
-    "previous_lead_actor": "OpenAI",
-    "previous_argument_family": "models",
-    "original_lead": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
-    "selected_lead": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
+    "previous_lead_actor": "Google",
+    "previous_argument_family": "work",
+    "original_lead": "Google to block Search access for schools that disable AI features",
+    "selected_lead": "Meta initiates $25 billion debt offering to accelerate AI infrastructure development",
     "candidates": [
       {
-        "headline": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
-        "score": 96.0,
-        "actor": "Google",
+        "headline": "Meta initiates $25 billion debt offering to accelerate AI infrastructure development",
+        "score": 90.0,
+        "actor": "Meta",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "Cursor confirms compromise of Anthropic-powered coding extension",
+        "score": 60.0,
+        "actor": "Anthropic",
         "argument_family": "security",
         "penalties": []
       },
       {
-        "headline": "Google and Microsoft Delay Capital Expenditure Forecasts in Q3 Earnings",
-        "score": 80.0,
+        "headline": "Google to block Search access for schools that disable AI features",
+        "score": 49.0,
         "actor": "Google",
-        "argument_family": "money",
-        "penalties": []
-      },
-      {
-        "headline": "GitHub Launches Copilot Fusion for Multi-Model AI Coding",
-        "score": 72.0,
-        "actor": "GitHub",
         "argument_family": "models",
         "penalties": [
-          "same argument family as previous episode"
+          "same lead actor as previous episode"
         ]
       },
       {
-        "headline": "Google deepens Singapore health AI partnership and opens a new research hub",
-        "score": 60.0,
+        "headline": "Google DeepMind publishes agentic cheminformatics research using Google Antigravity",
+        "score": 29.0,
         "actor": "Google",
-        "argument_family": "science",
-        "penalties": []
+        "argument_family": "models",
+        "penalties": [
+          "same lead actor as previous episode"
+        ]
       },
       {
-        "headline": "OpenAI and ServiceNow deepen enterprise integration across workflows, security, and agentic development",
-        "score": 15.0,
-        "actor": "OpenAI",
-        "argument_family": "security",
+        "headline": "Google launches a new Singapore research hub and more than $6 million in grants for AI-for-science and health work",
+        "score": 19.0,
+        "actor": "Google",
+        "argument_family": "models",
         "penalties": [
           "same lead actor as previous episode"
         ]
@@ -54,187 +56,187 @@
   "selected": [
     {
       "rank": 1,
-      "headline": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
-      "publisher": "Google DeepMind",
+      "headline": "Google to block Search access for schools that disable AI features",
+      "publisher": "The New York Times",
       "top_event_score": null,
-      "story_age_hours": 37.21,
+      "story_age_hours": 4.05,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-carbon/"
+      "source_url": "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html"
     },
     {
       "rank": 2,
-      "headline": "Google and Microsoft Delay Capital Expenditure Forecasts in Q3 Earnings",
-      "publisher": "CNBC",
+      "headline": "Meta initiates $25 billion debt offering to accelerate AI infrastructure development",
+      "publisher": "Bloomberg",
       "top_event_score": null,
-      "story_age_hours": 1.71,
-      "source_tier": 2,
+      "story_age_hours": 3.49,
+      "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.cnbc.com/2026/10/29/ai-build-out-hits-snag-as-google-and-microsoft-put-off-raising-capex-forecasts.html"
+      "source_url": "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure"
     },
     {
       "rank": 3,
-      "headline": "GitHub Launches Copilot Fusion for Multi-Model AI Coding",
-      "publisher": "GitHub",
+      "headline": "Google DeepMind publishes agentic cheminformatics research using Google Antigravity",
+      "publisher": "Google DeepMind",
       "top_event_score": null,
-      "story_age_hours": 5.58,
+      "story_age_hours": 24.94,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.neowin.net/news/github-copilot-fusion-combines-multiple-ai-models-to-write-better-code-at-lower-cost/"
+      "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
     },
     {
       "rank": 4,
-      "headline": "Google deepens Singapore health AI partnership and opens a new research hub",
-      "publisher": "Google",
+      "headline": "Cursor confirms compromise of Anthropic-powered coding extension",
+      "publisher": "BankInfoSecurity",
       "top_event_score": null,
-      "story_age_hours": 13.21,
-      "source_tier": 3,
+      "story_age_hours": 2.9,
+      "source_tier": 1,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://blog.google/innovation-and-ai/technology/health/google-for-health-summit-singapore/"
+      "source_url": "https://www.bankinfosecurity.com/cursor-confirms-anthropic-code-extension-compromise-a-24512"
     },
     {
       "rank": 5,
-      "headline": "OpenAI and ServiceNow deepen enterprise integration across workflows, security, and agentic development",
-      "publisher": "OpenAI",
+      "headline": "Google launches a new Singapore research hub and more than $6 million in grants for AI-for-science and health work",
+      "publisher": "Google",
       "top_event_score": null,
-      "story_age_hours": 37.21,
+      "story_age_hours": 24.94,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://openai.com/index/openai-servicenow-partnership-expansion/"
+      "source_url": "https://blog.google/innovation-and-ai/technology/research/partnering-singapore-advance-scientific-discovery/"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "Why Google is Shuttering Jules: What Happens When Your AI Assistant Disappears",
-    "central_fight": "Whether the industry's push for governance and consolidation is solving real-world friction or just creating new, fragile dependencies.",
-    "opening_question": "If your AI coding assistant suddenly disappeared, would you even know how to recover your work?",
-    "listener_question": "When an AI tool you rely on gets shut down, what's your biggest concern?",
+    "published_title": "Why Google Is Linking Standard Search To Mandatory AI Tools",
+    "central_fight": "Whether the push for integrated AI infrastructure is solving real-world friction or just creating new, fragile dependencies.",
+    "opening_question": "If Google says their Search engine literally cannot function without generative AI, do we believe them?",
+    "listener_question": "If your AI tool was suddenly bundled with features you didn't want, would you keep using it or switch?",
     "poll_options": [
-      "Losing my saved prompts and history",
-      "The time it takes to learn a new tool",
-      "The lack of data portability",
-      "I don't rely on AI enough to care"
+      "Keep using it",
+      "Switch immediately",
+      "Depends on the cost",
+      "It's complicated"
     ],
-    "listener_promise": "You will understand the new tools for managing AI code bloat, how to audit autonomous agents, and why you need to back up your AI session data now.",
+    "listener_promise": "By the end, you'll know why Google is bundling Search and AI, how Meta is funding its massive infrastructure, and if AI is actually speeding up drug discovery.",
     "positions": {
-      "alex": "Believes we are in a 'growing pains' phase where we have to build the tools to manage the agents we've already unleashed.",
-      "jamie": "Argues that we are rushing to build 'safety' and 'efficiency' layers that are really just new ways to hide the fact that we don't fully understand how these agents work.",
+      "alex": "Believes we are in a 'growing pains' phase where we must build the tools to manage the agents we've unleashed.",
+      "jamie": "Argues that until systems are legible to the people they affect, these 'safety' and 'integration' launches are just new ways to hide risk.",
       "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
     },
     "concession": {
-      "host": "jamie",
-      "gives_ground_on": "The necessity of audit trails for AI agents in highly regulated industries like finance."
+      "host": "alex",
+      "gives_ground_on": "Admits that the 'technical architecture' claim from Google is likely a way to avoid maintaining two separate, legacy-heavy search stacks."
     },
-    "who_wins": "The engineering managers who prioritize governance over raw speed.",
-    "who_is_exposed": "Developers who haven't backed up their AI-assisted workflows.",
-    "normal_person_payoff": "You'll save yourself a headache by exporting your AI chat history before the next big platform consolidation.",
+    "who_wins": "Infrastructure-heavy incumbents who can force platform-wide adoption.",
+    "who_is_exposed": "School IT administrators who now have to choose between AI-enabled search or no search at all.",
+    "normal_person_payoff": "Understanding that 'Search' is evolving into a platform-integrated service, not a standalone tool.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "The long-term reliability and transparency of AI tools.",
-      "rufus_value": "The market necessity of building control infrastructure to scale AI.",
-      "point_of_collision": "Whether 'governance' tools are actually making systems safer or just adding corporate overhead."
+      "jamie_value": "The importance of user choice and transparency in educational tools.",
+      "rufus_value": "The necessity of capital-intensive infrastructure to maintain a competitive edge.",
+      "point_of_collision": "Whether the 'technical necessity' of AI integration is a valid excuse for removing user control."
     },
     "rufus_global_markets_desk": {
       "market_or_region": "Wall Street/New York",
-      "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpMrcN2s_2HOn2Ly5klFwFOB885ZovvD6sIx7-oq2qL07ftz80MXY2lX-xQSjzcJqjCbQ9hd_g7jqaEIQCGE4g_9lAdmO1ErmVTlW-VuZnhy7lWf9FSaZVUeV44c2zabXnqAJczduQwJ2Qij8g7lp2arcaWNTn7BIuS98r4poI9vf5oq6vbLvS7YJVYLyK0EV8owbKrjuGuOIA54pfet9r7Iup_bVr_-b6qtk_UlASMQiPTZsvOqKs9zuTlHB1YkVY9uY0-bWb02QlybQ=",
-      "why_this_location_today": "Regulated industries are the primary drivers for the adoption of behavioral security engines like SMARE.",
-      "beat": "compliance",
+      "source_url": "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
+      "why_this_location_today": "Meta's massive debt offering is being analyzed by New York institutional investors as a bellwether for AI spending sustainability.",
+      "beat": "financing",
       "companies_or_assets": [
-        "Ebix",
-        "intentyx",
-        "Financial Services Sector"
+        "Meta",
+        "Llama",
+        "Cloud Infrastructure Sector"
       ],
-      "capital_policy_or_infrastructure_move": "The integration of behavioral security platforms into enterprise SaaS to satisfy regulatory audit requirements.",
+      "capital_policy_or_infrastructure_move": "The $25 billion debt offering to fund ongoing AI data center and hardware procurement.",
       "dated_market_receipts": [
-        "November 2, 2026 (Launch date)"
+        "$25 billion (November 3, 2026)"
       ]
     },
     "mandatory_receipts": [
-      "AI-assisted pull requests are 2.6 times larger and take 5x longer to review.",
-      "Google's Jules enters read-only mode on November 11, 2026.",
-      "SMARE monitors agent behavior against an 'approved business purpose'."
+      "Google's policy change on November 3, 2026, links Search to AI.",
+      "Meta's $25 billion debt offering aims to fund AI infrastructure through 2027.",
+      "Google DeepMind's agentic cheminformatics research proposes molecules in about an hour."
     ],
     "forwardable_targets": [
-      "If your AI assistant is writing code 2.6 times larger than you are, you aren't saving time—you're just becoming a full-time editor.",
-      "Google is killing Jules, which is a great reminder that your 'AI workspace' is just a guest in someone else's server room."
+      "Search is no longer a standalone product; it's now a feature of the AI ecosystem.",
+      "Meta is betting $25 billion that the future of the internet is built on Llama."
     ],
     "story_scenes": [
       {
         "story_index": 1,
-        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFa67a6gcB1PpanJZsys2Q6ttZKfnViVGXLJUT2Rt2aUMfppFwYlp6RyT5P3DWi6CHmJGB9DzIWZmb3Dwu5WNGFfFOtOPlUakRWlFpawu3DPyTBf_5qF2avOmmPzH-XEX8PaHHA-r4boUgonoaJCMepD0PJU2bVqteSpwWKqIvOoqGxwy66_4ULe0DzU7KQHNCnYjQHRhwkAj5-QgmkvIJIoTlTDGYitWAufo3XL-F6r3c3UoKXc0eJfZFAKvO9lZk9KsxEF8JiQ2EakHm0z2z0xP0DGtuzTskpfe016g9R4iHhFkL1MDff19xbe0zBUcoCw8O_ZA==",
-        "new_development": "LinearB launched Agentic Studio to provide governance and metrics for AI-assisted coding.",
-        "why_today": "Addresses the specific, documented 5x increase in review wait times for AI-generated code.",
-        "question": "How do we scale code output without breaking the human review process?",
+        "source_url": "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
+        "new_development": "Google updated its Workspace policy to link standard Search access to the enablement of generative AI features.",
+        "why_today": "The policy shift was announced November 3, 2026, creating an immediate compliance choice for K-12 and university administrators.",
+        "question": "Is it truly technically impossible to decouple Search from AI, or is this a forced adoption strategy?",
         "competing_readings": [
-          "This is a necessary operational layer for enterprise maturity.",
-          "It's just another tool to mask the underlying inefficiency of AI-generated code."
+          "Google is simplifying its architecture to ensure a unified, modern experience.",
+          "Google is leveraging its dominance in education to force AI adoption on institutions that want to opt out."
         ],
-        "receipt": "AI-assisted pull requests are 2.6 times larger than human ones and take 5x longer to review.",
-        "unknown": "Whether 'context surfaces' can actually reduce the cognitive load on reviewers.",
-        "listener_payoff": "Engineering teams can use the 'Agentic' toggle to automate low-risk merges.",
-        "exchange_premise": "Jamie notes that AI code is 'bloated,' Alex counters that it's just 'verbose,' and Rufus highlights the cost of the review delay.",
+        "receipt": "100% of managed school accounts are impacted if AI tools are disabled.",
+        "unknown": "The specific technical constraints preventing a modular opt-out.",
+        "listener_payoff": "Administrators must audit their current AI settings by the effective date to avoid losing Search functionality.",
+        "exchange_premise": "Alex asks if this is a 'take it or leave it' ultimatum; Rufus explains the 'technical architecture' claim; Jamie jokes about the irony of a search engine that refuses to be searched without a chatbot.",
         "cast_direction": {
-          "alex": "Interested in the 'Agentic' toggle as a practical way to reclaim developer time.",
-          "jamie": "Wants to know if we are just automating the creation of technical debt.",
-          "rufus": "Focuses on the 5x review wait time as a massive hidden cost to enterprise velocity."
+          "alex": "Wants to know if this is a genuine technical limitation or a business move.",
+          "jamie": "Focuses on the loss of agency for educators and parents.",
+          "rufus": "Analyzes the policy shift as a way to standardize the 'AI-first' user base."
         },
-        "relationship_beat": "Rufus teases Alex about his 'optimistic' view of automated merges.",
-        "scene_movement": "Starts with the reality of code bloat; moves to whether governance tools solve the problem or just add bureaucracy.",
-        "discovery": "The ability to define 'context surfaces' could actually make AI agents smarter about their environment."
+        "relationship_beat": "Jamie teases Alex for his 'optimistic' belief that Google would build a modular switch if they could.",
+        "scene_movement": "Starts with the news, moves to the technical feasibility, ends with the reality of school IT budgets.",
+        "discovery": "The realization that 'Search' is no longer a standalone product in the Google ecosystem."
       },
       {
         "story_index": 2,
-        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEpMrcN2s_2HOn2Ly5klFwFOB885ZovvD6sIx7-oq2qL07ftz80MXY2lX-xQSjzcJqjCbQ9hd_g7jqaEIQCGE4g_9lAdmO1ErmVTlW-VuZnhy7lWf9FSaZVUeV44c2zabXnqAJczduQwJ2Qij8g7lp2arcaWNTn7BIuS98r4poI9vf5oq6vbLvS7YJVYLyK0EV8owbKrjuGuOIA54pfet9r7Iup_bVr_-b6qtk_UlASMQiPTZsvOqKs9zuTlHB1YkVY9uY0-bWb02QlybQ=",
-        "new_development": "Ebix and intentyx launched SMARE to monitor and audit AI agent behavior.",
-        "why_today": "Provides a first-of-its-kind behavioral security layer for regulated industries.",
-        "question": "How do you hold an AI agent accountable when it acts autonomously?",
+        "source_url": "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
+        "new_development": "Meta launched a $25 billion debt offering specifically for AI infrastructure and data center expansion.",
+        "why_today": "This is a new, massive capital raise announced November 3, 2026, signaling sustained high-level spending through 2027.",
+        "question": "How much debt is too much when the return on investment for frontier models remains long-term?",
         "competing_readings": [
-          "This is the missing link for enterprise AI adoption.",
-          "It creates a false sense of security for 'black box' systems."
+          "Meta is securing its competitive future by locking in infrastructure now.",
+          "The scale of this debt indicates a desperate, high-stakes gamble on Llama's future dominance."
         ],
-        "receipt": "SMARE monitors for behavioral drift from an 'approved business purpose'.",
-        "unknown": "How accurately the system defines an 'approved business purpose' in complex scenarios.",
-        "listener_payoff": "Compliance officers now have a way to audit agent actions in real-time.",
-        "exchange_premise": "Rufus explains the market need for accountability; Jamie questions who defines the 'rules' the agent follows.",
+        "receipt": "$25 billion in new debt for AI infrastructure.",
+        "unknown": "The specific interest rate terms and the exact breakdown of hardware versus energy costs.",
+        "listener_payoff": "Investors should watch Meta's debt-to-equity ratios and CapEx efficiency reports.",
+        "exchange_premise": "Rufus explains the debt market's appetite for AI; Alex wonders if this is the 'infrastructure of control' they discussed previously.",
         "cast_direction": {
-          "alex": "Wants to know if this is just a fancy logging system.",
-          "jamie": "Skeptical of the 'behavioral drift' terminology.",
-          "rufus": "Views this as the essential infrastructure of control for regulated finance."
+          "alex": "Questions if the spending will ever plateau.",
+          "jamie": "Wonders what happens if the next Llama model doesn't drive proportional revenue.",
+          "rufus": "Explains why debt is a strategic choice over equity in this market."
         },
-        "relationship_beat": "Jamie asks Rufus if he'd trust an AI to manage his own portfolio with this 'governance' in place.",
-        "scene_movement": "Starts with the need for audit trails; moves to the philosophical question of defining 'good' agent behavior.",
-        "discovery": "Real-time behavioral monitoring is a significant step up from static access controls."
+        "relationship_beat": "Alex teases Rufus about his 'Wall Street' view of debt as a tool rather than a burden.",
+        "scene_movement": "Starts with the $25 billion figure, moves to the sustainability of the spending, ends with the market's reaction.",
+        "discovery": "The sheer scale of capital required to stay in the frontier model race."
       },
       {
         "story_index": 3,
-        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHBtxIfm8r8ZQFYDbSv61zHu9DKZzfffJfTduoSKeZglibijG8s_mbnyzThBa8BSYW7SYcGq1GTFCZs5ccE5f4acZlpcLXVMqf_xUIFIYq6DJo8lnAlj7xT81XQvXqOQuzaH_swKCN0v_utEpwPHUMxS8zyOzQOwYwBiWRk0H-Og5kC6as7TRkSx3BPkjG2LkyMHqScHZ4BPcl0fYzv_F4YJbLHug24D-Z5drCst6FgquMZ",
-        "new_development": "Google is shutting down the Jules AI coding agent on December 31, 2026.",
-        "why_today": "Users have until November 11 to export their data before the service enters read-only mode.",
-        "question": "What happens to your work when your AI assistant is killed?",
+        "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
+        "new_development": "Google DeepMind demonstrated an agentic workflow for drug discovery that identifies and designs molecules in about an hour.",
+        "why_today": "It provides a concrete, source-backed example of AI compressing scientific research cycles.",
+        "question": "Can these agentic workflows move from a controlled demo to repeatable lab utility?",
         "competing_readings": [
-          "Google is consolidating resources for a better, unified product.",
-          "This shows the fragility of relying on experimental AI tools."
+          "This is a breakthrough in scientific iteration speed.",
+          "It is a highly curated demo that doesn't account for the messiness of real-world wet-lab validation."
         ],
-        "receipt": "Jules shuts down Dec 31; read-only mode begins Nov 11.",
-        "unknown": "How much of the Jules experience will actually survive in the 'Antigravity' project.",
-        "listener_payoff": "Developers must export their session history and prompts immediately.",
-        "exchange_premise": "Alex laments the loss of a tool; Rufus explains the corporate logic of consolidation.",
+        "receipt": "The system proposes novel rigidified macrocycles with synthetic routes in about an hour.",
+        "unknown": "The success rate of these AI-proposed compounds in actual clinical testing.",
+        "listener_payoff": "Researchers should watch for similar agentic workflows moving into lab-bench utility.",
+        "exchange_premise": "Jamie highlights the speed of the discovery; Alex asks for the 'catch' regarding real-world validation; Rufus notes the potential for massive R&D cost savings.",
         "cast_direction": {
-          "alex": "Frustrated by the disruption to his workflow.",
-          "jamie": "Uses this as a case study for why we shouldn't over-rely on proprietary AI assistants.",
-          "rufus": "Explains that consolidation is standard for experimental tech projects."
+          "alex": "Interested in the 'agentic' aspect—how much is the AI actually doing?",
+          "jamie": "Delighted by the potential for faster drug discovery.",
+          "rufus": "Focuses on the economic impact of compressing R&D timelines."
         },
-        "relationship_beat": "Alex jokes about the 'Antigravity' name being a bit too ambitious.",
-        "scene_movement": "Starts with the practical shutdown dates; moves to the broader lesson of platform risk.",
-        "discovery": "The importance of data portability in the age of AI assistants."
+        "relationship_beat": "Jamie challenges Alex to stop being a skeptic for five minutes and appreciate the science.",
+        "scene_movement": "Starts with the hour-long discovery claim, moves to the reality of drug development, ends with the potential for real-world impact.",
+        "discovery": "The shift from AI as a 'chatbot' to AI as a 'lab assistant'."
       }
     ],
     "title_candidates": [
-      "LinearB’s Agentic Studio: Managing AI Coding Agents Without Overwhelming Human Reviewers",
-      "Why Google is Shuttering Jules: What Happens When Your AI Assistant Disappears",
-      "Can Behavioral Auditing Finally Hold Enterprise AI Agents Accountable for Their Actions?"
+      "Google Schools Lose Search Access If They Disable AI Features",
+      "Why Google Is Linking Standard Search To Mandatory AI Tools",
+      "Can Schools Opt Out Of AI Without Losing Google Search?"
     ],
-    "episode_hook": "AI agents are writing massive amounts of code, but human reviewers are drowning in the backlog. Today, we look at how to fix the bottleneck, why Google is killing its own coding agent, and how to actually hold these autonomous systems accountable.",
+    "episode_hook": "Google is telling schools they can't have standard Search without also enabling generative AI. We’re breaking down what this means for your school's IT settings and why the company says it’s a technical necessity.",
     "planning_status": "model_plan",
-    "_episode_date": "2026-11-02"
+    "_episode_date": "2026-11-03"
   }
 }

@@ -1,63 +1,63 @@
 {
-  "date": "2026-11-02",
+  "date": "2026-11-03",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automated document compliance for small-scale construction",
-        "tool": "Autodesk Construction Cloud (with AI-driven document management)",
-        "problem": "Manual cross-referencing of safety forms, permits, and architectural drawings across dispersed job sites often leads to outdated document usage.",
-        "workflow": "The AI agent monitors project folders, automatically tags incoming documents with metadata, and alerts project managers when a submitted file (like a safety checklist) conflicts with the current version of the master architectural plan or a specific local regulation.",
-        "result": "Field workers access accurate, updated permit and safety documentation instantly on mobile devices, eliminating the time previously spent verifying document versions with the central office.",
-        "result_basis": "Vendor-documented customer success report.",
-        "measurement_context": "Reported reduction in time spent on document coordination and manual compliance checks; not a controlled trial.",
-        "case_date": "2026-09-15",
-        "source_url": "https://construction.autodesk.com/resources/ai-in-construction-document-management/",
-        "source_quote": "Teams are now using automated tagging and conflict detection to ensure every field update aligns with the latest approved structural plans.",
-        "limitation": "The accuracy of document conflict detection depends entirely on the discipline of the team in uploading the correct master files initially.",
-        "listener_action": "Audit your own team's 'source of truth' folders; pick one recurring document that must match a master plan, and set a manual 'sync' trigger for one week to see how often they diverge.",
-        "availability": "Available within Autodesk Construction Cloud services for enterprise and pro users.",
-        "episode_date": "2026-11-02"
+        "subject": "Automated clinical trial recruitment screening",
+        "tool": "Google Cloud Vertex AI / Healthcare Data Engine",
+        "problem": "Researchers spend weeks manually scanning thousands of unstructured electronic health records (EHRs) to identify patients who meet specific, complex criteria for clinical trial eligibility.",
+        "workflow": "The AI agent ingests anonymized, unstructured clinical notes and laboratory reports, maps them against specific trial inclusion/exclusion protocols, and generates a pre-screened list of potential candidates for human review.",
+        "result": "Researchers receive a filtered shortlist of eligible candidates in minutes, significantly reducing the manual document review phase.",
+        "result_basis": "Vendor-reported case study and healthcare industry documentation regarding clinical data interoperability.",
+        "measurement_context": "Shift from manual, multi-week chart reviews to rapid, AI-assisted cohort identification; focus is on throughput rather than final clinical selection.",
+        "case_date": "2026-05-15",
+        "source_url": "https://cloud.google.com/solutions/healthcare-life-sciences",
+        "source_quote": "Accelerate clinical trial recruitment by using AI to analyze unstructured patient data and identify eligible candidates against complex protocol criteria faster.",
+        "limitation": "The agent only provides a recommendation; human clinicians must perform final medical validation to confirm eligibility and ethics compliance.",
+        "listener_action": "Identify the most time-consuming 'search and match' task in your team's document workflow; create a checklist of exact criteria used to filter those documents manually.",
+        "availability": "Available for deployment via Google Cloud Vertex AI for healthcare organizations with appropriate data governance.",
+        "episode_date": "2026-11-03"
+      },
+      "reason": "source_quote_not_found"
+    },
+    {
+      "case": {
+        "feature_mode": "real_case",
+        "subject": "Clinical trial patient prescreening",
+        "tool": "MAIA Prescreening (on Google Cloud Marketplace)",
+        "problem": "Manual chart review of thousands of patient records is slow, creating a major barrier to clinical trial enrollment.",
+        "workflow": "The AI agent ingests clinical data to automatically screen incoming patients against complex trial inclusion and exclusion criteria, flagging eligible candidates for research teams.",
+        "result": "A clinical trial site was able to screen 500 patients per month instead of 250, increasing total screening throughput.",
+        "result_basis": "Vendor-reported case study published by Clinical AI regarding their MAIA solution.",
+        "measurement_context": "Comparison of patient screening volume per month at a clinical trial site.",
+        "case_date": "2026-04-02",
+        "source_url": "https://www.prnewswire.com/news-releases/clinical-ai-announces-the-launch-of-maia-prescreening-on-google-cloud-marketplace-302105151.html",
+        "source_quote": "In one oncology case study, MAIA\u2122 helped enable a clinical trial site to screen all 500 patients coming into the clinic every month",
+        "limitation": "The agent provides a recommendation; human research teams must perform final clinical validation to confirm eligibility and compliance.",
+        "listener_action": "Identify the most time-consuming 'search and match' step in your documentation process and list the exact criteria a human uses to filter those items.",
+        "availability": "Available on Google Cloud Marketplace as of April 2026.",
+        "episode_date": "2026-11-03"
       },
       "reason": "source_http_404"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Construction document risk management",
-        "tool": "Document Crunch",
-        "problem": "Project managers struggle to manually review long, complex construction contracts and submittals for hidden risks or compliance issues, leading to potential disputes.",
-        "workflow": "The tool uses AI to ingest project contracts and submittals, automatically flagging high-risk clauses, missing requirements, or deviations from standardized language that a human reviewer might overlook during a quick scan.",
-        "result": "Project teams identify potential contract liabilities and missing compliance documentation significantly faster than manual review, allowing them to address issues before work begins.",
-        "result_basis": "Reported industry application and CEO commentary on AI-driven risk mitigation in construction.",
-        "measurement_context": "Reported reduction in time spent on manual document scrutiny and increased identification of risky contract terms; not a controlled trial.",
-        "case_date": "2025-02-11",
-        "source_url": "https://www.construction-briefing.com/news/how-ai-is-transforming-construction-contracts-risk-and-compliance/",
-        "source_quote": "Document Crunch CEO and co-founder Josh Levy joins Construction Briefing for a chat about construction contracts and new technology.",
-        "limitation": "The AI tool provides summaries and risk flags, but final legal or project-specific decisions remain the responsibility of qualified human professionals.",
-        "listener_action": "Take one standard contract or safety submittal, list the top three risk factors you look for, and test whether your team agrees on those definitions.",
-        "availability": "Generally available for AEC firms as a specialized risk management platform.",
-        "episode_date": "2026-11-02"
-      },
-      "reason": "source_fetch_URLError"
-    },
-    {
-      "case": {
-        "feature_mode": "real_case",
-        "subject": "Construction document risk management",
-        "tool": "Document Crunch",
-        "problem": "Project teams faced significant bottlenecks manually reviewing complex, dense construction contracts and specifications, often leading to overlooked risks and inconsistent project standards.",
-        "workflow": "Project teams upload contracts, specifications, and drawings into the platform; CrunchAI automatically scans the documents, cross-references clauses against company-specific risk checklists, and provides summarized insights with direct citations to the source text.",
-        "result": "Contractors like Hill & Wilkinson and Marksmen GC achieved up to 75% faster review times, allowing teams to identify scope gaps and potential liabilities before work begins rather than during construction.",
-        "result_basis": "Company-reported case study data verified via public customer success documentation.",
-        "measurement_context": "Reported reduction in time spent on document review and risk identification compared to previous manual processes; not a controlled scientific study.",
-        "case_date": "2025-12-10",
-        "source_url": "https://www.documentcrunch.com/resources/case-studies/how-hill-wilkinson-cut-document-review-times-down-by-75-and-empowered-their-project-teams",
-        "source_quote": "Hill & Wilkinson used Document Crunch to standardize reviews for RFPs, specs, and contracts, giving every team a consistent way to identify risk",
-        "limitation": "The tool identifies potential issues and risks, but final legal and project-specific decision-making remains with the human professional.",
-        "listener_action": "Pick a single standard contract or specification document, identify three 'must-have' safety or payment clauses, and see how long it takes to manually verify their presence versus using a simple AI summary tool.",
-        "availability": "Generally available for AEC (Architecture, Engineering, and Construction) firms.",
-        "episode_date": "2026-11-02"
+        "subject": "Automated clinical trial patient prescreening",
+        "tool": "Clinical AI MAIA\u2122 Prescreening",
+        "problem": "Manual chart review of thousands of patient records to match eligibility criteria is slow, leading to missed candidates and delayed clinical trials.",
+        "workflow": "The AI agent ingests clinical notes and laboratory data to automatically screen incoming patients against complex trial protocols, surfacing eligible candidates for human research teams.",
+        "result": "A clinical trial site was able to screen all 500 patients coming into the clinic every month, instead of screening 250 patients per month.",
+        "result_basis": "Company-reported oncology case study.",
+        "measurement_context": "Comparison of patient screening volume per month at a clinical trial site.",
+        "case_date": "2026-04-02",
+        "source_url": "https://www.prnewswire.com/news-releases/clinical-ai-announces-the-launch-of-maia-prescreening-on-google-cloud-marketplace-302105151.html",
+        "source_quote": "In one oncology case study, MAIA\u2122 helped enable a clinical trial site to screen all 500 patients coming into the clinic every month",
+        "limitation": "The agent provides recommendations; human research teams must perform final clinical validation to confirm eligibility and ethics compliance.",
+        "listener_action": "Identify the most time-consuming 'search and match' step in your documentation process and list the exact criteria a human uses to filter those items.",
+        "availability": "Available on Google Cloud Marketplace as of April 2026.",
+        "episode_date": "2026-11-03"
       },
       "reason": "source_http_404"
     }

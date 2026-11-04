@@ -40,23 +40,18 @@
     },
     {
       "applied": true,
-      "reason": "welcome_music_unavailable",
+      "reason": "mixed",
       "asset": "welcome_music.mp3",
       "provider": "elevenlabs",
       "sha256": "33a30efd319c39535138309c30e3a792c6d8be922314123c9debea8d8142a624",
       "duration_seconds": 7.2,
-      "bed_dbfs": -36.28,
+      "bed_dbfs": -35.94,
       "speech_chunk": 4
     },
     {
       "applied": false,
       "reason": "no_approved_matching_asset",
-      "speech_chunk": 54
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 61
+      "speech_chunk": 51
     },
     {
       "applied": true,
@@ -66,49 +61,14 @@
       "sha256": "4a616ccc98603cc9ac65b7b2915c4735851f35a3006436d3c49bc2b05fe2399f"
     },
     {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 63
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 64
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 66
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 69
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 71
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 74
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 76
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 78
-    },
-    {
-      "applied": false,
-      "reason": "no_approved_matching_asset",
-      "speech_chunk": 81
+      "applied": true,
+      "reason": "mixed",
+      "asset": "office.mp3",
+      "sha256": "93f40fd3801e2d9dac0765c43a13160aa85bb042b4cac587c043314ab65b08a2",
+      "provider": "elevenlabs",
+      "duration_seconds": 10.0,
+      "bed_dbfs": -36.12,
+      "speech_chunk": 53
     },
     {
       "applied": true,
@@ -125,35 +85,12 @@
       "provider": "elevenlabs",
       "asset": "transition.mp3",
       "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
-      "duration_seconds": 2.16,
-      "variant": 2,
-      "edit": "approved source: shortened tail and fade only",
-      "start": 71.963,
-      "end": 74.12299999999999,
-      "kind": "transition"
-    },
-    {
-      "applied": true,
-      "package": "ai-edge-studio-v2",
-      "provider": "elevenlabs",
-      "asset": "transition.mp3",
-      "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
       "duration_seconds": 2.76,
       "variant": 3,
       "edit": "approved source: shortened tail and fade only",
-      "start": 450.028,
-      "end": 452.788,
+      "start": 60.945,
+      "end": 63.705,
       "kind": "transition"
-    },
-    {
-      "applied": true,
-      "asset": "transition.mp3",
-      "provider": "existing_show_asset",
-      "duration_seconds": 1.881,
-      "sha256": "4a616ccc98603cc9ac65b7b2915c4735851f35a3006436d3c49bc2b05fe2399f",
-      "start": 545.756,
-      "end": 547.637,
-      "kind": "rufus_entrance"
     },
     {
       "applied": true,
@@ -164,19 +101,31 @@
       "duration_seconds": 3.0,
       "variant": 0,
       "edit": "approved source: shortened tail and fade only",
-      "start": 719.163,
-      "end": 722.163,
+      "start": 396.498,
+      "end": 399.498,
       "kind": "transition"
     },
     {
       "applied": true,
-      "asset": "jamie.mp3",
+      "asset": "transition.mp3",
+      "provider": "existing_show_asset",
+      "duration_seconds": 1.881,
+      "sha256": "4a616ccc98603cc9ac65b7b2915c4735851f35a3006436d3c49bc2b05fe2399f",
+      "start": 433.906,
+      "end": 435.787,
+      "kind": "rufus_entrance"
+    },
+    {
+      "applied": true,
+      "reason": "mixed",
+      "asset": "office.mp3",
+      "sha256": "93f40fd3801e2d9dac0765c43a13160aa85bb042b4cac587c043314ab65b08a2",
       "provider": "elevenlabs",
-      "sha256": "a786f53d0bbe6930bade5bf5fe89948bc8f6e6ae5b1674619d4c19e683444db9",
-      "duration_seconds": 3.0,
-      "start": 972.526,
-      "end": 975.526,
-      "kind": "jamie_entrance"
+      "duration_seconds": 10.0,
+      "bed_dbfs": -36.12,
+      "start": 435.898,
+      "end": 445.898,
+      "kind": "speech"
     },
     {
       "applied": true,
@@ -187,8 +136,31 @@
       "duration_seconds": 2.55,
       "variant": 1,
       "edit": "approved source: shortened tail and fade only",
-      "start": 1158.447,
-      "end": 1160.9969999999998,
+      "start": 740.587,
+      "end": 743.137,
+      "kind": "transition"
+    },
+    {
+      "applied": true,
+      "asset": "jamie.mp3",
+      "provider": "elevenlabs",
+      "sha256": "a786f53d0bbe6930bade5bf5fe89948bc8f6e6ae5b1674619d4c19e683444db9",
+      "duration_seconds": 3.0,
+      "start": 1069.562,
+      "end": 1072.562,
+      "kind": "jamie_entrance"
+    },
+    {
+      "applied": true,
+      "package": "ai-edge-studio-v2",
+      "provider": "elevenlabs",
+      "asset": "transition.mp3",
+      "sha256": "60d53c22fa021d739e52538334e3aa21e21766f02ec85c9a338f5be6a51d79f9",
+      "duration_seconds": 2.16,
+      "variant": 2,
+      "edit": "approved source: shortened tail and fade only",
+      "start": 1257.266,
+      "end": 1259.426,
       "kind": "transition"
     }
   ]
