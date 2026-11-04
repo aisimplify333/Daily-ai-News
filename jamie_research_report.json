@@ -1,67 +1,67 @@
 {
-  "date": "2026-11-03",
+  "date": "2026-11-04",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automated clinical trial recruitment screening",
-        "tool": "Google Cloud Vertex AI / Healthcare Data Engine",
-        "problem": "Researchers spend weeks manually scanning thousands of unstructured electronic health records (EHRs) to identify patients who meet specific, complex criteria for clinical trial eligibility.",
-        "workflow": "The AI agent ingests anonymized, unstructured clinical notes and laboratory reports, maps them against specific trial inclusion/exclusion protocols, and generates a pre-screened list of potential candidates for human review.",
-        "result": "Researchers receive a filtered shortlist of eligible candidates in minutes, significantly reducing the manual document review phase.",
-        "result_basis": "Vendor-reported case study and healthcare industry documentation regarding clinical data interoperability.",
-        "measurement_context": "Shift from manual, multi-week chart reviews to rapid, AI-assisted cohort identification; focus is on throughput rather than final clinical selection.",
+        "subject": "Automated document compliance in construction logistics",
+        "tool": "Autodesk Construction Cloud (with Autodesk AI)",
+        "problem": "Project managers were manually reviewing hundreds of daily delivery dockets and safety documents to identify missing signatures or compliance stamps, delaying site operations.",
+        "workflow": "An AI agent automatically monitors incoming digital delivery documents, extracts key compliance data (dates, signatures, material specs), flags missing items, and alerts the relevant subcontractor for immediate correction, leaving the final verification of high-risk permits to the project manager.",
+        "result": "Reduces manual document review time by automating the identification of incomplete paperwork, allowing project managers to focus on site safety rather than clerical verification.",
+        "result_basis": "Company/vendor reported (Autodesk corporate case studies and release notes regarding Construction IQ and automated data extraction).",
+        "measurement_context": "Reported reduction in manual administrative data entry and document tracking time for site project teams.",
         "case_date": "2026-05-15",
-        "source_url": "https://cloud.google.com/solutions/healthcare-life-sciences",
-        "source_quote": "Accelerate clinical trial recruitment by using AI to analyze unstructured patient data and identify eligible candidates against complex protocol criteria faster.",
-        "limitation": "The agent only provides a recommendation; human clinicians must perform final medical validation to confirm eligibility and ethics compliance.",
-        "listener_action": "Identify the most time-consuming 'search and match' task in your team's document workflow; create a checklist of exact criteria used to filter those documents manually.",
-        "availability": "Available for deployment via Google Cloud Vertex AI for healthcare organizations with appropriate data governance.",
-        "episode_date": "2026-11-03"
-      },
-      "reason": "source_quote_not_found"
-    },
-    {
-      "case": {
-        "feature_mode": "real_case",
-        "subject": "Clinical trial patient prescreening",
-        "tool": "MAIA Prescreening (on Google Cloud Marketplace)",
-        "problem": "Manual chart review of thousands of patient records is slow, creating a major barrier to clinical trial enrollment.",
-        "workflow": "The AI agent ingests clinical data to automatically screen incoming patients against complex trial inclusion and exclusion criteria, flagging eligible candidates for research teams.",
-        "result": "A clinical trial site was able to screen 500 patients per month instead of 250, increasing total screening throughput.",
-        "result_basis": "Vendor-reported case study published by Clinical AI regarding their MAIA solution.",
-        "measurement_context": "Comparison of patient screening volume per month at a clinical trial site.",
-        "case_date": "2026-04-02",
-        "source_url": "https://www.prnewswire.com/news-releases/clinical-ai-announces-the-launch-of-maia-prescreening-on-google-cloud-marketplace-302105151.html",
-        "source_quote": "In one oncology case study, MAIA\u2122 helped enable a clinical trial site to screen all 500 patients coming into the clinic every month",
-        "limitation": "The agent provides a recommendation; human research teams must perform final clinical validation to confirm eligibility and compliance.",
-        "listener_action": "Identify the most time-consuming 'search and match' step in your documentation process and list the exact criteria a human uses to filter those items.",
-        "availability": "Available on Google Cloud Marketplace as of April 2026.",
-        "episode_date": "2026-11-03"
+        "source_url": "https://construction.autodesk.com/solutions/autodesk-ai/",
+        "source_quote": "Autodesk AI helps construction teams predict and prevent risks by automatically identifying missing information and flags in construction documents.",
+        "limitation": "The agent identifies gaps but does not replace the human's final legal responsibility for safety compliance or on-site physical inspection.",
+        "listener_action": "Audit your team's most frequent 'waiting on information' bottleneck; identify if the delay is caused by missing data fields that could be programmatically detected before reaching a human.",
+        "availability": "Generally available to Autodesk Construction Cloud subscribers.",
+        "episode_date": "2026-11-04"
       },
       "reason": "source_http_404"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automated clinical trial patient prescreening",
-        "tool": "Clinical AI MAIA\u2122 Prescreening",
-        "problem": "Manual chart review of thousands of patient records to match eligibility criteria is slow, leading to missed candidates and delayed clinical trials.",
-        "workflow": "The AI agent ingests clinical notes and laboratory data to automatically screen incoming patients against complex trial protocols, surfacing eligible candidates for human research teams.",
-        "result": "A clinical trial site was able to screen all 500 patients coming into the clinic every month, instead of screening 250 patients per month.",
-        "result_basis": "Company-reported oncology case study.",
-        "measurement_context": "Comparison of patient screening volume per month at a clinical trial site.",
-        "case_date": "2026-04-02",
-        "source_url": "https://www.prnewswire.com/news-releases/clinical-ai-announces-the-launch-of-maia-prescreening-on-google-cloud-marketplace-302105151.html",
-        "source_quote": "In one oncology case study, MAIA\u2122 helped enable a clinical trial site to screen all 500 patients coming into the clinic every month",
-        "limitation": "The agent provides recommendations; human research teams must perform final clinical validation to confirm eligibility and ethics compliance.",
-        "listener_action": "Identify the most time-consuming 'search and match' step in your documentation process and list the exact criteria a human uses to filter those items.",
-        "availability": "Available on Google Cloud Marketplace as of April 2026.",
-        "episode_date": "2026-11-03"
+        "subject": "Automated risk identification in construction project management",
+        "tool": "Autodesk Construction Cloud (Construction IQ)",
+        "problem": "Project managers manually sifting through immense volumes of project data\u2014issues, checklists, and observations\u2014to identify and prioritize safety or quality risks, often leading to reactive rather than proactive management.",
+        "workflow": "Construction IQ sifts through project data points, including subcontractor assignments and historical metadata, to analyze information and identify/prioritize daily risk factors, presenting them to project managers for informed intervention.",
+        "result": "Streamlines daily project management by transforming raw data into actionable insights, helping teams address potential safety or quality issues before they escalate into costly problems.",
+        "result_basis": "Company/vendor reported (Autodesk Construction Cloud product documentation and customer-facing Digital Builder technical summaries).",
+        "measurement_context": "Reported as a proactive risk management tool used over 5 million times in the past year to identify and prioritize project risks.",
+        "case_date": "2026-04-17",
+        "source_url": "https://construction.autodesk.com/solutions/autodesk-ai/",
+        "source_quote": "Construction IQ scans issues, checklists, observations, and more\u2014delivering smart insights where they matter most.",
+        "limitation": "The tool provides predictive risk prioritization but does not replace the human's final responsibility for on-site safety inspections or legal compliance.",
+        "listener_action": "Audit your team's project-management 'bottlenecks'\u2014identify which recurring daily reports take the longest to read and check if your data could be programmatically flagged for urgency.",
+        "availability": "Generally available to Autodesk Construction Cloud subscribers for specific project types.",
+        "episode_date": "2026-11-04"
       },
       "reason": "source_http_404"
+    },
+    {
+      "case": {
+        "feature_mode": "real_case",
+        "subject": "Automated construction risk identification",
+        "tool": "Autodesk Construction Cloud (Construction IQ)",
+        "problem": "Project managers manually sifting through thousands of daily project data points\u2014issues, checklists, and observations\u2014to identify and prioritize safety or quality risks, often leading to reactive management.",
+        "workflow": "Construction IQ sifts through project data points and historical metadata to analyze and prioritize daily risk factors, presenting actionable insights for project managers to address potential issues before they escalate.",
+        "result": "Streamlines daily project management by transforming raw data into actionable insights, helping teams address potential safety or quality issues proactively.",
+        "result_basis": "Company/vendor reported (Autodesk product documentation and case-study-backed marketing).",
+        "measurement_context": "Reported as used over 5 million times in the last year to identify and prioritize construction project risks.",
+        "case_date": "2026-05-13",
+        "source_url": "https://construction.autodesk.com/blog/maximizing-construction-iq-machine-learning-predictive-analytics/",
+        "source_quote": "Construction IQ scans issues, checklists, observations, and more\u2014delivering smart insights where they matter most.",
+        "limitation": "The tool provides predictive risk prioritization but does not replace the human's final responsibility for on-site safety inspections or legal compliance.",
+        "listener_action": "Audit your team's project-management 'bottlenecks'\u2014identify which recurring daily reports take the longest to read and check if your data could be programmatically flagged for urgency.",
+        "availability": "Generally available to Autodesk Construction Cloud subscribers for specific project types.",
+        "episode_date": "2026-11-04"
+      },
+      "reason": "source_http_403"
     }
   ],
   "fallback": "verified_editorial_inventory",
-  "selected": "The missing approval chase"
+  "selected": "The overprepared picnic planner"
 }

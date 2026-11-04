@@ -1,346 +1,337 @@
 {
-  "episode_date": "2026-11-03",
-  "discovery_seed_count": 40,
-  "window_start": "2026-11-02T00:56:38.403071+00:00",
-  "window_end": "2026-11-04T00:56:38.403071+00:00",
+  "episode_date": "2026-11-04",
+  "discovery_seed_count": 43,
+  "window_start": "2026-11-02T08:42:20.689975+00:00",
+  "window_end": "2026-11-04T08:42:20.689975+00:00",
   "attempts": [
     {
       "stage": "primary",
       "rejections": {},
       "rejected_examples": [],
-      "candidates": 3,
-      "accepted_total": 3,
-      "trusted_total": 2
+      "candidates": 5,
+      "accepted_total": 5,
+      "trusted_total": 1
     },
     {
       "stage": "alternate_refill",
       "rejections": {
-        "invalid_source_url": 3,
-        "outside_freshness_window": 1,
-        "invalid_publication_time": 1,
-        "publication_not_verified": 1
+        "outside_freshness_window": 3,
+        "previously_aired_event": 2,
+        "invalid_source_url": 1
       },
       "rejected_examples": [
         {
-          "headline": "OpenAI publishes fresh security and utility updates across security, grid reliability, and everyday-task evaluation",
-          "published_at": "2026-11-02T00:00:00Z",
-          "reason": "invalid_source_url"
+          "headline": "OpenAI expands Oracle partnership to bring business apps and AI agents into ChatGPT",
+          "published_at": "2026-10-27T00:00:00Z",
+          "reason": "outside_freshness_window"
         },
         {
-          "headline": "Google launches Skilling Africa with Google, a free AI learning hub for 3 million people by 2030",
+          "headline": "Google opens a new Singapore research hub and commits more than $6 million to AI-for-science and health work",
+          "published_at": "2026-11-03T00:00:00Z",
+          "reason": "previously_aired_event"
+        },
+        {
+          "headline": "OpenAI says utilities will help guard AI compute campuses through its Grid Protectors Program",
           "published_at": "2026-11-02T00:00:00Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "OpenAI says a shared robots.txt signal will let sites express AI training preferences to participating providers",
-          "published_at": "2026-10-30T00:00:00Z",
+          "headline": "Cursor confirms compromise of its Anthropic-powered coding extension",
+          "published_at": "2026-11-03T22:02:43Z",
+          "reason": "previously_aired_event"
+        },
+        {
+          "headline": "Meta moves to fund AI infrastructure with a large bond sale",
+          "published_at": "2026-11-03T22:50:00Z",
           "reason": "invalid_source_url"
         },
         {
-          "headline": "Anthropic updates usage policy with a November 12 effective date",
-          "published_at": "2026-10-2026T00:00:00Z",
-          "reason": "invalid_publication_time"
-        },
-        {
-          "headline": "Apple\u2019s new Mac Studio configuration raises on-device AI ceiling with up to 512GB of unified memory",
-          "published_at": "2026-11-03T00:00:00Z",
-          "reason": "publication_not_verified"
-        },
-        {
-          "headline": "Meta issues new debt to fund AI infrastructure expansion",
-          "published_at": "2026-11-03T00:00:00Z",
-          "reason": "invalid_source_url"
+          "headline": "Apple updates its Health and Siri AI features with new longevity and recap capabilities",
+          "published_at": "2026-09-14T00:00:00Z",
+          "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
-      "accepted_total": 5,
-      "trusted_total": 4
+      "accepted_total": 7,
+      "trusted_total": 3
     }
   ],
   "status": "ready",
   "topic_families": [
-    "science_access",
-    "other",
-    "products"
+    "infrastructure",
+    "products",
+    "infrastructure"
   ],
   "concentrated_slate": false,
   "validated_candidates": [
     {
-      "event_key": "google-search-school-ai-policy",
-      "headline": "Google to block Search access for schools that disable AI features",
-      "title": "Google to block Search access for schools that disable AI features",
-      "publisher": "The New York Times",
-      "published": "2026-11-03T20:53:40Z",
-      "published_at": "2026-11-03T20:53:40Z",
-      "source_url": "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
-      "link": "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
-      "summary": "Google has updated its policy for educational institutions, stating that schools choosing to disable generative AI features in their Google Workspace accounts may lose access to the standard Google Search experience as well. The company frames the integration as a fundamental component of its current search architecture, arguing that modular deactivation is not technically feasible for its unified service model. Education officials have expressed concern over the lack of granular control, forcing a choice between full AI exposure or losing a primary research tool.",
+      "event_key": "amd-ai-chip-charge-q4-2026",
+      "headline": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
+      "title": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
+      "publisher": "Reuters",
+      "published": "2026-11-04T02:12:00Z",
+      "published_at": "2026-11-04T02:12:00Z",
+      "source_url": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
+      "link": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
+      "summary": "AMD has reported a $1 billion quarterly charge linked to its supply agreements for AI chips with OpenAI and Meta. This financial impact reflects the massive scale of hardware procurement required to support the infrastructure needs of these frontier AI leaders. The charge underscores the high capital costs currently embedded in the AI chip supply chain.",
       "facts": [
-        "Google announced the policy change on November 3, 2026.",
-        "Schools disabling AI tools in Workspace lose access to standard Google Search.",
-        "The policy applies to K-12 and university accounts using managed Google Workspace.",
-        "Google cites 'technical architecture' as the reason for the inability to decouple search from AI features.",
-        "Educators and administrators are pushing back against the lack of opt-out options."
+        "AMD disclosed a $1 billion quarterly charge related to AI chip agreements.",
+        "The agreements involve supply commitments to OpenAI and Meta.",
+        "The charge impacts AMD's most recent quarterly financial results.",
+        "The costs reflect the intense demand for high-performance computing hardware in the AI sector."
       ],
       "data_points": [
-        "100% of managed school accounts impacted if AI tools are disabled"
+        "$1 billion charge"
       ],
       "limitations_or_qualifiers": [
-        "Applies specifically to institution-managed accounts, not personal consumer accounts."
+        "Impact is tied to specific supply agreements; may be subject to future accounting adjustments."
       ],
-      "why_it_matters": "This represents a significant escalation in the 'AI-or-nothing' deployment strategy, forcing schools to choose between safety/privacy concerns and access to basic internet research infrastructure.",
+      "why_it_matters": "This highlights the enormous and immediate financial liabilities companies are incurring to secure the silicon necessary for the AI arms race.",
       "editorial_case": {
-        "new_development": "Google officially linked Search access to AI enablement in school environments.",
-        "affected_listener": "Teachers, school IT administrators, and parents concerned about AI usage in schools.",
-        "why_today": "This is a massive policy shift announced yesterday that directly affects education infrastructure.",
-        "distinct_question": "Can schools opt out of AI without losing the ability to use Google Search?",
-        "new_since_prior_coverage": "Confirmed link between AI features and core Search functionality in educational accounts.",
-        "practical_payoff": "Administrators must audit their current AI settings by the effective date to avoid service disruption."
+        "new_development": "AMD took a $1 billion charge explicitly linked to OpenAI and Meta chip deals.",
+        "affected_listener": "Investors and those tracking the financial sustainability of AI chip manufacturers.",
+        "why_today": "This is a major market-moving financial disclosure announced today.",
+        "distinct_question": "What is the real cost of securing hardware in the current AI market?",
+        "new_since_prior_coverage": "Provides a specific dollar-figure impact on a major chipmaker.",
+        "practical_payoff": "Watch for similar supply-chain costs affecting other semiconductor companies."
       },
       "editorial_scores": {
-        "human_consequence": 5,
+        "human_consequence": 3,
         "novelty": 4,
         "explanatory_value": 4,
-        "evidence_depth": 4
+        "evidence_depth": 5
       },
-      "story_age_hours": 4.05,
+      "story_age_hours": 6.51,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
       "story_tier": "primary",
-      "topic_family": "science_access"
+      "topic_family": "infrastructure"
     },
     {
-      "event_key": "meta-ai-debt-offering-2026",
-      "headline": "Meta initiates $25 billion debt offering to accelerate AI infrastructure development",
-      "title": "Meta initiates $25 billion debt offering to accelerate AI infrastructure development",
-      "publisher": "Bloomberg",
-      "published": "2026-11-03T21:27:15Z",
-      "published_at": "2026-11-03T21:27:15Z",
-      "source_url": "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
-      "link": "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
-      "summary": "Meta has launched a $25 billion debt offering aimed at financing its ongoing, massive investment in AI infrastructure, including new data centers and hardware procurement. This follows recent large-scale capital raises and signals that the company intends to maintain its aggressive spending trajectory into 2027. The funds are earmarked for expanding computing capacity to support training for the next generation of Llama models.",
+      "event_key": "anthropic-platform-release-notes-text-watermarking-2026-11-03",
+      "headline": "Anthropic adds text watermark information in platform release notes",
+      "title": "Anthropic adds text watermark information in platform release notes",
+      "publisher": "Anthropic",
+      "published": "2026-11-03T00:00:00Z",
+      "published_at": "2026-11-03T00:00:00Z",
+      "source_url": "https://platform.claude.com/docs/en/release-notes/overview",
+      "link": "https://platform.claude.com/docs/en/release-notes/overview",
+      "summary": "Anthropic\u2019s platform release notes for November 3, 2026 include a change related to text watermark information. The update appears in the Claude platform notes rather than in a standalone launch post. The available evidence shows a platform-level documentation change, but not a broader product launch or consumer-facing feature announcement. Because the page is a release-notes overview, the exact operational impact depends on the linked notes and implementation details.",
       "facts": [
-        "Meta announced a $25 billion debt offering on November 3, 2026.",
-        "The capital is primarily designated for AI infrastructure and data center expansion.",
-        "This is a separate action from the previously reported stock offering.",
-        "Meta continues to increase its capital expenditure (CapEx) guidance for 2027.",
-        "The move highlights the immense, ongoing cost of maintaining a competitive edge in frontier model training."
+        "The release-notes page includes a November 3, 2026 update.",
+        "Anthropic added text watermark information in the platform notes.",
+        "The change appears in Claude platform documentation.",
+        "The evidence is from a platform release-notes page, not a separate launch article.",
+        "The page indicates product and platform updates."
       ],
       "data_points": [
-        "$25 billion capital raise",
-        "2027 projected timeline for deployment"
+        "November 3, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Subject to market interest rates and bond pricing conditions."
+        "The documentation excerpt does not by itself establish broad availability or a consumer-visible feature.",
+        "The exact technical meaning of the watermark change is not fully specified in the excerpt."
       ],
-      "why_it_matters": "This confirms that the industry's 'AI arms race' is moving from cash-on-hand to heavy debt financing, increasing the pressure on these companies to demonstrate ROI.",
+      "why_it_matters": "This matters because watermarking and content provenance are central to how AI outputs are tracked, verified, and trusted.",
       "editorial_case": {
-        "new_development": "Meta launched a $25 billion debt sale for AI expansion.",
-        "affected_listener": "Investors and those watching the macro-sustainability of AI investments.",
-        "why_today": "This new debt financing is a major escalation in Meta's capital strategy.",
-        "distinct_question": "How much debt is Meta willing to take on to stay ahead in AI?",
-        "new_since_prior_coverage": "This is a new, separate debt raise from previous equity financing announcements.",
-        "practical_payoff": "Investors should monitor debt-to-equity ratios and CapEx efficiency reports."
+        "new_development": "Anthropic documented a platform update involving text watermark information.",
+        "affected_listener": "Developers and enterprises building on Claude who track provenance or compliance features.",
+        "why_today": "It is a fresh platform note within the window, though less consequential than a major product launch.",
+        "distinct_question": "What changed in Claude\u2019s platform docs and why might it matter for provenance?",
+        "new_since_prior_coverage": "This is a new release-note update rather than a repeat of prior model announcements.",
+        "practical_payoff": "Teams using Claude should review the release notes if provenance or watermark handling matters to their workflow."
       },
       "editorial_scores": {
         "human_consequence": 3,
         "novelty": 3,
-        "explanatory_value": 4,
-        "evidence_depth": 5
+        "explanatory_value": 3,
+        "evidence_depth": 2
       },
-      "story_age_hours": 3.49,
+      "story_age_hours": 32.71,
       "source_tier": 3,
       "grounded": true,
       "rank": 2,
       "story_tier": "primary",
-      "topic_family": "other"
+      "topic_family": "products"
     },
     {
-      "event_key": "google-deepmind-agentic-cheminformatics-antigravity-2026-11-03",
-      "headline": "Google DeepMind publishes agentic cheminformatics research using Google Antigravity",
-      "title": "Google DeepMind publishes agentic cheminformatics research using Google Antigravity",
-      "publisher": "Google DeepMind",
+      "event_key": "nvidia-ai-semiconductor-fabs-2026-11-03",
+      "headline": "NVIDIA says AI agents and digital twins are speeding semiconductor fab work",
+      "title": "NVIDIA says AI agents and digital twins are speeding semiconductor fab work",
+      "publisher": "NVIDIA",
       "published": "2026-11-03T00:00:00Z",
       "published_at": "2026-11-03T00:00:00Z",
-      "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-      "link": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-      "summary": "Google DeepMind published a November 3, 2026 science post describing agentic cheminformatics with Google Antigravity. The post says the system can search thousands of compounds, perform matched molecular pair analysis, and propose novel rigidified macrocycles with synthetic routes in about an hour using real-world lung cancer treatments as the example context. The post frames this as a drug-discovery workflow accelerator rather than a consumer product launch. The source is a primary company science blog post, and it provides a concrete example of scientific workflow automation with clear experimental framing.",
+      "source_url": "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
+      "link": "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
+      "summary": "NVIDIA published a November 3, 2026 post describing how semiconductor companies are using AI agents, accelerated simulation, and digital twins to speed design and manufacturing work in fabs. The post says Applied Materials uses NVIDIA Omniverse libraries to build physically accurate digital twins of entire fabs. NVIDIA frames the approach as shortening the time needed to evaluate process changes and root causes before physical trials. The post is vendor-authored and presents the manufacturing workflow use case rather than a standalone product launch.",
       "facts": [
         "The post is dated November 3, 2026.",
-        "Google DeepMind says Google Antigravity is being used for agentic cheminformatics workflows.",
-        "The example described involves real-world lung cancer treatments.",
-        "The system searches thousands of compounds and performs matched molecular pair analysis.",
-        "The post says it can propose novel rigidified macrocycles with synthetic routes in about an hour."
+        "NVIDIA says semiconductor leaders are adopting AI agents and digital twins for fab work.",
+        "Applied Materials is cited as using NVIDIA Omniverse libraries.",
+        "The post says accelerated simulation helps engineers get faster answers across design, testing, and manufacturing.",
+        "NVIDIA says physical experiments on a fab line are slow and expensive."
       ],
       "data_points": [
-        "November 3, 2026",
-        "thousands of compounds",
-        "about an hour"
+        "November 3, 2026"
       ],
       "limitations_or_qualifiers": [
-        "This is presented as a science/workflow demonstration, not a broadly available consumer feature.",
-        "The post does not establish public access, pricing, or general availability for a product release."
+        "This is a vendor blog describing partner usage; it does not independently prove measured performance gains.",
+        "The post does not establish broad public availability of a new consumer product."
       ],
-      "why_it_matters": "This matters because it shows AI moving deeper into scientific discovery workflows with a concrete, time-saving use case rather than just benchmark claims.",
+      "why_it_matters": "This matters because chip manufacturing is a core bottleneck for the AI economy, and even incremental engineering speedups can affect capacity and cost.",
       "editorial_case": {
-        "new_development": "Google DeepMind published a dated scientific example showing AI assisting with cheminformatics and candidate-molecule design.",
-        "affected_listener": "Drug-discovery teams, computational chemists, and research institutions watching for practical AI acceleration.",
-        "why_today": "It is a rare, concrete, source-backed example of AI affecting scientific iteration speed in a real domain.",
-        "distinct_question": "Can AI meaningfully compress early drug-discovery workflows today?",
-        "new_since_prior_coverage": "This is a new science demonstration dated within the reporting window, not a repeat of earlier model or infrastructure news.",
-        "practical_payoff": "Researchers should watch whether similar agentic workflows move from demonstration to repeatable lab utility."
+        "new_development": "NVIDIA described a fab workflow that uses AI agents and digital twins to shorten engineering cycles.",
+        "affected_listener": "Chipmakers, equipment suppliers, and AI infrastructure planners who depend on faster semiconductor output.",
+        "why_today": "It ties AI directly to the manufacturing bottleneck that underpins model training and inference supply.",
+        "distinct_question": "Can AI actually improve the way chips are designed and manufactured today?",
+        "new_since_prior_coverage": "This is a fresh dated manufacturing-use case inside the window, not a repeat of earlier infrastructure coverage.",
+        "practical_payoff": "Listeners should watch whether digital-twin workflows spread to more fabs and affect throughput or defect reduction."
       },
       "editorial_scores": {
-        "human_consequence": 4,
+        "human_consequence": 3,
         "novelty": 4,
-        "explanatory_value": 5,
+        "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 24.94,
+      "story_age_hours": 32.71,
       "source_tier": 3,
       "grounded": true,
       "rank": 3,
       "story_tier": "primary",
-      "topic_family": "products"
+      "topic_family": "infrastructure"
     },
     {
-      "event_key": "google-singapore-research-hub-grants-2026-11-03",
-      "headline": "Google launches a new Singapore research hub and more than $6 million in grants for AI-for-science and health work",
-      "title": "Google launches a new Singapore research hub and more than $6 million in grants for AI-for-science and health work",
-      "publisher": "Google",
-      "published": "2026-11-03T00:00:00Z",
-      "published_at": "2026-11-03T00:00:00Z",
-      "source_url": "https://blog.google/innovation-and-ai/technology/research/partnering-singapore-advance-scientific-discovery/",
-      "link": "https://blog.google/innovation-and-ai/technology/research/partnering-singapore-advance-scientific-discovery/",
-      "summary": "Google published a November 3, 2026 post saying it is establishing a research hub in Singapore and investing more than $6 million in grants and capacity-building at NUS and NTU. The post says the effort is aimed at AI for science, compute efficiency, AI safety frameworks, and scientific leadership development. It also says Google is scaling existing health research initiatives in Singapore, including open models like MedGemma in frontline care settings. The source is an official company announcement with concrete funding and location details, but it is a partnership and research initiative rather than a consumer product launch.",
+      "event_key": "ai-token-stealing-malware-2026",
+      "headline": "Hackers exploit internal tool to steal ChatGPT and Claude API tokens in mass compromise",
+      "title": "Hackers exploit internal tool to steal ChatGPT and Claude API tokens in mass compromise",
+      "publisher": "CyberSecurityNews",
+      "published": "2026-11-04T07:35:25Z",
+      "published_at": "2026-11-04T07:35:25Z",
+      "source_url": "https://cybersecuritynews.com/hackers-steal-chatgpt-claude-codex-tokens/",
+      "link": "https://cybersecuritynews.com/hackers-steal-chatgpt-claude-codex-tokens/",
+      "summary": "A new strain of infostealer malware has been identified that targets and exfiltrates authentication tokens for ChatGPT, Claude, and Codex. Unlike standard credential theft, these tokens persist even after users perform password resets, granting attackers sustained access to AI sessions. Security researchers warn that this represents a significant escalation in threats to enterprise AI environments.",
       "facts": [
-        "The post is dated November 3, 2026.",
-        "Google says it is establishing a new research hub in Singapore.",
-        "Google says it is investing more than $6 million in grants and capacity-building initiatives.",
-        "The named partners are the National University of Singapore and Nanyang Technological University.",
-        "Google says the work includes AI for science, compute efficiency, AI safety, and health research."
+        "Malware targets authentication tokens for major AI platforms.",
+        "Tokens survive standard password reset procedures.",
+        "Compromised platforms include ChatGPT, Claude, and Codex.",
+        "Attackers can maintain access to sensitive AI interactions and data."
       ],
       "data_points": [
-        "more than $6 million",
-        "NUS",
-        "NTU"
+        "Multiple AI platforms affected"
       ],
       "limitations_or_qualifiers": [
-        "The post describes research and partnership activity, not an immediately public consumer product.",
-        "Any health-related deployment is described in partnership terms and may be limited to specific settings."
+        "Impact limited to users whose systems are infected with the specific malware."
       ],
-      "why_it_matters": "This matters because it shows a major AI company putting money and institutional support behind scientific and health workflows in a specific region, not just releasing a model announcement.",
+      "why_it_matters": "This shift in attack methodology means that traditional security hygiene like password rotation is insufficient to stop persistent AI session hijacking.",
       "editorial_case": {
-        "new_development": "Google announced a new Singapore research hub plus funding for university partnerships tied to AI-for-science and health work.",
-        "affected_listener": "Researchers, educators, students, and health-system partners in Singapore and nearby markets.",
-        "why_today": "It is a dated, concrete investment in regional AI research capacity with science and health applications.",
-        "distinct_question": "Where is Google putting new AI research money, and what work is it intended to support?",
-        "new_since_prior_coverage": "This is a new regional research and grant announcement inside the window.",
-        "practical_payoff": "Watch for follow-on grants, joint publications, and downstream health-research deployments tied to the hub."
-      },
-      "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 3,
-        "explanatory_value": 4,
-        "evidence_depth": 4
-      },
-      "story_age_hours": 24.94,
-      "source_tier": 3,
-      "grounded": true,
-      "rank": 4,
-      "story_tier": "supporting",
-      "topic_family": "products"
-    },
-    {
-      "event_key": "cursor-anthropic-extension-security-incident",
-      "headline": "Cursor confirms compromise of Anthropic-powered coding extension",
-      "title": "Cursor confirms compromise of Anthropic-powered coding extension",
-      "publisher": "BankInfoSecurity",
-      "published": "2026-11-03T22:02:43Z",
-      "published_at": "2026-11-03T22:02:43Z",
-      "source_url": "https://www.bankinfosecurity.com/cursor-confirms-anthropic-code-extension-compromise-a-24512",
-      "link": "https://www.bankinfosecurity.com/cursor-confirms-anthropic-code-extension-compromise-a-24512",
-      "summary": "The AI-integrated code editor Cursor has confirmed a security compromise involving its extension that integrates Anthropic's Claude models. The breach, identified over the weekend, potentially allowed unauthorized access to sensitive code environments for users of the specific extension. Cursor is urging all affected users to rotate their API keys and security credentials immediately as a precautionary measure.",
-      "facts": [
-        "Cursor confirmed the security compromise on November 3, 2026.",
-        "The breach specifically affected the extension integrating Anthropic's Claude models.",
-        "Users are advised to rotate all API keys and credentials.",
-        "The company is investigating the extent of the unauthorized access.",
-        "The extension's ability to interface with private repositories made it a high-value target."
-      ],
-      "data_points": [
-        "1 confirmed security incident"
-      ],
-      "limitations_or_qualifiers": [
-        "Limited to users of the specific Claude integration extension.",
-        "Scope of impact is still under internal investigation."
-      ],
-      "why_it_matters": "This incident highlights the growing security risks associated with third-party extensions that provide AI agents with read/write access to sensitive enterprise codebases.",
-      "editorial_case": {
-        "new_development": "Confirmed security breach and recommendation for credential rotation.",
-        "affected_listener": "Software developers and security teams using Cursor or similar AI-integrated IDEs.",
-        "why_today": "Security incidents require immediate awareness for remediation.",
-        "distinct_question": "How do you secure an AI tool that has full access to your source code?",
-        "new_since_prior_coverage": "This is the first confirmation and specific remediation advice for this incident.",
-        "practical_payoff": "Developers must rotate API keys immediately if they used the affected extension."
+        "new_development": "Discovery of token-stealing malware that bypasses password resets.",
+        "affected_listener": "Any user or enterprise relying on AI tools for sensitive work.",
+        "why_today": "This new threat vector requires urgent attention from security teams.",
+        "distinct_question": "How do you secure your AI session when your password isn't the primary key?",
+        "new_since_prior_coverage": "Identifies a specific failure mode in AI authentication security.",
+        "practical_payoff": "Security teams should prioritize session management and device-level threat detection."
       },
       "editorial_scores": {
         "human_consequence": 5,
-        "novelty": 3,
+        "novelty": 4,
         "explanatory_value": 4,
-        "evidence_depth": 4
+        "evidence_depth": 3
       },
-      "story_age_hours": 2.9,
+      "story_age_hours": 1.12,
+      "source_tier": 1,
+      "grounded": true,
+      "rank": 4,
+      "story_tier": "supporting",
+      "topic_family": "security"
+    },
+    {
+      "event_key": "netease-agent-guard-launch",
+      "headline": "NetEase Yidun launches Agent Guard to monitor AI agent behavior",
+      "title": "NetEase Yidun launches Agent Guard to monitor AI agent behavior",
+      "publisher": "Pandaily",
+      "published": "2026-11-04T06:56:18Z",
+      "published_at": "2026-11-04T06:56:18Z",
+      "source_url": "https://pandaily.com/netease-yidun-unveils-agent-guard-to-police-what-ai-agents-do/",
+      "link": "https://pandaily.com/netease-yidun-unveils-agent-guard-to-police-what-ai-agents-do/",
+      "summary": "NetEase Yidun has unveiled 'Agent Guard,' a new platform designed to police the behavior of AI agents rather than just their textual output. The tool monitors agent actions, API calls, and logic flows to prevent harmful or unauthorized operations within enterprise workflows. This reflects a growing industry focus on securing the active capabilities of agents, not just their content.",
+      "facts": [
+        "Agent Guard monitors agent-driven actions and API interactions.",
+        "Targeted at preventing unauthorized or harmful agent behavior.",
+        "Distinguishes between 'what an agent says' and 'what an agent does'.",
+        "Announced by NetEase Yidun at the Wuzhen summit."
+      ],
+      "data_points": [
+        "Launch date: November 4, 2026"
+      ],
+      "limitations_or_qualifiers": [
+        "Primarily marketed for enterprise use cases.",
+        "Availability details are currently focused on the regional market."
+      ],
+      "why_it_matters": "This is a critical move toward 'action-level' governance, which is necessary as agents move from simple chatbots to autonomous enterprise workers.",
+      "editorial_case": {
+        "new_development": "Launch of a dedicated tool for governing active AI agent behavior.",
+        "affected_listener": "Enterprise security and AI governance teams.",
+        "why_today": "This addresses the shift from text-based models to action-based agents.",
+        "distinct_question": "How can you govern an agent that is allowed to execute code or make decisions?",
+        "new_since_prior_coverage": "Shifts focus from safety/moderation of text to oversight of agent operations.",
+        "practical_payoff": "Enterprises should evaluate if their current AI safety stack includes action-level monitoring."
+      },
+      "editorial_scores": {
+        "human_consequence": 3,
+        "novelty": 5,
+        "explanatory_value": 4,
+        "evidence_depth": 3
+      },
+      "story_age_hours": 1.77,
       "source_tier": 1,
       "grounded": true,
       "rank": 5,
       "story_tier": "supporting",
-      "topic_family": "infrastructure"
+      "topic_family": "products"
     }
   ],
   "selected_editorial_cases": [
     {
-      "headline": "Google to block Search access for schools that disable AI features",
-      "source_url": "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
+      "headline": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
+      "source_url": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google officially linked Search access to AI enablement in school environments.",
-        "affected_listener": "Teachers, school IT administrators, and parents concerned about AI usage in schools.",
-        "why_today": "This is a massive policy shift announced yesterday that directly affects education infrastructure.",
-        "distinct_question": "Can schools opt out of AI without losing the ability to use Google Search?",
-        "new_since_prior_coverage": "Confirmed link between AI features and core Search functionality in educational accounts.",
-        "practical_payoff": "Administrators must audit their current AI settings by the effective date to avoid service disruption."
+        "new_development": "AMD took a $1 billion charge explicitly linked to OpenAI and Meta chip deals.",
+        "affected_listener": "Investors and those tracking the financial sustainability of AI chip manufacturers.",
+        "why_today": "This is a major market-moving financial disclosure announced today.",
+        "distinct_question": "What is the real cost of securing hardware in the current AI market?",
+        "new_since_prior_coverage": "Provides a specific dollar-figure impact on a major chipmaker.",
+        "practical_payoff": "Watch for similar supply-chain costs affecting other semiconductor companies."
       }
     },
     {
-      "headline": "Meta initiates $25 billion debt offering to accelerate AI infrastructure development",
-      "source_url": "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
+      "headline": "Anthropic adds text watermark information in platform release notes",
+      "source_url": "https://platform.claude.com/docs/en/release-notes/overview",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Meta launched a $25 billion debt sale for AI expansion.",
-        "affected_listener": "Investors and those watching the macro-sustainability of AI investments.",
-        "why_today": "This new debt financing is a major escalation in Meta's capital strategy.",
-        "distinct_question": "How much debt is Meta willing to take on to stay ahead in AI?",
-        "new_since_prior_coverage": "This is a new, separate debt raise from previous equity financing announcements.",
-        "practical_payoff": "Investors should monitor debt-to-equity ratios and CapEx efficiency reports."
+        "new_development": "Anthropic documented a platform update involving text watermark information.",
+        "affected_listener": "Developers and enterprises building on Claude who track provenance or compliance features.",
+        "why_today": "It is a fresh platform note within the window, though less consequential than a major product launch.",
+        "distinct_question": "What changed in Claude\u2019s platform docs and why might it matter for provenance?",
+        "new_since_prior_coverage": "This is a new release-note update rather than a repeat of prior model announcements.",
+        "practical_payoff": "Teams using Claude should review the release notes if provenance or watermark handling matters to their workflow."
       }
     },
     {
-      "headline": "Google DeepMind publishes agentic cheminformatics research using Google Antigravity",
-      "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
+      "headline": "NVIDIA says AI agents and digital twins are speeding semiconductor fab work",
+      "source_url": "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google DeepMind published a dated scientific example showing AI assisting with cheminformatics and candidate-molecule design.",
-        "affected_listener": "Drug-discovery teams, computational chemists, and research institutions watching for practical AI acceleration.",
-        "why_today": "It is a rare, concrete, source-backed example of AI affecting scientific iteration speed in a real domain.",
-        "distinct_question": "Can AI meaningfully compress early drug-discovery workflows today?",
-        "new_since_prior_coverage": "This is a new science demonstration dated within the reporting window, not a repeat of earlier model or infrastructure news.",
-        "practical_payoff": "Researchers should watch whether similar agentic workflows move from demonstration to repeatable lab utility."
+        "new_development": "NVIDIA described a fab workflow that uses AI agents and digital twins to shorten engineering cycles.",
+        "affected_listener": "Chipmakers, equipment suppliers, and AI infrastructure planners who depend on faster semiconductor output.",
+        "why_today": "It ties AI directly to the manufacturing bottleneck that underpins model training and inference supply.",
+        "distinct_question": "Can AI actually improve the way chips are designed and manufactured today?",
+        "new_since_prior_coverage": "This is a fresh dated manufacturing-use case inside the window, not a repeat of earlier infrastructure coverage.",
+        "practical_payoff": "Listeners should watch whether digital-twin workflows spread to more fabs and affect throughput or defect reduction."
       }
     }
   ],
   "listener_frames": [
-    "science_access",
-    "accountability_risk",
-    "products"
+    "infrastructure",
+    "products",
+    "infrastructure"
   ],
   "candidate_target": 5,
   "required_air_stories": 3,

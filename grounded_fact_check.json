@@ -1,449 +1,52 @@
 {
   "version": "grounded-fact-firewall-v1",
-  "date": "2026-11-03",
+  "date": "2026-11-04",
   "initial": {
     "version": "grounded-fact-check-v1",
-    "date": "2026-11-03",
-    "pass": false,
-    "unresolved": [
-      "Invalid or ungrounded calculation record"
-    ],
-    "calculation_records": [
-      {
-        "exact_line": "JAMIE: What's the debt service on twenty-five billion?",
-        "left_quote": "twenty-five billion",
-        "right_quote": "twenty-five billion",
-        "operation": "greater_than",
-        "ratio_quote": "",
-        "replacement_line": "JAMIE: What's the debt service on twenty-five billion?"
-      }
-    ],
-    "critical_errors": [],
-    "warnings": [
-      "The source article regarding Google's school policy mentions it applies to managed Google Workspace accounts, but the podcast generalizes this as 100% of managed school accounts; while consistent with the provided summary, the exact scope of affected institutional users remains subject to administrative deployment."
-    ],
-    "verified_source_urls": [
-      "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
-      "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
-      "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-      "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
-    ],
-    "correction_recovery": {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-11-03",
-      "pass": false,
-      "unresolved": [
-        "The source supports this capability and the early-adopter limitation. The only issue is that the line omits that the example is hypothetical; but that is immediately clarified in later lines. No critical error required, but the exact date should be interpreted as October 27, 2026. This is a warning-level precision point, not a false claim.",
-        "This is supported by the source record's limitation that the example is hypothetical and untested, and that no measured customer outcome is claimed. No critical error."
-      ],
-      "calculation_records": [],
-      "critical_errors": [
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The policy immediately applies to every K-12 and university running Google's software, effective now.",
-          "evidence_quote": "Students using Google software in the classroom will not be allowed to access the company’s search engine unless their school system also opts in to artificial intelligence tools.",
-          "exact_line": "ALEX: Google just told every K-12 and university running its software: disable our AI tools and you lose standard Search. Not a warning. Policy. Effective now.",
-          "replacement_line": "ALEX: Google just told school systems on managed Workspace accounts: if you turn off the AI tools, students lose standard Search. Not a warning. Policy. Announced today.",
-          "reason": "This is overstated. The policy was announced on November 3, 2026, but the source says K-12 student accounts will have AI features and Search automatically turned off until school administrators explicitly turn them on; it does not support an immediate universal 'effective now' claim for every K-12 and university running Google's software. The story is about school-managed accounts, not every school using Google software.",
-          "source_url": "https://apnews.com/article/ai-schools-classroom-students-google-7ba4219e505db1c11d672f6eefe7155a"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta borrows twenty-five billion dollars to build more AI.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering, as the Facebook parent turns to debt markets to help finance its accelerating investments in AI infrastructure.",
-          "exact_line": "ALEX: Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. November third, 2026. Today: Google's school ultimatum, Meta borrows twenty-five billion dollars to build more AI, and DeepMind says it can sketch a lung cancer drug candidate in an hour.",
-          "replacement_line": "ALEX: Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. November third, 2026. Today: Google's school ultimatum, Meta borrows fifteen billion dollars to build more AI, and DeepMind says it can sketch a lung cancer drug candidate in an hour.",
-          "reason": "The Meta debt amount is wrong. The supplied sources support a $15 billion bond sale, not $25 billion. The DeepMind claim is broadly supported, but the Meta figure makes this line factually incorrect.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%2Bfive-part%2BUS%2Bbond%2Bsale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "All managed school accounts lose standard Google Search when administrators turn off generative AI features.",
-          "evidence_quote": "Access to Google’s AI features — Gemini, Gemini Notebook and Gemini in Classroom — as well as Google search will be automatically turned off for K-12 student accounts until “school administrators explicitly turn them on,”",
-          "exact_line": "ALEX: So. Google Search in schools. Policy landed today — if administrators on managed Google Workspace accounts turn off generative AI features, they lose access to standard Google Search. All of them. A hundred percent of managed school accounts.",
-          "replacement_line": "ALEX: So. Google Search in schools. Policy landed today — if administrators on managed Google Workspace accounts turn off generative AI features, students lose access to standard Google Search too.",
-          "reason": "The universal 'all of them' / 'a hundred percent' wording is too broad and unsupported. The source supports that students on school-managed accounts will lose Search if the school opts out of AI, but it does not establish every managed school account is impacted, nor that the 100% figure applies in the script's absolute framing.",
-          "source_url": "https://apnews.com/article/ai-schools-classroom-students-google-7ba4219e505db1c11d672f6eefe7155a"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta announced a twenty-five billion dollar debt offering today, and the money is specifically earmarked to train the next generation of Llama models through 2027.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering, as the Facebook parent turns to debt markets to help finance its accelerating investments in AI infrastructure.",
-          "exact_line": "ALEX: Our second story. Meta announced a twenty-five billion dollar debt offering today. Not equity — debt. Bonds. And the money is specifically earmarked for AI infrastructure: data centers, hardware, the computing capacity to train the next generation of Llama models through 2027.",
-          "replacement_line": "ALEX: Our second story. Meta announced a fifteen billion dollar debt offering today. Not equity — debt. Bonds. And the money is for AI infrastructure: data centers, hardware, and other accelerating AI investments.",
-          "reason": "The debt amount is wrong and the earmarking claim is too specific. The supplied reporting supports a $15 billion bond sale to fund accelerating AI infrastructure investments, but not a $25 billion offering or the detailed 'through 2027' training-capacity claim in this form.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%2Bfive-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "This debt offering is separate from previous capital raises.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-          "exact_line": "RUFUS: And this is separate from previous capital raises. Bloomberg reported this today as a new, distinct debt offering. Not a repackaging of anything earlier.",
-          "replacement_line": "RUFUS: And this is a distinct debt offering. Bloomberg reported this today as a new bond sale, not equity.",
-          "reason": "The assertion that this is 'separate from previous capital raises' is misleading without support in the supplied sources, and the same reporting also references earlier financing activity. The core 'distinct debt offering' part is supported, but the broader contrast to previous raises is not established by the provided evidence.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The debt service is on twenty-five billion.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-          "exact_line": "JAMIE: I want to know what happens if the next Llama model — the one this infrastructure is being built for — doesn't drive proportional revenue. What's the debt service on twenty-five billion?",
-          "replacement_line": "JAMIE: I want to know what happens if the next Llama model — the one this infrastructure is being built for — doesn't drive proportional revenue. What's the debt service on fifteen billion?",
-          "reason": "The debt amount is wrong. The source set supports a $15 billion bond offering, not $25 billion.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta gives Llama away as open source.",
-          "evidence_quote": "Llama has been open-weight, yes.",
-          "exact_line": "ALEX: So Meta is borrowing money, at interest, to build infrastructure, to train a model, that it then gives away as open source.",
-          "replacement_line": "ALEX: So Meta is borrowing money, at interest, to build infrastructure, to train a model, that it then releases as open-weight.",
-          "reason": "The source set supports that Llama is open-weight, not that Meta 'gives it away as open source.' Open-weight and open source are not interchangeable, so this is a capability/description error.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta's CapEx guidance for 2027 keeps rising.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering, as the Facebook parent turns to debt markets to help finance its accelerating investments in AI infrastructure.",
-          "exact_line": "JAMIE: What we do know is that Meta's CapEx guidance for 2027 keeps rising. This isn't a one-time catch-up. It's a sustained commitment to being one of the two or three organizations that can actually afford to train frontier models.",
-          "replacement_line": "JAMIE: What we do know is that Meta is making a sustained commitment to AI infrastructure. This isn't a one-time catch-up; it's a serious push to stay in the frontier-model race.",
-          "reason": "The supplied sources do not verify a specific claim that Meta's CapEx guidance for 2027 keeps rising, nor the 'two or three organizations' framing. This is too specific and not supported by the provided records.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "Meta has been escalating CapEx guidance each quarter.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-          "exact_line": "JAMIE: That doesn't fully settle it for me, though. Because this isn't the first raise. Meta has been escalating CapEx guidance each quarter. At what point does \"strategic debt\" become \"we need this just to stay stationary\"?",
-          "replacement_line": "JAMIE: That doesn't fully settle it for me, though. Because this isn't the first financing move. Meta keeps leaning harder into CapEx. At what point does \"strategic debt\" become \"we need this just to stay stationary\"?",
-          "reason": "The claim that Meta has been escalating CapEx guidance each quarter is not verified by the supplied sources. The provided records support a current financing action, not the quarterly trend asserted here.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "This offering is twenty-five billion dollars.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-          "exact_line": "JAMIE: What I'd genuinely want to know — and it's not in the Bloomberg piece — is what percentage of this twenty-five billion is hardware versus energy. Because those have completely different depreciation curves. A GPU cluster loses value. A power contract locks in an ongoing cost.",
-          "replacement_line": "JAMIE: What I'd genuinely want to know — and it's not in the Bloomberg piece — is what percentage of this fifteen billion is hardware versus energy. Because those have completely different depreciation curves. A GPU cluster loses value. A power contract locks in an ongoing cost.",
-          "reason": "The debt amount is wrong. The source set supports $15 billion, not $25 billion.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The number we know is twenty-five billion.",
-          "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-          "exact_line": "ALEX: So the number we know is twenty-five billion. The numbers that matter are still missing.",
-          "replacement_line": "ALEX: So the number we know is fifteen billion. The numbers that matter are still missing.",
-          "reason": "The number is wrong. The source set supports $15 billion, not $25 billion.",
-          "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The system can search thousands of compounds, run matched molecular pair analysis, and propose rigidified macrocycles with synthetic routes in about an hour.",
-          "evidence_quote": "Using real-world lung cancer treatments, an agent searches through thousands of compounds, performs matched molecular pair analysis, and proposes novel rigidified macrocycles with synthetic routes in just an hour.",
-          "exact_line": "JAMIE: We'll get there. The post describes an agentic workflow for drug discovery. And the specific claim is this: the system can search thousands of compounds, run something called matched molecular pair analysis, and propose novel drug candidates — specifically rigidified macrocycles, with synthetic routes — in about an hour.",
-          "replacement_line": "JAMIE: We'll get there. The post describes an agentic workflow for drug discovery. And the specific claim is this: the system can search through thousands of compounds, run matched molecular pair analysis, and propose novel rigidified macrocycles with synthetic routes in just an hour.",
-          "reason": "This is broadly supported, but the source says the workflow uses real-world lung cancer treatments and that the agent searched 'through thousands of compounds' and proposed rigidified macrocycles with synthetic routes 'in just an hour.' The script is close; no critical error needed if treated as paraphrase. However, the wording 'the specific claim is this' is fine. The concern is only minor precision.",
-          "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The system does the equivalent of a chemist's multi-week literature review and design iteration in sixty minutes.",
-          "evidence_quote": "a workflow that typically takes multiple days for a single iteration",
-          "exact_line": "RUFUS: And the claim is that this system does the equivalent of a chemist's multi-week literature review and design iteration in sixty minutes.",
-          "replacement_line": "RUFUS: And the claim is that this system compresses a workflow that typically takes multiple days for a single iteration into about sixty minutes.",
-          "reason": "The source supports that the workflow typically takes multiple days for a single iteration and that the demo compresses it to about an hour. 'Equivalent of a chemist's multi-week literature review' is rhetorical, not a verifiable source claim, but the line also implies a stronger quantification than the source states. Treat as a soft precision issue.",
-          "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "There is no information about public access, pricing, or general availability.",
-          "evidence_quote": "The cheminformatics skills are available on Google Antigravity today.",
-          "exact_line": "JAMIE: The post is a science demonstration. DeepMind explicitly frames it as a workflow demonstration, not a product launch. There's no information about public access, pricing, or general availability. And critically —",
-          "replacement_line": "JAMIE: The post is a science demonstration. DeepMind explicitly frames it as a workflow demonstration, not a consumer product launch. It does describe access to the cheminformatics skills on Google Antigravity, but not a broad consumer release. And critically —",
-          "reason": "This is too absolute. The source actually says the cheminformatics skills are available on Google Antigravity today, including for Enterprise users, and offers a free usage tier. So there is public availability of the skills, even if this is not a general consumer launch. The line should be narrowed rather than denying availability.",
-          "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The workflow is not making drug development faster but is making the starting grid bigger.",
-          "evidence_quote": "a workflow that typically takes multiple days for a single iteration",
-          "exact_line": "ALEX: It's not making drug development faster. It's making the starting grid bigger.",
-          "replacement_line": "ALEX: It may not make drug development faster end-to-end. It makes the starting grid bigger.",
-          "reason": "This is a causal inference rather than a directly sourced fact. It is plausible and stylistic, but the script elsewhere treats it as factual. To avoid overstating the source, it should be softened.",
-          "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The system makes sequential decisions without a human directing each step.",
-          "evidence_quote": "the underlying language model handles workflow orchestration, database navigation and scientific reasoning, while deterministic chemistry tools execute molecular calculations.",
-          "exact_line": "JAMIE: The post says it uses agentic cheminformatics workflows — meaning the system is making sequential decisions about what to search, what to analyze, and what to propose, without a human directing each step. It's not just a search engine for molecules. It's doing some of the reasoning work.",
-          "replacement_line": "JAMIE: The post says it uses agentic cheminformatics workflows — meaning the system is making sequential decisions about what to search, what to analyze, and what to propose, while the workflow orchestration is handled by the model. It's not just a search engine for molecules. It's doing some of the reasoning work.",
-          "reason": "The source supports workflow orchestration and scientific reasoning, but not the absolute claim that it operates 'without a human directing each step.' The page says the system handles workflow orchestration while chemists can use the workbench and that proposed designs must still be synthesized and validated experimentally.",
-          "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-        },
-        {
-          "claim_type": "factual_assertion",
-          "factual_claim": "The dated demonstration means it's happening now rather than as a roadmap promise.",
-          "evidence_quote": "November 3, 2026 Science",
-          "exact_line": "RUFUS: In a research context, anyway. This is a dated demonstration — November third — which means it's happening now, not as a roadmap promise.",
-          "replacement_line": "RUFUS: In a research context, anyway. This is a dated demonstration — November third — so this is a current publication, not just a roadmap promise.",
-          "reason": "The post is dated November 3, 2026 and is an announced science post; however 'it's happening now' is an overstatement because the article is a published demonstration, not necessarily a live new capability. This is better treated as a warning or softened wording.",
-          "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-        }
-      ],
-      "warnings": [
-        "The script repeatedly says 'today' and 'announced today'; that is consistent with the episode date, but a few lines make stronger immediacy claims than the sources strictly establish.",
-        "The Google school policy is about managed K-12 student accounts and school systems opting into AI; the script sometimes broadens this to all K-12 and university users.",
-        "The DeepMind post is a science/workflow demonstration with availability on Google Antigravity today, including an enterprise path and a limited free tier, so 'no public access' is too broad even though it is not a broad consumer product launch.",
-        "Several Meta lines use 'twenty-five billion' even though the supplied reporting supports fifteen billion; these are corrected as critical errors above.",
-        "The SAP transformation example is explicitly hypothetical and untested; the script is consistent on that point, but keep the distinction between a capability demo and a customer result."
-      ],
-      "verified_source_urls": [
-        "https://apnews.com/article/ai-schools-classroom-students-google-7ba4219e505db1c11d672f6eefe7155a",
-        "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-        "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html",
-        "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
-      ]
-    }
-  },
-  "audit_passes": [
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-11-03",
-      "pass": false,
-      "unresolved": [
-        "Invalid or ungrounded calculation record"
-      ],
-      "calculation_records": [
-        {
-          "exact_line": "JAMIE: What's the debt service on twenty-five billion?",
-          "left_quote": "twenty-five billion",
-          "right_quote": "twenty-five billion",
-          "operation": "greater_than",
-          "ratio_quote": "",
-          "replacement_line": "JAMIE: What's the debt service on twenty-five billion?"
-        }
-      ],
-      "critical_errors": [],
-      "warnings": [
-        "The source article regarding Google's school policy mentions it applies to managed Google Workspace accounts, but the podcast generalizes this as 100% of managed school accounts; while consistent with the provided summary, the exact scope of affected institutional users remains subject to administrative deployment."
-      ],
-      "verified_source_urls": [
-        "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
-        "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
-        "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-        "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
-      ],
-      "correction_recovery": {
-        "version": "grounded-fact-check-v1",
-        "date": "2026-11-03",
-        "pass": false,
-        "unresolved": [
-          "The source supports this capability and the early-adopter limitation. The only issue is that the line omits that the example is hypothetical; but that is immediately clarified in later lines. No critical error required, but the exact date should be interpreted as October 27, 2026. This is a warning-level precision point, not a false claim.",
-          "This is supported by the source record's limitation that the example is hypothetical and untested, and that no measured customer outcome is claimed. No critical error."
-        ],
-        "calculation_records": [],
-        "critical_errors": [
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The policy immediately applies to every K-12 and university running Google's software, effective now.",
-            "evidence_quote": "Students using Google software in the classroom will not be allowed to access the company’s search engine unless their school system also opts in to artificial intelligence tools.",
-            "exact_line": "ALEX: Google just told every K-12 and university running its software: disable our AI tools and you lose standard Search. Not a warning. Policy. Effective now.",
-            "replacement_line": "ALEX: Google just told school systems on managed Workspace accounts: if you turn off the AI tools, students lose standard Search. Not a warning. Policy. Announced today.",
-            "reason": "This is overstated. The policy was announced on November 3, 2026, but the source says K-12 student accounts will have AI features and Search automatically turned off until school administrators explicitly turn them on; it does not support an immediate universal 'effective now' claim for every K-12 and university running Google's software. The story is about school-managed accounts, not every school using Google software.",
-            "source_url": "https://apnews.com/article/ai-schools-classroom-students-google-7ba4219e505db1c11d672f6eefe7155a"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta borrows twenty-five billion dollars to build more AI.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering, as the Facebook parent turns to debt markets to help finance its accelerating investments in AI infrastructure.",
-            "exact_line": "ALEX: Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. November third, 2026. Today: Google's school ultimatum, Meta borrows twenty-five billion dollars to build more AI, and DeepMind says it can sketch a lung cancer drug candidate in an hour.",
-            "replacement_line": "ALEX: Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. November third, 2026. Today: Google's school ultimatum, Meta borrows fifteen billion dollars to build more AI, and DeepMind says it can sketch a lung cancer drug candidate in an hour.",
-            "reason": "The Meta debt amount is wrong. The supplied sources support a $15 billion bond sale, not $25 billion. The DeepMind claim is broadly supported, but the Meta figure makes this line factually incorrect.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%2Bfive-part%2BUS%2Bbond%2Bsale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "All managed school accounts lose standard Google Search when administrators turn off generative AI features.",
-            "evidence_quote": "Access to Google’s AI features — Gemini, Gemini Notebook and Gemini in Classroom — as well as Google search will be automatically turned off for K-12 student accounts until “school administrators explicitly turn them on,”",
-            "exact_line": "ALEX: So. Google Search in schools. Policy landed today — if administrators on managed Google Workspace accounts turn off generative AI features, they lose access to standard Google Search. All of them. A hundred percent of managed school accounts.",
-            "replacement_line": "ALEX: So. Google Search in schools. Policy landed today — if administrators on managed Google Workspace accounts turn off generative AI features, students lose access to standard Google Search too.",
-            "reason": "The universal 'all of them' / 'a hundred percent' wording is too broad and unsupported. The source supports that students on school-managed accounts will lose Search if the school opts out of AI, but it does not establish every managed school account is impacted, nor that the 100% figure applies in the script's absolute framing.",
-            "source_url": "https://apnews.com/article/ai-schools-classroom-students-google-7ba4219e505db1c11d672f6eefe7155a"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta announced a twenty-five billion dollar debt offering today, and the money is specifically earmarked to train the next generation of Llama models through 2027.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering, as the Facebook parent turns to debt markets to help finance its accelerating investments in AI infrastructure.",
-            "exact_line": "ALEX: Our second story. Meta announced a twenty-five billion dollar debt offering today. Not equity — debt. Bonds. And the money is specifically earmarked for AI infrastructure: data centers, hardware, the computing capacity to train the next generation of Llama models through 2027.",
-            "replacement_line": "ALEX: Our second story. Meta announced a fifteen billion dollar debt offering today. Not equity — debt. Bonds. And the money is for AI infrastructure: data centers, hardware, and other accelerating AI investments.",
-            "reason": "The debt amount is wrong and the earmarking claim is too specific. The supplied reporting supports a $15 billion bond sale to fund accelerating AI infrastructure investments, but not a $25 billion offering or the detailed 'through 2027' training-capacity claim in this form.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%2Bfive-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "This debt offering is separate from previous capital raises.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-            "exact_line": "RUFUS: And this is separate from previous capital raises. Bloomberg reported this today as a new, distinct debt offering. Not a repackaging of anything earlier.",
-            "replacement_line": "RUFUS: And this is a distinct debt offering. Bloomberg reported this today as a new bond sale, not equity.",
-            "reason": "The assertion that this is 'separate from previous capital raises' is misleading without support in the supplied sources, and the same reporting also references earlier financing activity. The core 'distinct debt offering' part is supported, but the broader contrast to previous raises is not established by the provided evidence.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The debt service is on twenty-five billion.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-            "exact_line": "JAMIE: I want to know what happens if the next Llama model — the one this infrastructure is being built for — doesn't drive proportional revenue. What's the debt service on twenty-five billion?",
-            "replacement_line": "JAMIE: I want to know what happens if the next Llama model — the one this infrastructure is being built for — doesn't drive proportional revenue. What's the debt service on fifteen billion?",
-            "reason": "The debt amount is wrong. The source set supports a $15 billion bond offering, not $25 billion.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta gives Llama away as open source.",
-            "evidence_quote": "Llama has been open-weight, yes.",
-            "exact_line": "ALEX: So Meta is borrowing money, at interest, to build infrastructure, to train a model, that it then gives away as open source.",
-            "replacement_line": "ALEX: So Meta is borrowing money, at interest, to build infrastructure, to train a model, that it then releases as open-weight.",
-            "reason": "The source set supports that Llama is open-weight, not that Meta 'gives it away as open source.' Open-weight and open source are not interchangeable, so this is a capability/description error.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%2Bbillion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta's CapEx guidance for 2027 keeps rising.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering, as the Facebook parent turns to debt markets to help finance its accelerating investments in AI infrastructure.",
-            "exact_line": "JAMIE: What we do know is that Meta's CapEx guidance for 2027 keeps rising. This isn't a one-time catch-up. It's a sustained commitment to being one of the two or three organizations that can actually afford to train frontier models.",
-            "replacement_line": "JAMIE: What we do know is that Meta is making a sustained commitment to AI infrastructure. This isn't a one-time catch-up; it's a serious push to stay in the frontier-model race.",
-            "reason": "The supplied sources do not verify a specific claim that Meta's CapEx guidance for 2027 keeps rising, nor the 'two or three organizations' framing. This is too specific and not supported by the provided records.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "Meta has been escalating CapEx guidance each quarter.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-            "exact_line": "JAMIE: That doesn't fully settle it for me, though. Because this isn't the first raise. Meta has been escalating CapEx guidance each quarter. At what point does \"strategic debt\" become \"we need this just to stay stationary\"?",
-            "replacement_line": "JAMIE: That doesn't fully settle it for me, though. Because this isn't the first financing move. Meta keeps leaning harder into CapEx. At what point does \"strategic debt\" become \"we need this just to stay stationary\"?",
-            "reason": "The claim that Meta has been escalating CapEx guidance each quarter is not verified by the supplied sources. The provided records support a current financing action, not the quarterly trend asserted here.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "This offering is twenty-five billion dollars.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-            "exact_line": "JAMIE: What I'd genuinely want to know — and it's not in the Bloomberg piece — is what percentage of this twenty-five billion is hardware versus energy. Because those have completely different depreciation curves. A GPU cluster loses value. A power contract locks in an ongoing cost.",
-            "replacement_line": "JAMIE: What I'd genuinely want to know — and it's not in the Bloomberg piece — is what percentage of this fifteen billion is hardware versus energy. Because those have completely different depreciation curves. A GPU cluster loses value. A power contract locks in an ongoing cost.",
-            "reason": "The debt amount is wrong. The source set supports $15 billion, not $25 billion.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The number we know is twenty-five billion.",
-            "evidence_quote": "Meta Platforms said on Tuesday it is raising $15 billion through a five-part US dollar bond offering",
-            "exact_line": "ALEX: So the number we know is twenty-five billion. The numbers that matter are still missing.",
-            "replacement_line": "ALEX: So the number we know is fifteen billion. The numbers that matter are still missing.",
-            "reason": "The number is wrong. The source set supports $15 billion, not $25 billion.",
-            "source_url": "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The system can search thousands of compounds, run matched molecular pair analysis, and propose rigidified macrocycles with synthetic routes in about an hour.",
-            "evidence_quote": "Using real-world lung cancer treatments, an agent searches through thousands of compounds, performs matched molecular pair analysis, and proposes novel rigidified macrocycles with synthetic routes in just an hour.",
-            "exact_line": "JAMIE: We'll get there. The post describes an agentic workflow for drug discovery. And the specific claim is this: the system can search thousands of compounds, run something called matched molecular pair analysis, and propose novel drug candidates — specifically rigidified macrocycles, with synthetic routes — in about an hour.",
-            "replacement_line": "JAMIE: We'll get there. The post describes an agentic workflow for drug discovery. And the specific claim is this: the system can search through thousands of compounds, run matched molecular pair analysis, and propose novel rigidified macrocycles with synthetic routes in just an hour.",
-            "reason": "This is broadly supported, but the source says the workflow uses real-world lung cancer treatments and that the agent searched 'through thousands of compounds' and proposed rigidified macrocycles with synthetic routes 'in just an hour.' The script is close; no critical error needed if treated as paraphrase. However, the wording 'the specific claim is this' is fine. The concern is only minor precision.",
-            "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The system does the equivalent of a chemist's multi-week literature review and design iteration in sixty minutes.",
-            "evidence_quote": "a workflow that typically takes multiple days for a single iteration",
-            "exact_line": "RUFUS: And the claim is that this system does the equivalent of a chemist's multi-week literature review and design iteration in sixty minutes.",
-            "replacement_line": "RUFUS: And the claim is that this system compresses a workflow that typically takes multiple days for a single iteration into about sixty minutes.",
-            "reason": "The source supports that the workflow typically takes multiple days for a single iteration and that the demo compresses it to about an hour. 'Equivalent of a chemist's multi-week literature review' is rhetorical, not a verifiable source claim, but the line also implies a stronger quantification than the source states. Treat as a soft precision issue.",
-            "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "There is no information about public access, pricing, or general availability.",
-            "evidence_quote": "The cheminformatics skills are available on Google Antigravity today.",
-            "exact_line": "JAMIE: The post is a science demonstration. DeepMind explicitly frames it as a workflow demonstration, not a product launch. There's no information about public access, pricing, or general availability. And critically —",
-            "replacement_line": "JAMIE: The post is a science demonstration. DeepMind explicitly frames it as a workflow demonstration, not a consumer product launch. It does describe access to the cheminformatics skills on Google Antigravity, but not a broad consumer release. And critically —",
-            "reason": "This is too absolute. The source actually says the cheminformatics skills are available on Google Antigravity today, including for Enterprise users, and offers a free usage tier. So there is public availability of the skills, even if this is not a general consumer launch. The line should be narrowed rather than denying availability.",
-            "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The workflow is not making drug development faster but is making the starting grid bigger.",
-            "evidence_quote": "a workflow that typically takes multiple days for a single iteration",
-            "exact_line": "ALEX: It's not making drug development faster. It's making the starting grid bigger.",
-            "replacement_line": "ALEX: It may not make drug development faster end-to-end. It makes the starting grid bigger.",
-            "reason": "This is a causal inference rather than a directly sourced fact. It is plausible and stylistic, but the script elsewhere treats it as factual. To avoid overstating the source, it should be softened.",
-            "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The system makes sequential decisions without a human directing each step.",
-            "evidence_quote": "the underlying language model handles workflow orchestration, database navigation and scientific reasoning, while deterministic chemistry tools execute molecular calculations.",
-            "exact_line": "JAMIE: The post says it uses agentic cheminformatics workflows — meaning the system is making sequential decisions about what to search, what to analyze, and what to propose, without a human directing each step. It's not just a search engine for molecules. It's doing some of the reasoning work.",
-            "replacement_line": "JAMIE: The post says it uses agentic cheminformatics workflows — meaning the system is making sequential decisions about what to search, what to analyze, and what to propose, while the workflow orchestration is handled by the model. It's not just a search engine for molecules. It's doing some of the reasoning work.",
-            "reason": "The source supports workflow orchestration and scientific reasoning, but not the absolute claim that it operates 'without a human directing each step.' The page says the system handles workflow orchestration while chemists can use the workbench and that proposed designs must still be synthesized and validated experimentally.",
-            "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-          },
-          {
-            "claim_type": "factual_assertion",
-            "factual_claim": "The dated demonstration means it's happening now rather than as a roadmap promise.",
-            "evidence_quote": "November 3, 2026 Science",
-            "exact_line": "RUFUS: In a research context, anyway. This is a dated demonstration — November third — which means it's happening now, not as a roadmap promise.",
-            "replacement_line": "RUFUS: In a research context, anyway. This is a dated demonstration — November third — so this is a current publication, not just a roadmap promise.",
-            "reason": "The post is dated November 3, 2026 and is an announced science post; however 'it's happening now' is an overstatement because the article is a published demonstration, not necessarily a live new capability. This is better treated as a warning or softened wording.",
-            "source_url": "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/"
-          }
-        ],
-        "warnings": [
-          "The script repeatedly says 'today' and 'announced today'; that is consistent with the episode date, but a few lines make stronger immediacy claims than the sources strictly establish.",
-          "The Google school policy is about managed K-12 student accounts and school systems opting into AI; the script sometimes broadens this to all K-12 and university users.",
-          "The DeepMind post is a science/workflow demonstration with availability on Google Antigravity today, including an enterprise path and a limited free tier, so 'no public access' is too broad even though it is not a broad consumer product launch.",
-          "Several Meta lines use 'twenty-five billion' even though the supplied reporting supports fifteen billion; these are corrected as critical errors above.",
-          "The SAP transformation example is explicitly hypothetical and untested; the script is consistent on that point, but keep the distinction between a capability demo and a customer result."
-        ],
-        "verified_source_urls": [
-          "https://apnews.com/article/ai-schools-classroom-students-google-7ba4219e505db1c11d672f6eefe7155a",
-          "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-          "https://www.streetinsider.com/Reuters/Meta%2Braises%2B%2415%20billion%C2%A0in%20five-part%20US%20bond%20sale/27283778.html",
-          "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
-        ]
-      }
-    },
-    {
-      "version": "grounded-fact-check-v1",
-      "date": "2026-11-03",
-      "pass": true,
-      "unresolved": [],
-      "calculation_records": [],
-      "critical_errors": [],
-      "warnings": [],
-      "verified_source_urls": [
-        "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
-        "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
-        "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-        "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
-      ]
-    }
-  ],
-  "replacements_applied": 0,
-  "final": {
-    "version": "grounded-fact-check-v1",
-    "date": "2026-11-03",
+    "date": "2026-11-04",
     "pass": true,
     "unresolved": [],
     "calculation_records": [],
     "critical_errors": [],
     "warnings": [],
     "verified_source_urls": [
-      "https://www.nytimes.com/2026/11/03/technology/google-schools-ai-search.html",
-      "https://www.bloomberg.com/news/articles/2026-11-03/meta-launches-25-billion-debt-offering-for-ai-infrastructure",
-      "https://deepmind.google/blog/agentic-cheminformatics-with-google-antigravity/",
-      "https://news.sap.com/2026/10/sap-teched-ai-developers-build-what-matters-autonomous-execution/"
+      "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
+      "https://platform.claude.com/docs/en/release-notes/overview",
+      "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
+      "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+    ]
+  },
+  "audit_passes": [
+    {
+      "version": "grounded-fact-check-v1",
+      "date": "2026-11-04",
+      "pass": true,
+      "unresolved": [],
+      "calculation_records": [],
+      "critical_errors": [],
+      "warnings": [],
+      "verified_source_urls": [
+        "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
+        "https://platform.claude.com/docs/en/release-notes/overview",
+        "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
+        "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
+      ]
+    }
+  ],
+  "replacements_applied": 0,
+  "final": {
+    "version": "grounded-fact-check-v1",
+    "date": "2026-11-04",
+    "pass": true,
+    "unresolved": [],
+    "calculation_records": [],
+    "critical_errors": [],
+    "warnings": [],
+    "verified_source_urls": [
+      "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
+      "https://platform.claude.com/docs/en/release-notes/overview",
+      "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
+      "https://support.claude.com/en/articles/17153992-what-are-artifacts-and-how-do-i-use-them"
     ]
   },
   "pass": true,
