@@ -8,7 +8,7 @@ from pathlib import Path
 def choose_bed(text):
     if not re.search(r'\b(?:picture|imagine)\b', text, re.I):
         return None
-    for name, pattern in [('office', r'\b(?:office|boardroom|risk committee meeting|board meeting|conference room|software company|(?:large )?tech company|developer team)\b'),
+    for name, pattern in [('office', r'\b(?:office|compliance floor|trading floor|financial services firm|boardroom|risk committee meeting|board meeting|conference room|software company|(?:large )?tech company|developer team)\b'),
                           ('conference', r'\b(?:conference|convention|dreamforce|oracle (?:event|cloudworld)|vc (?:event|summit)|trade show)\b'),
                           ('factory', r'factory|manufacturing floor'),
                           ('server_room', r'server room|data[ -]?cent' ),
@@ -111,7 +111,7 @@ def mix_welcome_music(voice_path, destination, root=None, audit=None):
             mixed=mixed.apply_gain(-1-mixed.max_dBFS)
         mixed.export(destination,format='mp3',bitrate='192k').close()
         if audit is not None:
-            audit.update(applied=True,asset=row['file'],provider='elevenlabs',
+            audit.update(applied=True,reason='mixed',asset=row['file'],provider='elevenlabs',
                          sha256=row['sha256'],duration_seconds=len(bed)/1000,
                          bed_dbfs=round(bed.dBFS,2))
         return Path(destination)
