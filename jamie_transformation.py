@@ -63,7 +63,8 @@ def repeated_vendor(case, history):
     """Avoid consecutive vendor showcases, including product-name aliases."""
     candidate = ' '.join(str(case.get(k, '')) for k in ('tool', 'subject')).casefold()
     aliases = (('salesforce', 'agentforce'), ('microsoft', 'copilot'),
-               ('google', 'gemini'), ('anthropic', 'claude'), ('openai', 'chatgpt'))
+               ('google', 'gemini'), ('anthropic', 'claude'), ('openai', 'chatgpt'),
+               ('sap', 'joule'), ('n8n',), ('oracle',))
     previous = history[0]['dialogue'].casefold() if history else ''
     return any(any(name in candidate for name in group) and
                any(name in previous for name in group) for group in aliases)
