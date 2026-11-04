@@ -803,7 +803,10 @@ def fact_check_script(
         recovery_prompt += "\nCORRECTION RECOVERY: the previous review detected the following unresolved factual concerns but supplied no usable edit. Verify each concern against sources, locate its numbered SCRIPT line, and return minimal same-speaker corrections with all evidence fields. Never silently clear these concerns or return a pass-only response. Preserve humor and the surrounding exchange.\n" + json.dumps(report["unresolved"])
         try:
             recovered = _validate_fact_payload(script, _extract_json(_recovery_search(recovery_prompt), {}), date_str)
-            if recovered["critical_errors"] and not recovered["unresolved"]:
+            if recovered["critical_errors"]:
+                # Keep usable evidence-backed corrections even when another item
+                # is malformed. The bounded repair loop must verify the edited
+                # script; a fresh pass must not erase these known defects.
                 recovered["recovery_from"] = report["unresolved"]
                 return recovered
             report["correction_recovery"] = recovered
