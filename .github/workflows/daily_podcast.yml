@@ -167,6 +167,8 @@ jobs:
             --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir "$recovery_dir"
           if [[ -f ${recovery_dir}/script_editorial_blocked.txt ]]; then
             cp ${recovery_dir}/script_editorial_blocked.txt "${recovery_dir}/script_fact_repaired_${recovery_date}.txt"
+          elif [[ -s "${recovery_dir}/script_fact_repaired_${recovery_date}.txt" ]]; then
+            echo "Retaining existing fact-repaired checkpoint; factual checks still run."
           elif [[ -f "${recovery_dir}/script_fact_candidate_${recovery_date}.txt" ]]; then
             cp "${recovery_dir}/script_fact_candidate_${recovery_date}.txt" "${recovery_dir}/script_fact_repaired_${recovery_date}.txt"
           else
