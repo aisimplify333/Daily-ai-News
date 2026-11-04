@@ -705,6 +705,15 @@ Rules:
   this monetary-only schema; check those factual assertions in critical_errors.
   Four billion divided by one hundred million is forty, not four. Funding raised,
   company valuation and an acquisition price are different quantities.
+- A charge reported FOR one quarter is not evidence of a recurring charge EVERY
+  quarter. Verify cash versus non-cash treatment before deriving subscription or
+  cloud-price consequences; keep unproven price pass-through explicitly conditional.
+- Audit every spoken story, including inserted security anecdotes not present in
+  SOURCE RECORDS. Verify platform-specific password-reset/session-revocation claims
+  against each named provider's current documentation; do not generalize one platform.
+- Distinguish vendor-reported measurements from independent results. A lack of
+  independent benchmarks does not mean a source contains no numerical benchmarks.
+  Open the full primary source before claiming numbers or implementation scope are absent.
 - Verify the YEAR of historical examples against the episode date, including phrases
   such as "earlier this year". Do not carry old events into the current year.
 - A critical error you cannot safely repair must still be returned with its exact_line
