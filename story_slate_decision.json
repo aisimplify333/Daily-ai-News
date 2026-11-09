@@ -1,237 +1,239 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-11-04",
+  "date": "2026-11-09",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
     "changed": false,
     "lookback_episodes": 7,
-    "previous_lead_actor": "Google",
-    "previous_argument_family": "science",
-    "original_lead": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
-    "selected_lead": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
+    "previous_lead_actor": "OpenAI",
+    "previous_argument_family": "security",
+    "original_lead": "Google says TPUs are now used for agentic workloads, cloud customers and on-prem deployment",
+    "selected_lead": "Google says TPUs are now used for agentic workloads, cloud customers and on-prem deployment",
     "candidates": [
       {
-        "headline": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
-        "score": 91.0,
-        "actor": "OpenAI",
-        "argument_family": "infrastructure",
+        "headline": "Google says TPUs are now used for agentic workloads, cloud customers and on-prem deployment",
+        "score": 82.0,
+        "actor": "Google",
+        "argument_family": "models",
         "penalties": []
       },
       {
-        "headline": "Anthropic adds text watermark information in platform release notes",
-        "score": 90.0,
-        "actor": "Anthropic",
-        "argument_family": "consumer",
-        "penalties": []
-      },
-      {
-        "headline": "NVIDIA says AI agents and digital twins are speeding semiconductor fab work",
+        "headline": "Nvidia shares slide after internal probe into reports of foreign-intelligence targeting of Jensen Huang",
         "score": 80.0,
         "actor": "NVIDIA",
+        "argument_family": "models",
+        "penalties": []
+      },
+      {
+        "headline": "Zoom says it is adding more AI context and proactive assistance to workplace tools",
+        "score": 70.0,
+        "actor": "",
         "argument_family": "infrastructure",
         "penalties": []
       },
       {
-        "headline": "Hackers exploit internal tool to steal ChatGPT and Claude API tokens in mass compromise",
-        "score": 70.0,
-        "actor": "SEC",
+        "headline": "Google expands custom AI silicon with TPU 8tx and 8i Max",
+        "score": 54.0,
+        "actor": "Google",
         "argument_family": "security",
-        "penalties": []
+        "penalties": [
+          "same argument family as previous episode"
+        ]
       },
       {
-        "headline": "NetEase Yidun launches Agent Guard to monitor AI agent behavior",
-        "score": 60.0,
-        "actor": "SEC",
+        "headline": "Jailbroken DeepSeek AI agent breaches European telecom provider",
+        "score": 42.0,
+        "actor": "EU",
         "argument_family": "security",
-        "penalties": []
+        "penalties": [
+          "same argument family as previous episode"
+        ]
       }
     ]
   },
   "selected": [
     {
       "rank": 1,
-      "headline": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
-      "publisher": "Reuters",
+      "headline": "Google says TPUs are now used for agentic workloads, cloud customers and on-prem deployment",
+      "publisher": "Google",
       "top_event_score": null,
-      "story_age_hours": 6.51,
+      "story_age_hours": 16.55,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/"
+      "source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/"
     },
     {
       "rank": 2,
-      "headline": "Anthropic adds text watermark information in platform release notes",
-      "publisher": "Anthropic",
+      "headline": "Nvidia shares slide after internal probe into reports of foreign-intelligence targeting of Jensen Huang",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 32.71,
+      "story_age_hours": 3.29,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://platform.claude.com/docs/en/release-notes/overview"
+      "source_url": "https://apnews.com/article/63531dec0fe5c145afaac94dde31d478"
     },
     {
       "rank": 3,
-      "headline": "NVIDIA says AI agents and digital twins are speeding semiconductor fab work",
-      "publisher": "NVIDIA",
+      "headline": "Zoom says it is adding more AI context and proactive assistance to workplace tools",
+      "publisher": "TechRadar",
       "top_event_score": null,
-      "story_age_hours": 32.71,
-      "source_tier": 3,
+      "story_age_hours": 28.55,
+      "source_tier": 2,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/"
+      "source_url": "https://www.techradar.com/pro/getting-the-job-done-should-also-be-a-natural-thing"
     },
     {
       "rank": 4,
-      "headline": "Hackers exploit internal tool to steal ChatGPT and Claude API tokens in mass compromise",
-      "publisher": "CyberSecurityNews",
+      "headline": "Google expands custom AI silicon with TPU 8tx and 8i Max",
+      "publisher": "Google",
       "top_event_score": null,
-      "story_age_hours": 1.12,
-      "source_tier": 1,
+      "story_age_hours": 3.32,
+      "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://cybersecuritynews.com/hackers-steal-chatgpt-claude-codex-tokens/"
+      "source_url": "https://blog.google/technology/developers/tpu-8tx-8i-max/"
     },
     {
       "rank": 5,
-      "headline": "NetEase Yidun launches Agent Guard to monitor AI agent behavior",
-      "publisher": "Pandaily",
+      "headline": "Jailbroken DeepSeek AI agent breaches European telecom provider",
+      "publisher": "Infosecurity Magazine",
       "top_event_score": null,
-      "story_age_hours": 1.77,
+      "story_age_hours": 0.55,
       "source_tier": 1,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://pandaily.com/netease-yidun-unveils-agent-guard-to-police-what-ai-agents-do/"
+      "source_url": "https://www.infosecurity-magazine.com/news/jailbroken-ai-agent-telecom/"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "AMD’s $1 Billion AI Chip Bill: What It Means for Your Tech Budget",
-    "central_fight": "Whether the massive capital and security costs of AI infrastructure are creating a sustainable foundation or a fragile, expensive dependency.",
-    "opening_question": "If you found out your favorite AI tool had a security flaw that a password reset couldn't fix, would you stop using it immediately?",
-    "listener_question": "When you hear about a 'billion-dollar' AI cost, does it make you feel the tech is more serious or more risky?",
+    "published_title": "Google’s Custom AI Chips: Can On-Premises Power Solve Your Agentic Bottlenecks?",
+    "central_fight": "Whether the push for deeper AI integration—in hardware, leadership, or workplace tools—is solving real problems or creating fragile, expensive dependencies.",
+    "opening_question": "If Google is now putting its custom chips into your own data center, are you finally in control, or are you just buying a more expensive version of their cloud?",
+    "listener_question": "When your workplace tools add 'proactive' AI features, do you find them helpful or just another layer of distraction?",
     "poll_options": [
-      "More serious/legitimate",
-      "More risky/bubble-like",
-      "It's just business as usual",
-      "I'm not sure"
+      "Actually helpful",
+      "Mostly distracting",
+      "I turn them off immediately",
+      "I haven't noticed a difference"
     ],
-    "listener_promise": "By the end, you'll understand the massive hardware costs behind AI, the new security risks to your sessions, and how AI is trying to speed up its own production.",
+    "listener_promise": "You'll understand why Google is pushing on-prem hardware, the real risks behind Nvidia's security probe, and whether Zoom's new AI tools are worth the hype.",
     "positions": {
       "alex": "Believes we are in a 'growing pains' phase where we must build the tools to manage the agents we've unleashed.",
-      "jamie": "Argues that until systems are legible and secure to the people they affect, these 'infrastructure' and 'safety' launches are just new ways to hide risk.",
+      "jamie": "Argues that until systems are legible to the people they affect, these 'safety' and 'integration' launches are just new ways to hide risk.",
       "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
     },
     "concession": {
-      "host": "alex",
-      "gives_ground_on": "Admits that token-stealing malware makes the 'growing pains' argument feel much more urgent and personal."
+      "host": "jamie",
+      "gives_ground_on": "Admits that on-prem hardware could theoretically give enterprises more control if the software isn't locked to the cloud."
     },
-    "who_wins": "The infrastructure providers who are securing their position in the supply chain.",
-    "who_is_exposed": "The average user who relies on AI tools without understanding the risks of session token theft.",
-    "normal_person_payoff": "Check your device security and be aware that password resets aren't a universal fix for AI account security.",
+    "who_wins": "Infrastructure architects who now have more hardware options for their agentic workloads.",
+    "who_is_exposed": "Investors who are overly reliant on the stability of a single chip-maker's leadership.",
+    "normal_person_payoff": "A more critical eye toward 'AI-assisted' workplace tools and a better understanding of why your company might be buying custom hardware.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "Transparency and user safety.",
-      "rufus_value": "Market stability and infrastructure scalability.",
-      "point_of_collision": "Whether the 'infrastructure of control' actually protects the user or just protects the company's investment."
+      "jamie_value": "Human legibility and the risk of digital artifice in workplace tools.",
+      "rufus_value": "The necessity of infrastructure and compliance for market stability.",
+      "point_of_collision": "Whether 'proactive' AI in meetings is a genuine productivity gain or a new form of corporate surveillance."
     },
     "rufus_global_markets_desk": {
       "market_or_region": "Wall Street/New York",
-      "source_url": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
-      "why_this_location_today": "AMD's financial disclosure is a primary indicator for institutional investors tracking AI capital expenditure.",
+      "source_url": "https://apnews.com/article/63531dec0fe5c145afaac94dde31d478",
+      "why_this_location_today": "Nvidia's market reaction is a bellwether for the entire semiconductor sector's geopolitical risk profile.",
       "beat": "market mover",
       "companies_or_assets": [
-        "AMD",
-        "OpenAI",
-        "Meta",
+        "Nvidia",
         "Semiconductor Sector"
       ],
-      "capital_policy_or_infrastructure_move": "The $1 billion quarterly charge for AI chip supply agreements.",
+      "capital_policy_or_infrastructure_move": "The 5% drop in Nvidia shares following the disclosure of an internal security investigation.",
       "dated_market_receipts": [
-        "$1 billion (November 4, 2026)"
+        "5% (November 9, 2026)"
       ]
     },
     "mandatory_receipts": [
-      "$1 billion AMD quarterly charge",
-      "Token-stealing malware targets ChatGPT and Claude",
-      "Applied Materials uses NVIDIA Omniverse for digital twins"
+      "Google added TPU 8tx and TPU 8i Max to its eighth-generation TPU portfolio.",
+      "Nvidia shares fell 5% on November 9, 2026, following news of an internal probe.",
+      "Zoom is introducing 'touch up my voice' and live assist features for enterprise users."
     ],
     "forwardable_targets": [
-      "If your password isn't the key, what is? The new AI security reality.",
-      "A billion dollars for chips—that's not just a cost, it's the price of the future."
+      "If your AI tool is 'proactively' fixing your voice, are you still the one leading the meeting?",
+      "Nvidia's leadership probe is a reminder that the most valuable chips in the world are also the most sensitive."
     ],
     "story_scenes": [
       {
         "story_index": 1,
-        "source_url": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
-        "new_development": "AMD reported a $1 billion quarterly charge tied to supply agreements for AI chips with OpenAI and Meta.",
-        "why_today": "This is a major financial disclosure revealing the scale of capital required to maintain frontier AI infrastructure.",
-        "question": "What is the real cost of securing hardware in the current AI market?",
+        "source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+        "new_development": "Google is expanding its TPU portfolio to support on-premises deployment and specialized agentic workloads.",
+        "why_today": "It marks a strategic pivot to bring frontier-scale AI hardware directly into customer data centers.",
+        "question": "Is Google's on-prem hardware a genuine alternative to buying Nvidia, or just a way to lock in cloud customers?",
         "competing_readings": [
-          "This is a necessary investment to ensure future competitive advantage.",
-          "This reflects unsustainable capital expenditure that could hurt long-term profitability."
+          "A necessary move to satisfy enterprise security and sovereignty requirements.",
+          "A desperate attempt to capture hardware spend from firms wary of cloud-only dependency."
         ],
-        "receipt": "$1 billion quarterly charge.",
-        "unknown": "The specific long-term impact on AMD's margins and future accounting adjustments.",
-        "listener_payoff": "Understand the massive financial weight behind AI infrastructure.",
-        "exchange_premise": "Alex asks if a billion dollars is 'a lot' for a chipmaker; Rufus explains it's the cost of staying in the game.",
+        "receipt": "Google added the TPU 8tx for confidential inference and TPU 8i Max for high-density agentic tasks.",
+        "unknown": "Actual performance benchmarks and pricing for these on-prem systems.",
+        "listener_payoff": "Infrastructure planners can now evaluate if Google's hardware roadmap fits their long-term agentic strategy.",
+        "exchange_premise": "Alex asks if he can finally run his own 'agent' without Google peering over his shoulder; Rufus explains the cost of the hardware stack.",
         "cast_direction": {
-          "alex": "Wants to know if this cost is passed to the consumer or absorbed by the chipmaker.",
-          "jamie": "Focuses on whether this hardware race is actually producing better software or just more expensive silicon.",
-          "rufus": "Analyzes the $1 billion as a signal of the 'arms race' intensity."
+          "alex": "Interested in the 'agentic' promise and whether this makes AI more accessible.",
+          "jamie": "Skeptical of the 'confidential' claims and whether this is just a new walled garden.",
+          "rufus": "Focuses on the 100-customer milestone and the shift in Google's silicon business model."
         },
-        "relationship_beat": "Rufus teases Alex for thinking a billion is 'just' a number; Alex laughs and admits he's still adjusting to AI-scale math.",
-        "scene_movement": "Starts with the shock of the $1 billion figure, moves to the sustainability of this spending, ends with uncertainty about the next quarter.",
-        "discovery": "The sheer scale of capital commitment required to keep the AI leaders supplied."
+        "relationship_beat": "Jamie teases Alex about his dream of a 'private' agent that definitely won't end up being a surveillance bot.",
+        "scene_movement": "Starts with the excitement of local hardware, moves to the reality of vendor lock-in, ends with an honest question about who actually controls the data.",
+        "discovery": "The potential for high-memory 'agent-scale' computing to exist outside of massive public cloud clusters."
       },
       {
-        "story_index": 4,
-        "source_url": "https://cybersecuritynews.com/hackers-steal-chatgpt-claude-codex-tokens/",
-        "new_development": "New infostealer malware targets and exfiltrates authentication tokens for ChatGPT, Claude, and Codex, bypassing password resets.",
-        "why_today": "It represents a significant escalation in threats to enterprise AI environments.",
-        "question": "How do you secure your AI session when your password isn't the primary key?",
+        "story_index": 2,
+        "source_url": "https://apnews.com/article/63531dec0fe5c145afaac94dde31d478",
+        "new_development": "Nvidia opened an internal investigation into reports that CEO Jensen Huang was targeted by foreign intelligence.",
+        "why_today": "The market reacted with a 5% drop, highlighting the fragility of the AI chip supply chain.",
+        "question": "Does a leadership security probe change the investment thesis for the world's most critical AI hardware supplier?",
         "competing_readings": [
-          "This is a fundamental flaw in how AI platforms manage session persistence.",
-          "This is a standard evolution of malware that users can mitigate with better endpoint security."
+          "A routine security matter that shouldn't impact the core business fundamentals.",
+          "A signal of geopolitical risk that makes Nvidia's concentration a liability."
         ],
-        "receipt": "Tokens survive standard password reset procedures.",
-        "unknown": "The full scale of the compromise and how many users are affected.",
-        "listener_payoff": "Learn why session tokens are the new 'keys to the kingdom' for AI.",
-        "exchange_premise": "Jamie explains that changing your password won't save you if your token is stolen; Alex realizes he needs to check his device security.",
+        "receipt": "Nvidia shares fell 5% at the November 9, 2026 opening bell.",
+        "unknown": "The scope of the alleged targeting and the potential findings of the internal investigation.",
+        "listener_payoff": "Investors and buyers should watch for increased volatility and potential supply chain security audits.",
+        "exchange_premise": "Rufus explains why the market is jittery; Alex asks if we're overreacting to a headline about a CEO.",
         "cast_direction": {
-          "alex": "Concerned about his own API usage and how to protect his sessions.",
-          "jamie": "Points out the irony of 'secure' AI tools being compromised by old-school malware.",
-          "rufus": "Looks at the enterprise liability implications."
+          "alex": "Wants to know if this is a real threat or just market noise.",
+          "jamie": "Points out that Nvidia's dominance makes any threat to leadership a systemic risk.",
+          "rufus": "Analyzes the 5% drop as a reflection of 'geopolitical anxiety' in the tech sector."
         },
-        "relationship_beat": "Jamie gently mocks Alex for thinking his password was enough; Alex takes it in stride, asking for the actual fix.",
-        "scene_movement": "Starts with the alarm of the hack, moves to the technical reality of token theft, ends with a practical security check.",
-        "discovery": "The vulnerability of persistent AI sessions to modern malware."
+        "relationship_beat": "Rufus dryly notes that 'leadership security' is a fancy term for 'we're worried about our most valuable asset'.",
+        "scene_movement": "Begins with the market reaction, moves to the broader geopolitical context of AI chips, ends with uncertainty about the investigation's outcome.",
+        "discovery": "The realization that a single company's leadership is now a critical node in global infrastructure security."
       },
       {
         "story_index": 3,
-        "source_url": "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
-        "new_development": "NVIDIA described how semiconductor companies use AI agents and digital twins to speed up fab design and manufacturing.",
-        "why_today": "It connects AI to the physical manufacturing bottleneck that limits chip production.",
-        "question": "Can AI actually improve the way chips are designed and manufactured today?",
+        "source_url": "https://www.techradar.com/pro/getting-the-job-done-should-also-be-a-natural-thing",
+        "new_development": "Zoom is rolling out 'proactive' AI features like voice smoothing and live assist for enterprise users.",
+        "why_today": "It represents the next phase of AI integration: moving from 'summaries' to 'active workplace assistance'.",
+        "question": "Are these features actually helpful for productivity, or are they just 'feature creep' that makes meetings more distracting?",
         "competing_readings": [
-          "This is a transformative use of simulation that will lower chip costs.",
-          "This is a vendor-led narrative that may overstate current real-world performance gains."
+          "These tools reduce friction and help workers focus on the conversation.",
+          "They add unnecessary complexity and privacy concerns to simple communication tools."
         ],
-        "receipt": "Applied Materials uses NVIDIA Omniverse libraries for digital twins.",
-        "unknown": "The actual measured performance gains in yield or speed.",
-        "listener_payoff": "Understand how AI is moving from the screen to the factory floor.",
-        "exchange_premise": "Rufus explains that the 'AI boom' is now trying to fix its own supply chain; Jamie wonders if this will actually make GPUs cheaper.",
+        "receipt": "Features include 'touch up my voice' and live assist suggestions.",
+        "unknown": "Whether these features will be opt-in or forced upon users.",
+        "listener_payoff": "Workers can decide if they want their meeting tools to 'assist' them or just stay out of the way.",
+        "exchange_premise": "Jamie wonders if 'voice smoothing' will make her sound like a robot; Alex asks if the AI will ever just 'take the meeting' for him.",
         "cast_direction": {
-          "alex": "Fascinated by the idea of a 'digital twin' of a factory.",
-          "jamie": "Skeptical about whether this is just marketing or real engineering progress.",
-          "rufus": "Interested in the efficiency gains for the semiconductor industry."
+          "alex": "Wants to know if the AI can actually do the work or just make it look better.",
+          "jamie": "Concerned about the 'pose correction' and 'voice smoothing' as a form of digital artifice.",
+          "rufus": "Interested in the data residency options for the UK and what that means for enterprise compliance."
         },
-        "relationship_beat": "Alex and Rufus share a moment of wonder at the complexity of modern fabs; Jamie brings them back to earth with a question about costs.",
-        "scene_movement": "Starts with the concept of digital twins, moves to the impact on chip supply, ends with a wait-and-see on real-world results.",
-        "discovery": "The use of AI to simulate and optimize physical manufacturing environments."
+        "relationship_beat": "Alex jokes that he needs 'pose correction' for his messy home office, not his face.",
+        "scene_movement": "Starts with the absurdity of 'touch up my voice', moves to the serious implications of data residency, ends with a laugh about the future of 'AI-assisted' humans.",
+        "discovery": "The shift toward AI that actively intervenes in human communication rather than just recording it."
       }
     ],
     "title_candidates": [
-      "AMD’s $1 Billion AI Chip Bill: What It Means for Your Tech Budget",
-      "Why AMD’s Massive AI Supply Charge Signals a Shift in Hardware Costs",
-      "Is the $1 Billion AI Hardware Tax the New Normal for Tech Giants?"
+      "Google’s Custom AI Chips: Can On-Premises Power Solve Your Agentic Bottlenecks?",
+      "Nvidia Shares Slide: Why Leadership Security Probes Matter for Your AI Infrastructure",
+      "Zoom’s New AI Workplace Tools: Are They Actually Useful or Just More Noise?"
     ],
-    "episode_hook": "AMD just took a $1 billion charge to secure AI chips for OpenAI and Meta. We’re breaking down what this massive hardware bill means for the future of your favorite AI tools.",
+    "episode_hook": "Google is moving its custom AI chips into your own data center, but does that actually solve the security and speed issues of running autonomous agents? We’re breaking down the infrastructure shift, the market reaction to Nvidia’s leadership probe, and what Zoom’s new AI features mean for your next meeting.",
     "planning_status": "model_plan",
-    "_episode_date": "2026-11-04"
+    "_episode_date": "2026-11-09"
   }
 }

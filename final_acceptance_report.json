@@ -3,226 +3,534 @@
   "listened": false,
   "checks": [
     {
-      "pass": true,
-      "failures": [],
+      "pass": false,
+      "failures": [
+        "single_endings: Lines 125 and 126 constitute a completed show close \u2014 Rufus delivers the platform CTA and signs off ('Back tomorrow'), Alex confirms ('See you then'). These are unambiguous farewell lines that a listener would reasonably interpret as the end of the episode. Line 127 then restarts with a listener question addressed to 'you,' followed by the closing sponsor credit (line 128), a show tagline (line 129), and a second follow CTA (line 130). This is a false ending: the show closes twice. The approved closing block structure (listener question, sponsor credit, house tag, follow CTA) appears intact at lines 127\u2013130, but lines 125\u2013126 precede it as a completed sign-off rather than a transition into that block. The midroll at lines 69\u201372 is a single correctly placed conversational placement and is not a duplicate. The closing credit at line 128 is the approved final placement. The problem is solely that lines 125\u2013126 sign the show off before the closing block begins, creating two endings for the overall show close."
+      ],
       "checks": {
         "responsive_banter": {
           "pass": true,
           "evidence": [
-            "exact complete speaker line"
+            "JAMIE: That's either a genuinely big deal for enterprise security, or it's Google selling you a very expensive leash.",
+            "RUFUS: Nearly a hundred customers in. I'd call that a leash with real traction.",
+            "JAMIE: Although. Can I push on the word confidential for a second?",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: I detect a low bar.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: Default-on within eighteen months. That's not pessimism, that's the pattern.",
+            "RUFUS: That's speculation.",
+            "JAMIE: Call it pattern recognition.",
+            "RUFUS: That's speculation.",
+            "JAMIE: That's pattern recognition.",
+            "RUFUS: Fair.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land."
           ],
-          "reason": "The episode sustains genuine three-way engagement across all three stories. Alex participates as a full discussant, not just a moderator: she volunteers her own unease (line 72), stakes out positions (lines 37, 44, 114), and is challenged and answered. Jamie and Rufus react to each other's specific points rather than delivering parallel monologues. The opening exchange (lines 3-4) is tight and character-specific. The leverage inversion thread (lines 37-41) is a genuinely developed disagreement across multiple turns. The watermark mini-thread (lines 76-87) is brisk but all three voices have distinct roles. Story 3 sustains a productive sceptic-advocate tension across lines 108-131. Fizzle point: the midroll (lines 95-98) is the flattest stretch\u2014it reads as scripted promo exchange rather than conversation. Overall pattern is engaged listening and genuine reaction throughout.",
-          "story_notes": {
-            "segment_2_story_1": {
-              "challenge": "Jamie raises the aggregate question (line 19): every AI chip deal carries this cost somewhere; what does the total look like? Rufus responds directly (line 21) and the thread develops through the leverage inversion (lines 37-41) where Alex proposes AMD needed the deals more than OpenAI/Meta needed AMD, Rufus completes her sentence, and Jamie reframes the whole story. The dispute about whether AMD is 'winning' (lines 42-45) is not resolved with a 'fair point' pivot but left genuinely open. Development is sustained. No long interchangeable summary stretch.",
-              "fizzle": "None significant; lines 46-49 close cleanly on acknowledged uncertainty."
-            },
-            "segment_3_story_2": {
-              "challenge": "The session-token story has no explicit Jamie challenge or Rufus pushback; instead all three cooperate in building the explanation (lines 56-91). Alex frames, Jamie asks the naive questions, Rufus adds the enterprise liability angle (line 89). Engagement is functional but collaborative rather than contested. The watermark sub-story (lines 76-87) is brief and all three contribute a distinct observation. Longest stretch without friction: lines 69-91, which is a run of cooperative explanation. It stays coherent but loses argumentative energy.",
-              "fizzle": "Lines 69-91 are largely cooperative summary; no developed dispute, though each speaker adds something specific rather than repeating."
-            },
-            "segment_4_story_3": {
-              "challenge": "Jamie issues an explicit sceptic challenge at line 108 (NVIDIA is writing this post, treat it as evidence of a direction not proof). Rufus supports the challenge (line 110). Alex defends the deployment as real (line 111). Jamie sharpens the demand for evidence (line 112). Rufus arbitrates (line 113). The recursion observation (line 114) reframes both stories together and all three engage with it. Jamie's specific quantitative challenge at line 119 (what does 'speeds up' actually mean\u2014weeks? months?) is the sharpest question in the episode and goes unanswered by design, landing as genuine unresolved uncertainty rather than a topic change. Development is sustained through line 131.",
-              "fizzle": "Lines 122-131 become slightly more cooperative as the three converge on what to watch for, but each speaker still adds a distinct and non-interchangeable point."
-            }
-          },
           "evidence_line_numbers": [
             3,
             4,
-            19,
-            21,
-            29,
-            30,
-            37,
-            38,
-            39,
-            40,
-            41,
-            42,
-            43,
-            44,
-            45,
+            23,
+            32,
+            33,
+            76,
+            87,
+            105,
+            106,
+            107,
             108,
             109,
             110,
-            111,
-            112,
-            113,
-            114,
-            119,
-            120
+            115,
+            116
           ],
+          "reason": "The three hosts consistently react to each other's specific words and framings rather than delivering parallel monologues. The opening leash metaphor is immediately picked up by Rufus with a specific twist. Jamie pushes back on Google's 'confidential' language as a vendor claim rather than accepting it, and Alex validates then extends the challenge. Rufus's culinary quip is a direct reaction to Jamie's oven metaphor. In Story 2 Alex names the distinction he wants to draw and the others orient around it. In Story 3 the speculation-versus-pattern-recognition loop is a genuine micro-dispute that runs four exchanges and resolves with a dry concession. Alex participates as a questioner with genuine investment (line 85 self-deprecation, line 34 practical framing) rather than just hosting. The pattern holds across all three stories. The weakest stretch is the mid-section of Story 2 (lines 54\u201367) where the hosts take turns extending a shared thesis without real pushback, but this is an engaged collaborative development rather than interchangeable summaries. No long stretch loses the voice distinction.",
+          "story_notes": {
+            "segment_2_story_1_google_tpu": "The challenge is Jamie's push on 'confidential' at line 23 \u2014 a direct critique of Google's own framing as unverified. Alex concedes immediately ('That's a vendor claim, not an auditor's report,' line 24) and Jamie extends it to the customer count at line 25. Rufus then recontextualises the customer number itself (line 26) rather than merely agreeing. Alex escalates to the uncomfortable question at line 27 ('Is this actually a competitive alternative\u2026or is this Google trying to keep enterprise customers in its orbit?'). Rufus refuses to treat these as opposites (line 28), which Jamie then extends with the oven metaphor (line 29), capped by Alex's summary at line 30. This develops across six exchanges. It doesn't fizzle so much as reach a resolution the hosts all accept, after which the closing watch-list (lines 37\u201342) is functional but calmer.",
+            "segment_3_story_2_nvidia": "The challenge is Alex's explicit separation at line 51 \u2014 he names two distinct things getting blurred and insists on treating them apart. Jamie and Rufus pick up each thread in turn rather than merging them. The genuine development is the shared discovery at lines 54\u201361: not just that Jensen Huang is a target but that indispensability creates exposure, articulated across three voices building on each other. There is no sharp dispute but there is a coherent collaborative construction. The weakest part is lines 62\u201367, a straight watch-list where the voices are less distinct. Jamie's closing line ('An investigation into allegations is a beginning. Not a finding.') at line 67 is a pointed restatement that earns its place.",
+            "segment_4_story_3_zoom": "The challenge emerges at line 99 when Jamie raises whether live assist means you're no longer fully present in a conversation \u2014 a genuine tension, not just a summary. Alex responds by drawing a distinction between surfacing a document and coaching tone (line 101), which is a real answer rather than a deflection. The speculation loop (lines 105\u2013110) is the most sustained back-and-forth of the episode and resolves with Rufus's dry 'Fair.' Alex's line 85 self-disclosure ('Alex from today says I'd probably turn it on within thirty seconds') is a moment of personal candour that Jamie immediately responds to warmly (line 86), and Rufus caps with a dry comment (line 87). No long stretch of interchangeable summaries; the voice and pose correction features are worked through with distinct reactions from each host."
+          },
           "verified_evidence": [
-            "JAMIE: One billion. Per quarter. I need a moment.",
-            "RUFUS: Take your time. The market didn't get one.",
-            "JAMIE: And here's what I keep returning to \u2014 this is one company, one quarter. OpenAI and Meta are not buying exclusively from AMD. Everyone's shopping around, and every one of those deals carries some version of this cost. What does the aggregate look like?",
-            "RUFUS: Somewhere, yes. AMD disclosed. Others may follow. That's the right thing to watch.",
-            "ALEX: Jamie, you were asking whether this hardware race produces better models or just more expensive silicon. Where do you actually land?",
-            "JAMIE: Honestly? Both are true right now. The models are genuinely improving. But this cost trajectory doesn't hold without either prices going up for users or margins getting crushed for the suppliers. Something has to give.",
-            "ALEX: That second one actually makes it more interesting to me. If AMD needed these deals more than OpenAI and Meta needed AMD \u2014",
-            "RUFUS: \u2014 then the leverage was always on the buyer's side.",
-            "JAMIE: Which is a very different story than \"AMD wins by supplying the biggest AI labs.\"",
-            "ALEX: Heh. Winning expensively.",
-            "RUFUS: The semiconductor industry has a long history of that particular trophy.",
-            "JAMIE: The other thing I keep wondering \u2014 AMD is a distant second to NVIDIA in AI chips. Does absorbing a charge like this buy them loyalty from OpenAI and Meta, or are those customers still going to diversify the moment a better option arrives?",
-            "RUFUS: Almost certainly the latter. OpenAI and Meta are actively developing their own silicon. This charge doesn't lock them in to AMD permanently.",
-            "ALEX: So AMD takes the hit now and may still lose the account later.",
-            "RUFUS: That's the unresolved part. And it's genuinely worth watching whether this disclosure changes how aggressively AMD pursues the next round of agreements.",
-            "JAMIE: Okay. But here's my question. NVIDIA is writing this post. NVIDIA makes the Omniverse platform that Applied Materials is using. So I'm inclined to treat this as interesting evidence of a direction, not proof that it's working at scale.",
-            "ALEX: That's fair.",
-            "RUFUS: Completely fair. The post does not include independent measured performance data \u2014 no yield improvement percentage, no time-saved figures. It's describing a workflow and citing a partner.",
-            "ALEX: Though Applied Materials is a real and significant company. If they're building digital twins of fabs using Omniverse, that's a real deployment, not a hypothetical.",
-            "JAMIE: Sure. But is it working? Is it producing chips faster? Is it reducing defects? Those questions aren't answered by this post.",
-            "RUFUS: Which is exactly the right frame. This is a direction that makes engineering sense. The measurement of whether it's actually moving the needle \u2014 that comes later.",
-            "ALEX: There's a beautiful recursion to this though. We spent story one on how expensive it is to supply AI chips. And now in story three we have AI being used to try to make chip manufacturing faster and cheaper. It's AI trying to fix its own supply chain.",
-            "JAMIE: I want to know what \"speeds up\" actually means in fab terms. Is that weeks? Months? Because if a simulation saves two hours on a process that takes six months, the efficiency gain is real but not transformative.",
-            "ALEX: That's the number we don't have from this post."
+            "JAMIE: That's either a genuinely big deal for enterprise security, or it's Google selling you a very expensive leash.",
+            "RUFUS: Nearly a hundred customers in. I'd call that a leash with real traction.",
+            "JAMIE: Although. Can I push on the word confidential for a second?",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: I detect a low bar.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: Default-on within eighteen months. That's not pessimism, that's the pattern.",
+            "RUFUS: That's speculation.",
+            "JAMIE: Call it pattern recognition.",
+            "RUFUS: That's speculation.",
+            "JAMIE: That's pattern recognition.",
+            "RUFUS: Fair.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land.",
+            "JAMIE: That's either a genuinely big deal for enterprise security, or it's Google selling you a very expensive leash.",
+            "RUFUS: Nearly a hundred customers in. I'd call that a leash with real traction.",
+            "JAMIE: Although. Can I push on the word confidential for a second? Google is describing these chips as supporting confidential inference. But that's Google describing its own product. We don't have independent benchmarks or verified performance outcomes here.",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: I detect a low bar.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: Default-on within eighteen months. That's not pessimism, that's the pattern.",
+            "RUFUS: That's speculation.",
+            "JAMIE: Call it pattern recognition.",
+            "RUFUS: That's speculation.",
+            "JAMIE: That's pattern recognition.",
+            "RUFUS: Fair.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land."
           ]
         },
         "cast_warmth": {
           "pass": true,
-          "evidence": [],
-          "reason": "Affection is present without being announced. Rufus's dry completions of Alex's sentences (line 38, line 4) and Jamie's 'Heh' (line 115) signal comfort. The 'winning expensively' exchange (lines 40-41) and 'classic release-notes energy' / 'most Anthropic way' (lines 86-87) are playful without being forced. Jamie and Rufus disagree with each other and with Alex without hostility\u2014Rufus supports Jamie's vendor-scepticism (line 110) but Alex holds her ground (line 111) and neither capitulates. 'Take care of your tokens' (line 142) is a character-consistent warm close. No announced reconciliation; warmth is in the texture of the exchanges.",
+          "evidence": [
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: I detect a low bar.",
+            "RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite.",
+            "JAMIE: The Ledger. Briefings there, exquisite disagreements here.",
+            "RUFUS: I'm going to let that one land."
+          ],
           "evidence_line_numbers": [
-            4,
-            38,
-            40,
-            41,
+            32,
+            33,
             86,
             87,
-            115,
-            116,
-            142
+            76,
+            70,
+            72,
+            116
           ],
+          "reason": "Teasing and challenge are present throughout without hardening into hostility. Rufus's culinary remark (line 32) is dry but warm, and Jamie's 'I contain multitudes' reply (line 33) plays back without defensiveness. Jamie's 'most honest thing anyone's said on this show in weeks' (line 86) is affectionate mockery directed at Alex. Rufus's 'erosion of standards' (line 87) is a dry poke, not a put-down. The midroll exchange (lines 69\u201372) has Rufus protecting the group's reputation ('our arguments aren't exquisite') and Jamie using that phrase to close the ad, showing in-group shorthand. Rufus standing aside at line 116 ('I'm going to let that one land') reads as amused appreciation rather than withdrawal. The characters are distinct throughout \u2014 Jamie energetic and slightly provocative, Rufus composed and gently sardonic, Alex warm and candid \u2014 and none of the challenges read as cold or antagonistic.",
           "verified_evidence": [
-            "RUFUS: Take your time. The market didn't get one.",
-            "RUFUS: \u2014 then the leverage was always on the buyer's side.",
-            "ALEX: Heh. Winning expensively.",
-            "RUFUS: The semiconductor industry has a long history of that particular trophy.",
-            "RUFUS: Quietly consequential. Classic release-notes energy.",
-            "ALEX: Which is somehow the most Anthropic way to ship something.",
-            "JAMIE: Heh. It's very on-brand for 2026.",
-            "RUFUS: The ecosystem eating itself constructively.",
-            "RUFUS: Take care of your tokens."
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: I detect a low bar.",
+            "RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite.",
+            "JAMIE: The Ledger. Briefings there, exquisite disagreements here.",
+            "RUFUS: I'm going to let that one land.",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: I detect a low bar.",
+            "RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite. The Ledger offers five focused briefings to help connect news with decisions.",
+            "JAMIE: The Ledger. Briefings there, exquisite disagreements here. Right, let's get back to it.",
+            "RUFUS: I'm going to let that one land."
           ]
         },
         "useful_discovery": {
           "pass": true,
-          "evidence": [],
-          "reason": "Two concrete beneficial applications are present. First, session-token management: lines 71 and 91 give specific actionable guidance\u2014users can manually revoke all active sessions themselves before an incident, and should locate that setting now. This is a concrete capability listeners may not have known existed. Second, digital-twin simulation in semiconductor fabs: lines 104-107 and 117-118 explain that running process-change experiments inside a software model of a fab before physical trials is a real deployment (Applied Materials/Omniverse), potentially relieving chip-supply constraints. Both go beyond fear or compliance framing and give listeners something to be curious about or act on.",
-          "evidence_line_numbers": [
-            71,
-            91,
-            104,
-            105,
-            106,
-            107,
-            117,
-            118,
-            123
+          "evidence": [
+            "RUFUS: Sovereignty, primarily. Regulated industries \u2014 finance, healthcare, defense \u2014 they have strict requirements about where data can physically travel. If your AI is running inference inside a Google data center, your data is leaving your building, even briefly. For some organizations that's a dealbreaker.",
+            "RUFUS: Possibly. If you've been holding off on committing to a hardware vendor because you didn't want to be entirely at the mercy of cloud pricing, this gives you another option to evaluate.",
+            "JAMIE: And the specific call-out of agentic workloads matters. A lot of the enterprise AI interest right now isn't in passive chat tools. It's in AI that can actually take actions. If Google's chips are genuinely optimized for that, that's a different value proposition than what most companies have been shopping for.",
+            "RUFUS: Live assist suggestions during calls \u2014 that's AI listening to your meeting in real time and surfacing suggestions or information as the conversation develops. Not a summary after the fact, but active intervention during.",
+            "ALEX: Which is a real shift. Most AI meeting tools right now transcribe and summarize after the fact. This is trying to be useful while you're actually in it.",
+            "JAMIE: Which matters enormously for regulated industries in the UK and Europe. If a healthcare organization or a financial services firm can't use a tool because it doesn't meet their data localization requirements, that UK data center unlocks a whole category of potential customer."
           ],
+          "evidence_line_numbers": [
+            22,
+            35,
+            36,
+            90,
+            91,
+            96
+          ],
+          "reason": "The episode delivers at least two substantial beneficial discoveries. First, the on-premises TPU option is explained as a concrete solution to a real problem: regulated industries (finance, healthcare, defense) that cannot allow sensitive data to leave their building now have a hardware option to evaluate, and the agentic workload framing is explained as a genuinely different value proposition from passive chat tools \u2014 something enterprise buyers can act on. Second, Zoom's live assist feature is identified as a meaningful shift from post-meeting transcription to real-time participation, with the UK data center explained as the infrastructure move that unlocks regulated-industry adoption in Europe. These are concrete, grounded, and go beyond fear or compliance framing.",
           "verified_evidence": [
-            "RUFUS: And most platforms let you manually revoke all active sessions. That's worth knowing how to do before something goes wrong. You don't have to wait for the platform \u2014 you can terminate all active tokens yourself.",
-            "ALEX: Tell them to open their AI platform settings and find the active sessions or devices section. It's usually there. They should know where it is before they need it.",
-            "ALEX: A digital twin is a detailed simulation of a physical system \u2014 in this case, an entire semiconductor fabrication facility. You model the fab in software, and engineers can run experiments inside the simulation instead of on the actual factory floor.",
-            "JAMIE: So you test a process change in the virtual factory before you try it in the real one.",
-            "ALEX: Exactly. And NVIDIA says that's meaningful because physical experiments on a fab line are slow and expensive.",
-            "RUFUS: They are. Semiconductor fabrication is extraordinarily precise. A single process change \u2014 adjusting temperature, timing, chemical ratios \u2014 takes significant time and money to test physically. The idea of running those tests in simulation first is genuinely appealing to the industry.",
-            "ALEX: If this actually works \u2014 and again, we're taking NVIDIA's word on early directions here \u2014 the downstream implication is that fab throughput improves. More chips, potentially faster. Which matters a lot given that the AMD story this morning tells us demand is enormous.",
-            "RUFUS: The connection is real. Chip supply is a genuine constraint on AI development. Anything that shortens engineering cycles in fabs could relieve some of that pressure. Even modestly.",
-            "RUFUS: Whether other major fab operators \u2014 TSMC, Samsung, Intel Foundry \u2014 adopt similar approaches. If this spreads beyond Applied Materials, that's a signal the industry finds it valuable, not just NVIDIA's story about one partner."
+            "RUFUS: Sovereignty, primarily. Regulated industries \u2014 finance, healthcare, defense \u2014 they have strict requirements about where data can physically travel. If your AI is running inference inside a Google data center, your data is leaving your building, even briefly. For some organizations that's a dealbreaker.",
+            "RUFUS: Possibly. If you've been holding off on committing to a hardware vendor because you didn't want to be entirely at the mercy of cloud pricing, this gives you another option to evaluate.",
+            "JAMIE: And the specific call-out of agentic workloads matters. A lot of the enterprise AI interest right now isn't in passive chat tools. It's in AI that can actually take actions. If Google's chips are genuinely optimized for that, that's a different value proposition than what most companies have been shopping for.",
+            "ALEX: Which is a real shift. Most AI meeting tools right now transcribe and summarize after the fact. This is trying to be useful while you're actually in it.",
+            "JAMIE: Which matters enormously for regulated industries in the UK and Europe. If a healthcare organization or a financial services firm can't use a tool because it doesn't meet their data localization requirements, that UK data center unlocks a whole category of potential customer.",
+            "RUFUS: Sovereignty, primarily. Regulated industries \u2014 finance, healthcare, defense \u2014 they have strict requirements about where data can physically travel. If your AI is running inference inside a Google data center, your data is leaving your building, even briefly. For some organizations that's a dealbreaker.",
+            "RUFUS: Possibly. If you've been holding off on committing to a hardware vendor because you didn't want to be entirely at the mercy of cloud pricing, this gives you another option to evaluate. It's not Nvidia-versus-Google yet. But it's the clearest signal that Google wants to be in that conversation.",
+            "JAMIE: And the specific call-out of agentic workloads matters. A lot of the enterprise AI interest right now isn't in passive chat tools. It's in AI that can actually take actions. If Google's chips are genuinely optimized for that, that's a different value proposition than what most companies have been shopping for.",
+            "RUFUS: The other features interest me more from a practical standpoint. Live assist suggestions during calls \u2014 that's AI listening to your meeting in real time and surfacing suggestions or information as the conversation develops. Not a summary after the fact, but active intervention during.",
+            "ALEX: Which is a real shift. Most AI meeting tools right now transcribe and summarize after the fact. This is trying to be useful while you're actually in it.",
+            "JAMIE: Which matters enormously for regulated industries in the UK and Europe. If a healthcare organization or a financial services firm can't use a tool because it doesn't meet their data localization requirements, that UK data center unlocks a whole category of potential customer."
           ]
         },
         "rufus_scene": {
           "pass": true,
-          "evidence": [],
-          "reason": "Alex hands off at line 22 ('Rufus, take us there'). Rufus delivers the Wall Street setting across lines 23-25. Jamie then challenges at line 26 ('AMD signed these deals knowing the costs. This isn't a shock to their finance team'). Rufus responds directly and specifically at line 27 ('Almost certainly not. The surprise is the visibility. It's disclosed. It's a number. Now everyone can see it.'). Jamie follows with a reactive observation at line 28 ('Which is actually useful'). Alex returns to the wider story at line 29. The scene contains a Jamie challenge and a responsive Rufus reply before Alex's return. The setup has dry wit ('their expression is doing something complicated'). The payoff\u2014visibility of the charge is itself the news, not the amount\u2014is a concrete and useful insight.",
-          "evidence_line_numbers": [
-            22,
-            23,
-            24,
-            25,
-            26,
-            27,
-            28,
-            29
+          "evidence": [
+            "ALEX: Our second story. Nvidia. And this one hit the market this morning. Rufus, take us on location.",
+            "RUFUS: Right. Picture the floor of the New York Stock Exchange, Monday morning, November ninth. The AI semiconductor sector is already on a hair trigger \u2014 it moves on news faster than almost anything else right now. Then the headline lands \u2014",
+            "RUFUS: Nvidia has opened an internal investigation after reports that CEO Jensen Huang was the target of a foreign-intelligence effort. Within minutes of the opening bell, shares are down five percent. That's the AP-confirmed number.",
+            "JAMIE: Which, to be clear, Nvidia is one of the most valuable companies on earth. Five percent is not noise. That's real money, gone, before most people finished their coffee.",
+            "RUFUS: And the reason it moved that fast is what's interesting. This isn't a revenue miss. It's not a product recall. The market is essentially pricing in the risk that the person at the center of Nvidia's strategic vision is a geopolitical target. Leadership security, as a line item.",
+            "ALEX: Back to the wider story."
           ],
+          "evidence_line_numbers": [
+            44,
+            45,
+            46,
+            47,
+            48,
+            49
+          ],
+          "reason": "Alex's handoff is explicit at line 44. Rufus sets the scene concretely (NYSE floor, Monday morning, hair-trigger sector) and delivers the event with the AP-confirmed figure. Jamie enters at line 47 with a pointed observation \u2014 five percent on a company of that scale is 'real money, gone, before most people finished their coffee' \u2014 which is a responsive challenge to absorb the magnitude. Rufus replies directly at line 48 by reframing why it moved that fast ('not a revenue miss, not a product recall') and coining 'leadership security, as a line item,' which is dry wit with a useful payoff. Alex returns at line 49. The scene contains a concrete imagined situation, a Jamie interjection that Rufus responds to, dry wit in Rufus's reframe, and a payoff (the market is pricing geopolitical exposure as a governance risk). Requirements met.",
           "verified_evidence": [
-            "ALEX: Rufus, take us there.",
-            "RUFUS: Picture a mid-sized investment bank on Wall Street this morning \u2014 not a triumphant morning, the kind where someone is very quietly updating a spreadsheet and their expression is doing something complicated. Because AMD's disclosure lands today, and the question institutional investors are asking isn't \"is a billion dollars a lot\" \u2014",
-            "RUFUS: of course it is \u2014 it's whether this is a one-quarter anomaly or the new rhythm of supplying chips to frontier AI. Reuters confirms the charge is tied to the OpenAI and Meta commitments. What it doesn't tell us yet is how AMD accounts for future agreements \u2014",
-            "RUFUS: or whether OpenAI and Meta carry any of that exposure themselves. For the semiconductor sector, the signal is simply this: being the hardware supplier to the largest AI labs on earth now comes with a capital commitment that is visibly, publicly enormous. It's on the record.",
-            "JAMIE: And AMD signed these deals knowing the costs. This isn't a shock to their finance team.",
-            "RUFUS: Almost certainly not. The surprise is the visibility. It's disclosed. It's a number. Now everyone can see it.",
-            "JAMIE: Which is actually useful.",
-            "ALEX: Jamie, you were asking whether this hardware race produces better models or just more expensive silicon. Where do you actually land?"
+            "ALEX: Our second story. Nvidia. And this one hit the market this morning. Rufus, take us on location.",
+            "RUFUS: Right. Picture the floor of the New York Stock Exchange, Monday morning, November ninth. The AI semiconductor sector is already on a hair trigger \u2014 it moves on news faster than almost anything else right now. Then the headline lands \u2014",
+            "RUFUS: Nvidia has opened an internal investigation after reports that CEO Jensen Huang was the target of a foreign-intelligence effort. Within minutes of the opening bell, shares are down five percent. That's the AP-confirmed number.",
+            "JAMIE: Which, to be clear, Nvidia is one of the most valuable companies on earth. Five percent is not noise. That's real money, gone, before most people finished their coffee.",
+            "RUFUS: And the reason it moved that fast is what's interesting. This isn't a revenue miss. It's not a product recall. The market is essentially pricing in the risk that the person at the center of Nvidia's strategic vision is a geopolitical target. Leadership security, as a line item.",
+            "ALEX: Back to the wider story.",
+            "ALEX: Our second story. Nvidia. And this one hit the market this morning. Rufus, take us on location.",
+            "RUFUS: Right. Picture the floor of the New York Stock Exchange, Monday morning, November ninth. The AI semiconductor sector is already on a hair trigger \u2014 it moves on news faster than almost anything else right now. Then the headline lands \u2014",
+            "RUFUS: Nvidia has opened an internal investigation after reports that CEO Jensen Huang was the target of a foreign-intelligence effort. Within minutes of the opening bell, shares are down five percent. That's the AP-confirmed number.",
+            "JAMIE: Which, to be clear, Nvidia is one of the most valuable companies on earth. Five percent is not noise. That's real money, gone, before most people finished their coffee.",
+            "RUFUS: And the reason it moved that fast is what's interesting. This isn't a revenue miss. It's not a product recall. The market is essentially pricing in the risk that the person at the center of Nvidia's strategic vision is a geopolitical target. Leadership security, as a line item.",
+            "ALEX: Back to the wider story. So what do we actually know about the investigation itself?"
           ]
         },
         "single_endings": {
-          "pass": true,
-          "evidence": [],
-          "reason": "Story 1 closes cleanly at line 52 with no restart. Story 2 closes at line 94; the watermark sub-story is integrated within segment 3, not a separate restarted ending. Story 3 closes at line 131. The closing block is: synthesis/forward-look (lines 133-139), share CTA (line 140), sign-off (lines 141-142), listener question (line 143), closing sponsor credit (line 144), house tag (line 145), follow CTA (line 146). The midroll (lines 95-98) is a single correctly placed conversational placement. The opening sponsor read is lines 7-8. The closing credit at line 144 is the third approved placement. No duplicate sponsor setups, abandoned fragments, or extra placements are present. No early thanks-for-listening before the final block. The Jamie AI transformation block is not present in this script and does not need to be evaluated.",
-          "evidence_line_numbers": [
-            50,
-            51,
-            52,
-            88,
-            89,
-            90,
-            91,
-            92,
-            93,
-            94,
-            131,
-            133,
-            134,
-            135,
-            136,
-            137,
-            138,
-            139,
-            140,
-            141,
-            142,
-            143,
-            144,
-            145,
-            146
+          "pass": false,
+          "evidence": [
+            "RUFUS: Follow us on whatever platform you prefer. We're on all of them. The AI Edge. Back tomorrow.",
+            "ALEX: See you then.",
+            "ALEX: Today's question for you: When your workplace tools add 'proactive' AI features, do you find them helpful or just another layer of distraction?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
           ],
+          "evidence_line_numbers": [
+            125,
+            126,
+            127,
+            128,
+            129,
+            130
+          ],
+          "reason": "Lines 125 and 126 constitute a completed show close \u2014 Rufus delivers the platform CTA and signs off ('Back tomorrow'), Alex confirms ('See you then'). These are unambiguous farewell lines that a listener would reasonably interpret as the end of the episode. Line 127 then restarts with a listener question addressed to 'you,' followed by the closing sponsor credit (line 128), a show tagline (line 129), and a second follow CTA (line 130). This is a false ending: the show closes twice. The approved closing block structure (listener question, sponsor credit, house tag, follow CTA) appears intact at lines 127\u2013130, but lines 125\u2013126 precede it as a completed sign-off rather than a transition into that block. The midroll at lines 69\u201372 is a single correctly placed conversational placement and is not a duplicate. The closing credit at line 128 is the approved final placement. The problem is solely that lines 125\u2013126 sign the show off before the closing block begins, creating two endings for the overall show close.",
           "verified_evidence": [
-            "ALEX: For anyone watching AI investment exposure or tracking their own spend: this is the clearest single data point we've seen on what hardware commitment actually costs at the frontier level. AMD disclosed it. Watch the next round of earnings calls across the sector.",
-            "JAMIE: And watch whether OpenAI or Meta say anything publicly, because they're the other side of these agreements.",
-            "RUFUS: They won't. But watch anyway.",
-            "JAMIE: Review your active sessions. Know how to revoke them. Keep endpoint security updated. And if you're managing this for a team, make sure your policy covers AI platform sessions specifically, not just corporate email.",
-            "RUFUS: The enterprise liability question is real too. If a token is stolen and someone accesses your organization's AI environment, working out who is responsible for that breach is not straightforward.",
-            "ALEX: Alright, here's the thing worth sending to a friend. Picture someone who uses Claude every day for work. Strong password, not worried. What they haven't thought about is the token sitting on their laptop \u2014 that's the actual key, and malware can lift it without touching the password at all.",
-            "ALEX: Tell them to open their AI platform settings and find the active sessions or devices section. It's usually there. They should know where it is before they need it.",
-            "JAMIE: Know where the off switch is before something goes wrong. That's it.",
-            "RUFUS: Preventative session management. Not the most thrilling Tuesday activity, but.",
-            "JAMIE: Better than the alternative Tuesday.",
-            "ALEX: That's pretty much where we are.",
-            "ALEX: Before we land the plane \u2014 a quick one for the Ledger midroll, and then we answer the question we opened with.",
-            "ALEX: Okay. The title of today's episode was AMD's one-billion-dollar AI chip bill \u2014 what does it mean for your tech budget?",
-            "RUFUS: Here's the honest answer. If you're a consumer, it doesn't hit your subscription this quarter. But cost pressure at this scale does not stay contained. AMD absorbs it now. The question is whether that's sustainable across multiple quarters and multiple suppliers.",
-            "JAMIE: If you're an investor or someone tracking the semiconductor sector: AMD's disclosure is the clearest signal yet that fulfilling AI chip supply agreements carries enormous capital costs. Watch the next round of earnings from other chipmakers for similar disclosures.",
-            "ALEX: If you're an enterprise buyer or a team planning AI infrastructure spend: the hardware cost of frontier AI is baked into everything you pay for model access. This isn't abstract. It's one billion dollars per quarter, from one company, in agreements with two customers.",
-            "ALEX: Scale that across the ecosystem and you have a sense of what's underneath your cloud bill.",
-            "RUFUS: The useful prediction: within two quarters, we'll see at least one other semiconductor company disclose a comparable supply-chain charge tied to AI commitments. AMD went first. They're not alone in these agreements.",
-            "JAMIE: We are on YouTube, Spotify, Apple Podcasts, and wherever you get your shows. If today was useful, share it with someone who's making real decisions about AI \u2014 whether that's budget, security policy, or just understanding what the headlines actually mean.",
-            "ALEX: I'm Alex. That's Jamie and Rufus.",
-            "RUFUS: Take care of your tokens.",
-            "ALEX: Today\u2019s question for you: When you hear about a 'billion-dollar' AI cost, does it make you feel the tech is more serious or more risky?",
-            "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "RUFUS: Follow us on whatever platform you prefer. We're on all of them. The AI Edge. Back tomorrow.",
+            "ALEX: See you then.",
+            "ALEX: Today's question for you: When your workplace tools add 'proactive' AI features, do you find them helpful or just another layer of distraction?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
+            "RUFUS: Follow us on whatever platform you prefer. We're on all of them. The AI Edge. Back tomorrow.",
+            "ALEX: See you then.",
+            "ALEX: Today\u2019s question for you: When your workplace tools add 'proactive' AI features, do you find them helpful or just another layer of distraction?",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
           ]
         }
       },
       "feature_word_band_advisory": false,
-      "script_sha256": "9280acdbca2cf4e76f82a6f8298b170174497a5c1e366bd20c3bf265e6960ffd"
+      "script_sha256": "b5bce79020455a1680d877aa608a8aaf846e4da2cb89564a3e7bed5424df5fd3"
+    },
+    {
+      "pass": true,
+      "failures": [],
+      "checks": {
+        "responsive_banter": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: That's either a genuinely big deal for enterprise security, or it's Google selling you a very expensive leash.",
+            "RUFUS: Nearly a hundred customers in. I'd call that a leash with real traction.",
+            "JAMIE: Although. Can I push on the word confidential for a second?",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: I detect a low bar.",
+            "ALEX: A very low bar.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: That's pattern recognition. RUFUS: That's speculation. JAMIE: That's pattern recognition. RUFUS: Fair.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land."
+          ],
+          "evidence_line_numbers": [
+            3,
+            4,
+            23,
+            32,
+            33,
+            76,
+            77,
+            86,
+            87,
+            107,
+            108,
+            109,
+            110,
+            115,
+            116
+          ],
+          "reason": "The three voices are genuinely distinct and reactive throughout. Jamie challenges vendor framing (line 23\u201325), Rufus anchors with dry context (line 26, 32), and Alex both poses questions and reveals a personal position (line 85). The oven/flour metaphor lands and draws a real response. The 'pattern recognition vs. speculation' loop (lines 107\u2013110) is a live disagreement that actually resolves with Rufus conceding, not a filler comeback. Alex is a full participant: pushing uncomfortable questions (line 27), owning a position (line 85), and landing a self-deprecating closing note (line 114). Story 2 is more sober but suits the subject; the trio still exchanges perspective rather than taking turns lecturing. The pattern is consistent across all segments, with engagement only slightly thinner in the closing synthesis, which is appropriate.",
+          "story_notes": {
+            "segment_2_story_1_google_tpu": "Challenge: Jamie pushes back on Google's 'confidential' claim as self-reported (line 23\u201325); Rufus contextualises the customer count as niche (line 26); Alex escalates to the uncomfortable question of whether this is real competition or orbit-keeping (line 27). Rufus gives a genuinely developed answer (line 28) and Jamie builds on it with the software-dependency point (line 29), which Alex synthesises into the oven metaphor prompt (line 30). The dispute develops across five exchanges rather than stalling at 'fair point.' No long stretch of interchangeable summary.",
+            "segment_3_story_2_nvidia": "Challenge: Alex explicitly separates two things getting blurred \u2014 the personal matter and the market reaction (line 51) \u2014 and the trio works through why the market moved on a non-financial event. Jamie's 'it's not Jensen Huang the person' reframe (line 52) is picked up and extended by Rufus (line 54) and then Alex (line 55). The exchange about concentration risk (lines 56\u201361) is a genuine shared discovery rather than parallel monologues. The segment is appropriately more sober; banter is lighter but the trio is clearly tracking each other's points rather than rotating through prepared paragraphs.",
+            "segment_4_story_3_zoom": "Challenge: Jamie opens by flagging unsettling features before Alex does (line 78); the voice-smoothing vs. pose-correction distinction generates a real small dispute (lines 82\u201389) with Jamie and Rufus taking different positions on where the line sits. Jamie's 'live assist' question (lines 99\u2013100) about presence vs. performance is the most substantive challenge of the segment and Alex gives a differentiated answer (line 101) rather than deferring. The speculation/pattern-recognition loop (lines 107\u2013110) is the liveliest verbal exchange in the episode. No long neutral-summary stretch; the trio drives the story through their reactions."
+          },
+          "verified_evidence": [
+            "JAMIE: That's either a genuinely big deal for enterprise security, or it's Google selling you a very expensive leash.",
+            "RUFUS: Nearly a hundred customers in. I'd call that a leash with real traction.",
+            "JAMIE: Although. Can I push on the word confidential for a second?",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: I detect a low bar.",
+            "ALEX: A very low bar.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land.",
+            "JAMIE: That's either a genuinely big deal for enterprise security, or it's Google selling you a very expensive leash.",
+            "RUFUS: Nearly a hundred customers in. I'd call that a leash with real traction.",
+            "JAMIE: Although. Can I push on the word confidential for a second? Google is describing these chips as supporting confidential inference. But that's Google describing its own product. We don't have independent benchmarks or verified performance outcomes here.",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "JAMIE: I detect a low bar.",
+            "ALEX: A very low bar. So TechRadar reported this yesterday, November eighth. Zoom is pushing a more AI-enabled workplace direction, with some specific features that are either helpful or slightly unsettling depending on your disposition.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "JAMIE: Call it pattern recognition.",
+            "RUFUS: That's speculation.",
+            "JAMIE: That's pattern recognition.",
+            "RUFUS: Fair.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land."
+          ]
+        },
+        "cast_warmth": {
+          "pass": true,
+          "evidence": [
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "ALEX: A very low bar.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite.",
+            "JAMIE: The Ledger. Briefings there, exquisite disagreements here.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land."
+          ],
+          "evidence_line_numbers": [
+            32,
+            33,
+            77,
+            86,
+            87,
+            70,
+            72,
+            115,
+            116
+          ],
+          "reason": "Teasing and challenge coexist with evident comfort. Rufus's 'unusually culinary' (line 32) is dry affection, not dismissal; Jamie's 'I contain multitudes' reply is playful self-ownership. Alex's self-deprecating admission about the pose-correction tool (line 85) invites Jamie's warm jab (line 86) and Rufus's dry follow (line 87) without anyone deflecting or moralising. The midroll banter (lines 69\u201372) shows Rufus teasing the implied slight ('our arguments aren't exquisite') and Jamie incorporating it into the sign-off \u2014 a small but clear sign of mutual enjoyment. Disagreements (Jamie vs. Rufus on speculation, lines 107\u2013110) end in Rufus conceding with 'Fair,' not resentment. No exchange tips into hostility or polite indifference.",
+          "verified_evidence": [
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "ALEX: A very low bar.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite.",
+            "JAMIE: The Ledger. Briefings there, exquisite disagreements here.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land.",
+            "RUFUS: That's unusually culinary for a Monday.",
+            "JAMIE: I contain multitudes.",
+            "ALEX: A very low bar. So TechRadar reported this yesterday, November eighth. Zoom is pushing a more AI-enabled workplace direction, with some specific features that are either helpful or slightly unsettling depending on your disposition.",
+            "JAMIE: That's the most honest thing anyone's said on this show in weeks.",
+            "RUFUS: The erosion of standards is so convenient.",
+            "RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite. The Ledger offers five focused briefings to help connect news with decisions.",
+            "JAMIE: The Ledger. Briefings there, exquisite disagreements here. Right, let's get back to it.",
+            "JAMIE: Those are more similar than you think.",
+            "RUFUS: I'm going to let that one land."
+          ]
+        },
+        "useful_discovery": {
+          "pass": true,
+          "evidence": [
+            "RUFUS: Sovereignty, primarily. Regulated industries \u2014 finance, healthcare, defense \u2014 they have strict requirements about where data can physically travel. If your AI is running inference inside a Google data center, your data is leaving your building, even briefly. For some organizations that's a dealbreaker.",
+            "JAMIE: And the specific call-out of agentic workloads matters. A lot of the enterprise AI interest right now isn't in passive chat tools. It's in AI that can actually take actions. If Google's chips are genuinely optimized for that, that's a different value proposition than what most companies have been shopping for.",
+            "RUFUS: Live assist suggestions during calls \u2014 that's AI listening to your meeting in real time and surfacing suggestions or information as the conversation develops. Not a summary after the fact, but active intervention during.",
+            "ALEX: Which is a real shift. Most AI meeting tools right now transcribe and summarize after the fact. This is trying to be useful while you're actually in it.",
+            "JAMIE: Which matters enormously for regulated industries in the UK and Europe. If a healthcare organization or a financial services firm can't use a tool because it doesn't meet their data localization requirements, that UK data center unlocks a whole category of potential customer."
+          ],
+          "evidence_line_numbers": [
+            22,
+            36,
+            90,
+            91,
+            96
+          ],
+          "reason": "Multiple concrete beneficial applications are identified and explained. The on-prem TPU's data-sovereignty value for regulated industries (line 22) gives a specific listener population a concrete reason to evaluate the product now. The agentic workload distinction (line 36) teaches the difference between passive and action-taking AI and explains why that changes the hardware conversation. The live-assist-during-calls framing (lines 90\u201391) distinguishes a genuinely new behaviour from existing AI meeting tools. The UK data centre as an enterprise unlocker for GDPR-adjacent industries (line 96) is a practical commercial insight. All are grounded in sourced facts.",
+          "verified_evidence": [
+            "RUFUS: Sovereignty, primarily. Regulated industries \u2014 finance, healthcare, defense \u2014 they have strict requirements about where data can physically travel. If your AI is running inference inside a Google data center, your data is leaving your building, even briefly. For some organizations that's a dealbreaker.",
+            "JAMIE: And the specific call-out of agentic workloads matters. A lot of the enterprise AI interest right now isn't in passive chat tools. It's in AI that can actually take actions. If Google's chips are genuinely optimized for that, that's a different value proposition than what most companies have been shopping for.",
+            "ALEX: Which is a real shift. Most AI meeting tools right now transcribe and summarize after the fact. This is trying to be useful while you're actually in it.",
+            "JAMIE: Which matters enormously for regulated industries in the UK and Europe. If a healthcare organization or a financial services firm can't use a tool because it doesn't meet their data localization requirements, that UK data center unlocks a whole category of potential customer.",
+            "RUFUS: Sovereignty, primarily. Regulated industries \u2014 finance, healthcare, defense \u2014 they have strict requirements about where data can physically travel. If your AI is running inference inside a Google data center, your data is leaving your building, even briefly. For some organizations that's a dealbreaker.",
+            "JAMIE: And the specific call-out of agentic workloads matters. A lot of the enterprise AI interest right now isn't in passive chat tools. It's in AI that can actually take actions. If Google's chips are genuinely optimized for that, that's a different value proposition than what most companies have been shopping for.",
+            "RUFUS: The other features interest me more from a practical standpoint. Live assist suggestions during calls \u2014 that's AI listening to your meeting in real time and surfacing suggestions or information as the conversation develops. Not a summary after the fact, but active intervention during.",
+            "ALEX: Which is a real shift. Most AI meeting tools right now transcribe and summarize after the fact. This is trying to be useful while you're actually in it.",
+            "JAMIE: Which matters enormously for regulated industries in the UK and Europe. If a healthcare organization or a financial services firm can't use a tool because it doesn't meet their data localization requirements, that UK data center unlocks a whole category of potential customer."
+          ]
+        },
+        "rufus_scene": {
+          "pass": true,
+          "evidence": [
+            "ALEX: Our second story. Nvidia. And this one hit the market this morning. Rufus, take us on location.",
+            "RUFUS: Right. Picture the floor of the New York Stock Exchange, Monday morning, November ninth.",
+            "JAMIE: Which, to be clear, Nvidia is one of the most valuable companies on earth. Five percent is not noise. That's real money, gone, before most people finished their coffee.",
+            "RUFUS: And the reason it moved that fast is what's interesting. This isn't a revenue miss. It's not a product recall. The market is essentially pricing in the risk that the person at the center of Nvidia's strategic vision is a geopolitical target. Leadership security, as a line item.",
+            "ALEX: Back to the wider story."
+          ],
+          "evidence_line_numbers": [
+            44,
+            45,
+            47,
+            48,
+            49
+          ],
+          "reason": "Alex hands off at line 44 ('Rufus, take us on location'). Rufus sets the NYSE floor scene across lines 45\u201346. Jamie intervenes at line 47 with a contextualising challenge ('five percent is not noise'), and Rufus responds directly and builds on it at line 48, reframing the move as 'leadership security, as a line item' \u2014 a dry, payoff-carrying observation. Alex returns the scene at line 49. The Jamie challenge and Rufus reply between the two Alex boundaries satisfy the interaction requirement. The wit is in Rufus's reframe ('as a line item') applied to an abstract geopolitical risk, and the payoff is the novel insight that CEO security is now being priced by markets.",
+          "verified_evidence": [
+            "ALEX: Our second story. Nvidia. And this one hit the market this morning. Rufus, take us on location.",
+            "RUFUS: Right. Picture the floor of the New York Stock Exchange, Monday morning, November ninth.",
+            "JAMIE: Which, to be clear, Nvidia is one of the most valuable companies on earth. Five percent is not noise. That's real money, gone, before most people finished their coffee.",
+            "RUFUS: And the reason it moved that fast is what's interesting. This isn't a revenue miss. It's not a product recall. The market is essentially pricing in the risk that the person at the center of Nvidia's strategic vision is a geopolitical target. Leadership security, as a line item.",
+            "ALEX: Back to the wider story.",
+            "ALEX: Our second story. Nvidia. And this one hit the market this morning. Rufus, take us on location.",
+            "RUFUS: Right. Picture the floor of the New York Stock Exchange, Monday morning, November ninth. The AI semiconductor sector is already on a hair trigger \u2014 it moves on news faster than almost anything else right now. Then the headline lands \u2014",
+            "JAMIE: Which, to be clear, Nvidia is one of the most valuable companies on earth. Five percent is not noise. That's real money, gone, before most people finished their coffee.",
+            "RUFUS: And the reason it moved that fast is what's interesting. This isn't a revenue miss. It's not a product recall. The market is essentially pricing in the risk that the person at the center of Nvidia's strategic vision is a geopolitical target. Leadership security, as a line item.",
+            "ALEX: Back to the wider story. So what do we actually know about the investigation itself?"
+          ]
+        },
+        "single_endings": {
+          "pass": true,
+          "evidence": [
+            "ALEX: So the honest answer is: it's a real option for a specific set of organizations, and an interesting early signal for everyone else. Watch the benchmark numbers, and watch whether that customer count grows.",
+            "ALEX: An investigation into allegations is a beginning. Not a finding.",
+            "ALEX: And whether 'touch up my voice' makes me sound like a news anchor or a robot.",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
+          ],
+          "evidence_line_numbers": [
+            121,
+            67,
+            114,
+            128,
+            129,
+            130
+          ],
+          "reason": "Story 1 (Google TPU) ends cleanly at line 121 with no restart. Story 2 (Nvidia) ends at line 67 and transitions into the approved midroll at lines 69\u201372 with no restarted analysis after. Story 3 (Zoom) ends at line 116. The closing synthesis (Segment 5, lines 118\u2013126) is a brief forward look tied to the opening question, not a second discussion of any individual story. The listener question (line 127), closing sponsor credit (line 128), house tag (line 129), and follow CTA (line 130) form one closing block. The midroll at lines 69\u201372 is the approved conversational placement, distinct from the opening read (lines 7\u20138) and the closing credit (line 128). No duplicated ad fragment, no abandoned setup, no early thanks-for-listening. All three placements are present and correctly positioned.",
+          "verified_evidence": [
+            "ALEX: So the honest answer is: it's a real option for a specific set of organizations, and an interesting early signal for everyone else. Watch the benchmark numbers, and watch whether that customer count grows.",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
+            "ALEX: So the honest answer is: it's a real option for a specific set of organizations, and an interesting early signal for everyone else. Watch the benchmark numbers, and watch whether that customer count grows.",
+            "JAMIE: An investigation into allegations is a beginning. Not a finding. That matters for how you read this morning's move.",
+            "ALEX: And whether \"touch up my voice\" makes me sound like a news anchor or a robot.",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
+          ]
+        }
+      },
+      "feature_word_band_advisory": false,
+      "script_sha256": "1be5c75fb03acff93e7f8c2236474af2cddb7075affa05d0a324869a410ad5e1"
     }
   ],
-  "repair": null,
-  "repairs": [],
+  "repair": {
+    "basis": "model editorial review plus local safeguards; not listening",
+    "listened": false,
+    "requested_calls": 1,
+    "accepted_edits": 1,
+    "edits": [
+      {
+        "accepted": true,
+        "reason": "Removes false sign-off; bridges naturally into the listener question at line 127 without closing the show twice.",
+        "segment": 5
+      }
+    ],
+    "input_sha256": "b5bce79020455a1680d877aa608a8aaf846e4da2cb89564a3e7bed5424df5fd3",
+    "review_before_repairs": {
+      "scenes": [
+        {
+          "segment": 2,
+          "chemistry": "Jamie's oven/flour analogy earns a dry Rufus line and a confident Jamie reply; the trio follows each other's actual points rather than rotating summaries.",
+          "discovery": "The on-prem/sovereignty argument builds through three distinct angles before landing on the honest unknown: pricing and benchmarks.",
+          "repetition": "none"
+        },
+        {
+          "segment": 3,
+          "chemistry": "Alex separates the personal and market threads cleanly; Jamie and Rufus build on each other's geopolitical framing without redundant agreement.",
+          "discovery": "The concentration-risk insight lands through Jamie's one-sentence summary and Rufus's confirmation, not a third restatement.",
+          "repetition": "none"
+        },
+        {
+          "segment": 4,
+          "chemistry": "The Jamie/Rufus 'speculation vs pattern recognition' loop is a live evolving bit with a dry Rufus concession; Alex's self-roast on pose correction earns a genuine Jamie reaction.",
+          "discovery": "Rufus redirects from features to infrastructure as the real business story; that shift lands as a reveal, not a topic-change announcement.",
+          "repetition": "none"
+        }
+      ],
+      "rufus_feature": "The NYSE floor dispatch (lines 45\u201348) names a concrete setting in the first sentence, stays within source facts, and receives a responsive studio exchange from Jamie and Alex before returning. Scene is an honest imagined dispatch, not merely a label.",
+      "remaining_issues": [
+        "Lines 125\u2013126 deliver a completed show close (Rufus platform CTA plus Alex farewell) before the approved closing block at lines 127\u2013130, creating two endings. Required repair: convert lines 125\u2013126 into a transition that leads into the listener question without signing off."
+      ]
+    },
+    "remaining_production_language": [],
+    "output_sha256": "1be5c75fb03acff93e7f8c2236474af2cddb7075affa05d0a324869a410ad5e1",
+    "status": "repairs_applied_need_audio_review"
+  },
+  "repairs": [
+    {
+      "basis": "model editorial review plus local safeguards; not listening",
+      "listened": false,
+      "requested_calls": 1,
+      "accepted_edits": 1,
+      "edits": [
+        {
+          "accepted": true,
+          "reason": "Removes false sign-off; bridges naturally into the listener question at line 127 without closing the show twice.",
+          "segment": 5
+        }
+      ],
+      "input_sha256": "b5bce79020455a1680d877aa608a8aaf846e4da2cb89564a3e7bed5424df5fd3",
+      "review_before_repairs": {
+        "scenes": [
+          {
+            "segment": 2,
+            "chemistry": "Jamie's oven/flour analogy earns a dry Rufus line and a confident Jamie reply; the trio follows each other's actual points rather than rotating summaries.",
+            "discovery": "The on-prem/sovereignty argument builds through three distinct angles before landing on the honest unknown: pricing and benchmarks.",
+            "repetition": "none"
+          },
+          {
+            "segment": 3,
+            "chemistry": "Alex separates the personal and market threads cleanly; Jamie and Rufus build on each other's geopolitical framing without redundant agreement.",
+            "discovery": "The concentration-risk insight lands through Jamie's one-sentence summary and Rufus's confirmation, not a third restatement.",
+            "repetition": "none"
+          },
+          {
+            "segment": 4,
+            "chemistry": "The Jamie/Rufus 'speculation vs pattern recognition' loop is a live evolving bit with a dry Rufus concession; Alex's self-roast on pose correction earns a genuine Jamie reaction.",
+            "discovery": "Rufus redirects from features to infrastructure as the real business story; that shift lands as a reveal, not a topic-change announcement.",
+            "repetition": "none"
+          }
+        ],
+        "rufus_feature": "The NYSE floor dispatch (lines 45\u201348) names a concrete setting in the first sentence, stays within source facts, and receives a responsive studio exchange from Jamie and Alex before returning. Scene is an honest imagined dispatch, not merely a label.",
+        "remaining_issues": [
+          "Lines 125\u2013126 deliver a completed show close (Rufus platform CTA plus Alex farewell) before the approved closing block at lines 127\u2013130, creating two endings. Required repair: convert lines 125\u2013126 into a transition that leads into the listener question without signing off."
+        ]
+      },
+      "remaining_production_language": [],
+      "output_sha256": "1be5c75fb03acff93e7f8c2236474af2cddb7075affa05d0a324869a410ad5e1",
+      "status": "repairs_applied_need_audio_review"
+    }
+  ],
   "pass": true
 }

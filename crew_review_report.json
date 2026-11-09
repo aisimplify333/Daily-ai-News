@@ -2,66 +2,76 @@
   "basis": "model editorial review plus local safeguards; not listening",
   "listened": false,
   "requested_calls": 1,
-  "accepted_edits": 4,
+  "accepted_edits": 5,
   "edits": [
     {
       "accepted": true,
-      "reason": "Exact duplicate of the Reuters accounting-adjustment caveat already stated at line 35.",
-      "segment": 2
-    },
-    {
-      "accepted": true,
-      "reason": "Line 96 is a stray sponsor fragment; lines 97-100 duplicate the segment-1 sponsor read. Both break the security-story arc and violate single-read structure.",
+      "reason": "Removes near-duplicate sponsor lines 69 and 72; keeps both hosts, trims repetition, preserves sponsor name and CTA.",
       "segment": 3
     },
     {
       "accepted": true,
-      "reason": "Replaces a repeated 'concept sound, proof pending' verdict with a substantive exchange on measurement difficulty, adding evidence rather than restating the conclusion.",
+      "reason": "Line 62 restates line 57 without adding evidence; deleting it tightens the close of the story without losing a receipt.",
+      "segment": 3
+    },
+    {
+      "accepted": true,
+      "reason": "Collapses redundant restatement at 40-42 into one tight landing; removes duplicated conclusion without losing the qualifier.",
+      "segment": 2
+    },
+    {
+      "accepted": true,
+      "reason": "Sharpens the caveat, gives Alex a brief pointed reply, removes Jamie's restatement of the same point.",
       "segment": 4
     },
     {
       "accepted": true,
-      "reason": "Third consecutive restatement of the same 'useful direction, unproven at scale' verdict; already landed clearly in the revised lines above.",
+      "reason": "Removes unverifiable callback to prior episode; preserves the Jamie-Rufus disagreement beat that follows, which is sourced to the conversation itself.",
       "segment": 4
+    },
+    {
+      "accepted": false,
+      "reason": "sponsor_protected"
     }
   ],
-  "input_sha256": "561b3a3ad552517e63651def8f3bbd23e6b309d4e3ffa7ce3e8cb2924115f127",
+  "input_sha256": "22909959406af02b43b5c9e29aff7e367ad36ce69a7e49b7db1b89539fb8a74d",
   "review_before_repairs": {
     "scenes": [
       {
         "segment": 2,
-        "chemistry": "Strong: the leverage-on-buyer-side exchange (lines 37-41) and the 'winning expensively' callback land naturally; alliances shift when Jamie joins Rufus's read on OpenAI/Meta diversification.",
-        "discovery": "Present: the charge-as-visibility point (line 27) and AMD's locked-in contractual exposure (lines 31-35) develop genuinely.",
-        "repetition": "Lines 46 and 35 both restate the Reuters accounting-adjustment qualifier; redundant after the point has already landed at line 35."
+        "chemistry": "Strong: Jamie's vendor-claim pushback earns a direct answer; Rufus's 'nearly a hundred' observation is precise; the oven analogy lands and gets a dry response from Rufus that Jamie deflects with confidence. Exchanges follow what was just said.",
+        "discovery": "Present: the distinction between owning hardware and owning intelligence is built through conversation, not announced.",
+        "repetition": "Lines 40-42 restate the same 'we'll know in six months' conclusion already reached at line 38-39. Minor redundancy at the close."
       },
       {
         "segment": 3,
-        "chemistry": "Adequate but uneven: the token/keycard explanation is clear; lines 96-100 break frame badly—line 96 is a stray Jamie question that belongs nowhere in the security story, and the sponsor reprise interrupts the security landing before the session-management advice closes.",
-        "discovery": "Present in the token-theft section; the Anthropic watermark note at lines 77-88 is handled with appropriate epistemic humility.",
-        "repetition": "Line 96 ('So it helps you ask better questions') is a fragment from the sponsor script that appears mid-security discussion with no connection to the conversation. Lines 97-100 duplicate the sponsor read already delivered in segment 1 and violate the single-sponsor-read structure. The security closing (lines 89-95) then resumes after the sponsor reprise, creating a broken arc."
+        "chemistry": "Solid: Jamie's systemic-risk framing extends Rufus's opening rather than repeating it; Alex's separation of personal event from market reaction is a useful structuring move. Lines 62 and 67 both end on 'that's what we saw' / 'visible in a way it wasn't' — same cadence.",
+        "discovery": "Present: the geopolitical-concentration point arrives through accumulation, not summary.",
+        "repetition": "Lines 69 and 72 both deliver the sponsor call-to-action ('think beyond the headline / think about what matters') in nearly identical phrasing. Line 62 echoes line 57 in compressed form without adding evidence."
       },
       {
         "segment": 4,
-        "chemistry": "Good: Jamie's vendor-skepticism is specific and earns responses; Rufus and Alex's recursion observation (line 116) is an earned callback to segment 2, not a replay.",
-        "discovery": "Present: the agent-versus-simulation distinction (lines 129-132) adds substance beyond the vendor summary.",
-        "repetition": "Lines 127-128 and 133 deliver the same 'concept sound, proof pending' verdict three times in slightly different words; the third instance is redundant."
+        "chemistry": "Good comic texture in the voice-smoothing exchange; Alex's self-admission at line 86 is the strongest character moment in the segment. Lines 105-108 carry a lively genuine disagreement that resolves quickly but honestly.",
+        "discovery": "Present: the pivot from AI-features-as-headline to data-center-as-business-story is the segment's real finding and lands cleanly.",
+        "repetition": "Line 105 invokes a listener question framed as a callback but the show history to verify it is not supplied — this should be flagged. Lines 103-104 restate the 'upcoming not available' caveat that line 78 already implied."
       },
       {
         "segment": 5,
-        "chemistry": "Functional closing; each host addresses a distinct listener segment. Rufus's prediction (line 142) is specific and earns its place.",
-        "discovery": "Line 141 ('scale that across the ecosystem') briefly opens the aggregate question Jamie raised at line 19 without resolving it—acceptable as an honest open end.",
-        "repetition": "None flagged in segment 5 itself."
+        "chemistry": "Closing rotates cleanly through all three; Jamie's 'leash is longer' callback earns its place. No forced concession.",
+        "discovery": "The closing question reframes the opening tease usefully.",
+        "repetition": "Lines 123-125 deliver the farewell before the audience question and sponsor tag at lines 126-129, violating the approved sequence. Lines 127-129 contain a second sponsor read and a second follow CTA after the established closing at 123-125, creating two endings."
       }
     ],
-    "rufus_feature": "The Wall Street dispatch (lines 23-25) names a concrete setting and a specific human detail—the analyst quietly updating a spreadsheet. It earns the scene. Jamie and Rufus exchange two responsive lines after it (26-27), and Jamie's 'which is actually useful' (line 28) is a genuine reaction. The feature functions as an imagined scene with a studio return, not merely a label.",
+    "rufus_feature": "The imagined dispatch names a concrete setting (New York Stock Exchange floor, Monday morning) in the first sentence and uses 'Picture' as required. Rufus delivers dated market facts sourced to AP. Jamie and Rufus exchange before the return. The studio responds to what Rufus actually said. Passes as an honest imagined scene with responsive exchange.",
     "remaining_issues": [
-      "Line 96 is a detached sponsor-script fragment dropped mid-security discussion; it must be removed.",
-      "Lines 97-100 are a full duplicate sponsor read; a second sponsor read in segment 3 contradicts the single-read structure and must be cut.",
-      "Lines 46 reiterates the Reuters accounting-adjustment caveat already delivered at line 35; remove the redundant restatement.",
-      "Lines 127-128 and 133 repeat the 'concept sound, proof pending' conclusion three times; the last instance should be cut or replaced with a substantive follow-on."
+      "Farewell at lines 123-125 precedes the audience question and sponsor tag at 126-129, breaking the approved closing sequence: audience question, sponsor, follow invitation, then farewell.",
+      "Lines 69 and 72 duplicate the sponsor call-to-action almost word-for-word within the same sponsor read; one must be cut or meaningfully varied.",
+      "Line 105 cites a listener callback ('The question from last November') that cannot be verified against supplied show history — editorial review required before audio.",
+      "Lines 40-42 restate the conclusion already established at lines 38-39 without adding evidence; trim to one landing.",
+      "Line 62 compresses line 57 without new information; cut or fold into the line that follows it."
     ]
   },
   "remaining_production_language": [],
-  "output_sha256": "9280acdbca2cf4e76f82a6f8298b170174497a5c1e366bd20c3bf265e6960ffd",
+  "output_sha256": "b5bce79020455a1680d877aa608a8aaf846e4da2cb89564a3e7bed5424df5fd3",
   "status": "repairs_applied_need_audio_review"
 }

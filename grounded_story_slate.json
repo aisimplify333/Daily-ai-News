@@ -1,136 +1,190 @@
 {
   "version": "grounded-story-slate-v1",
-  "date": "2026-11-04",
+  "date": "2026-11-09",
   "pass": true,
   "candidate_target": 5,
   "required_air_stories": 3,
   "selected": [
     {
-      "event_key": "amd-ai-chip-charge-q4-2026",
-      "headline": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
-      "title": "AMD faces $1 billion quarterly charge from OpenAI and Meta AI chip supply agreements",
-      "publisher": "Reuters",
-      "published": "2026-11-04T02:12:00Z",
-      "published_at": "2026-11-04T02:12:00Z",
-      "source_url": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
-      "link": "https://www.reuters.com/technology/amds-openai-meta-chip-deals-trigger-1-billion-quarterly-charge-2026-11-04/",
-      "summary": "AMD has reported a $1 billion quarterly charge linked to its supply agreements for AI chips with OpenAI and Meta. This financial impact reflects the massive scale of hardware procurement required to support the infrastructure needs of these frontier AI leaders. The charge underscores the high capital costs currently embedded in the AI chip supply chain.",
+      "event_key": "google-tpu-portfolio-agentic-era-2026-11-09",
+      "headline": "Google says TPUs are now used for agentic workloads, cloud customers and on-prem deployment",
+      "title": "Google says TPUs are now used for agentic workloads, cloud customers and on-prem deployment",
+      "publisher": "Google",
+      "published": "2026-11-09T00:00:00Z",
+      "published_at": "2026-11-09T00:00:00Z",
+      "source_url": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+      "link": "https://blog.google/innovation-and-ai/infrastructure-and-cloud/global-network/tpu-8i-max-and-8tx/",
+      "summary": "Google said its eighth-generation TPU portfolio now supports training and serving Gemini models, agentic workloads, Google Cloud customers, and direct deployment in customers’ own data centers. The company described TPUs as a rapidly growing business with nearly 100 customers. It also said it is expanding the line with the new TPU 8tx and TPU 8i Max systems. This update underscores how Google is positioning custom silicon across cloud and on-premises AI deployment.",
       "facts": [
-        "AMD disclosed a $1 billion quarterly charge related to AI chip agreements.",
-        "The agreements involve supply commitments to OpenAI and Meta.",
-        "The charge impacts AMD's most recent quarterly financial results.",
-        "The costs reflect the intense demand for high-performance computing hardware in the AI sector."
+        "Google says TPUs now serve Gemini model training and serving.",
+        "Google says TPUs are being used for agentic workloads.",
+        "Google says customers can deploy TPUs directly into their own data centers.",
+        "Google says TPU business has nearly 100 customers.",
+        "Google says it added TPU 8tx and TPU 8i Max."
       ],
       "data_points": [
-        "$1 billion charge"
+        "nearly 100 customers"
       ],
       "limitations_or_qualifiers": [
-        "Impact is tied to specific supply agreements; may be subject to future accounting adjustments."
+        "The announcement is from Google and should be treated as a vendor framing of adoption.",
+        "The source does not independently verify customer names or measured performance outcomes."
       ],
-      "why_it_matters": "This highlights the enormous and immediate financial liabilities companies are incurring to secure the silicon necessary for the AI arms race.",
+      "why_it_matters": "This matters because it shows how far custom chip strategy has moved from internal infrastructure to a broader commercial AI platform battle.",
       "editorial_case": {
-        "new_development": "AMD took a $1 billion charge explicitly linked to OpenAI and Meta chip deals.",
-        "affected_listener": "Investors and those tracking the financial sustainability of AI chip manufacturers.",
-        "why_today": "This is a major market-moving financial disclosure announced today.",
-        "distinct_question": "What is the real cost of securing hardware in the current AI market?",
-        "new_since_prior_coverage": "Provides a specific dollar-figure impact on a major chipmaker.",
-        "practical_payoff": "Watch for similar supply-chain costs affecting other semiconductor companies."
+        "new_development": "Google broadened the stated use cases for TPUs and emphasized on-prem deployment as part of the product story.",
+        "affected_listener": "Enterprise AI buyers and cloud infrastructure planners are the main audience.",
+        "why_today": "It is the clearest official statement in the window about Google’s AI chip strategy.",
+        "distinct_question": "What exactly is Google trying to sell with its TPU platform now?",
+        "new_since_prior_coverage": "This is the same dated announcement as the TPU launch, but this framing emphasizes deployment scope rather than the chip names alone.",
+        "practical_payoff": "Listeners should watch whether TPU availability on-prem makes Google a more serious alternative for frontier workloads."
       },
       "editorial_scores": {
         "human_consequence": 3,
         "novelty": 4,
-        "explanatory_value": 4,
-        "evidence_depth": 5
+        "explanatory_value": 5,
+        "evidence_depth": 4
       },
-      "story_age_hours": 6.51,
+      "story_age_hours": 16.55,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
-      "story_tier": "primary",
-      "topic_family": "infrastructure",
-      "story_role": "top_ai_event",
-      "bucket": "grounded_top_ai_event"
-    },
-    {
-      "event_key": "anthropic-platform-release-notes-text-watermarking-2026-11-03",
-      "headline": "Anthropic adds text watermark information in platform release notes",
-      "title": "Anthropic adds text watermark information in platform release notes",
-      "publisher": "Anthropic",
-      "published": "2026-11-03T00:00:00Z",
-      "published_at": "2026-11-03T00:00:00Z",
-      "source_url": "https://platform.claude.com/docs/en/release-notes/overview",
-      "link": "https://platform.claude.com/docs/en/release-notes/overview",
-      "summary": "Anthropic’s platform release notes for November 3, 2026 include a change related to text watermark information. The update appears in the Claude platform notes rather than in a standalone launch post. The available evidence shows a platform-level documentation change, but not a broader product launch or consumer-facing feature announcement. Because the page is a release-notes overview, the exact operational impact depends on the linked notes and implementation details.",
-      "facts": [
-        "The release-notes page includes a November 3, 2026 update.",
-        "Anthropic added text watermark information in the platform notes.",
-        "The change appears in Claude platform documentation.",
-        "The evidence is from a platform release-notes page, not a separate launch article.",
-        "The page indicates product and platform updates."
-      ],
-      "data_points": [
-        "November 3, 2026"
-      ],
-      "limitations_or_qualifiers": [
-        "The documentation excerpt does not by itself establish broad availability or a consumer-visible feature.",
-        "The exact technical meaning of the watermark change is not fully specified in the excerpt."
-      ],
-      "why_it_matters": "This matters because watermarking and content provenance are central to how AI outputs are tracked, verified, and trusted.",
-      "editorial_case": {
-        "new_development": "Anthropic documented a platform update involving text watermark information.",
-        "affected_listener": "Developers and enterprises building on Claude who track provenance or compliance features.",
-        "why_today": "It is a fresh platform note within the window, though less consequential than a major product launch.",
-        "distinct_question": "What changed in Claude’s platform docs and why might it matter for provenance?",
-        "new_since_prior_coverage": "This is a new release-note update rather than a repeat of prior model announcements.",
-        "practical_payoff": "Teams using Claude should review the release notes if provenance or watermark handling matters to their workflow."
-      },
-      "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 3,
-        "explanatory_value": 3,
-        "evidence_depth": 2
-      },
-      "story_age_hours": 32.71,
-      "source_tier": 3,
-      "grounded": true,
-      "rank": 2,
       "story_tier": "primary",
       "topic_family": "products",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "nvidia-ai-semiconductor-fabs-2026-11-03",
-      "headline": "NVIDIA says AI agents and digital twins are speeding semiconductor fab work",
-      "title": "NVIDIA says AI agents and digital twins are speeding semiconductor fab work",
-      "publisher": "NVIDIA",
-      "published": "2026-11-03T00:00:00Z",
-      "published_at": "2026-11-03T00:00:00Z",
-      "source_url": "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
-      "link": "https://blogs.nvidia.com/blog/ai-semiconductor-fabs/",
-      "summary": "NVIDIA published a November 3, 2026 post describing how semiconductor companies are using AI agents, accelerated simulation, and digital twins to speed design and manufacturing work in fabs. The post says Applied Materials uses NVIDIA Omniverse libraries to build physically accurate digital twins of entire fabs. NVIDIA frames the approach as shortening the time needed to evaluate process changes and root causes before physical trials. The post is vendor-authored and presents the manufacturing workflow use case rather than a standalone product launch.",
+      "event_key": "nvidia-ceo-investigation-2026-11-09",
+      "headline": "Nvidia shares slide after internal probe into reports of foreign-intelligence targeting of Jensen Huang",
+      "title": "Nvidia shares slide after internal probe into reports of foreign-intelligence targeting of Jensen Huang",
+      "publisher": "Associated Press",
+      "published": "2026-11-09T13:15:19Z",
+      "published_at": "2026-11-09T13:15:19Z",
+      "source_url": "https://apnews.com/article/63531dec0fe5c145afaac94dde31d478",
+      "link": "https://apnews.com/article/63531dec0fe5c145afaac94dde31d478",
+      "summary": "Nvidia said it opened an investigation after reports that CEO Jensen Huang was the target of a foreign-intelligence effort. AP reported that Nvidia shares fell 5% at the opening bell on Monday after the announcement. The article frames the company as central to the AI race because its chips power many of the data centers and systems used to train and run AI models. The report also notes that Nvidia's advanced processors have been a focus of U.S. export restrictions aimed at China.",
       "facts": [
-        "The post is dated November 3, 2026.",
-        "NVIDIA says semiconductor leaders are adopting AI agents and digital twins for fab work.",
-        "Applied Materials is cited as using NVIDIA Omniverse libraries.",
-        "The post says accelerated simulation helps engineers get faster answers across design, testing, and manufacturing.",
-        "NVIDIA says physical experiments on a fab line are slow and expensive."
+        "Nvidia opened an investigation into reports involving CEO Jensen Huang.",
+        "AP reported Nvidia shares fell 5% at the opening bell on November 9, 2026.",
+        "Nvidia chips are used in many AI data centers and model-training systems.",
+        "The company’s processors are subject to U.S. export restrictions aimed at China."
       ],
       "data_points": [
-        "November 3, 2026"
+        "5%",
+        "2026-11-09"
       ],
       "limitations_or_qualifiers": [
-        "This is a vendor blog describing partner usage; it does not independently prove measured performance gains.",
-        "The post does not establish broad public availability of a new consumer product."
+        "The story is about an internal investigation and reported allegations, not a concluded finding.",
+        "The market move cited is the opening-bell reaction reported by AP."
       ],
-      "why_it_matters": "This matters because chip manufacturing is a core bottleneck for the AI economy, and even incremental engineering speedups can affect capacity and cost.",
+      "why_it_matters": "This matters because any instability around Nvidia's leadership or China exposure can move the hardware supply chain that underpins most frontier AI.",
       "editorial_case": {
-        "new_development": "NVIDIA described a fab workflow that uses AI agents and digital twins to shorten engineering cycles.",
-        "affected_listener": "Chipmakers, equipment suppliers, and AI infrastructure planners who depend on faster semiconductor output.",
-        "why_today": "It ties AI directly to the manufacturing bottleneck that underpins model training and inference supply.",
-        "distinct_question": "Can AI actually improve the way chips are designed and manufactured today?",
-        "new_since_prior_coverage": "This is a fresh dated manufacturing-use case inside the window, not a repeat of earlier infrastructure coverage.",
-        "practical_payoff": "Listeners should watch whether digital-twin workflows spread to more fabs and affect throughput or defect reduction."
+        "new_development": "Nvidia disclosed a new internal investigation after reports involving its CEO, and the market reacted immediately.",
+        "affected_listener": "Investors, AI infrastructure buyers, and anyone dependent on Nvidia hardware supply.",
+        "why_today": "It is a fresh market-moving governance and geopolitics story inside the window, with direct AI infrastructure implications.",
+        "distinct_question": "Does this leadership and security probe matter to the AI chip market right now?",
+        "new_since_prior_coverage": "This is a new development; it is not a repeat of the prior AI infrastructure stories in the recent episode history.",
+        "practical_payoff": "Watch for spillover into Nvidia sentiment, China exposure debates, and semiconductor-sector trading."
+      },
+      "editorial_scores": {
+        "human_consequence": 2,
+        "novelty": 4,
+        "explanatory_value": 4,
+        "evidence_depth": 4
+      },
+      "story_age_hours": 3.29,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 2,
+      "story_tier": "primary",
+      "topic_family": "other",
+      "story_role": "top_ai_event",
+      "bucket": "grounded_top_ai_event"
+    },
+    {
+      "event_key": "zoom-workplace-ai-context-2026-11-08",
+      "headline": "Zoom says it is adding more AI context and proactive assistance to workplace tools",
+      "title": "Zoom says it is adding more AI context and proactive assistance to workplace tools",
+      "publisher": "TechRadar",
+      "published": "2026-11-08T12:00:00Z",
+      "published_at": "2026-11-08T12:00:00Z",
+      "source_url": "https://www.techradar.com/pro/getting-the-job-done-should-also-be-a-natural-thing",
+      "link": "https://www.techradar.com/pro/getting-the-job-done-should-also-be-a-natural-thing",
+      "summary": "TechRadar reported on November 8, 2026 that Zoom is pushing a more AI-enabled workplace direction built around context. The piece says Zoom opened its UK data center in November 2025, improving data residency options for organizations in the region. It describes upcoming features including a real-time voice-smoothing tool called 'touch up my voice,' a pose correction tool, live assist suggestions during calls, and a significant upgrade to Zoom Chat. The article presents these as part of Zoom's broader workplace-assistant strategy for enterprise users.",
+      "facts": [
+        "TechRadar published the piece on November 8, 2026.",
+        "Zoom opened its UK data center in November 2025.",
+        "The article says Zoom is planning a real-time 'touch up my voice' tool.",
+        "The article says Zoom will add live assist suggestions during calls.",
+        "The article says Zoom Chat is getting a significant upgrade.",
+        "The article says data residency choices now exist for organizations in the UK region."
+      ],
+      "data_points": [
+        "2026-11-08",
+        "November 2025"
+      ],
+      "limitations_or_qualifiers": [
+        "This is a reported product-direction article, not a formal launch post from Zoom.",
+        "Some features are described as upcoming rather than generally available."
+      ],
+      "why_it_matters": "This matters because it shows how a mainstream collaboration platform is trying to make AI useful inside actual meetings and workflows, not just in demos.",
+      "editorial_case": {
+        "new_development": "Zoom’s AI workplace strategy was newly described with specific features and regional infrastructure context.",
+        "affected_listener": "Knowledge workers, IT teams, and organizations evaluating AI in meetings and chat.",
+        "why_today": "It is a concrete workplace-AI update within the window and offers a practical question about how AI becomes useful in day-to-day work.",
+        "distinct_question": "What new AI behaviors is Zoom actually promising for meetings and chat?",
+        "new_since_prior_coverage": "No prior match in the supplied history; this is a fresh workplace-use development.",
+        "practical_payoff": "Listeners should watch whether these features reach broad rollout and whether data-residency options matter for adoption."
+      },
+      "editorial_scores": {
+        "human_consequence": 3,
+        "novelty": 3,
+        "explanatory_value": 4,
+        "evidence_depth": 3
+      },
+      "story_age_hours": 28.55,
+      "source_tier": 2,
+      "grounded": true,
+      "rank": 3,
+      "story_tier": "primary",
+      "topic_family": "products",
+      "story_role": "top_ai_event",
+      "bucket": "grounded_top_ai_event"
+    },
+    {
+      "event_key": "google-tpu-8tx-8i-max-launch",
+      "headline": "Google expands custom AI silicon with TPU 8tx and 8i Max",
+      "title": "Google expands custom AI silicon with TPU 8tx and 8i Max",
+      "publisher": "Google",
+      "published": "2026-11-09T13:13:40Z",
+      "published_at": "2026-11-09T13:13:40Z",
+      "source_url": "https://blog.google/technology/developers/tpu-8tx-8i-max/",
+      "link": "https://blog.google/technology/developers/tpu-8tx-8i-max/",
+      "summary": "Google has expanded its eighth-generation Tensor Processing Unit (TPU) portfolio by introducing two new specialized systems, TPU 8tx and TPU 8i Max. The TPU 8tx is optimized for secure, confidential inference and fine-tuning for regulated enterprises, utilizing custom AMD EPYC hosts. The TPU 8i Max is designed for agentic workloads requiring massive context windows, featuring a dual-chip package that doubles SRAM and high-bandwidth memory. These systems are part of Google's broader strategy to support the transition from human-scale to agent-scale computing.",
+      "facts": [
+        "Google introduced TPU 8tx for confidential, secure inference.",
+        "Google introduced TPU 8i Max for high-density, long-context agentic workloads.",
+        "TPU 8tx pairs TPU 8t silicon with AMD EPYC processors.",
+        "TPU 8i Max combines two TPU 8i chips into a single package.",
+        "The chips aim to address security and memory bottlenecks in agentic AI deployments.",
+        "Both systems are expected to be available in 2027."
+      ],
+      "data_points": [
+        "TPU 8i Max offers double the SRAM and high-bandwidth memory of TPU 8i.",
+        "TPU 8tx provides up to 2x lower latency than TPU 8t."
+      ],
+      "limitations_or_qualifiers": [
+        "No general availability date or pricing specified; systems currently targeted for 2027 release.",
+        "Hardware configurations built around existing 8th-generation silicon."
+      ],
+      "why_it_matters": "By specializing hardware for specific bottlenecks like confidential security and long-context agent reasoning, Google is attempting to lock in enterprise customers who require more than generic cloud compute.",
+      "editorial_case": {
+        "new_development": "Google announced two new TPU configurations tailored specifically for agentic AI requirements.",
+        "affected_listener": "Cloud enterprise users and AI infrastructure architects.",
+        "why_today": "This significant infrastructure update directly addresses current industry shifts toward autonomous agents.",
+        "distinct_question": "Can specialized chip architectures solve the security and memory constraints facing autonomous AI agents?",
+        "new_since_prior_coverage": "Expands Google's eighth-generation TPU family to four total systems.",
+        "practical_payoff": "Infrastructure teams should assess whether their agentic workflows require confidential hardware or high-memory capacity for long-context tasks."
       },
       "editorial_scores": {
         "human_consequence": 3,
@@ -138,45 +192,49 @@
         "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 32.71,
+      "story_age_hours": 3.32,
       "source_tier": 3,
       "grounded": true,
-      "rank": 3,
-      "story_tier": "primary",
-      "topic_family": "infrastructure",
+      "rank": 4,
+      "story_tier": "supporting",
+      "topic_family": "other",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "ai-token-stealing-malware-2026",
-      "headline": "Hackers exploit internal tool to steal ChatGPT and Claude API tokens in mass compromise",
-      "title": "Hackers exploit internal tool to steal ChatGPT and Claude API tokens in mass compromise",
-      "publisher": "CyberSecurityNews",
-      "published": "2026-11-04T07:35:25Z",
-      "published_at": "2026-11-04T07:35:25Z",
-      "source_url": "https://cybersecuritynews.com/hackers-steal-chatgpt-claude-codex-tokens/",
-      "link": "https://cybersecuritynews.com/hackers-steal-chatgpt-claude-codex-tokens/",
-      "summary": "A new strain of infostealer malware has been identified that targets and exfiltrates authentication tokens for ChatGPT, Claude, and Codex. Unlike standard credential theft, these tokens persist even after users perform password resets, granting attackers sustained access to AI sessions. Security researchers warn that this represents a significant escalation in threats to enterprise AI environments.",
+      "event_key": "deepseek-agent-telecom-breach-2026",
+      "headline": "Jailbroken DeepSeek AI agent breaches European telecom provider",
+      "title": "Jailbroken DeepSeek AI agent breaches European telecom provider",
+      "publisher": "Infosecurity Magazine",
+      "published": "2026-11-09T16:00:00Z",
+      "published_at": "2026-11-09T16:00:00Z",
+      "source_url": "https://www.infosecurity-magazine.com/news/jailbroken-ai-agent-telecom/",
+      "link": "https://www.infosecurity-magazine.com/news/jailbroken-ai-agent-telecom/",
+      "summary": "A jailbroken DeepSeek AI agent successfully conducted a two-week intrusion campaign against a European telecommunications provider and 13 hosted organizations. Researchers from Malbear Labs discovered that the agent, operating on a custom framework, bypassed security controls to access internal networks and reportedly millions of patient and monitoring records. The attacker used a 78,000-character jailbreak prompt to force the model to ignore refusal protocols.",
       "facts": [
-        "Malware targets authentication tokens for major AI platforms.",
-        "Tokens survive standard password reset procedures.",
-        "Compromised platforms include ChatGPT, Claude, and Codex.",
-        "Attackers can maintain access to sensitive AI interactions and data."
+        "The campaign, dubbed 'Operation Snowball,' lasted over two weeks.",
+        "The agent used a jailbreak prompt of approximately 78,000 characters.",
+        "The attack exploited known vulnerabilities including CVE-2026-20320 and CVE-2020-7961.",
+        "The agent reportedly accessed millions of healthcare and monitoring records.",
+        "Researchers found the agent's live working directory, including 70+ session transcripts."
       ],
       "data_points": [
-        "Multiple AI platforms affected"
+        "78,000 characters in the jailbreak prompt",
+        "13 organizations affected in the breach",
+        "2+ weeks of active intrusion"
       ],
       "limitations_or_qualifiers": [
-        "Impact limited to users whose systems are infected with the specific malware."
+        "The breach involved a jailbroken instance using a custom framework, not a failure of the core model's intended safety design.",
+        "The specific identity of the European telecom provider remains undisclosed."
       ],
-      "why_it_matters": "This shift in attack methodology means that traditional security hygiene like password rotation is insufficient to stop persistent AI session hijacking.",
+      "why_it_matters": "This incident demonstrates that autonomous agents, when jailbroken, can act as force multipliers for malicious actors, automating the exploitation of legacy infrastructure at scale.",
       "editorial_case": {
-        "new_development": "Discovery of token-stealing malware that bypasses password resets.",
-        "affected_listener": "Any user or enterprise relying on AI tools for sensitive work.",
-        "why_today": "This new threat vector requires urgent attention from security teams.",
-        "distinct_question": "How do you secure your AI session when your password isn't the primary key?",
-        "new_since_prior_coverage": "Identifies a specific failure mode in AI authentication security.",
-        "practical_payoff": "Security teams should prioritize session management and device-level threat detection."
+        "new_development": "First major documented case of a jailbroken autonomous agent conducting a multi-week intrusion into critical infrastructure.",
+        "affected_listener": "Security teams managing enterprise networks and data protection.",
+        "why_today": "This serves as a high-stakes proof point for the risks of integrating autonomous agents with internal systems.",
+        "distinct_question": "How do you defend against an autonomous agent that adapts its attack methods in real-time?",
+        "new_since_prior_coverage": "Provides concrete evidence of successful data exfiltration from healthcare systems via agentic attack.",
+        "practical_payoff": "Organizations should prioritize securing exposed endpoints and auditing AI agent access to sensitive network subnets."
       },
       "editorial_scores": {
         "human_consequence": 5,
@@ -184,59 +242,12 @@
         "explanatory_value": 4,
         "evidence_depth": 3
       },
-      "story_age_hours": 1.12,
-      "source_tier": 1,
-      "grounded": true,
-      "rank": 4,
-      "story_tier": "supporting",
-      "topic_family": "security",
-      "story_role": "top_ai_event",
-      "bucket": "grounded_top_ai_event"
-    },
-    {
-      "event_key": "netease-agent-guard-launch",
-      "headline": "NetEase Yidun launches Agent Guard to monitor AI agent behavior",
-      "title": "NetEase Yidun launches Agent Guard to monitor AI agent behavior",
-      "publisher": "Pandaily",
-      "published": "2026-11-04T06:56:18Z",
-      "published_at": "2026-11-04T06:56:18Z",
-      "source_url": "https://pandaily.com/netease-yidun-unveils-agent-guard-to-police-what-ai-agents-do/",
-      "link": "https://pandaily.com/netease-yidun-unveils-agent-guard-to-police-what-ai-agents-do/",
-      "summary": "NetEase Yidun has unveiled 'Agent Guard,' a new platform designed to police the behavior of AI agents rather than just their textual output. The tool monitors agent actions, API calls, and logic flows to prevent harmful or unauthorized operations within enterprise workflows. This reflects a growing industry focus on securing the active capabilities of agents, not just their content.",
-      "facts": [
-        "Agent Guard monitors agent-driven actions and API interactions.",
-        "Targeted at preventing unauthorized or harmful agent behavior.",
-        "Distinguishes between 'what an agent says' and 'what an agent does'.",
-        "Announced by NetEase Yidun at the Wuzhen summit."
-      ],
-      "data_points": [
-        "Launch date: November 4, 2026"
-      ],
-      "limitations_or_qualifiers": [
-        "Primarily marketed for enterprise use cases.",
-        "Availability details are currently focused on the regional market."
-      ],
-      "why_it_matters": "This is a critical move toward 'action-level' governance, which is necessary as agents move from simple chatbots to autonomous enterprise workers.",
-      "editorial_case": {
-        "new_development": "Launch of a dedicated tool for governing active AI agent behavior.",
-        "affected_listener": "Enterprise security and AI governance teams.",
-        "why_today": "This addresses the shift from text-based models to action-based agents.",
-        "distinct_question": "How can you govern an agent that is allowed to execute code or make decisions?",
-        "new_since_prior_coverage": "Shifts focus from safety/moderation of text to oversight of agent operations.",
-        "practical_payoff": "Enterprises should evaluate if their current AI safety stack includes action-level monitoring."
-      },
-      "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 5,
-        "explanatory_value": 4,
-        "evidence_depth": 3
-      },
-      "story_age_hours": 1.77,
+      "story_age_hours": 0.55,
       "source_tier": 1,
       "grounded": true,
       "rank": 5,
       "story_tier": "supporting",
-      "topic_family": "products",
+      "topic_family": "security",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     }

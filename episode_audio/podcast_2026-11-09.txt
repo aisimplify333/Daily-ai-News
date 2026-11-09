@@ -1,0 +1,164 @@
+Google’s Custom AI Chips: Can On-Premises Power Solve Your Agentic Bottlenecks?
+2026-11-09
+
+
+SEGMENT 1 — Google says TPUs are now used for agentic workloads, cloud customers and
+
+ALEX: Google just announced you can run its AI chips in your own building. Not rented from Google. Yours.
+JAMIE: That's either a genuinely big deal for enterprise security, or it's Google selling you a very expensive leash.
+RUFUS: Nearly a hundred customers in. I'd call that a leash with real traction.
+[Intro music]
+ALEX: Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. November ninth, twenty twenty-six. Three stories today that all touch the same question from completely different angles.
+ALEX: Today’s episode is brought to you by The Ledger. What changed in AI, and what does it mean for your next decision?
+ALEX: The Ledger turns the noise into five focused briefings. Subscribe at T-H-E-L-E-D-G-R dot I-O. That’s LEDGR, with no E between G and R. Find the link in our show notes.
+
+SEGMENT 2 — Story 1: Google says TPUs are now used for agentic workloads, cloud
+
+ALEX: So. Google's TPUs. Tensor Processing Units — that's Google's custom-built AI chip, designed specifically to train and run AI models rather than general computing. And they just said the eighth generation of these chips now supports agentic workloads and, crucially, on-premises deployment. Meaning a company can actually put Google's AI hardware inside their own data center.
+JAMIE: Which sounds like a pretty significant departure.
+ALEX: It does. So what's actually changing here?
+RUFUS: What's changing is the pitch. Up until now, if you wanted Google's TPUs, you were a cloud customer. You rented time on Google's infrastructure. Now Google is saying you can buy into the hardware stack directly and run it yourself.
+JAMIE: And they added two new systems — the TPU 8tx and the TPU 8i Max. The 8tx is framed around confidential inference, which means processing AI queries without exposing sensitive data to outside eyes. The 8i Max is built for high-density agentic tasks.
+ALEX: Okay, agentic. Let's not skip past that. What does agentic actually mean in this context?
+JAMIE: So an AI agent is software that doesn't just answer one question — it takes a sequence of actions to complete a goal. Book a trip, process a contract, monitor a system and respond to anomalies. That kind of thing.
+JAMIE: It's more demanding than a single query because it requires the chip to hold a lot of context in memory simultaneously.
+ALEX: So it needs more horsepower sustained over a longer task.
+JAMIE: Right. And that's partly why the memory capacity matters so much here. These aren't the same as asking a chatbot a quick question.
+ALEX: So Google is saying its hardware can handle that now, on your premises. I want to understand what problem that actually solves. Why would a company care if the chip is in their building versus Google's?
+RUFUS: Sovereignty, primarily. Regulated industries — finance, healthcare, defense — they have strict requirements about where data can physically travel. If your AI is running inference inside a Google data center, your data is leaving your building, even briefly. For some organizations that's a dealbreaker.
+JAMIE: Although. Can I push on the word confidential for a second? Google is describing these chips as supporting confidential inference. But that's Google describing its own product. We don't have independent benchmarks or verified performance outcomes here.
+ALEX: That's fair. That's a vendor claim, not an auditor's report.
+JAMIE: Exactly. And the fact that there are nearly a hundred customers, also from Google, doesn't tell us who those customers are or what they're actually running.
+RUFUS: Nearly a hundred is an interesting number, though. It's large enough to call it a business; small enough that it hasn't escaped anyone's notice that this is still a niche product. For context, Nvidia has effectively the entire industry.
+ALEX: Which is what makes me want to ask the uncomfortable question. Is this actually a competitive alternative to Nvidia, or is this Google trying to keep enterprise customers inside its orbit by giving them the feeling of control?
+RUFUS: I think those two things aren't mutually exclusive. Google can genuinely solve a sovereignty problem for some customers while simultaneously keeping them dependent on Google's toolchain, software stack, and support contracts.
+JAMIE: That's the thing. The chip is in your building, but the software that makes it useful — the model weights, the optimization libraries, the update cycle — that all still flows from Google.
+ALEX: So you own the hardware, you don't necessarily own the intelligence.
+JAMIE: Which is a bit like owning the oven but only being allowed to use the flour they sell you.
+RUFUS: That's unusually culinary for a Monday.
+JAMIE: I contain multitudes.
+ALEX: Okay, but here's what I'm genuinely curious about. For someone who is evaluating AI infrastructure right now — say you're running a mid-size company with a real agentic use case you're trying to build — does this change your calculus?
+RUFUS: Possibly. If you've been holding off on committing to a hardware vendor because you didn't want to be entirely at the mercy of cloud pricing, this gives you another option to evaluate. It's not Nvidia-versus-Google yet. But it's the clearest signal that Google wants to be in that conversation.
+JAMIE: And the specific call-out of agentic workloads matters. A lot of the enterprise AI interest right now isn't in passive chat tools. It's in AI that can actually take actions. If Google's chips are genuinely optimized for that, that's a different value proposition than what most companies have been shopping for.
+ALEX: What's the thing to watch here?
+RUFUS: Pricing and availability for the on-prem systems. Google hasn't published that publicly in this announcement. And independent benchmarks. Right now we have Google's word that these chips handle agentic workloads well. That needs to be tested.
+JAMIE: And whether the customer count grows meaningfully. Nearly a hundred is a starting point. If this is still nearly a hundred in a year, it's a pilot program. If it's several hundred, it's a platform.
+ALEX: So the honest headline: can on-premises TPUs solve your agentic bottlenecks?
+RUFUS: For regulated industries blocked by data-residency rules, it's a legitimate option to evaluate. For everyone else, the case depends on benchmarks and pricing we don't have yet.
+JAMIE: Six months of customer numbers will tell us more than today's announcement.
+
+SEGMENT 3 — Story 2: Nvidia shares slide after internal probe into reports of
+
+ALEX: Our second story. Nvidia. And this one hit the market this morning. Rufus, take us on location.
+RUFUS: Right. Picture the floor of the New York Stock Exchange, Monday morning, November ninth. The AI semiconductor sector is already on a hair trigger — it moves on news faster than almost anything else right now. Then the headline lands —
+RUFUS: Nvidia has opened an internal investigation after reports that CEO Jensen Huang was the target of a foreign-intelligence effort. Within minutes of the opening bell, shares are down five percent. That's the AP-confirmed number.
+JAMIE: Which, to be clear, Nvidia is one of the most valuable companies on earth. Five percent is not noise. That's real money, gone, before most people finished their coffee.
+RUFUS: And the reason it moved that fast is what's interesting. This isn't a revenue miss. It's not a product recall. The market is essentially pricing in the risk that the person at the center of Nvidia's strategic vision is a geopolitical target. Leadership security, as a line item.
+ALEX: Back to the wider story. So what do we actually know about the investigation itself?
+RUFUS: AP reports that Nvidia said it opened the probe in response to reports involving Huang. The nature of the alleged targeting isn't detailed. This is an internal investigation into reported allegations — not a concluded finding. That distinction matters.
+ALEX: Okay, so I want to separate two things, because they're getting blurred. Whatever happened or allegedly happened to Jensen Huang — that's a serious personal matter and we genuinely don't know enough. The second thing is the market reaction, and that one I do want to understand.
+JAMIE: I think the market isn't really reacting to Jensen Huang the person. It's reacting to what he represents. Nvidia's chips power most of the major AI training infrastructure on the planet. They're subject to U.S. export restrictions aimed at China — AP notes this explicitly —
+JAMIE: because they're considered strategically important enough to control at a government level. That's the context.
+RUFUS: Exactly. When you're that central to global AI infrastructure, your leadership becomes a critical node. If a foreign intelligence service was reportedly interested in Jensen Huang, it's not for the anecdotes. It's because of what his company builds and who gets to use it.
+ALEX: That's a genuinely strange consequence. The more indispensable your technology, the more exposed your CEO becomes.
+JAMIE: And the more nervous markets get about anything that might disrupt continuity at the top. This is a company where one person's strategic instincts affect data centers on basically every continent.
+RUFUS: Which is a concentration that makes investors anxious even before a headline like this. After it? Understandably more so.
+ALEX: The export restrictions piece is worth sitting with for a second. The U.S. has been specifically trying to limit China's access to Nvidia's highest-end chips. And now there's a report of foreign-intelligence interest in Nvidia's CEO. Those two facts aren't directly connected in the reporting — I want to be clear about that —
+ALEX: but they appear in the same AP story for a reason.
+RUFUS: They're part of the same geopolitical texture. Nvidia's chips are already the subject of a national-security argument. If you're trying to understand or influence that argument from the outside, Huang is an obvious figure of interest.
+JAMIE: And that's the concentration problem in one sentence, really. One company makes the chips most of the world's frontier AI runs on. That's an extraordinary amount of leverage in one place. Any uncertainty about its internal stability gets priced in immediately, because the stakes are that high.
+ALEX: So what do we watch from here?
+RUFUS: Three things. First, any update on the scope or findings of the investigation — though that could take weeks. Second, whether this accelerates existing debates about Nvidia's China exposure and what stricter governance might look like. Third, whether the semiconductor sector follows Nvidia's move today or treats it as company-specific.
+JAMIE: And whether this starts a broader conversation about executive security in AI hardware. It really shouldn't require a headline like this to have that conversation. But here we are.
+ALEX: To be direct: does this change the investment or buying case for Nvidia right now?
+RUFUS: The five percent says investors are nervous. Whether that's warranted depends entirely on what the investigation finds. The underlying demand for Nvidia's chips hasn't changed. But the geopolitical risk layer is now visible in a way it wasn't a week ago.
+JAMIE: An investigation into allegations is a beginning. Not a finding. That matters for how you read this morning's move.
+JAMIE: Right. Back to it.
+JAMIE: A short sponsor break for The Ledger. Rufus, can we agree that people need something more useful than another argument about AI?
+RUFUS: Certainly. Although I object to the implication that our arguments aren't exquisite. The Ledger offers five focused briefings to help connect news with decisions.
+JAMIE: The Ledger. Briefings there, exquisite disagreements here. Right, let's get back to it.
+
+SEGMENT 4 — Story 3: Zoom says it is adding more AI context and proactive assistance
+
+ALEX: Our third story. And I'll be honest, I wanted to like this one before we even started, because it's about Zoom, and we all live in Zoom, and sometimes that's deeply unpleasant.
+JAMIE: I detect a low bar.
+ALEX: A very low bar. So TechRadar reported this yesterday, November eighth. Zoom is pushing a more AI-enabled workplace direction, with some specific features that are either helpful or slightly unsettling depending on your disposition.
+JAMIE: Let's start with the ones that are slightly unsettling.
+ALEX: Great instinct. "Touch up my voice." A real-time voice-smoothing tool.
+JAMIE: Okay. So. This is AI processing your voice as you speak, in real time, to make it sound smoother or cleaner. What does that actually mean?
+RUFUS: I believe the stated intent is reducing background noise, correcting audio quality issues, compensating for a poor microphone. Making you sound like you have professional recording equipment when you don't.
+ALEX: Which sounds reasonable until you ask — at what point is it not really your voice anymore?
+JAMIE: I mean, there's already noise cancellation. This seems like a much more aggressive version of that.
+RUFUS: The TechRadar piece also mentions a pose correction tool, which is — visual, apparently. As in, it adjusts how you look on camera.
+ALEX: Right. I saw that. And Alex from two years ago would have said that sounds dystopian. Alex from today says I'd probably turn it on within thirty seconds if it improved my lighting.
+JAMIE: That's the most honest thing anyone's said on this show in weeks.
+RUFUS: The erosion of standards is so convenient.
+ALEX: But seriously, that's the question, isn't it? These tools are genuinely useful for people with bad home office setups, unreliable internet, noisy environments. That's most people on most calls.
+JAMIE: I'll grant you the microphone situation. The pose correction one I'm less sure about. That feels more like — filtering who you are for professional consumption, rather than solving a technical problem.
+RUFUS: The other features interest me more from a practical standpoint. Live assist suggestions during calls — that's AI listening to your meeting in real time and surfacing suggestions or information as the conversation develops. Not a summary after the fact, but active intervention during.
+ALEX: Which is a real shift. Most AI meeting tools right now transcribe and summarize after the fact. This is trying to be useful while you're actually in it.
+JAMIE: That's the direction a lot of enterprise AI is moving, though. From recording to participating.
+ALEX: There's also a significant Zoom Chat upgrade mentioned. The article doesn't go deep on what that means exactly, but the framing is around context — the AI building a richer understanding of what your ongoing conversations are about.
+RUFUS: Which gets to the data question. Zoom also opened a UK data center in November 2025 — that's a confirmed fact from the article — and the piece frames this as expanding data-residency options for UK organizations. Data residency means that your data, your meeting recordings, your chat logs —
+RUFUS: they stay within a specific geographic jurisdiction rather than flowing through servers wherever Zoom happens to route them.
+JAMIE: Which matters enormously for regulated industries in the UK and Europe. If a healthcare organization or a financial services firm can't use a tool because it doesn't meet their data localization requirements, that UK data center unlocks a whole category of potential customer.
+ALEX: So the AI features are the headline, but the infrastructure buildout is the actual business story.
+RUFUS: Often is.
+JAMIE: I want to come back to the live assist idea, because I think this is where the real question lives. If the AI is suggesting things to you in real time during a meeting — whether to soften a message, how to respond to a concern someone raised —
+JAMIE: flagging a commitment you're about to make — does that help you do your job better, or does it just mean you're not really fully present in the conversation?
+ALEX: That's a good question. I think it depends entirely on what the suggestions are. If it's surfacing a document that's relevant to what someone just asked, that's genuinely useful. If it's coaching your tone in real time, that starts to feel like something different.
+RUFUS: Worth noting: TechRadar is reporting Zoom's stated direction. Several features are described as upcoming — not available today. Roadmap, not product.
+ALEX: Which changes whether you're excited or alarmed by about eighteen months.
+ALEX: The real question is whether these end up as things you switch on or things that are already running when you join.
+JAMIE: Default-on within eighteen months. That's not pessimism, that's the pattern.
+RUFUS: That's speculation.
+JAMIE: Call it pattern recognition.
+RUFUS: That's speculation.
+JAMIE: That's pattern recognition.
+RUFUS: Fair.
+ALEX: Okay. What should someone who lives in Zoom actually watch for?
+JAMIE: Whether the live assist feature ends up being something you control granularly or something that just runs. That distinction matters a lot.
+RUFUS: And whether the UK data center accelerates enterprise adoption in Europe. That's the actual commercial story underneath the feature announcements.
+ALEX: And whether "touch up my voice" makes me sound like a news anchor or a robot.
+JAMIE: Those are more similar than you think.
+RUFUS: I'm going to let that one land.
+ALEX: Jamie, show us the AI transformation.
+JAMIE: Picture this. You are coordinating a group picnic. You send one message asking people to claim items. Within forty-eight hours you have seventeen replies, two people claimed drinks, nobody claimed plates, and someone wrote, and I quote, "I'll just bring something."
+RUFUS: That person is chaos in human form.
+JAMIE: That person is every group chat, Rufus. The tool is Claude Artifacts. Anthropic documents that Claude can generate self-contained outputs, including formatted documents, code snippets, and small interactive files, directly inside a conversation. This is a hypothetical workflow. No measured outcome. No actual picnic was saved.
+ALEX: Walk us through what the proposed workflow looks like.
+JAMIE: You give Claude synthetic names and fictional items. Nothing real, no connected apps, no invitations sent. You ask it to draft a small assignment checklist as an artifact. The proposed output returns formatted assignments, an unassigned-items column, and a duplicate-item warning.
+RUFUS: A warning. For the person who brings two desserts and acts surprised.
+JAMIE: Exactly that person. Then you manually check every assignment yourself. Deliberately put a duplicate in and watch whether the warning catches it. That is the whole test.
+ALEX: I want to push on the evidence. A proposed workflow and a vendor-documented capability are not a customer result.
+JAMIE: Completely correct, and I will not dress it up. No measured time saving, no real implementation, no outcome to report. The logic Claude generates can be wrong. You inspect the output yourself before it gets anywhere near a real group or event.
+RUFUS: So the unassigned plates are still your problem.
+JAMIE: Entirely your problem. The artifact makes the gap visible. Closing it is on the humans doing the reviewing.
+RUFUS: Jamie, you are extremely worked up about a checklist for a fictional picnic.
+JAMIE: Rufus, you once described a spreadsheet as "pretty much fine" and then three people ordered the same catering item for a team lunch.
+RUFUS: That was a supply chain issue.
+ALEX: It really wasn't.
+JAMIE: One real limitation before anyone opens Claude. Artifacts need code execution enabled in your account. That is not a default everywhere. Check your settings first, because assuming it is available and finding it isn't is its own coordination failure.
+ALEX: So what does someone do right now?
+JAMIE: Open Claude. Invent five names. Assign fictional items. Ask for a small assignment checklist as an artifact. Manually add a duplicate and read the output line by line before you trust any of it. Keep everything synthetic. The coordination still belongs to the people.
+RUFUS: Low stakes, concrete, honest about what it cannot do.
+JAMIE: That is the standard. The artifact just surfaces the gaps before someone arrives holding the third bag of crisps nobody requested.
+RUFUS: I'll try it. And I'll confirm who has the plates this time.
+JAMIE: Write that down. And maybe the forks.
+ALEX: That's Jamie's AI transformation.
+
+SEGMENT 5 — The Edge: What Changed and What Happens Next
+
+ALEX: Alright. We asked at the top whether Google's on-premises AI chips can actually solve your agentic bottlenecks. Here's what we know.
+JAMIE: If you're blocked by data-residency rules — if your legal or compliance team won't let your sensitive data leave your building — then Google's new on-prem TPU option is a legitimate thing to evaluate. That problem is real, and this addresses it.
+RUFUS: If you're not blocked by those requirements, the case is much less clear. We don't have independent performance benchmarks, we don't have public pricing, and nearly a hundred customers is a beginning, not a proof of scale.
+ALEX: So the honest answer is: it's a real option for a specific set of organizations, and an interesting early signal for everyone else. Watch the benchmark numbers, and watch whether that customer count grows.
+JAMIE: The question we'd leave you with this week — and this is genuinely something to think about, not just a clever closing. When you hear about an AI hardware option that promises to put the chip in your building, does that actually mean control? Or does it just mean the leash is longer?
+RUFUS: That is a question worth sitting with.
+ALEX: Send us your answer. You know where to find us. Leave a comment, leave a review, those genuinely help more people find the show.
+RUFUS: We're on every platform you use. Find us, follow us, and bring a question.
+ALEX: Starting with this one.
+ALEX: Today’s question for you: When your workplace tools add 'proactive' AI features, do you find them helpful or just another layer of distraction?
+RUFUS: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.
+ALEX: What changed. Who wins. What you do next. That’s The AI Edge.
+ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.
