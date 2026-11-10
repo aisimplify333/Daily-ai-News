@@ -807,6 +807,27 @@ def fact_check_script(
     report = _validate_fact_payload(script, payload, date_str)
     # Invalid/no-op/overlong correction output is a transport/schema failure,
     # not proof that a detected factual defect is impossible to repair.
+    schema_issues = {"Invalid or ungrounded calculation record", "Fact audit omitted calculations array"}
+    if report["unresolved"] and all(issue in schema_issues for issue in report["unresolved"]):
+        # Repair the malformed field, not the whole fact verdict. In particular a
+        # date interval is not a monetary ratio, and no new factual errors are required.
+        prompt = ("Extract monetary comparisons ONLY from the following script. Return a JSON object "
+                  "with key calculations, using this exact schema: "
+                  '{"calculations":[{"exact_line":"complete speaker line","left_quote":"first monetary amount",'
+                  '"right_quote":"second monetary amount","operation":"ratio or greater_than",'
+                  '"ratio_quote":"spoken multiple or empty","replacement_line":"corrected full speaker line"}]}. '
+                  "If there are no monetary comparisons, return an empty array. A standalone amount, "
+                  "calendar interval or technical percentage is not a monetary comparison. Do not change "
+                  "the factual verdict, draft a script, or propose unrelated corrections.\nSCRIPT:\n" + script)
+        try:
+            corrected_field = _extract_json(_recovery_search(prompt), {}).get("calculations")
+            if isinstance(corrected_field, list):
+                revised = _validate_fact_payload(script, dict(payload, calculations=corrected_field), date_str)
+                revised["calculation_schema_repaired"] = True
+                return revised
+        except Exception:
+            pass
+        return report
     if report["unresolved"]:
         recovery_prompt = _fact_check_prompt(script, stories, date_str)
         recovery_prompt += "\nCORRECTION RECOVERY: the previous review detected the following unresolved factual concerns but supplied no usable edit. Verify each concern against sources, locate its numbered SCRIPT line, and return minimal same-speaker corrections with all evidence fields. Never silently clear these concerns or return a pass-only response. Preserve humor and the surrounding exchange.\n" + json.dumps(report["unresolved"])
