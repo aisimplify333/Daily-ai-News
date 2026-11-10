@@ -1,99 +1,70 @@
 {
-  "date": "2026-11-09",
+  "date": "2026-11-10",
   "new_tts_calls": 0,
-  "warnings": [],
+  "warnings": [
+    "Trailer beats do not fit 60–90 seconds cleanly; prepared trailer script remains available."
+  ],
   "publication": "assets_only_not_uploaded_to_spotify",
   "clip": {
-    "start": 271.238,
-    "end": 302.577,
-    "seconds": 31.339,
-    "score": 6,
+    "start": 404.433,
+    "end": 426.88,
+    "seconds": 22.447,
+    "score": 5,
     "turns": [
       {
         "kind": "speech",
-        "segment": 2,
+        "segment": 3,
         "speaker": "JAMIE",
-        "text": "I contain multitudes.",
-        "sound_design": {},
-        "performance_mood": "warmth",
-        "tempo_factor": 1.0,
-        "speed": 1.05,
-        "level_delta_db": 0.0,
-        "pause_requested_ms": 180,
-        "pause_reason": "reflective_response",
-        "start": 271.238,
-        "end": 273.448
-      },
-      {
-        "kind": "speech",
-        "segment": 2,
-        "speaker": "ALEX",
-        "text": "Okay, but here's what I'm genuinely curious about. For someone who is evaluating AI infrastructure right now — say you're running a mid-size company with a real agentic use case you're trying to build — does this change your calculus?",
+        "text": "Is that an infrastructure move, or a hedge against the cloud providers they depend on?",
         "sound_design": {},
         "performance_mood": "curiosity",
         "tempo_factor": 1.0,
-        "speed": 1.01,
+        "speed": 1.05,
         "level_delta_db": 0.0,
         "pause_requested_ms": 85,
         "pause_reason": "question_to_answer",
-        "start": 273.628,
-        "end": 286.566
+        "start": 404.433,
+        "end": 409.087
       },
       {
         "kind": "speech",
-        "segment": 2,
+        "segment": 3,
         "speaker": "RUFUS",
-        "text": "Possibly. If you've been holding off on committing to a hardware vendor because you didn't want to be entirely at the mercy of cloud pricing, this gives you another option to evaluate. It's not Nvidia-versus-Google yet. But it's the clearest signal that Google wants to be in that conversation.",
+        "text": "Both, I think. And that's rather the point. Anthropic's S-1 disclosed a large monthly services contract for computing through May twenty twenty-nine. That's the existing dependency. The turbines may be the beginning of an exit from it.",
         "sound_design": {},
         "performance_mood": "explainer",
         "tempo_factor": 0.975,
         "speed": 1.092,
         "level_delta_db": -0.25,
+        "pause_requested_ms": 65,
+        "pause_reason": "short_reply",
+        "start": 409.172,
+        "end": 424.098
+      },
+      {
+        "kind": "speech",
+        "segment": 3,
+        "speaker": "JAMIE",
+        "text": "So they're buying their way toward independence.",
+        "sound_design": {},
+        "performance_mood": "curiosity",
+        "tempo_factor": 1.0,
+        "speed": 1.05,
+        "level_delta_db": 0.0,
         "pause_requested_ms": 110,
         "pause_reason": "conversational_handoff",
-        "start": 286.651,
-        "end": 302.577
+        "start": 424.163,
+        "end": 426.88
       }
     ],
-    "audio": "clip_2026-11-09.mp3",
-    "captions": "clip_2026-11-09.vtt",
+    "audio": "clip_2026-11-10.mp3",
+    "captions": "clip_2026-11-10.vtt",
     "caption_timing": "measured-turn-boundaries-with-estimated-word-groups",
     "needs_editorial_review": true,
-    "video": "clip_2026-11-09.mp4"
+    "video": "clip_2026-11-10.mp4"
   },
   "existing_trailer": {
     "status": "preserved",
     "audio": "show_trailer.mp3"
-  },
-  "trailer": {
-    "status": "candidate_requires_listening_not_published",
-    "audio": "show_trailer_candidate_2026-11-09.mp3",
-    "seconds": 69.196,
-    "source_ranges": [
-      [
-        0.0,
-        6.701
-      ],
-      [
-        17.024,
-        21.524
-      ],
-      [
-        21.624,
-        33.079
-      ],
-      [
-        271.238,
-        302.577
-      ],
-      [
-        1268.416,
-        1277.617
-      ],
-      [
-        1277.817,
-        1283.817
-      ]
-    ]
   }
 }

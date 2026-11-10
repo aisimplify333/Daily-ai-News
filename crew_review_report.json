@@ -2,76 +2,65 @@
   "basis": "model editorial review plus local safeguards; not listening",
   "listened": false,
   "requested_calls": 1,
-  "accepted_edits": 5,
+  "accepted_edits": 3,
   "edits": [
     {
-      "accepted": true,
-      "reason": "Removes near-duplicate sponsor lines 69 and 72; keeps both hosts, trims repetition, preserves sponsor name and CTA.",
-      "segment": 3
+      "accepted": false,
+      "reason": "feature_navigation_protected"
     },
     {
       "accepted": true,
-      "reason": "Line 62 restates line 57 without adding evidence; deleting it tightens the close of the story without losing a receipt.",
-      "segment": 3
-    },
-    {
-      "accepted": true,
-      "reason": "Collapses redundant restatement at 40-42 into one tight landing; removes duplicated conclusion without losing the qualifier.",
+      "reason": "Collapses three repeated penalty-gap conclusions into one substantive exchange; retains the key distinction and the human consequence.",
       "segment": 2
     },
     {
       "accepted": true,
-      "reason": "Sharpens the caveat, gives Alex a brief pointed reply, removes Jamie's restatement of the same point.",
+      "reason": "Removes third restatement of Fable/Mythos split; keeps the access-vs-safeguard distinction, which is the only genuinely new point here.",
       "segment": 4
     },
     {
       "accepted": true,
-      "reason": "Removes unverifiable callback to prior episode; preserves the Jamie-Rufus disagreement beat that follows, which is sourced to the conversation itself.",
-      "segment": 4
-    },
-    {
-      "accepted": false,
-      "reason": "sponsor_protected"
+      "reason": "Removes the June-to-November gap restatement duplicated at line 175; keeps the thematic close.",
+      "segment": 5
     }
   ],
-  "input_sha256": "22909959406af02b43b5c9e29aff7e367ad36ce69a7e49b7db1b89539fb8a74d",
+  "input_sha256": "08557c35abe0b436d86ae019822737630252786360cba468716bb53aebca9144",
   "review_before_repairs": {
     "scenes": [
       {
         "segment": 2,
-        "chemistry": "Strong: Jamie's vendor-claim pushback earns a direct answer; Rufus's 'nearly a hundred' observation is precise; the oven analogy lands and gets a dry response from Rufus that Jamie deflects with confidence. Exchanges follow what was just said.",
-        "discovery": "Present: the distinction between owning hardware and owning intelligence is built through conversation, not announced.",
-        "repetition": "Lines 40-42 restate the same 'we'll know in six months' conclusion already reached at line 38-39. Minor redundancy at the close."
+        "chemistry": "Strong: Jamie's '84 days' precision grounds Rufus's template theory; the exchange at lines 47-50 ('branching out') earns its quiet laugh without forcing it.",
+        "discovery": "Present: independent evaluation as the preventive layer (line 44) advances beyond mere reporting; Rufus's incentive-design argument (line 48) adds substance.",
+        "repetition": "Lines 51-60 re-litigate the criminal-law/penalty gap already settled at lines 27-28 and 55-56 without adding new evidence; the verdicts at 57-60 repeat the conclusion twice."
       },
       {
         "segment": 3,
-        "chemistry": "Solid: Jamie's systemic-risk framing extends Rufus's opening rather than repeating it; Alex's separation of personal event from market reaction is a useful structuring move. Lines 62 and 67 both end on 'that's what we saw' / 'visible in a way it wasn't' — same cadence.",
-        "discovery": "Present: the geopolitical-concentration point arrives through accumulation, not summary.",
-        "repetition": "Lines 69 and 72 both deliver the sponsor call-to-action ('think beyond the headline / think about what matters') in nearly identical phrasing. Line 62 echoes line 57 in compressed form without adding evidence."
+        "chemistry": "Mostly good; the shareable exchange (lines 74-84) is the clearest ensemble moment. Lines 79-84 intrude a prior-episode NVIDIA reference ('Yesterday we covered NVIDIA's internal investigation') that has no sourced basis in supplied material.",
+        "discovery": "Present: Caterpillar routing (line 105) and the compute-contract exit-direction reading (line 74) are specific and sourced.",
+        "repetition": "The segment discusses turbines in both segment 3 (Rufus feature) and segment 4 header (line 116 transition), creating a mild double-opening. Lines 85-109 also carry two near-identical 'energy as constraint' conclusions (lines 86 and 109)."
       },
       {
         "segment": 4,
-        "chemistry": "Good comic texture in the voice-smoothing exchange; Alex's self-admission at line 86 is the strongest character moment in the segment. Lines 105-108 carry a lively genuine disagreement that resolves quickly but honestly.",
-        "discovery": "Present: the pivot from AI-features-as-headline to data-center-as-business-story is the segment's real finding and lands cleanly.",
-        "repetition": "Line 105 invokes a listener question framed as a callback but the show history to verify it is not supplied — this should be flagged. Lines 103-104 restate the 'upcoming not available' caveat that line 78 already implied."
+        "chemistry": "Good friction on verification-gate skepticism; Jamie's 'I contain multitudes' (line 145) lands cleanly. The Fermat discussion (lines 131-135) loses momentum because all three simply agree.",
+        "discovery": "Present: Rufus connecting turbine purchase to physical-world model testing (line 138) is the strongest cross-story link in the episode.",
+        "repetition": "Lines 141-143 re-explain the Fable/Mythos safeguard split already stated at lines 121-123; the gate accountability point is made three times (lines 99-101, 123, 142)."
       },
       {
         "segment": 5,
-        "chemistry": "Closing rotates cleanly through all three; Jamie's 'leash is longer' callback earns its place. No forced concession.",
-        "discovery": "The closing question reframes the opening tease usefully.",
-        "repetition": "Lines 123-125 deliver the farewell before the audience question and sponsor tag at lines 126-129, violating the approved sequence. Lines 127-129 contain a second sponsor read and a second follow CTA after the established closing at 123-125, creating two endings."
+        "chemistry": "Warm and clean. Jamie's '84 days' callback (line 179) is the episode's best earned callback.",
+        "discovery": "Rufus's 'independent evaluation travels farthest' (line 171) is a genuine editorial advance over the segment 2 close.",
+        "repetition": "Lines 169 and 175 both summarize the June-to-November gap; one is enough."
       }
     ],
-    "rufus_feature": "The imagined dispatch names a concrete setting (New York Stock Exchange floor, Monday morning) in the first sentence and uses 'Picture' as required. Rufus delivers dated market facts sourced to AP. Jamie and Rufus exchange before the return. The studio responds to what Rufus actually said. Passes as an honest imagined scene with responsive exchange.",
+    "rufus_feature": "The imagined setting is named (institutional investment conference floor, New York) and Rufus inhabits it naturally. Jamie responds with a sharp infrastructure-vs-hedge question before the return. The studio exchange is genuine: Jamie pushes, Rufus qualifies 'independence,' Jamie teases the phrasing, Rufus accepts it dryly. Passes as an honest imagined scene with responsive exchange.",
     "remaining_issues": [
-      "Farewell at lines 123-125 precedes the audience question and sponsor tag at 126-129, breaking the approved closing sequence: audience question, sponsor, follow invitation, then farewell.",
-      "Lines 69 and 72 duplicate the sponsor call-to-action almost word-for-word within the same sponsor read; one must be cut or meaningfully varied.",
-      "Line 105 cites a listener callback ('The question from last November') that cannot be verified against supplied show history — editorial review required before audio.",
-      "Lines 40-42 restate the conclusion already established at lines 38-39 without adding evidence; trim to one landing.",
-      "Line 62 compresses line 57 without new information; cut or fold into the line that follows it."
+      "Lines 79-84: NVIDIA reference ('Yesterday we covered NVIDIA's internal investigation') is unsourced and implies prior episode content not supplied; must be removed.",
+      "Lines 51-60: criminal-law penalty discussion repeats conclusions from lines 27-28 and 55-56 without new evidence; trim to recover runtime for stronger exchange.",
+      "Lines 141-143: third restatement of Fable/Mythos safeguard split adds no new fact or argument.",
+      "Line 169: closing summary restates the June-November gap already captured at line 175; one instance is sufficient."
     ]
   },
   "remaining_production_language": [],
-  "output_sha256": "b5bce79020455a1680d877aa608a8aaf846e4da2cb89564a3e7bed5424df5fd3",
+  "output_sha256": "01702fa8522c6f05780396db9d130c22f2d697193ad05d2084624c69ed5b57a2",
   "status": "repairs_applied_need_audio_review"
 }
