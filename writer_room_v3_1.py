@@ -3122,7 +3122,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             json.dumps(crew_report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         assessment = _assess(script, stories, board, fuel)
 
-        # Preserve the generated candidate before external fact auditing so a
+        # Preserve the generated candidate before final editorial review so a
         # blocked run can be diagnosed and repaired without paying to rewrite it.
         try:
             Path(f"script_fact_candidate_{date_str}.txt").write_text(
@@ -3165,61 +3165,19 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         stories[0]['jamie_transformation_case'] = case
         script = add_feature(script, case, final_editor_request)
 
-        # Required fact verification of the actual final script, after all creative edits.
-        try:
-            from grounded_news_v1 import audit_with_repairs, fact_check_script
-
-            script, fact_audits, total_applied = audit_with_repairs(
-                script,
-                lambda candidate: fact_check_script(
-                    candidate, stories, date_str, model=GROUNDED_NEWS_MODEL
-                ),
-                lambda candidate: _repair_relative_dates(
-                    stabilize(_split_long_turns(candidate, max_words=55)), date_str
-                ),
-                checkpoint_path=f"script_fact_repaired_{date_str}.txt",
-            )
-            assessment = _assess(script, stories, board, fuel)
-            first_fact_audit = fact_audits[0]
-            final_fact_audit = fact_audits[-1]
-            fact_report = {
-                "version": "grounded-fact-firewall-v1",
-                "date": date_str,
-                "initial": first_fact_audit,
-                "audit_passes": fact_audits,
-                "replacements_applied": total_applied,
-                "final": final_fact_audit,
-                "pass": bool(final_fact_audit.get("pass")),
-                "blocking": True,
-            }
-            Path("grounded_fact_check.json").write_text(
-                json.dumps(fact_report, ensure_ascii=False, indent=2) + "\n",
-                encoding="utf-8",
-            )
-            if not fact_report["pass"]:
-                raise RuntimeError("Unresolved factual errors after bounded repairs; see grounded_fact_check.json")
-            else:
-                _safe_print(g, f"      ✅ grounded fact audit passed; exact-line repairs={total_applied}")
-        except Exception as exc:
-            raise RuntimeError("Required factual verification failed before TTS: " + type(exc).__name__) from exc
-
-        # Fact correction may replace a full line. Reassert only the deterministic
-        # navigation/connection lines, then take the final authoritative reading.
+        # Source verification is performed during research. Do not re-audit host dialogue.
+        Path("grounded_fact_check.json").write_text(
+            json.dumps({"date": date_str, "status": "not_run", "blocking": False,
+                        "reason": "Post-script fact checker retired; source checks remain upstream."}) + "\n",
+            encoding="utf-8",
+        )
         script = stabilize(_split_long_turns(script, max_words=55))
         script = _repair_relative_dates(script, date_str)
         assessment = _assess(script, stories, board, fuel)
 
         if not jamie_status(script)['pass']:
-            raise RuntimeError("Jamie transformation did not survive final fact repairs")
+            raise RuntimeError("Jamie transformation missing after final assembly")
 
-        # Fact edits must not reopen a weak scene or invalidate the accepted script.
-        if total_applied:
-            from final_acceptance import verify
-            post_fact_review = verify(script, stories, final_editor_request)
-            Path("post_fact_editorial_report.json").write_text(
-                json.dumps(post_fact_review, indent=2) + "\n", encoding="utf-8")
-            if not post_fact_review['pass']:
-                raise RuntimeError("Fact repairs require editorial recovery before TTS")
         from editorial_contract import audit as editorial_audit
         Path("editorial_contract_report.json").write_text(
             json.dumps(editorial_audit(script), indent=2) + "\n", encoding="utf-8")

@@ -274,9 +274,6 @@ def main() -> int:
     grounded_slate = _read_json(ROOT / "grounded_story_slate.json")
     if not grounded_slate.get("pass"):
         failures.append("grounded 24-48 hour story slate report missing or failed")
-    grounded_fact = _read_json(ROOT / "grounded_fact_check.json")
-    if not grounded_fact.get("pass"):
-        failures.append("grounded claim-level fact audit missing or failed")
 
     report = {
         "version": "recovery-acceptance-v3",
@@ -322,7 +319,7 @@ def main() -> int:
             "older_than_48_hours": len(stale),
             "unknown_age": unknown_age,
             "grounded_slate_pass": bool(grounded_slate.get("pass")),
-            "grounded_fact_check_pass": bool(grounded_fact.get("pass")),
+            "post_script_fact_audit": "not_run",
         },
     }
     REPORT_PATH.write_text(

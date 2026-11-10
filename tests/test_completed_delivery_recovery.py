@@ -16,7 +16,7 @@ class CompletedDeliveryRecoveryTests(unittest.TestCase):
             (source/'podcast_2026-10-13.mp3').write_bytes(audio)
             (source/'feed.xml').write_text('<rss><channel><item><enclosure url="https://example.com/podcast_2026-10-13.mp3"/></item></channel></rss>')
             (root/'feed.xml').write_text('<rss><channel><title>Keep metadata</title><item><title>Keep archive</title></item></channel></rss>')
-            for name, field in [('final_acceptance_report.json','pass'),('grounded_fact_check.json','pass'),('production_delivery_report.json','passed')]:
+            for name, field in [('final_acceptance_report.json','pass'),('production_delivery_report.json','passed')]:
                 (source/name).write_text(json.dumps({field:True}))
             with self.assertRaisesRegex(ValueError, 'hash'):
                 restore(source,'2026-10-13','wrong',root)

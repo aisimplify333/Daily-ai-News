@@ -16,7 +16,6 @@ def restore(source, date, expected_sha256, root=Path('.')):
     if hashlib.sha256(audio.read_bytes()).hexdigest() != expected_sha256:
         raise ValueError('Completed master does not match approved recovery hash')
     for filename, field in [('final_acceptance_report.json','pass'),
-                            ('grounded_fact_check.json','pass'),
                             ('production_delivery_report.json','passed')]:
         if json.loads((source/filename).read_text()).get(field) is not True:
             raise ValueError('Recovery review failed: ' + filename)

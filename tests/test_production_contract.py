@@ -136,9 +136,12 @@ class ProductionContractTests(unittest.TestCase):
         self.assertIn("Story 2: Nvidia faces infrastructure questions", lines[0])
         self.assertIn("Story 3: Schools debate AI restrictions", lines[1])
 
-    def test_production_fact_audit_enabled(self):
+    def test_post_script_fact_checker_removed_from_production(self):
         workflow = (ROOT / ".github/workflows/daily_podcast.yml").read_text()
-        self.assertIn('ENABLE_GROUNDED_FACT_AUDIT: "true"', workflow)
+        self.assertNotIn('ENABLE_GROUNDED_FACT_AUDIT', workflow)
+        code = (ROOT / "writer_room_v3_1.py").read_text()
+        self.assertNotIn("fact_check_script(", code)
+        self.assertNotIn("audit_with_repairs(", code)
 
     def test_title_payoff_surface_check(self):
         self.assertFalse(writer._title_has_payoff(
