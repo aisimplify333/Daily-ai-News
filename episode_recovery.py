@@ -1,5 +1,6 @@
 """Explicit same-day recovery of saved research and writing; normal QA still runs."""
 import datetime as dt
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -37,6 +38,14 @@ def load_recovery(date_str):
     from episode_freshness import assert_fresh_episode
     assert_fresh_episode(stories, date_str, board["published_title"])
     script = (root / f"script_fact_repaired_{date_str}.txt").read_text()
+    # A reviewed patch is keyed to this exact saved draft, never to the live master.
+    digest = hashlib.sha256(script.encode("utf-8")).hexdigest()
+    edits = Path(__file__).parent / "producer_desk" / "recovery_edits" / f"{date_str}-{digest}.json"
+    if edits.is_file():
+        for old, new in json.loads(edits.read_text()):
+            if script.count(old) != 1:
+                raise ValueError("Reviewed recovery edit did not match exactly once")
+            script = script.replace(old, new, 1)
     if not script.strip():
         raise ValueError("Empty recovery script")
     return {"stories": stories, "board": board, "script": script}
