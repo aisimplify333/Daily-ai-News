@@ -284,6 +284,17 @@ Rules:
 - Score each editorial_scores dimension from 0 to 5 with conservative editorial judgment.
   These are comparative opinions, not measured audience outcomes. Evidence depth rewards
   concrete supported detail; money raised and company fame alone earn no points.
+- Lead for a general AI listener on the morning commute. For each candidate's
+  editorial_case.practical_payoff name WHO outside the immediate institution is
+  affected, WHAT changes for them and WHY today. If the evidence only supports a
+  local or specialist consequence, say so; do not invent global spillover.
+  Calibrate human_consequence: 0-2 for a narrow administrative change with no
+  demonstrated wider impact; 3 for a concrete consequential change for a defined
+  audience; 4-5 for broad documented reach OR exceptional tangible stakes.
+  Any country or company can lead. Compare the best product, markets, public
+  interest and practical-use candidates head to head. In the lead's distinct_question
+  capture the question a listener would actually ask. "Your compliance strategy"
+  is not a general-audience payoff. Distinguish recommendations from rules in force.
 - Before ranking, explicitly search official OpenAI, Anthropic, Google/DeepMind,
   Microsoft, Meta, NVIDIA and Apple releases plus TechRadar and independent reporting.
   A model launch must explain actual access and a useful change, not just benchmarks.
