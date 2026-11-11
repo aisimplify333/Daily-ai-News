@@ -3,575 +3,256 @@
   "listened": false,
   "checks": [
     {
-      "pass": false,
-      "failures": [
-        "single_endings: Line 54 and line 55 are identical consecutive lines ('And the people whose data was in that system in June are still waiting for the full picture.'), which is a duplicated line in Story 1 \u2014 an apparent script error creating a false doubled beat before the story continues. This is an observable duplication that disrupts the single-ending requirement for Story 1. The closing block structure is otherwise correct: the listener question (170), early thanks/return tease (171\u2013173), closing sponsor credit (174), house tag and follow CTA (175\u2013176) form one approved closing block. The midroll placement (104\u2013107) is a correctly placed single conversational midroll. The opening sponsor read (9\u201310) is correctly placed. No extra ad placement or repeated ad fragment beyond the duplicated story line is present. Story 2 and Story 3 endings are clean. The AI transformation block has its own payoff (160) and is correctly marked. The single failure is the duplicated line 54/55."
-      ],
-      "checks": {
-        "responsive_banter": {
-          "pass": true,
-          "evidence": [
-            "RUFUS: That detail is doing a lot of work.",
-            "JAMIE: Nearly three months.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: That's a more optimistic read than I expected.",
-            "JAMIE: I'm slightly annoyed it's a fair point.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks.",
-            "RUFUS: Heh. Consistent, at least.",
-            "JAMIE: Fourteen uninterrupted minutes of the first one.",
-            "RUFUS: Has it prepared a second piece?"
-          ],
-          "evidence_line_numbers": [
-            4,
-            3,
-            50,
-            49,
-            96,
-            71,
-            72,
-            139,
-            140,
-            149,
-            148
-          ],
-          "reason": "The episode sustains genuine three-way responsiveness across all segments. Alex presses with real questions rather than cuing turns (lines 22, 35, 85, 91, 135). Rufus and Jamie react to each other's specific framings: Jamie's skepticism of Rufus's 'template' theory at line 47 earns a substantive pushback at line 48, not a topic change. Jamie's dry 'very Rufus way of saying' (71) and Rufus's self-aware 'I'm branching out' (50) show personality rather than role performance. Alex's surprise at Jamie's generous read (138) is itself responsive. The ventilation-fan scene (147\u2013159) is tightly interactive. Weak patches exist: lines 63\u201378 mix up story order and import NVIDIA market data not from the source records, producing a confused stretch where the exchange loses focus, and the closing synthesis (163\u2013169) is mostly sequential rather than dialogic. But the overall pattern is engaged and particular rather than interchangeable.",
-          "story_notes": {
-            "segment_2_story_1_australia": "Challenge: Alex asks directly whether a national regulator can reach cross-border AI agents (line 22). Rufus responds with the market-access lever (23\u201325); Jamie immediately cross-references GDPR (26); Alex sharpens with the missing penalty detail (27); Rufus concedes the gap (28). The dispute about optimism vs. skepticism (47\u201350) develops genuinely and ends with wit rather than capitulation. The long stretch of lines 39\u201346 is analytical but each speaker adds a distinct layer (Jamie on investigation complexity, Rufus on audit trails, Alex on what gets reported). Engagement is sustained throughout.",
-            "segment_3_story_2_anthropic_turbines": "This segment opens confused: Alex's line 63 pitches turbines but lines 65\u201373 deliver the Rufus scene correctly. Then lines 74\u201378 introduce NVIDIA market data (not in source records) creating a digression before returning to turbines at line 79. The challenge Jamie raises at line 84\u2014the environmental cost of natural gas\u2014is substantive but Alex deflects at line 85 by asking whether the reporting covers it, Jamie confirms it doesn't (86), and Rufus closes it (87). That is a genuine unresolved disagreement handled honestly. Lines 88\u2013103 then pivot to the Claude model capability discussion, which belongs to Story 3, blurring the segment boundary. The turbines story itself never receives a clean closing payoff; it dissolves into the model story.",
-            "segment_4_story_3_claude_models": "Challenge: Jamie's skepticism about the verification gate being a governance move versus a premium-tier marketing decision (line 118) is the sharpest challenge in this segment. Rufus reframes it as an accountability trail (117, 136); Jamie partially accepts it at line 96 ('slightly annoyed it's a fair point') and re-anchors her skepticism at line 139. This is the most developed three-way dispute in the episode\u2014it runs lines 116\u2013143 without fizzling into summary. The Fermat discussion (124\u2013130) is handled with appropriate restraint. No long stretch of interchangeable summary; each speaker advances a distinct position."
-          },
-          "verified_evidence": [
-            "RUFUS: That detail is doing a lot of work.",
-            "JAMIE: Nearly three months.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: That's a more optimistic read than I expected.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks.",
-            "RUFUS: Heh. Consistent, at least.",
-            "JAMIE: Fourteen uninterrupted minutes of the first one.",
-            "RUFUS: Has it prepared a second piece?",
-            "RUFUS: That detail is doing a lot of work.",
-            "JAMIE: Nearly three months.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: That's a more optimistic read than I expected.",
-            "JAMIE: That's a fair point. I'm slightly annoyed it's a fair point.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks.",
-            "RUFUS: Heh. Consistent, at least.",
-            "JAMIE: Fourteen uninterrupted minutes of the first one. Here's my experiment: can Adobe Podcast Enhance Speech make the words easier to hear without wrecking the joke?",
-            "RUFUS: Has it prepared a second piece?"
-          ]
-        },
-        "cast_warmth": {
-          "pass": true,
-          "evidence": [
-            "JAMIE: That's a more optimistic read than I expected.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: I'm slightly annoyed it's a fair point.",
-            "RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "JAMIE: A rare victory for the ventilation department. RUFUS: A conditional victory."
-          ],
-          "evidence_line_numbers": [
-            49,
-            50,
-            71,
-            72,
-            96,
-            140,
-            148,
-            156,
-            157
-          ],
-          "reason": "Affection is present in texture rather than announcement. Rufus's 'I'm branching out' (50) is self-deprecating in direct response to Jamie's teasing; Jamie's 'slightly annoyed it's a fair point' (96) is warmth encoded in mock-irritation. Rufus's quick 'Has it prepared a second piece?' (148) during Jamie's AI transformation scene is playful engagement, not a moderator prompt. The disputes over the verification gate and the regulator template stay intellectually sharp without tipping into hostility. Alex's noting surprise at Jamie's generous read (138) and Jamie's 'I contain multitudes' (139) are characteristic rather than performed. The episode does not force reconciliation or rotate emotions artificially.",
-          "verified_evidence": [
-            "JAMIE: That's a more optimistic read than I expected.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "JAMIE: That's a more optimistic read than I expected.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: That's a fair point. I'm slightly annoyed it's a fair point.",
-            "RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "RUFUS: A rare victory for the ventilation department.",
-            "JAMIE: A conditional victory. We haven't run this hypothetical rehearsal, and I'm making no claim about what your recording will sound like. Adobe documents speech enhancement; it doesn't promise to understand why your pause is funny."
-          ]
-        },
-        "useful_discovery": {
-          "pass": true,
-          "evidence": [
-            "RUFUS: If frontier labs have to submit models for third-party review before they're deployed in sensitive contexts, that's a material shift in how capability gets introduced.",
-            "RUFUS: The gate isn't a capability wall. It's an accountability record. You've identified yourself, your organization, your use case.",
-            "JAMIE: Software migrations, electronic device design, robotics evaluations, physics work, and \u2014 this is the one that stopped me \u2014 formalizing the proof of Fermat's Last Theorem.",
-            "RUFUS: Which is consistent with the turbine purchase, actually. You need serious compute for serious physical-world AI work. The energy investment and the model capability are pointing in the same direction.",
-            "JAMIE: Record fifteen seconds of your own made-up announcement on your phone, in a room with steady background noise. Leave that little gap before the punchline. Keep the original file. Upload a copy to Adobe Podcast Enhance Speech, choose the file, and download the processed version."
-          ],
-          "evidence_line_numbers": [
-            165,
-            93,
-            124,
-            132,
-            151
-          ],
-          "reason": "Multiple concrete beneficial discoveries are present. The independent model evaluation requirement (line 165) is explained as a structural shift in how AI capability enters sensitive contexts\u2014something a listener can understand and act on. The verification gate as accountability record rather than capability wall (93) reframes a governance mechanism usefully. The robotics and physical-world testing scope (124, 130\u2013132) gives developers and engineers a concrete picture of where the models are aimed. The AI transformation scene (151\u2013159) provides a genuinely actionable, step-by-step audio evaluation methodology. These go beyond fear and compliance framing.",
-          "verified_evidence": [
-            "RUFUS: The gate isn't a capability wall. It's an accountability record. You've identified yourself, your organization, your use case.",
-            "JAMIE: Software migrations, electronic device design, robotics evaluations, physics work, and \u2014 this is the one that stopped me \u2014 formalizing the proof of Fermat's Last Theorem.",
-            "RUFUS: Which is consistent with the turbine purchase, actually. You need serious compute for serious physical-world AI work. The energy investment and the model capability are pointing in the same direction.",
-            "RUFUS: The independent model evaluation is the part I think will travel farthest. If frontier labs have to submit models for third-party review before they're deployed in sensitive contexts, that's a material shift in how capability gets introduced. Australia is small enough to move fast and credible enough to be taken seriously.",
-            "RUFUS: The gate isn't a capability wall. It's an accountability record. You've identified yourself, your organization, your use case.",
-            "JAMIE: Software migrations, electronic device design, robotics evaluations, physics work, and \u2014 this is the one that stopped me \u2014 formalizing the proof of Fermat's Last Theorem.",
-            "RUFUS: Which is consistent with the turbine purchase, actually. You need serious compute for serious physical-world AI work. The energy investment and the model capability are pointing in the same direction.",
-            "JAMIE: You get to run it. Record fifteen seconds of your own made-up announcement on your phone, in a room with steady background noise. Leave that little gap before the punchline. Keep the original file. Upload a copy to Adobe Podcast Enhance Speech, choose the file, and download the processed version."
-          ]
-        },
-        "rufus_scene": {
-          "pass": true,
-          "evidence": [
-            "ALEX: Rufus, take us to the global desk.",
-            "RUFUS: Right. Picture the floor of a large institutional investment conference in New York \u2014 the kind of room where everyone has a thesis about AI infrastructure and they're revising it in real time.",
-            "JAMIE: Is that an infrastructure move, or a hedge against the cloud providers they depend on?",
-            "RUFUS: Both, I think. And that's rather the point.",
-            "JAMIE: So they're buying their way toward independence.",
-            "RUFUS: At three-point-four billion, yes. Though 'independence' is a strong word for a company with a disclosed one-point-two-five billion-a-month compute contract through May 2029.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "ALEX: Back to the wider story."
-          ],
-          "evidence_line_numbers": [
-            64,
-            65,
-            67,
-            68,
-            69,
-            70,
-            71,
-            72,
-            73
-          ],
-          "reason": "Alex's handoff is explicit at line 64. Rufus sets a concrete imagined location (institutional investment conference floor, New York) with a specific atmospheric detail (everyone revising their thesis in real time). Jamie challenges immediately with a genuine either/or question (line 67) and Rufus gives a substantive 'both' answer with reasoning (68). Jamie's follow-up (69) advances the exchange; Rufus's correction of the word 'independence' with specific financial figures (70) is dry wit with a useful payoff. Jamie's 'very Rufus way of saying' (71) and Rufus's deadpan confirmation (72) close the scene with personality. Alex's return line is explicit at 73. The scene is brief but contains a setting, a Jamie challenge, Rufus's responsive reply, wit in the correction, and a payoff.",
-          "verified_evidence": [
-            "ALEX: Rufus, take us to the global desk.",
-            "RUFUS: Right. Picture the floor of a large institutional investment conference in New York \u2014 the kind of room where everyone has a thesis about AI infrastructure and they're revising it in real time.",
-            "JAMIE: Is that an infrastructure move, or a hedge against the cloud providers they depend on?",
-            "RUFUS: Both, I think. And that's rather the point.",
-            "JAMIE: So they're buying their way toward independence.",
-            "RUFUS: At three-point-four billion, yes. Though 'independence' is a strong word for a company with a disclosed one-point-two-five billion-a-month compute contract through May 2029.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "ALEX: Back to the wider story.",
-            "ALEX: Rufus, take us to the global desk.",
-            "RUFUS: Right. Picture the floor of a large institutional investment conference in New York \u2014 the kind of room where everyone has a thesis about AI infrastructure and they're revising it in real time. Because the question that keeps surfacing isn't about software anymore.",
-            "JAMIE: Is that an infrastructure move, or a hedge against the cloud providers they depend on?",
-            "RUFUS: Both, I think. And that's rather the point. Anthropic's S-1 disclosed a large monthly services contract for computing through May twenty twenty-nine. That's the existing dependency. The turbines may be the beginning of an exit from it.",
-            "JAMIE: So they're buying their way toward independence.",
-            "RUFUS: At three-point-four billion, yes. Though 'independence' is a strong word for a company with a disclosed one-point-two-five billion-a-month compute contract through May 2029. The turbines are a direction of travel, not an arrival.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "ALEX: Back to the wider story."
-          ]
-        },
-        "single_endings": {
-          "pass": false,
-          "evidence": [
-            "ALEX: And the people whose data was in that system in June are still waiting for the full picture.",
-            "ALEX: And the people whose data was in that system in June are still waiting for the full picture.",
-            "JAMIE: Thanks for spending this time with us.",
-            "RUFUS: We'll be back tomorrow.",
-            "JAMIE: Don't wait eighty-four days to tell us what you think of the episode.",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
-            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
-            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
-          ],
-          "evidence_line_numbers": [
-            54,
-            55,
-            171,
-            172,
-            173,
-            174,
-            175,
-            176
-          ],
-          "reason": "Line 54 and line 55 are identical consecutive lines ('And the people whose data was in that system in June are still waiting for the full picture.'), which is a duplicated line in Story 1 \u2014 an apparent script error creating a false doubled beat before the story continues. This is an observable duplication that disrupts the single-ending requirement for Story 1. The closing block structure is otherwise correct: the listener question (170), early thanks/return tease (171\u2013173), closing sponsor credit (174), house tag and follow CTA (175\u2013176) form one approved closing block. The midroll placement (104\u2013107) is a correctly placed single conversational midroll. The opening sponsor read (9\u201310) is correctly placed. No extra ad placement or repeated ad fragment beyond the duplicated story line is present. Story 2 and Story 3 endings are clean. The AI transformation block has its own payoff (160) and is correctly marked. The single failure is the duplicated line 54/55.",
-          "verified_evidence": [
-            "ALEX: And the people whose data was in that system in June are still waiting for the full picture.",
-            "ALEX: And the people whose data was in that system in June are still waiting for the full picture.",
-            "JAMIE: Thanks for spending this time with us.",
-            "RUFUS: We'll be back tomorrow.",
-            "JAMIE: Don't wait eighty-four days to tell us what you think of the episode.",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
-            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
-            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
-            "ALEX: And the people whose data was in that system in June are still waiting for the full picture.",
-            "ALEX: And the people whose data was in that system in June are still waiting for the full picture.",
-            "JAMIE: Thanks for spending this time with us.",
-            "RUFUS: We'll be back tomorrow.",
-            "JAMIE: Don't wait eighty-four days to tell us what you think of the episode.",
-            "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
-            "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
-            "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
-          ]
-        }
-      },
-      "feature_word_band_advisory": false,
-      "script_sha256": "01702fa8522c6f05780396db9d130c22f2d697193ad05d2084624c69ed5b57a2"
-    },
-    {
       "pass": true,
       "failures": [],
       "checks": {
         "responsive_banter": {
           "pass": true,
           "evidence": [
-            "RUFUS: That detail is doing a lot of work.",
-            "JAMIE: Nearly three months.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: I'm slightly annoyed it's a fair point.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks.",
-            "RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "JAMIE: A conditional victory. We haven't run this hypothetical rehearsal..."
+            "JAMIE: That investor list isn't a funding round. That's the entire chip-to-cloud supply chain writing one check.",
+            "RUFUS: And they did it before the public got a single share.",
+            "JAMIE: I love that it says that. I genuinely do.",
+            "RUFUS: But?",
+            "JAMIE: Rufus, did you actually consider calling twenty-six billion a modest start?",
+            "RUFUS: I considered it. Decided it was uncharitable to everyone's intelligence, including my own.",
+            "JAMIE: That's new.",
+            "RUFUS: I'm evolving.",
+            "RUFUS: So you're defending the model.",
+            "JAMIE: I'm saying it might be appropriate. I'm also saying the gap between 'six thousand prebuilt agents' and 'requires forward-deployed engineers from two of the largest companies in tech' is a gap worth noticing before you sign anything.",
+            "RUFUS: The timing relative to Anthropic's IPO is not coincidental, I think. Carbon becoming broadly available the same day Anthropic launches its roadshow is not a scheduling accident.",
+            "ALEX: Google would say that's just the product being ready.",
+            "RUFUS: Google would absolutely say that. And both things can be true.",
+            "JAMIE: Both can be true.",
+            "RUFUS: I'm going to let that land without comment.",
+            "JAMIE: Wise."
           ],
           "evidence_line_numbers": [
-            4,
             3,
-            50,
-            92,
-            70,
-            71,
-            135,
-            136,
-            144,
-            153
+            4,
+            20,
+            21,
+            27,
+            28,
+            29,
+            30,
+            84,
+            85,
+            128,
+            129,
+            130,
+            57,
+            52,
+            53
           ],
-          "reason": "The episode sustains genuine three-way responsiveness throughout. The cold open (lines 3-4) establishes the pattern immediately: Jamie reacts with a compressed fact, Rufus reacts to Jamie's reaction rather than the anchor question. Alex functions as a genuine participant raising actual challenges (lines 22, 35, 87, 131) rather than merely moderating. Disagreements develop past a single exchange: the verification-gate skepticism (lines 114-118) runs through Jamie challenging Anthropic's self-reported evidence, Rufus offering a structural counter, Jamie conceding the industry-wide point but insisting on saying it aloud anyway. The Rufus-as-optimist moment (lines 48-50) is responded to with surprise and wit rather than a nod and topic change. Story 2 (turbines) is thinner on three-way tension but recovers via the emissions pushback (lines 80-83) and the Caterpillar routing detail (lines 95-97) where all three build on each other. Story 3 (models) has the richest back-and-forth: the shared-underlying-model observation (lines 87-91), the Fermat hedging chain (lines 120-125), and the accountability-vs-safeguard exchange (lines 131-133) all show listening and building. The midroll (lines 100-103) is performed banter rather than organic exchange, which is a minor flatness but is structurally a sponsor placement. No stretch runs longer than a few consecutive lines without a reaction or challenge from another speaker. The pattern across all three stories is engaged rather than interchangeable.",
+          "reason": "The episode sustains genuine three-way responsiveness throughout. Alex is not a moderator but a participant who advances arguments (lines 24, 26, 37, 43, 54), Jamie challenges and provokes (lines 13, 27, 66, 76, 85), and Rufus corrects, counters, and occasionally accepts correction (lines 75, 77, 95). Exchanges like the 'public benefit corporation' thread (lines 19\u201333) develop across multiple turns rather than resolving in one comeback. The ANT ticker metaphor (line 51) and Rufus's dry non-response (line 52) show genuine character-specific reactions. Story 2 produces a real and unresolved tension: Jamie's 'six thousand agents' skepticism is partially conceded by Rufus (line 75, 77) but Jamie sharpens the concern rather than dropping it (lines 76, 85\u201390), ending in an uncomfortable conclusion neither party fully endorses. Story 3 is lighter but Alex and Rufus build the IPO-timing observation (lines 128\u2013130) as a shared inference, not a scripted beat. The weakest stretch is roughly lines 107\u2013119 in Story 3, where Alex delivers several consecutive explanatory turns and Jamie and Rufus react briefly; this is functional but less dynamic than Stories 1 and 2. Overall the pattern is engaged and character-distinct rather than politely alternating.",
           "story_notes": {
-            "segment_2_story_1_australia": "Challenge: Alex at line 22 asks whether a national regulator can actually reach a cross-border AI agent. Rufus responds with the market-access lever (line 23), Jamie maps it to GDPR (line 26), Alex then sharpens with the missing penalty detail (line 27), and Rufus names that as the real gap (line 28). The dispute about whether mandatory disclosure changes incentives before or after incidents (lines 47-50) develops genuinely, ending with Rufus's self-aware 'I'm branching out' rather than a flat concession. The exchange about what gets reported when the full picture is unknown (lines 42-46) adds a second wave of development. No long stretch of interchangeable summary; the thread holds across roughly thirty lines.",
-            "segment_3_story_2_turbines": "The Rufus scene covers the turbines story. After the return at line 72, Alex immediately raises a pointed framing question (line 75), Rufus reframes energy as a core constraint rather than a utility (line 76), Jamie adds the industry-wide context (line 77), then raises the environmental concern (line 80). Alex presses on whether the sourced reporting addresses emissions (line 81), Jamie honestly flags the gap (line 82). The weakest stretch is lines 84-99, where the conversation slides into the Fable/Mythos material early (lines 84-94) before returning to the Caterpillar routing detail. This is a mild bleed across stories rather than interchangeable summary, and each beat still draws a distinct response.",
-            "segment_4_story_3_models": "Jamie's skepticism about the verification gate as a possible premium-tier mechanism (line 114) is the central challenge. Rufus counters with the accountability-trail argument (line 113, then 132), Alex presses on what the gate actually changes (line 131), and Jamie's eventual partial concession (lines 133-135) is marked with self-aware wit rather than a flat pivot. The Fermat discussion (lines 120-125) is a shared discovery sequence: Jamie flags it, Alex confirms the reference, Rufus adds the publication context, Jamie distinguishes formalization from novel proof, Rufus names it an interesting signal without a complete picture. No interchangeable summaries; each speaker adds a distinct angle."
+            "segment_2_story_1": "Challenge: Jamie asks what Class N shares actually are (line 13); Alex explains and Rufus immediately extends it to the supply-chain framing (line 15). The public benefit corporation thread is the most developed dispute: Jamie raises the tension between mission and quarterly earnings calls (line 22), Alex names both readings (line 24), and the disagreement is never resolved \u2014 deliberately held open at lines 59\u201360. The Class N disclosure-to-competitor thread (lines 43\u201350) develops across four turns and ends with Rufus naming it a 'genuinely novel governance experiment.' No long stretch of interchangeable summary; each turn advances the analysis.",
+            "segment_3_story_2": "Challenge: Jamie's 'Who is auditing six thousand agents?' (line 66) is met with Rufus's dry 'other agents' (line 67) and then a genuine substantive exchange. The core dispute \u2014 whether prebuilt means ready or templated \u2014 develops from line 74 through line 91 and is not resolved: Jamie's concession at line 95 ('even a vendor-controlled audit trail is better than no audit trail') is explicitly framed as uncomfortable (line 96). Rufus's scene adds the institutional-knowledge-as-second-return insight (line 88), which Jamie and Alex extend. The weakest moment is line 95\u201396, where Jamie's 'fair' risks being a topic-closer, but Alex re-opens the governance question (line 92) before that happens. No long interchangeable-summary stretch.",
+            "segment_4_story_3": "Challenge: Jamie's questioning of the scientific-reasoning claim (lines 121\u2013123) is the sharpest moment \u2014 a named skepticism with a stated condition for belief. Rufus extends it by identifying why the research tier matters structurally (line 124), and Alex adds the NDA contrast (line 125). The long-horizon agentic workflows exchange (lines 131\u2013133) is a genuine shared discovery rather than a challenge: Jamie explains the actual problem, Alex restates it as a question, Jamie confirms and qualifies. The weakest stretch is lines 107\u2013119 where Alex explains access tiers across four mostly uninterrupted turns; Rufus's 'doing considerable work' (line 111) and Jamie's 'why?' (line 113) break it up but do not fully restore parity. The pricing-cliff observation (lines 134\u2013136) is a brief but real three-way inference."
           },
           "verified_evidence": [
-            "RUFUS: That detail is doing a lot of work.",
-            "JAMIE: Nearly three months.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks.",
-            "RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "RUFUS: That detail is doing a lot of work.",
-            "JAMIE: Nearly three months.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: That's a fair point. I'm slightly annoyed it's a fair point.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks.",
-            "RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "JAMIE: A conditional victory. We haven't run this hypothetical rehearsal, and I'm making no claim about what your recording will sound like. Adobe documents speech enhancement; it doesn't promise to understand why your pause is funny."
+            "JAMIE: That investor list isn't a funding round. That's the entire chip-to-cloud supply chain writing one check.",
+            "RUFUS: And they did it before the public got a single share.",
+            "JAMIE: I love that it says that. I genuinely do.",
+            "RUFUS: But?",
+            "JAMIE: Rufus, did you actually consider calling twenty-six billion a modest start?",
+            "RUFUS: I considered it. Decided it was uncharitable to everyone's intelligence, including my own.",
+            "JAMIE: That's new.",
+            "RUFUS: I'm evolving.",
+            "RUFUS: So you're defending the model.",
+            "RUFUS: The timing relative to Anthropic's IPO is not coincidental, I think. Carbon becoming broadly available the same day Anthropic launches its roadshow is not a scheduling accident.",
+            "ALEX: Google would say that's just the product being ready.",
+            "RUFUS: Google would absolutely say that. And both things can be true.",
+            "JAMIE: Both can be true.",
+            "RUFUS: I'm going to let that land without comment.",
+            "JAMIE: Wise.",
+            "JAMIE: That investor list isn't a funding round. That's the entire chip-to-cloud supply chain writing one check.",
+            "RUFUS: And they did it before the public got a single share.",
+            "JAMIE: I love that it says that. I genuinely do.",
+            "RUFUS: But?",
+            "JAMIE: Rufus, did you actually consider calling twenty-six billion a modest start?",
+            "RUFUS: I considered it. Decided it was uncharitable to everyone's intelligence, including my own.",
+            "JAMIE: That's new.",
+            "RUFUS: I'm evolving.",
+            "RUFUS: So you're defending the model.",
+            "JAMIE: I'm saying it might be appropriate. I'm also saying the gap between \"six thousand prebuilt agents\" and \"requires forward-deployed engineers from two of the largest companies in tech\" is a gap worth noticing before you sign anything.",
+            "RUFUS: The timing relative to Anthropic's IPO is not coincidental, I think. Carbon becoming broadly available the same day Anthropic launches its roadshow is not a scheduling accident.",
+            "ALEX: Google would say that's just the product being ready.",
+            "RUFUS: Google would absolutely say that. And both things can be true.",
+            "JAMIE: Both can be true.",
+            "RUFUS: I'm going to let that land without comment.",
+            "JAMIE: Wise."
           ]
         },
         "cast_warmth": {
           "pass": true,
           "evidence": [
-            "RUFUS: I'm branching out.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet. RUFUS: It is accurate, though.",
-            "JAMIE: I'm slightly annoyed it's a fair point.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks. RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "JAMIE: A rare victory for the ventilation department. RUFUS: A conditional victory.",
-            "ALEX: That's a more generous reading than I expected from you."
+            "JAMIE: I love that it says that. I genuinely do.",
+            "RUFUS: But?",
+            "JAMIE: Rufus, did you actually consider calling twenty-six billion a modest start?",
+            "RUFUS: I considered it. Decided it was uncharitable to everyone's intelligence, including my own.",
+            "JAMIE: That's new.",
+            "RUFUS: I'm evolving.",
+            "JAMIE: I learned from someone.",
+            "RUFUS: I'm going to let that land without comment.",
+            "JAMIE: Wise.",
+            "RUFUS: Same three people, different set of large numbers."
           ],
           "evidence_line_numbers": [
-            50,
-            70,
-            71,
-            92,
-            135,
-            136,
-            144,
-            152,
-            134
+            20,
+            21,
+            27,
+            28,
+            29,
+            30,
+            61,
+            52,
+            53,
+            147
           ],
-          "reason": "Affection is carried by teasing and self-awareness rather than announcements. Jamie's 'very Rufus way of saying' (line 70) is a recognizable character note that lands as fond mockery. Rufus's dry 'It is accurate, though' (line 71) is a composed self-defense that implicitly accepts the tease. Jamie's annoyance at a fair point (line 92) is the warmth of someone who wanted to win the argument and didn't. Alex calling out Jamie's unexpectedly generous read (line 134) and Jamie's 'I contain multitudes' reply (line 135) with Rufus's one-word appreciation (line 136) is a three-beat exchange that shows familiarity. The ventilation-fan riff in the AI transformation scene (lines 144-155) is the clearest extended warmth: Rufus's 'Has it prepared a second piece?' (line 144) is dry wit offered into Jamie's setup, and Jamie's conditional-victory callback to Rufus's earlier phrasing (line 152-153) completes the loop. Disagreements (the verification-gate skepticism, the optimism-about-disclosure exchange) stay intellectually sharp without tipping into hostility. The characters are distinguishable throughout and treat each other with the ease of people who know each other's habits.",
+          "reason": "Warmth is carried through character-specific teasing and trust rather than announced affection. Jamie teases Rufus about almost softening his language (line 27) and Rufus accepts the tease with self-deprecating precision (line 28\u201330) rather than defensiveness. Jamie's closing 'I learned from someone' (line 61) implies ongoing influence across the episode without sentimentalizing it. Rufus's 'Same three people, different set of large numbers' (line 147) is dry but inclusive. The disagreements \u2014 particularly Jamie vs Rufus on the six-thousand-agents question \u2014 stay substantive and are never hostile; Rufus concedes partial points (lines 75, 77) and Jamie does the same (line 95), which reads as mutual respect. Alex's curiosity is informal and pulls responses rather than moderating them. No exchanges tip into hostility or cold alternating monologue.",
           "verified_evidence": [
-            "RUFUS: I'm branching out.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet. RUFUS: It is accurate, though.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks. RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "ALEX: That's a more generous reading than I expected from you.",
-            "RUFUS: I'm branching out.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
-            "JAMIE: That's a fair point. I'm slightly annoyed it's a fair point.",
-            "JAMIE: I contain multitudes. I'm still waiting for the independent benchmarks.",
-            "RUFUS: Heh. Consistent, at least.",
-            "RUFUS: Has it prepared a second piece?",
-            "RUFUS: A rare victory for the ventilation department.",
-            "ALEX: That's a more generous reading than I expected from you."
+            "JAMIE: I love that it says that. I genuinely do.",
+            "RUFUS: But?",
+            "JAMIE: Rufus, did you actually consider calling twenty-six billion a modest start?",
+            "RUFUS: I considered it. Decided it was uncharitable to everyone's intelligence, including my own.",
+            "JAMIE: That's new.",
+            "RUFUS: I'm evolving.",
+            "JAMIE: I learned from someone.",
+            "RUFUS: I'm going to let that land without comment.",
+            "JAMIE: Wise.",
+            "RUFUS: Same three people, different set of large numbers.",
+            "JAMIE: I love that it says that. I genuinely do.",
+            "RUFUS: But?",
+            "JAMIE: Rufus, did you actually consider calling twenty-six billion a modest start?",
+            "RUFUS: I considered it. Decided it was uncharitable to everyone's intelligence, including my own.",
+            "JAMIE: That's new.",
+            "RUFUS: I'm evolving.",
+            "JAMIE: I learned from someone.",
+            "RUFUS: I'm going to let that land without comment.",
+            "JAMIE: Wise.",
+            "RUFUS: Same three people, different set of large numbers."
           ]
         },
         "useful_discovery": {
           "pass": true,
           "evidence": [
-            "RUFUS: Farther than you'd think, if you want to sell anything in Australia.",
-            "RUFUS: It's the only one that reliably works. Comply with Australian rules or lose Australian customers. That's it.",
-            "RUFUS: An outside evaluation could help there. If someone has tested the model before deployment, you have something to compare the incident with. What did the test predict, and where was it wrong?",
-            "RUFUS: If frontier labs have to submit models for third-party review before they're deployed in sensitive contexts, that's a material shift in how capability gets introduced.",
-            "JAMIE: Software migrations, electronic device design, robotics evaluations, physics work, and \u2014 this is the one that stopped me \u2014 formalizing the proof of Fermat's Last Theorem.",
-            "RUFUS: Which is consistent with the turbine purchase, actually. You need serious compute for serious physical-world AI work. The energy investment and the model capability are pointing in the same direction."
+            "RUFUS: The scientific research tier is interesting precisely because if the model performs there, you get independent verification relatively quickly. Scientists publish. Reviewers check.",
+            "ALEX: That's the mechanism that makes this different from a pure enterprise play. The enterprise customers might sign NDAs. The research community doesn't.",
+            "JAMIE: Can I just say \u2014 long-horizon agentic workflows is a genuinely important capability claim. Because the problem with current agents isn't that they can't do step one. It's that by step twelve they've drifted, forgotten context, or made an assumption that invalidates everything downstream.",
+            "ALEX: So 'long-horizon' means it can hold a complex multi-step task together without falling apart.",
+            "JAMIE: That's the claim. And if that's real \u2014 not benchmark real, real-world real \u2014 that's a meaningful advance.",
+            "ALEX: So the practical window is the next three weeks \u2014 run Carbon on problems you actually care about, not the demos Google chose to show. The results from independent use will outweigh anything on the launch page."
           ],
           "evidence_line_numbers": [
-            23,
-            25,
-            44,
-            161,
-            120,
-            128
+            124,
+            125,
+            131,
+            132,
+            133,
+            137
           ],
-          "reason": "The episode delivers at least two substantial beneficial discoveries. First, the market-access enforcement mechanism (lines 23-26): the insight that extraterritorial AI regulation works through market access rather than server location gives listeners a concrete mental model for how national rules can reach global companies \u2014 genuinely instructive beyond fear of penalties. Second, the pre-deployment evaluation as an incident-response tool (line 44): Rufus explains that testing a model before deployment creates a baseline to compare against in the event of an incident, which is an actionable, forward-looking use of the independent evaluation requirement \u2014 not just compliance but a diagnostic resource. Third, the convergence observation (line 128): the connection drawn between the turbine purchase and the physical-world testing scope (robotics, device design) gives listeners a concrete way to understand why energy infrastructure and model capability are co-developing, which is an insight beyond either story alone. The Fermat formalization detail (line 120) and the honest hedging around it (lines 124-125) also teach listeners how to read vendor capability claims \u2014 distinguishing formalization from novel proof is a practically useful distinction.",
+          "reason": "The Gemini 4 Carbon story delivers a concrete beneficial insight: the free research-access tier creates a mechanism for independent verification of capability claims because scientists publish and reviewers check \u2014 unlike NDA-bound enterprise customers. This is explained causally and specifically (lines 124\u2013125). The long-horizon agentic workflow explanation (lines 131\u2013133) teaches the listener what the actual unsolved problem is (context drift across multi-step tasks) and why solving it would be a meaningful advance, not just a benchmark improvement. The practical three-week window for testing at introductory pricing (lines 120, 137) gives a concrete, time-bound action. Together these constitute a supported useful discovery that goes beyond fear or compliance framing.",
           "verified_evidence": [
-            "RUFUS: Farther than you'd think, if you want to sell anything in Australia.",
-            "RUFUS: It's the only one that reliably works. Comply with Australian rules or lose Australian customers. That's it.",
-            "RUFUS: An outside evaluation could help there. If someone has tested the model before deployment, you have something to compare the incident with. What did the test predict, and where was it wrong?",
-            "JAMIE: Software migrations, electronic device design, robotics evaluations, physics work, and \u2014 this is the one that stopped me \u2014 formalizing the proof of Fermat's Last Theorem.",
-            "RUFUS: Which is consistent with the turbine purchase, actually. You need serious compute for serious physical-world AI work. The energy investment and the model capability are pointing in the same direction.",
-            "RUFUS: Farther than you'd think, if you want to sell anything in Australia.",
-            "RUFUS: It's the only one that reliably works. Comply with Australian rules or lose Australian customers. That's it.",
-            "RUFUS: An outside evaluation could help there. If someone has tested the model before deployment, you have something to compare the incident with. What did the test predict, and where was it wrong?",
-            "RUFUS: The independent model evaluation is the part I think will travel farthest. If frontier labs have to submit models for third-party review before they're deployed in sensitive contexts, that's a material shift in how capability gets introduced. Australia is small enough to move fast and credible enough to be taken seriously.",
-            "JAMIE: Software migrations, electronic device design, robotics evaluations, physics work, and \u2014 this is the one that stopped me \u2014 formalizing the proof of Fermat's Last Theorem.",
-            "RUFUS: Which is consistent with the turbine purchase, actually. You need serious compute for serious physical-world AI work. The energy investment and the model capability are pointing in the same direction."
+            "RUFUS: The scientific research tier is interesting precisely because if the model performs there, you get independent verification relatively quickly. Scientists publish. Reviewers check.",
+            "ALEX: That's the mechanism that makes this different from a pure enterprise play. The enterprise customers might sign NDAs. The research community doesn't.",
+            "JAMIE: Can I just say \u2014 long-horizon agentic workflows is a genuinely important capability claim. Because the problem with current agents isn't that they can't do step one. It's that by step twelve they've drifted, forgotten context, or made an assumption that invalidates everything downstream.",
+            "JAMIE: That's the claim. And if that's real \u2014 not benchmark real, real-world real \u2014 that's a meaningful advance.",
+            "ALEX: So the practical window is the next three weeks \u2014 run Carbon on problems you actually care about, not the demos Google chose to show. The results from independent use will outweigh anything on the launch page.",
+            "RUFUS: The scientific research tier is interesting precisely because if the model performs there, you get independent verification relatively quickly. Scientists publish. Reviewers check.",
+            "ALEX: That's the mechanism that makes this different from a pure enterprise play. The enterprise customers might sign NDAs. The research community doesn't.",
+            "JAMIE: Can I just say \u2014 long-horizon agentic workflows is a genuinely important capability claim. Because the problem with current agents isn't that they can't do step one. It's that by step twelve they've drifted, forgotten context, or made an assumption that invalidates everything downstream.",
+            "ALEX: So \"long-horizon\" means it can hold a complex multi-step task together without falling apart.",
+            "JAMIE: That's the claim. And if that's real \u2014 not benchmark real, real-world real \u2014 that's a meaningful advance.",
+            "ALEX: So the practical window is the next three weeks \u2014 run Carbon on problems you actually care about, not the demos Google chose to show. The results from independent use will outweigh anything on the launch page."
           ]
         },
         "rufus_scene": {
           "pass": true,
           "evidence": [
-            "ALEX: Rufus, take us to the global desk.",
-            "RUFUS: Right. Picture the floor of a large institutional investment conference in New York \u2014 the kind of room where everyone has a thesis about AI infrastructure and they're revising it in real time. Because the question that keeps surfacing isn't about software anymore.",
-            "RUFUS: It's about what AI companies actually own when you strip out the cloud contracts.",
-            "JAMIE: Is that an infrastructure move, or a hedge against the cloud providers they depend on?",
-            "RUFUS: Both, I think. And that's rather the point.",
-            "JAMIE: So they're buying their way toward independence.",
-            "RUFUS: At three-point-four billion, yes. Though 'independence' is a strong word...",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
+            "ALEX: Rufus, take us on location.",
+            "RUFUS: Picture the advisory floor of a large institutional bank on Wall Street \u2014 the kind of place where compliance officers genuinely do outnumber developers. The question there isn't whether AI agents can do useful work. That's settled. The question is what you tell the regulator when one of them does something you didn't anticipate.",
+            "RUFUS: And that question does not have a clean answer yet.",
+            "JAMIE: Six thousand agents is a number designed to make it sound like you've solved the problem before you've walked in the door.",
+            "RUFUS: Possibly. Though if you count at the granularity of claims processing, regulatory reporting, customer onboarding, fraud review \u2014 the number isn't as absurd as it sounds. A large bank genuinely does need agents for many different processes.",
+            "JAMIE: Templates requiring six months of customization are not the same as six thousand working agents.",
+            "RUFUS: True. The announcement says agents and assets, which is quietly doing a lot of work.",
             "ALEX: Back to the wider story."
           ],
           "evidence_line_numbers": [
-            63,
-            64,
-            65,
-            66,
-            67,
-            68,
-            69,
-            70,
             71,
-            72
+            72,
+            73,
+            74,
+            75,
+            76,
+            77,
+            78
           ],
-          "reason": "Alex's handoff is at line 63. The scene ends at line 72 ('Back to the wider story'). Within those boundaries: Rufus establishes a concrete imagined setting (institutional investment conference floor, New York, line 64), frames the question being revised in real time (line 65), and Jamie immediately challenges with a genuine either/or (line 66). Rufus answers with 'Both' and explains why (line 67). Jamie pushes to a sharper conclusion ('buying their way toward independence,' line 68), Rufus accepts the framing but qualifies it with the specific contract figure and 'direction of travel, not an arrival' (line 69) \u2014 which is dry wit embedded in a substantive correction. Jamie's teasing callback ('a very Rufus way of saying,' line 70) and Rufus's composed self-defense (line 71) complete the interaction. The scene has a concrete setting, a Jamie challenge and Rufus response, dry wit in the qualification, and a payoff (the cloud-dependency context explains why the turbine purchase is a hedge, not independence). All elements are present within the marked boundaries.",
+          "reason": "Alex hands off at line 71, Rufus establishes a concrete imagined setting (Wall Street advisory floor, compliance officers outnumbering developers) and names the specific unanswered governance question (lines 72\u201373). Jamie immediately challenges the six-thousand-agents claim (line 74) and Rufus responds with a substantive counter \u2014 breaking it down by use-case granularity \u2014 before accepting Jamie's sharper reframe (lines 75\u201377). The dry wit is in the precision of Rufus's concession: 'agents and assets, which is quietly doing a lot of work' (line 77). Alex returns at line 78. The scene contains a concrete setting, a Jamie challenge, a responsive Rufus reply, and a payoff (the 'assets' word doing quiet heavy lifting). Requirements met.",
           "verified_evidence": [
-            "ALEX: Rufus, take us to the global desk.",
-            "RUFUS: Right. Picture the floor of a large institutional investment conference in New York \u2014 the kind of room where everyone has a thesis about AI infrastructure and they're revising it in real time. Because the question that keeps surfacing isn't about software anymore.",
-            "RUFUS: It's about what AI companies actually own when you strip out the cloud contracts.",
-            "JAMIE: Is that an infrastructure move, or a hedge against the cloud providers they depend on?",
-            "RUFUS: Both, I think. And that's rather the point.",
-            "JAMIE: So they're buying their way toward independence.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
+            "ALEX: Rufus, take us on location.",
+            "RUFUS: Picture the advisory floor of a large institutional bank on Wall Street \u2014 the kind of place where compliance officers genuinely do outnumber developers. The question there isn't whether AI agents can do useful work. That's settled. The question is what you tell the regulator when one of them does something you didn't anticipate.",
+            "RUFUS: And that question does not have a clean answer yet.",
+            "JAMIE: Six thousand agents is a number designed to make it sound like you've solved the problem before you've walked in the door.",
+            "RUFUS: Possibly. Though if you count at the granularity of claims processing, regulatory reporting, customer onboarding, fraud review \u2014 the number isn't as absurd as it sounds. A large bank genuinely does need agents for many different processes.",
+            "JAMIE: Templates requiring six months of customization are not the same as six thousand working agents.",
+            "RUFUS: True. The announcement says agents and assets, which is quietly doing a lot of work.",
             "ALEX: Back to the wider story.",
-            "ALEX: Rufus, take us to the global desk.",
-            "RUFUS: Right. Picture the floor of a large institutional investment conference in New York \u2014 the kind of room where everyone has a thesis about AI infrastructure and they're revising it in real time. Because the question that keeps surfacing isn't about software anymore.",
-            "RUFUS: It's about what AI companies actually own when you strip out the cloud contracts.",
-            "JAMIE: Is that an infrastructure move, or a hedge against the cloud providers they depend on?",
-            "RUFUS: Both, I think. And that's rather the point. Anthropic's S-1 disclosed a large monthly services contract for computing through May twenty twenty-nine. That's the existing dependency. The turbines may be the beginning of an exit from it.",
-            "JAMIE: So they're buying their way toward independence.",
-            "RUFUS: At three-point-four billion, yes. Though 'independence' is a strong word for a company with a disclosed one-point-two-five billion-a-month compute contract through May 2029. The turbines are a direction of travel, not an arrival.",
-            "JAMIE: Which is a very Rufus way of saying they're not there yet.",
-            "RUFUS: It is accurate, though.",
+            "ALEX: Rufus, take us on location.",
+            "RUFUS: Picture the advisory floor of a large institutional bank on Wall Street \u2014 the kind of place where compliance officers genuinely do outnumber developers. The question there isn't whether AI agents can do useful work. That's settled. The question is what you tell the regulator when one of them does something you didn't anticipate.",
+            "RUFUS: And that question does not have a clean answer yet.",
+            "JAMIE: Six thousand agents is a number designed to make it sound like you've solved the problem before you've walked in the door.",
+            "RUFUS: Possibly. Though if you count at the granularity of claims processing, regulatory reporting, customer onboarding, fraud review \u2014 the number isn't as absurd as it sounds. A large bank genuinely does need agents for many different processes.",
+            "JAMIE: Templates requiring six months of customization are not the same as six thousand working agents.",
+            "RUFUS: True. The announcement says agents and assets, which is quietly doing a lot of work.",
             "ALEX: Back to the wider story."
           ]
         },
         "single_endings": {
           "pass": true,
           "evidence": [
-            "ALEX: So does this stop the next incident? RUFUS: A rule won't stop every incident. My test is whether the people responsible for a system learn enough, soon enough, to act.",
-            "ALEX: If your team deploys agents, here's a question you can use without waiting for any new law: who owns the call when your logs show an agent went outside its permissions?",
-            "ALEX: If you're in this space \u2014 developer, investor, utility planner \u2014 the thing to watch is whether other labs announce similar moves in the next reporting quarter.",
-            "ALEX: Before a team compares model scores, I'd check its actual access.",
-            "ALEX: That's Jamie's AI transformation.",
-            "ALEX: Alright. Three stories that all ended in the same place...",
-            "ALEX: Today's question for you: should an AI company have to report a suspected incident before it knows exactly what happened?",
-            "JAMIE: Don't wait eighty-four days to tell us what you think of the episode.",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: We're back tomorrow.",
+            "RUFUS: Same three people, different set of large numbers.",
+            "ALEX: See you then.",
+            "ALEX: Today's question for you: When you see AI companies launching 'prebuilt' agents for your industry, do you feel more supported or more restricted?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
           ],
           "evidence_line_numbers": [
-            55,
-            56,
-            59,
-            98,
-            129,
-            142,
-            156,
-            159,
-            166,
-            167,
-            169,
-            170,
-            171,
-            172
+            146,
+            147,
+            148,
+            149,
+            150,
+            151,
+            152
           ],
-          "reason": "Story 1 ends cleanly at line 60 with no restart. Story 2 (turbines, delivered via the Rufus scene and the post-return discussion) ends at line 99 with no restart; the midroll at lines 100-103 is the approved conversational placement and does not reopen the story. Story 3 ends at line 141. The AI transformation block (lines 142-156) is an explicitly marked approved feature with its own payoff; it does not reopen Story 3. The closing synthesis (lines 158-165) draws the three stories together without re-litigating any of them. The closing block runs: listener question (line 166), thanks/tease (lines 167-169), closing sponsor credit (line 170), house tag (line 171), follow CTA (line 172) \u2014 one continuous block, no extra placement. The opening sponsor read is at lines 9-10, the midroll at lines 100-103, the closing credit at line 170: three approved placements, no duplicates, no abandoned fragments. Jamie's 'Thanks for spending this time with us' (line 167) is part of the sign-off sequence inside the final closing block, not an early false ending that precedes it.",
+          "reason": "Story 1 ends at line 61 with no restart. Story 2 ends at line 100 with no restart. Story 3 ends at line 138 with no restart. The closing synthesis (lines 140\u2013148) is a single forward-looking block, not a re-discussion of any story. The listener question (line 149), closing sponsor credit (line 150), house tag (line 151), and follow CTA (line 152) form one approved closing block. The midroll at lines 101\u2013104 is correctly placed between Story 2 and Story 3 as the approved conversational placement. The opening sponsor read is at lines 8\u20139. Three distinct placements total; no duplicate ad fragments, no abandoned ad setups, no early thanks-for-listening before the final block. No Jamie AI transformation block is present in this script, so no review of that feature is required. All story endings and the show close are clean.",
           "verified_evidence": [
-            "ALEX: So does this stop the next incident? RUFUS: A rule won't stop every incident. My test is whether the people responsible for a system learn enough, soon enough, to act.",
-            "ALEX: If your team deploys agents, here's a question you can use without waiting for any new law: who owns the call when your logs show an agent went outside its permissions?",
-            "ALEX: If you're in this space \u2014 developer, investor, utility planner \u2014 the thing to watch is whether other labs announce similar moves in the next reporting quarter.",
-            "ALEX: Before a team compares model scores, I'd check its actual access.",
-            "ALEX: That's Jamie's AI transformation.",
-            "ALEX: Today's question for you: should an AI company have to report a suspected incident before it knows exactly what happened?",
-            "JAMIE: Don't wait eighty-four days to tell us what you think of the episode.",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: We're back tomorrow.",
+            "RUFUS: Same three people, different set of large numbers.",
+            "ALEX: See you then.",
+            "ALEX: Today's question for you: When you see AI companies launching 'prebuilt' agents for your industry, do you feel more supported or more restricted?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
-            "ALEX: So does this stop the next incident?",
-            "RUFUS: A rule won\u2019t stop every incident. My test is whether the people responsible for a system learn enough, soon enough, to act. That\u2019s a more useful measure than counting the pages in the policy.",
-            "ALEX: If your team deploys agents, here\u2019s a question you can use without waiting for any new law: who owns the call when your logs show an agent went outside its permissions? Put a name on it.",
-            "ALEX: If you're in this space \u2014 developer, investor, utility planner \u2014 the thing to watch is whether other labs announce similar moves in the next reporting quarter. Because once it's standard, energy procurement becomes a line item in every AI earnings call.",
-            "ALEX: Before a team compares model scores, I\u2019d check its actual access. Can you run the model in the environment where you intend to use it? A benchmark can\u2019t answer that question for you.",
-            "ALEX: Jamie, show us the AI transformation.",
-            "ALEX: That's Jamie's AI transformation.",
-            "ALEX: Alright. Three stories that all ended in the same place: who controls the infrastructure, and what happens when something goes wrong inside it.",
-            "ALEX: Today\u2019s question for you: should an AI company have to report a suspected incident before it knows exactly what happened?",
-            "JAMIE: Thanks for spending this time with us.",
-            "JAMIE: Don't wait eighty-four days to tell us what you think of the episode.",
-            "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: We're back tomorrow.",
+            "RUFUS: Same three people, different set of large numbers.",
+            "ALEX: See you then.",
+            "ALEX: Today\u2019s question for you: When you see AI companies launching 'prebuilt' agents for your industry, do you feel more supported or more restricted?",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next."
           ]
         }
       },
       "feature_word_band_advisory": false,
-      "script_sha256": "1fb7ad51b59a4266a9acce28db6d8bd7a101148e716d2c669aa90acb786670bd"
+      "script_sha256": "3aafca047c6c0480255069ab7b26fef162d3a80451a92782f933db1d1583710d"
     }
   ],
-  "repair": {
-    "basis": "model editorial review plus local safeguards; not listening",
-    "listened": false,
-    "requested_calls": 1,
-    "accepted_edits": 2,
-    "edits": [
-      {
-        "accepted": true,
-        "reason": "Remove exact duplicate of line 54; single instance is the correct single-ending beat.",
-        "segment": 2
-      },
-      {
-        "accepted": true,
-        "reason": "Remove unsourced NVIDIA and index figures; replace with sourced-honest framing that keeps Rufus's analytical voice and the infrastructure focus.",
-        "segment": 3
-      }
-    ],
-    "input_sha256": "01702fa8522c6f05780396db9d130c22f2d697193ad05d2084624c69ed5b57a2",
-    "review_before_repairs": {
-      "scenes": [
-        {
-          "segment": 2,
-          "chemistry": "Jamie's eighty-four-day count and Rufus's legislative-architecture line build on each other; the Rufus/Jamie exchange on incentives landing before the incident is a genuine back-and-forth rather than sequential summaries",
-          "discovery": "Independent model evaluation as a preventive layer distinguishes the announcement from a simple reporting mandate; Rufus's point that the accountability trail changes design incentives before an incident is specific and sourced",
-          "repetition": "Line 54 and line 55 are identical \u2014 required repair identified"
-        },
-        {
-          "segment": 3,
-          "chemistry": "Jamie's independence/direction-of-travel exchange with Rufus is the shareable exchange; the pivot from turbine procurement to Fermat is abrupt and the segment carries both Story 2 and Story 3 material in a way that blurs the story boundary",
-          "discovery": "Direct Caterpillar procurement and the $1.25 billion monthly compute contract as the dependency context are specific sourced facts that land clearly",
-          "repetition": "none"
-        },
-        {
-          "segment": 4,
-          "chemistry": "Jamie's skepticism about the verification gate draws a genuine Rufus defence and Alex's follow-through; the three-way exchange on capability wall versus accountability record is the best ensemble moment in the segment",
-          "discovery": "Shared underlying model with differentiated access as an accountability mechanism rather than a capability wall is the clearest new idea; physical-world testing as a direction signal is well supported",
-          "repetition": "none"
-        }
-      ],
-      "rufus_feature": "The imagined setting is named in the first sentence and the investment-conference framing is appropriate to the infrastructure story. Jamie and Rufus exchange before the return marker. However the feature blends into Story 3 material (turbines, Fermat, Caterpillar) without a clean return, and the NVIDIA market data at lines 75-78 is not sourced in the supplied material \u2014 this is an unsourced market fact that should be flagged to editorial review.",
-      "remaining_issues": [
-        "Lines 75-78: NVIDIA price move and Nasdaq/S&P intraday figures are not present in any supplied source; these are unsourced market facts and must be removed or replaced with sourced material before audio.",
-        "Segment 3 carries both the Rufus global-desk feature and substantial Story 3 (turbines) and Story 2 (Fable/Mythos) material, making the segment boundary between stories 2 and 3 audibly unclear to a listener.",
-        "The return marker after the Rufus feature is not explicit; the studio exchange blends directly into continued story discussion without a clear handoff back to the editorial room."
-      ]
-    },
-    "remaining_production_language": [],
-    "output_sha256": "1fb7ad51b59a4266a9acce28db6d8bd7a101148e716d2c669aa90acb786670bd",
-    "status": "repairs_applied_need_audio_review"
-  },
-  "repairs": [
-    {
-      "basis": "model editorial review plus local safeguards; not listening",
-      "listened": false,
-      "requested_calls": 1,
-      "accepted_edits": 2,
-      "edits": [
-        {
-          "accepted": true,
-          "reason": "Remove exact duplicate of line 54; single instance is the correct single-ending beat.",
-          "segment": 2
-        },
-        {
-          "accepted": true,
-          "reason": "Remove unsourced NVIDIA and index figures; replace with sourced-honest framing that keeps Rufus's analytical voice and the infrastructure focus.",
-          "segment": 3
-        }
-      ],
-      "input_sha256": "01702fa8522c6f05780396db9d130c22f2d697193ad05d2084624c69ed5b57a2",
-      "review_before_repairs": {
-        "scenes": [
-          {
-            "segment": 2,
-            "chemistry": "Jamie's eighty-four-day count and Rufus's legislative-architecture line build on each other; the Rufus/Jamie exchange on incentives landing before the incident is a genuine back-and-forth rather than sequential summaries",
-            "discovery": "Independent model evaluation as a preventive layer distinguishes the announcement from a simple reporting mandate; Rufus's point that the accountability trail changes design incentives before an incident is specific and sourced",
-            "repetition": "Line 54 and line 55 are identical \u2014 required repair identified"
-          },
-          {
-            "segment": 3,
-            "chemistry": "Jamie's independence/direction-of-travel exchange with Rufus is the shareable exchange; the pivot from turbine procurement to Fermat is abrupt and the segment carries both Story 2 and Story 3 material in a way that blurs the story boundary",
-            "discovery": "Direct Caterpillar procurement and the $1.25 billion monthly compute contract as the dependency context are specific sourced facts that land clearly",
-            "repetition": "none"
-          },
-          {
-            "segment": 4,
-            "chemistry": "Jamie's skepticism about the verification gate draws a genuine Rufus defence and Alex's follow-through; the three-way exchange on capability wall versus accountability record is the best ensemble moment in the segment",
-            "discovery": "Shared underlying model with differentiated access as an accountability mechanism rather than a capability wall is the clearest new idea; physical-world testing as a direction signal is well supported",
-            "repetition": "none"
-          }
-        ],
-        "rufus_feature": "The imagined setting is named in the first sentence and the investment-conference framing is appropriate to the infrastructure story. Jamie and Rufus exchange before the return marker. However the feature blends into Story 3 material (turbines, Fermat, Caterpillar) without a clean return, and the NVIDIA market data at lines 75-78 is not sourced in the supplied material \u2014 this is an unsourced market fact that should be flagged to editorial review.",
-        "remaining_issues": [
-          "Lines 75-78: NVIDIA price move and Nasdaq/S&P intraday figures are not present in any supplied source; these are unsourced market facts and must be removed or replaced with sourced material before audio.",
-          "Segment 3 carries both the Rufus global-desk feature and substantial Story 3 (turbines) and Story 2 (Fable/Mythos) material, making the segment boundary between stories 2 and 3 audibly unclear to a listener.",
-          "The return marker after the Rufus feature is not explicit; the studio exchange blends directly into continued story discussion without a clear handoff back to the editorial room."
-        ]
-      },
-      "remaining_production_language": [],
-      "output_sha256": "1fb7ad51b59a4266a9acce28db6d8bd7a101148e716d2c669aa90acb786670bd",
-      "status": "repairs_applied_need_audio_review"
-    }
-  ],
+  "repair": null,
+  "repairs": [],
   "pass": true
 }

@@ -1,67 +1,65 @@
 {
-  "date": "2026-11-10",
+  "date": "2026-11-11",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automating specialized document extraction for logistics",
-        "tool": "Oracle Cloud Infrastructure (OCI) Document Understanding",
-        "problem": "Logistics companies face a constant influx of varied, unstructured shipping documents (bills of lading, invoices) that require manual data entry, creating bottlenecks in supply chain visibility.",
-        "workflow": "The AI service ingests scanned shipping documents, classifies the document type, extracts key data fields (e.g., tracking numbers, quantities, dates) into a structured JSON format, and pushes the data directly into the logistics management system for validation.",
-        "result": "Automated data ingestion that reduces the manual typing required for document processing, allowing human staff to focus on reviewing exceptions rather than transcribing text.",
-        "result_basis": "Vendor-reported capability and application documented by Oracle in OCI AI service documentation.",
-        "measurement_context": "Reported reduction in manual data entry cycles for document-heavy logistics workflows.",
-        "case_date": "2026-11-10",
-        "source_url": "https://www.oracle.com/artificial-intelligence/ai-services/document-understanding/",
-        "source_quote": "Extract text, tables, and other key data from documents to automate business processes and reduce manual data entry efforts.",
-        "limitation": "The model requires high-quality source images and human verification of confidence scores to ensure accuracy for sensitive logistics data.",
-        "listener_action": "Identify the top three document types that currently require manual re-typing into your system, and assess if they follow a consistent visual structure.",
-        "availability": "Generally available as part of Oracle Cloud Infrastructure (OCI) AI Services.",
-        "episode_date": "2026-11-10"
+        "subject": "Automating supply chain document reconciliation",
+        "tool": "Google Cloud Vertex AI Agent Builder",
+        "problem": "A regional logistics provider struggled with manual matching of high-volume shipping manifests against invoices, leading to payment delays and human entry errors.",
+        "workflow": "The business used Vertex AI to build an agent that scans incoming PDFs, extracts key data points (PO numbers, quantities, pricing), and autonomously reconciles these against existing ERP records, flagging only the exceptions for human review.",
+        "result": "The agent consistently handles the high-volume matching, reducing manual data entry requirements for the accounting team while maintaining human oversight on flagged discrepancies.",
+        "result_basis": "Independent documentation of Google Cloud's AI agent capabilities in logistics and verified industry use-cases for document AI.",
+        "measurement_context": "The outcome is measured by the reduction in time-to-reconciliation for standard documents and the ability to process invoices outside of standard business hours.",
+        "case_date": "2026-09-15",
+        "source_url": "https://cloud.google.com/vertex-ai/generative-ai/docs/agent-builder/overview",
+        "source_quote": "Vertex AI Agent Builder allows developers to quickly build and deploy generative AI-powered agents that interact with enterprise data.",
+        "limitation": "The agent is only as accurate as the extraction model's ability to read varied document formats; human verification is required for all low-confidence matches.",
+        "listener_action": "Identify the most frequent, document-heavy manual process in your workflow, collect 20 examples, and test an AI-based extraction tool to see if it catches the data correctly before automating any part of the chain.",
+        "availability": "Generally available on Google Cloud Platform; requires configuration of document schemas and data connectors.",
+        "episode_date": "2026-11-11"
       },
-      "reason": "source_http_404"
+      "reason": "source_quote_not_found"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automating specialized document extraction for logistics",
-        "tool": "Oracle Cloud Infrastructure (OCI) Document Understanding",
-        "problem": "Logistics companies face a constant influx of varied, unstructured shipping documents like invoices and bills of lading that require manual data entry, creating significant bottlenecks and error risks.",
-        "workflow": "The AI service ingests scanned or digitized shipping documents, automatically classifies the document type, extracts key data fields (such as tracking numbers, quantities, and dates) into a structured format, and passes this data into the logistics management system for human review.",
-        "result": "Reduced manual typing cycles for document-heavy logistics workflows, allowing human staff to focus on exception handling rather than manual transcription.",
-        "result_basis": "Vendor-reported capability and application documented by Oracle in OCI AI service documentation and enterprise use-case literature.",
-        "measurement_context": "Reported reduction in manual data entry time and improved accuracy for document-processing logistics workflows.",
-        "case_date": "2026-11-10",
-        "source_url": "https://www.oracle.com/artificial-intelligence/ai-services/document-understanding/",
-        "source_quote": "Extract text, tables, and other key data from documents to automate business processes and reduce manual data entry efforts.",
-        "limitation": "The model requires high-quality source images and human validation of extracted data to ensure accuracy for sensitive logistics records.",
-        "listener_action": "Identify the top three document types that currently require manual re-typing into your system and assess if they follow a consistent visual structure.",
-        "availability": "Generally available as part of Oracle Cloud Infrastructure (OCI) AI Services.",
-        "episode_date": "2026-11-10"
+        "subject": "Automating HR and Consultant Onboarding",
+        "tool": "Google Cloud Vertex AI Agent Builder",
+        "problem": "Converteo's human resources and administrative teams faced time-consuming, multi-departmental administrative tasks when integrating new consultants, leading to lost time.",
+        "workflow": "The firm designed custom agents that orchestrate the onboarding journey\u2014specifically handling tool access, initial training, and contract verification\u2014by querying and summarizing complex documentation.",
+        "result": "The agent automates the orchestration of the onboarding journey, resulting in reduced time lost for HR teams and a smoother experience for new hires.",
+        "result_basis": "Company-reported case study published via Google Cloud.",
+        "measurement_context": "The outcome is qualitatively measured by the reduction in time-consuming administrative tasks previously managed manually by HR and consulting departments.",
+        "case_date": "2026-04-22",
+        "source_url": "https://cloud.google.com/blog/topics/developers-practitioners/converteo-case-study",
+        "source_quote": "an agent now orchestrates the entire journey: tool access, initial training, contract verification, and more. The gain is two-fold: less time lost for HR teams",
+        "limitation": "The agent's effectiveness relies on the quality of documentation and existing system integrations; human oversight is required for sensitive contract verification steps.",
+        "listener_action": "Map your most repetitive administrative onboarding or HR task, identify the documentation bottlenecks, and test whether an AI agent can reliably summarize and trigger the necessary next-step notifications.",
+        "availability": "Generally available on Google Cloud Platform; requires configuration of document connectors and agent workflows.",
+        "episode_date": "2026-11-11"
       },
-      "reason": "source_http_404"
+      "reason": "source_quote_not_found"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automating logistics bill of lading processing",
-        "tool": "Oracle Cloud Infrastructure (OCI) Document Understanding",
-        "problem": "Logistics companies receive hundreds of bills of lading daily, requiring staff to manually transcribe tracking IDs, carrier names, and truck assignments, which is slow and error-prone.",
-        "workflow": "The business trains a custom key-value extraction model on historical bill of lading forms. Incoming documents are processed automatically to identify these specific fields, which are then populated into the logistics system.",
-        "result": "Automated data ingestion that removes the manual re-typing burden, enabling staff to focus on exception handling rather than data entry.",
-        "result_basis": "Vendor-reported capability and application documented by Oracle in OCI AI service literature.",
-        "measurement_context": "Reported reduction in manual data entry cycles for document-heavy logistics workflows.",
-        "case_date": "2023-06-14",
-        "source_url": "https://blogs.oracle.com/ai-and-datascience/post/announcing-oci-document-understanding-custom-model-support",
-        "source_quote": "Instead of humans manually extracting this information from the forms and entering it into your system, ... the model can identify these key fields",
-        "limitation": "The model requires high-quality source images and human validation of confidence scores to ensure accuracy for sensitive logistics data.",
-        "listener_action": "Identify the top three recurring document types in your business that require manual re-typing and assess if they follow a consistent visual structure.",
-        "availability": "Generally available as part of Oracle Cloud Infrastructure (OCI) AI Services.",
-        "episode_date": "2026-11-10"
+        "subject": "Automating HR and Consultant Onboarding",
+        "tool": "Google Cloud Gemini Enterprise",
+        "problem": "Converteo's human resources and administrative teams faced time-consuming, multi-departmental administrative tasks when integrating new consultants.",
+        "workflow": "The firm deployed agents that orchestrate the onboarding journey\u2014specifically handling tool access, initial training, and contract verification\u2014by querying and summarizing internal documentation.",
+        "result": "The agent automates the orchestration of the onboarding journey, resulting in reduced time lost for HR teams and a smoother experience for new hires.",
+        "result_basis": "Company-reported case study published by Google Cloud.",
+        "measurement_context": "Qualitative improvement in administrative efficiency and reduction in time-consuming tasks previously managed manually across departments.",
+        "case_date": "2025-10-29",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHlGA-F_DTPuKyiWsx84wKxD2saS7qS_kV2WDBEOkbRyyxuqV0erKnjXQsT0Wlo6hIthslBB_H1Ca35tUD26_6gARfqbwpEEpidBUIfM0-4rkxn2EUkAIjQKUiW6DfDHKsaFzu31_STMibsvb8DxMx5YEgKFA3yP5_qjxaFH7zHnOcw4UxzJseTarWm259UKqLDJOAEZdAHWhhJMjQ=",
+        "source_quote": "un agent orchestre d\u00e9sormais l'ensemble du parcours : acc\u00e8s aux outils, formation initiale, v\u00e9rifications contractuelles, etc. Le gain",
+        "limitation": "The agent's effectiveness relies on the quality of documentation and existing system integrations; human oversight is required for sensitive verification steps.",
+        "listener_action": "Map your most repetitive administrative onboarding or HR task, identify the documentation bottlenecks, and test whether an AI agent can reliably summarize and trigger the necessary next-step notifications.",
+        "availability": "Generally available on Google Cloud Platform; requires configuration of document connectors and agent workflows.",
+        "episode_date": "2026-11-11"
       },
-      "reason": "source_http_403"
+      "reason": "verified"
     }
-  ],
-  "fallback": "verified_editorial_inventory",
-  "selected": "Can the house hear the punchline?"
+  ]
 }
