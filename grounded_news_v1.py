@@ -528,13 +528,23 @@ def build_grounded_story_slate(
                             "window_end": now.isoformat(), "attempts": [], "status": "researching"}
     # Final targeted pass may use fresh RSS leads OR validated/rejected article leads.
     # At most four provider requests including the primary's existing fallback.
+    # Explicit same-day artifact restore. Only our normalized records carry grounded=True.
+    saved_rows = []
+    checkpoint = os.environ.get("RESEARCH_RECOVERY_REPORT")
+    if checkpoint:
+        packet = json.loads(Path(checkpoint).read_text())
+        if packet.get("episode_date") != date_str:
+            raise ValueError("Research checkpoint date mismatch")
+        saved_rows = [dict(row, original_publication_verified=True)
+                      for row in packet.get("validated_candidates", [])
+                      if isinstance(row, dict) and row.get("grounded") is True]
     for attempt in range(3):
         stage = ("primary", "alternate_refill", "targeted_discovery_refill")[attempt]
         entry: Dict[str, Any] = {"stage": stage, "rejections": {}, "rejected_examples": []}
         report["attempts"].append(entry)
         try:
             if attempt == 0:
-                text = _grounded_text(prompt, model=model)
+                text = (json.dumps({"stories": saved_rows}) if saved_rows else _grounded_text(prompt, model=model))
             else:
                 refill = prompt + "\nRecovery: independently search documented uses of AI at work and home, creative projects, science, accessibility, education, useful product releases, and infrastructure advances. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these already trusted headlines: " + json.dumps([s["headline"] for s in normalized if s["source_tier"] >= 2])
                 refill += "\nPrevious validation results (do not resubmit rejected old stories or change their dates): " + json.dumps(report["attempts"][:-1])

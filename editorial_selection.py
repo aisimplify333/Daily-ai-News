@@ -33,6 +33,14 @@ def listener_frame(story):
     if risk_angle:
         return "accountability_risk"
     family = topic_family(story)
+    # Product is a desk, not one listener question: commuter vs developer vs wearable user.
+    if family in {"products", "other"}:
+        title = str(story.get("headline") or story.get("title") or "").lower()
+        for label, pattern in (("in_car_use", r"\bcarplay\b|\bandroid auto\b"),
+                               ("developer_workflow", r"\bapi\b|\bsdk\b"),
+                               ("wearable_use", r"\bapple watch\b|\bwear os\b|\bsmartwatch")):
+            if re.search(pattern, title):
+                return label
     return "accountability_risk" if family in {"governance", "security"} else family
 
 
