@@ -1029,6 +1029,25 @@ def _title_matches_lead(title: str, stories: List[Dict[str, Any]]) -> bool:
     ) for name in names)
 
 
+def _report_context(stories):
+    """Choose one optional historical discussion card only after news selection."""
+    try:
+        cards = json.loads(Path(__file__).with_name("editorial_report_cards.json").read_text(encoding="utf-8"))
+        subjects = " ".join(str(s.get(k) or "") for s in stories[:3]
+                            for k in ("headline", "title", "summary")).casefold()
+        matches = [(sum(bool(re.search(r"(?<!\\w)" + re.escape(tag) + r"(?!\\w)", subjects))
+                        for tag in card["tags"]), card) for card in cards]
+        score, card = max(matches, key=lambda pair: pair[0])
+        if score:
+            return ("Optional historical context for ONE matching discussion only; identify publisher and date. "
+                    "Do not use as fresh news, a fourth story, title, or evidence about today's named company. "
+                    "Keep the scope and caveat; the question is a producer suggestion. Skip if forced. "
+                    + json.dumps({k: card[k] for k in ("publisher","title","date","source","evidence","angle")}, ensure_ascii=False))
+    except (OSError, ValueError, KeyError, TypeError):
+        pass
+    return ""
+
+
 def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
                    date_str: str, fuel: Dict[str, Any]) -> Dict[str, Any]:
     """One Gemini JSON call that designs the episode: the title, the fight, and —
@@ -1079,6 +1098,7 @@ def _preproduction(g: Dict[str, Any], stories: List[Dict[str, Any]],
     )
     prompt = f"""Return STRICT JSON only. You are the showrunner for {SHOW_TITLE}, a daily
 AI debate podcast. Design today's episode. Do NOT write dialogue.
+{_report_context(stories)}
 Plan three distinct stories: Story 1 leads Segment 2, Story 2 owns Segment 3,
 and Story 3 owns Segment 4. Each needs its own stakes and takeaway. Allocate
 editorial discussion roughly 40/30/30; do not subordinate all three to one thesis.
