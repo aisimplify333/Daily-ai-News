@@ -503,11 +503,13 @@ def build_grounded_story_slate(
     aired_history = published_history(date_str, root=Path("."))
     prompt = _story_prompt(date_str, candidate_count, now, editorial_history[:7])
     prompt += "\nALREADY AIRED: exclude these events; search different developments, not new angles on the same announcement: " + json.dumps(aired_history)
+    refresh_saved_research = False
     # Date-scoped editor leads aid discovery only; every candidate still goes
     # through live source verification, freshness, duplication and fact checks.
     try:
         brief = json.loads(Path("editor_discovery.json").read_text())
         if brief.get("episode_date") == date_str:
+            refresh_saved_research = brief.get("refresh_saved_research") is True
             leads = brief.get("leads", [])
             if isinstance(leads, list):
                 seeds = [row for row in leads[:8] if isinstance(row, dict)] + seeds
@@ -544,7 +546,7 @@ def build_grounded_story_slate(
         report["attempts"].append(entry)
         try:
             if attempt == 0:
-                text = (json.dumps({"stories": saved_rows}) if saved_rows else _grounded_text(prompt, model=model))
+                text = (json.dumps({"stories": saved_rows}) if saved_rows and not refresh_saved_research else _grounded_text(prompt, model=model))
             else:
                 refill = prompt + "\nRecovery: independently search documented uses of AI at work and home, creative projects, science, accessibility, education, useful product releases, and infrastructure advances. Find distinct NEW events, not commentary. If accepted stories cluster around governance, actively search significant product releases, science, accessibility, education and infrastructure. Do not invent a positive story or lower the factual standard. Retain all original factual standards. Do not repeat these already trusted headlines: " + json.dumps([s["headline"] for s in normalized if s["source_tier"] >= 2])
                 refill += "\nPrevious validation results (do not resubmit rejected old stories or change their dates): " + json.dumps(report["attempts"][:-1])
@@ -565,6 +567,8 @@ def build_grounded_story_slate(
             rows = payload.get("stories", []) if isinstance(payload, dict) else payload if isinstance(payload, list) else []
             if not isinstance(rows, list):
                 rows = []
+            if attempt == 0 and refresh_saved_research and saved_rows:
+                rows = rows + saved_rows
             entry["candidates"] = len(rows)
             for raw in rows:
                 reason = _rejection_reason(raw, now)

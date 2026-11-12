@@ -151,6 +151,7 @@ jobs:
             return 'produce';
 
       - name: Load requested same-day research checkpoint
+        id: research_restore
         if: steps.release_check.outputs.result == 'produce' && github.event_name == 'push'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -161,7 +162,7 @@ jobs:
             dest="$(mktemp -d "$RUNNER_TEMP/research.XXXXXX")"
             gh run download "$source_run" --repo "$GITHUB_REPOSITORY" --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir "$dest"
             report="$(find "$dest" -name grounded_research_report.json -type f -print -quit)"
-            if [[ -n "$report" ]]; then echo "RESEARCH_RECOVERY_REPORT=$report" >> "$GITHUB_ENV"; fi
+            if [[ -n "$report" ]]; then echo "report=$report" >> "$GITHUB_OUTPUT"; fi
           fi
 
       - name: Restore same-day editorial recovery
@@ -291,6 +292,7 @@ jobs:
       - name: Run The AI Edge v3.1 Cost-Safe Hybrid Broadcast
         if: steps.release_check.outputs.result == 'produce'
         env:
+          RESEARCH_RECOVERY_REPORT: ${{ steps.research_restore.outputs.report }}
           EPISODE_RECOVERY_DIR: ${{ steps.editorial_recovery.outputs.directory }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
