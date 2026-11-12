@@ -100,6 +100,7 @@ CONTINUITY_MAX_STORED = int(os.getenv("CONTINUITY_MAX_STORED", "150"))
 EDITORIAL_FRESHNESS_LOOKBACK = int(os.getenv("EDITORIAL_FRESHNESS_LOOKBACK", "7"))
 
 EDITORIAL_DISCOVERY_FEEDS = [
+    ("major_news", "https://news.google.com/rss/search?q=(NVIDIA%20OR%20OpenAI%20OR%20Anthropic%20OR%20Alphabet%20OR%20Microsoft%20OR%20TSMC%20OR%20AMD%20OR%20Meta)%20(resigns%20OR%20succession%20OR%20earnings%20OR%20acquisition%20OR%20recall%20OR%20%22export%20ban%22)%20when%3A2d&hl=en-US&gl=US&ceid=US%3Aen"),
     ("ai_tools", "https://www.techradar.com/feeds/tag/ai"),
     ("major_news", "https://news.google.com/rss/search?q=(AI%20OR%20%22artificial%20intelligence%22)%20(source%3AReuters%20OR%20source%3ABloomberg%20OR%20source%3ACNBC%20OR%20source%3A%22The%20Wall%20Street%20Journal%22%20OR%20source%3A%22Financial%20Times%22%20OR%20source%3A%22Yahoo%20Finance%22)%20when%3A2d&hl=en-US&gl=US&ceid=US%3Aen"),
     ("broad_news", "https://www.bing.com/news/search?q=%28AI+OR+%22artificial+intelligence%22%29+%28funding+OR+regulation+OR+chips+OR+jobs+OR+research+OR+security%29&format=rss"),

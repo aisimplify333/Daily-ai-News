@@ -206,6 +206,12 @@ def _rejection_reason(raw: Any, now: dt.datetime) -> str:
     return ""
 
 
+# Keep consequential events visible even when newer feature roundups fill the feed.
+# This buys a research slot, not an on-air endorsement. All sourcing gates run later.
+def _breaking_event(headline):
+    return bool(re.search(r"\b(?:resigns?|resigned|steps down|ousted|interim CEO|succession|recall|bankruptcy|trading halt|export ban|acquires|acquisition|antitrust ruling|earnings surprise)\b", str(headline), re.I))
+
+
 def _fresh_discovery_seeds(items: Any, now: dt.datetime) -> List[Dict[str, str]]:
     """RSS is discovery evidence only; never promote feed text into verified facts."""
     seeds = []
@@ -226,7 +232,8 @@ def _fresh_discovery_seeds(items: Any, now: dt.datetime) -> List[Dict[str, str]]
                       "feed_timestamp": published.isoformat(),
                       "discovery_url": str(item.get("source_url") or item.get("link") or "")[:2000]})
     seeds.sort(key=lambda row: row["feed_timestamp"], reverse=True)
-    return seeds[:40]
+    priority = [row for row in seeds if _breaking_event(row['headline'])][:6]
+    return (priority + [row for row in seeds if row not in priority])[:40]
 
 
 def _story_prompt(
@@ -295,6 +302,7 @@ Rules:
   interest and practical-use candidates head to head. In the lead's distinct_question
   capture the question a listener would actually ask. "Your compliance strategy"
   is not a general-audience payoff. Distinguish recommendations from rules in force.
+- Before ranking, check for late-breaking leadership changes, earnings surprises, major rulings and disruptions at key AI suppliers. Search company names without requiring 'AI' in the headline. Compare the latest confirmed development with product news on broad listener consequences; do not lead on rumors or fame alone.
 - Before ranking, explicitly search official OpenAI, Anthropic, Google/DeepMind,
   Microsoft, Meta, NVIDIA and Apple releases plus TechRadar and independent reporting.
   A model launch must explain actual access and a useful change, not just benchmarks.
@@ -540,6 +548,17 @@ def build_grounded_story_slate(
         saved_rows = [dict(row, original_publication_verified=True)
                       for row in packet.get("validated_candidates", [])
                       if isinstance(row, dict) and row.get("grounded") is True]
+    if saved_rows and not refresh_saved_research:
+        from difflib import SequenceMatcher
+        known = [str(row.get("headline", "")).casefold() for row in saved_rows]
+        refresh_saved_research = any(
+            _breaking_event(seed.get("headline", "")) and
+            all(SequenceMatcher(None, seed["headline"].casefold(), old).ratio() < .88 for old in known)
+            for seed in seeds if seed.get("headline")
+        )
+    report["breaking_discovery_headlines"] = [seed["headline"] for seed in seeds
+                                               if _breaking_event(seed.get("headline", ""))][:8]
+    report["refreshed_saved_research"] = bool(saved_rows and refresh_saved_research)
     for attempt in range(3):
         stage = ("primary", "alternate_refill", "targeted_discovery_refill")[attempt]
         entry: Dict[str, Any] = {"stage": stage, "rejections": {}, "rejected_examples": []}
