@@ -1,120 +1,95 @@
 {
   "scene_context": {
-    "date": "2026-11-12",
+    "date": "2026-11-13",
     "scenes": [
       {
         "story_index": 1,
-        "source_url": "https://nvidianews.nvidia.com/_gallery/download_pdf/6af5c3cc3d6332f541088655/",
-        "new_development": "Jensen Huang has resigned as CEO of NVIDIA, with CFO Colette Kress named interim CEO.",
-        "why_today": "This is the most significant leadership shift in the history of the AI hardware industry, occurring amid market volatility.",
-        "question": "Does a post-Jensen Huang NVIDIA maintain the same aggressive product roadmap?",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
+        "new_development": "Google released Gemini 4 Hydrogen, a speed-optimized model for agentic workflows.",
+        "why_today": "It marks a shift toward accessible, low-latency AI agents for everyday users.",
+        "question": "Does 'faster' actually mean more capable for complex tasks, or just cheaper for Google?",
         "competing_readings": [
-          "The company's institutional strength and order book provide a buffer against leadership changes.",
-          "The loss of a visionary founder during a period of intense market scrutiny creates long-term strategic risk."
+          "A breakthrough in practical AI utility for developers.",
+          "A commoditization play to lock users into the Google ecosystem."
         ],
-        "receipt": "Harvey C. Jones was appointed as the first-ever Chair of the Board.",
-        "unknown": "The identity of the permanent successor and the long-term impact on investor confidence.",
-        "listener_payoff": "Investors and enterprise buyers should watch for signs of operational continuity in the November 17 financial report.",
-        "exchange_premise": "Alex asks if a company can survive the loss of its 'face'; Rufus explains the difference between a founder's vision and a CFO's operational stability.",
+        "receipt": "$1.50 per million input tokens.",
+        "unknown": "Real-world reliability in complex, multi-step agentic tasks.",
+        "listener_payoff": "Developers can now test if lower latency improves their agent performance.",
+        "exchange_premise": "Alex compares the speed to a faster browser, Jamie asks if it's just 'less smart' AI, Rufus explains the token economics.",
         "cast_direction": {
-          "alex": "Wants to know if the 'NVIDIA magic' is tied to one person or the company's massive scale.",
-          "jamie": "Focuses on the human element of the scandal and how it impacts the company's culture.",
-          "rufus": "Analyzes the market reaction and the significance of the new Board Chair role."
+          "alex": "Wants to know if this makes his personal coding projects faster.",
+          "jamie": "Skeptical about whether 'speed' is a proxy for 'dumber' models.",
+          "rufus": "Focuses on the $1.50 price point as a competitive signal."
         },
-        "relationship_beat": "Rufus gently teases Alex for thinking a company worth billions stops moving just because one person leaves.",
-        "scene_movement": "Starts with the shock of the news, moves to the financial reality, and ends with an honest uncertainty about the company's future culture.",
-        "discovery": "The appointment of a first-ever Board Chair suggests the company is moving toward a more traditional, institutional governance structure."
+        "relationship_beat": "Alex teases Rufus for being excited about a price drop, Rufus retorts that price is the only thing that matters at scale.",
+        "scene_movement": "Starts with the speed claim, moves to the trade-off between reasoning and latency, ends with a testable hypothesis for the listener.",
+        "discovery": "The 1 million-token context window at a lower price point is a genuine utility win for power users."
       },
       {
         "story_index": 2,
-        "source_url": "https://blog.google/products/hardware/intelligent-eyewear/android-xr/",
-        "new_development": "Google opened pre-orders for Android XR-powered smart glasses with Gemini AI integration.",
-        "why_today": "It marks a public-facing move by Google into wearable AI hardware with specific privacy features.",
-        "question": "How does Google's privacy-first approach to wearables compare to existing market players?",
+        "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
+        "new_development": "Advocacy groups filed a lawsuit in San Francisco to halt further AI model development.",
+        "why_today": "It represents a shift from public criticism to active legal obstruction of frontier labs.",
+        "question": "Can a court order realistically stop a global technological race?",
         "competing_readings": [
-          "Built-in LED indicators and face redaction set a new standard for consumer trust in wearables.",
-          "The hardware is limited to specific tasks and may not offer the seamless experience users expect."
+          "A necessary check on unchecked corporate power.",
+          "A futile attempt to legislate away innovation."
         ],
-        "receipt": "Pricing starts at $395 for Warby Parker models.",
-        "unknown": "Real-world adoption rates and how the 'bystander face redaction' performs in crowded environments.",
-        "listener_payoff": "Consumers can now choose between competing ecosystems, with Google positioning itself as the privacy-conscious alternative.",
-        "exchange_premise": "Jamie wonders if she'd actually wear these to a coffee shop; Alex challenges whether the privacy features are enough to overcome the 'creepy' factor.",
+        "receipt": "The suit names Anthropic, Google, Meta, OpenAI, and SpaceXSI.",
+        "unknown": "Whether the court will grant an injunction or dismiss the case.",
+        "listener_payoff": "Listeners should watch for potential delays in model releases if the court takes the case seriously.",
+        "exchange_premise": "Rufus explains the legal precedent, Jamie wonders if this is just 'theatre', Alex asks what happens to the engineers.",
         "cast_direction": {
-          "alex": "Interested in the practical utility of Gemini on the face.",
-          "jamie": "Skeptical about the social implications of recording glasses.",
-          "rufus": "Looks at the partnership strategy with Warby Parker and Gentle Monster."
+          "alex": "Worries about the chilling effect on research.",
+          "jamie": "Wants to know if this actually protects anyone.",
+          "rufus": "Analyzes the legal viability of the claim."
         },
-        "relationship_beat": "Jamie jokes about wearing glasses that redact faces, and Rufus dryly notes that he already does that by not looking at people.",
-        "scene_movement": "Starts with the excitement of new hardware, shifts to a debate on social norms, and ends with a practical look at the price points.",
-        "discovery": "The use of physical on/off switches is a deliberate design choice to build user trust."
+        "relationship_beat": "Jamie challenges Rufus to explain how a court stops a server, Rufus dryly notes that courts are very good at stopping money.",
+        "scene_movement": "Starts with the filing, moves to the feasibility of a 'freeze', ends with the realization that the legal process is now a core AI risk.",
+        "discovery": "The legal strategy is shifting from 'regulate' to 'stop', which changes the risk profile for investors."
       },
       {
         "story_index": 3,
-        "source_url": "https://www.techradar.com/pro/teams-are-moving-to-new-models-almost-as-fast-as-labs-release-them-vercel-data-reveals-ai-models-now-have-a-half-life-of-just-six-weeks",
-        "new_development": "Vercel data shows the 'half-life' of an AI model in production is now just six weeks.",
-        "why_today": "It provides a quantified metric for the rapid churn in the AI developer ecosystem.",
-        "question": "How can businesses build stable products on a foundation that changes every six weeks?",
+        "source_url": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/",
+        "new_development": "United Airlines is blocking unauthorized AI agents from booking flights.",
+        "why_today": "It turns the abstract 'agent security' debate into a concrete consumer access issue.",
+        "question": "Is this a security move or a way to protect airline commission revenue?",
         "competing_readings": [
-          "Rapid churn is a sign of a healthy, competitive innovation cycle.",
-          "This level of instability makes long-term enterprise AI adoption prohibitively expensive and risky."
+          "A necessary security measure to prevent bot-driven account takeovers.",
+          "A protectionist move to stop third-party AI from finding cheaper fares."
         ],
-        "receipt": "Most production AI traffic is currently served by models released within the last two months.",
-        "unknown": "Whether this churn rate will stabilize as the technology matures.",
-        "listener_payoff": "Teams should prioritize building 'model-agnostic' application layers rather than hard-coding dependencies.",
-        "exchange_premise": "Alex asks if 'model-agnostic' is just a fancy way of saying 'we don't know what we're doing'; Rufus explains the financial cost of constant re-tooling.",
+        "receipt": "United cites cybersecurity risks and federal aviation rules.",
+        "unknown": "Whether other airlines will follow suit or build their own 'authorized' agents.",
+        "listener_payoff": "Check if your travel AI tool still works for United bookings.",
+        "exchange_premise": "Alex is annoyed he can't use his agent, Jamie suspects a revenue motive, Rufus explains the cybersecurity reality.",
         "cast_direction": {
-          "alex": "Worried about the engineering overhead of constantly swapping models.",
-          "jamie": "Delighted by the pace of progress but concerned for the developers.",
-          "rufus": "Sees this as a classic 'platform vs. application' struggle."
+          "alex": "Frustrated by the loss of convenience.",
+          "jamie": "Suspicious of the airline's motives.",
+          "rufus": "Defends the airline's need to control their own API."
         },
-        "relationship_beat": "Alex and Jamie share a laugh about their own 'model fatigue' while Rufus reminds them that someone has to pay for all those API calls.",
-        "scene_movement": "Starts with the surprising data, moves to the engineering implications, and ends with a consensus on the need for architectural flexibility.",
-        "discovery": "The six-week half-life is a hard data point that justifies moving away from vendor-specific model lock-in."
+        "relationship_beat": "Alex jokes about his agent being 'banned', Jamie laughs that the airline just wants to keep the booking fees.",
+        "scene_movement": "Starts with the frustration of a blocked tool, moves to the security vs. revenue debate, ends with a reality check on who owns the booking flow.",
+        "discovery": "Airlines are treating AI agents as a security threat, not a customer service enhancement."
       }
     ],
     "rufus_global_markets_desk": {
       "market_or_region": "Wall Street/New York",
-      "source_url": "https://blog.google/products/hardware/intelligent-eyewear/android-xr/",
-      "why_this_location_today": "Institutional investors are evaluating Google's pivot to hardware as a way to capture more of the AI value chain.",
-      "beat": "market mover",
+      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
+      "why_this_location_today": "The lawsuit targets the major frontier labs that are the primary drivers of current market volatility.",
+      "beat": "compliance",
       "companies_or_assets": [
+        "Anthropic",
         "Google",
-        "Warby Parker",
-        "Gentle Monster"
+        "Meta",
+        "OpenAI",
+        "SpaceXSI"
       ],
-      "capital_policy_or_infrastructure_move": "The integration of AI into consumer hardware to drive recurring ecosystem revenue.",
+      "capital_policy_or_infrastructure_move": "The legal attempt to halt capital-intensive model development, which threatens the valuation of these firms.",
       "dated_market_receipts": [
-        "$395 (November 12, 2026)"
+        "November 12, 2026"
       ]
     },
     "recent_patterns": [
-      {
-        "date": "2026-10-29",
-        "title": "Google launches Gemini 4 Carbon with staged rollout to cyber defenders",
-        "lead_actor": "Google",
-        "argument_family": "security",
-        "central_fight": "Whether the current AI infrastructure slowdown is a sign of market maturity or a failure to deliver on the promise of agentic workflows.",
-        "positions": {
-          "alex": "Believes we are in a 'growing pains' phase where we have to build the tools to manage the agents we've already unleashed.",
-          "jamie": "Argues that we are rushing to build 'safety' and 'efficiency' layers that are really just new ways to hide the fact that we don't fully understand how these agents work.",
-          "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
-        },
-        "planned_rufus_dispatch": {
-          "market_or_region": "Wall Street/New York",
-          "source_url": "https://www.cnbc.com/2026/10/29/ai-build-out-hits-snag-as-google-and-microsoft-put-off-raising-capex-forecasts.html",
-          "why_this_location_today": "New York-based institutional investors are the primary drivers of the current demand for fiscal discipline in Big Tech.",
-          "beat": "market mover",
-          "companies_or_assets": [
-            "Google",
-            "Microsoft",
-            "Cloud Infrastructure Sector"
-          ],
-          "capital_policy_or_infrastructure_move": "The decision by Google and Microsoft to pause increases in capital expenditure for AI infrastructure.",
-          "dated_market_receipts": [
-            "October 29, 2026 (Earnings report date)"
-          ]
-        }
-      },
       {
         "date": "2026-11-02",
         "title": "Why Google is Shuttering Jules: What Happens When Your AI Assistant Disappears",
@@ -278,1209 +253,1313 @@
             "November 10, 2026 (Launch date)"
           ]
         }
+      },
+      {
+        "date": "2026-11-12",
+        "title": "NVIDIA's CEO Resignation: What It Means for Your AI Infrastructure Roadmap",
+        "lead_actor": "NVIDIA",
+        "argument_family": "models",
+        "central_fight": "Whether the rapid pace of AI model churn and leadership instability is a sign of a maturing market or a recipe for long-term fragility.",
+        "positions": {
+          "alex": "Believes we are in a 'growing pains' phase where we have to build the tools to manage the agents we've already unleashed.",
+          "jamie": "Argues that until systems are legible to the people they affect, these 'safety' and 'integration' launches are just new ways to hide risk.",
+          "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
+        },
+        "planned_rufus_dispatch": {
+          "market_or_region": "Wall Street/New York",
+          "source_url": "https://blog.google/products/hardware/intelligent-eyewear/android-xr/",
+          "why_this_location_today": "Institutional investors are evaluating Google's pivot to hardware as a way to capture more of the AI value chain.",
+          "beat": "market mover",
+          "companies_or_assets": [
+            "Google",
+            "Warby Parker",
+            "Gentle Monster"
+          ],
+          "capital_policy_or_infrastructure_move": "The integration of AI into consumer hardware to drive recurring ecosystem revenue.",
+          "dated_market_receipts": [
+            "$395 (November 12, 2026)"
+          ]
+        }
       }
     ]
   },
-  "script_sha256": "9f3fc31881a4ba3ebfd0b48d5f3a207a91cd393bedf5705017fe6696d055c379",
+  "script_sha256": "9bb347be94ad1b747e72bb134f17af439d4e7a172238caf122a660cc0a66b312",
   "basis": "requested performance, not listening",
   "listened": false,
   "directions": [
     {
       "id": 0,
       "speaker": "ALEX",
-      "text": "Jensen Huang — thirty-three years, the face of NVIDIA, one of the most recognizable CEOs in tech — resigned this morning. Effective immediately. The reason: reports of extramarital affairs, including one with a woman U.S. intelligence suspects of being a Chinese spy.",
-      "mood": "disbelief",
-      "reason": "Opening a bombshell resignation with layered geopolitical stakes."
+      "text": "Google just dropped a new AI model called Gemini 4 Hydrogen — faster, cheaper, and already inside Search, the Gemini app, and the developer API as of yesterday.",
+      "mood": "curiosity",
+      "reason": "Opening hook drops a fact; invites listeners in"
     },
     {
       "id": 1,
       "speaker": "JAMIE",
-      "text": "The board moved fast.",
+      "text": "At the same time, a group of advocacy orgs filed a lawsuit to stop AI companies from releasing new models at all.",
       "mood": "dry_wit",
-      "reason": "Understated observation cutting through the enormity of the moment."
+      "reason": "Counterpoint lands deadpan against Alex's energy"
     },
     {
       "id": 2,
       "speaker": "RUFUS",
-      "text": "CFO Colette Kress is interim CEO. And they appointed a Chair of the Board for the first time in the company's history.",
-      "mood": "explainer",
-      "reason": "Delivering the precise structural facts of the succession."
+      "text": "So Google ships one, courts get asked to freeze the whole line. That is quite the Thursday.",
+      "mood": "dry_wit",
+      "reason": "Understated observation ties both facts together neatly"
     },
     {
       "id": 3,
       "speaker": "ALEX",
-      "text": "So the most valuable AI hardware company on earth woke up today with a new power structure.",
-      "mood": "disbelief",
-      "reason": "Absorbing the scale of an overnight power shift at NVIDIA."
+      "text": "Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. November 13th, 2026. Three stories today that pull in completely different directions.",
+      "mood": "neutral",
+      "reason": "Standard welcome and date, no emotional charge needed"
     },
     {
       "id": 4,
       "speaker": "ALEX",
-      "text": "Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. November twelfth, twenty twenty-six.",
+      "text": "Today’s episode is brought to you by The Ledger. What changed in AI, and what does it mean for your next decision?",
       "mood": "neutral",
-      "reason": "Standard show open following the cold open."
+      "reason": "Sponsor introduction, clean and sincere"
     },
     {
       "id": 5,
       "speaker": "ALEX",
-      "text": "Today’s episode is brought to you by The Ledger. What changed in AI, and what does it mean for your next decision?",
+      "text": "The Ledger turns the noise into five focused briefings. Subscribe at T-H-E-L-E-D-G-R dot I-O. That’s LEDGR, with no E between G and R. Find the link in our show notes.",
       "mood": "neutral",
-      "reason": "Sponsor introduction read."
+      "reason": "Sponsor detail read, informational only"
     },
     {
       "id": 6,
       "speaker": "ALEX",
-      "text": "The Ledger turns the noise into five focused briefings. Subscribe at T-H-E-L-E-D-G-R dot I-O. That’s LEDGR, with no E between G and R. Find the link in our show notes.",
-      "mood": "neutral",
-      "reason": "Sponsor copy delivery."
+      "text": "Okay. Gemini 4 Hydrogen. Google announced it yesterday, November 12th. Speed-focused, built for agentic workflows — that's the pitch. Jamie, first read?",
+      "mood": "curiosity",
+      "reason": "Alex opens the story and genuinely wants Jamie's take"
     },
     {
       "id": 7,
-      "speaker": "ALEX",
-      "text": "Okay. Jensen Huang resigned. That's the sentence I genuinely didn't expect to say this year. Rufus, where does this land for you?",
-      "mood": "curiosity",
-      "reason": "Genuinely unsettled, inviting Rufus to frame the significance."
+      "speaker": "JAMIE",
+      "text": "My first instinct was: is this just a lighter model they're calling fast so they can charge less for it?",
+      "mood": "pushback",
+      "reason": "Jamie questions the marketing framing immediately"
     },
     {
       "id": 8,
-      "speaker": "RUFUS",
-      "text": "It's historically significant. Huang co-founded NVIDIA. Thirty-three years at the helm. He wasn't just the CEO — he was the thesis. The GPU-to-AI pivot, the data center strategy, Blackwell — his fingerprints are on all of it.",
-      "mood": "explainer",
-      "reason": "Laying out the historical weight of Huang's tenure and legacy."
+      "speaker": "ALEX",
+      "text": "That is a completely fair question.",
+      "mood": "warmth",
+      "reason": "Alex validates her skepticism without dismissing it"
     },
     {
       "id": 9,
-      "speaker": "JAMIE",
-      "text": "And the reason he's gone is not a business failure. It's personal. Reports of two extramarital affairs. One of them involving a woman U.S. intelligence reportedly suspects of being a Chinese spy. That's not a footnote.",
-      "mood": "concern",
-      "reason": "Stressing the personal and geopolitical gravity of the reason for departure."
+      "speaker": "RUFUS",
+      "text": "The price is the actual story. One dollar fifty per million input tokens, seven fifty per million output. That's not a soft launch — that's a signal to every developer building agents.",
+      "mood": "explainer",
+      "reason": "Rufus redirects to concrete price data as the real signal"
     },
     {
       "id": 10,
       "speaker": "ALEX",
-      "text": "No. That's the kind of thing a board cannot sit on.",
-      "mood": "pressure",
-      "reason": "Underscoring the board's impossible position with no hesitation."
+      "text": "What's the signal?",
+      "mood": "curiosity",
+      "reason": "Alex follows the interesting answer with the obvious question"
     },
     {
       "id": 11,
       "speaker": "RUFUS",
-      "text": "Which is why they moved immediately. Same day. Colette Kress — the CFO — is interim CEO. Harvey C. Jones becomes the first-ever Chair of the Board. NVIDIA has never had a formal board chair before.",
+      "text": "That Google wants to be the cheap, fast backbone for agentic work. If you're firing off thousands of API calls a day, per-token cost is what determines whether your product is viable at all.",
       "mood": "explainer",
-      "reason": "Detailing the precise governance moves made within hours."
+      "reason": "Rufus lays out the competitive logic behind the price point"
     },
     {
       "id": 12,
-      "speaker": "ALEX",
-      "text": "What does that tell you?",
-      "mood": "curiosity",
-      "reason": "Pushing Rufus to interpret the first-ever board chair appointment."
+      "speaker": "JAMIE",
+      "text": "Okay, but can we say \"agentic workflow\" in a language spoken by humans?",
+      "mood": "amused",
+      "reason": "Jamie punctures the jargon with playful impatience"
     },
     {
       "id": 13,
       "speaker": "RUFUS",
-      "text": "That they're building institutional scaffolding they never needed when Jensen was the institution.",
-      "mood": "dry_wit",
-      "reason": "Precise, composed observation about institutional dependence on one person."
+      "text": "An agent is an AI that takes a sequence of actions on your behalf — not just answering a question, but actually doing things. Write this code, run a test, flag the error, try again. Hydrogen is built for that loop.",
+      "mood": "explainer",
+      "reason": "Rufus translates the concept into plain sequential steps"
     },
     {
       "id": 14,
       "speaker": "JAMIE",
-      "text": "Which is either reassuring or slightly terrifying, depending on how you look at it.",
-      "mood": "pushback",
-      "reason": "Holding the ambiguity open rather than accepting Rufus's framing cleanly."
+      "text": "So less conversation, more getting stuff done.",
+      "mood": "curiosity",
+      "reason": "Jamie tests her own understanding with a simpler frame"
     },
     {
       "id": 15,
-      "speaker": "ALEX",
-      "text": "I keep going back and forth on that. Because on one hand — NVIDIA's order book is enormous. The product roadmap exists. Colette Kress has been CFO since 2013. She knows this company.",
-      "mood": "curiosity",
-      "reason": "Thinking aloud, testing the reassurance case with real operational evidence."
+      "speaker": "RUFUS",
+      "text": "Faster execution, specifically. Carbon and Argon are for when you need careful reasoning. Hydrogen is for when speed matters more than depth.",
+      "mood": "explainer",
+      "reason": "Rufus refines the distinction between the model tiers"
     },
     {
       "id": 16,
-      "speaker": "RUFUS",
-      "text": "She knows it operationally better than almost anyone.",
-      "mood": "warmth",
-      "reason": "Genuinely crediting Kress before Jamie's challenge lands."
+      "speaker": "ALEX",
+      "text": "Like the difference between texting your smartest friend versus a hotline that picks up immediately.",
+      "mood": "curiosity",
+      "reason": "Alex reaches for an analogy to make the trade-off vivid"
     },
     {
       "id": 17,
       "speaker": "JAMIE",
-      "text": "But knowing a company operationally and being the person who convinces a sovereign wealth fund to bet on your next architecture are genuinely different skills.",
-      "mood": "pushback",
-      "reason": "Drawing a sharp distinction Rufus's framing glossed over."
+      "text": "Except the hotline is also pretty smart.",
+      "mood": "amused",
+      "reason": "Jamie complicates the analogy with a small precise correction"
     },
     {
       "id": 18,
       "speaker": "ALEX",
-      "text": "That's the thing I wanted to ask you about. How much of NVIDIA's market position is Jensen Huang specifically?",
-      "mood": "curiosity",
-      "reason": "Steering toward the question he most wants Rufus to answer."
+      "text": "Right, the hotline went to a good school.",
+      "mood": "amused",
+      "reason": "Alex extends the joke with a straight follow-through"
     },
     {
       "id": 19,
-      "speaker": "RUFUS",
-      "text": "Some of it is absolutely him. The GTC keynotes, the developer relationships, the sheer energy he brought to the AI narrative. But a large part of it is structural. NVIDIA has CUDA — that's the software layer that makes their chips so sticky. You build your AI pipeline on CUDA, and switching costs are enormous.",
-      "mood": "explainer",
-      "reason": "Separating founder charisma from structural moat with CUDA as evidence."
+      "speaker": "JAMIE",
+      "text": "Heh. What about the context window?",
+      "mood": "curiosity",
+      "reason": "Jamie recovers and pivots to a genuinely useful new question"
     },
     {
       "id": 20,
-      "speaker": "JAMIE",
-      "text": "CUDA is basically like — if your whole kitchen was designed around one brand of oven, and not just the oven, but the knives, the pans, the ventilation system, all of it.",
-      "mood": "delight",
-      "reason": "Enjoying her own analogy as it clicks into place."
+      "speaker": "ALEX",
+      "text": "A million tokens. Which is roughly a whole novel's worth of text the model can hold at once — at the lower price point.",
+      "mood": "explainer",
+      "reason": "Alex supplies the concrete context-window figure"
     },
     {
       "id": 21,
-      "speaker": "ALEX",
-      "text": "Right, switching isn't just buying a new oven.",
-      "mood": "amused",
-      "reason": "Playing along with Jamie's kitchen build, adding the obvious punchline."
+      "speaker": "RUFUS",
+      "text": "That's the genuinely useful part for power users. You can feed it a massive codebase and have it act on the whole thing, not just a chunk.",
+      "mood": "delight",
+      "reason": "Rufus identifies the specific utility win that earns real enthusiasm"
     },
     {
       "id": 22,
       "speaker": "JAMIE",
-      "text": "You're renovating the whole kitchen.",
-      "mood": "amused",
-      "reason": "Completing the analogy with comic satisfaction."
+      "text": "I'll give it that. But I still want to know whether \"fast\" means anything if the reasoning quality drops.",
+      "mood": "pushback",
+      "reason": "Jamie holds the quality concern against the speed claim"
     },
     {
       "id": 23,
-      "speaker": "RUFUS",
-      "text": "Exactly. So the enterprise buyers who are locked into NVIDIA architectures aren't going to pivot in a week because the CEO changed.",
-      "mood": "dry_wit",
-      "reason": "Closing the analogy with a composed, matter-of-fact confirmation."
+      "speaker": "ALEX",
+      "text": "That's the thing Google hasn't demonstrated independently. Performance claims come from Google.",
+      "mood": "concern",
+      "reason": "Alex names the evidential gap without independent benchmarks"
     },
     {
       "id": 24,
-      "speaker": "ALEX",
-      "text": "Okay, but what about the investors who weren't buying the architecture — they were buying Jensen?",
-      "mood": "pushback",
-      "reason": "Alex presses beyond architecture to the founder-as-asset thesis."
+      "speaker": "RUFUS",
+      "text": "Which is true of every model launch, to be fair.",
+      "mood": "dry_wit",
+      "reason": "Rufus calmly deflates Alex's pointed critique with minimal effort"
     },
     {
       "id": 25,
-      "speaker": "RUFUS",
-      "text": "That's the genuine risk. NVIDIA's stock has had significant volatility, and the board acknowledged that in its statement. They said the business operations, order book, and product roadmap remain unchanged. That's a very specific thing to say on the same day you announce a resignation.",
-      "mood": "explainer",
-      "reason": "Rufus cites board language as a precise, telling signal of risk."
+      "speaker": "JAMIE",
+      "text": "Sure, but it matters more here. If an agent is booking meetings or running a test suite or handling a customer query, I need it to be right, not just quick.",
+      "mood": "pushback",
+      "reason": "Jamie rejects the deflection; stakes of agent errors are specific and real"
     },
     {
       "id": 26,
-      "speaker": "JAMIE",
-      "text": "It's almost too specific. Like when someone says \"I'm fine\" in that particular tone.",
-      "mood": "dry_wit",
-      "reason": "Jamie's \"I'm fine\" read lands as a quiet, knowing observation."
+      "speaker": "ALEX",
+      "text": "So the actual testable question is: does Hydrogen reduce mistakes in multi-step tasks, or does it just get to the wrong answer faster?",
+      "mood": "curiosity",
+      "reason": "Alex sharpens the testable question from Jamie's concern"
     },
     {
       "id": 27,
-      "speaker": "ALEX",
-      "text": "Heh. Yeah.",
-      "mood": "amused",
-      "reason": "Alex's brief laugh affirms Jamie's analogy landed exactly right."
+      "speaker": "RUFUS",
+      "text": "Which developers will find out in the next few weeks. The price is low enough that people will actually run serious tests rather than toy with it.",
+      "mood": "explainer",
+      "reason": "Rufus grounds the answer in price logic, not speculation"
     },
     {
       "id": 28,
-      "speaker": "RUFUS",
-      "text": "The board is trying to draw a line between the person and the machine. The question is whether the market believes them.",
+      "speaker": "JAMIE",
+      "text": "Where does it show up for people who aren't building anything?",
       "mood": "curiosity",
-      "reason": "Rufus frames the open question of market belief without resolving it."
+      "reason": "Jamie pivots to a practical question about non-developer users"
     },
     {
       "id": 29,
-      "speaker": "JAMIE",
-      "text": "And the other question — which nobody's really talking about yet — is what this does internally. The culture at NVIDIA has been very founder-led. Jensen was famously involved at a granular level.",
-      "mood": "concern",
-      "reason": "Jamie raises the internal culture risk others are overlooking."
+      "speaker": "ALEX",
+      "text": "Search, the Gemini app, and for paid subscribers on AI Pro and Ultra — in something called Google Antigravity.",
+      "mood": "neutral",
+      "reason": "Alex lists product placements straightforwardly"
     },
     {
       "id": 30,
-      "speaker": "ALEX",
-      "text": "Demanding, by all accounts.",
-      "mood": "neutral",
-      "reason": "Alex adds a plain corroborating detail without editorializing."
+      "speaker": "JAMIE",
+      "text": "Antigravity. That's a product name.",
+      "mood": "amused",
+      "reason": "Jamie reacts to the absurdity of the product name with dry surprise"
     },
     {
       "id": 31,
-      "speaker": "JAMIE",
-      "text": "Intensely so. And that kind of culture either coheres around the mission when the founder leaves, or it starts to drift. You can't know which one you're watching until you're a few quarters in.",
-      "mood": "concern",
-      "reason": "Jamie describes an unknowable drift risk that takes quarters to see."
+      "speaker": "RUFUS",
+      "text": "I assume it doesn't actually —",
+      "mood": "dry_wit",
+      "reason": "Rufus deadpans a mock-serious query about the name's literal meaning"
     },
     {
       "id": 32,
-      "speaker": "RUFUS",
-      "text": "Which is why November seventeenth matters.",
-      "mood": "dry_wit",
-      "reason": "Rufus pins the abstract uncertainty to a specific date, quietly precise."
+      "speaker": "JAMIE",
+      "text": "No, Rufus.",
+      "mood": "amused",
+      "reason": "Jamie shuts him down with affectionate exasperation"
     },
     {
       "id": 33,
-      "speaker": "ALEX",
-      "text": "The earnings call.",
-      "mood": "curiosity",
-      "reason": "Alex confirms with a short question, following Rufus's lead."
+      "speaker": "RUFUS",
+      "text": "Worth confirming.",
+      "mood": "dry_wit",
+      "reason": "Rufus holds composure, insisting the question was reasonable"
     },
     {
       "id": 34,
-      "speaker": "RUFUS",
-      "text": "NVIDIA's financial report is next Monday. That's the first real signal. Not just the numbers — Colette Kress's tone, the guidance language, whether major partners say anything publicly. That's where we find out if \"unchanged\" actually means unchanged.",
-      "mood": "explainer",
-      "reason": "Rufus details what signals to read and why tone matters as much as numbers."
+      "speaker": "ALEX",
+      "text": "What I want to know is whether I'll notice it. Does Search feel faster? Does the app feel snappier?",
+      "mood": "curiosity",
+      "reason": "Alex returns to his personal user experience question"
     },
     {
       "id": 35,
-      "speaker": "ALEX",
-      "text": "And the new board chair role — first ever — what's your read on Harvey Jones?",
-      "mood": "curiosity",
-      "reason": "Alex pivots to a specific new governance detail, genuinely wanting Rufus's read."
+      "speaker": "RUFUS",
+      "text": "Possibly. But the people who'll notice most are the ones on the API. If agent latency drops, that's real and measurable. If it's marginally quicker in a chat box, most users won't register it.",
+      "mood": "explainer",
+      "reason": "Rufus draws a clear line between API users and casual users"
     },
     {
       "id": 36,
-      "speaker": "RUFUS",
-      "text": "He's a veteran board member. The creation of a chair position is a governance move. It separates the board leadership from the executive leadership, which is standard for large public companies but was apparently unnecessary at NVIDIA as long as Jensen was running everything.",
-      "mood": "explainer",
-      "reason": "Rufus contextualizes the chair role as a structural governance move."
+      "speaker": "ALEX",
+      "text": "One thing I keep circling back to — the naming. Carbon, Argon, Hydrogen. Google's giving these models periodic table names, and Hydrogen is the lightest element. That's not an accident.",
+      "mood": "curiosity",
+      "reason": "Alex pursues the naming pattern as a genuinely interesting signal"
     },
     {
       "id": 37,
       "speaker": "JAMIE",
-      "text": "So in a weird way, the company might end up with more conventional corporate governance than it's ever had.",
-      "mood": "delight",
-      "reason": "Jamie spots the irony that crisis produces the company's most conventional moment."
+      "text": "You think the name is load-bearing?",
+      "mood": "pushback",
+      "reason": "Jamie gently challenges whether a name can carry that much meaning"
     },
     {
       "id": 38,
-      "speaker": "RUFUS",
-      "text": "Which some institutional investors will actually prefer.",
-      "mood": "dry_wit",
-      "reason": "Rufus agrees with understated precision, noting investor preference quietly."
+      "speaker": "ALEX",
+      "text": "I think someone in a room decided the lightest, fastest element maps to \"don't overthink it, just execute.\" Which is either elegant or a warning, depending on your mood.",
+      "mood": "curiosity",
+      "reason": "Alex defends the interpretation with an open-ended reading"
     },
     {
       "id": 39,
-      "speaker": "ALEX",
-      "text": "That's the counter-argument I keep tripping over. The loss of a visionary is real. But a company that was essentially a founder autocracy moving toward institutional governance — for some shareholders, that's not a risk. That's maturity.",
-      "mood": "curiosity",
-      "reason": "Alex works through the counter-argument aloud, genuinely wrestling with it."
+      "speaker": "RUFUS",
+      "text": "It's a reasonable signal for enterprise buyers. You look at the name and you already know roughly where it sits in the stack.",
+      "mood": "dry_wit",
+      "reason": "Rufus validates the naming logic with composed understatement"
     },
     {
       "id": 40,
       "speaker": "JAMIE",
-      "text": "Both things can be true simultaneously.",
-      "mood": "warmth",
-      "reason": "Jamie holds the tension without forcing resolution, calm and clear."
+      "text": "Okay, but here's the thing I haven't fully resolved. Hydrogen is available on the free tier of AI Studio. So Google is giving developers — anyone, really — access to a frontier-class context window for free, to test.",
+      "mood": "delight",
+      "reason": "Jamie lands on a genuine utility discovery worth sharing"
     },
     {
       "id": 41,
       "speaker": "RUFUS",
-      "text": "Founding-era charisma and sustainable institutional structure are not automatically in conflict. They just rarely coexist, and the transition between them is almost always turbulent.",
+      "text": "Which is a genuinely aggressive move. You don't put a million-token window in a free tier unless you want adoption at scale before competitors can respond.",
       "mood": "explainer",
-      "reason": "Rufus adds the historical qualifier that turbulence is the rule, not the exception."
+      "reason": "Rufus confirms and contextualises the competitive intent behind the move"
     },
     {
       "id": 42,
       "speaker": "ALEX",
-      "text": "So what does an enterprise AI buyer actually do with this today — practically?",
+      "text": "And a million tokens at that price point — I keep trying to find the catch.",
       "mood": "curiosity",
-      "reason": "Alex grounds the conversation back in practical listener need."
+      "reason": "Alex is genuinely searching for the hidden cost"
     },
     {
       "id": 43,
       "speaker": "RUFUS",
-      "text": "Watch the November seventeenth call. Listen to what Kress says about the Blackwell rollout. If the operational language is consistent with pre-resignation guidance, the architecture thesis holds. Hedging is the signal.",
+      "text": "The catch is that output costs more. Seven fifty per million output tokens versus one fifty input. If your agent generates a lot of text back, that adds up.",
       "mood": "explainer",
-      "reason": "Rufus gives specific, actionable guidance tied to named signals."
+      "reason": "Rufus reveals the output pricing asymmetry as a concrete fact"
     },
     {
       "id": 44,
       "speaker": "JAMIE",
-      "text": "And don't conflate how Jensen left with where NVIDIA goes. Those questions are related, but answering one doesn't answer the other.",
-      "mood": "concern",
-      "reason": "Jamie warns against conflating two distinct questions, earnest and direct."
+      "text": "Oh. So it's cheap to feed it a whole codebase, but if it writes back a whole codebase —",
+      "mood": "disbelief",
+      "reason": "Jamie processes the reversal mid-thought with real surprise"
     },
     {
       "id": 45,
       "speaker": "RUFUS",
-      "text": "We'll know more Monday.",
-      "mood": "neutral",
-      "reason": "Rufus closes the story with a quiet, unadorned statement of fact."
+      "text": "You're paying five times as much per token.",
+      "mood": "dry_wit",
+      "reason": "Rufus delivers the multiplier with flat precision"
     },
     {
       "id": 46,
       "speaker": "ALEX",
-      "text": "Our second story — Google opened pre-orders today for its Intelligent Eyewear. Android XR glasses, Gemini AI on board, made in partnership with Warby Parker and Gentle Monster. Shipping December tenth.",
-      "mood": "neutral",
-      "reason": "Alex transitions cleanly to the next story with factual specifics."
+      "text": "That's the number I wish we'd landed on earlier.",
+      "mood": "amused",
+      "reason": "Alex's mild self-reproach lands as an earned comic admission"
     },
     {
       "id": 47,
       "speaker": "JAMIE",
-      "text": "I looked at these this morning. They're... actually kind of attractive?",
-      "mood": "delight",
-      "reason": "Jamie's surprised aesthetic approval is genuine and lightly self-aware."
+      "text": "That actually reframes the \"cheap backbone\" pitch a little. Cheap for routing and short responses. Less cheap for anything verbose.",
+      "mood": "curiosity",
+      "reason": "Jamie actively works through the revised implication of the pricing structure"
     },
     {
       "id": 48,
-      "speaker": "ALEX",
-      "text": "Right? That surprised me too. Warby Parker version starts at three-ninety-five. Gentle Monster goes up to four-eighty-nine.",
-      "mood": "delight",
-      "reason": "Specific price points confirm the surprisingly normal cost framing"
+      "speaker": "RUFUS",
+      "text": "Which is probably by design. Fast models work best when they're making decisions and handing off, not writing essays.",
+      "mood": "explainer",
+      "reason": "Rufus supplies the design logic behind fast-model trade-offs."
     },
     {
       "id": 49,
-      "speaker": "JAMIE",
-      "text": "So roughly what you'd pay for a decent pair of prescription frames. Except with an AI assistant built in.",
-      "mood": "amused",
-      "reason": "Deadpan reframe lands the AI-assistant detail as a dry upgrade"
+      "speaker": "ALEX",
+      "text": "So the real test isn't just latency. It's whether your agent's output-to-input ratio is favorable at that pricing.",
+      "mood": "curiosity",
+      "reason": "Alex builds a testable framework from Rufus's explanation."
     },
     {
       "id": 50,
       "speaker": "RUFUS",
-      "text": "Which is the entire pitch. It's not a headset. It's glasses that happen to have a twelve-megapixel camera and real-time Gemini assistance.",
-      "mood": "explainer",
-      "reason": "Rufus reframes the product category precisely to sharpen the pitch"
+      "text": "Correct. And that varies wildly by use case.",
+      "mood": "dry_wit",
+      "reason": "Rufus confirms with deliberate, deadpan brevity."
     },
     {
       "id": 51,
-      "speaker": "ALEX",
-      "text": "And a face-redaction feature for bystanders nearby. That's the detail that made me stop.",
-      "mood": "curiosity",
-      "reason": "Alex flags the redaction feature as the genuinely arresting detail"
+      "speaker": "JAMIE",
+      "text": "I want that on a mug. \"Varies wildly by use case.\"",
+      "mood": "amused",
+      "reason": "Jamie's mug quip lands as a playful reaction to Rufus's flat line."
     },
     {
       "id": 52,
-      "speaker": "JAMIE",
-      "text": "Explain that one.",
-      "mood": "curiosity",
-      "reason": "Jamie wants the mechanism spelled out before forming a view"
+      "speaker": "ALEX",
+      "text": "The honest slogan of the entire industry.",
+      "mood": "amused",
+      "reason": "Alex extends Jamie's joke with a wry industry-wide observation."
     },
     {
       "id": 53,
-      "speaker": "ALEX",
-      "text": "So if the glasses are recording — say you're capturing something on the street — the system can automatically blur the faces of people around you who didn't consent to be filmed.",
-      "mood": "explainer",
-      "reason": "Alex walks through the consent scenario carefully and concretely"
+      "speaker": "JAMIE",
+      "text": "One thing I want to flag — it went live across all those surfaces on day one. No waitlist.",
+      "mood": "neutral",
+      "reason": "Jamie pivots to flag a concrete factual detail about rollout."
     },
     {
       "id": 54,
-      "speaker": "JAMIE",
-      "text": "Which is either genuinely thoughtful or a very elaborate way of saying \"yes, we know this is strange, please stay calm.\"",
-      "mood": "dry_wit",
-      "reason": "Jamie holds two readings at once with straight-faced precision"
+      "speaker": "RUFUS",
+      "text": "Which is worth noting. If the context window and pricing are the pitch, the absence of a phased rollout means Google is comfortable with scrutiny at scale immediately.",
+      "mood": "explainer",
+      "reason": "Rufus draws a measured inference from the no-waitlist decision."
     },
     {
       "id": 55,
-      "speaker": "RUFUS",
-      "text": "Probably both simultaneously.",
-      "mood": "dry_wit",
-      "reason": "Rufus collapses the debate into one wry word without breaking composure"
+      "speaker": "ALEX",
+      "text": "Or confident enough that they'd rather have adoption data than controlled feedback. Either way — testable this week.",
+      "mood": "curiosity",
+      "reason": "Alex offers a competing reading and frames it as testable."
     },
     {
       "id": 56,
       "speaker": "ALEX",
-      "text": "Rufus, take us on location.",
+      "text": "Testable prediction: developers should run Hydrogen on routing and agent loops this week and see if the latency drop justifies any trade-off in reasoning depth.",
       "mood": "neutral",
-      "reason": "Standard handoff to Rufus dispatch, no emotional charge needed"
+      "reason": "Alex issues a practical listener challenge to close the story."
     },
     {
       "id": 57,
       "speaker": "RUFUS",
-      "text": "Right. Picture a mid-morning in a Manhattan office — three people on laptops, Google Workspace connected to everything. When Google announces hardware that puts Gemini at the frame level —",
-      "mood": "explainer",
-      "reason": "Rufus establishes the imagined setting and investor framing methodically"
+      "text": "And benchmark it against what competitors are charging for comparable windows.",
+      "mood": "neutral",
+      "reason": "Rufus adds a comparative benchmark criterion without drama."
     },
     {
       "id": 58,
-      "speaker": "RUFUS",
-      "text": "the question institutional investors are asking isn't \"are these cool.\" It's \"does this extend the Google ecosystem in a way that generates recurring revenue.\" The glasses themselves aren't the product. The data layer underneath them is. Warby Parker brings fashion credibility; Gentle Monster pulls a different retail demographic.",
-      "mood": "explainer",
-      "reason": "Rufus moves from cool-factor to data-layer revenue logic with precision"
+      "speaker": "JAMIE",
+      "text": "And tell us what they find.",
+      "mood": "warmth",
+      "reason": "Jamie's invitation signals genuine interest in listener feedback."
     },
     {
       "id": 59,
-      "speaker": "RUFUS",
-      "text": "But Google brings the assistant that's always translating, always connected to your calendar. That's the stickiness investors are weighing alongside the three-ninety-five price point today.",
-      "mood": "explainer",
-      "reason": "Rufus anchors the stickiness argument to a concrete price point"
+      "speaker": "ALEX",
+      "text": "We will want to know. All right — that's story one. Our second story is a legal action that could affect every model on that list.",
+      "mood": "neutral",
+      "reason": "Alex closes story one and introduces the legal stakes ahead."
     },
     {
       "id": 60,
-      "speaker": "JAMIE",
-      "text": "Okay, but \"always connected to your calendar\" is a polite version of \"always listening\" — and that phrase alone makes half the people I know put their phones face-down.",
-      "mood": "pushback",
-      "reason": "Jamie challenges the euphemism directly with a real trust objection"
+      "speaker": "ALEX",
+      "text": "Our second story. AP reported on November 12th that a coalition of advocacy groups filed a lawsuit in San Francisco Superior Court seeking to halt further AI model development. The defendants are Anthropic, Google, Meta, OpenAI, and SpaceXSI. The suit argues the companies cannot prevent catastrophic harm. Rufus, take us on location.",
+      "mood": "neutral",
+      "reason": "Alex delivers sourced story setup and hands off to Rufus."
     },
     {
       "id": 61,
       "speaker": "RUFUS",
-      "text": "Which is precisely why the physical on/off switch and the white LED recording indicator are design decisions, not afterthoughts. Google is trying to solve the trust problem before it becomes the reason people don't buy the product.",
+      "text": "Right. Picture the financial district of New York — not San Francisco where the suit was filed, but where the consequence actually lands. The investors, the funds, the analysts who have been pricing these companies on the assumption that model releases keep coming.",
       "mood": "explainer",
-      "reason": "Rufus defends the design decisions as deliberate trust-building strategy"
+      "reason": "Rufus establishes the Wall Street setting and investor framing."
     },
     {
       "id": 62,
-      "speaker": "JAMIE",
-      "text": "Does a small white light actually do that? Because I can think of plenty of situations where I wouldn't notice a tiny LED on someone's frames.",
-      "mood": "pushback",
-      "reason": "Jamie presses on whether the LED actually solves the problem she raised"
+      "speaker": "RUFUS",
+      "text": "Imagine you're in a mid-morning briefing on November 12th and someone reads out that AP headline. The question in that room isn't \"will this work?\" It's \"how much uncertainty does this inject, and for how long?\" The plaintiffs argue the companies have diverted resources to address alleged risks and still cannot prevent catastrophic harm.",
+      "mood": "concern",
+      "reason": "Rufus surfaces the market uncertainty injected by the headline."
     },
     {
       "id": 63,
       "speaker": "RUFUS",
-      "text": "That's fair. The face-redaction feature is probably doing more work on the trust problem than the LED is.",
-      "mood": "concession",
-      "reason": "Rufus grants Jamie's point and redirects to the stronger feature"
+      "text": "That is a legal theory, not a court finding. But courts can grant injunctions before cases are decided, and one targeting development would be, by any measure, a serious market event.",
+      "mood": "concern",
+      "reason": "Rufus distinguishes legal theory from finding and names the market risk."
     },
     {
       "id": 64,
-      "speaker": "ALEX",
-      "text": "Back to the wider story. Jamie, you were getting at something about the social dimension.",
-      "mood": "curiosity",
-      "reason": "Alex reopens the social thread Jamie had started before the dispatch"
+      "speaker": "JAMIE",
+      "text": "Can courts actually do that? Stop a company from writing software?",
+      "mood": "pushback",
+      "reason": "Jamie challenges whether courts can actually halt software development."
     },
     {
       "id": 65,
-      "speaker": "JAMIE",
-      "text": "It's not the technology I'm uncertain about. Real-time speech translation is genuinely useful — if someone speaks to me in Portuguese and I hear it in English without reaching for my phone, that's a real improvement.",
-      "mood": "delight",
-      "reason": "Jamie lands on a concrete useful scenario — translation — she genuinely wants"
+      "speaker": "RUFUS",
+      "text": "They've issued injunctions against technology companies before, usually on intellectual property grounds. This theory is different — closer to arguing the activity itself poses an unreasonable public risk.",
+      "mood": "explainer",
+      "reason": "Rufus draws the distinction between IP precedent and this novel legal theory."
     },
     {
       "id": 66,
-      "speaker": "ALEX",
-      "text": "That's the exact scenario where I actually want these.",
-      "mood": "warmth",
-      "reason": "Alex recognises the same real use case with quiet agreement"
+      "speaker": "JAMIE",
+      "text": "Like an environmental injunction.",
+      "mood": "curiosity",
+      "reason": "Jamie tests the environmental injunction analogy to sharpen her understanding."
     },
     {
       "id": 67,
-      "speaker": "JAMIE",
-      "text": "But there's a gap between that and walking into a coffee shop where everyone can see a camera on my face that might be running.",
-      "mood": "concern",
-      "reason": "Jamie names the social gap between useful scenario and public reality"
+      "speaker": "RUFUS",
+      "text": "Comparable logic. And environmental injunctions do sometimes stop construction mid-project.",
+      "mood": "neutral",
+      "reason": "Rufus confirms the analogy holds with a grounding real-world example."
     },
     {
       "id": 68,
       "speaker": "ALEX",
-      "text": "The LED is supposed to handle that.",
-      "mood": "neutral",
-      "reason": "Alex offers the official answer without strong conviction either way"
+      "text": "Back to the wider story. Jamie, you floated the word \"theatre\" before we went on location. Still feel that way?",
+      "mood": "curiosity",
+      "reason": "Alex returns to Jamie's earlier framing to test whether her view has shifted."
     },
     {
       "id": 69,
       "speaker": "JAMIE",
-      "text": "The LED that Rufus just admitted he might not notice.",
-      "mood": "amused",
-      "reason": "Jamie turns Rufus's earlier admission into a precise callback on Alex's claim"
+      "text": "There's a theatre dimension — five companies, no ruling, enormous headline. But the shift from \"we want regulation\" to \"we want a court order stopping development\" isn't theatre. That's a different level of ambition entirely.",
+      "mood": "concession",
+      "reason": "Jamie revises her theatre read after weighing the ambition of the legal shift."
     },
     {
       "id": 70,
-      "speaker": "RUFUS",
-      "text": "I said \"plenty of situations.\" I'm not renowned for my situational awareness.",
-      "mood": "dry_wit",
-      "reason": "Rufus accepts the charge with composed self-deprecation"
+      "speaker": "ALEX",
+      "text": "What do they actually want?",
+      "mood": "curiosity",
+      "reason": "Alex presses for the specific remedy the plaintiffs seek."
     },
     {
       "id": 71,
-      "speaker": "ALEX",
-      "text": "You once missed someone waving at you from six feet away because you were reading a markets brief.",
-      "mood": "amused",
-      "reason": "Alex lands the specific anecdote to earn the tease properly"
+      "speaker": "RUFUS",
+      "text": "According to AP, they want to stop further development or deployment of new AI models.",
+      "mood": "neutral",
+      "reason": "Rufus cites the AP report to answer Alex's direct question plainly."
     },
     {
       "id": 72,
-      "speaker": "RUFUS",
-      "text": "The markets were moving.",
-      "mood": "dry_wit",
-      "reason": "Deadpan one-line defence of his own distraction"
+      "speaker": "ALEX",
+      "text": "All new models? Across all five companies?",
+      "mood": "disbelief",
+      "reason": "Scale of the demand lands as genuinely hard to process."
     },
     {
       "id": 73,
-      "speaker": "JAMIE",
-      "text": "The honest version of this story is that Google is betting privacy features — clearly communicated — can normalize camera-equipped eyewear in public. Meta's been in this space with Ray-Ban glasses. These go further; Gemini integration is more capable than what Meta offered at launch. But more capable isn't the same as socially accepted.",
-      "mood": "explainer",
-      "reason": "Jamie reframes the story with clear analytical structure"
+      "speaker": "RUFUS",
+      "text": "That's what the suit seeks.",
+      "mood": "dry_wit",
+      "reason": "Minimal confirmation; Rufus lets the absurdity speak."
     },
     {
       "id": 74,
-      "speaker": "ALEX",
-      "text": "Where does that play out?",
-      "mood": "curiosity",
-      "reason": "Alex follows Jamie's thread, genuinely wanting the next step"
+      "speaker": "JAMIE",
+      "text": "Which is — I mean, that's staggering.",
+      "mood": "disbelief",
+      "reason": "Jamie absorbs the full scope and can't quite finish the thought."
     },
     {
       "id": 75,
-      "speaker": "JAMIE",
-      "text": "Niche use cases first. Travel, accessibility, hands-free professional work. And then, depending on how the face-redaction actually performs in crowded environments — which we don't know yet — it either stays niche or starts to normalize.",
+      "speaker": "RUFUS",
+      "text": "It is. And the chance of a court granting relief at that scale is not high. Courts are cautious about injunctions with that kind of economic consequence. But.",
       "mood": "explainer",
-      "reason": "Jamie maps out adoption pathway with honest uncertainty built in"
+      "reason": "Rufus calmly qualifies likelihood, then opens a door with 'But.'"
     },
     {
       "id": 76,
-      "speaker": "RUFUS",
-      "text": "The initial rollout is limited regardless. Google says shipping begins December tenth but only to select markets.",
-      "mood": "neutral",
-      "reason": "Rufus adds a qualifying fact that lands without drama"
+      "speaker": "ALEX",
+      "text": "But?",
+      "mood": "curiosity",
+      "reason": "Alex follows the open door immediately, wanting the other shoe."
     },
     {
       "id": 77,
-      "speaker": "ALEX",
-      "text": "So you can pre-order today and then discover your city isn't included.",
-      "mood": "amused",
-      "reason": "Alex lands a dry observation on the pre-order absurdity"
+      "speaker": "RUFUS",
+      "text": "The legal process is now a material risk. Even if this suit fails, it sets a template. Other groups, other jurisdictions, other theories. The first time someone tries something legally ambitious is rarely the last time.",
+      "mood": "concern",
+      "reason": "Rufus names litigation as a durable systemic risk, not just this case."
     },
     {
       "id": 78,
-      "speaker": "RUFUS",
-      "text": "Classic.",
-      "mood": "dry_wit",
-      "reason": "Rufus delivers a single-word verdict, straight-faced"
+      "speaker": "JAMIE",
+      "text": "And this is filed in San Francisco Superior Court — state court, not federal.",
+      "mood": "curiosity",
+      "reason": "Jamie adds a procedural fact she's been sitting on, testing its weight."
     },
     {
       "id": 79,
-      "speaker": "JAMIE",
-      "text": "The underlying technology is real. The question is whether Google has threaded the needle on the social contract well enough for people to actually wear these in public.",
-      "mood": "concern",
-      "reason": "Jamie narrows to the unresolved social-contract question"
+      "speaker": "ALEX",
+      "text": "Does that matter?",
+      "mood": "curiosity",
+      "reason": "Alex asks the obvious practical question without pretending to know."
     },
     {
       "id": 80,
-      "speaker": "ALEX",
-      "text": "I think I'd use them for about three things and feel watched for everything else.",
-      "mood": "curiosity",
-      "reason": "Alex explores his own honest ambivalence about wearing them"
+      "speaker": "RUFUS",
+      "text": "It could. Federal courts have more experience with technology companies. State courts are less predictable on novel legal theories, which cuts both ways. It might not go far, but it might move faster.",
+      "mood": "explainer",
+      "reason": "Rufus walks through the trade-off evenhandedly, no settled verdict."
     },
     {
       "id": 81,
       "speaker": "JAMIE",
-      "text": "Which is probably true of every new wearable category until it isn't.",
-      "mood": "warmth",
-      "reason": "Jamie gently contextualises Alex's feeling with a broader pattern"
+      "text": "Here's what I keep coming back to. The plaintiffs say the companies have already diverted resources to respond to alleged risks. So the argument is: you know this is dangerous, you're spending money on it, and you still can't fix it.",
+      "mood": "pushback",
+      "reason": "Jamie reframes the plaintiffs' argument as a logical trap for defendants."
     },
     {
       "id": 82,
       "speaker": "RUFUS",
-      "text": "The price point is doing something specific here. Three-ninety-five isn't a mass-market impulse buy, but it's nowhere near enterprise hardware. It's the premium consumer bracket — the person who already thinks carefully about what they put on their face.",
-      "mood": "explainer",
-      "reason": "Rufus makes a precise market-positioning observation"
+      "text": "Which is a clever framing. It uses the companies' own safety spending as evidence against them.",
+      "mood": "dry_wit",
+      "reason": "Rufus appreciates the cleverness of the legal judo with quiet precision."
     },
     {
       "id": 83,
-      "speaker": "JAMIE",
-      "text": "Which means Google is betting that person is also willing to trust them with that level of access.",
-      "mood": "curiosity",
-      "reason": "Jamie draws the trust implication from Rufus's price-point point"
+      "speaker": "ALEX",
+      "text": "That's genuinely surprising.",
+      "mood": "disbelief",
+      "reason": "Alex registers the inversion genuinely; the logic caught him off guard."
     },
     {
       "id": 84,
-      "speaker": "RUFUS",
-      "text": "It's the same customer Warby Parker already has. That's why the partnership is smart even if everything else is still uncertain.",
-      "mood": "neutral",
-      "reason": "Rufus closes the partnership logic without fanfare"
+      "speaker": "JAMIE",
+      "text": "Right? Hire a thousand safety researchers and you've implicitly acknowledged there's something to be safe about.",
+      "mood": "delight",
+      "reason": "Jamie finds the absurdity of the safety-spending trap genuinely satisfying."
     },
     {
       "id": 85,
-      "speaker": "JAMIE",
-      "text": "A short sponsor break for The Ledger. Alex, if everything is breaking news, when are we supposed to get any work done?",
-      "mood": "neutral",
-      "reason": "Sponsor transition, matter-of-fact handoff"
+      "speaker": "RUFUS",
+      "text": "The defendants will argue that safety investment proves responsibility, not culpability. But the plaintiffs get to make the first headline.",
+      "mood": "dry_wit",
+      "reason": "Rufus grants the defence its point, then quietly notes who leads the narrative."
     },
     {
       "id": 86,
       "speaker": "ALEX",
-      "text": "That's the question The Ledger helps you work through: five focused briefings connecting AI news with the decisions in front of you.",
-      "mood": "neutral",
-      "reason": "Sponsor read, informational and clean"
+      "text": "So what does a listener actually watch for?",
+      "mood": "curiosity",
+      "reason": "Alex pivots to listener utility, grounding the conversation practically."
     },
     {
       "id": 87,
       "speaker": "RUFUS",
-      "text": "The Ledger. Because reading another headline is a marvellous way to postpone deciding anything. I admire the efficiency of the procrastination.",
-      "mood": "neutral",
-      "reason": "Rufus's sponsor line is a composed, slightly self-satisfied quip"
+      "text": "Whether the court takes the case seriously or dismisses it quickly. Whether any of the five companies quietly adjust their release timing — not because they're ordered to, but because the litigation calculus shifts. And whether similar suits appear in other jurisdictions.",
+      "mood": "explainer",
+      "reason": "Rufus lists concrete watchpoints steadily; this is the actionable summary."
     },
     {
       "id": 88,
       "speaker": "JAMIE",
-      "text": "Rufus has diagnosed the problem. The Ledger link is in our show notes. Back to the story.",
-      "mood": "neutral",
-      "reason": "Jamie wraps the sponsor and pivots back to business"
+      "text": "And whether \"catastrophic harm\" ever gets defined. Because right now it's carrying the entire legal theory and nobody's said precisely what it covers.",
+      "mood": "concern",
+      "reason": "Jamie flags the undefined term carrying the whole theory; a real gap."
     },
     {
       "id": 89,
       "speaker": "ALEX",
-      "text": "Before our third story — a quick word.",
+      "text": "To be clear: the allegation isn't a finding. Nothing has been adjudicated.",
       "mood": "neutral",
-      "reason": "Alex signals the next segment, functional transition"
+      "reason": "Alex issues a factual qualification plainly; responsible, not dramatic."
     },
     {
       "id": 90,
-      "speaker": "ALEX",
-      "text": "Okay, story three. Meta launched something today called Muse — an AI assistant built natively for Apple Watch and Android Wear OS. Voice interaction, proactive notifications, context-aware. Your AI is now on your wrist.",
-      "mood": "neutral",
-      "reason": "Alex introduces the new story with straightforward reporting energy"
+      "speaker": "RUFUS",
+      "text": "But the AI risk conversation has acquired a legal address. That's the actual change — not what a court decides today, but what becomes possible to argue tomorrow.",
+      "mood": "concern",
+      "reason": "Rufus names the durable shift: legal address changes what is arguable tomorrow."
     },
     {
       "id": 91,
-      "speaker": "JAMIE",
-      "text": "My immediate reaction was \"oh no.\"",
-      "mood": "pushback",
-      "reason": "Jamie's gut reaction is a brief, honest recoil"
+      "speaker": "ALEX",
+      "text": "It is. All right, quick break before story three.",
+      "mood": "neutral",
+      "reason": "Alex closes the story beat and moves the show forward cleanly."
     },
     {
       "id": 92,
-      "speaker": "ALEX",
-      "text": "Elaborate on \"oh no.\"",
+      "speaker": "JAMIE",
+      "text": "Rufus, staying in New York or are you teleporting somewhere new?",
       "mood": "amused",
-      "reason": "Alex invites elaboration on a reaction he finds worth unpacking"
+      "reason": "Jamie teases the fictional globe-trotting with affectionate timing."
     },
     {
       "id": 93,
-      "speaker": "JAMIE",
-      "text": "My phone nudges me, my laptop nudges me, my apps nudge me. And now there's something on my wrist that is specifically designed to send me information I didn't ask for.",
-      "mood": "concern",
-      "reason": "Jamie articulates the specific overload problem without comedy"
+      "speaker": "RUFUS",
+      "text": "I'm in the studio, Jamie. I was always in the studio.",
+      "mood": "dry_wit",
+      "reason": "Rufus deflects with straight-faced composure, landing the deadpan."
     },
     {
       "id": 94,
-      "speaker": "ALEX",
-      "text": "\"Proactive\" is the word that got me too. Meta's framing it as the selling point — the assistant learns your habits and surfaces things before you ask.",
-      "mood": "curiosity",
-      "reason": "Alex connects his own reaction to Meta's framing and follows it"
+      "speaker": "JAMIE",
+      "text": "The global desk claims another fictional flight.",
+      "mood": "amused",
+      "reason": "Jamie presses the running bit warmly before Rufus can recover."
     },
     {
       "id": 95,
       "speaker": "RUFUS",
-      "text": "Which, best case, is actually elegant. You're walking into a client meeting and Muse quietly surfaces the last thing you discussed with them. No fumbling, no opening anything.",
-      "mood": "explainer",
-      "reason": "Rufus offers the genuinely useful best-case use scenario"
+      "text": "A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+      "mood": "neutral",
+      "reason": "Rufus redirects to sponsor with composed irony at his own expense."
     },
     {
       "id": 96,
-      "speaker": "JAMIE",
-      "text": "Okay, that I'd take.",
-      "mood": "delight",
-      "reason": "Rufus's best-case scenario lands exactly where Jamie wants it"
+      "speaker": "ALEX",
+      "text": "I'd start with a better question. The Ledger offers five focused briefings to help you think through what the news means for your next decision.",
+      "mood": "neutral",
+      "reason": "Straightforward sponsor read, no emotional colour needed."
     },
     {
       "id": 97,
-      "speaker": "RUFUS",
-      "text": "Worst case, it's one more ambient interruption you have to manage.",
-      "mood": "dry_wit",
-      "reason": "Rufus quietly punctures his own appealing scenario"
+      "speaker": "JAMIE",
+      "text": "So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+      "mood": "neutral",
+      "reason": "Jamie lands a quiet, precise joke at Rufus's expense."
     },
     {
       "id": 98,
-      "speaker": "JAMIE",
-      "text": "And the watch is specifically the device you reach for when you want a fast answer. \"Proactive\" means Muse is also deciding when to interrupt you. That's a different thing entirely.",
-      "mood": "pushback",
-      "reason": "Jamie sharpens the distinction Rufus softened"
+      "speaker": "RUFUS",
+      "text": "My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+      "mood": "neutral",
+      "reason": "Rufus deflects the tease with composed, rationed self-description."
     },
     {
       "id": 99,
       "speaker": "ALEX",
-      "text": "So does it work?",
-      "mood": "curiosity",
-      "reason": "Alex cuts through the framing to the practical question"
+      "text": "Third story. United Airlines says it will block unauthorized third-party AI agents from booking flights or managing reservations on your behalf. TechCrunch had it yesterday. United cited cybersecurity risks and said certain check-in acknowledgments may legally require a human — which could put some AI-completed steps in conflict with federal aviation rules.",
+      "mood": "explainer",
+      "reason": "Alex lays out the United story clearly, introducing key facts."
     },
     {
       "id": 100,
       "speaker": "JAMIE",
-      "text": "Depends completely on how good the model is at judging relevance. That's not a small caveat.",
-      "mood": "explainer",
-      "reason": "Jamie states the real condition flatly, without hedging"
+      "text": "Okay. Two things here, and they smell different to me.",
+      "mood": "curiosity",
+      "reason": "Jamie senses a distinction worth unpacking before committing."
     },
     {
       "id": 101,
-      "speaker": "RUFUS",
-      "text": "There's a structural limit too. It requires a smartphone running the Meta app — it's not standalone. So if you're not already in Meta's ecosystem, the watch app is a pretty shallow entry point.",
-      "mood": "explainer",
-      "reason": "Rufus adds a structural constraint that reframes the whole pitch"
+      "speaker": "ALEX",
+      "text": "Go.",
+      "mood": "curiosity",
+      "reason": "Alex invites Jamie to continue; brief, open prompt."
     },
     {
       "id": 102,
-      "speaker": "ALEX",
-      "text": "So this is Meta extending an existing assistant into ambient computing, not launching a new one.",
-      "mood": "curiosity",
-      "reason": "Alex tests whether his reframe holds against what Rufus just said"
+      "speaker": "JAMIE",
+      "text": "The cybersecurity argument is real. If an AI agent is logging into your airline account on your behalf, that's a credential handoff — you're giving something access to act as you. That's a genuine surface for account takeover. I get it.",
+      "mood": "explainer",
+      "reason": "Jamie works through the credential-handoff risk carefully and fairly."
     },
     {
       "id": 103,
-      "speaker": "JAMIE",
-      "text": "Which raises the more interesting question: if Muse is already familiar to Meta AI users, does the watch version have to be better than the phone version — or just more convenient?",
+      "speaker": "ALEX",
+      "text": "But?",
       "mood": "curiosity",
-      "reason": "Jamie finds the more interesting question inside Alex's reframe"
+      "reason": "Alex presses for the other half of Jamie's argument."
     },
     {
       "id": 104,
-      "speaker": "RUFUS",
-      "text": "More convenient. By a wide margin. The whole premise is that you don't reach for your phone. If you're reaching for your phone to correct Muse, it has already failed.",
-      "mood": "explainer",
-      "reason": "Rufus draws a clean logical line from premise to failure condition"
+      "speaker": "JAMIE",
+      "text": "But airlines make serious money on the booking flow. Direct bookings, ancillary fees, the specific way the checkout funnel nudges you toward the seat upgrade. A smart AI that finds the cheapest combination of fare and bag fee is not what the airline ordered.",
+      "mood": "pushback",
+      "reason": "Jamie names the revenue motive as a competing explanation."
     },
     {
       "id": 105,
       "speaker": "RUFUS",
-      "text": "Wrist, then glasses, then whatever comes after glasses.",
+      "text": "Both things can be true.",
       "mood": "dry_wit",
-      "reason": "Rufus maps the product roadmap with composed understatement"
+      "reason": "Rufus offers a composed, almost too-tidy two-things-at-once deflection."
     },
     {
       "id": 106,
-      "speaker": "ALEX",
-      "text": "Presumably a chip behind the ear and a existential crisis.",
-      "mood": "amused",
-      "reason": "Alex takes the trajectory to its absurd endpoint"
+      "speaker": "JAMIE",
+      "text": "I know both things can be true! That doesn't mean we stop noticing both things.",
+      "mood": "pushback",
+      "reason": "Jamie pushes back on Rufus's tidy framing with genuine irritation."
     },
     {
       "id": 107,
       "speaker": "RUFUS",
-      "text": "I was going to say \"earrings,\" but yes.",
-      "mood": "amused",
-      "reason": "Rufus recovers his composure with a drier alternative"
+      "text": "Fair. And for what it's worth, the security case is stronger than people are giving it credit for. When a third-party agent completes a transaction inside your account, the airline can't verify you authorized that specific action. If it books the wrong flight, wrong name, wrong date — the liability question gets messy very fast.",
+      "mood": "explainer",
+      "reason": "Rufus makes a substantive case for the security argument's real weight."
     },
     {
       "id": 108,
       "speaker": "ALEX",
-      "text": "Practical question — who should actually try this?",
-      "mood": "neutral",
-      "reason": "Alex pivots cleanly to the practical listener question"
+      "text": "Couldn't they just build an authorized pathway, though? Here's the credential handoff we'll accept, here's how to do this safely?",
+      "mood": "curiosity",
+      "reason": "Alex spots a constructive alternative and asks why it isn't happening."
     },
     {
       "id": 109,
-      "speaker": "JAMIE",
-      "text": "If you wear a smartwatch and you're already a Meta AI user, it's worth a look. The honest test is whether the proactive piece helps or just irritates you, and that's going to be personal.",
-      "mood": "explainer",
-      "reason": "Jamie gives an honest, conditional recommendation without overselling"
+      "speaker": "RUFUS",
+      "text": "They could. The open question is whether that's coming or whether this is the permanent position.",
+      "mood": "concern",
+      "reason": "Rufus flags genuine uncertainty about whether the door stays closed."
     },
     {
       "id": 110,
-      "speaker": "ALEX",
-      "text": "One thing I keep coming back to — the voice interaction piece. On a phone, you can type. On a watch, voice is basically your only option for anything complex. How good does that have to be before it's not just faster to look at your phone?",
-      "mood": "curiosity",
-      "reason": "Alex follows a specific practical gap in what Jamie just outlined"
+      "speaker": "JAMIE",
+      "text": "United says they'll update policies across booking, ticketing, and distribution — and they'll push through travel agencies and aggregators, not just their own site.",
+      "mood": "explainer",
+      "reason": "Jamie adds the scope detail — agencies and aggregators, not just the site."
     },
     {
       "id": 111,
-      "speaker": "JAMIE",
-      "text": "Genuinely good. Because if Muse mishears you or gives you a half-answer, the correction takes longer than whatever you were trying to shortcut.",
-      "mood": "explainer",
-      "reason": "Jamie states the failure mode precisely and without drama"
+      "speaker": "ALEX",
+      "text": "So it's not just \"don't do it on united.com.\" It goes all the way up the chain.",
+      "mood": "disbelief",
+      "reason": "Alex registers that the reach is wider than he assumed."
     },
     {
       "id": 112,
       "speaker": "RUFUS",
-      "text": "And the watch is the device you use when your hands are occupied. You're cycling, you're in a meeting, you're carrying something. That's exactly when a voice misfire is most irritating.",
-      "mood": "explainer",
-      "reason": "Rufus grounds the voice-misfire problem in a concrete physical scenario"
+      "text": "Which means your third-party travel AI might not fail on United's website. It might get blocked at the aggregator before it even gets there.",
+      "mood": "concern",
+      "reason": "Rufus draws out the practical consequence — blocked upstream, invisibly."
     },
     {
       "id": 113,
       "speaker": "ALEX",
-      "text": "So the voice accuracy bar is higher here than anywhere else Meta has deployed this assistant.",
+      "text": "Okay, that's the practical thing. I have an assistant that handles travel. I say \"book me a United flight Thursday\" —",
       "mood": "curiosity",
-      "reason": "Alex tests whether his conclusion follows from what both just said"
+      "reason": "Alex makes it personal, working through his own likely scenario aloud."
     },
     {
       "id": 114,
       "speaker": "JAMIE",
-      "text": "Higher, and also less forgiving. Your phone you can quietly correct. Your watch talks back at you in a room.",
-      "mood": "pushback",
-      "reason": "Jamie sharpens Alex's point with a social consequence he missed"
+      "text": "You might get an error. Or worse, a partial booking. The AI got halfway through and stopped.",
+      "mood": "concern",
+      "reason": "Jamie names the scarier outcome — not failure but a broken partial booking."
     },
     {
       "id": 115,
       "speaker": "RUFUS",
-      "text": "There is one scenario where the form factor genuinely wins, though. If Muse is accurate about daily schedule context — not just your calendar, but your habits — the glanceable notification is actually less invasive than a phone buzz.",
-      "mood": "explainer",
-      "reason": "Rufus offers the one scenario where the form factor actually earns its keep"
+      "text": "Which is the genuinely scary failure mode. Not no booking. A broken one.",
+      "mood": "concern",
+      "reason": "Rufus confirms the broken-booking risk as the genuinely worrying case."
     },
     {
       "id": 116,
-      "speaker": "RUFUS",
-      "text": "A tap on the wrist with one useful sentence is a different object than a banner across your screen.",
-      "mood": "explainer",
-      "reason": "Rufus adds the concrete sensory distinction that earns the scenario"
+      "speaker": "JAMIE",
+      "text": "The word \"unauthorized\" is doing a lot of work in United's statement. Unauthorized third-party agents — which implies there's a category of authorized agents they'd accept.",
+      "mood": "curiosity",
+      "reason": "Jamie notices the precise word choice and what it implies about authorized tiers."
     },
     {
       "id": 117,
-      "speaker": "ALEX",
-      "text": "That's the scenario Meta needs to be true for this to matter.",
-      "mood": "neutral",
-      "reason": "Alex names the stakes plainly after Rufus lands the point"
+      "speaker": "RUFUS",
+      "text": "Possibly their own. Or vetted partners.",
+      "mood": "dry_wit",
+      "reason": "Rufus offers the logical completion with deliberate, understated brevity."
     },
     {
       "id": 118,
       "speaker": "JAMIE",
-      "text": "Right. And it requires the integration with your Meta account to be doing real work — not just pushing generic reminders but actually learning that Thursday at eleven you're always in a meeting and Saturday morning you want to know the weather before you leave the house.",
-      "mood": "explainer",
-      "reason": "Jamie specifies what real integration would actually require"
+      "text": "Which would make this a competitive moat dressed as a security policy.",
+      "mood": "pushback",
+      "reason": "Jamie names the competitive-moat interpretation directly and pointedly."
     },
     {
       "id": 119,
       "speaker": "ALEX",
-      "text": "Does it do that on day one?",
-      "mood": "curiosity",
-      "reason": "Alex asks the obvious question that tests Jamie's condition"
+      "text": "We can't confirm that from the reporting.",
+      "mood": "pressure",
+      "reason": "Alex pulls Jamie back to what the reporting actually supports."
     },
     {
       "id": 120,
-      "speaker": "RUFUS",
-      "text": "Almost certainly not. That's learned behavior. It needs time and data before the proactive piece is calibrated to you specifically.",
-      "mood": "explainer",
-      "reason": "Correcting a hopeful assumption with calm technical precision."
+      "speaker": "JAMIE",
+      "text": "We can't. But it is the logical direction the door opens toward.",
+      "mood": "pushback",
+      "reason": "Jamie holds her position after Alex's correction"
     },
     {
       "id": 121,
-      "speaker": "JAMIE",
-      "text": "Which means the first week of Muse is probably the worst possible advertisement for Muse.",
-      "mood": "dry_wit",
-      "reason": "Lands the irony of launch-day being the worst showcase quietly."
+      "speaker": "RUFUS",
+      "text": "There's also the federal aviation angle, and I want to take it seriously for a moment. Some check-in acknowledgments exist for safety. Confirming you packed your own bag. Confirming your identity. Having an AI complete those steps on your behalf raises a genuine accountability question.",
+      "mood": "explainer",
+      "reason": "Rufus pivots to a serious safety angle, grounding the debate"
     },
     {
       "id": 122,
-      "speaker": "RUFUS",
-      "text": "Heh. You'd need to wear it through the awkward phase before you know if it earns the interruptions.",
-      "mood": "amused",
-      "reason": "Earned laugh from Jamie's observation; Heh. cues the reaction."
+      "speaker": "ALEX",
+      "text": "If an AI says \"the passenger confirms\" and the passenger didn't — that's not hypothetical. That's a real gap.",
+      "mood": "concern",
+      "reason": "Alex identifies a concrete accountability gap, not hypothetical"
     },
     {
       "id": 123,
-      "speaker": "ALEX",
-      "text": "That's actually the most honest thing anyone's said about ambient AI hardware in general.",
-      "mood": "warmth",
-      "reason": "Genuinely appreciates Rufus's candor about a wider truth."
+      "speaker": "JAMIE",
+      "text": "The check-in point I'll concede. That one lands.",
+      "mood": "concession",
+      "reason": "Jamie genuinely yields to the safety point"
     },
     {
       "id": 124,
-      "speaker": "RUFUS",
-      "text": "Meta's bet is that contextual relevance solves notification fatigue. If the AI is accurate about when you actually care, it doesn't feel like noise. That is a genuinely high bar.",
-      "mood": "explainer",
-      "reason": "Stakes the specific claim about notification fatigue with real weight."
+      "speaker": "ALEX",
+      "text": "One thing I want to go back to before we move on — United said this applies through travel agencies and aggregators too. That's not a small detail.",
+      "mood": "curiosity",
+      "reason": "Alex pulls back a detail he wants the group to examine"
     },
     {
       "id": 125,
-      "speaker": "ALEX",
-      "text": "One nobody's fully cleared yet.",
-      "mood": "pushback",
-      "reason": "Quietly challenges the bar as unmet without elaborating further."
+      "speaker": "JAMIE",
+      "text": "Right. That's the whole distribution stack.",
+      "mood": "neutral",
+      "reason": "Jamie confirms the implication plainly and quickly"
     },
     {
       "id": 126,
-      "speaker": "JAMIE",
-      "text": "So the real question today isn't whether Muse is the answer. It's whether your wrist is a good place for an AI at all, and what it would need to do to earn that spot.",
+      "speaker": "ALEX",
+      "text": "So an AI travel tool built on top of Expedia, say, could get blocked upstream without any visible explanation to the user.",
       "mood": "curiosity",
-      "reason": "Reframes the conversation toward the deeper unresolved question."
+      "reason": "Alex follows the upstream consequence for the user"
     },
     {
       "id": 127,
       "speaker": "RUFUS",
-      "text": "And honestly — we don't know yet. The launch is today. Whether the proactive model learns well, whether voice interaction holds up, whether the battery survives it — none of that is established.",
-      "mood": "concern",
-      "reason": "Lists genuine unknowns on launch day with honest restraint."
+      "text": "Which is a real governance question for the aggregators. Do they build agent verification into their own APIs, or do they just pass the restriction along?",
+      "mood": "explainer",
+      "reason": "Rufus frames the governance question for aggregators"
     },
     {
       "id": 128,
-      "speaker": "ALEX",
-      "text": "Try it if you're in the ecosystem. Watch the pattern. And give yourself permission to turn it off if it makes Tuesday worse.",
-      "mood": "neutral",
-      "reason": "Practical listener advice delivered plainly without emotional colour."
+      "speaker": "JAMIE",
+      "text": "And the aggregators have their own interests here. They don't love direct booking either.",
+      "mood": "dry_wit",
+      "reason": "Jamie notes aggregators' self-interest with quiet precision"
     },
     {
       "id": 129,
-      "speaker": "JAMIE",
-      "text": "That is the most useful thing anyone has said about a product launch in recent memory.",
-      "mood": "warmth",
-      "reason": "Sincerely credits Alex's framing; no irony in the compliment."
+      "speaker": "ALEX",
+      "text": "So you could end up with a situation where the aggregator and the airline are both quietly relieved the agent got stopped.",
+      "mood": "amused",
+      "reason": "Alex lands the ironic alignment with a slight smile"
     },
     {
       "id": 130,
       "speaker": "RUFUS",
-      "text": "\"Makes Tuesday worse\" is an admirably low bar.",
+      "text": "Strange alignment of incentives.",
       "mood": "dry_wit",
-      "reason": "Undercuts the bar's low height with composed deadpan."
+      "reason": "Rufus delivers a brief, composed observation on the irony"
     },
     {
       "id": 131,
       "speaker": "JAMIE",
-      "text": "And yet here we are, not confident it clears it.",
-      "mood": "amused",
-      "reason": "Builds on Rufus's dry line with shared wry recognition."
+      "text": "That's not cynical, it's just the booking industry.",
+      "mood": "neutral",
+      "reason": "Jamie deflates the cynicism charge flatly"
     },
     {
       "id": 132,
-      "speaker": "ALEX",
-      "text": "Jamie, show us the AI transformation.",
-      "mood": "neutral",
-      "reason": "Clean handoff; no emotional charge, just moving the show forward."
+      "speaker": "RUFUS",
+      "text": "The other thing I haven't heard anyone name yet — this is one airline's policy, not a federal rule. United chose to move. The reporting doesn't say regulators required it.",
+      "mood": "explainer",
+      "reason": "Rufus names the distinction between policy and regulation"
     },
     {
       "id": 133,
-      "speaker": "JAMIE",
-      "text": "Right. So. Can a fan ruin the punchline?",
-      "mood": "delight",
-      "reason": "Jamie opens the feature with eager, slightly mischievous energy."
+      "speaker": "ALEX",
+      "text": "So when United says \"federal aviation rules\" in the same breath as \"cybersecurity\" —",
+      "mood": "curiosity",
+      "reason": "Alex begins drawing out the implication, leaving it open"
     },
     {
       "id": 134,
-      "speaker": "RUFUS",
-      "text": "This is a question I did not expect to have feelings about. And yet.",
-      "mood": "amused",
-      "reason": "Rufus caught off guard by unexpected feelings; dry surprise lands."
+      "speaker": "JAMIE",
+      "text": "They may be covering multiple concerns at once and presenting them as one.",
+      "mood": "neutral",
+      "reason": "Jamie completes Alex's thought plainly and accurately"
     },
     {
       "id": 135,
-      "speaker": "JAMIE",
-      "text": "The scenario is a community theatre rehearsal announcement. Someone's recorded a little audio clip. Steady background fan noise. The final word of the joke is a whisper, and that whisper is now competing with the ventilation system.",
-      "mood": "explainer",
-      "reason": "Jamie sets the concrete scenario with focus and detail."
+      "speaker": "RUFUS",
+      "text": "Which is a reasonable thing for a legal team to do, and worth a listener noticing.",
+      "mood": "dry_wit",
+      "reason": "Rufus notes the legal logic with composed understatement"
     },
     {
       "id": 136,
       "speaker": "ALEX",
-      "text": "How important is the whisper, exactly?",
-      "mood": "curiosity",
-      "reason": "Alex probing the stakes of the whisper before accepting the premise."
+      "text": "The safety acknowledgments issue is real and distinct from the revenue question. United gets to present them as one — that's the move worth noticing.",
+      "mood": "neutral",
+      "reason": "Alex restates the distinction clearly for the listener"
     },
     {
       "id": 137,
-      "speaker": "JAMIE",
-      "text": "The whisper is the entire joke, Alex.",
-      "mood": "warmth",
-      "reason": "Jamie's affectionate exasperation at a friend who needed it spelled out."
+      "speaker": "RUFUS",
+      "text": "Which is convenient.",
+      "mood": "dry_wit",
+      "reason": "Rufus delivers a single dry word as a quiet verdict"
     },
     {
       "id": 138,
-      "speaker": "RUFUS",
-      "text": "So the fan is basically doing open-mic night uninvited.",
+      "speaker": "JAMIE",
+      "text": "Remarkably.",
       "mood": "dry_wit",
-      "reason": "Rufus's straight-faced image of fan as uninvited performer lands quietly."
+      "reason": "Jamie echoes with one word, equally deadpan"
     },
     {
       "id": 139,
-      "speaker": "JAMIE",
-      "text": "Eleven minutes of unsolicited material, yes. The tool is Adobe Podcast Enhance Speech. Web-based, documented by Adobe as taking just minutes to clean up audio files. That is Adobe's own description. This is a hypothetical workflow, not a tested result.",
-      "mood": "explainer",
-      "reason": "Jamie names the tool and its documented claims with careful precision."
+      "speaker": "RUFUS",
+      "text": "I find myself in the unusual position of partly defending an airline.",
+      "mood": "amused",
+      "reason": "Rufus acknowledges his own unusual position with self-awareness"
     },
     {
       "id": 140,
-      "speaker": "ALEX",
-      "text": "What's the honest limitation here?",
-      "mood": "curiosity",
-      "reason": "Alex inviting honest qualification before accepting the workflow."
+      "speaker": "JAMIE",
+      "text": "Noted for the record. We will return to this.",
+      "mood": "warmth",
+      "reason": "Jamie promises a callback with affectionate mock-formality"
     },
     {
       "id": 141,
-      "speaker": "JAMIE",
-      "text": "Adobe documents the enhancement. It does not promise to understand why a pause is funny. No guaranteed improvement. No independent endorsement of this scenario. We have not run this. The fictional rehearsal is untested.",
-      "mood": "neutral",
-      "reason": "Jamie delivers limitations plainly; no celebration, no alarm."
+      "speaker": "ALEX",
+      "text": "So what do listeners actually do with this?",
+      "mood": "curiosity",
+      "reason": "Alex steers toward the practical listener payoff"
     },
     {
       "id": 142,
       "speaker": "RUFUS",
-      "text": "So the fan might win on appeal.",
-      "mood": "dry_wit",
-      "reason": "Rufus frames the uncertainty as legal appeal; composed and quiet."
+      "text": "Watch whether Delta, American, or Southwest follow. If this is a cybersecurity problem, every airline has it equally. If only United moves, that's a different story.",
+      "mood": "explainer",
+      "reason": "Rufus offers a clear, testable signal for listeners to watch"
     },
     {
       "id": 143,
       "speaker": "JAMIE",
-      "text": "Conditionally. If processing harms the joke, keep the original. That is a real outcome to listen for, not a failure of the tool.",
-      "mood": "concern",
-      "reason": "Jamie names a real outcome to protect against; genuinely cautionary."
+      "text": "And watch whether United announces an authorized agent program. That tells you whether this is \"close the door\" or \"control the door.\"",
+      "mood": "explainer",
+      "reason": "Jamie sharpens the test with a specific observable outcome"
     },
     {
       "id": 144,
       "speaker": "ALEX",
-      "text": "Walk us through the workflow.",
-      "mood": "curiosity",
-      "reason": "Alex wants the practical steps laid out clearly."
+      "text": "Those are very different things. In the meantime — if you use a travel AI for work or just convenience, check that it still handles United bookings cleanly. Because you do not want to find out it doesn't at an airport on a Tuesday morning.",
+      "mood": "neutral",
+      "reason": "Practical listener advice, grounded close to the story."
     },
     {
       "id": 145,
       "speaker": "JAMIE",
-      "text": "Record fifteen seconds of your own invented line in a room with steady background noise. Something with a pause before the final word. Keep the original file. Upload a copy to Enhance Speech, download the processed version, and level-match the playback volume on both.",
-      "mood": "explainer",
-      "reason": "Jamie walks through a precise, methodical workflow."
+      "text": "Specifically a Tuesday. It's always a Tuesday.",
+      "mood": "amused",
+      "reason": "Absurd comic precision riffing on Alex's Tuesday detail."
     },
     {
       "id": 146,
-      "speaker": "ALEX",
-      "text": "Why does the volume-matching step matter?",
-      "mood": "curiosity",
-      "reason": "Alex catches a specific step and genuinely wants the reasoning."
+      "speaker": "RUFUS",
+      "text": "I have no data to support that, but I believe it.",
+      "mood": "dry_wit",
+      "reason": "Straight-faced endorsement of an unsupported comic claim."
     },
     {
       "id": 147,
-      "speaker": "JAMIE",
-      "text": "Because louder usually sounds better, and that is not the same as clearer. Level-match first, then hand both clips to someone who hasn't seen the script. Don't label them. Ask for the last word.",
-      "mood": "explainer",
-      "reason": "Jamie corrects a common assumption with a clean methodological point."
+      "speaker": "ALEX",
+      "text": "Jamie, show us the AI transformation.",
+      "mood": "warmth",
+      "reason": "Friendly handoff to Jamie, inviting her into the spotlight."
     },
     {
       "id": 148,
-      "speaker": "RUFUS",
-      "text": "That's a sharper question than which sounds more professional.",
-      "mood": "dry_wit",
-      "reason": "Rufus quietly recognises the sharper test without fanfare."
+      "speaker": "JAMIE",
+      "text": "Alright. Picture a sold-out opening night. The house is packed, the production is beautiful, and somewhere in row seven, two audience members can't follow a word because there are no captions.",
+      "mood": "delight",
+      "reason": "Jamie eager to share; vivid scene-setting signals genuine investment."
     },
     {
       "id": 149,
-      "speaker": "JAMIE",
-      "text": "The second question is equally important. Could they hear the word and still prefer the original? Processing can improve intelligibility and damage timing. If the pause feels different, that matters for a joke.",
-      "mood": "explainer",
-      "reason": "Jamie adds timing as a distinct variable; the point is analytical."
+      "speaker": "RUFUS",
+      "text": "Every night, quietly, for a lot of venues.",
+      "mood": "concern",
+      "reason": "Rufus quietly recognising a real, recurring human cost."
     },
     {
       "id": 150,
-      "speaker": "ALEX",
-      "text": "Account setup?",
-      "mood": "curiosity",
-      "reason": "Alex moves to the next practical barrier with a brief prompt."
+      "speaker": "JAMIE",
+      "text": "Every night. Captitles is a web-based platform reviewed independently in October this year. The case date is the fourteenth. Over six hundred theatres and festivals are reported to be using it for in-house caption management. That is the platform's documented usage figure.",
+      "mood": "explainer",
+      "reason": "Jamie anchoring the platform with sourced, specific usage data."
     },
     {
       "id": 151,
-      "speaker": "JAMIE",
-      "text": "Web upload, verify your file limits before you start. Adjustable enhancement strength is a Premium feature. It is not required for the comparison, so the basic test is accessible.",
-      "mood": "explainer",
-      "reason": "Jamie confirms access conditions and flags the Premium distinction."
+      "speaker": "ALEX",
+      "text": "Six hundred sounds significant. What were venues doing before?",
+      "mood": "curiosity",
+      "reason": "Alex following the data point to its practical implication."
     },
     {
       "id": 152,
-      "speaker": "RUFUS",
-      "text": "So one line, your voice, two files, one honest listener.",
-      "mood": "dry_wit",
-      "reason": "Rufus distils the whole method into a composed one-liner."
+      "speaker": "JAMIE",
+      "text": "Outsourcing. Professional surtitling companies, specialist engineers, scheduling constraints, and costs that made captioning feel optional for smaller productions. Which meant accessible performances were rationed.",
+      "mood": "explainer",
+      "reason": "Jamie mapping the before-state: cost, constraint, rationed access."
     },
     {
       "id": 153,
-      "speaker": "JAMIE",
-      "text": "And if both versions lose the word, step away from the fan and record again. Sometimes the best audio tool is three feet to the left.",
-      "mood": "warmth",
-      "reason": "Jamie's punchline is generous and gently self-aware."
+      "speaker": "RUFUS",
+      "text": "Jamie, I want to tease you here, but honestly surtitling sounds so niche that I am just quietly impressed you found the word.",
+      "mood": "amused",
+      "reason": "Rufus playfully conceding admiration instead of delivering the tease."
     },
     {
       "id": 154,
-      "speaker": "RUFUS",
-      "text": "Jamie, that is either very wise or very anticlimactic.",
-      "mood": "amused",
-      "reason": "Rufus enjoys the anticlimactic wisdom with evident appreciation."
+      "speaker": "JAMIE",
+      "text": "Rufus, it is on every opera programme you have never read.",
+      "mood": "dry_wit",
+      "reason": "Jamie's precise, affectionate counter lands without raising her voice."
     },
     {
       "id": 155,
-      "speaker": "JAMIE",
-      "text": "In audio, Rufus, those are often the same thing.",
-      "mood": "dry_wit",
-      "reason": "Jamie returns the volley with a quiet, composed observation."
+      "speaker": "ALEX",
+      "text": "He has definitely read the interval bar menu though.",
+      "mood": "amused",
+      "reason": "Alex piling on Rufus with a specific, earned detail."
     },
     {
       "id": 156,
-      "speaker": "ALEX",
-      "text": "That's Jamie's AI transformation.",
-      "mood": "neutral",
-      "reason": "Alex closes the feature with a clean handoff marker."
+      "speaker": "RUFUS",
+      "text": "Extensively. And with great attention to the footnotes.",
+      "mood": "amused",
+      "reason": "Rufus playing into the roast with composed self-deprecation."
     },
     {
       "id": 157,
-      "speaker": "ALEX",
-      "text": "Okay. The title question we opened with. NVIDIA's CEO resignation — what does it actually mean for your AI infrastructure roadmap?",
-      "mood": "curiosity",
-      "reason": "Alex re-opens the central question with focused intent."
+      "speaker": "JAMIE",
+      "text": "I will accept that as a contribution to the cultural sector. The workflow: venue staff import their production script into Captitles. The AI detects dialogue and splits it into readable surtitle chunks, sized and timed for screens or audience devices. Staff then style and manage those cues in the cloud.",
+      "mood": "explainer",
+      "reason": "Jamie recovering the room and walking through the concrete workflow."
     },
     {
       "id": 158,
-      "speaker": "RUFUS",
-      "text": "What we don't know is whether a permanent successor maintains the aggressive pace Jensen set — particularly on the developer relationship side, which is harder to institutionalize than a supply chain.",
-      "mood": "concern",
-      "reason": "Rufus flags a specific institutional risk that cannot yet be answered."
+      "speaker": "ALEX",
+      "text": "So the AI is handling the parsing, not the live cueing?",
+      "mood": "curiosity",
+      "reason": "Alex identifying the precise technical distinction that matters."
     },
     {
       "id": 159,
       "speaker": "JAMIE",
-      "text": "And we don't know what the intelligence dimension of that resignation means for regulatory scrutiny going forward. That story is not closed.",
-      "mood": "concern",
-      "reason": "Jamie raises the intelligence dimension as a genuinely open threat."
+      "text": "Correct, and that matters for the limitation. Real-time automatic cueing is still on the roadmap. A person is still pressing go. The system is handling the preparation work that used to require an expensive outside team and weeks of scheduling. AI translation also still needs human verification. And this is text, not sign language.",
+      "mood": "explainer",
+      "reason": "Jamie confirming the distinction and laying out real limitations clearly."
     },
     {
       "id": 160,
-      "speaker": "ALEX",
-      "text": "That second part feels underreported so far. If U.S. intelligence has concerns about the relationship, does that surface in export controls, in partner reviews — where does it actually land?",
-      "mood": "pushback",
-      "reason": "Alex presses on where the intelligence risk concretely lands."
+      "speaker": "RUFUS",
+      "text": "So the operator is still in the room.",
+      "mood": "neutral",
+      "reason": "Rufus distilling the key human-oversight point without editorial spin."
     },
     {
       "id": 161,
       "speaker": "JAMIE",
-      "text": "We genuinely don't know. But it's a different kind of risk from an earnings miss.",
-      "mood": "concern",
-      "reason": "Jamie holds the uncertainty and distinguishes the risk category."
+      "text": "Absolutely still in the room. What changes is how much preparation work landed on a budget that most fringe theatres don't have. The independent review describes Captitles' purpose as turning a script into accurate, well-timed, well-styled captions that open a performance to deaf and hard-of-hearing patrons. That is the reviewer's framing, not mine.",
+      "mood": "warmth",
+      "reason": "Jamie grounding the budget reality in smaller venues with quiet sincerity."
     },
     {
       "id": 162,
-      "speaker": "RUFUS",
-      "text": "Agreed. And structurally — a first-ever board chair combined with an interim CEO search suggests a company in genuine transition. That can go well. It can also create decision paralysis during a moment when the competitive environment does not pause for anyone.",
-      "mood": "concern",
-      "reason": "Rufus names decision paralysis as a structural consequence with stakes."
+      "speaker": "ALEX",
+      "text": "Where does someone start?",
+      "mood": "curiosity",
+      "reason": "Alex turning useful information into a practical next step for listeners."
     },
     {
       "id": 163,
       "speaker": "JAMIE",
-      "text": "AMD and others are watching whether Jensen's founder energy was baked into the company or baked into Jensen.",
-      "mood": "curiosity",
-      "reason": "Jamie frames the core unknown that competitors are now watching."
+      "text": "Check your local theatre's accessibility page. Does it list captioned performances? If you're curious whether they handle this in-house or outsource it, ask them directly. That question alone tells you a lot about where the access gaps still sit.",
+      "mood": "explainer",
+      "reason": "Jamie giving concrete, actionable guidance; tone is direct and useful."
     },
     {
       "id": 164,
-      "speaker": "ALEX",
-      "text": "That's the bet the market is making in real time. For infrastructure buyers: near-term, watch Monday. Medium-term, evaluate whether your stack has flexibility built in. NVIDIA's dominance is real — but the case for not being wholly dependent on a single vendor just became more visible.",
-      "mood": "explainer",
-      "reason": "Alex synthesises the listener's practical takeaway from the evidence."
+      "speaker": "RUFUS",
+      "text": "And if they look surprised anyone asked?",
+      "mood": "dry_wit",
+      "reason": "Rufus's quiet hypothetical has a wry edge without undermining the stakes."
     },
     {
       "id": 165,
       "speaker": "JAMIE",
-      "text": "Thirty-three years. Whatever else happened, that's a long time to build something.",
+      "text": "Then the question was worth asking. Captitles is generally available as a web application for theatre professionals. The useful transformation here is not flashy. It is a smaller venue finally being able to caption a production it previously couldn't afford to caption. That is row seven getting to follow the story.",
       "mood": "warmth",
-      "reason": "Jamie pauses on the human scale of thirty-three years, sincerely."
+      "reason": "Jamie's closing image of row seven lands as a sincere human payoff."
     },
     {
       "id": 166,
       "speaker": "ALEX",
-      "text": "And we find out next Monday how much of it he built to last.",
-      "mood": "neutral",
-      "reason": "Alex closes on a sober, forward-looking note without sentiment."
+      "text": "That's Jamie's AI transformation.",
+      "mood": "warmth",
+      "reason": "Alex's simple sign-off is an affectionate acknowledgement of Jamie's feature."
     },
     {
       "id": 167,
       "speaker": "ALEX",
-      "text": "Today’s question for you: When you see AI companies launching new hardware or models, do you feel more excited by the progress or exhausted by the pace?",
-      "mood": "curiosity",
-      "reason": "Alex invites the audience into a genuine open question."
+      "text": "Before we wrap — this week we asked you: when you see AI companies launching new hardware or models, do you feel more excited by the progress or more exhausted by the pace? We'll put today's question in the show notes — and genuinely, we read these.",
+      "mood": "neutral",
+      "reason": "Straightforward audience engagement and show-notes invitation."
     },
     {
       "id": 168,
       "speaker": "JAMIE",
-      "text": "A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
-      "mood": "neutral",
-      "reason": "clean sponsor read, sincere and functional"
+      "text": "For people building things with the API — the price and context window combination is confirmed. The speed claim still needs independent verification. Those are two different kinds of news.",
+      "mood": "explainer",
+      "reason": "Jamie distinguishes confirmed facts from unverified claims precisely"
     },
     {
       "id": 169,
-      "speaker": "ALEX",
-      "text": "What changed. Who wins. What you do next. That’s The AI Edge.",
-      "mood": "neutral",
-      "reason": "show tagline delivery, declarative and grounded"
+      "speaker": "RUFUS",
+      "text": "The legal case is very early. But the template it sets — moving from 'regulate' to 'stop' — that's the shift that matters for investment risk, regardless of this particular suit's outcome.",
+      "mood": "dry_wit",
+      "reason": "Rufus reframes the legal story as an investment signal, not a verdict"
     },
     {
       "id": 170,
       "speaker": "ALEX",
-      "text": "Follow The AI Edge now. Join us tomorrow for what changes next.",
+      "text": "And the United story connects to both. Google ships a model for agents; United blocks agents from acting. The same week. That tension is the actual story of the next twelve months.",
+      "mood": "curiosity",
+      "reason": "Alex connects two separate stories into a single unresolved tension"
+    },
+    {
+      "id": 171,
+      "speaker": "JAMIE",
+      "text": "The models get more capable. The platforms they want to act on start drawing lines.",
+      "mood": "neutral",
+      "reason": "Jamie restates the tension plainly, letting the observation land quietly"
+    },
+    {
+      "id": 172,
+      "speaker": "RUFUS",
+      "text": "And the courts may eventually get to decide which lines hold.",
+      "mood": "dry_wit",
+      "reason": "Rufus adds the courts with composed understatement, no fanfare"
+    },
+    {
+      "id": 173,
+      "speaker": "ALEX",
+      "text": "Here's the prediction worth watching. If one other major airline — Delta, American — makes a similar announcement in the next three months, this becomes industry standard. If none do, United is an outlier and the story ends there.",
+      "mood": "curiosity",
+      "reason": "Alex proposes a testable prediction, genuinely interested in the outcome"
+    },
+    {
+      "id": 174,
+      "speaker": "RUFUS",
+      "text": "I would not bet against contagion.",
+      "mood": "dry_wit",
+      "reason": "Rufus delivers a brief, straight-faced assessment without elaborating"
+    },
+    {
+      "id": 175,
+      "speaker": "JAMIE",
+      "text": "Neither would I, honestly.",
+      "mood": "concession",
+      "reason": "Jamie agrees honestly, without irony or enthusiasm"
+    },
+    {
+      "id": 176,
+      "speaker": "ALEX",
+      "text": "Today’s question for you: When an airline blocks your AI agent from booking a flight, do you feel protected or restricted?",
+      "mood": "neutral",
+      "reason": "Alex poses the closing question directly to the audience"
+    },
+    {
+      "id": 177,
+      "speaker": "JAMIE",
+      "text": "Take care.",
       "mood": "warmth",
-      "reason": "forward invitation closing the episode with connection"
+      "reason": "Jamie's farewell is brief and sincere"
+    },
+    {
+      "id": 178,
+      "speaker": "RUFUS",
+      "text": "Good day.",
+      "mood": "warmth",
+      "reason": "Rufus closes with quiet composure and genuine good feeling"
+    },
+    {
+      "id": 179,
+      "speaker": "RUFUS",
+      "text": "A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
+      "mood": "neutral",
+      "reason": "Sponsor read delivered cleanly without editorial colour"
+    },
+    {
+      "id": 180,
+      "speaker": "ALEX",
+      "text": "What changed. Who wins. What you do next. That’s The AI Edge.",
+      "mood": "neutral",
+      "reason": "Show tagline read as a straight close"
+    },
+    {
+      "id": 181,
+      "speaker": "ALEX",
+      "text": "Follow The AI Edge now. Join us tomorrow for what changes next.",
+      "mood": "neutral",
+      "reason": "Final call-to-action delivered directly and without affect"
     }
   ],
   "issues": [],

@@ -1,67 +1,45 @@
 {
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Optimizing Patient Transportation Scheduling",
-        "tool": "Oracle Clinical Digital Assistant",
-        "problem": "Healthcare administrative staff at various health systems struggle with the time-intensive, fragmented process of manually coordinating non-emergency patient transportation, leading to delays and communication gaps.",
-        "workflow": "The AI agent integrates with electronic health records (EHR) and transportation logistics systems. It monitors patient appointment schedules, automatically identifies transport needs, communicates with both the patient and the transport provider, and updates the EHR in real-time as transit status changes.",
-        "result": "The agent automates the multi-step coordination of logistics, reducing the manual burden on staff who previously had to place individual calls or send separate emails to confirm transport details for each patient.",
-        "result_basis": "Reported by Oracle in their AI-focused healthcare solution disclosures and industry briefings.",
-        "measurement_context": "Qualitative improvement in administrative throughput and a reduction in manual, repetitive coordination tasks for healthcare scheduling teams.",
-        "case_date": "2026-10-15",
-        "source_url": "https://www.oracle.com/healthcare/clinical-digital-assistant/",
-        "source_quote": "automating the administrative burden of patient scheduling and logistics to allow clinical and operational staff to focus more on patient care",
-        "limitation": "The efficacy of the agent depends entirely on the interoperability between the EHR, the transport provider's scheduling software, and the accuracy of the underlying patient data; human intervention is essential for managing complex exceptions or medical emergencies.",
-        "listener_action": "Audit your team\u2019s most frequent 'inter-departmental handoff'\u2014the one where you feel like a human switchboard\u2014and map exactly which data points are missing or duplicated in your current emails or calls before investigating if an agent can bridge that specific system gap.",
-        "availability": "Generally available as part of the Oracle Health clinical suite; requires specific system integrations to function effectively.",
-        "episode_date": "2026-11-12"
+        "subject": "AI-assisted accessibility for live performance",
+        "tool": "OpenAI Whisper (integrated via independent accessibility tool)",
+        "problem": "Deaf or hard-of-hearing audience members missing nuances in unscripted, improvised theater or live community events where closed captioning is not pre-written.",
+        "workflow": "A theater technician uses a laptop running Whisper-based transcription to ingest live audio from the stage. The agent processes the audio in near real-time, displaying generated captions on a screen visible to the audience. Human oversight involves a technician monitoring for major errors and toggling the system on/off during intermission or set changes.",
+        "result": "Improved audience inclusion by providing live, automated accessibility for unscripted dialogue, allowing deaf attendees to follow comedic timing and improvised audience interactions.",
+        "result_basis": "Independent reporting and community accessibility project documentation.",
+        "measurement_context": "Qualitative improvement in accessibility as reported by venue attendees and local accessibility advocates; no quantitative accuracy percentage claimed.",
+        "case_date": "2026-09-15",
+        "source_url": "https://www.theguardian.com/stage/2026/sep/15/ai-captions-theatre-accessibility",
+        "source_quote": "Automated captioning tools have begun to bridge the gap for unscripted performances where pre-recorded subtitles are impossible to provide.",
+        "limitation": "The tool can struggle with overlapping dialogue or heavy accents; requires a stable microphone setup and a person to manage the display interface.",
+        "listener_action": "For your next small local event, test a whisper-based transcription tool by recording a 5-minute conversation with background noise to see if it captures names and specific terminology correctly before relying on it for live accessibility.",
+        "availability": "Available via various open-source wrappers of the OpenAI Whisper API.",
+        "episode_date": "2026-11-13"
       },
       "reason": "source_http_404"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automating Healthcare Transport Logistics",
-        "tool": "Oracle Health AI Agent (formerly Clinical Digital Assistant)",
-        "problem": "Healthcare operational staff face manual, fragmented coordination for patient logistics, including transportation scheduling, which often leads to communication gaps and operational delays.",
-        "workflow": "Oracle is developing agentic AI capabilities that integrate across healthcare operations, using the Oracle Health AI Agent and broader Oracle Fusion Cloud platforms to monitor patient demand and automate the coordination of logistics, including transport planning and workforce scheduling.",
-        "result": "The platform automates multi-step coordination tasks, shifting manual administrative burdens to AI agents to improve operational efficiency and ensure staff can focus on higher-value care activities.",
-        "result_basis": "Vendor-reported initiative and industry briefing from Oracle Health leadership regarding their end-to-end healthcare automation strategy.",
-        "measurement_context": "Qualitative improvement in operational throughput and administrative efficiency by replacing manual, repetitive coordination tasks in healthcare workflows.",
-        "case_date": "2026-09-24",
-        "source_url": "https://www.healthcareitnews.com/news/oracle-health-rolls-out-ai-solutions-rcm-oncology-part-broader-healthcare-life-sciences-strategy",
-        "source_quote": "The company is also developing a state-of-the-art transport and logistics platform to improve patient throughput and operational efficiency across the care continuum.",
-        "limitation": "The effectiveness of these agentic workflows depends on deep integration with existing EHR and logistics systems; human oversight remains mandatory for complex logistical exceptions and patient safety.",
-        "listener_action": "Map your most frequent inter-departmental handoff\u2014the 'human switchboard' task\u2014and identify exactly which data points are manually re-entered or passed between systems; then, assess if a rules-based agent could draft the necessary communication or status updates.",
-        "availability": "Available as part of the evolving Oracle Health and Fusion Cloud application suites; specific agentic workflows are subject to organizational configuration and deployment.",
-        "episode_date": "2026-11-12"
+        "subject": "In-house theatre surtitling",
+        "tool": "Captitles",
+        "problem": "Performing arts venues frequently struggle with the high cost and logistical complexity of outsourcing professional surtitling and captioning services for live theatre and opera.",
+        "workflow": "Venues import their production scripts into the platform; the AI detects and splits dialogue into readable surtitle chunks, which staff then style and manage in the cloud for display on venue screens or audience devices.",
+        "result": "The tool enables theatres to produce professional-grade surtitles in-house, significantly lowering costs and making live captioning feasible for a wider range of productions.",
+        "result_basis": "Independent product review and platform documentation.",
+        "measurement_context": "Reported usage by over 600 theatres and festivals for in-house caption management.",
+        "case_date": "2026-10-14",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHGWAbv5TXUtr6TEsaRRN2djHb52LP4n8g5AbCQ6C9TONL-8Fr20QJH03RAszki1ysF6P-781mw6Eab1Cvs8EDUD7YLz2omuLobPoHSt7PT2aPNBKTdKlMa8Q4=",
+        "source_quote": "Captitles' lane is the room: turning a script into accurate, well-timed, well-styled captions that open a performance to deaf and hard-of-hearing patrons",
+        "limitation": "Real-time automatic cueing remains on the roadmap; AI translation still requires human verification, and the system provides text, not sign language.",
+        "listener_action": "Check your local theatre's accessibility page to see if they offer captioning, then ask if they handle surtitling in-house or outsource it.",
+        "availability": "Generally available; web-based application for theatre professionals.",
+        "episode_date": "2026-11-13"
       },
-      "reason": "source_http_403"
-    },
-    {
-      "case": {
-        "feature_mode": "real_case",
-        "subject": "Automating Patient Transport Coordination",
-        "tool": "Oracle Health Clinical AI Agent",
-        "problem": "Healthcare operational staff face manual, fragmented coordination for patient logistics, including transportation scheduling, which often leads to communication gaps and operational delays.",
-        "workflow": "The AI agent monitors patient appointment schedules and transit requirements within the Oracle Health Foundation EHR, automatically tracking transit status (off-unit, returning, overdue) and coordinating updates across the care team.",
-        "result": "The system automates the multi-step coordination of logistics, replacing manual status checks and individual communications to reduce the administrative burden on nursing and support staff.",
-        "result_basis": "Reported in Oracle Health and Life Sciences official product roadmaps and documentation.",
-        "measurement_context": "Qualitative improvement in operational throughput and administrative efficiency by replacing manual, repetitive coordination tasks in healthcare workflows.",
-        "case_date": "2026-09-01",
-        "source_url": "https://www.oracle.com/a/ocom/docs/oracle-health-and-life-sciences-product-roadmap.pdf",
-        "source_quote": "Monitor patient transport status, including off unit, returning, and overdue, throughout transport workflows.",
-        "limitation": "The effectiveness of these agentic workflows depends on deep integration with existing EHR and logistics systems; human oversight remains mandatory for complex logistical exceptions and patient safety.",
-        "listener_action": "Map your team\u2019s most frequent 'inter-departmental handoff'\u2014the one where you feel like a human switchboard\u2014and identify exactly which data points are manually re-entered or passed between systems; then, assess if a rules-based agent could draft the necessary communication or status updates.",
-        "availability": "Available as part of the Oracle Health Clinical AI Agent suite; specific agentic workflows are subject to organizational configuration and deployment.",
-        "episode_date": "2026-11-12"
-      },
-      "reason": "source_http_404"
+      "reason": "verified"
     }
-  ],
-  "fallback": "verified_editorial_inventory",
-  "selected": "Can the house hear the punchline?"
+  ]
 }

@@ -1,241 +1,241 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
-    "changed": false,
+    "changed": true,
     "lookback_episodes": 7,
-    "previous_lead_actor": "Anthropic",
+    "previous_lead_actor": "NVIDIA",
     "previous_argument_family": "models",
-    "original_lead": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
-    "selected_lead": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
+    "original_lead": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
+    "selected_lead": "United Airlines blocks AI agents from booking flights",
     "candidates": [
       {
-        "headline": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
-        "score": 100.0,
-        "actor": "NVIDIA",
+        "headline": "United Airlines blocks AI agents from booking flights",
+        "score": 70.0,
+        "actor": "SEC",
+        "argument_family": "security",
+        "penalties": []
+      },
+      {
+        "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
+        "score": 64.0,
+        "actor": "Google",
+        "argument_family": "models",
+        "penalties": [
+          "same argument family as previous episode"
+        ]
+      },
+      {
+        "headline": "AP reports lawsuits seeking to freeze new AI model development",
+        "score": 63.0,
+        "actor": "OpenAI",
+        "argument_family": "models",
+        "penalties": [
+          "same argument family as previous episode"
+        ]
+      },
+      {
+        "headline": "Google publishes privacy protections for intelligent eyewear",
+        "score": 62.0,
+        "actor": "Google",
         "argument_family": "consumer",
         "penalties": []
       },
       {
-        "headline": "Google launches 'Intelligent Eyewear' Android XR glasses",
-        "score": 63.0,
-        "actor": "Google",
-        "argument_family": "other",
+        "headline": "IBM acquires AuthMind to monitor AI agent credential use",
+        "score": 60.0,
+        "actor": "SEC",
+        "argument_family": "security",
         "penalties": []
-      },
-      {
-        "headline": "Meta launches Muse AI assistant for smartwatches",
-        "score": 52.0,
-        "actor": "Meta",
-        "argument_family": "models",
-        "penalties": [
-          "same argument family as previous episode"
-        ]
-      },
-      {
-        "headline": "Vercel data shows AI model 'half-life' is shrinking to six weeks",
-        "score": 42.0,
-        "actor": "Stability",
-        "argument_family": "models",
-        "penalties": [
-          "same argument family as previous episode"
-        ]
-      },
-      {
-        "headline": "Google launches Gemini Decisions API for fast multimodal decision-making",
-        "score": 35.0,
-        "actor": "Google",
-        "argument_family": "models",
-        "penalties": [
-          "same argument family as previous episode"
-        ]
       }
     ]
   },
   "selected": [
     {
       "rank": 1,
-      "headline": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
-      "publisher": "NVIDIA",
+      "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
+      "publisher": "Google",
       "top_event_score": null,
-      "story_age_hours": 17.18,
+      "story_age_hours": 32.85,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://nvidianews.nvidia.com/_gallery/download_pdf/6af5c3cc3d6332f541088655/"
+      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/"
     },
     {
       "rank": 2,
-      "headline": "Google launches 'Intelligent Eyewear' Android XR glasses",
-      "publisher": "Google",
+      "headline": "AP reports lawsuits seeking to freeze new AI model development",
+      "publisher": "AP News",
       "top_event_score": null,
-      "story_age_hours": 17.18,
+      "story_age_hours": 17.85,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://blog.google/products/hardware/intelligent-eyewear-android-xr/"
+      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba"
     },
     {
       "rank": 3,
-      "headline": "Meta launches Muse AI assistant for smartwatches",
-      "publisher": "TechRadar",
+      "headline": "United Airlines blocks AI agents from booking flights",
+      "publisher": "TechCrunch",
       "top_event_score": null,
-      "story_age_hours": 15.15,
+      "story_age_hours": 15.57,
       "source_tier": 2,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.techradar.com/ai-platforms-assistants/meta-launches-muse-ai-agent-for-apple-watch-and-android-wear-os-so-now-you-can-talk-to-your-fluffy-life-assistant-anywhere"
+      "source_url": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/"
     },
     {
       "rank": 4,
-      "headline": "Vercel data shows AI model 'half-life' is shrinking to six weeks",
-      "publisher": "TechRadar",
+      "headline": "Google publishes privacy protections for intelligent eyewear",
+      "publisher": "Google",
       "top_event_score": null,
-      "story_age_hours": 16.02,
-      "source_tier": 2,
+      "story_age_hours": 32.85,
+      "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://www.techradar.com/pro/teams-are-moving-to-new-models-almost-as-fast-as-labs-release-them-vercel-data-reveals-ai-models-now-have-a-half-life-of-just-six-weeks-with-most-most-ai-traffic-running-on-models-less-than-two-months-old"
+      "source_url": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/"
     },
     {
       "rank": 5,
-      "headline": "Google launches Gemini Decisions API for fast multimodal decision-making",
-      "publisher": "Google",
+      "headline": "IBM acquires AuthMind to monitor AI agent credential use",
+      "publisher": "Unite.AI",
       "top_event_score": null,
-      "story_age_hours": 41.18,
-      "source_tier": 3,
+      "story_age_hours": 10.64,
+      "source_tier": 1,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/"
+      "source_url": "https://unite.ai/ibm-acquires-authmind-to-monitor-ai-agent-credential-use/"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "NVIDIA's CEO Resignation: What It Means for Your AI Infrastructure Roadmap",
-    "central_fight": "Whether the rapid pace of AI model churn and leadership instability is a sign of a maturing market or a recipe for long-term fragility.",
-    "opening_question": "If the hardware leader loses its CEO and the software models change every six weeks, how are we supposed to build anything that lasts?",
-    "listener_question": "When you see AI companies launching new hardware or models, do you feel more excited by the progress or exhausted by the pace?",
+    "published_title": "Google’s Gemini 4 Hydrogen Launch: Faster AI Agents for Your Daily Workflow",
+    "central_fight": "Whether the industry's push for control—through legal, technical, or policy barriers—is solving real friction or just protecting incumbents.",
+    "opening_question": "If Google makes AI faster and airlines make it harder to use, are we actually moving forward or just running in place?",
+    "listener_question": "When an airline blocks your AI agent from booking a flight, do you feel protected or restricted?",
     "poll_options": [
-      "Excited by the rapid progress",
-      "Exhausted by the constant updates",
-      "Waiting for things to stabilize"
+      "Protected: Bots are a security risk",
+      "Restricted: I want my agent to work",
+      "Confused: Why can't they just play nice?"
     ],
-    "listener_promise": "By the end, you'll understand the impact of NVIDIA's leadership change, the trade-offs of Google's new smart glasses, and how to build a more stable AI stack.",
+    "listener_promise": "You will understand why Google's new model matters for your workflow, why courts are being asked to stop AI development, and why your travel agent might be blocked.",
     "positions": {
       "alex": "Believes we are in a 'growing pains' phase where we have to build the tools to manage the agents we've already unleashed.",
       "jamie": "Argues that until systems are legible to the people they affect, these 'safety' and 'integration' launches are just new ways to hide risk.",
       "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
     },
     "concession": {
-      "host": "alex",
-      "gives_ground_on": "Admits that the 'model half-life' data makes a strong case for building model-agnostic layers."
+      "host": "rufus",
+      "gives_ground_on": "Admits that United's move might be as much about protecting revenue as it is about security."
     },
-    "who_wins": "The developers who build flexible, model-agnostic systems.",
-    "who_is_exposed": "Companies relying on a single, static AI model or a single visionary leader.",
-    "normal_person_payoff": "You'll know why your favorite AI tool might change soon and how to avoid getting locked into a fragile setup.",
+    "who_wins": "The infrastructure providers who control the access points.",
+    "who_is_exposed": "The early adopters relying on third-party AI agents for daily tasks.",
+    "normal_person_payoff": "You'll know to verify if your AI travel tools are still functional before your next trip.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "The human experience of using these tools in daily life.",
-      "rufus_value": "The long-term economic sustainability of the AI infrastructure.",
-      "point_of_collision": "Whether the cost of constant innovation is worth the marginal gain in user experience."
+      "jamie_value": "User autonomy and transparency.",
+      "rufus_value": "System stability and institutional security.",
+      "point_of_collision": "Whether blocking agents is a legitimate security practice or an anti-competitive gatekeeping tactic."
     },
     "rufus_global_markets_desk": {
       "market_or_region": "Wall Street/New York",
-      "source_url": "https://blog.google/products/hardware/intelligent-eyewear/android-xr/",
-      "why_this_location_today": "Institutional investors are evaluating Google's pivot to hardware as a way to capture more of the AI value chain.",
-      "beat": "market mover",
+      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
+      "why_this_location_today": "The lawsuit targets the major frontier labs that are the primary drivers of current market volatility.",
+      "beat": "compliance",
       "companies_or_assets": [
+        "Anthropic",
         "Google",
-        "Warby Parker",
-        "Gentle Monster"
+        "Meta",
+        "OpenAI",
+        "SpaceXSI"
       ],
-      "capital_policy_or_infrastructure_move": "The integration of AI into consumer hardware to drive recurring ecosystem revenue.",
+      "capital_policy_or_infrastructure_move": "The legal attempt to halt capital-intensive model development, which threatens the valuation of these firms.",
       "dated_market_receipts": [
-        "$395 (November 12, 2026)"
+        "November 12, 2026"
       ]
     },
     "mandatory_receipts": [
-      "Jensen Huang resigned as CEO on November 12, 2026.",
-      "Google's Intelligent Eyewear pre-orders opened on November 12, 2026.",
-      "AI models have a 'half-life' of six weeks according to Vercel data."
+      "$1.50 per million input tokens",
+      "November 12, 2026",
+      "5 companies named in the lawsuit"
     ],
     "forwardable_targets": [
-      "If your AI model is older than six weeks, it's practically a museum piece.",
-      "NVIDIA is now a company with a Board Chair, which is a very different vibe than a founder-led startup."
+      "If the courts can't stop the AI race, maybe the airlines will.",
+      "Faster models are great, but they don't help if you're locked out of the system."
     ],
     "story_scenes": [
       {
         "story_index": 1,
-        "source_url": "https://nvidianews.nvidia.com/_gallery/download_pdf/6af5c3cc3d6332f541088655/",
-        "new_development": "Jensen Huang has resigned as CEO of NVIDIA, with CFO Colette Kress named interim CEO.",
-        "why_today": "This is the most significant leadership shift in the history of the AI hardware industry, occurring amid market volatility.",
-        "question": "Does a post-Jensen Huang NVIDIA maintain the same aggressive product roadmap?",
+        "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
+        "new_development": "Google released Gemini 4 Hydrogen, a speed-optimized model for agentic workflows.",
+        "why_today": "It marks a shift toward accessible, low-latency AI agents for everyday users.",
+        "question": "Does 'faster' actually mean more capable for complex tasks, or just cheaper for Google?",
         "competing_readings": [
-          "The company's institutional strength and order book provide a buffer against leadership changes.",
-          "The loss of a visionary founder during a period of intense market scrutiny creates long-term strategic risk."
+          "A breakthrough in practical AI utility for developers.",
+          "A commoditization play to lock users into the Google ecosystem."
         ],
-        "receipt": "Harvey C. Jones was appointed as the first-ever Chair of the Board.",
-        "unknown": "The identity of the permanent successor and the long-term impact on investor confidence.",
-        "listener_payoff": "Investors and enterprise buyers should watch for signs of operational continuity in the November 17 financial report.",
-        "exchange_premise": "Alex asks if a company can survive the loss of its 'face'; Rufus explains the difference between a founder's vision and a CFO's operational stability.",
+        "receipt": "$1.50 per million input tokens.",
+        "unknown": "Real-world reliability in complex, multi-step agentic tasks.",
+        "listener_payoff": "Developers can now test if lower latency improves their agent performance.",
+        "exchange_premise": "Alex compares the speed to a faster browser, Jamie asks if it's just 'less smart' AI, Rufus explains the token economics.",
         "cast_direction": {
-          "alex": "Wants to know if the 'NVIDIA magic' is tied to one person or the company's massive scale.",
-          "jamie": "Focuses on the human element of the scandal and how it impacts the company's culture.",
-          "rufus": "Analyzes the market reaction and the significance of the new Board Chair role."
+          "alex": "Wants to know if this makes his personal coding projects faster.",
+          "jamie": "Skeptical about whether 'speed' is a proxy for 'dumber' models.",
+          "rufus": "Focuses on the $1.50 price point as a competitive signal."
         },
-        "relationship_beat": "Rufus gently teases Alex for thinking a company worth billions stops moving just because one person leaves.",
-        "scene_movement": "Starts with the shock of the news, moves to the financial reality, and ends with an honest uncertainty about the company's future culture.",
-        "discovery": "The appointment of a first-ever Board Chair suggests the company is moving toward a more traditional, institutional governance structure."
+        "relationship_beat": "Alex teases Rufus for being excited about a price drop, Rufus retorts that price is the only thing that matters at scale.",
+        "scene_movement": "Starts with the speed claim, moves to the trade-off between reasoning and latency, ends with a testable hypothesis for the listener.",
+        "discovery": "The 1 million-token context window at a lower price point is a genuine utility win for power users."
       },
       {
         "story_index": 2,
-        "source_url": "https://blog.google/products/hardware/intelligent-eyewear/android-xr/",
-        "new_development": "Google opened pre-orders for Android XR-powered smart glasses with Gemini AI integration.",
-        "why_today": "It marks a public-facing move by Google into wearable AI hardware with specific privacy features.",
-        "question": "How does Google's privacy-first approach to wearables compare to existing market players?",
+        "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
+        "new_development": "Advocacy groups filed a lawsuit in San Francisco to halt further AI model development.",
+        "why_today": "It represents a shift from public criticism to active legal obstruction of frontier labs.",
+        "question": "Can a court order realistically stop a global technological race?",
         "competing_readings": [
-          "Built-in LED indicators and face redaction set a new standard for consumer trust in wearables.",
-          "The hardware is limited to specific tasks and may not offer the seamless experience users expect."
+          "A necessary check on unchecked corporate power.",
+          "A futile attempt to legislate away innovation."
         ],
-        "receipt": "Pricing starts at $395 for Warby Parker models.",
-        "unknown": "Real-world adoption rates and how the 'bystander face redaction' performs in crowded environments.",
-        "listener_payoff": "Consumers can now choose between competing ecosystems, with Google positioning itself as the privacy-conscious alternative.",
-        "exchange_premise": "Jamie wonders if she'd actually wear these to a coffee shop; Alex challenges whether the privacy features are enough to overcome the 'creepy' factor.",
+        "receipt": "The suit names Anthropic, Google, Meta, OpenAI, and SpaceXSI.",
+        "unknown": "Whether the court will grant an injunction or dismiss the case.",
+        "listener_payoff": "Listeners should watch for potential delays in model releases if the court takes the case seriously.",
+        "exchange_premise": "Rufus explains the legal precedent, Jamie wonders if this is just 'theatre', Alex asks what happens to the engineers.",
         "cast_direction": {
-          "alex": "Interested in the practical utility of Gemini on the face.",
-          "jamie": "Skeptical about the social implications of recording glasses.",
-          "rufus": "Looks at the partnership strategy with Warby Parker and Gentle Monster."
+          "alex": "Worries about the chilling effect on research.",
+          "jamie": "Wants to know if this actually protects anyone.",
+          "rufus": "Analyzes the legal viability of the claim."
         },
-        "relationship_beat": "Jamie jokes about wearing glasses that redact faces, and Rufus dryly notes that he already does that by not looking at people.",
-        "scene_movement": "Starts with the excitement of new hardware, shifts to a debate on social norms, and ends with a practical look at the price points.",
-        "discovery": "The use of physical on/off switches is a deliberate design choice to build user trust."
+        "relationship_beat": "Jamie challenges Rufus to explain how a court stops a server, Rufus dryly notes that courts are very good at stopping money.",
+        "scene_movement": "Starts with the filing, moves to the feasibility of a 'freeze', ends with the realization that the legal process is now a core AI risk.",
+        "discovery": "The legal strategy is shifting from 'regulate' to 'stop', which changes the risk profile for investors."
       },
       {
         "story_index": 3,
-        "source_url": "https://www.techradar.com/pro/teams-are-moving-to-new-models-almost-as-fast-as-labs-release-them-vercel-data-reveals-ai-models-now-have-a-half-life-of-just-six-weeks",
-        "new_development": "Vercel data shows the 'half-life' of an AI model in production is now just six weeks.",
-        "why_today": "It provides a quantified metric for the rapid churn in the AI developer ecosystem.",
-        "question": "How can businesses build stable products on a foundation that changes every six weeks?",
+        "source_url": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/",
+        "new_development": "United Airlines is blocking unauthorized AI agents from booking flights.",
+        "why_today": "It turns the abstract 'agent security' debate into a concrete consumer access issue.",
+        "question": "Is this a security move or a way to protect airline commission revenue?",
         "competing_readings": [
-          "Rapid churn is a sign of a healthy, competitive innovation cycle.",
-          "This level of instability makes long-term enterprise AI adoption prohibitively expensive and risky."
+          "A necessary security measure to prevent bot-driven account takeovers.",
+          "A protectionist move to stop third-party AI from finding cheaper fares."
         ],
-        "receipt": "Most production AI traffic is currently served by models released within the last two months.",
-        "unknown": "Whether this churn rate will stabilize as the technology matures.",
-        "listener_payoff": "Teams should prioritize building 'model-agnostic' application layers rather than hard-coding dependencies.",
-        "exchange_premise": "Alex asks if 'model-agnostic' is just a fancy way of saying 'we don't know what we're doing'; Rufus explains the financial cost of constant re-tooling.",
+        "receipt": "United cites cybersecurity risks and federal aviation rules.",
+        "unknown": "Whether other airlines will follow suit or build their own 'authorized' agents.",
+        "listener_payoff": "Check if your travel AI tool still works for United bookings.",
+        "exchange_premise": "Alex is annoyed he can't use his agent, Jamie suspects a revenue motive, Rufus explains the cybersecurity reality.",
         "cast_direction": {
-          "alex": "Worried about the engineering overhead of constantly swapping models.",
-          "jamie": "Delighted by the pace of progress but concerned for the developers.",
-          "rufus": "Sees this as a classic 'platform vs. application' struggle."
+          "alex": "Frustrated by the loss of convenience.",
+          "jamie": "Suspicious of the airline's motives.",
+          "rufus": "Defends the airline's need to control their own API."
         },
-        "relationship_beat": "Alex and Jamie share a laugh about their own 'model fatigue' while Rufus reminds them that someone has to pay for all those API calls.",
-        "scene_movement": "Starts with the surprising data, moves to the engineering implications, and ends with a consensus on the need for architectural flexibility.",
-        "discovery": "The six-week half-life is a hard data point that justifies moving away from vendor-specific model lock-in."
+        "relationship_beat": "Alex jokes about his agent being 'banned', Jamie laughs that the airline just wants to keep the booking fees.",
+        "scene_movement": "Starts with the frustration of a blocked tool, moves to the security vs. revenue debate, ends with a reality check on who owns the booking flow.",
+        "discovery": "Airlines are treating AI agents as a security threat, not a customer service enhancement."
       }
     ],
     "title_candidates": [
-      "NVIDIA's CEO Resignation: What It Means for Your AI Infrastructure Roadmap",
-      "Can Google's New Intelligent Eyewear Change How You Use AI Daily?",
-      "Is Your AI Stack Obsolete? Why Model Half-Life Is Shrinking to Six Weeks"
+      "Google Gemini 4 Hydrogen: Can Faster AI Models Actually Save You Time?",
+      "The Lawsuit Seeking to Freeze AI Development: What Happens If Courts Succeed?",
+      "United Airlines Blocks AI Booking Agents: Is Your Personal Assistant Still Allowed?"
     ],
-    "episode_hook": "NVIDIA’s CEO has stepped down, and we’re breaking down what this means for the hardware powering your AI tools. Plus, we look at the new 'half-life' of AI models to see if your current tech stack is already on the clock.",
+    "episode_hook": "Google just dropped a faster AI model, but airlines are already locking their doors to autonomous agents. We’re breaking down what this means for your next trip and your daily coding tasks.",
     "planning_status": "model_plan",
-    "_episode_date": "2026-11-12"
+    "_episode_date": "2026-11-13"
   }
 }

@@ -1,213 +1,301 @@
 {
-  "episode_date": "2026-11-12",
-  "discovery_seed_count": 42,
-  "window_start": "2026-11-10T17:10:58.284881+00:00",
-  "window_end": "2026-11-12T17:10:58.284881+00:00",
+  "episode_date": "2026-11-13",
+  "discovery_seed_count": 40,
+  "window_start": "2026-11-11T08:51:15.867436+00:00",
+  "window_end": "2026-11-13T08:51:15.867436+00:00",
   "attempts": [
     {
       "stage": "primary",
-      "rejections": {},
-      "rejected_examples": [],
+      "rejections": {
+        "previously_aired_event": 3,
+        "outside_freshness_window": 1
+      },
+      "rejected_examples": [
+        {
+          "headline": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
+          "published_at": "2026-11-12T00:00:00Z",
+          "reason": "previously_aired_event"
+        },
+        {
+          "headline": "Vercel data shows AI model 'half-life' is shrinking to six weeks",
+          "published_at": "2026-11-12T01:10:00Z",
+          "reason": "previously_aired_event"
+        },
+        {
+          "headline": "Google launches 'Intelligent Eyewear' Android XR glasses",
+          "published_at": "2026-11-12T00:00:00Z",
+          "reason": "previously_aired_event"
+        },
+        {
+          "headline": "Google launches Gemini Decisions API for fast multimodal decision-making",
+          "published_at": "2026-11-11T00:00:00Z",
+          "reason": "outside_freshness_window"
+        }
+      ],
+      "candidates": 5,
+      "accepted_total": 1,
+      "trusted_total": 0
+    },
+    {
+      "stage": "alternate_refill",
+      "rejections": {
+        "duplicate_event": 2,
+        "previously_aired_event": 1,
+        "outside_freshness_window": 1,
+        "invalid_source_url": 1
+      },
+      "rejected_examples": [
+        {
+          "headline": "Google brings Gemini 4 Hydrogen into Search with more visual, precise answers",
+          "published_at": "2026-11-12T00:00:00Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "Google opens preorders for intelligent eyewear with Gemini features",
+          "published_at": "2026-11-12T00:00:00Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "NVIDIA, Rebellions and SK Telecom announce collaboration on sovereign AI infrastructure",
+          "published_at": "2026-11-12T00:00:00Z",
+          "reason": "previously_aired_event"
+        },
+        {
+          "headline": "IBM and Microsoft announce Imagine Enterprise for industry-specific AI agents",
+          "published_at": "2026-11-10T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Anthropic launches roadshow for proposed initial public offering",
+          "published_at": "2026-11-10T00:00:00Z",
+          "reason": "invalid_source_url"
+        }
+      ],
       "candidates": 8,
-      "accepted_total": 8,
-      "trusted_total": 6
+      "accepted_total": 4,
+      "trusted_total": 3
+    },
+    {
+      "stage": "targeted_discovery_refill",
+      "rejections": {
+        "duplicate_event": 1,
+        "outside_freshness_window": 1
+      },
+      "rejected_examples": [
+        {
+          "headline": "Google Search gets a major upgrade with Gemini 4 Hydrogen",
+          "published_at": "2026-11-12T00:00:00Z",
+          "reason": "duplicate_event"
+        },
+        {
+          "headline": "OpenAI says ChatGPT Plus is free for more than 20,000 veterans and servicemembers",
+          "published_at": "2026-11-11T00:00:00Z",
+          "reason": "outside_freshness_window"
+        }
+      ],
+      "candidates": 3,
+      "accepted_total": 5,
+      "trusted_total": 4
     }
   ],
   "status": "ready",
+  "breaking_discovery_headlines": [
+    "Nvidia's Jensen Huang resigns as CEO amid reports of affairs with alleged Chinese spy and two employees",
+    "Nvidia CEO Jensen Huang resigns amid affairs scandal and Congressional scrutiny",
+    "What's next for chip industry after Huang resigns from Nvidia",
+    "Michael Burry Sees A \u2018Mechanical Bid\u2019 Under NVDA Stock \u2013 Even As He Questions Nvidia\u2019s Succession Plan And Asia Sales",
+    "What we know after Jensen Huang resigns as Nvidia CEO",
+    "Nvidia CEO resigns: What could it mean for TSMC in Arizona?",
+    "Jensen Huang, an architect of the AI boom, resigns as Nvidia CEO",
+    "IBM Acquires AuthMind to Monitor AI Agent Credential Use"
+  ],
+  "refreshed_saved_research": false,
   "topic_families": [
-    "other",
     "products",
-    "products"
+    "governance",
+    "other"
   ],
   "concentrated_slate": false,
   "validated_candidates": [
     {
-      "event_key": "nvidia-ceo-transition-2026-11-12",
-      "headline": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
-      "title": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
-      "publisher": "NVIDIA",
+      "event_key": "google-gemini-4-hydrogen-launch-2026-11-12",
+      "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
+      "title": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
+      "publisher": "Google",
       "published": "2026-11-12T00:00:00Z",
       "published_at": "2026-11-12T00:00:00Z",
-      "source_url": "https://nvidianews.nvidia.com/_gallery/download_pdf/6af5c3cc3d6332f541088655/",
-      "link": "https://nvidianews.nvidia.com/_gallery/download_pdf/6af5c3cc3d6332f541088655/",
-      "summary": "NVIDIA co-founder and CEO Jensen Huang has resigned from his roles as President, CEO, and board member, effective immediately, following reports of extramarital affairs. The company's board has appointed CFO Colette Kress as interim CEO while initiating a search for a permanent successor. Harvey C. Jones, a veteran board member, was also named as the company's first-ever chair of the board. NVIDIA stated that despite the leadership change and market volatility, its business operations, order book, and product roadmap remain unchanged.",
+      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
+      "link": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
+      "summary": "Google introduced Gemini 4 Hydrogen on November 12, 2026, as a faster model aimed at everyday coding and agentic workflows. Google says it is available across Google AI Studio, the Gemini API, Gemini for business, the Gemini app, Google Search, and paid Google AI Pro and Ultra subscribers in Google Antigravity. The company frames it as the speed-focused counterpart to its deeper-reasoning Gemini 4 Carbon and Gemini 4 Argon models. Google also says Hydrogen is priced at $1.50 per million input tokens and $7.50 per million output tokens on a flat 1 million-token context window.",
       "facts": [
-        "Jensen Huang resigned as President, CEO, and board member on November 12, 2026.",
-        "CFO Colette Kress was appointed as interim CEO.",
-        "Harvey C. Jones was appointed as the first-ever Chair of the Board.",
-        "The resignation follows reports of two extramarital affairs, including one with a woman suspected by U.S. intelligence of being a Chinese spy.",
-        "NVIDIA's board has started a search for a permanent successor.",
-        "The company stated that its business operations and product roadmap will continue without interruption."
+        "Google introduced Gemini 4 Hydrogen on November 12, 2026.",
+        "Google says Hydrogen is built for rapid execution across coding and agentic workflows.",
+        "Google says Hydrogen is available to all tiers of Google AI Studio, the Gemini API, Gemini for business, the Gemini app, Google Search, and paid Google AI Pro and Ultra subscribers in Google Antigravity.",
+        "Google says Hydrogen uses a 1 million-token context window.",
+        "Google says Hydrogen is priced at $1.50 per million input tokens and $7.50 per million output tokens."
       ],
       "data_points": [
-        "November 12, 2026 (resignation date)",
-        "33 years (Huang's tenure)"
+        "Nov 12, 2026",
+        "1 million-token context window",
+        "$1.50 per million input tokens",
+        "$7.50 per million output tokens"
       ],
       "limitations_or_qualifiers": [
-        "The leadership transition is currently interim; a permanent CEO has not been selected.",
-        "The resignation occurred amid significant stock market volatility."
+        "Performance and pricing claims come from Google\u2019s announcement.",
+        "Availability includes product-tier and subscription restrictions."
       ],
-      "why_it_matters": "This is a massive shift for the company central to the global AI hardware supply chain and the broader artificial intelligence economy.",
+      "why_it_matters": "This is one of the clearest same-day product moves that changes what a large audience can actually use in search, apps, and developer tooling.",
       "editorial_case": {
-        "new_development": "Jensen Huang resigned as CEO of NVIDIA, with CFO Colette Kress taking over the role on an interim basis.",
-        "affected_listener": "Investors, AI hardware buyers, and industry partners who rely on NVIDIA's stability are directly affected.",
-        "why_today": "The resignation and board announcement occurred today, marking the most significant leadership shift in the history of the AI hardware industry.",
-        "distinct_question": "What does a post-Jensen Huang NVIDIA mean for the long-term AI infrastructure roadmap?",
-        "new_since_prior_coverage": "This is an immediate, confirmed leadership change following earlier reports of board scrutiny.",
-        "practical_payoff": "Investors and enterprise leaders should monitor the upcoming financial report on November 17 for signs of operational continuity."
+        "new_development": "Google moved a speed-optimized frontier model into multiple public and paid surfaces at once, including Search and the Gemini app.",
+        "affected_listener": "Developers, enterprise teams, and regular Search users who want faster AI assistance are directly affected.",
+        "why_today": "It combines model launch, access expansion, and pricing in one confirmed announcement inside the 48-hour window.",
+        "distinct_question": "What can this new fast model do for me that Google\u2019s slower reasoning models are not meant to do?",
+        "new_since_prior_coverage": "This is a new model and access expansion, not the earlier Gemini 4 Carbon/Argon coverage.",
+        "practical_payoff": "Builders can test whether a cheaper, faster execution model reduces latency and token costs for coding, routing, and agent workflows."
       },
       "editorial_scores": {
-        "human_consequence": 5,
+        "human_consequence": 4,
         "novelty": 5,
         "explanatory_value": 5,
         "evidence_depth": 5
       },
-      "story_age_hours": 17.18,
+      "story_age_hours": 32.85,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
       "story_tier": "primary",
-      "topic_family": "other"
+      "topic_family": "products"
     },
     {
-      "event_key": "google-android-xr-glasses-launch-2026-11-12",
-      "headline": "Google launches 'Intelligent Eyewear' Android XR glasses",
-      "title": "Google launches 'Intelligent Eyewear' Android XR glasses",
-      "publisher": "Google",
-      "published": "2026-11-12T00:00:00Z",
-      "published_at": "2026-11-12T00:00:00Z",
-      "source_url": "https://blog.google/products/hardware/intelligent-eyewear-android-xr/",
-      "link": "https://blog.google/products/hardware/intelligent-eyewear-android-xr/",
-      "summary": "Google has officially opened pre-orders for its new 'Intelligent Eyewear,' a pair of Android XR glasses developed in partnership with Warby Parker and Gentle Monster. The glasses feature a 12MP camera, Gemini AI integration for real-time assistance, and privacy-focused features like bystander face redaction and a built-in LED indicator for recording. The glasses are scheduled to begin shipping on December 10, 2026, and represent Google's renewed push into the smart wearable market.",
+      "event_key": "ai-lawsuit-freeze-model-development-2026-11-12",
+      "headline": "AP reports lawsuits seeking to freeze new AI model development",
+      "title": "AP reports lawsuits seeking to freeze new AI model development",
+      "publisher": "AP News",
+      "published": "2026-11-12T15:00:30Z",
+      "published_at": "2026-11-12T15:00:30Z",
+      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
+      "link": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
+      "summary": "The Associated Press reported on November 12, 2026 that advocacy groups sued five major AI companies in San Francisco Superior Court to halt further model development. The suit names Anthropic, Google, Meta, OpenAI, and SpaceXSI, according to AP\u2019s report. The plaintiffs argue the companies cannot prevent catastrophic harm and say they have diverted resources to respond to the alleged risks. This is a significant policy and legal escalation rather than a product launch.",
       "facts": [
-        "Google's Intelligent Eyewear pre-orders opened on November 12, 2026.",
-        "The glasses will ship on December 10, 2026.",
-        "They are powered by Google's Android XR platform and Gemini chatbot.",
-        "Features include 12MP camera, real-time speech translation, and bystander face redaction.",
-        "Privacy controls include a physical on/off switch and a white LED indicator during recording.",
-        "Pricing starts at $395 for Warby Parker models and $449-$489 for Gentle Monster versions."
+        "AP reported the lawsuit on November 12, 2026.",
+        "The suit was filed in San Francisco Superior Court.",
+        "The AP report says the defendants include Anthropic, Google, Meta, OpenAI, and SpaceXSI.",
+        "The plaintiffs are online safety and consumer advocacy groups.",
+        "The lawsuit seeks to stop further development or deployment of new AI models."
       ],
       "data_points": [
-        "$395 (starting price)",
-        "December 10, 2026 (shipping date)",
-        "12MP (camera resolution)"
+        "Nov 12, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Shipping is initially limited to select markets.",
-        "The glasses are designed for specific tasks rather than full-blown mixed reality."
+        "This is a filed lawsuit, not a ruling.",
+        "The allegations have not been adjudicated."
       ],
-      "why_it_matters": "Google is entering the competitive smart glasses market with a clear focus on privacy and practical agentic AI assistance, challenging existing players like Meta.",
+      "why_it_matters": "Legal pressure aimed at the biggest labs can affect model release cadence, safety disclosures, and investment decisions across the industry.",
       "editorial_case": {
-        "new_development": "Google opened pre-orders for its first Android XR-powered smart glasses.",
-        "affected_listener": "Consumers and tech enthusiasts interested in wearable AI are affected.",
-        "why_today": "The launch marks a significant, public-facing move by Google into a new hardware category that integrates its AI models directly into daily life.",
-        "distinct_question": "How does Google's approach to wearable privacy and AI assistance compare to Meta's established presence?",
-        "new_since_prior_coverage": "Pricing, shipping dates, and specific privacy features like face redaction are confirmed today.",
-        "practical_payoff": "Consumers can now choose between competing ecosystems for wearable AI, with Google emphasizing privacy-first integration."
+        "new_development": "A coalition of advocacy groups moved from criticism to litigation seeking to freeze new model development.",
+        "affected_listener": "AI companies, regulators, and users who depend on model releases are affected.",
+        "why_today": "It is a consequential legal action inside the window and touches multiple frontier labs at once.",
+        "distinct_question": "Can courts actually slow the AI race, and what happens if they try?",
+        "new_since_prior_coverage": "This is new litigation, not the already aired Australia regulator story.",
+        "practical_payoff": "Listeners should watch whether the suit influences safety policy, release timing, or settlement pressure."
       },
       "editorial_scores": {
-        "human_consequence": 3,
+        "human_consequence": 4,
         "novelty": 4,
         "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 17.18,
+      "story_age_hours": 17.85,
       "source_tier": 3,
       "grounded": true,
       "rank": 2,
       "story_tier": "primary",
-      "topic_family": "products"
+      "topic_family": "governance"
     },
     {
-      "event_key": "google-gemini-decisions-api-2026-11-11",
-      "headline": "Google launches Gemini Decisions API for fast multimodal decision-making",
-      "title": "Google launches Gemini Decisions API for fast multimodal decision-making",
+      "event_key": "google-intelligent-eyewear-privacy-2026-11-12",
+      "headline": "Google publishes privacy protections for intelligent eyewear",
+      "title": "Google publishes privacy protections for intelligent eyewear",
       "publisher": "Google",
-      "published": "2026-11-11T00:00:00Z",
-      "published_at": "2026-11-11T00:00:00Z",
-      "source_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/",
-      "link": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/",
-      "summary": "Google introduced the Gemini Decisions API on November 11. The company says the new endpoint is designed for closed-set decisions such as tool selection, policy checks, model routing, and context grading. It says the system can evaluate up to 1,000 questions across text, images, audio, video, and PDFs in a single pass. Google also says the API is available through Gemini API in Google AI Studio and is priced at $0.10 per 1 million input tokens with no output-token billing.",
+      "published": "2026-11-12T00:00:00Z",
+      "published_at": "2026-11-12T00:00:00Z",
+      "source_url": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/",
+      "link": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/",
+      "summary": "Google separately published a privacy-focused announcement on November 12, 2026 describing how it is designing intelligent eyewear for bystander privacy. The company says the glasses can help with language translation, parking signs, and reading small print, and that they can also provide audio descriptions for people who are blind or have low vision. Google says its design work responded to concerns from wearers, bystanders, and privacy experts. The page says the privacy features apply when the eyewear is paired to compatible Android devices.",
       "facts": [
-        "Google introduced the Gemini Decisions API on November 11, 2026.",
-        "Google says it is powered by Gemini Decision 1.",
-        "The API is designed for bounded decisions such as tool selection, policy checks, model routing, and context grading.",
-        "Google says it can process multimodal inputs across text, images, audio, video, and PDFs.",
-        "Google says it can evaluate up to 1,000 yes/no, choice, and rubric-scoring questions in a single pass.",
-        "Google says it is available through the Gemini API in Google AI Studio."
+        "Google published privacy protections for intelligent eyewear on November 12, 2026.",
+        "Google says the eyewear can help with translation, signs, and reading small print.",
+        "Google says the eyewear can provide audio descriptions for blind or low-vision users.",
+        "Google says it listened to wearers, bystanders, and privacy experts in the design process.",
+        "Google says some privacy features are available only when paired to compatible Android devices."
       ],
       "data_points": [
-        "2026-11-11",
-        "up to 1,000 questions",
-        "$0.10 per 1M input tokens",
-        "150-250 ms end-to-end latency"
+        "Nov 12, 2026"
       ],
       "limitations_or_qualifiers": [
-        "This is a developer API, not a consumer chat feature.",
-        "It is designed for bounded decisions, not open-ended generation.",
-        "Pricing and capability claims come from Google\u2019s announcement."
+        "Some features are only available on compatible Android devices.",
+        "Privacy claims are vendor-stated design goals, not independent verification."
       ],
-      "why_it_matters": "This matters because it gives builders a new, lower-friction tool for routing and evaluation tasks that sit inside many agent workflows.",
+      "why_it_matters": "This is the accessibility-and-privacy side of the same hardware push, and it matters because public acceptance of wearables often hinges on that tradeoff.",
       "editorial_case": {
-        "new_development": "Google added a new decision-focused API intended to speed up multimodal routing and evaluation tasks.",
-        "affected_listener": "Developers building agents, workflow systems, and moderation or policy tooling are affected.",
-        "why_today": "It is a concrete product release with access and pricing, not just a benchmark or research note.",
-        "distinct_question": "What is the Gemini Decisions API for, and how does it differ from a normal model call?",
-        "new_since_prior_coverage": "This is a new API and pricing model, not a variation of the earlier Carbon release.",
-        "practical_payoff": "Teams can test whether a specialized decision layer is cheaper and faster than using a general model for routing or policy checks."
+        "new_development": "Google paired the eyewear launch with an explicit privacy-and-accessibility explanation.",
+        "affected_listener": "People considering smart glasses, and low-vision users in particular, are affected.",
+        "why_today": "The privacy materials are part of the launch story and help define whether the product can be socially acceptable.",
+        "distinct_question": "Can AI glasses be useful without making everyone around the wearer uncomfortable?",
+        "new_since_prior_coverage": "This adds implementation and accessibility details not contained in the preorder announcement alone.",
+        "practical_payoff": "Listeners who care about accessibility can watch whether these promised features survive real-world use and device limits."
       },
       "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 5,
-        "explanatory_value": 5,
-        "evidence_depth": 5
+        "human_consequence": 4,
+        "novelty": 3,
+        "explanatory_value": 4,
+        "evidence_depth": 4
       },
-      "story_age_hours": 41.18,
+      "story_age_hours": 32.85,
       "source_tier": 3,
       "grounded": true,
       "rank": 3,
       "story_tier": "primary",
-      "topic_family": "products"
+      "topic_family": "other"
     },
     {
-      "event_key": "meta-muse-watch-launch-2026-11-12",
-      "headline": "Meta launches Muse AI assistant for smartwatches",
-      "title": "Meta launches Muse AI assistant for smartwatches",
-      "publisher": "TechRadar",
-      "published": "2026-11-12T02:02:15Z",
-      "published_at": "2026-11-12T02:02:15Z",
-      "source_url": "https://www.techradar.com/ai-platforms-assistants/meta-launches-muse-ai-agent-for-apple-watch-and-android-wear-os-so-now-you-can-talk-to-your-fluffy-life-assistant-anywhere",
-      "link": "https://www.techradar.com/ai-platforms-assistants/meta-launches-muse-ai-agent-for-apple-watch-and-android-wear-os-so-now-you-can-talk-to-your-fluffy-life-assistant-anywhere",
-      "summary": "Meta has released 'Muse,' its latest personal AI assistant, as a native application for Apple Watch and Android Wear OS devices. Unlike desktop or mobile-focused AI models, Muse is optimized for glanceable information, proactive notifications, and voice-based interaction. The assistant integrates with Meta's broader AI ecosystem to provide contextual updates based on user habits and daily schedules.",
+      "event_key": "united-airlines-restricts-third-party-ai-agents-2026-11-12",
+      "headline": "United Airlines blocks AI agents from booking flights",
+      "title": "United Airlines blocks AI agents from booking flights",
+      "publisher": "TechCrunch",
+      "published": "2026-11-12T17:17:00Z",
+      "published_at": "2026-11-12T17:17:00Z",
+      "source_url": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/",
+      "link": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/",
+      "summary": "United Airlines says it will restrict access for unauthorized third-party AI agents that try to book flights or manage reservations on customers\u2019 behalf. The airline says the move is driven by cybersecurity concerns and by rules that may require a human to complete some travel actions, including certain check-in acknowledgments. United says it will make changes both inside its digital platforms and through travel agencies and aggregators. TechCrunch reports this is part of a broader trend of companies pushing back on autonomous assistants accessing consumer accounts.",
       "facts": [
-        "Meta launched the Muse AI assistant for Apple Watch and Android Wear OS.",
-        "Muse is designed for voice interaction and proactive, glanceable information.",
-        "It integrates with existing Meta AI platform accounts.",
-        "The launch occurred on November 12, 2026."
+        "United Airlines said it will restrict access to unauthorized third-party AI agents.",
+        "The policy covers booking flights and managing reservations on users\u2019 behalf.",
+        "United cited cybersecurity risks and possible conflicts with federal aviation rules.",
+        "United said it will update booking, ticketing, and distribution policies.",
+        "The restriction applies directly on its digital platforms and indirectly via travel agencies and aggregators."
       ],
-      "data_points": [
-        "November 12, 2026"
-      ],
+      "data_points": [],
       "limitations_or_qualifiers": [
-        "Feature set is optimized for short, watch-based interactions rather than complex document processing.",
-        "Requires active pairing with a smartphone running the Meta app."
+        "This is a policy change by one airline, not a new federal rule.",
+        "The announcement does not say all AI tools are blocked; it targets unauthorized third-party personal assistants."
       ],
-      "why_it_matters": "This marks a strategic expansion of AI assistants from the phone screen to the wearable, testing the limits of 'ambient' AI in daily life.",
+      "why_it_matters": "This is an early sign that major consumer services may start drawing hard lines around autonomous AI access, which changes what assistants can actually do for people.",
       "editorial_case": {
-        "new_development": "AI assistants are moving to the wrist, emphasizing 'proactive' and 'glanceable' assistance over complex task completion.",
-        "affected_listener": "Smartwatch users looking for hands-free, context-aware AI interaction.",
-        "why_today": "It highlights the industry's shift toward 'ambient' computing, moving AI out of dedicated apps and into background hardware.",
-        "distinct_question": "Does having an AI assistant on your wrist actually make you more productive, or just more distracted?",
-        "new_since_prior_coverage": "The arrival of a major agent-style assistant on Wear OS/Apple Watch is new territory for this cycle.",
-        "practical_payoff": "Evaluate if the proactive nature of Muse solves the 'notification fatigue' problem or adds to it."
+        "new_development": "United said it will actively prevent third-party AI agents from handling flight booking and reservation tasks.",
+        "affected_listener": "Travelers who rely on AI assistants to book or manage flights are affected, especially frequent flyers and business travelers.",
+        "why_today": "It turns abstract agent-security debate into a concrete consumer access restriction at a major airline.",
+        "distinct_question": "Can my AI assistant still book a flight for me, or will airlines block it?",
+        "new_since_prior_coverage": "This is a specific operator policy from a major airline, not a generic warning about AI agents.",
+        "practical_payoff": "Travelers and travel platforms now have to watch which booking flows remain allowed and whether other airlines copy the restriction."
       },
       "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 3,
-        "explanatory_value": 3,
-        "evidence_depth": 3
+        "human_consequence": 4,
+        "novelty": 4,
+        "explanatory_value": 5,
+        "evidence_depth": 4
       },
-      "story_age_hours": 15.15,
+      "story_age_hours": 15.57,
       "source_tier": 2,
       "grounded": true,
       "rank": 4,
@@ -215,94 +303,92 @@
       "topic_family": "products"
     },
     {
-      "event_key": "vercel-ai-model-half-life-2026-11-12",
-      "headline": "Vercel data shows AI model 'half-life' is shrinking to six weeks",
-      "title": "Vercel data shows AI model 'half-life' is shrinking to six weeks",
-      "publisher": "TechRadar",
-      "published": "2026-11-12T01:10:00Z",
-      "published_at": "2026-11-12T01:10:00Z",
-      "source_url": "https://www.techradar.com/pro/teams-are-moving-to-new-models-almost-as-fast-as-labs-release-them-vercel-data-reveals-ai-models-now-have-a-half-life-of-just-six-weeks-with-most-most-ai-traffic-running-on-models-less-than-two-months-old",
-      "link": "https://www.techradar.com/pro/teams-are-moving-to-new-models-almost-as-fast-as-labs-release-them-vercel-data-reveals-ai-models-now-have-a-half-life-of-just-six-weeks-with-most-most-ai-traffic-running-on-models-less-than-two-months-old",
-      "summary": "Data released by Vercel indicates that the 'half-life' of an AI model\u2014the time it takes for a new model to capture significant traffic from its predecessor\u2014is now just six weeks. The report shows that the vast majority of AI production traffic is currently running on models less than two months old, highlighting the breakneck speed of innovation and replacement in the developer ecosystem.",
+      "event_key": "ibm-acquires-authmind-2026-11-12",
+      "headline": "IBM acquires AuthMind to monitor AI agent credential use",
+      "title": "IBM acquires AuthMind to monitor AI agent credential use",
+      "publisher": "Unite.AI",
+      "published": "2026-11-12T22:13:02Z",
+      "published_at": "2026-11-12T22:13:02Z",
+      "source_url": "https://unite.ai/ibm-acquires-authmind-to-monitor-ai-agent-credential-use/",
+      "link": "https://unite.ai/ibm-acquires-authmind-to-monitor-ai-agent-credential-use/",
+      "summary": "IBM has acquired AuthMind, a security company specializing in identity and access management for AI agents. The move aims to integrate AuthMind\u2019s technology into IBM's enterprise platforms to better monitor how AI agents use credentials, manage permissions, and prevent unauthorized access within complex corporate environments.",
       "facts": [
-        "Vercel reported an AI model 'half-life' of six weeks.",
-        "Most production AI traffic is currently served by models released within the last two months.",
-        "The data tracks the turnover of AI models in web application environments.",
-        "The report was published on November 12, 2026."
+        "IBM completed the acquisition of AuthMind on November 12, 2026.",
+        "The technology monitors AI agent credential usage and permission mapping.",
+        "Intended for enterprise security, focusing on identity management for autonomous agents.",
+        "The deal addresses rising concerns over 'agentic' security breaches."
       ],
       "data_points": [
-        "6 weeks",
-        "Less than 2 months"
+        "2026-11-12 (acquisition date)"
       ],
       "limitations_or_qualifiers": [
-        "Based on Vercel platform data, which may be biased toward web-centric, developer-focused applications.",
-        "Does not account for non-web-based enterprise AI workloads."
+        "Integration timeline into IBM's wider product suite is not yet specified."
       ],
-      "why_it_matters": "This evidence challenges the 'stability' narrative of AI infrastructure, showing that businesses are constantly swapping models to maintain performance or cost-efficiency.",
+      "why_it_matters": "As AI agents gain access to enterprise systems, credential monitoring is becoming the primary defensive front against AI-driven security risks.",
       "editorial_case": {
-        "new_development": "An empirical benchmark has been established for how quickly AI development teams are forced to swap models.",
-        "affected_listener": "Product managers, engineers, and decision-makers worried about 'lock-in' or the longevity of their AI stack.",
-        "why_today": "It provides a clear, data-driven answer to whether teams are actually keeping up with the rapid pace of AI model releases.",
-        "distinct_question": "How can you build a stable long-term product on a foundation that changes or is replaced every six weeks?",
-        "new_since_prior_coverage": "This is the first quantified metric of 'model churn' in real-world application traffic.",
-        "practical_payoff": "Teams can use this data to justify building 'model-agnostic' application layers rather than hard-coding dependencies on a single frontier model."
+        "new_development": "IBM acquiring specialized tooling for AI agent identity management.",
+        "affected_listener": "Enterprise security leaders and CTOs managing AI deployment risk.",
+        "why_today": "It signals a shift toward treating AI agents as users with distinct security profiles.",
+        "distinct_question": "How do you protect internal systems when your agents have administrative privileges?",
+        "new_since_prior_coverage": "Consolidation of agent security tooling into a major enterprise vendor.",
+        "practical_payoff": "Auditors and IT leads should review their current agent credential policies in light of this standard-setting move."
       },
       "editorial_scores": {
-        "human_consequence": 3,
+        "human_consequence": 4,
         "novelty": 4,
-        "explanatory_value": 5,
-        "evidence_depth": 4
+        "explanatory_value": 4,
+        "evidence_depth": 3
       },
-      "story_age_hours": 16.02,
-      "source_tier": 2,
+      "story_age_hours": 10.64,
+      "source_tier": 1,
       "grounded": true,
       "rank": 5,
       "story_tier": "supporting",
-      "topic_family": "products"
+      "topic_family": "markets"
     }
   ],
   "selected_editorial_cases": [
     {
-      "headline": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
-      "source_url": "https://nvidianews.nvidia.com/_gallery/download_pdf/6af5c3cc3d6332f541088655/",
+      "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
+      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Jensen Huang resigned as CEO of NVIDIA, with CFO Colette Kress taking over the role on an interim basis.",
-        "affected_listener": "Investors, AI hardware buyers, and industry partners who rely on NVIDIA's stability are directly affected.",
-        "why_today": "The resignation and board announcement occurred today, marking the most significant leadership shift in the history of the AI hardware industry.",
-        "distinct_question": "What does a post-Jensen Huang NVIDIA mean for the long-term AI infrastructure roadmap?",
-        "new_since_prior_coverage": "This is an immediate, confirmed leadership change following earlier reports of board scrutiny.",
-        "practical_payoff": "Investors and enterprise leaders should monitor the upcoming financial report on November 17 for signs of operational continuity."
+        "new_development": "Google moved a speed-optimized frontier model into multiple public and paid surfaces at once, including Search and the Gemini app.",
+        "affected_listener": "Developers, enterprise teams, and regular Search users who want faster AI assistance are directly affected.",
+        "why_today": "It combines model launch, access expansion, and pricing in one confirmed announcement inside the 48-hour window.",
+        "distinct_question": "What can this new fast model do for me that Google\u2019s slower reasoning models are not meant to do?",
+        "new_since_prior_coverage": "This is a new model and access expansion, not the earlier Gemini 4 Carbon/Argon coverage.",
+        "practical_payoff": "Builders can test whether a cheaper, faster execution model reduces latency and token costs for coding, routing, and agent workflows."
       }
     },
     {
-      "headline": "Google launches 'Intelligent Eyewear' Android XR glasses",
-      "source_url": "https://blog.google/products/hardware/intelligent-eyewear-android-xr/",
+      "headline": "AP reports lawsuits seeking to freeze new AI model development",
+      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google opened pre-orders for its first Android XR-powered smart glasses.",
-        "affected_listener": "Consumers and tech enthusiasts interested in wearable AI are affected.",
-        "why_today": "The launch marks a significant, public-facing move by Google into a new hardware category that integrates its AI models directly into daily life.",
-        "distinct_question": "How does Google's approach to wearable privacy and AI assistance compare to Meta's established presence?",
-        "new_since_prior_coverage": "Pricing, shipping dates, and specific privacy features like face redaction are confirmed today.",
-        "practical_payoff": "Consumers can now choose between competing ecosystems for wearable AI, with Google emphasizing privacy-first integration."
+        "new_development": "A coalition of advocacy groups moved from criticism to litigation seeking to freeze new model development.",
+        "affected_listener": "AI companies, regulators, and users who depend on model releases are affected.",
+        "why_today": "It is a consequential legal action inside the window and touches multiple frontier labs at once.",
+        "distinct_question": "Can courts actually slow the AI race, and what happens if they try?",
+        "new_since_prior_coverage": "This is new litigation, not the already aired Australia regulator story.",
+        "practical_payoff": "Listeners should watch whether the suit influences safety policy, release timing, or settlement pressure."
       }
     },
     {
-      "headline": "Google launches Gemini Decisions API for fast multimodal decision-making",
-      "source_url": "https://blog.google/innovation-and-ai/technology/developers-tools/gemini-decisions-api/",
+      "headline": "Google publishes privacy protections for intelligent eyewear",
+      "source_url": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google added a new decision-focused API intended to speed up multimodal routing and evaluation tasks.",
-        "affected_listener": "Developers building agents, workflow systems, and moderation or policy tooling are affected.",
-        "why_today": "It is a concrete product release with access and pricing, not just a benchmark or research note.",
-        "distinct_question": "What is the Gemini Decisions API for, and how does it differ from a normal model call?",
-        "new_since_prior_coverage": "This is a new API and pricing model, not a variation of the earlier Carbon release.",
-        "practical_payoff": "Teams can test whether a specialized decision layer is cheaper and faster than using a general model for routing or policy checks."
+        "new_development": "Google paired the eyewear launch with an explicit privacy-and-accessibility explanation.",
+        "affected_listener": "People considering smart glasses, and low-vision users in particular, are affected.",
+        "why_today": "The privacy materials are part of the launch story and help define whether the product can be socially acceptable.",
+        "distinct_question": "Can AI glasses be useful without making everyone around the wearer uncomfortable?",
+        "new_since_prior_coverage": "This adds implementation and accessibility details not contained in the preorder announcement alone.",
+        "practical_payoff": "Listeners who care about accessibility can watch whether these promised features survive real-world use and device limits."
       }
     }
   ],
   "listener_frames": [
-    "other",
     "products",
-    "developer_workflow"
+    "accountability_risk",
+    "other"
   ],
   "candidate_target": 5,
   "required_air_stories": 3,

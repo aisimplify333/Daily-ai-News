@@ -4,25 +4,25 @@
   "cost": "zero-model-calls",
   "feed": "feed.xml",
   "newest_episode": {
-    "title": "NVIDIA's CEO Resignation: What It Means for Your AI Infrastructure Roadmap",
-    "description_chars": 1699,
-    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-12.mp3",
-    "pub_date": "Thu, 12 Nov 2026 12:00:00 -0000",
-    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-12.mp3"
+    "title": "Google’s Gemini 4 Hydrogen Launch: Faster AI Agents for Your Daily Workflow",
+    "description_chars": 2011,
+    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-13.mp3",
+    "pub_date": "Fri, 13 Nov 2026 12:00:00 -0000",
+    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-13.mp3"
   },
-  "audio_path": "episode_audio/podcast_2026-11-12.mp3",
-  "duration_minutes": 21.587,
+  "audio_path": "episode_audio/podcast_2026-11-13.mp3",
+  "duration_minutes": 22.259,
   "cost_metrics": {
-    "tts_characters_total": 20524,
+    "tts_characters_total": 20672,
     "tts_characters_by_speaker": {
-      "ALEX": 5501,
-      "JAMIE": 7829,
-      "RUFUS": 7194
+      "ALEX": 6315,
+      "JAMIE": 6900,
+      "RUFUS": 7457
     },
     "grok_estimated_cost_usd": 0.0,
     "grok_cache_hits": 0,
     "fallback_count": 0,
-    "provider_calls": 165
+    "provider_calls": 178
   },
   "checks": {
     "stop_scroll_title": "passed",
@@ -36,6 +36,10 @@
     "audio_window": "passed"
   },
   "failures": [],
-  "warnings": [],
+  "warnings": [
+    {
+      "reason": "itunes_summary_differs_from_description"
+    }
+  ],
   "recovery": "Completed audio is preserved. Repair packaging and rerun this gate; do not regenerate TTS."
 }
