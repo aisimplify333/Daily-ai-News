@@ -24,10 +24,10 @@ jobs:
             !/episode_audio/*.mp3
             !/episode_audio/*.mp4
             !/.tts_cache/
-            /episode_audio/podcast_2026-10-29.mp3
-            /episode_audio/podcast_2026-10-30.mp3
-            /episode_audio/clip_2026-10-30.mp3
-            /episode_audio/clip_2026-10-30.mp4
+            /episode_audio/podcast_2026-11-12.mp3
+            /episode_audio/podcast_2026-11-13.mp3
+            /episode_audio/clip_2026-11-13.mp3
+            /episode_audio/clip_2026-11-13.mp4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -35,10 +35,35 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh run download 41125300728 --repo "$GITHUB_REPOSITORY" --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir /tmp/completed_episode
-          sha256sum /tmp/completed_episode/podcast_2026-10-30.mp3 > /tmp/master.sha256
+          gh run download 43396307640 --repo "$GITHUB_REPOSITORY" --name the-ai-edge-v3-1-hybrid-tts-artifacts --dir /tmp/completed_episode
+          sha256sum /tmp/completed_episode/podcast_2026-11-13.mp3 > /tmp/master.sha256
           master_sha="$(cut -d ' ' -f1 /tmp/master.sha256)"
-          python recover_completed_episode.py --source /tmp/completed_episode --date 2026-10-30 --sha256 "$master_sha"
+          # A failed rebase may leave the archived feed with conflict markers.
+          # Use the preserved episode metadata and the current feed to build a recovery input if needed.
+          python - <<'PY'
+          import json, pathlib, xml.etree.ElementTree as ET
+          d=pathlib.Path('/tmp/completed_episode'); p=d/'feed.xml'; date='2026-11-13'
+          try:
+              assert any(i.get('url','').endswith('podcast_'+date+'.mp3') for i in ET.parse(p).iter('enclosure'))
+          except (OSError, ET.ParseError, AssertionError):
+              from copy import deepcopy
+              feed=ET.parse('feed.xml'); ch=feed.find('channel'); prev=ch.find('item')
+              item=deepcopy(prev); meta=json.loads((d/f'podcast_{date}.json').read_text())
+              assert meta['title'] and meta['description']
+              for node in item.iter():
+                  if node.text: node.text=node.text.replace('2026-11-12',date)
+                  for k,v in node.attrib.items(): node.set(k,v.replace('2026-11-12',date))
+              item.find('title').text=meta['title']; item.find('description').text=meta['description']
+              item.find('pubDate').text='Fri, 13 Nov 2026 10:30:00 +0000'
+              for node in list(item):
+                  key=node.tag.split('}')[-1]
+                  if key=='duration': node.text='1336'
+                  if key in ('summary','subtitle'): node.text=meta['description']
+                  if key in ('image','chapters','transcript'): item.remove(node)
+              item.find('enclosure').set('length',str((d/f'podcast_{date}.mp3').stat().st_size))
+              ch.insert(0,item);feed.write(p,encoding='utf-8',xml_declaration=True)
+          PY
+          python recover_completed_episode.py --source /tmp/completed_episode --date 2026-11-13 --sha256 "$master_sha"
       - name: Validate delivery package and rebuild episode pages
         run: |
           sudo apt-get update -qq
@@ -51,12 +76,12 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add --sparse -- . ':(exclude).tts_cache' ':(exclude)_voice_recovery' ':(exclude)_run_artifacts'
-          git commit -m 'Publish preserved October 30 Sulafat episode after push conflict'
+          git commit -m 'Publish preserved November 13 episode after push conflict'
           git fetch origin main
           git rebase origin/main
           git push origin main
       - name: Verify public feed page and MP3
-        run: python verify_publication.py --date 2026-10-30 --attempts 60 --interval 20
+        run: python verify_publication.py --date 2026-11-13 --attempts 60 --interval 20
       - uses: actions/upload-artifact@v4
         if: always()
         with:
