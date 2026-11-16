@@ -1,345 +1,322 @@
 {
-  "episode_date": "2026-11-13",
+  "episode_date": "2026-11-16",
   "discovery_seed_count": 40,
-  "window_start": "2026-11-11T08:51:15.867436+00:00",
-  "window_end": "2026-11-13T08:51:15.867436+00:00",
+  "window_start": "2026-11-14T08:55:06.075662+00:00",
+  "window_end": "2026-11-16T08:55:06.075662+00:00",
   "attempts": [
     {
       "stage": "primary",
-      "rejections": {
-        "previously_aired_event": 3,
-        "outside_freshness_window": 1
-      },
-      "rejected_examples": [
-        {
-          "headline": "NVIDIA CEO Jensen Huang resigns amid scandal; CFO Colette Kress named interim CEO",
-          "published_at": "2026-11-12T00:00:00Z",
-          "reason": "previously_aired_event"
-        },
-        {
-          "headline": "Vercel data shows AI model 'half-life' is shrinking to six weeks",
-          "published_at": "2026-11-12T01:10:00Z",
-          "reason": "previously_aired_event"
-        },
-        {
-          "headline": "Google launches 'Intelligent Eyewear' Android XR glasses",
-          "published_at": "2026-11-12T00:00:00Z",
-          "reason": "previously_aired_event"
-        },
-        {
-          "headline": "Google launches Gemini Decisions API for fast multimodal decision-making",
-          "published_at": "2026-11-11T00:00:00Z",
-          "reason": "outside_freshness_window"
-        }
-      ],
+      "rejections": {},
+      "rejected_examples": [],
       "candidates": 5,
-      "accepted_total": 1,
-      "trusted_total": 0
+      "accepted_total": 5,
+      "trusted_total": 1
     },
     {
       "stage": "alternate_refill",
       "rejections": {
-        "duplicate_event": 2,
-        "previously_aired_event": 1,
-        "outside_freshness_window": 1,
+        "outside_freshness_window": 6,
         "invalid_source_url": 1
       },
       "rejected_examples": [
         {
-          "headline": "Google brings Gemini 4 Hydrogen into Search with more visual, precise answers",
-          "published_at": "2026-11-12T00:00:00Z",
-          "reason": "duplicate_event"
-        },
-        {
-          "headline": "Google opens preorders for intelligent eyewear with Gemini features",
-          "published_at": "2026-11-12T00:00:00Z",
-          "reason": "duplicate_event"
-        },
-        {
-          "headline": "NVIDIA, Rebellions and SK Telecom announce collaboration on sovereign AI infrastructure",
-          "published_at": "2026-11-12T00:00:00Z",
-          "reason": "previously_aired_event"
-        },
-        {
-          "headline": "IBM and Microsoft announce Imagine Enterprise for industry-specific AI agents",
-          "published_at": "2026-11-10T00:00:00Z",
+          "headline": "OpenAI launches ChatGPT Wallet for agent-assisted purchases",
+          "published_at": "2026-11-13T00:00:00Z",
           "reason": "outside_freshness_window"
         },
         {
-          "headline": "Anthropic launches roadshow for proposed initial public offering",
+          "headline": "Google brings Gemini to Apple CarPlay",
+          "published_at": "2026-11-11T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Anthropic launches roadshow for its proposed initial public offering",
           "published_at": "2026-11-10T00:00:00Z",
           "reason": "invalid_source_url"
+        },
+        {
+          "headline": "NVIDIA releases new physical AI models and robotics tools",
+          "published_at": "2026-11-13T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "OpenAI says ChatGPT Wallet requires purchase-by-purchase approval and hides card details",
+          "published_at": "2026-11-12T00:00:00Z",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Google says Gemini is now on Apple CarPlay and expands in-car AI access",
+          "published_at": "2026-11-11T15:57:00-03:00",
+          "reason": "outside_freshness_window"
+        },
+        {
+          "headline": "Microsoft and IBM announce a new AI agent platform for industry-specific transformation",
+          "published_at": "2026-11-10T00:00:00Z",
+          "reason": "outside_freshness_window"
         }
       ],
       "candidates": 8,
-      "accepted_total": 4,
-      "trusted_total": 3
+      "accepted_total": 6,
+      "trusted_total": 2
     },
     {
       "stage": "targeted_discovery_refill",
       "rejections": {
-        "duplicate_event": 1,
-        "outside_freshness_window": 1
+        "duplicate": 1
       },
       "rejected_examples": [
         {
-          "headline": "Google Search gets a major upgrade with Gemini 4 Hydrogen",
-          "published_at": "2026-11-12T00:00:00Z",
-          "reason": "duplicate_event"
-        },
-        {
-          "headline": "OpenAI says ChatGPT Plus is free for more than 20,000 veterans and servicemembers",
-          "published_at": "2026-11-11T00:00:00Z",
-          "reason": "outside_freshness_window"
+          "headline": "Apple launches U.S. study to examine how people use AI for health",
+          "published_at": "2026-11-15T00:00:00Z",
+          "reason": "duplicate"
         }
       ],
       "candidates": 3,
-      "accepted_total": 5,
+      "accepted_total": 8,
       "trusted_total": 4
     }
   ],
   "status": "ready",
   "breaking_discovery_headlines": [
-    "Nvidia's Jensen Huang resigns as CEO amid reports of affairs with alleged Chinese spy and two employees",
-    "Nvidia CEO Jensen Huang resigns amid affairs scandal and Congressional scrutiny",
-    "What's next for chip industry after Huang resigns from Nvidia",
-    "Michael Burry Sees A \u2018Mechanical Bid\u2019 Under NVDA Stock \u2013 Even As He Questions Nvidia\u2019s Succession Plan And Asia Sales",
-    "What we know after Jensen Huang resigns as Nvidia CEO",
-    "Nvidia CEO resigns: What could it mean for TSMC in Arizona?",
-    "Jensen Huang, an architect of the AI boom, resigns as Nvidia CEO",
-    "IBM Acquires AuthMind to Monitor AI Agent Credential Use"
+    "New snaps show ousted Nvidia CEO Jensen Huang holding waist of 'Chinese spy'"
   ],
   "refreshed_saved_research": false,
   "topic_families": [
+    "other",
     "products",
-    "governance",
-    "other"
+    "governance"
   ],
   "concentrated_slate": false,
   "validated_candidates": [
     {
-      "event_key": "google-gemini-4-hydrogen-launch-2026-11-12",
-      "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
-      "title": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
-      "publisher": "Google",
-      "published": "2026-11-12T00:00:00Z",
-      "published_at": "2026-11-12T00:00:00Z",
-      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
-      "link": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
-      "summary": "Google introduced Gemini 4 Hydrogen on November 12, 2026, as a faster model aimed at everyday coding and agentic workflows. Google says it is available across Google AI Studio, the Gemini API, Gemini for business, the Gemini app, Google Search, and paid Google AI Pro and Ultra subscribers in Google Antigravity. The company frames it as the speed-focused counterpart to its deeper-reasoning Gemini 4 Carbon and Gemini 4 Argon models. Google also says Hydrogen is priced at $1.50 per million input tokens and $7.50 per million output tokens on a flat 1 million-token context window.",
+      "event_key": "trump-admin-ai-national-champions-designation",
+      "headline": "Trump administration to name Nvidia, Microsoft and OpenAI as AI 'National Champions'",
+      "title": "Trump administration to name Nvidia, Microsoft and OpenAI as AI 'National Champions'",
+      "publisher": "The Wall Street Journal",
+      "published": "2026-11-16T03:59:00Z",
+      "published_at": "2026-11-16T03:59:00Z",
+      "source_url": "https://www.wsj.com/business/trump-administration-to-name-nvidia-microsoft-and-openai-as-ai-national-champions-c9b2f1e0",
+      "link": "https://www.wsj.com/business/trump-administration-to-name-nvidia-microsoft-and-openai-as-ai-national-champions-c9b2f1e0",
+      "summary": "The incoming Trump administration plans to designate key AI companies, including Nvidia, Microsoft, and OpenAI, as 'national champions' to bolster U.S. technological leadership. This designation is expected to provide these firms with streamlined regulatory support, prioritized government contracts, and deeper integration into national infrastructure planning. The move signals a strategic shift toward state-backed coordination of AI development to compete with international rivals.",
       "facts": [
-        "Google introduced Gemini 4 Hydrogen on November 12, 2026.",
-        "Google says Hydrogen is built for rapid execution across coding and agentic workflows.",
-        "Google says Hydrogen is available to all tiers of Google AI Studio, the Gemini API, Gemini for business, the Gemini app, Google Search, and paid Google AI Pro and Ultra subscribers in Google Antigravity.",
-        "Google says Hydrogen uses a 1 million-token context window.",
-        "Google says Hydrogen is priced at $1.50 per million input tokens and $7.50 per million output tokens."
+        "The Wall Street Journal reported on the designation plan on November 16, 2026.",
+        "The list includes Nvidia, Microsoft, and OpenAI, among others.",
+        "The policy aims to align AI development with national interests and strategic competition.",
+        "The designation is intended to streamline regulatory hurdles for these companies.",
+        "Government prioritization for infrastructure and resource allocation is part of the framework."
       ],
       "data_points": [
-        "Nov 12, 2026",
-        "1 million-token context window",
-        "$1.50 per million input tokens",
-        "$7.50 per million output tokens"
+        "November 16, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Performance and pricing claims come from Google\u2019s announcement.",
-        "Availability includes product-tier and subscription restrictions."
+        "The official scope and specific legal privileges of this designation are still being finalized.",
+        "The impact on non-designated AI firms remains undefined."
       ],
-      "why_it_matters": "This is one of the clearest same-day product moves that changes what a large audience can actually use in search, apps, and developer tooling.",
+      "why_it_matters": "This marks a major pivot in AI policy from open-market development to state-managed industrial strategy, directly affecting the future of AI investment and regulation.",
       "editorial_case": {
-        "new_development": "Google moved a speed-optimized frontier model into multiple public and paid surfaces at once, including Search and the Gemini app.",
-        "affected_listener": "Developers, enterprise teams, and regular Search users who want faster AI assistance are directly affected.",
-        "why_today": "It combines model launch, access expansion, and pricing in one confirmed announcement inside the 48-hour window.",
-        "distinct_question": "What can this new fast model do for me that Google\u2019s slower reasoning models are not meant to do?",
-        "new_since_prior_coverage": "This is a new model and access expansion, not the earlier Gemini 4 Carbon/Argon coverage.",
-        "practical_payoff": "Builders can test whether a cheaper, faster execution model reduces latency and token costs for coding, routing, and agent workflows."
+        "new_development": "The official prioritization of specific private tech companies as strategic state assets.",
+        "affected_listener": "Investors, developers, and global competitors who need to understand the new geopolitical alignment of AI firms.",
+        "why_today": "This reporting emerged within the 48-hour window as a defining shift in AI policy.",
+        "distinct_question": "What does it mean for the competitive landscape when the government picks 'AI winners'?",
+        "new_since_prior_coverage": "No prior coverage; this is the first reporting on this specific policy shift.",
+        "practical_payoff": "Watch for which companies gain fast-tracked federal contracts or influence over future AI safety standards."
       },
       "editorial_scores": {
-        "human_consequence": 4,
+        "human_consequence": 5,
         "novelty": 5,
-        "explanatory_value": 5,
-        "evidence_depth": 5
+        "explanatory_value": 4,
+        "evidence_depth": 4
       },
-      "story_age_hours": 32.85,
+      "story_age_hours": 4.94,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
       "story_tier": "primary",
-      "topic_family": "products"
-    },
-    {
-      "event_key": "ai-lawsuit-freeze-model-development-2026-11-12",
-      "headline": "AP reports lawsuits seeking to freeze new AI model development",
-      "title": "AP reports lawsuits seeking to freeze new AI model development",
-      "publisher": "AP News",
-      "published": "2026-11-12T15:00:30Z",
-      "published_at": "2026-11-12T15:00:30Z",
-      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
-      "link": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
-      "summary": "The Associated Press reported on November 12, 2026 that advocacy groups sued five major AI companies in San Francisco Superior Court to halt further model development. The suit names Anthropic, Google, Meta, OpenAI, and SpaceXSI, according to AP\u2019s report. The plaintiffs argue the companies cannot prevent catastrophic harm and say they have diverted resources to respond to the alleged risks. This is a significant policy and legal escalation rather than a product launch.",
-      "facts": [
-        "AP reported the lawsuit on November 12, 2026.",
-        "The suit was filed in San Francisco Superior Court.",
-        "The AP report says the defendants include Anthropic, Google, Meta, OpenAI, and SpaceXSI.",
-        "The plaintiffs are online safety and consumer advocacy groups.",
-        "The lawsuit seeks to stop further development or deployment of new AI models."
-      ],
-      "data_points": [
-        "Nov 12, 2026"
-      ],
-      "limitations_or_qualifiers": [
-        "This is a filed lawsuit, not a ruling.",
-        "The allegations have not been adjudicated."
-      ],
-      "why_it_matters": "Legal pressure aimed at the biggest labs can affect model release cadence, safety disclosures, and investment decisions across the industry.",
-      "editorial_case": {
-        "new_development": "A coalition of advocacy groups moved from criticism to litigation seeking to freeze new model development.",
-        "affected_listener": "AI companies, regulators, and users who depend on model releases are affected.",
-        "why_today": "It is a consequential legal action inside the window and touches multiple frontier labs at once.",
-        "distinct_question": "Can courts actually slow the AI race, and what happens if they try?",
-        "new_since_prior_coverage": "This is new litigation, not the already aired Australia regulator story.",
-        "practical_payoff": "Listeners should watch whether the suit influences safety policy, release timing, or settlement pressure."
-      },
-      "editorial_scores": {
-        "human_consequence": 4,
-        "novelty": 4,
-        "explanatory_value": 4,
-        "evidence_depth": 4
-      },
-      "story_age_hours": 17.85,
-      "source_tier": 3,
-      "grounded": true,
-      "rank": 2,
-      "story_tier": "primary",
-      "topic_family": "governance"
-    },
-    {
-      "event_key": "google-intelligent-eyewear-privacy-2026-11-12",
-      "headline": "Google publishes privacy protections for intelligent eyewear",
-      "title": "Google publishes privacy protections for intelligent eyewear",
-      "publisher": "Google",
-      "published": "2026-11-12T00:00:00Z",
-      "published_at": "2026-11-12T00:00:00Z",
-      "source_url": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/",
-      "link": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/",
-      "summary": "Google separately published a privacy-focused announcement on November 12, 2026 describing how it is designing intelligent eyewear for bystander privacy. The company says the glasses can help with language translation, parking signs, and reading small print, and that they can also provide audio descriptions for people who are blind or have low vision. Google says its design work responded to concerns from wearers, bystanders, and privacy experts. The page says the privacy features apply when the eyewear is paired to compatible Android devices.",
-      "facts": [
-        "Google published privacy protections for intelligent eyewear on November 12, 2026.",
-        "Google says the eyewear can help with translation, signs, and reading small print.",
-        "Google says the eyewear can provide audio descriptions for blind or low-vision users.",
-        "Google says it listened to wearers, bystanders, and privacy experts in the design process.",
-        "Google says some privacy features are available only when paired to compatible Android devices."
-      ],
-      "data_points": [
-        "Nov 12, 2026"
-      ],
-      "limitations_or_qualifiers": [
-        "Some features are only available on compatible Android devices.",
-        "Privacy claims are vendor-stated design goals, not independent verification."
-      ],
-      "why_it_matters": "This is the accessibility-and-privacy side of the same hardware push, and it matters because public acceptance of wearables often hinges on that tradeoff.",
-      "editorial_case": {
-        "new_development": "Google paired the eyewear launch with an explicit privacy-and-accessibility explanation.",
-        "affected_listener": "People considering smart glasses, and low-vision users in particular, are affected.",
-        "why_today": "The privacy materials are part of the launch story and help define whether the product can be socially acceptable.",
-        "distinct_question": "Can AI glasses be useful without making everyone around the wearer uncomfortable?",
-        "new_since_prior_coverage": "This adds implementation and accessibility details not contained in the preorder announcement alone.",
-        "practical_payoff": "Listeners who care about accessibility can watch whether these promised features survive real-world use and device limits."
-      },
-      "editorial_scores": {
-        "human_consequence": 4,
-        "novelty": 3,
-        "explanatory_value": 4,
-        "evidence_depth": 4
-      },
-      "story_age_hours": 32.85,
-      "source_tier": 3,
-      "grounded": true,
-      "rank": 3,
-      "story_tier": "primary",
       "topic_family": "other"
     },
     {
-      "event_key": "united-airlines-restricts-third-party-ai-agents-2026-11-12",
-      "headline": "United Airlines blocks AI agents from booking flights",
-      "title": "United Airlines blocks AI agents from booking flights",
-      "publisher": "TechCrunch",
-      "published": "2026-11-12T17:17:00Z",
-      "published_at": "2026-11-12T17:17:00Z",
-      "source_url": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/",
-      "link": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/",
-      "summary": "United Airlines says it will restrict access for unauthorized third-party AI agents that try to book flights or manage reservations on customers\u2019 behalf. The airline says the move is driven by cybersecurity concerns and by rules that may require a human to complete some travel actions, including certain check-in acknowledgments. United says it will make changes both inside its digital platforms and through travel agencies and aggregators. TechCrunch reports this is part of a broader trend of companies pushing back on autonomous assistants accessing consumer accounts.",
+      "event_key": "apple-health-ai-usage-study-2026-11-15",
+      "headline": "Apple launches the Apple Health AI Usage Study in the United States",
+      "title": "Apple launches the Apple Health AI Usage Study in the United States",
+      "publisher": "Apple",
+      "published": "2026-11-15T00:00:00Z",
+      "published_at": "2026-11-15T00:00:00Z",
+      "source_url": "https://www.apple.com/newsroom/2026/11/apple-launches-research-study-to-explore-the-use-of-ai-for-health/",
+      "link": "https://www.apple.com/newsroom/2026/11/apple-launches-research-study-to-explore-the-use-of-ai-for-health/",
+      "summary": "Apple announced the Apple Health AI Usage Study on November 15, 2026. The company says the study is a virtual research program and companion app designed to examine how people use conversational health AI tools, including trust, comprehension, and everyday health actions. Apple says the study is being run with OpenEvidence and is open to up to 200,000 eligible US participants age 21 and older with an Apple Intelligence-enabled iPhone running iOS 26 or later. Apple says study data will not be used to train AI models.",
       "facts": [
-        "United Airlines said it will restrict access to unauthorized third-party AI agents.",
-        "The policy covers booking flights and managing reservations on users\u2019 behalf.",
-        "United cited cybersecurity risks and possible conflicts with federal aviation rules.",
-        "United said it will update booking, ticketing, and distribution policies.",
-        "The restriction applies directly on its digital platforms and indirectly via travel agencies and aggregators."
+        "Apple announced the Apple Health AI Usage Study on November 15, 2026.",
+        "Apple says the study is conducted in collaboration with OpenEvidence.",
+        "Apple says the study is open to up to 200,000 eligible participants in the United States.",
+        "Participants must be age 21 or older and have an Apple Intelligence-enabled iPhone running iOS 26 or later.",
+        "Apple says study data will not be used to train AI models."
       ],
-      "data_points": [],
+      "data_points": [
+        "up to 200,000 participants",
+        "age 21+",
+        "iPhone 15 Pro or later / iOS 26 or later"
+      ],
       "limitations_or_qualifiers": [
-        "This is a policy change by one airline, not a new federal rule.",
-        "The announcement does not say all AI tools are blocked; it targets unauthorized third-party personal assistants."
+        "This is a research study, not a consumer health diagnosis or treatment product.",
+        "Enrollment is limited to eligible US participants.",
+        "Apple says participants control whether they share HealthKit data."
       ],
-      "why_it_matters": "This is an early sign that major consumer services may start drawing hard lines around autonomous AI access, which changes what assistants can actually do for people.",
+      "why_it_matters": "Apple is testing how health AI is actually used in the real world, which could shape future consumer health tools and the broader evidence standard for medical AI UX.",
       "editorial_case": {
-        "new_development": "United said it will actively prevent third-party AI agents from handling flight booking and reservation tasks.",
-        "affected_listener": "Travelers who rely on AI assistants to book or manage flights are affected, especially frequent flyers and business travelers.",
-        "why_today": "It turns abstract agent-security debate into a concrete consumer access restriction at a major airline.",
-        "distinct_question": "Can my AI assistant still book a flight for me, or will airlines block it?",
-        "new_since_prior_coverage": "This is a specific operator policy from a major airline, not a generic warning about AI agents.",
-        "practical_payoff": "Travelers and travel platforms now have to watch which booking flows remain allowed and whether other airlines copy the restriction."
+        "new_development": "Apple moved from health features into a large-scale health-AI usage study with a dedicated app and clinical research framing.",
+        "affected_listener": "US iPhone users interested in health tools, clinicians, and health-AI product teams are affected.",
+        "why_today": "It is one of the clearest fresh developments on AI in consumer health, and it lands inside the reporting window.",
+        "distinct_question": "How are people actually using AI for health, and what does Apple learn from that?",
+        "new_since_prior_coverage": "New research launch, not the earlier Health app update.",
+        "practical_payoff": "Eligible US participants can enroll now, while health-tech teams should watch whether Apple\u2019s findings become product design rules."
       },
       "editorial_scores": {
         "human_consequence": 4,
         "novelty": 4,
         "explanatory_value": 5,
+        "evidence_depth": 5
+      },
+      "story_age_hours": 32.92,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 2,
+      "story_tier": "primary",
+      "topic_family": "products"
+    },
+    {
+      "event_key": "un-backed-talks-autonomous-weapons-rules-2026-11-16",
+      "headline": "AP reports UN-backed talks may launch rules for lethal autonomous weapons",
+      "title": "AP reports UN-backed talks may launch rules for lethal autonomous weapons",
+      "publisher": "Associated Press",
+      "published": "2026-11-16T08:31:20Z",
+      "published_at": "2026-11-16T08:31:20Z",
+      "source_url": "https://apnews.com/article/1ff519255c145105360b04961d136081",
+      "link": "https://apnews.com/article/1ff519255c145105360b04961d136081",
+      "summary": "The Associated Press reported on November 16, 2026 that UN-backed talks in Geneva are considering whether to begin negotiations on rules for lethal autonomous weapons. The AP says government envoys could decide whether to launch negotiations this week. The report frames the issue as a debate over whether humans must keep control and accountability over weapons that can act independently. It also says widespread rollout has not happened, even though activists say some armed drones capable of independent strikes have already appeared in limited conflict-zone use.",
+      "facts": [
+        "AP reported the talks on November 16, 2026.",
+        "The talks are taking place in Geneva.",
+        "Envoys could decide whether to launch negotiations on rules for lethal autonomous weapons.",
+        "The report says activists believe some autonomous strike capability has already been used in select conflict-zone instances.",
+        "The debate centers on human control and accountability."
+      ],
+      "data_points": [
+        "November 16, 2026"
+      ],
+      "limitations_or_qualifiers": [
+        "This is a diplomatic discussion, not an adopted international rule.",
+        "The AP report says widespread rollout has not happened."
+      ],
+      "why_it_matters": "This could shape the legal boundary around military AI, which is a high-stakes policy question with potential security and humanitarian consequences.",
+      "editorial_case": {
+        "new_development": "The Geneva talks may move from discussion toward formal negotiations on lethal autonomous weapons rules.",
+        "affected_listener": "Defense policymakers, military planners, and anyone tracking AI governance are directly affected.",
+        "why_today": "It is the freshest high-stakes policy development inside the window and answers a clear question about whether governments will act.",
+        "distinct_question": "Are governments about to start writing real rules for autonomous weapons?",
+        "new_since_prior_coverage": "This is a new negotiation trigger, not a recap of older UN discussions.",
+        "practical_payoff": "Listeners should watch whether negotiations begin and whether that changes military AI procurement or deployment expectations."
+      },
+      "editorial_scores": {
+        "human_consequence": 4,
+        "novelty": 4,
+        "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 15.57,
-      "source_tier": 2,
+      "story_age_hours": 0.4,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 3,
+      "story_tier": "primary",
+      "topic_family": "governance"
+    },
+    {
+      "event_key": "openai-science-blog-standard-model-gpt-6-astra-2026-11-15",
+      "headline": "OpenAI posts first science blog case study on GPT-6 Astra and the Standard Model",
+      "title": "OpenAI posts first science blog case study on GPT-6 Astra and the Standard Model",
+      "publisher": "OpenAI",
+      "published": "2026-11-15T00:00:00Z",
+      "published_at": "2026-11-15T00:00:00Z",
+      "source_url": "https://openai.com/index/step-toward-defining-the-standard-model/",
+      "link": "https://openai.com/index/step-toward-defining-the-standard-model/",
+      "summary": "OpenAI published a science blog post on November 15, 2026 describing work by physicist Nathaniel Craig with GPT-6 Astra. The post says the collaboration produced a candidate nonperturbative lattice definition of the Standard Model, which the company frames as a potential answer to a question that has been open for more than fifty years. OpenAI says the result is still a candidate and requires scientific scrutiny from experts. The post also says the method is more a step toward usefulness than a finished tool for practical lattice simulations.",
+      "facts": [
+        "OpenAI published the post on November 15, 2026.",
+        "The post describes a collaboration between Nathaniel Craig and GPT-6 Astra.",
+        "OpenAI says the work produced a candidate nonperturbative lattice definition of the Standard Model.",
+        "OpenAI says the result still needs expert scientific validation.",
+        "OpenAI says the method is not yet a practical simulation tool."
+      ],
+      "data_points": [
+        "November 15, 2026",
+        "more than fifty years"
+      ],
+      "limitations_or_qualifiers": [
+        "This is a candidate theoretical construction, not a confirmed physical breakthrough.",
+        "The post itself says scientific dialogue and further work are still required."
+      ],
+      "why_it_matters": "It is one of the clearest examples in the window of AI being used as a serious scientific collaborator, not just a chat tool or coding assistant.",
+      "editorial_case": {
+        "new_development": "OpenAI published a specific science example showing GPT-6 Astra contributing to a theoretical physics result.",
+        "affected_listener": "Researchers in theoretical physics and scientific AI users are the direct audience, with broader scientific readers as secondary listeners.",
+        "why_today": "It is fresh, original, and unusually concrete evidence that frontier models are being positioned as research collaborators.",
+        "distinct_question": "Can a frontier model help generate publishable theory in fundamental physics?",
+        "new_since_prior_coverage": "This is a new science blog example, not a general model release or marketing recap.",
+        "practical_payoff": "Scientists can watch whether similar AI-assisted reasoning becomes reproducible and useful in other hard research domains."
+      },
+      "editorial_scores": {
+        "human_consequence": 2,
+        "novelty": 5,
+        "explanatory_value": 4,
+        "evidence_depth": 4
+      },
+      "story_age_hours": 32.92,
+      "source_tier": 3,
       "grounded": true,
       "rank": 4,
       "story_tier": "supporting",
       "topic_family": "products"
     },
     {
-      "event_key": "ibm-acquires-authmind-2026-11-12",
-      "headline": "IBM acquires AuthMind to monitor AI agent credential use",
-      "title": "IBM acquires AuthMind to monitor AI agent credential use",
-      "publisher": "Unite.AI",
-      "published": "2026-11-12T22:13:02Z",
-      "published_at": "2026-11-12T22:13:02Z",
-      "source_url": "https://unite.ai/ibm-acquires-authmind-to-monitor-ai-agent-credential-use/",
-      "link": "https://unite.ai/ibm-acquires-authmind-to-monitor-ai-agent-credential-use/",
-      "summary": "IBM has acquired AuthMind, a security company specializing in identity and access management for AI agents. The move aims to integrate AuthMind\u2019s technology into IBM's enterprise platforms to better monitor how AI agents use credentials, manage permissions, and prevent unauthorized access within complex corporate environments.",
+      "event_key": "oura-acquires-counsel-health-2026-11-16",
+      "headline": "Oura agrees to acquire Counsel Health for $625 million to advance AI health diagnostics",
+      "title": "Oura agrees to acquire Counsel Health for $625 million to advance AI health diagnostics",
+      "publisher": "The Rundown AI",
+      "published": "2026-11-16T04:02:06Z",
+      "published_at": "2026-11-16T04:02:06Z",
+      "source_url": "https://www.therundown.ai/news/oura-acquires-counsel-health-625m",
+      "link": "https://www.therundown.ai/news/oura-acquires-counsel-health-625m",
+      "summary": "Oura has agreed to purchase health-AI startup Counsel Health for $625 million. The deal aims to integrate Counsel's predictive analytics into Oura's wearable ecosystem to provide real-time clinical diagnostics and personalized health recommendations. This acquisition highlights a growing trend of hardware-centric wearable companies aggressively buying AI software expertise to move from activity tracking to medical-grade diagnosis.",
       "facts": [
-        "IBM completed the acquisition of AuthMind on November 12, 2026.",
-        "The technology monitors AI agent credential usage and permission mapping.",
-        "Intended for enterprise security, focusing on identity management for autonomous agents.",
-        "The deal addresses rising concerns over 'agentic' security breaches."
+        "Oura announced the $625 million acquisition on November 16, 2026.",
+        "Counsel Health specializes in predictive AI diagnostics for healthcare.",
+        "The goal is to integrate AI into Oura\u2019s consumer wearables.",
+        "The acquisition enables real-time diagnostic insights for users.",
+        "The integration plan includes moving Oura\u2019s software beyond activity tracking into clinical-adjacent fields."
       ],
       "data_points": [
-        "2026-11-12 (acquisition date)"
+        "$625 million",
+        "November 16, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Integration timeline into IBM's wider product suite is not yet specified."
+        "The deal is subject to customary closing conditions and regulatory approvals.",
+        "Clinical diagnostic features require specific health-grade validation and potential FDA oversight."
       ],
-      "why_it_matters": "As AI agents gain access to enterprise systems, credential monitoring is becoming the primary defensive front against AI-driven security risks.",
+      "why_it_matters": "This signals a major consolidation in personal health AI, where wearable device makers are no longer just tracking movement but attempting to become proactive, AI-driven healthcare providers.",
       "editorial_case": {
-        "new_development": "IBM acquiring specialized tooling for AI agent identity management.",
-        "affected_listener": "Enterprise security leaders and CTOs managing AI deployment risk.",
-        "why_today": "It signals a shift toward treating AI agents as users with distinct security profiles.",
-        "distinct_question": "How do you protect internal systems when your agents have administrative privileges?",
-        "new_since_prior_coverage": "Consolidation of agent security tooling into a major enterprise vendor.",
-        "practical_payoff": "Auditors and IT leads should review their current agent credential policies in light of this standard-setting move."
+        "new_development": "A major acquisition combining wearable hardware with predictive clinical AI.",
+        "affected_listener": "Users of health wearables and healthcare providers interested in remote monitoring data.",
+        "why_today": "Reported during this window as a significant market-moving event in health tech.",
+        "distinct_question": "Will my fitness tracker soon be able to perform clinical-grade health diagnostics?",
+        "new_since_prior_coverage": "A new industry consolidation event, not related to prior wearable product launches.",
+        "practical_payoff": "Expect to see new software updates in Oura products that offer deeper health diagnostic insights in the coming year."
       },
       "editorial_scores": {
         "human_consequence": 4,
         "novelty": 4,
         "explanatory_value": 4,
-        "evidence_depth": 3
+        "evidence_depth": 4
       },
-      "story_age_hours": 10.64,
+      "story_age_hours": 4.88,
       "source_tier": 1,
       "grounded": true,
       "rank": 5,
@@ -349,46 +326,46 @@
   ],
   "selected_editorial_cases": [
     {
-      "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
-      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
+      "headline": "Trump administration to name Nvidia, Microsoft and OpenAI as AI 'National Champions'",
+      "source_url": "https://www.wsj.com/business/trump-administration-to-name-nvidia-microsoft-and-openai-as-ai-national-champions-c9b2f1e0",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google moved a speed-optimized frontier model into multiple public and paid surfaces at once, including Search and the Gemini app.",
-        "affected_listener": "Developers, enterprise teams, and regular Search users who want faster AI assistance are directly affected.",
-        "why_today": "It combines model launch, access expansion, and pricing in one confirmed announcement inside the 48-hour window.",
-        "distinct_question": "What can this new fast model do for me that Google\u2019s slower reasoning models are not meant to do?",
-        "new_since_prior_coverage": "This is a new model and access expansion, not the earlier Gemini 4 Carbon/Argon coverage.",
-        "practical_payoff": "Builders can test whether a cheaper, faster execution model reduces latency and token costs for coding, routing, and agent workflows."
+        "new_development": "The official prioritization of specific private tech companies as strategic state assets.",
+        "affected_listener": "Investors, developers, and global competitors who need to understand the new geopolitical alignment of AI firms.",
+        "why_today": "This reporting emerged within the 48-hour window as a defining shift in AI policy.",
+        "distinct_question": "What does it mean for the competitive landscape when the government picks 'AI winners'?",
+        "new_since_prior_coverage": "No prior coverage; this is the first reporting on this specific policy shift.",
+        "practical_payoff": "Watch for which companies gain fast-tracked federal contracts or influence over future AI safety standards."
       }
     },
     {
-      "headline": "AP reports lawsuits seeking to freeze new AI model development",
-      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
+      "headline": "Apple launches the Apple Health AI Usage Study in the United States",
+      "source_url": "https://www.apple.com/newsroom/2026/11/apple-launches-research-study-to-explore-the-use-of-ai-for-health/",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "A coalition of advocacy groups moved from criticism to litigation seeking to freeze new model development.",
-        "affected_listener": "AI companies, regulators, and users who depend on model releases are affected.",
-        "why_today": "It is a consequential legal action inside the window and touches multiple frontier labs at once.",
-        "distinct_question": "Can courts actually slow the AI race, and what happens if they try?",
-        "new_since_prior_coverage": "This is new litigation, not the already aired Australia regulator story.",
-        "practical_payoff": "Listeners should watch whether the suit influences safety policy, release timing, or settlement pressure."
+        "new_development": "Apple moved from health features into a large-scale health-AI usage study with a dedicated app and clinical research framing.",
+        "affected_listener": "US iPhone users interested in health tools, clinicians, and health-AI product teams are affected.",
+        "why_today": "It is one of the clearest fresh developments on AI in consumer health, and it lands inside the reporting window.",
+        "distinct_question": "How are people actually using AI for health, and what does Apple learn from that?",
+        "new_since_prior_coverage": "New research launch, not the earlier Health app update.",
+        "practical_payoff": "Eligible US participants can enroll now, while health-tech teams should watch whether Apple\u2019s findings become product design rules."
       }
     },
     {
-      "headline": "Google publishes privacy protections for intelligent eyewear",
-      "source_url": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/",
+      "headline": "AP reports UN-backed talks may launch rules for lethal autonomous weapons",
+      "source_url": "https://apnews.com/article/1ff519255c145105360b04961d136081",
       "editorial_analysis_not_verified_facts": {
-        "new_development": "Google paired the eyewear launch with an explicit privacy-and-accessibility explanation.",
-        "affected_listener": "People considering smart glasses, and low-vision users in particular, are affected.",
-        "why_today": "The privacy materials are part of the launch story and help define whether the product can be socially acceptable.",
-        "distinct_question": "Can AI glasses be useful without making everyone around the wearer uncomfortable?",
-        "new_since_prior_coverage": "This adds implementation and accessibility details not contained in the preorder announcement alone.",
-        "practical_payoff": "Listeners who care about accessibility can watch whether these promised features survive real-world use and device limits."
+        "new_development": "The Geneva talks may move from discussion toward formal negotiations on lethal autonomous weapons rules.",
+        "affected_listener": "Defense policymakers, military planners, and anyone tracking AI governance are directly affected.",
+        "why_today": "It is the freshest high-stakes policy development inside the window and answers a clear question about whether governments will act.",
+        "distinct_question": "Are governments about to start writing real rules for autonomous weapons?",
+        "new_since_prior_coverage": "This is a new negotiation trigger, not a recap of older UN discussions.",
+        "practical_payoff": "Listeners should watch whether negotiations begin and whether that changes military AI procurement or deployment expectations."
       }
     }
   ],
   "listener_frames": [
+    "other",
     "products",
-    "accountability_risk",
-    "other"
+    "accountability_risk"
   ],
   "candidate_target": 5,
   "required_air_stories": 3,

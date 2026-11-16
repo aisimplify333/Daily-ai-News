@@ -1,241 +1,239 @@
 {
   "version": "v3.3-grounded-top-ai-events-no-sector-quota",
-  "date": "2026-11-13",
+  "date": "2026-11-16",
   "selection_rule": "rank all AI stories by importance, authority, receipts, conflict, human stakes, recency, and seven-episode editorial freshness; repeated leads stay available as supporting stories",
   "editorial_freshness": {
-    "changed": true,
+    "changed": false,
     "lookback_episodes": 7,
     "previous_lead_actor": "NVIDIA",
     "previous_argument_family": "models",
-    "original_lead": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
-    "selected_lead": "United Airlines blocks AI agents from booking flights",
+    "original_lead": "Trump administration to name Nvidia, Microsoft and OpenAI as AI 'National Champions'",
+    "selected_lead": "Trump administration to name Nvidia, Microsoft and OpenAI as AI 'National Champions'",
     "candidates": [
       {
-        "headline": "United Airlines blocks AI agents from booking flights",
-        "score": 70.0,
+        "headline": "Trump administration to name Nvidia, Microsoft and OpenAI as AI 'National Champions'",
+        "score": 91.0,
+        "actor": "OpenAI",
+        "argument_family": "money",
+        "penalties": []
+      },
+      {
+        "headline": "AP reports UN-backed talks may launch rules for lethal autonomous weapons",
+        "score": 80.0,
         "actor": "SEC",
         "argument_family": "security",
         "penalties": []
       },
       {
-        "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
-        "score": 64.0,
-        "actor": "Google",
+        "headline": "Apple launches the Apple Health AI Usage Study in the United States",
+        "score": 72.0,
+        "actor": "Apple",
         "argument_family": "models",
         "penalties": [
           "same argument family as previous episode"
         ]
       },
       {
-        "headline": "AP reports lawsuits seeking to freeze new AI model development",
-        "score": 63.0,
+        "headline": "Oura agrees to acquire Counsel Health for $625 million to advance AI health diagnostics",
+        "score": 60.0,
+        "actor": "",
+        "argument_family": "money",
+        "penalties": []
+      },
+      {
+        "headline": "OpenAI posts first science blog case study on GPT-6 Astra and the Standard Model",
+        "score": 43.0,
         "actor": "OpenAI",
         "argument_family": "models",
         "penalties": [
           "same argument family as previous episode"
         ]
-      },
-      {
-        "headline": "Google publishes privacy protections for intelligent eyewear",
-        "score": 62.0,
-        "actor": "Google",
-        "argument_family": "consumer",
-        "penalties": []
-      },
-      {
-        "headline": "IBM acquires AuthMind to monitor AI agent credential use",
-        "score": 60.0,
-        "actor": "SEC",
-        "argument_family": "security",
-        "penalties": []
       }
     ]
   },
   "selected": [
     {
       "rank": 1,
-      "headline": "Google launches Gemini 4 Hydrogen for agentic workflows and broader access",
-      "publisher": "Google",
+      "headline": "Trump administration to name Nvidia, Microsoft and OpenAI as AI 'National Champions'",
+      "publisher": "The Wall Street Journal",
       "top_event_score": null,
-      "story_age_hours": 32.85,
+      "story_age_hours": 4.94,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/"
+      "source_url": "https://www.wsj.com/business/trump-administration-to-name-nvidia-microsoft-and-openai-as-ai-national-champions-c9b2f1e0"
     },
     {
       "rank": 2,
-      "headline": "AP reports lawsuits seeking to freeze new AI model development",
-      "publisher": "AP News",
+      "headline": "AP reports UN-backed talks may launch rules for lethal autonomous weapons",
+      "publisher": "Associated Press",
       "top_event_score": null,
-      "story_age_hours": 17.85,
+      "story_age_hours": 0.4,
       "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba"
+      "source_url": "https://apnews.com/article/1ff519255c145105360b04961d136081"
     },
     {
       "rank": 3,
-      "headline": "United Airlines blocks AI agents from booking flights",
-      "publisher": "TechCrunch",
+      "headline": "Apple launches the Apple Health AI Usage Study in the United States",
+      "publisher": "Apple",
       "top_event_score": null,
-      "story_age_hours": 15.57,
-      "source_tier": 2,
+      "story_age_hours": 32.92,
+      "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/"
+      "source_url": "https://www.apple.com/newsroom/2026/11/apple-launches-research-study-to-explore-the-use-of-ai-for-health/"
     },
     {
       "rank": 4,
-      "headline": "Google publishes privacy protections for intelligent eyewear",
-      "publisher": "Google",
+      "headline": "Oura agrees to acquire Counsel Health for $625 million to advance AI health diagnostics",
+      "publisher": "The Rundown AI",
       "top_event_score": null,
-      "story_age_hours": 32.85,
-      "source_tier": 3,
+      "story_age_hours": 4.88,
+      "source_tier": 1,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://blog.google/innovation-and-ai/technology/safety-security/intelligent-eyewear-privacy-protections/"
+      "source_url": "https://www.therundown.ai/news/oura-acquires-counsel-health-625m"
     },
     {
       "rank": 5,
-      "headline": "IBM acquires AuthMind to monitor AI agent credential use",
-      "publisher": "Unite.AI",
+      "headline": "OpenAI posts first science blog case study on GPT-6 Astra and the Standard Model",
+      "publisher": "OpenAI",
       "top_event_score": null,
-      "story_age_hours": 10.64,
-      "source_tier": 1,
+      "story_age_hours": 32.92,
+      "source_tier": 3,
       "bucket_original": "grounded_top_ai_event",
-      "source_url": "https://unite.ai/ibm-acquires-authmind-to-monitor-ai-agent-credential-use/"
+      "source_url": "https://openai.com/index/step-toward-defining-the-standard-model/"
     }
   ],
   "v3_3_debate_board": {
     "format": "hard_debate_hybrid",
-    "published_title": "Google’s Gemini 4 Hydrogen Launch: Faster AI Agents for Your Daily Workflow",
-    "central_fight": "Whether the industry's push for control—through legal, technical, or policy barriers—is solving real friction or just protecting incumbents.",
-    "opening_question": "If Google makes AI faster and airlines make it harder to use, are we actually moving forward or just running in place?",
-    "listener_question": "When an airline blocks your AI agent from booking a flight, do you feel protected or restricted?",
+    "published_title": "Why the White House Is Picking AI National Champions and What It Means",
+    "central_fight": "Whether government-led AI prioritization creates a necessary strategic advantage or a dangerous, fragile dependency.",
+    "opening_question": "If the government decides who the 'National Champions' are, does that mean the era of the scrappy AI startup is effectively over?",
+    "listener_question": "When you hear 'National Champion' applied to a tech company, do you feel safer or more concerned about market competition?",
     "poll_options": [
-      "Protected: Bots are a security risk",
-      "Restricted: I want my agent to work",
-      "Confused: Why can't they just play nice?"
+      "Safer: It ensures national security.",
+      "Concerned: It stifles innovation.",
+      "Neutral: It's just how business works."
     ],
-    "listener_promise": "You will understand why Google's new model matters for your workflow, why courts are being asked to stop AI development, and why your travel agent might be blocked.",
+    "listener_promise": "By the end, you'll understand why the White House is prioritizing specific AI firms, the status of global autonomous weapons rules, and what Apple's new health study means for your data.",
     "positions": {
       "alex": "Believes we are in a 'growing pains' phase where we have to build the tools to manage the agents we've already unleashed.",
       "jamie": "Argues that until systems are legible to the people they affect, these 'safety' and 'integration' launches are just new ways to hide risk.",
       "rufus": "Observes that the market is currently paying for the 'infrastructure of control' because it's the only way to keep the AI boom going without a catastrophic failure."
     },
     "concession": {
-      "host": "rufus",
-      "gives_ground_on": "Admits that United's move might be as much about protecting revenue as it is about security."
+      "host": "",
+      "gives_ground_on": ""
     },
-    "who_wins": "The infrastructure providers who control the access points.",
-    "who_is_exposed": "The early adopters relying on third-party AI agents for daily tasks.",
-    "normal_person_payoff": "You'll know to verify if your AI travel tools are still functional before your next trip.",
+    "who_wins": "The incumbents who gain regulatory and contract priority.",
+    "who_is_exposed": "Smaller AI firms without government-champion status.",
+    "normal_person_payoff": "You'll know which companies to watch for federal contract news and how to participate in health research if you choose.",
     "jamie_rufus_value_conflict": {
-      "jamie_value": "User autonomy and transparency.",
-      "rufus_value": "System stability and institutional security.",
-      "point_of_collision": "Whether blocking agents is a legitimate security practice or an anti-competitive gatekeeping tactic."
+      "jamie_value": "Transparency and user accountability.",
+      "rufus_value": "Strategic stability and capital efficiency.",
+      "point_of_collision": "Whether state-backed 'champions' prioritize public benefit or corporate dominance."
     },
     "rufus_global_markets_desk": {
-      "market_or_region": "Wall Street/New York",
-      "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
-      "why_this_location_today": "The lawsuit targets the major frontier labs that are the primary drivers of current market volatility.",
-      "beat": "compliance",
+      "market_or_region": "Washington/White House",
+      "source_url": "https://apnews.com/article/1ff519255c145105360b04961d136081",
+      "why_this_location_today": "The intersection of defense policy and AI procurement is being set by current diplomatic and executive actions.",
+      "beat": "government policy",
       "companies_or_assets": [
-        "Anthropic",
-        "Google",
-        "Meta",
-        "OpenAI",
-        "SpaceXSI"
+        "Nvidia",
+        "Microsoft",
+        "OpenAI"
       ],
-      "capital_policy_or_infrastructure_move": "The legal attempt to halt capital-intensive model development, which threatens the valuation of these firms.",
+      "capital_policy_or_infrastructure_move": "The designation of firms as 'national champions' to streamline federal contracts and regulatory support.",
       "dated_market_receipts": [
-        "November 12, 2026"
+        "November 16, 2026"
       ]
     },
     "mandatory_receipts": [
-      "$1.50 per million input tokens",
-      "November 12, 2026",
-      "5 companies named in the lawsuit"
+      "November 16, 2026: WSJ reports on the National Champions policy.",
+      "November 16, 2026: AP reports on Geneva autonomous weapons talks.",
+      "November 15, 2026: Apple announces the Health AI Usage Study."
     ],
     "forwardable_targets": [
-      "If the courts can't stop the AI race, maybe the airlines will.",
-      "Faster models are great, but they don't help if you're locked out of the system."
+      "When the government picks the winners, the market stops being a race and starts being a committee.",
+      "If your fitness tracker is about to become a clinical diagnostic tool, are you ready for the conversation?"
     ],
     "story_scenes": [
       {
         "story_index": 1,
-        "source_url": "https://blog.google/innovation-and-ai/models-and-research/gemini-models/introducing-gemini-4-hydrogen/",
-        "new_development": "Google released Gemini 4 Hydrogen, a speed-optimized model for agentic workflows.",
-        "why_today": "It marks a shift toward accessible, low-latency AI agents for everyday users.",
-        "question": "Does 'faster' actually mean more capable for complex tasks, or just cheaper for Google?",
+        "source_url": "https://www.wsj.com/business/trump-administration-to-name-nvidia-microsoft-and-openai-as-ai-national-champions-c9b2f1e0",
+        "new_development": "The incoming administration plans to designate Nvidia, Microsoft, and OpenAI as 'national champions' to prioritize their AI development.",
+        "why_today": "This is a major, first-time policy shift reported within the last 48 hours.",
+        "question": "What does it mean for the competitive landscape when the government picks 'AI winners'?",
         "competing_readings": [
-          "A breakthrough in practical AI utility for developers.",
-          "A commoditization play to lock users into the Google ecosystem."
+          "A necessary strategic move to ensure US tech dominance against international rivals.",
+          "A market-distorting policy that unfairly advantages incumbents over smaller innovators."
         ],
-        "receipt": "$1.50 per million input tokens.",
-        "unknown": "Real-world reliability in complex, multi-step agentic tasks.",
-        "listener_payoff": "Developers can now test if lower latency improves their agent performance.",
-        "exchange_premise": "Alex compares the speed to a faster browser, Jamie asks if it's just 'less smart' AI, Rufus explains the token economics.",
+        "receipt": "The designation includes streamlined regulatory support and prioritized government contracts.",
+        "unknown": "The specific legal privileges and the long-term impact on non-designated firms.",
+        "listener_payoff": "Investors and tech workers can watch for which companies receive fast-tracked federal contracts.",
+        "exchange_premise": "Alex asks if this is just 'picking winners' again; Rufus explains why the state sees this as infrastructure, not just business.",
         "cast_direction": {
-          "alex": "Wants to know if this makes his personal coding projects faster.",
-          "jamie": "Skeptical about whether 'speed' is a proxy for 'dumber' models.",
-          "rufus": "Focuses on the $1.50 price point as a competitive signal."
+          "alex": "Wants to know if this makes it harder for the next startup to compete.",
+          "jamie": "Focuses on the lack of transparency in how these 'champions' are chosen.",
+          "rufus": "Sees the geopolitical necessity of aligning private capital with state interests."
         },
-        "relationship_beat": "Alex teases Rufus for being excited about a price drop, Rufus retorts that price is the only thing that matters at scale.",
-        "scene_movement": "Starts with the speed claim, moves to the trade-off between reasoning and latency, ends with a testable hypothesis for the listener.",
-        "discovery": "The 1 million-token context window at a lower price point is a genuine utility win for power users."
+        "relationship_beat": "Jamie teases Rufus for his 'state-backed' enthusiasm; Rufus admits it's messy but inevitable.",
+        "scene_movement": "Starts with the news, moves to the competitive impact, ends on the uncertainty of the policy's reach.",
+        "discovery": "The shift toward state-backed coordination of AI as a national security asset."
       },
       {
         "story_index": 2,
-        "source_url": "https://apnews.com/article/03ece37b96979fe834f60976648504ba",
-        "new_development": "Advocacy groups filed a lawsuit in San Francisco to halt further AI model development.",
-        "why_today": "It represents a shift from public criticism to active legal obstruction of frontier labs.",
-        "question": "Can a court order realistically stop a global technological race?",
+        "source_url": "https://apnews.com/article/1ff519255c145105360b04961d136081",
+        "new_development": "UN-backed talks in Geneva are considering formal negotiations on rules for lethal autonomous weapons.",
+        "why_today": "Envoys are deciding this week whether to launch formal rule-making.",
+        "question": "Are governments about to start writing real rules for autonomous weapons?",
         "competing_readings": [
-          "A necessary check on unchecked corporate power.",
-          "A futile attempt to legislate away innovation."
+          "A critical step toward preventing an uncontrolled arms race.",
+          "A slow-moving diplomatic process that may be outpaced by battlefield reality."
         ],
-        "receipt": "The suit names Anthropic, Google, Meta, OpenAI, and SpaceXSI.",
-        "unknown": "Whether the court will grant an injunction or dismiss the case.",
-        "listener_payoff": "Listeners should watch for potential delays in model releases if the court takes the case seriously.",
-        "exchange_premise": "Rufus explains the legal precedent, Jamie wonders if this is just 'theatre', Alex asks what happens to the engineers.",
+        "receipt": "Activists report that armed drones capable of independent strikes have already appeared in limited conflict zones.",
+        "unknown": "Whether major powers will agree to binding, enforceable constraints.",
+        "listener_payoff": "Watch for whether negotiations begin, as this will shift military AI procurement expectations.",
+        "exchange_premise": "Jamie questions if rules can even keep up with the tech; Alex wonders if the 'human in the loop' is just a formality.",
         "cast_direction": {
-          "alex": "Worries about the chilling effect on research.",
-          "jamie": "Wants to know if this actually protects anyone.",
-          "rufus": "Analyzes the legal viability of the claim."
+          "alex": "Skeptical about the speed of diplomacy versus the speed of software.",
+          "jamie": "Deeply concerned about the accountability gap in autonomous systems.",
+          "rufus": "Focuses on the economic and strategic cost of being the first to self-regulate."
         },
-        "relationship_beat": "Jamie challenges Rufus to explain how a court stops a server, Rufus dryly notes that courts are very good at stopping money.",
-        "scene_movement": "Starts with the filing, moves to the feasibility of a 'freeze', ends with the realization that the legal process is now a core AI risk.",
-        "discovery": "The legal strategy is shifting from 'regulate' to 'stop', which changes the risk profile for investors."
+        "relationship_beat": "Alex and Jamie share a quiet, serious moment about the reality of conflict-zone AI.",
+        "scene_movement": "From the Geneva news to the broader question of whether international law can govern code.",
+        "discovery": "The shift from abstract discussion to potential formal negotiation."
       },
       {
         "story_index": 3,
-        "source_url": "https://techcrunch.com/2026/11/12/united-airlines-blocks-ai-agents-from-booking-flights-citing-cybersecurity-risks/",
-        "new_development": "United Airlines is blocking unauthorized AI agents from booking flights.",
-        "why_today": "It turns the abstract 'agent security' debate into a concrete consumer access issue.",
-        "question": "Is this a security move or a way to protect airline commission revenue?",
+        "source_url": "https://www.apple.com/newsroom/2026/11/apple-launches-research-study-to-explore-the-use-of-ai-for-health/",
+        "new_development": "Apple launched a 200,000-person research study to track how people use conversational AI for health.",
+        "why_today": "A significant, fresh move by a major consumer tech firm into clinical-adjacent research.",
+        "question": "How are people actually using AI for health, and what does Apple learn from that?",
         "competing_readings": [
-          "A necessary security measure to prevent bot-driven account takeovers.",
-          "A protectionist move to stop third-party AI from finding cheaper fares."
+          "A vital step toward making AI health tools safer and more effective.",
+          "A data-gathering exercise that might lead to more invasive health tracking."
         ],
-        "receipt": "United cites cybersecurity risks and federal aviation rules.",
-        "unknown": "Whether other airlines will follow suit or build their own 'authorized' agents.",
-        "listener_payoff": "Check if your travel AI tool still works for United bookings.",
-        "exchange_premise": "Alex is annoyed he can't use his agent, Jamie suspects a revenue motive, Rufus explains the cybersecurity reality.",
+        "receipt": "The study uses a dedicated app and requires an Apple Intelligence-enabled iPhone.",
+        "unknown": "How the findings will eventually be integrated into consumer health products.",
+        "listener_payoff": "Eligible US users can participate; health-tech teams should watch for new design rules.",
+        "exchange_premise": "Alex is curious about the 'conversational' aspect; Jamie asks if users actually trust AI with their health data.",
         "cast_direction": {
-          "alex": "Frustrated by the loss of convenience.",
-          "jamie": "Suspicious of the airline's motives.",
-          "rufus": "Defends the airline's need to control their own API."
+          "alex": "Delighted by the scale of the research and the potential for better user insights.",
+          "jamie": "Cautious about the privacy implications of 'conversational' health AI.",
+          "rufus": "Interested in how this data creates a moat for Apple's health ecosystem."
         },
-        "relationship_beat": "Alex jokes about his agent being 'banned', Jamie laughs that the airline just wants to keep the booking fees.",
-        "scene_movement": "Starts with the frustration of a blocked tool, moves to the security vs. revenue debate, ends with a reality check on who owns the booking flow.",
-        "discovery": "Airlines are treating AI agents as a security threat, not a customer service enhancement."
+        "relationship_beat": "Rufus jokes about Alex signing up for every study he sees.",
+        "scene_movement": "From the study's launch to the broader question of trust in AI-driven health advice.",
+        "discovery": "The use of large-scale behavioral research to shape future health AI tools."
       }
     ],
     "title_candidates": [
-      "Google Gemini 4 Hydrogen: Can Faster AI Models Actually Save You Time?",
-      "The Lawsuit Seeking to Freeze AI Development: What Happens If Courts Succeed?",
-      "United Airlines Blocks AI Booking Agents: Is Your Personal Assistant Still Allowed?"
+      "The Strategic Cost of Government-Backed AI Champions",
+      "Nvidia, Microsoft, and OpenAI Named National Champions: What Changes Now?",
+      "Does Designating AI National Champions Help or Hinder Global Competition?"
     ],
-    "episode_hook": "Google just dropped a faster AI model, but airlines are already locking their doors to autonomous agents. We’re breaking down what this means for your next trip and your daily coding tasks.",
+    "episode_hook": "The government is officially picking AI winners, and we’re breaking down what 'National Champion' status actually does for companies like Nvidia and Microsoft. Plus, we look at the new UN talks on autonomous weapons and Apple's massive health AI study.",
     "planning_status": "model_plan",
-    "_episode_date": "2026-11-13"
+    "_episode_date": "2026-11-16"
   }
 }

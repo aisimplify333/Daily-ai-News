@@ -1,45 +1,67 @@
 {
-  "date": "2026-11-13",
+  "date": "2026-11-16",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "AI-assisted accessibility for live performance",
-        "tool": "OpenAI Whisper (integrated via independent accessibility tool)",
-        "problem": "Deaf or hard-of-hearing audience members missing nuances in unscripted, improvised theater or live community events where closed captioning is not pre-written.",
-        "workflow": "A theater technician uses a laptop running Whisper-based transcription to ingest live audio from the stage. The agent processes the audio in near real-time, displaying generated captions on a screen visible to the audience. Human oversight involves a technician monitoring for major errors and toggling the system on/off during intermission or set changes.",
-        "result": "Improved audience inclusion by providing live, automated accessibility for unscripted dialogue, allowing deaf attendees to follow comedic timing and improvised audience interactions.",
-        "result_basis": "Independent reporting and community accessibility project documentation.",
-        "measurement_context": "Qualitative improvement in accessibility as reported by venue attendees and local accessibility advocates; no quantitative accuracy percentage claimed.",
-        "case_date": "2026-09-15",
-        "source_url": "https://www.theguardian.com/stage/2026/sep/15/ai-captions-theatre-accessibility",
-        "source_quote": "Automated captioning tools have begun to bridge the gap for unscripted performances where pre-recorded subtitles are impossible to provide.",
-        "limitation": "The tool can struggle with overlapping dialogue or heavy accents; requires a stable microphone setup and a person to manage the display interface.",
-        "listener_action": "For your next small local event, test a whisper-based transcription tool by recording a 5-minute conversation with background noise to see if it captures names and specific terminology correctly before relying on it for live accessibility.",
-        "availability": "Available via various open-source wrappers of the OpenAI Whisper API.",
-        "episode_date": "2026-11-13"
+        "subject": "Independent bookstore inventory management",
+        "tool": "Claude (Anthropic) via custom API/Automated workflow",
+        "problem": "Small, independent booksellers often face 'discovery friction' where niche interest trends rise faster than staff can manually cross-reference social media discourse with distributor availability.",
+        "workflow": "The bookstore uses an agentic workflow: an automated script scrapes weekly literary trends from specific community forums and social feeds, uses Claude to summarize these into 'emerging author' lists, cross-references those names against a local distributor's CSV inventory file, and drafts a stock-order proposal for the owner.",
+        "result": "The owner receives a curated, annotated order proposal each Monday morning instead of spending hours manually searching for trending titles; the owner then performs the final review and approval, occasionally rejecting or adjusting quantities based on local store knowledge.",
+        "result_basis": "Independent bookseller case account and process documentation.",
+        "measurement_context": "Reported usage by an independent bookstore in the Pacific Northwest to streamline weekly restocking, moving from manual curation to an 'approve-first' model.",
+        "case_date": "2026-10-22",
+        "source_url": "https://www.anthropic.com/news/building-effective-agents",
+        "source_quote": "The agent doesn't decide what to buy; it surfaces the data for the human to make the final, nuanced decision.",
+        "limitation": "The agent cannot predict regional demand shifts accurately; it relies entirely on the quality of the scraped source data and the accuracy of the distributor's inventory file.",
+        "listener_action": "Identify the one category of inventory you spend the most time manually researching, then list the steps you take to verify if an item is currently available to order.",
+        "availability": "Generally available; requires custom API integration or use of agentic frameworks (e.g., LangChain) for automation.",
+        "episode_date": "2026-11-16"
       },
-      "reason": "source_http_404"
+      "reason": "source_quote_not_found"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "In-house theatre surtitling",
-        "tool": "Captitles",
-        "problem": "Performing arts venues frequently struggle with the high cost and logistical complexity of outsourcing professional surtitling and captioning services for live theatre and opera.",
-        "workflow": "Venues import their production scripts into the platform; the AI detects and splits dialogue into readable surtitle chunks, which staff then style and manage in the cloud for display on venue screens or audience devices.",
-        "result": "The tool enables theatres to produce professional-grade surtitles in-house, significantly lowering costs and making live captioning feasible for a wider range of productions.",
-        "result_basis": "Independent product review and platform documentation.",
-        "measurement_context": "Reported usage by over 600 theatres and festivals for in-house caption management.",
-        "case_date": "2026-10-14",
-        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQHGWAbv5TXUtr6TEsaRRN2djHb52LP4n8g5AbCQ6C9TONL-8Fr20QJH03RAszki1ysF6P-781mw6Eab1Cvs8EDUD7YLz2omuLobPoHSt7PT2aPNBKTdKlMa8Q4=",
-        "source_quote": "Captitles' lane is the room: turning a script into accurate, well-timed, well-styled captions that open a performance to deaf and hard-of-hearing patrons",
-        "limitation": "Real-time automatic cueing remains on the roadmap; AI translation still requires human verification, and the system provides text, not sign language.",
-        "listener_action": "Check your local theatre's accessibility page to see if they offer captioning, then ask if they handle surtitling in-house or outsource it.",
-        "availability": "Generally available; web-based application for theatre professionals.",
-        "episode_date": "2026-11-13"
+        "subject": "Independent bookstore inventory management",
+        "tool": "Custom Agentic Workflow (using Claude)",
+        "problem": "Small, independent booksellers often face 'discovery friction' where niche interest trends rise faster than staff can manually cross-reference social media discourse with distributor availability.",
+        "workflow": "The bookstore uses an agentic workflow: an automated script scrapes weekly literary trends from specific community forums and social feeds, uses Claude to summarize these into 'emerging author' lists, cross-references those names against a local distributor's CSV inventory file, and drafts a stock-order proposal for the owner.",
+        "result": "The owner receives a curated, annotated order proposal each Monday morning instead of spending hours manually searching for trending titles; the owner then performs the final review and approval, occasionally rejecting or adjusting quantities based on local store knowledge.",
+        "result_basis": "Independent bookseller case account and process documentation.",
+        "measurement_context": "Reported usage by an independent bookstore to streamline weekly restocking, moving from manual curation to an 'approve-first' model.",
+        "case_date": "2026-10-22",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFC80s2iankWxYMXqQ1vNiONIzLPUWxk48mcptzKt_hqiz9jA2IIdH7MVheEI6hrh81r5aI2y7DXLcxxwA4aucF2l3qSW6XezDBI1dP3kRTLadY0-oT93rkIDQQx0KcAyOIXxz-QYfZNsQKSEdHoH1MVCyH36QOQ-Co",
+        "source_quote": "The agent doesn't decide what to produce or what to withhold; it surfaces the working position and the basis for the attorney's call.",
+        "limitation": "The agent cannot predict regional demand shifts accurately; it relies entirely on the quality of the scraped source data and the accuracy of the distributor's inventory file.",
+        "listener_action": "Identify the one category of inventory you spend the most time manually researching, then list the steps you take to verify if an item is currently available to order.",
+        "availability": "Generally available; requires custom API integration or use of agentic frameworks for automation.",
+        "episode_date": "2026-11-16"
       },
-      "reason": "verified"
+      "reason": "source_quote_not_found"
+    },
+    {
+      "case": {
+        "feature_mode": "real_case",
+        "subject": "Discovery response preparation in law firms",
+        "tool": "Dodonai Discovery Response Agent",
+        "problem": "Legal teams lose significant time manually drafting responses to interrogatories, organizing document production with Bates numbering, and building privilege logs, which diverts associate time from high-level legal strategy.",
+        "workflow": "The agent drafts responses per request, proposes objections with a legal basis, organizes document sets, and maintains the privilege log, ultimately surfacing specific requests that require partner-level strategic judgment.",
+        "result": "Legal teams report that associates spend two days on review and finalization instead of an entire week on assembly and initial drafting, while ensuring all work remains under attorney oversight.",
+        "result_basis": "Company-reported case study detailing specific workflow efficiencies in discovery response handling.",
+        "measurement_context": "Reported shift from an associate-week-long manual process to a two-day review-focused process for discovery response batches.",
+        "case_date": "2026-11-04",
+        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKSNJNXvrFGRBei7LNSHjbJMNJS8bN_-jCok-2WqtaVt2o0Wk04ODy4YKp210UeoGiIlGmH8hNQWy8veSaZ15d4L253d7i8yCUMXhBWk43RIio8IkZa5XPuN3tGZswo2FTB4_UCshcpn56CD2sQF_Nbwltts3qCt8=",
+        "source_quote": "The agent doesn't decide what to produce or what to withhold; it surfaces the working position and the basis for the attorney's call.",
+        "limitation": "The agent does not possess final decision-making authority; it relies on an attorney to review every draft, verify the basis of privilege logs, and apply strategic judgment.",
+        "listener_action": "Map your firm's current document production workflow to identify exactly where manual assembly tasks (like privilege logging or Bates numbering) are consuming the most associate hours.",
+        "availability": "Available for legal teams via the Dodonai platform.",
+        "episode_date": "2026-11-16"
+      },
+      "reason": "source_quote_not_found"
     }
-  ]
+  ],
+  "fallback": "verified_editorial_inventory",
+  "selected": "Can the house hear the punchline?"
 }
