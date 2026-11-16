@@ -1748,7 +1748,7 @@ def _ensure_connection_elements(
         *([] if closing_question_seen else [f"ALEX: Today’s question for you: {question}"]),
         f"{tag_speaker}: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
         "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
-        "ALEX: Follow The AI Edge now. Join us tomorrow for what changes next.",
+        "ALEX: Follow The AI Edge now. Join us next episode for what changes next.",
     ]
     segment5 = next(
         (i for i, line in enumerate(lines) if re.match(r"^###\s*SEGMENT\s*5\b", line, flags=re.IGNORECASE)),

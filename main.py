@@ -4743,7 +4743,7 @@ def build_episode_show_notes(
         "",
         f"Listener question: {listener_question}",
         "",
-        f"What to watch tomorrow: {tomorrow_tease}",
+        f"What to watch next: {tomorrow_tease}",
         "",
         episode_blurb,
         "",
