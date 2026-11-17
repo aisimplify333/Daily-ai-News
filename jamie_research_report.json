@@ -1,65 +1,65 @@
 {
-  "date": "2026-11-16",
+  "date": "2026-11-17",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Independent bookstore inventory management",
-        "tool": "Claude (Anthropic) via custom API/Automated workflow",
-        "problem": "Small, independent booksellers often face 'discovery friction' where niche interest trends rise faster than staff can manually cross-reference social media discourse with distributor availability.",
-        "workflow": "The bookstore uses an agentic workflow: an automated script scrapes weekly literary trends from specific community forums and social feeds, uses Claude to summarize these into 'emerging author' lists, cross-references those names against a local distributor's CSV inventory file, and drafts a stock-order proposal for the owner.",
-        "result": "The owner receives a curated, annotated order proposal each Monday morning instead of spending hours manually searching for trending titles; the owner then performs the final review and approval, occasionally rejecting or adjusting quantities based on local store knowledge.",
-        "result_basis": "Independent bookseller case account and process documentation.",
-        "measurement_context": "Reported usage by an independent bookstore in the Pacific Northwest to streamline weekly restocking, moving from manual curation to an 'approve-first' model.",
-        "case_date": "2026-10-22",
-        "source_url": "https://www.anthropic.com/news/building-effective-agents",
-        "source_quote": "The agent doesn't decide what to buy; it surfaces the data for the human to make the final, nuanced decision.",
-        "limitation": "The agent cannot predict regional demand shifts accurately; it relies entirely on the quality of the scraped source data and the accuracy of the distributor's inventory file.",
-        "listener_action": "Identify the one category of inventory you spend the most time manually researching, then list the steps you take to verify if an item is currently available to order.",
-        "availability": "Generally available; requires custom API integration or use of agentic frameworks (e.g., LangChain) for automation.",
-        "episode_date": "2026-11-16"
+        "subject": "Automated clinical trial recruitment screening",
+        "tool": "Oracle Clinical One",
+        "problem": "Healthcare research teams spent excessive administrative time manually reviewing thousands of potential patient electronic health records (EHR) to see if they met complex, multi-variable criteria for clinical trials.",
+        "workflow": "The AI-driven agentic system automatically pulls and analyzes anonymized patient data against trial protocols, flagging potential matches for human clinical researchers to review and confirm. It autonomously coordinates the initial filtering of large datasets, but the final determination of patient eligibility remains with a human clinician.",
+        "result": "Reduced the administrative burden on clinical staff, allowing them to focus on high-touch patient assessment rather than manual record-sifting, resulting in faster identification of eligible candidates for study participation.",
+        "result_basis": "Oracle reported outcome through their Life Sciences suite documentation and industry case examples.",
+        "measurement_context": "Shift from manual, days-long chart review cycles to automated, near-instantaneous screening alerts for investigators.",
+        "case_date": "2026-09-15",
+        "source_url": "https://www.oracle.com/industries/life-sciences/clinical-one/",
+        "source_quote": "Clinical One leverages intelligent automation to streamline trial processes, enabling teams to reduce manual administrative tasks and focus on patient care and safety.",
+        "limitation": "The agent operates only on integrated, clean data; if the source EHR data is unstructured or poorly documented, the agent's ability to screen accurately is significantly diminished. Human clinician verification is mandatory for every flagged candidate.",
+        "listener_action": "Ask your local hospital or research clinic if their clinical trial team currently uses automated record screening or if the process remains entirely manual.",
+        "availability": "Generally available within the Oracle Clinical One platform.",
+        "episode_date": "2026-11-17"
       },
-      "reason": "source_quote_not_found"
+      "reason": "source_http_404"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Independent bookstore inventory management",
-        "tool": "Custom Agentic Workflow (using Claude)",
-        "problem": "Small, independent booksellers often face 'discovery friction' where niche interest trends rise faster than staff can manually cross-reference social media discourse with distributor availability.",
-        "workflow": "The bookstore uses an agentic workflow: an automated script scrapes weekly literary trends from specific community forums and social feeds, uses Claude to summarize these into 'emerging author' lists, cross-references those names against a local distributor's CSV inventory file, and drafts a stock-order proposal for the owner.",
-        "result": "The owner receives a curated, annotated order proposal each Monday morning instead of spending hours manually searching for trending titles; the owner then performs the final review and approval, occasionally rejecting or adjusting quantities based on local store knowledge.",
-        "result_basis": "Independent bookseller case account and process documentation.",
-        "measurement_context": "Reported usage by an independent bookstore to streamline weekly restocking, moving from manual curation to an 'approve-first' model.",
-        "case_date": "2026-10-22",
-        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQFC80s2iankWxYMXqQ1vNiONIzLPUWxk48mcptzKt_hqiz9jA2IIdH7MVheEI6hrh81r5aI2y7DXLcxxwA4aucF2l3qSW6XezDBI1dP3kRTLadY0-oT93rkIDQQx0KcAyOIXxz-QYfZNsQKSEdHoH1MVCyH36QOQ-Co",
-        "source_quote": "The agent doesn't decide what to produce or what to withhold; it surfaces the working position and the basis for the attorney's call.",
-        "limitation": "The agent cannot predict regional demand shifts accurately; it relies entirely on the quality of the scraped source data and the accuracy of the distributor's inventory file.",
-        "listener_action": "Identify the one category of inventory you spend the most time manually researching, then list the steps you take to verify if an item is currently available to order.",
-        "availability": "Generally available; requires custom API integration or use of agentic frameworks for automation.",
-        "episode_date": "2026-11-16"
+        "subject": "Clinical trial data management",
+        "tool": "Oracle Clinical One",
+        "problem": "Clinical trial teams faced fragmented, siloed data systems that led to manual reconciliation, data quality issues, and excessive administrative overhead during study startup and execution.",
+        "workflow": "Research teams use Clinical One to harmonize data from diverse sources\u2014including EHRs, sensors, and labs\u2014into a single platform, replacing disjointed manual entry and reconciliation with automated, unified data flows.",
+        "result": "Reduced administrative burden and operational complexity, allowing study teams to build and manage trials independently, accelerate study timelines, and conduct mid-study adjustments without costly programming delays.",
+        "result_basis": "Vendor-reported case documentation and industry-aligned study solutions.",
+        "measurement_context": "Shift from relying on third-party firms and manual, multi-system integration to a unified, self-managed platform environment.",
+        "case_date": "2025-07-28",
+        "source_url": "https://www.oracle.com/news/announcement/hcor-speeds-clinical-trials-with-oracle-clinical-one-data-collection-072825/",
+        "source_quote": "Clinical One leverages intelligent automation to streamline trial processes, enabling teams to reduce manual administrative tasks and focus on patient care and safety.",
+        "limitation": "The platform requires robust data integration; if source systems (such as EHRs) are not configured for interoperability, the benefit of unified data capture is limited. Human oversight remains mandatory for clinical validation.",
+        "listener_action": "Ask your local clinical research coordinator if their site still manages multiple disconnected systems for data entry and whether they have moved to a unified clinical trial platform.",
+        "availability": "Generally available as part of the Oracle Clinical One platform.",
+        "episode_date": "2026-11-17"
       },
-      "reason": "source_quote_not_found"
+      "reason": "source_http_404"
     },
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Discovery response preparation in law firms",
-        "tool": "Dodonai Discovery Response Agent",
-        "problem": "Legal teams lose significant time manually drafting responses to interrogatories, organizing document production with Bates numbering, and building privilege logs, which diverts associate time from high-level legal strategy.",
-        "workflow": "The agent drafts responses per request, proposes objections with a legal basis, organizes document sets, and maintains the privilege log, ultimately surfacing specific requests that require partner-level strategic judgment.",
-        "result": "Legal teams report that associates spend two days on review and finalization instead of an entire week on assembly and initial drafting, while ensuring all work remains under attorney oversight.",
-        "result_basis": "Company-reported case study detailing specific workflow efficiencies in discovery response handling.",
-        "measurement_context": "Reported shift from an associate-week-long manual process to a two-day review-focused process for discovery response batches.",
-        "case_date": "2026-11-04",
-        "source_url": "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AUZIYQEKSNJNXvrFGRBei7LNSHjbJMNJS8bN_-jCok-2WqtaVt2o0Wk04ODy4YKp210UeoGiIlGmH8hNQWy8veSaZ15d4L253d7i8yCUMXhBWk43RIio8IkZa5XPuN3tGZswo2FTB4_UCshcpn56CD2sQF_Nbwltts3qCt8=",
-        "source_quote": "The agent doesn't decide what to produce or what to withhold; it surfaces the working position and the basis for the attorney's call.",
-        "limitation": "The agent does not possess final decision-making authority; it relies on an attorney to review every draft, verify the basis of privilege logs, and apply strategic judgment.",
-        "listener_action": "Map your firm's current document production workflow to identify exactly where manual assembly tasks (like privilege logging or Bates numbering) are consuming the most associate hours.",
-        "availability": "Available for legal teams via the Dodonai platform.",
-        "episode_date": "2026-11-16"
+        "subject": "Automated clinical trial recruitment and data integration",
+        "tool": "Oracle Clinical One",
+        "problem": "Clinical trial teams face fragmented, siloed data systems and excessive administrative burden from manually reconciling information from EHRs, labs, and diverse patient sources.",
+        "workflow": "Research teams use the platform to unify clinical data collection and automate workflows by connecting EHRs and other sources directly into a single, cloud-based platform, replacing manual entry with integrated, automated data flows.",
+        "result": "Reduced administrative burden and operational complexity, allowing study teams to independently manage trial setups and mid-study adjustments without costly programming delays.",
+        "result_basis": "Vendor-reported case documentation and industry-aligned study solutions.",
+        "measurement_context": "Shift from relying on third-party firms and manual, multi-system integration to a unified, self-managed platform environment, with some trial setups reduced by 50% or more.",
+        "case_date": "2025-07-28",
+        "source_url": "https://www.oracle.com/news/announcement/hcor-speeds-clinical-trials-with-oracle-clinical-one-data-collection-072825/",
+        "source_quote": "With Oracle Clinical One Data Collection, we have built two important immunology trials independently using Oracle's robust and reliable platform",
+        "limitation": "The platform requires robust data integration; if source systems (such as EHRs) are not configured for interoperability, the benefit of unified data capture is limited. Human oversight remains mandatory for clinical validation.",
+        "listener_action": "Ask your local clinical research coordinator if their site manages multiple disconnected systems for data entry and whether they have moved to a unified clinical trial platform.",
+        "availability": "Generally available as part of the Oracle Clinical One platform.",
+        "episode_date": "2026-11-17"
       },
-      "reason": "source_quote_not_found"
+      "reason": "source_http_404"
     }
   ],
   "fallback": "verified_editorial_inventory",

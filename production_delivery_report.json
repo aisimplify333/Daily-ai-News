@@ -4,20 +4,20 @@
   "cost": "zero-model-calls",
   "feed": "feed.xml",
   "newest_episode": {
-    "title": "Why the White House Is Picking AI National Champions and What It Means",
-    "description_chars": 1762,
-    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-16.mp3",
-    "pub_date": "Mon, 16 Nov 2026 12:00:00 -0000",
-    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-16.mp3"
+    "title": "OpenAI’s New Clinical Agents: Can AI Actually Automate Your Healthcare Paperwork?",
+    "description_chars": 1788,
+    "guid": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-17.mp3",
+    "pub_date": "Tue, 17 Nov 2026 12:00:00 -0000",
+    "enclosure_url": "https://aisimplify333.github.io/Daily-ai-News/episode_audio/podcast_2026-11-17.mp3"
   },
-  "audio_path": "episode_audio/podcast_2026-11-16.mp3",
-  "duration_minutes": 22.442,
+  "audio_path": "episode_audio/podcast_2026-11-17.mp3",
+  "duration_minutes": 21.902,
   "cost_metrics": {
-    "tts_characters_total": 21316,
+    "tts_characters_total": 21127,
     "tts_characters_by_speaker": {
-      "ALEX": 7054,
-      "JAMIE": 7292,
-      "RUFUS": 6970
+      "ALEX": 6586,
+      "JAMIE": 8409,
+      "RUFUS": 6132
     },
     "grok_estimated_cost_usd": 0.0,
     "grok_cache_hits": 0,
@@ -30,12 +30,17 @@
     "subscriber_cta": "passed",
     "show_follow_cta": "passed",
     "transcript_and_chapters": "passed",
-    "listener_poll_payload": "passed",
+    "listener_poll_payload": "warning",
     "rss_metadata": "passed",
     "duplicate_protection": "passed",
     "audio_window": "passed"
   },
   "failures": [],
-  "warnings": [],
+  "warnings": [
+    {
+      "reason": "listener_poll_question_invalid",
+      "length": 143
+    }
+  ],
   "recovery": "Completed audio is preserved. Repair packaging and rerun this gate; do not regenerate TTS."
 }
