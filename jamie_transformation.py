@@ -64,7 +64,7 @@ def repeated_vendor(case, history):
     candidate = ' '.join(str(case.get(k, '')) for k in ('tool', 'subject')).casefold()
     aliases = (('salesforce', 'agentforce'), ('microsoft', 'copilot'),
                ('google', 'gemini'), ('anthropic', 'claude'), ('openai', 'chatgpt'),
-               ('sap', 'joule'), ('n8n',), ('oracle',))
+               ('sap', 'joule'), ('n8n',), ('oracle',), ('adobe', 'enhance speech'))
     previous = history[0]['dialogue'].casefold() if history else ''
     return any(any(name in candidate for name in group) and
                any(name in previous for name in group) for group in aliases)
@@ -173,7 +173,9 @@ def select_inventory(date, history):
                 continue
         except (KeyError, ValueError):
             continue
-        if item.get('subject', '').casefold() in recent:
+        if (item.get('subject', '').casefold() in recent
+                or (item.get('tool', '').strip() and
+                    item['tool'].casefold() in recent)):
             continue
         case = dict(item, episode_date=date)
         if valid_case(case) and source_matches(case):
