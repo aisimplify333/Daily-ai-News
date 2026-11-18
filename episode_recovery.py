@@ -47,6 +47,11 @@ def load_recovery(date_str):
             title = reviewed.get("published_title", "").strip()
             if title:
                 board["published_title"] = title
+            order = reviewed.get("story_order")
+            if order is not None:
+                if sorted(order) != list(range(len(stories))):
+                    raise ValueError("Reviewed story order must preserve every story exactly once")
+                stories = [stories[index] for index in order]
             reviewed = reviewed.get("script_edits", [])
         for old, new in reviewed:
             if script.count(old) != 1:
