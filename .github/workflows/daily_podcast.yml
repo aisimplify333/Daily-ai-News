@@ -226,11 +226,11 @@ jobs:
           command -v convert >/dev/null || missing+=(imagemagick)
           command -v gs >/dev/null || missing+=(ghostscript)
           if (( ${#missing[@]} )); then
-            # The Azure mirror intermittently stalls media package downloads.
+            # Regional Azure/AWS mirrors can stall media package downloads.
             # Use Ubuntu's primary archive; retain normal apt signature checks.
             for source in /etc/apt/apt-mirrors.txt /etc/apt/sources.list /etc/apt/sources.list.d/ubuntu.sources; do
               if [[ -f "$source" ]]; then
-                sudo sed -i 's|http://azure.archive.ubuntu.com/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"
+                sudo sed -E -i 's|https?://(azure\.archive\.ubuntu\.com|[a-z0-9-]+\.ec2\.archive\.ubuntu\.com)/ubuntu|https://archive.ubuntu.com/ubuntu|g' "$source"
               fi
             done
             sudo timeout --kill-after=10s 180s apt-get -o Acquire::Retries=2 -o Acquire::http::Timeout=30 -o Acquire::https::Timeout=30 update
