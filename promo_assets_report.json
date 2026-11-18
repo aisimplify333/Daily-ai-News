@@ -1,19 +1,39 @@
 {
-  "date": "2026-11-17",
+  "date": "2026-11-18",
   "new_tts_calls": 0,
-  "warnings": [],
+  "warnings": [
+    "Trailer beats do not fit 60–90 seconds cleanly; prepared trailer script remains available."
+  ],
   "publication": "assets_only_not_uploaded_to_spotify",
   "clip": {
-    "start": 0.0,
-    "end": 28.519,
-    "seconds": 28.519,
+    "start": 479.05,
+    "end": 519.585,
+    "seconds": 40.535,
     "score": 6,
     "turns": [
       {
         "kind": "speech",
-        "segment": 1,
+        "segment": 3,
+        "speaker": "RUFUS",
+        "text": "Tool calling means the model can reach out and use external software — run a search, check a database, trigger another process. The Responses API is OpenAI's newer framework that enables it. What's notable is that tool calling is only available through Responses, not through the older Chat Completions pathway.",
+        "sound_design": {
+          "applied": false,
+          "reason": "no_approved_matching_asset"
+        },
+        "performance_mood": "explainer",
+        "tempo_factor": 0.975,
+        "speed": 1.092,
+        "level_delta_db": -0.25,
+        "pause_requested_ms": 110,
+        "pause_reason": "conversational_handoff",
+        "start": 479.05,
+        "end": 499.288
+      },
+      {
+        "kind": "speech",
+        "segment": 3,
         "speaker": "ALEX",
-        "text": "OpenAI just gave healthcare AI the ability to actually *do* things — not answer questions, but click through software, fill out forms, move across systems. That's a different animal entirely.",
+        "text": "So if you want your agent to actually do things, rather than just describe doing things, you need the newer plumbing.",
         "sound_design": {},
         "performance_mood": "curiosity",
         "tempo_factor": 1.0,
@@ -21,94 +41,69 @@
         "level_delta_db": 0.0,
         "pause_requested_ms": 110,
         "pause_reason": "conversational_handoff",
-        "start": 0.0,
-        "end": 11.851
+        "start": 499.398,
+        "end": 506.947
       },
       {
         "kind": "speech",
-        "segment": 1,
+        "segment": 3,
+        "speaker": "RUFUS",
+        "text": "Which means any team still on the older integration has to migrate before they get the full capability.",
+        "sound_design": {
+          "applied": false,
+          "reason": "no_approved_matching_asset"
+        },
+        "performance_mood": "concern",
+        "tempo_factor": 0.975,
+        "speed": 1.092,
+        "level_delta_db": -0.25,
+        "pause_requested_ms": 180,
+        "pause_reason": "reflective_response",
+        "start": 507.057,
+        "end": 512.185
+      },
+      {
+        "kind": "speech",
+        "segment": 3,
         "speaker": "JAMIE",
-        "text": "And they dropped more than twenty new plugins on the same day. That's not an update, that's a statement.",
+        "text": "That's not nothing for a larger company.",
         "sound_design": {},
-        "performance_mood": "delight",
+        "performance_mood": "concern",
         "tempo_factor": 1.0,
         "speed": 1.05,
         "level_delta_db": 0.0,
-        "pause_requested_ms": 110,
-        "pause_reason": "conversational_handoff",
-        "start": 11.961,
-        "end": 17.655
+        "pause_requested_ms": 180,
+        "pause_reason": "reflective_response",
+        "start": 512.365,
+        "end": 514.847
       },
       {
         "kind": "speech",
-        "segment": 1,
+        "segment": 3,
         "speaker": "RUFUS",
-        "text": "The statement being: we would like to be inside your hospital's software stack before anyone asks permission.",
-        "sound_design": {},
+        "text": "No. But it's a migration with a clear destination, not a wall.",
+        "sound_design": {
+          "applied": false,
+          "reason": "no_approved_matching_asset"
+        },
         "performance_mood": "dry_wit",
         "tempo_factor": 0.985,
         "speed": 1.1032000000000002,
         "level_delta_db": -0.15,
         "pause_requested_ms": 210,
         "pause_reason": "short_rufus_observation",
-        "start": 17.765,
-        "end": 23.908
-      },
-      {
-        "kind": "speech",
-        "segment": 1,
-        "speaker": "ALEX",
-        "text": "We'll get into what that means. November 17th, 2026.",
-        "sound_design": {},
-        "performance_mood": "neutral",
-        "tempo_factor": 1.0,
-        "speed": 1.01,
-        "level_delta_db": 0.0,
-        "pause_requested_ms": 100,
-        "pause_reason": "structural_boundary",
-        "start": 24.121,
-        "end": 28.519
+        "start": 515.027,
+        "end": 519.585
       }
     ],
-    "audio": "clip_2026-11-17.mp3",
-    "captions": "clip_2026-11-17.vtt",
+    "audio": "clip_2026-11-18.mp3",
+    "captions": "clip_2026-11-18.vtt",
     "caption_timing": "measured-turn-boundaries-with-estimated-word-groups",
     "needs_editorial_review": true,
-    "video": "clip_2026-11-17.mp4"
+    "video": "clip_2026-11-18.mp4"
   },
   "existing_trailer": {
     "status": "preserved",
     "audio": "show_trailer.mp3"
-  },
-  "trailer": {
-    "status": "candidate_requires_listening_not_published",
-    "audio": "show_trailer_candidate_2026-11-17.mp3",
-    "seconds": 71.599,
-    "source_ranges": [
-      [
-        0.0,
-        11.851
-      ],
-      [
-        28.619,
-        33.118
-      ],
-      [
-        33.218,
-        44.182
-      ],
-      [
-        0.0,
-        28.519
-      ],
-      [
-        1289.141,
-        1298.907
-      ],
-      [
-        1299.107,
-        1305.107
-      ]
-    ]
   }
 }
