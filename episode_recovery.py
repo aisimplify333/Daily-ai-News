@@ -42,7 +42,13 @@ def load_recovery(date_str):
     digest = hashlib.sha256(script.encode("utf-8")).hexdigest()
     edits = Path(__file__).parent / "producer_desk" / "recovery_edits" / f"{date_str}-{digest}.json"
     if edits.is_file():
-        for old, new in json.loads(edits.read_text()):
+        reviewed = json.loads(edits.read_text())
+        if isinstance(reviewed, dict):
+            title = reviewed.get("published_title", "").strip()
+            if title:
+                board["published_title"] = title
+            reviewed = reviewed.get("script_edits", [])
+        for old, new in reviewed:
             if script.count(old) != 1:
                 raise ValueError("Reviewed recovery edit did not match exactly once")
             script = script.replace(old, new, 1)
