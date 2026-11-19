@@ -3,212 +3,568 @@
   "listened": false,
   "checks": [
     {
-      "pass": true,
-      "failures": [],
+      "pass": false,
+      "failures": [
+        "single_endings: Three script errors fail this check. First, line 53 is a verbatim duplicate of line 52 ('The market always has two sides. That's what makes it annoying.') \u2014 a doubled line within Story 1 that creates a false beat. Second, lines 79 and 80 are both 'ALEX: Back to the wider story.' \u2014 a duplicated return cue in Story 2. Third, line 78 ('RUFUS: And the employee presumably did not know that.') restates the substance of line 76 ('ALEX: So the employee presumably didn't authorise that specific use.' / 'RUFUS: That is what makes it a breach rather than a feature.') after the scene has already returned, creating a stray line that belongs inside the Rufus scene but appears after the closing cue. The closing block itself (lines 175-180: Jamie/Rufus sign-off, listener question, closing sponsor credit, house tag, follow CTA) is correctly structured as one approved block with no duplicate ad placement \u2014 Rufus delivers the closing sponsor credit at line 178, which is an approved placement. The failures are the duplicated lines 52-53, 79-80, and the orphaned line 78, not the closing block."
+      ],
       "checks": {
         "responsive_banter": {
           "pass": true,
           "evidence": [
-            "JAMIE: \"For now, yes\" is doing a lot of work in that sentence, Rufus.",
-            "RUFUS: Heh. That is the more troubling reading for NVIDIA, yes.",
-            "JAMIE: I love that your resting face comes with a spreadsheet.",
-            "RUFUS: Only for friends. Strangers get an invoice.",
-            "JAMIE: Oh, that's actually a tighter constraint than it sounds. You don't just choose a model. You choose a whole plumbing stack at the same time.",
-            "JAMIE: I'm going to start saying that about everything. 'Check your plumbing stack.' Very empowering advice.",
-            "JAMIE: One thing I'd actually push back on slightly \u2014 the split assumes developers can predict which bucket a problem falls into before they start.",
-            "RUFUS: That's a fair constraint. Though you could argue it's also recoverable \u2014 you route mid-task to Astra if Sol hits its ceiling.",
-            "ALEX: Is that how it works in practice, or is that the ideal?"
+            "JAMIE: That is an enormous bet on what AI earns next. Not just what it can do.",
+            "RUFUS: I'd push back on the framing slightly. The question isn't whether the money is real \u2014 the registration statement became effective and the offering has been priced, but closing remains subject to conditions. The question is whether the price reflects what Anthropic will actually earn.",
+            "JAMIE: Which sounds exactly like what people said about every other overpriced tech listing.",
+            "RUFUS: Some of which turned out fine.",
+            "JAMIE: Some.",
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else's correspondence.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know."
           ],
           "evidence_line_numbers": [
-            21,
-            33,
-            50,
-            51,
+            3,
+            15,
+            18,
+            19,
+            20,
             73,
-            91,
-            84,
-            85,
-            86
+            74,
+            146,
+            147,
+            148,
+            152,
+            153
           ],
-          "reason": "The episode sustains genuine three-way engagement for most of its run. Alex does not merely moderate: she poses real challenges (lines 26, 47, 56, 71, 86, 109), builds on others' observations (lines 72\u201375, 104, 115), and earns reactive replies. Jamie pushes back on Rufus's cost-overhead point (line 54), introduces an unresolved talent-retention concern (line 39), and the group leaves it genuinely open (lines 40\u201341). Rufus's dry register is responded to warmly by Jamie (lines 50, 130). The pattern across all three stories is reciprocal: specific lines from one speaker provoke specific replies from another rather than parallel summaries. The weakest stretch is lines 97\u2013118 in Segment 4, where Alex and Jamie trade observations in something closer to alternating turns before Rufus re-enters at line 105 with the architecture detail that restarts the exchange. That stretch is noticeable but not long enough to collapse the episode's overall pattern.",
+          "reason": "The episode broadly sustains three-way engagement. Alex generates questions that push the conversation rather than just moderate it (lines 14, 21, 24, 31, 38, 87, 129, 138). Rufus challenges Jamie and Alex with corrections or rebuttals rather than just agreeing (lines 15, 19, 30, 51, 130). Jamie challenges received wisdom on valuations (lines 18, 131) and brings the security framing to the Meta story (lines 69, 94). Story 2 is the strongest: Jamie and Alex build the master-key analogy together across lines 86-96, and Rufus connects it to enterprise-wide risk (line 89). Story 3 sustains momentum through the agent/model distinction debate (lines 139-149) and the cross-story callback on Meta/cyber-defense (lines 142-148). Story 1 is the weakest for banter: the governance thread (lines 38-47) is genuinely developed, but the selling-stockholder exchange (lines 48-53) ends with a duplicated line (lines 52-53) and runs slightly flat. The midroll (lines 107-110) is a rare moment of genuine three-way playfulness. No long stretches of interchangeable summary are present; most segments pivot on a specific question or objection. Overall the connection is sustained rather than performed.",
           "story_notes": {
-            "segment_2_nvidia": "Challenge: Jamie (line 21) directly challenges Rufus's 'for now, yes' hedge, prompting Rufus to extend it with the SEC overhang (line 22). Alex re-enters with the strategic-direction gap (line 30). Jamie then raises talent retention (line 39), Rufus affirms it and sharpens it (line 41), and the exchange ends unresolved\u2014an earned open question rather than a topic change. The dispute over what AMD's rally actually signals (lines 31\u201333) is brief but genuine: Jamie's 'more troubling reading' reframes Rufus's point and Rufus acknowledges it. No long stretch of interchangeable summary.",
-            "segment_3_openai": "Challenge: Jamie opens with naming fatigue but concedes the split makes sense (line 44), setting up her own explanation that Alex draws out (lines 45\u201346). Rufus raises cost overhead (line 53); Jamie pushes back that this is already normal developer practice (line 54); Rufus concedes but notes the accumulation (line 55); Alex resolves it into the specialisation-versus-choosing-cost framing (line 56). The Responses API migration becomes a shared discovery (lines 62\u201368, 72\u201376) with all three building on each other's points. Jamie's late pushback on the two-bucket assumption (line 84) is answered by Rufus (line 85) and genuinely left partially open (line 87). The duplicate 'Back to the wider story' at lines 57\u201358 is a script error but does not affect engagement quality. No long interchangeable summary stretch.",
-            "segment_4_gemini": "Challenge: Jamie flags 'make calls' as the key crossing point (lines 101\u2013103); Alex sharpens to advisory-versus-autonomous (line 104); Rufus adds the architecture detail (line 105); Jamie reframes isolation as a trust-building choice (line 108); Alex challenges whether it actually solves the problem (line 109); Rufus distinguishes the specific threat it addresses from the misinterpretation risk (line 110); Jamie names her actual fear (line 111). The concrete restaurant-booking scenario (lines 112\u2013113) is generated by Alex and immediately built upon by Jamie and Rufus. The error surface / accessibility tension (lines 115\u2013116) is a genuine shared discovery. The weakest stretch is lines 117\u2013121, where the three take turns adding qualifications without much reciprocal reaction, but Rufus's dinner-table test (lines 128\u2013129) and Jamie's affirmation (line 130) close the story with a moment of shared enjoyment."
+            "segment_2_story_1": "Challenge: Alex asks whether the IPO money is real or hype (line 14). Rufus reframes the question (line 15); Jamie counters with the overpriced-tech-listing analogy (line 18); Rufus concedes partially (line 19); Jamie lands the deflating 'Some' (line 20). The safety-mission thread (lines 21-26) is a genuine development, not a topic change \u2014 Rufus introduces share-class mechanics (line 23), Alex sharpens the implication (line 24), Jamie qualifies it (line 26). The selling-stockholder exchange (lines 48-53) adds a useful point but ends with a duplicated line (line 53) and fizzles rather than resolves. The Rufus scene (lines 55-57) is notably thin: one Jamie question, a one-line Rufus reply, no texture. No long stretch of interchangeable summaries.",
+            "segment_3_story_2": "Challenge: Jamie immediately escalates Alex's framing \u2014 'Encrypted. Signal. Messages.' (line 65) \u2014 and identifies the actual mechanism (application-level access, line 69). Rufus connects it to delegated access as a general pattern (line 72); Jamie's banter in the scene (line 73) lands and Rufus responds in character (line 74). The master-key analogy (lines 86-88) is a collaboratively built explanation. The 'is this happening everywhere quietly' escalation (line 89) is the strongest development in the episode. The thread sustains through the practical audit recommendation (lines 101-105). Duplicate 'Back to the wider story' (lines 79-80) is a script error, not a banter failure. No interchangeable summaries.",
+            "segment_4_story_3": "Challenge: Alex questions whether this is a meaningful leap or another press release (line 121); Jamie gives an honest 'we don't know yet' (line 122) rather than a sales pitch. Rufus's competitive-timing hypothesis (line 130) is challenged by Jamie (line 131) and Rufus concedes uncertainty (line 132) \u2014 a genuinely unresolved disagreement that works. The agent/model distinction (lines 139-145) is the most substantive developed exchange: Alex draws the implication, Jamie corrects it, Rufus ties it back to the Meta story (line 142), Alex synthesises (line 144), Jamie qualifies (line 145). The 'annoying bug in the backlog' exchange (lines 151-153) is a natural three-beat. No interchangeable summaries."
           },
           "verified_evidence": [
-            "JAMIE: \"For now, yes\" is doing a lot of work in that sentence, Rufus.",
-            "RUFUS: Heh. That is the more troubling reading for NVIDIA, yes.",
-            "JAMIE: I love that your resting face comes with a spreadsheet.",
-            "RUFUS: Only for friends. Strangers get an invoice.",
-            "JAMIE: Oh, that's actually a tighter constraint than it sounds. You don't just choose a model. You choose a whole plumbing stack at the same time.",
-            "JAMIE: I'm going to start saying that about everything. 'Check your plumbing stack.' Very empowering advice.",
-            "JAMIE: One thing I'd actually push back on slightly \u2014 the split assumes developers can predict which bucket a problem falls into before they start.",
-            "RUFUS: That's a fair constraint. Though you could argue it's also recoverable \u2014 you route mid-task to Astra if Sol hits its ceiling.",
-            "ALEX: Is that how it works in practice, or is that the ideal?",
-            "JAMIE: \"For now, yes\" is doing a lot of work in that sentence, Rufus.",
-            "RUFUS: Heh. That is the more troubling reading for NVIDIA, yes.",
-            "JAMIE: I love that your resting face comes with a spreadsheet.",
-            "RUFUS: Only for friends. Strangers get an invoice.",
-            "JAMIE: Oh, that's actually a tighter constraint than it sounds. You don't just choose a model. You choose a whole plumbing stack at the same time.",
-            "JAMIE: I'm going to start saying that about everything. 'Check your plumbing stack.' Very empowering advice.",
-            "JAMIE: One thing I'd actually push back on slightly \u2014 the split assumes developers can predict which bucket a problem falls into before they start. Some of the most expensive tasks start as boilerplate and turn into architectural problems halfway through.",
-            "RUFUS: That's a fair constraint. Though you could argue it's also recoverable \u2014 you route mid-task to Astra if Sol hits its ceiling. The API lets you switch.",
-            "ALEX: Is that how it works in practice, or is that the ideal?"
+            "JAMIE: That is an enormous bet on what AI earns next. Not just what it can do.",
+            "RUFUS: I'd push back on the framing slightly. The question isn't whether the money is real \u2014 the registration statement became effective and the offering has been priced, but closing remains subject to conditions. The question is whether the price reflects what Anthropic will actually earn.",
+            "JAMIE: Which sounds exactly like what people said about every other overpriced tech listing.",
+            "RUFUS: Some of which turned out fine.",
+            "JAMIE: Some.",
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else's correspondence.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know.",
+            "JAMIE: That is an enormous bet on what AI earns next. Not just what it can do.",
+            "RUFUS: I'd push back on the framing slightly. The question isn't whether the money is real \u2014 the registration statement became effective and the offering has been priced, but closing remains subject to conditions. The question is whether the price reflects what Anthropic will actually earn.",
+            "JAMIE: Which sounds exactly like what people said about every other overpriced tech listing.",
+            "RUFUS: Some of which turned out fine.",
+            "JAMIE: Some.",
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else\u2019s correspondence. We still need the investigation to establish exactly what happened here.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know."
           ]
         },
         "cast_warmth": {
           "pass": true,
           "evidence": [
-            "JAMIE: I love that your resting face comes with a spreadsheet.",
-            "RUFUS: Only for friends. Strangers get an invoice.",
-            "ALEX: And we appreciate the friends-and-family rate.",
-            "RUFUS: Heh. That is the more troubling reading for NVIDIA, yes.",
-            "JAMIE: I'm going to start saying that about everything. 'Check your plumbing stack.' Very empowering advice.",
-            "RUFUS: Cheerful morning listening.",
-            "JAMIE: We're helpful that way.",
-            "JAMIE: That's a genuinely good dinner table test.",
-            "RUFUS: Possibly the most load-bearing sentence in this whole story."
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else's correspondence.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex."
           ],
           "evidence_line_numbers": [
-            50,
-            51,
-            52,
-            33,
-            91,
-            82,
-            83,
-            130,
-            90
+            73,
+            74,
+            146,
+            147,
+            148,
+            152,
+            153,
+            110,
+            109
           ],
-          "reason": "Affection is present without being announced. The spreadsheet exchange (lines 50\u201352) is the clearest moment: Rufus's self-deprecating dry reply to Jamie's tease, and Alex's warm follow-through, establish the friendship register without sentimentality. Rufus conceding Jamie's reframe on AMD (line 33) with a quiet 'Heh' shows he can be bested without defensiveness. Jamie adopting Alex's 'load-bearing' metaphor as a joke (line 91) and Rufus's callback (line 90) show ideas circulating rather than being defended. Disagreements (cost overhead, two-bucket assumption, SEC scope) stay engaged rather than hostile, and partial concessions are given without capitulation. The cast does not rotate through emotional beats mechanically.",
+          "reason": "Warmth is expressed through teasing and in-jokes rather than declarations of friendship. Jamie's 'ideal colleague, minus the dry cleaning bill' (line 73) and Rufus's mock-offended reply (line 74) are character-consistent and affectionate. The midroll exchange (lines 107-110) is the clearest three-way moment of playful warmth \u2014 Jamie teases Rufus's utility, Rufus deflects with self-deprecating precision. The Rufus/Alex exchange at lines 146-148 shows Rufus noticing what Alex avoided, and Alex accepting the gentle exposure without defensiveness. Jamie's 'Heh. I know.' (line 153) in reply to Alex's mock-resentment is casual and warm. Disagreements (lines 18-20, 131-132) remain collegial. No hostility or performative reconciliation.",
           "verified_evidence": [
-            "JAMIE: I love that your resting face comes with a spreadsheet.",
-            "RUFUS: Only for friends. Strangers get an invoice.",
-            "ALEX: And we appreciate the friends-and-family rate.",
-            "RUFUS: Heh. That is the more troubling reading for NVIDIA, yes.",
-            "JAMIE: I'm going to start saying that about everything. 'Check your plumbing stack.' Very empowering advice.",
-            "RUFUS: Cheerful morning listening.",
-            "JAMIE: We're helpful that way.",
-            "JAMIE: That's a genuinely good dinner table test.",
-            "RUFUS: Possibly the most load-bearing sentence in this whole story.",
-            "JAMIE: I love that your resting face comes with a spreadsheet.",
-            "RUFUS: Only for friends. Strangers get an invoice.",
-            "ALEX: And we appreciate the friends-and-family rate. What did you find?",
-            "RUFUS: Heh. That is the more troubling reading for NVIDIA, yes.",
-            "JAMIE: I'm going to start saying that about everything. 'Check your plumbing stack.' Very empowering advice.",
-            "RUFUS: Cheerful morning listening.",
-            "JAMIE: We're helpful that way.",
-            "JAMIE: That's a genuinely good dinner table test.",
-            "RUFUS: Possibly the most load-bearing sentence in this whole story."
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else's correspondence.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else\u2019s correspondence. We still need the investigation to establish exactly what happened here.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know.",
+            "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex."
           ]
         },
         "useful_discovery": {
           "pass": true,
           "evidence": [
-            "JAMIE: If Sol handles that reliably, your senior engineers are actually solving problems instead of writing the same setup code for the fourth time this month.",
-            "RUFUS: Tool calling means the model can reach out and use external software \u2014 run a search, check a database, trigger another process.",
-            "ALEX: So if you want your agent to actually do things, rather than just describe doing things, you need the newer plumbing.",
-            "JAMIE: Oh, that's actually a tighter constraint than it sounds. You don't just choose a model. You choose a whole plumbing stack at the same time.",
-            "JAMIE: the upside here is real. If this works reliably, the people who benefit most aren't the ones who already have assistants. It's the people who don't have time, who juggle a lot, who'd genuinely save an hour a week by not making calls themselves."
+            "JAMIE: The science workflow angle is the one I keep coming back to. Google doesn't throw that phrase around. It usually means they're competing for researchers \u2014 people who process large bodies of technical literature or run analysis pipelines. That's a real community with real switching costs.",
+            "JAMIE: Take a real bug from a real codebase, see what happens. That's a half-hour experiment.",
+            "RUFUS: The model dropdown is the most underrated detail here, actually. A business user who's been defaulting to an older Gemini version gets a one-click experiment.",
+            "JAMIE: Start with the annoying bug that's been sitting in your backlog for six weeks. Low stakes, real signal."
           ],
           "evidence_line_numbers": [
-            61,
-            64,
-            65,
-            73,
-            122
+            120,
+            134,
+            137,
+            151
           ],
-          "reason": "Two substantive beneficial discoveries are grounded in source facts. First, the Sol/boilerplate insight (lines 59\u201361): a concrete productivity mechanism where Sol handles the seventy-percent repetitive scaffolding, freeing senior engineers for genuine problem-solving\u2014this teaches a listener something actionable, not just alarming. Second, the tool-calling architecture insight (lines 62\u201368, 72\u201374): the discovery that choosing Sol for agents implicitly commits you to the Responses API migration is a non-obvious architectural consequence that developers can act on immediately. Third, Gemini Tasks' equity framing (line 122) identifies a genuine beneficial population\u2014people without existing assistants\u2014rather than restating a risk. These go beyond fear or compliance into curiosity and practical use.",
+          "reason": "The Gemini 4 Neon discussion delivers concrete beneficial application: listeners learn who can access the model today (tiered by subscription, lines 124-127), what specific tasks it is designed for (production-ready code, science workflows, lines 116-120), and how to run a low-risk real-world test (a half-hour on a real bug, lines 134 and 151). The model-dropdown detail (line 137) is a genuinely useful operational insight for existing Google users. These go beyond fear or compliance into actionable curiosity. The science-workflow framing (line 120) gives researchers a concrete reason to investigate further.",
           "verified_evidence": [
-            "RUFUS: Tool calling means the model can reach out and use external software \u2014 run a search, check a database, trigger another process.",
-            "ALEX: So if you want your agent to actually do things, rather than just describe doing things, you need the newer plumbing.",
-            "JAMIE: Oh, that's actually a tighter constraint than it sounds. You don't just choose a model. You choose a whole plumbing stack at the same time.",
-            "JAMIE: The scaffolding. If Sol handles that reliably, your senior engineers are actually solving problems instead of writing the same setup code for the fourth time this month.",
-            "RUFUS: Tool calling means the model can reach out and use external software \u2014 run a search, check a database, trigger another process. The Responses API is OpenAI's newer framework that enables it. What's notable is that tool calling is only available through Responses, not through the older Chat Completions pathway.",
-            "ALEX: So if you want your agent to actually do things, rather than just describe doing things, you need the newer plumbing.",
-            "JAMIE: Oh, that's actually a tighter constraint than it sounds. You don't just choose a model. You choose a whole plumbing stack at the same time.",
-            "JAMIE: That said \u2014 and I want to hold this honestly \u2014 the upside here is real. If this works reliably, the people who benefit most aren't the ones who already have assistants. It's the people who don't have time, who juggle a lot, who'd genuinely save an hour a week by not making calls themselves."
+            "JAMIE: The science workflow angle is the one I keep coming back to. Google doesn't throw that phrase around. It usually means they're competing for researchers \u2014 people who process large bodies of technical literature or run analysis pipelines. That's a real community with real switching costs.",
+            "RUFUS: The model dropdown is the most underrated detail here, actually. A business user who's been defaulting to an older Gemini version gets a one-click experiment.",
+            "JAMIE: Start with the annoying bug that's been sitting in your backlog for six weeks. Low stakes, real signal.",
+            "JAMIE: The science workflow angle is the one I keep coming back to. Google doesn't throw that phrase around. It usually means they're competing for researchers \u2014 people who process large bodies of technical literature or run analysis pipelines. That's a real community with real switching costs.",
+            "JAMIE: The coding claim, without question. \"Production-ready code\" is specific enough that you can verify it fast. Take a real bug from a real codebase, see what happens. That's a half-hour experiment.",
+            "RUFUS: The model dropdown is the most underrated detail here, actually. A business user who's been defaulting to an older Gemini version gets a one-click experiment. Check your plan and administrator settings first.",
+            "JAMIE: Start with the annoying bug that's been sitting in your backlog for six weeks. Low stakes, real signal."
           ]
         },
         "rufus_scene": {
           "pass": true,
           "evidence": [
             "ALEX: Rufus, take us on location.",
-            "RUFUS: Picture an imagined midtown Manhattan trading desk after yesterday's earnings release \u2014 three screens, cold coffee, someone eating a sandwich while watching a ticker.",
-            "JAMIE: Which tells you something about where the anxiety actually was.",
-            "RUFUS: The market wasn't pricing in collapse. It was pricing in uncertainty.",
-            "JAMIE: \"For now, yes\" is doing a lot of work in that sentence, Rufus.",
-            "RUFUS: It is. Reuters also noted that investors remain concerned about a potential SEC probe.",
+            "RUFUS: Picture an imagined midtown Manhattan brokerage before the opening bell. Not the trading floor itself \u2014 the offices above it, where the institutional allocation calls are wrapping up. Imagine the portfolio managers who've been watching Anthropic from the sidelines for two years, trying to get frontier AI exposure without buying the same chip stocks twice.",
+            "JAMIE: And the answer to that is basically 'we don't know yet,' right?",
+            "RUFUS: That is what makes it a market.",
             "ALEX: Back to the wider story."
           ],
           "evidence_line_numbers": [
-            16,
-            17,
-            19,
-            20,
-            21,
-            22,
-            23
+            54,
+            55,
+            56,
+            57,
+            58
           ],
-          "reason": "Alex hands off at line 16, Rufus opens the imagined scene at line 17 with a concrete situated setting (midtown trading desk, three screens, cold coffee, sandwich, ticker). Jamie intervenes at line 19 with a pointed observation that redirects Rufus's framing; Rufus responds directly to that challenge at line 20, distinguishing uncertainty-pricing from collapse-pricing. Jamie challenges the 'for now, yes' hedge at line 21; Rufus responds with the SEC overhang at line 22, adding new information rather than deflecting. Alex closes the scene at line 23. The scene contains a concrete setting, a dry analytical register, Jamie's responsive challenges, Rufus's direct replies, and a useful payoff (the market exhaled because uncertainty was removed, not because results were exceptional). All requirements are met within the boundary lines.",
+          "reason": "Alex hands off at line 54, Rufus sets the scene at line 55, Jamie asks a responsive question at line 56, Rufus replies with dry wit at line 57, Alex returns at line 58. The boundary is clear. Jamie's question follows directly from the scene content (portfolio managers seeking AI exposure) and Rufus's reply is both substantive and characteristically dry. The scene is sparse \u2014 one exchange \u2014 but the requirements are met: explicit handoff, concrete imagined setting, Jamie interaction within boundaries, Rufus responsive reply, wit in the reply, useful payoff (the market-as-answer framing). The thinness is noted in story_notes but does not constitute a fail under the stated criteria.",
           "verified_evidence": [
             "ALEX: Rufus, take us on location.",
-            "RUFUS: Picture an imagined midtown Manhattan trading desk after yesterday's earnings release \u2014 three screens, cold coffee, someone eating a sandwich while watching a ticker.",
-            "JAMIE: Which tells you something about where the anxiety actually was.",
-            "RUFUS: The market wasn't pricing in collapse. It was pricing in uncertainty.",
-            "JAMIE: \"For now, yes\" is doing a lot of work in that sentence, Rufus.",
-            "RUFUS: It is. Reuters also noted that investors remain concerned about a potential SEC probe.",
+            "RUFUS: Picture an imagined midtown Manhattan brokerage before the opening bell. Not the trading floor itself \u2014 the offices above it, where the institutional allocation calls are wrapping up. Imagine the portfolio managers who've been watching Anthropic from the sidelines for two years, trying to get frontier AI exposure without buying the same chip stocks twice.",
+            "RUFUS: That is what makes it a market.",
             "ALEX: Back to the wider story.",
             "ALEX: Rufus, take us on location.",
-            "RUFUS: Picture an imagined midtown Manhattan trading desk after yesterday\u2019s earnings release \u2014 three screens, cold coffee, someone eating a sandwich while watching a ticker. After the closing bell, NVIDIA reported earnings that cleared analyst targets. Colette Kress ran the call, emphasised continuity, and the market exhaled. Not just NVIDIA \u2014 AMD up, Broadcom up.",
-            "JAMIE: Which tells you something about where the anxiety actually was.",
-            "RUFUS: The market wasn't pricing in collapse. It was pricing in uncertainty. The earnings removed the uncertainty. So the rally isn't celebrating strong results so much as a collective deep breath. The question everyone had been sitting with was: without Jensen Huang, does this machine keep running? Yesterday's answer was \u2014 for now, yes.",
-            "JAMIE: \"For now, yes\" is doing a lot of work in that sentence, Rufus.",
-            "RUFUS: It is. Reuters also noted that investors remain concerned about a potential SEC probe. That hasn't resolved. So you have a company that beat on earnings, steadied its supply-chain partners, and still has a legal overhang nobody can price with any precision.",
-            "ALEX: Back to the wider story. Jamie, you were asking about culture before we went to Rufus. What's your read?"
+            "RUFUS: Picture an imagined midtown Manhattan brokerage before the opening bell. Not the trading floor itself \u2014 the offices above it, where the institutional allocation calls are wrapping up. Imagine the portfolio managers who've been watching Anthropic from the sidelines for two years, trying to get frontier AI exposure without buying the same chip stocks twice.",
+            "JAMIE: And the answer to that is basically \"we don't know yet,\" right?",
+            "RUFUS: That is what makes it a market.",
+            "ALEX: Back to the wider story. So what do listeners actually do with this?"
           ]
         },
         "single_endings": {
-          "pass": true,
+          "pass": false,
           "evidence": [
-            "RUFUS: We're back tomorrow.",
-            "ALEX: Don't book anything you can't cancel.",
-            "ALEX: Today's question for you: When you delegate a task to an AI, what is your biggest fear?",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: The market always has two sides. That's what makes it annoying.",
+            "JAMIE: The market always has two sides. That's what makes it annoying.",
+            "ALEX: Back to the wider story.",
+            "ALEX: Back to the wider story.",
+            "RUFUS: And the employee presumably did not know that.",
+            "JAMIE: Take care of yourselves.",
+            "RUFUS: And audit your permissions.",
+            "ALEX: Today's question for you: If your company gave an AI agent access to your internal communications, would you feel more productive or more exposed?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
           ],
           "evidence_line_numbers": [
-            141,
-            142,
-            143,
-            144,
-            145,
-            146
+            52,
+            53,
+            79,
+            80,
+            78,
+            175,
+            176,
+            177,
+            178,
+            179,
+            180
           ],
-          "reason": "Story 1 ends cleanly at line 41 with no restart. Story 2 ends at line 91 with no second discussion; the midroll sponsor (lines 92\u201395) is the approved conversational placement and does not restart the story. Story 3 ends at line 132 with no restart. Segment 5 (lines 133\u2013142) is a brief closing synthesis across all three stories, explicitly permitted. Lines 141\u2013146 form one closing block: a sign-off quip, the listener question, the closing sponsor credit (Jamie, line 144), the house tag (Alex, line 145), and the follow CTA (Alex, line 146). Jamie's speaker change and 'brought to you by' phrasing at line 144 do not constitute a duplicate ad; it is the approved short closing credit. The opening sponsor read (lines 8\u20139) and the midroll (lines 92\u201395) are the other two approved placements. No extra placement, repeated ad fragment, or abandoned setup is present. No early thanks-for-listening appears before the closing block.",
+          "reason": "Three script errors fail this check. First, line 53 is a verbatim duplicate of line 52 ('The market always has two sides. That's what makes it annoying.') \u2014 a doubled line within Story 1 that creates a false beat. Second, lines 79 and 80 are both 'ALEX: Back to the wider story.' \u2014 a duplicated return cue in Story 2. Third, line 78 ('RUFUS: And the employee presumably did not know that.') restates the substance of line 76 ('ALEX: So the employee presumably didn't authorise that specific use.' / 'RUFUS: That is what makes it a breach rather than a feature.') after the scene has already returned, creating a stray line that belongs inside the Rufus scene but appears after the closing cue. The closing block itself (lines 175-180: Jamie/Rufus sign-off, listener question, closing sponsor credit, house tag, follow CTA) is correctly structured as one approved block with no duplicate ad placement \u2014 Rufus delivers the closing sponsor credit at line 178, which is an approved placement. The failures are the duplicated lines 52-53, 79-80, and the orphaned line 78, not the closing block.",
           "verified_evidence": [
-            "RUFUS: We're back tomorrow.",
-            "ALEX: Don't book anything you can't cancel.",
-            "ALEX: Today's question for you: When you delegate a task to an AI, what is your biggest fear?",
-            "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: The market always has two sides. That's what makes it annoying.",
+            "JAMIE: The market always has two sides. That's what makes it annoying.",
+            "ALEX: Back to the wider story.",
+            "ALEX: Back to the wider story.",
+            "RUFUS: And the employee presumably did not know that.",
+            "JAMIE: Take care of yourselves.",
+            "RUFUS: And audit your permissions.",
+            "ALEX: Today's question for you: If your company gave an AI agent access to your internal communications, would you feel more productive or more exposed?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us next episode for what changes next.",
-            "RUFUS: We're back tomorrow.",
-            "ALEX: Don't book anything you can't cancel.",
-            "ALEX: Today\u2019s question for you: When you delegate a task to an AI, what is your biggest fear?",
-            "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "JAMIE: The market always has two sides. That's what makes it annoying.",
+            "JAMIE: The market always has two sides. That's what makes it annoying.",
+            "ALEX: Back to the wider story.",
+            "ALEX: Back to the wider story.",
+            "RUFUS: And the employee presumably did not know that.",
+            "JAMIE: Take care of yourselves.",
+            "RUFUS: And audit your permissions.",
+            "ALEX: Today\u2019s question for you: If your company gave an AI agent access to your internal communications, would you feel more productive or more exposed?",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
             "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
             "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
           ]
         }
       },
       "feature_word_band_advisory": false,
-      "script_sha256": "0d78d2a72a835217f38b9b0d9b99757ea7e5bb54d2abed122dc07c30c6d5b764"
+      "script_sha256": "089d08961e09990946ab4133073f375989a359f264987932198ad093a5c5eae4"
+    },
+    {
+      "pass": true,
+      "failures": [],
+      "checks": {
+        "responsive_banter": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: That is an enormous bet on what AI earns next. Not just what it can do.",
+            "RUFUS: I'd push back on the framing slightly. The question isn't whether the money is real \u2014 the registration statement became effective and the offering has been priced, but closing remains subject to conditions. The question is whether the price reflects what Anthropic will actually earn.",
+            "JAMIE: Which sounds exactly like what people said about every other overpriced tech listing.",
+            "RUFUS: Some of which turned out fine.",
+            "JAMIE: Some.",
+            "JAMIE: That's either reassuring or deeply convenient, depending on how much you trust the founders.",
+            "ALEX: Or it's what you say when you want the money and the steering wheel.",
+            "JAMIE: Both things can be true at once.",
+            "RUFUS: Welcome to the IPO.",
+            "RUFUS: Please. I ask before opening somebody else's correspondence. We still need the investigation to establish exactly what happened here.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know."
+          ],
+          "evidence_line_numbers": [
+            3,
+            15,
+            18,
+            19,
+            20,
+            26,
+            45,
+            46,
+            47,
+            73,
+            144,
+            145,
+            146,
+            150,
+            151
+          ],
+          "reason": "The episode shows genuine three-way engagement across all segments. In Story 1, Rufus pushes back on Alex's framing (line 15), Jamie challenges with scepticism about overpriced listings (line 18), Rufus concedes partially (line 19), Jamie sharpens it (line 20), and Alex drives the safety-mission question (line 21) which then develops across multiple exchanges rather than being dropped. Alex is an active participant with real challenges and observations, not merely a traffic cop. The founder-control thread (lines 23\u201346) is a genuine multi-turn argument that reaches a real tension rather than a polite concession. Story 2 banter is lighter but Rufus's dry line about asking before opening correspondence (line 73) responds directly to Jamie's joke (line 72) and stays in character. Story 3 has the best sustained three-way exchange: the 'cyber defense' thread (lines 115\u2013147) sees Rufus introduce a pointed observation, Jamie and Alex develop it, and Rufus caps it wryly (line 146). Alex's self-deprecating line (line 150) and Jamie's response (line 151) show genuine ease. The overall pattern is one of listening and building rather than sequential summary. The weakest stretch is the Rufus scene in Story 1 (lines 54\u201356), which is very brief and thin, but it does not define the episode. No segment collapses into interchangeable monologue.",
+          "story_notes": {
+            "segment_2_story_1": "Challenge: Alex asks whether the IPO money is 'real or hype money' (line 14). Rufus pushes back on the framing and redirects to earnings (line 15). Jamie then challenges the entire IPO-as-validation narrative with a sceptical comparison (line 18); Rufus concedes partially (line 19), Jamie sharpens with 'Some' (line 20). Alex then pivots to the safety-mission question (line 21), which Jamie and Rufus develop into the share-class / governance thread (lines 23\u201346), the most sustained argument in the episode. That thread does not fizzle; it reaches a genuinely unresolved tension that Alex names cleanly (line 45). The Rufus scene (lines 54\u201356) is two lines and amounts to a very brief exchange \u2014 Jamie asks a question, Rufus gives a one-line answer, and Alex returns. It is thin but technically contains a Jamie question followed by Rufus's direct reply. No long stretch of interchangeable summary in this segment.",
+            "segment_3_story_2": "Challenge: Alex frames the Signal encryption paradox (lines 63\u201367); Jamie answers with the application-layer explanation (line 68), which Alex confirms (line 69) and Rufus elaborates as 'delegated access' (line 71). Jamie's dry joke (line 72) gets a sharp in-character response from Rufus (line 73). The story then develops through the 'master key' analogy (line 84) and Rufus's observation that the same pattern is probably quiet everywhere else (line 87), which Alex names as 'not comforting' (line 88). The segment is more explanatory than argumentative, but the exchanges build on each other rather than repeating. No unresolved challenge is dropped with a 'fair point.' The weakest moment is lines 94\u201398, which are essentially confirmatory rather than developing, but the segment recovers with the practical-action exchange (lines 99\u2013103).",
+            "segment_4_story_3": "Challenge: Alex asks whether Neon is a 'meaningful leap or another our-model-is-better press release' (line 119). Jamie gives an honest 'we don't know' answer grounded in what is and isn't confirmed (line 120). Rufus introduces the competitive-timing angle (line 128); Jamie pushes back (line 129); Rufus accepts the ambiguity (line 130) \u2014 a genuine unresolved disagreement that neither party forces to resolution. The 'end-to-end task completion' thread (lines 136\u2013143) is the strongest shared discovery: Alex asks what the phrase actually means, Jamie gives a substantive distinction between model and agent, and Rufus connects it back to the Meta story (line 140), which Alex admits he was avoiding (line 145) and Rufus says he noticed (line 146). That is a fully developed three-way exchange. No long stretch of interchangeable summary."
+          },
+          "verified_evidence": [
+            "JAMIE: That is an enormous bet on what AI earns next. Not just what it can do.",
+            "RUFUS: I'd push back on the framing slightly. The question isn't whether the money is real \u2014 the registration statement became effective and the offering has been priced, but closing remains subject to conditions. The question is whether the price reflects what Anthropic will actually earn.",
+            "JAMIE: Which sounds exactly like what people said about every other overpriced tech listing.",
+            "RUFUS: Some of which turned out fine.",
+            "JAMIE: Some.",
+            "JAMIE: That's either reassuring or deeply convenient, depending on how much you trust the founders.",
+            "ALEX: Or it's what you say when you want the money and the steering wheel.",
+            "JAMIE: Both things can be true at once.",
+            "RUFUS: Welcome to the IPO.",
+            "RUFUS: Please. I ask before opening somebody else's correspondence. We still need the investigation to establish exactly what happened here.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know.",
+            "JAMIE: That is an enormous bet on what AI earns next. Not just what it can do.",
+            "RUFUS: I'd push back on the framing slightly. The question isn't whether the money is real \u2014 the registration statement became effective and the offering has been priced, but closing remains subject to conditions. The question is whether the price reflects what Anthropic will actually earn.",
+            "JAMIE: Which sounds exactly like what people said about every other overpriced tech listing.",
+            "RUFUS: Some of which turned out fine.",
+            "JAMIE: Some.",
+            "JAMIE: That's either reassuring or deeply convenient, depending on how much you trust the founders.",
+            "ALEX: Or it's what you say when you want the money and the steering wheel.",
+            "JAMIE: Both things can be true at once.",
+            "RUFUS: Welcome to the IPO.",
+            "RUFUS: Please. I ask before opening somebody else\u2019s correspondence. We still need the investigation to establish exactly what happened here.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know."
+          ]
+        },
+        "cast_warmth": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else's correspondence. We still need the investigation to establish exactly what happened here.",
+            "RUFUS: A very efficient assistant with absolutely no sense of boundaries.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know."
+          ],
+          "evidence_line_numbers": [
+            72,
+            73,
+            71,
+            107,
+            108,
+            144,
+            145,
+            146,
+            150,
+            151
+          ],
+          "reason": "Affection is shown through calibrated teasing rather than announcement. Jamie teases Rufus about the dry cleaning bill (line 72); Rufus deflects with self-aware mock dignity while remaining useful (line 73). The midroll exchange (lines 105\u2013108) has Jamie mock-questioning Rufus's role and Rufus's 'my warmth is very precisely rationed' landing as a dry self-aware joke rather than hostility. The three-way moment around lines 144\u2013146 and 150\u2013151 shows ease: Rufus needles Alex, Alex admits it, Rufus confirms he noticed \u2014 all without any of them breaking into the topic or becoming hostile. Alex participates as a curious equal who takes ribbing and gives it. Characters do not announce their friendship or perform reconciliation; the warmth is in the texture of the exchanges.",
+          "verified_evidence": [
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else's correspondence. We still need the investigation to establish exactly what happened here.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know.",
+            "JAMIE: So your ideal colleague, minus the dry cleaning bill?",
+            "RUFUS: Please. I ask before opening somebody else\u2019s correspondence. We still need the investigation to establish exactly what happened here.",
+            "RUFUS: My concern is delegated access. If an agent inherits a user\u2019s permissions, an innocent task can reach somewhere entirely inappropriate. A very efficient assistant with absolutely no sense of boundaries.",
+            "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+            "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+            "RUFUS: The cyber defense mention acquires a slightly different texture after the Meta story, doesn't it.",
+            "ALEX: I was trying not to say that.",
+            "RUFUS: I noticed.",
+            "ALEX: I resent that because it's not wrong.",
+            "JAMIE: Heh. I know."
+          ]
+        },
+        "useful_discovery": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: The science workflow angle is the one I keep coming back to. Google doesn't throw that phrase around. It usually means they're competing for researchers \u2014 people who process large bodies of technical literature or run analysis pipelines. That's a real community with real switching costs.",
+            "JAMIE: The coding claim, without question. 'Production-ready code' is specific enough that you can verify it fast. Take a real bug from a real codebase, see what happens. That's a half-hour experiment.",
+            "RUFUS: The model dropdown is the most underrated detail here, actually. A business user who's been defaulting to an older Gemini version gets a one-click experiment. Check your plan and administrator settings first.",
+            "JAMIE: So most models answer your question and stop. End-to-end implies it keeps going \u2014 writes the code, runs the check, fixes the error it caused, hands you something usable.",
+            "JAMIE: Start with the annoying bug that's been sitting in your backlog for six weeks. Low stakes, real signal."
+          ],
+          "evidence_line_numbers": [
+            118,
+            132,
+            135,
+            137,
+            149
+          ],
+          "reason": "The Gemini 4 Neon segment contains substantive beneficial discovery beyond fear or compliance. Jamie explains what 'end-to-end task completion' actually means in practice versus a standard chat model (line 137) \u2014 a concrete distinction that teaches the listener something about capability, not just risk. The science-workflow framing (line 118) identifies a real professional community that could benefit and explains why. The half-hour coding test (line 132) and the low-friction model dropdown observation (line 135) give listeners a concrete, actionable way to evaluate a tool they might already pay for. These are not restatements of harm or compliance guidance.",
+          "verified_evidence": [
+            "JAMIE: The science workflow angle is the one I keep coming back to. Google doesn't throw that phrase around. It usually means they're competing for researchers \u2014 people who process large bodies of technical literature or run analysis pipelines. That's a real community with real switching costs.",
+            "RUFUS: The model dropdown is the most underrated detail here, actually. A business user who's been defaulting to an older Gemini version gets a one-click experiment. Check your plan and administrator settings first.",
+            "JAMIE: So most models answer your question and stop. End-to-end implies it keeps going \u2014 writes the code, runs the check, fixes the error it caused, hands you something usable.",
+            "JAMIE: Start with the annoying bug that's been sitting in your backlog for six weeks. Low stakes, real signal.",
+            "JAMIE: The science workflow angle is the one I keep coming back to. Google doesn't throw that phrase around. It usually means they're competing for researchers \u2014 people who process large bodies of technical literature or run analysis pipelines. That's a real community with real switching costs.",
+            "JAMIE: The coding claim, without question. \"Production-ready code\" is specific enough that you can verify it fast. Take a real bug from a real codebase, see what happens. That's a half-hour experiment.",
+            "RUFUS: The model dropdown is the most underrated detail here, actually. A business user who's been defaulting to an older Gemini version gets a one-click experiment. Check your plan and administrator settings first.",
+            "JAMIE: So most models answer your question and stop. End-to-end implies it keeps going \u2014 writes the code, runs the check, fixes the error it caused, hands you something usable.",
+            "JAMIE: Start with the annoying bug that's been sitting in your backlog for six weeks. Low stakes, real signal."
+          ]
+        },
+        "rufus_scene": {
+          "pass": true,
+          "evidence": [
+            "ALEX: Rufus, take us on location.",
+            "RUFUS: Picture an imagined midtown Manhattan brokerage before the opening bell. Not the trading floor itself \u2014 the offices above it, where the institutional allocation calls are wrapping up. Imagine the portfolio managers who've been watching Anthropic from the sidelines for two years, trying to get frontier AI exposure without buying the same chip stocks twice.",
+            "JAMIE: And the answer to that is basically 'we don't know yet,' right?",
+            "RUFUS: That is what makes it a market.",
+            "ALEX: Back to the wider story."
+          ],
+          "evidence_line_numbers": [
+            53,
+            54,
+            55,
+            56,
+            57
+          ],
+          "reason": "Alex hands off at line 53. Rufus establishes a concrete imagined setting with a specific situation (portfolio managers seeking frontier AI exposure) at line 54. Jamie asks a question directly responsive to the setup at line 55. Rufus replies with a dry, pointed one-liner at line 56. Alex returns at line 57. The scene is brief but meets the stated requirements: an explicitly imagined concrete situation, a Jamie question followed by Rufus's responsive reply within the scene boundaries, and dry wit in Rufus's reply. The useful payoff is implicit \u2014 the scene crystallises that the IPO price is a thesis, not a certainty, which is the analytical point of the segment. Interaction between the handoff and return is present.",
+          "verified_evidence": [
+            "ALEX: Rufus, take us on location.",
+            "RUFUS: Picture an imagined midtown Manhattan brokerage before the opening bell. Not the trading floor itself \u2014 the offices above it, where the institutional allocation calls are wrapping up. Imagine the portfolio managers who've been watching Anthropic from the sidelines for two years, trying to get frontier AI exposure without buying the same chip stocks twice.",
+            "RUFUS: That is what makes it a market.",
+            "ALEX: Back to the wider story.",
+            "ALEX: Rufus, take us on location.",
+            "RUFUS: Picture an imagined midtown Manhattan brokerage before the opening bell. Not the trading floor itself \u2014 the offices above it, where the institutional allocation calls are wrapping up. Imagine the portfolio managers who've been watching Anthropic from the sidelines for two years, trying to get frontier AI exposure without buying the same chip stocks twice.",
+            "JAMIE: And the answer to that is basically \"we don't know yet,\" right?",
+            "RUFUS: That is what makes it a market.",
+            "ALEX: Back to the wider story. So what do listeners actually do with this?"
+          ]
+        },
+        "single_endings": {
+          "pass": true,
+          "evidence": [
+            "JAMIE: Take care of yourselves.",
+            "RUFUS: And audit your permissions.",
+            "ALEX: Today's question for you: If your company gave an AI agent access to your internal communications, would you feel more productive or more exposed?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
+          ],
+          "evidence_line_numbers": [
+            173,
+            174,
+            175,
+            176,
+            177,
+            178
+          ],
+          "reason": "Story 1 ends cleanly at line 61 with Alex's listener-facing synthesis and no restart. Story 2 ends at lines 99\u2013103 with practical action items and no second discussion. Story 3 ends at lines 153\u2013154 with a clear practical recommendation and a forward-looking observation; no analysis restarts after that. Segment 5 is a unified closing synthesis across all three stories, not a restarted ending for any individual story. The closing block (lines 173\u2013178) consists of: a listener sign-off (lines 173\u2013174), the listener question (line 175), the closing sponsor credit (line 176), the house tag (line 177), and the follow CTA (line 178) \u2014 these together form one approved closing block. The opening sponsor read (lines 7\u20138) and conversational midroll (lines 104\u2013108) are the other two approved placements. No duplicate ad fragment or extra placement is present. No early thanks-for-listening appears before the final closing block.",
+          "verified_evidence": [
+            "JAMIE: Take care of yourselves.",
+            "RUFUS: And audit your permissions.",
+            "ALEX: Today's question for you: If your company gave an AI agent access to your internal communications, would you feel more productive or more exposed?",
+            "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us next episode for what changes next.",
+            "JAMIE: Take care of yourselves.",
+            "RUFUS: And audit your permissions.",
+            "ALEX: Today\u2019s question for you: If your company gave an AI agent access to your internal communications, would you feel more productive or more exposed?",
+            "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+            "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
+            "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
+          ]
+        }
+      },
+      "feature_word_band_advisory": false,
+      "script_sha256": "ca09866f32f7fb8865d32dadf5453310a6d2ccafdcb099c8c75c18f8c79ae4d6"
     }
   ],
-  "repair": null,
-  "repairs": [],
+  "repair": {
+    "basis": "model editorial review plus local safeguards; not listening",
+    "listened": false,
+    "requested_calls": 1,
+    "accepted_edits": 2,
+    "edits": [
+      {
+        "accepted": true,
+        "reason": "Verbatim duplicate of line 52; delete to remove false beat.",
+        "segment": 2
+      },
+      {
+        "accepted": true,
+        "reason": "Line 78 is orphaned restatement of line 76-77; lines 79-80 duplicate the return cue. Collapse to single cue.",
+        "segment": 3
+      },
+      {
+        "accepted": false,
+        "reason": "new_structural_or_runtime_failure",
+        "new_failures": [
+          "no_monologue_bloat"
+        ]
+      }
+    ],
+    "input_sha256": "089d08961e09990946ab4133073f375989a359f264987932198ad093a5c5eae4",
+    "review_before_repairs": {
+      "scenes": [
+        {
+          "segment": 2,
+          "chemistry": "shareable exchange at lines 44-49 is specific and earned; Rufus teasing Alex about the moral compass of markets works naturally",
+          "discovery": "governance structure uncertainty lands clearly; institutional-benchmark insight is concrete",
+          "repetition": "line 53 duplicates line 52 verbatim \u2014 required repair"
+        },
+        {
+          "segment": 3,
+          "chemistry": "dry-cleaning joke at line 73 lands and receives a real answer; master-key analogy is Jamie's own and gets used",
+          "discovery": "permission-inheritance mechanism explained without jargon",
+          "repetition": "line 78 orphaned after scene return at line 71; lines 79-80 duplicate 'Back to the wider story' \u2014 required repairs"
+        },
+        {
+          "segment": 4,
+          "chemistry": "Rufus/Jamie timing disagreement at 131-132 is genuine and unresolved; cyber-defense callback at 146-148 earns its moment",
+          "discovery": "model-vs-agent distinction adds real nuance after Meta story",
+          "repetition": "none detected"
+        }
+      ],
+      "rufus_feature": "Scene at lines 55-57 is thin: Rufus opens an imagined midtown brokerage setting credibly, but Jamie's reply ('And the answer to that is basically we don't know yet') arrives before Rufus has said anything that warrants it, and Rufus's closing line restates the market-uncertainty point already made at line 17. No responsive exchange develops inside the imagined scene.",
+      "remaining_issues": [
+        "Rufus feature lacks a substantive studio exchange before the return; Jamie's reply does not follow from anything Rufus actually said in the imagined setting"
+      ]
+    },
+    "remaining_production_language": [],
+    "output_sha256": "e19e93005260716b5c249f53d61dc820f5d91db77e9c9f4bcf78f25489d58ef0",
+    "status": "repairs_applied_need_audio_review"
+  },
+  "repairs": [
+    {
+      "basis": "model editorial review plus local safeguards; not listening",
+      "listened": false,
+      "requested_calls": 1,
+      "accepted_edits": 2,
+      "edits": [
+        {
+          "accepted": true,
+          "reason": "Verbatim duplicate of line 52; delete to remove false beat.",
+          "segment": 2
+        },
+        {
+          "accepted": true,
+          "reason": "Line 78 is orphaned restatement of line 76-77; lines 79-80 duplicate the return cue. Collapse to single cue.",
+          "segment": 3
+        },
+        {
+          "accepted": false,
+          "reason": "new_structural_or_runtime_failure",
+          "new_failures": [
+            "no_monologue_bloat"
+          ]
+        }
+      ],
+      "input_sha256": "089d08961e09990946ab4133073f375989a359f264987932198ad093a5c5eae4",
+      "review_before_repairs": {
+        "scenes": [
+          {
+            "segment": 2,
+            "chemistry": "shareable exchange at lines 44-49 is specific and earned; Rufus teasing Alex about the moral compass of markets works naturally",
+            "discovery": "governance structure uncertainty lands clearly; institutional-benchmark insight is concrete",
+            "repetition": "line 53 duplicates line 52 verbatim \u2014 required repair"
+          },
+          {
+            "segment": 3,
+            "chemistry": "dry-cleaning joke at line 73 lands and receives a real answer; master-key analogy is Jamie's own and gets used",
+            "discovery": "permission-inheritance mechanism explained without jargon",
+            "repetition": "line 78 orphaned after scene return at line 71; lines 79-80 duplicate 'Back to the wider story' \u2014 required repairs"
+          },
+          {
+            "segment": 4,
+            "chemistry": "Rufus/Jamie timing disagreement at 131-132 is genuine and unresolved; cyber-defense callback at 146-148 earns its moment",
+            "discovery": "model-vs-agent distinction adds real nuance after Meta story",
+            "repetition": "none detected"
+          }
+        ],
+        "rufus_feature": "Scene at lines 55-57 is thin: Rufus opens an imagined midtown brokerage setting credibly, but Jamie's reply ('And the answer to that is basically we don't know yet') arrives before Rufus has said anything that warrants it, and Rufus's closing line restates the market-uncertainty point already made at line 17. No responsive exchange develops inside the imagined scene.",
+        "remaining_issues": [
+          "Rufus feature lacks a substantive studio exchange before the return; Jamie's reply does not follow from anything Rufus actually said in the imagined setting"
+        ]
+      },
+      "remaining_production_language": [],
+      "output_sha256": "e19e93005260716b5c249f53d61dc820f5d91db77e9c9f4bcf78f25489d58ef0",
+      "status": "repairs_applied_need_audio_review"
+    }
+  ],
   "pass": true
 }

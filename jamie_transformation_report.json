@@ -1,26 +1,26 @@
 {
   "case": {
+    "episode_date": "2026-11-19",
     "feature_mode": "hypothetical_capability",
-    "subject": "The errand assistant versus the fussy customer",
-    "tool": "Gemini Tasks",
-    "problem": "A hypothetical busy household needs to compare two service appointments without losing control of booking.",
-    "workflow": "Where available, switch from Chat to Task and ask for two local service options, opening hours and source links. Explicitly require approval before booking, calling or spending. Check the options yourself. Cast illustrates a hypothetical request; no actual test or completed booking is claimed.",
-    "result": "A proposed comparison and approval workflow, not a measured success or time saving.",
-    "result_basis": "Google vendor announcement of Tasks capabilities; proposed household scenario is hypothetical.",
-    "measurement_context": "Compare quoted availability against the source and count corrections needed; no invented results.",
-    "case_date": "2026-11-17",
-    "episode_date": "2026-11-18",
-    "source_url": "https://blog.google/innovation-and-ai/products/gemini-app/tasks-in-gemini-free-new-features/",
-    "source_quote": "We\u2019re also rolling out a set of advanced features, starting in the U.S.",
-    "limitation": "Rollout varies by country/account; calling unavailable in Indiana, Louisiana, Minnesota, Montana and Nebraska. AI may fail. No claim that instructions guarantee safety.",
-    "listener_action": "Try a low-stakes comparison and check it before approving any external action.",
-    "availability": "Free Tasks rollout in US, Japan, Korea, Canada, Australia and India; advanced features start in US."
+    "subject": "The missing parcel and the human escape hatch",
+    "tool": "Salesforce Agentforce for Service",
+    "problem": "A hypothetical customer's delivered parcel is missing; automated support must not trap them.",
+    "workflow": "Use Salesforce Trailhead's documented order inquiry and escalation examples. In a configured test environment, try an ordinary delivery query, a lost parcel and a request for a human. Verify routing rather than assuming it works.",
+    "result": "Proposed test of useful assistance and human handoff, not a measured customer outcome.",
+    "result_basis": "Salesforce vendor documentation; fictional scenario and producer-proposed test.",
+    "measurement_context": "Record whether each test routes correctly and what context reaches the human; no claimed savings or success rate.",
+    "case_date": "Evergreen documentation checked November 19, 2026; not a new launch.",
+    "source_url": "https://trailhead.salesforce.com/content/learn/modules/agentforce-service-agent-quick-look/explore-use-cases-for-agentforce-for-service",
+    "source_quote": "If the customer asks to speak to a live agent at any time, escalate the conversation.",
+    "limitation": "Examples need business-specific configuration and staffed routing. Private actions require further configuration. Documentation is not evidence of successful deployment.",
+    "listener_action": "Start with three fictional test requests and verify the human handoff before live use.",
+    "availability": "Public Trailhead learning material; operational Agentforce use depends on the business's licensed and configured Salesforce environment."
   },
   "core_preserved": true,
-  "core_sha256": "0d78d2a72a835217f38b9b0d9b99757ea7e5bb54d2abed122dc07c30c6d5b764",
+  "core_sha256": "ca09866f32f7fb8865d32dadf5453310a6d2ccafdcb099c8c75c18f8c79ae4d6",
   "feature": {
     "present": true,
-    "words": 450,
+    "words": 381,
     "pass": true
   },
   "audio_verified": false
