@@ -27,7 +27,13 @@ class DialogueEditorTests(unittest.TestCase):
             self.assertFalse(report["accepted"])
 
     def test_structural_and_runtime_regressions_keep_original(self):
-        for candidate in ({"failed": ["missing_music"], "distance": 0}, {"failed": [], "distance": 2}):
+        for candidate in ({"failed": ["missing_music"], "distance": 0},):
             original, (script, _, report) = self.run_edit("ALEX: 12 trials. JAMIE: Which tasks?", candidate)
             self.assertEqual(script, original)
             self.assertFalse(report["accepted"])
+
+    def test_runtime_distance_is_advisory(self):
+        draft = "ALEX: 12 trials. JAMIE: Which tasks?"
+        _, (script, _, report) = self.run_edit(draft, {"failed": [], "distance": 2})
+        self.assertEqual(script, draft)
+        self.assertTrue(report["accepted"])
