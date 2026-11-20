@@ -1307,7 +1307,7 @@ Return exactly this JSON:
     candidates = [default.get("published_title", "")] + list(default.get("title_candidates") or [])
     chosen = next((str(t).strip() for t in candidates if isinstance(t, str)
         and not t.lower().startswith("today") and "lesson" not in t.lower()
-        and 6 <= _word_count(t) <= 14 and _title_matches_lead(t, stories)
+        and bool(t.strip()) and _title_matches_lead(t, stories)
         and not _title_is_generic(t) and _title_has_payoff(t)), None)
     default["published_title"] = chosen or _hard_title(stories)
     planning_report["title_source"] = "model_candidate" if chosen else "source_headline"
@@ -1408,7 +1408,7 @@ feature is added afterwards, with a 33-minute total ceiling. Do not remove or sh
 any core section to accommodate it, and never speed up voices to fit it. Depth comes from evidence,
 examples explicitly labelled hypothetical, a sharper objection or a useful consequence.
 Never pad with recaps. Split the editorial discussion approximately 40/30/30.
-Normal turns 8-30 words, maximum 55. Alex's questions/setups usually 8-25 words.
+Prefer responsive turns around 8-30 words; length is advisory. Alex's questions/setups usually 8-25 words.
 A tiny interjection does not reset an Alex monologue. A colleague supplies substance.
 No compulsory interruption or laugh. Give a punchline its last word; don't explain it.
 Never speak production labels such as "shareable exchange," "clip" or "forwardable".
@@ -2063,7 +2063,6 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
     # remain measured below, but do not strand an otherwise deliverable master.
     hard_gate_keys = {
         "five_segments",
-        "runtime_word_band",
         "one_music_marker",
         "ledger_cta_spelled_url",
         "welcome_after_music",
@@ -2072,7 +2071,6 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "sponsor_at_segment1_break",
         "sponsor_opener_exact",
         "sponsor_alex_two_line_read",
-        "sponsor_read_not_bloated",
         "sponsor_cta_exactly_once",
         "rotating_sponsor_end_tag",
         "listener_question_present",
@@ -2082,7 +2080,6 @@ def _assess(script: str, stories: List[Dict[str, Any]], board: Dict[str, Any],
         "no_legacy_sponsor_language",
         "no_signal_room",
         "not_lesson_title",
-        "no_monologue_bloat",
         "no_spoken_stage_directions",
         "no_spoken_production_language",
         "temporal_consistency",
@@ -3009,7 +3006,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             def request_scene(segment, scene, rejected=None, failure=None):
                 return _anthropic_text(
                     g, "Revise ONLY the dialogue below. Return speaker lines, no headers. "
-                    "Keep 85-112% of its word count; cut redundant exposition, preserve live exchanges. Preserve every factual qualification, "
+                    "Word counts are advisory; cut redundant exposition, preserve live exchanges. Preserve every factual qualification, "
                     "number, attribution, sponsor line and navigation. No new reporting. "
                     "Improve responsive exchanges, plain-English examples and earned warmth. "
                     "Let a specific affectionate jab receive a response where natural; no joke quota. "
@@ -3028,7 +3025,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
                        + ". Correct that specific defect while keeping its useful exchanges. "
                        "Use the ORIGINAL below as factual authority. Preserve its numerical tokens, "
                        "qualifications, sponsors and navigation. Return only corrected speaker lines. "
-                       "Required word count: " + str(math.ceil(len(scene.split()) * .85))
+                       "Suggested word count: " + str(math.ceil(len(scene.split()) * .85))
                        + " to " + str(int(len(scene.split()) * 1.12))
                        + " words.\nREJECTED CANDIDATE:\n" + rejected if failure else "")
                     + "\nEXACT SCENE TO REVISE:\n" + scene,
@@ -3102,47 +3099,11 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         script = stabilize(ensure_feature_fallback(script))
         assessment = _assess(script, stories, board, fuel)
 
-        # Runtime is normalized deterministically before episode TTS. A modest
-        # under-run may use the restored main.py add-on writer; any over-run is
-        # trimmed around receipts, sponsor copy, the concession, and chemistry.
+        # Owner policy: word counts are planning suggestions only.
+        # Never trim, pad, or spend rewrite calls solely to hit a length band.
         min_episode_words = int(os.getenv("RECOVERY_MIN_SCRIPT_WORDS", "3150"))
         max_episode_words = int(os.getenv("RECOVERY_MAX_SCRIPT_WORDS", "4800"))
-        target_episode_words = min(
-            max_episode_words - 25,
-            int(os.getenv("RECOVERY_TARGET_SCRIPT_WORDS", "3800")),
-        )
-        final_words = int((assessment.get("metrics") or {}).get("words") or 0)
-        if final_words < min_episode_words:
-            for pad_attempt in range(1, 7):
-                if final_words >= min_episode_words:
-                    break
-                needed = min(850, max(300, target_episode_words - final_words))
-                _safe_print(
-                    g,
-                    f"      🧩 runtime underrun ({final_words} words); "
-                    f"deepening the underweight story with sourced debate (pass {pad_attempt}/6)",
-                )
-                expanded = _expand_segment_four(
-                    g, script, stories, date_str, board, add_words=needed
-                )
-                if _word_count(expanded) <= final_words:
-                    break
-                script = stabilize(_split_long_turns(expanded, max_words=55))
-                script = _repair_relative_dates(script, date_str)
-                assessment = _assess(script, stories, board, fuel)
-                final_words = int((assessment.get("metrics") or {}).get("words") or 0)
-
-        if final_words > max_episode_words:
-            before_words = final_words
-            script = _deterministic_trim_to_target(script, target_episode_words)
-            script = stabilize(_split_long_turns(script, max_words=55))
-            assessment = _assess(script, stories, board, fuel)
-            final_words = int((assessment.get("metrics") or {}).get("words") or 0)
-            _safe_print(
-                g,
-                f"      ✂️ deterministic runtime trim: {before_words} → "
-                f"{final_words} words before TTS",
-            )
+        _safe_print(g, "Word-count targets are advisory; complete dialogue retained.")
 
         # Re-run the narrow structural repair after runtime normalization, then
         # take the authoritative pre-TTS measurement.
@@ -3181,15 +3142,6 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         def finish_editorial(candidate):
             from editorial_contract import ensure_feature_fallback
             candidate = stabilize(ensure_feature_fallback(candidate))
-            for _ in range(2):
-                words = _word_count(candidate)
-                if words >= min_episode_words:
-                    break
-                expanded = _expand_segment_four(g, candidate, stories, date_str, board,
-                                                min(600, min_episode_words + 150 - words))
-                if expanded == candidate:
-                    break
-                candidate = stabilize(ensure_feature_fallback(expanded))
             return candidate
 
         script, acceptance = repair_and_verify(
@@ -3430,6 +3382,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     g["V3_1_WRITER_ROOM_INSTALLED"] = True
     g["V3_2_HARD_DEBATE_WRITER_ROOM_INSTALLED"] = True
     g["V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"] = True
+
 
 
 
