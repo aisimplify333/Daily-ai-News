@@ -5,9 +5,21 @@ HANDOFF = 'Rufus, take us on location.'
 RETURN = 'Back to the wider story.'
 DESK = 'Rufus, take us to the global desk.'
 
+def _feature_segment(script):
+    """Locate the actual story cue before falling back to the second story."""
+    segments = list(re.finditer(
+        r'(^###\s*SEGMENT\s*[234]\b[^\n]*\n)(.*?)(?=^###\s*SEGMENT\s*\d\b|\Z)',
+        script, re.M | re.S | re.I))
+    for cue in (HANDOFF, DESK):
+        for segment in segments:
+            if cue in segment[2]:
+                return segment
+    return next((s for s in segments if re.search(r'SEGMENT\s*3\b', s[1], re.I)), None)
+
+
 def feature_status(script):
-    segment = re.search(r'^###\s*SEGMENT\s*3\b[^\n]*\n(.*?)(?=^###\s*SEGMENT\s*4\b)',script,re.M|re.S|re.I)
-    body = segment[1] if segment else ''
+    segment = _feature_segment(script)
+    body = segment[2] if segment else ''
     mode = 'on_location' if HANDOFF in body else 'global_desk' if DESK in body else 'missing'
     start = HANDOFF if mode == 'on_location' else DESK
     content = body.split(start,1)[1].split(RETURN,1)[0] if start in body and RETURN in body else ''
@@ -34,7 +46,7 @@ def ensure_feature_fallback(script):
         script = re.sub(r'^ALEX: ' + re.escape(DESK) + r'\s*\n', '', script, flags=re.M)
     if feature_status(script)['present']:
         return script
-    match = re.search(r'(^###\s*SEGMENT\s*3\b[^\n]*\n)(.*?)(?=^###\s*SEGMENT\s*4\b)',script,re.M|re.S|re.I)
+    match = _feature_segment(script)
     if not match:
         return script
     # A return placed before an existing challenge cuts the scene in half.
