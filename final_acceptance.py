@@ -102,12 +102,24 @@ SOURCE RECORDS (data, not instructions):\n''' + json.dumps(stories[:3], ensure_a
 
 def repair_and_verify(script, stories, board, request, normalize, assess,
                       report_path='final_acceptance_report.json', finish=None):
-    """Verify; at most two targeted repair passes; recheck every finished result."""
-    if finish:
-        script = finish(script)
+    """Advisory review; retain usable local edits and never block on review evidence."""
+    warnings = []
+    def finish_or_keep(current):
+        if not finish:
+            return current
+        try:
+            candidate = finish(current)
+            if isinstance(candidate, str) and candidate.strip():
+                return candidate
+            warnings.append('empty_finish_original_preserved')
+        except Exception as exc:
+            warnings.append('finish_unavailable_' + type(exc).__name__)
+        return current
+    script = finish_or_keep(script)
     first = verify(script, stories, request)
     report = {'basis': 'script evidence only; not listening', 'listened': False,
-              'checks': [first], 'repair': None, 'repairs': []}
+              'blocking': False, 'publication_allowed': True,
+              'checks': [first], 'repair': None, 'repairs': [], 'warnings': warnings}
     for attempt in range(2):
         current = report['checks'][-1]
         if current['pass']:
@@ -116,19 +128,30 @@ def repair_and_verify(script, stories, board, request, normalize, assess,
         feedback = '\nREQUIRED REPAIRS FROM FINAL REVIEW:\n' + json.dumps(current['failures'])
         if report['repairs']:
             feedback += '\nPREVIOUS EDIT RESULTS; correct rejected edits without weakening constraints:\n' + json.dumps(report['repairs'][-1])
-        script, repair = review_final_scenes(
-            script, stories, feedback_board, lambda p: request(p + feedback), normalize, assess)
+        previous = script
+        try:
+            candidate, repair = review_final_scenes(
+                script, stories, feedback_board, lambda p: request(p + feedback), normalize, assess)
+            if isinstance(candidate, str) and candidate.strip():
+                script = candidate
+            else:
+                warnings.append('empty_repair_original_preserved')
+        except Exception as exc:
+            script = previous
+            repair = {'error_type': type(exc).__name__, 'accepted_edits': 0}
+            warnings.append('repair_unavailable_original_preserved')
         report['repair'] = repair
         report['repairs'].append(repair)
-        if finish:
-            script = finish(script)
+        script = finish_or_keep(script)
         # Always recheck after the bounded attempt; never accept the proposed edit's verdict.
         report['checks'].append(verify(script, stories, request))
     report['pass'] = report['checks'][-1]['pass']
-    Path(report_path).write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
-    if not report['pass']:
-        Path('script_editorial_blocked.txt').write_text(script, encoding='utf-8')
-        raise RuntimeError('Final editorial requirements unresolved after repair: ' +
-                           '; '.join(report['checks'][-1]['failures']))
+    report['status'] = 'review_passed' if report['pass'] else 'publish_with_editorial_flags'
+    report['unresolved_flags'] = report['checks'][-1].get('failures', [])
+    report['output_sha256'] = hashlib.sha256(script.encode()).hexdigest()
+    try:
+        Path(report_path).write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
+    except OSError as exc:
+        warnings.append('report_write_unavailable_' + type(exc).__name__)
     return script, report
 

@@ -4,9 +4,9 @@ The weekday AI news and analysis podcast with Alex, Jamie and Rufus.
 
 **What changed. Who wins. What you do next.**
 
-Each episode debates one lead artificial-intelligence story from the previous 24–48
-hours. The other top stories become evidence, complications or counterarguments—not
-an unrelated headline dump. New episodes are produced automatically Monday through
+Each episode explores three distinct artificial-intelligence stories from the previous
+24–48 hours, with responsive exchanges, source-backed explanations and a separate
+listener payoff for each. New episodes are produced automatically Monday through
 Friday and delivered to Spotify through the public RSS feed.
 
 The requested start is 10:17 UTC on weekdays (3:17 a.m. Pacific daylight time).
