@@ -40,6 +40,10 @@ def write_review(stories, timeline, directory="."):
     contract = read("editorial_contract_report.json")
     plan = read("performance_plan.json")
     report["editorial_contract"] = contract
+    acceptance = read("final_acceptance_report.json")
+    report["editorial_review"] = acceptance
+    report["issues"].extend(acceptance.get("unresolved_flags", []))
+    report["producer_evidence"] = read("crew_review_report.json").get("producer_evidence", {})
     report["performance_plan_turns"] = len(plan.get("directions", []))
     report["performance_direction_usage"] = read("hybrid_tts_report.json").get("performance_direction_usage", {})
     report["issues"].extend(contract.get("issues", []))

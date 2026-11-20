@@ -115,6 +115,9 @@ Do not claim your proposed edits are verified improvements or assign a numeric s
                 row['reason'] = 'new_structural_or_runtime_failure'
                 row['new_failures'] = sorted(new_failures)
                 continue
+            if set(after.get('soft_flags') or []) - set(before.get('soft_flags') or []):
+                row['reason'] = 'new_editorial_warning_original_span_preserved'
+                continue
             if len(spoken_leaks(candidate)) > len(spoken_leaks(script)):
                 row['reason'] = 'new_production_language'
                 continue

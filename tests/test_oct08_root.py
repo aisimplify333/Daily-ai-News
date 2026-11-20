@@ -181,11 +181,12 @@ class RootRepairs(unittest.TestCase):
             old = os.getcwd();os.chdir(tmp)
             try:
                 request = Mock(return_value='{}')
-                with self.assertRaisesRegex(RuntimeError, 'unresolved'):
-                    repair_and_verify('ALEX: Real line.', [], {}, request, lambda x:x, lambda x:{'failed':[]})
+                result, advisory = repair_and_verify('ALEX: Real line.', [], {}, request, lambda x:x, lambda x:{'failed':[]})
+                self.assertEqual(result, 'ALEX: Real line.')
+                self.assertFalse(advisory['blocking'])
                 # Initial review plus two bounded repair/review pairs.
                 self.assertEqual(request.call_count, 5)
-                self.assertEqual(Path('script_editorial_blocked.txt').read_text(), 'ALEX: Real line.')
+                self.assertFalse(Path('script_editorial_blocked.txt').exists())
                 report = json.loads(Path('final_acceptance_report.json').read_text())
                 self.assertEqual(len(report['repairs']), 2)
                 self.assertEqual(len(report['checks']), 3)

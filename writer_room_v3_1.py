@@ -3175,8 +3175,8 @@ def install_v3_1(g: Dict[str, Any]) -> None:
         except Exception:
             pass
 
-        # Final review must demonstrate the experience in the actual script.
-        # One targeted repair and recheck; no unbounded rewrite loop or paid TTS yet.
+        # Advisory final review: bounded local improvements, then continue with flags.
+        # Missing editorial evidence must not stop an otherwise usable episode.
         from final_acceptance import repair_and_verify
         def finish_editorial(candidate):
             from editorial_contract import ensure_feature_fallback

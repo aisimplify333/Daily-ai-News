@@ -31,10 +31,33 @@ def test_editorial_retry_receives_rejection_reason(tmp_path, monkeypatch):
     assert seen == ['ALEX: start', 'ALEX: start next']
     assert 'introduced numeric claim' in request.call_args.args[0]
 
-def test_editorial_failure_still_blocks_after_two_repairs(tmp_path, monkeypatch):
+def test_editorial_failure_publishes_with_flags_after_two_repairs(tmp_path, monkeypatch):
     monkeypatch.chdir(tmp_path)
     failed = {'pass': False, 'failures': ['unresolved']}
     with patch('final_acceptance.verify', return_value=failed), patch('final_acceptance.review_final_scenes', return_value=('ALEX: blocked', {})) as repair:
-        with pytest.raises(RuntimeError):
-            repair_and_verify('ALEX: start', [], {}, Mock(), lambda s:s, lambda s:{})
+        script, report = repair_and_verify('ALEX: start', [], {}, Mock(), lambda s:s, lambda s:{})
     assert repair.call_count == 2
+    assert script == 'ALEX: blocked'
+    assert not report['pass'] and not report['blocking']
+    assert report['publication_allowed']
+    assert report['unresolved_flags'] == ['unresolved']
+
+def test_review_and_finish_outages_keep_usable_script(tmp_path):
+    def unavailable(*args):
+        raise TimeoutError('provider unavailable')
+    script, report = repair_and_verify('ALEX: Usable segment.', [], {}, unavailable,
+        lambda s: s, lambda s: {}, str(tmp_path/'report.json'), finish=unavailable)
+    assert script == 'ALEX: Usable segment.'
+    assert report['publication_allowed'] and not report['blocking']
+    assert not report['pass'] and report['warnings']
+
+def test_bad_later_edit_keeps_good_edit_in_another_segment():
+    from crew_review import review_final_scenes
+    import json
+    original = '### SEGMENT 2 — First\nALEX: Old first.\n### SEGMENT 3 — Second\nJAMIE: Good second.\n### SEGMENT 4 — Third\nRUFUS: Good third.'
+    edits = [{'segment': 2, 'old': 'ALEX: Old first.', 'new': 'ALEX: Better first.'},
+             {'segment': 3, 'old': 'JAMIE: Good second.', 'new': 'JAMIE: Worse second.'}]
+    result, report = review_final_scenes(original, [], {}, lambda _: json.dumps({'edits': edits}),
+        lambda s: s, lambda s: {'failed': [], 'soft_flags': ['repetition'] if 'Worse second' in s else []})
+    assert 'Better first' in result and 'Good second' in result and 'Good third' in result
+    assert 'Worse second' not in result and report['accepted_edits'] == 1

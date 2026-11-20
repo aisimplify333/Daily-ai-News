@@ -18,9 +18,15 @@ class CompletedDeliveryRecoveryTests(unittest.TestCase):
             (root/'feed.xml').write_text('<rss><channel><title>Keep metadata</title><item><title>Keep archive</title></item></channel></rss>')
             for name, field in [('final_acceptance_report.json','pass'),('production_delivery_report.json','passed')]:
                 (source/name).write_text(json.dumps({field:True}))
+            (source/'final_acceptance_report.json').write_text(json.dumps({
+                'pass': False, 'blocking': False, 'unresolved_flags': ['missing evidence']}))
             with self.assertRaisesRegex(ValueError, 'hash'):
                 restore(source,'2026-10-13','wrong',root)
             digest=hashlib.sha256(audio).hexdigest()
+            (source/'production_delivery_report.json').write_text('{"passed": false}')
+            with self.assertRaisesRegex(ValueError, 'production_delivery'):
+                restore(source,'2026-10-13',digest,root)
+            (source/'production_delivery_report.json').write_text('{"passed": true}')
             restore(source,'2026-10-13',digest,root)
             self.assertEqual((root/'episode_audio/podcast_2026-10-13.mp3').read_bytes(),audio)
             self.assertEqual(len(ET.parse(root/'feed.xml').findall('./channel/item')),2)
