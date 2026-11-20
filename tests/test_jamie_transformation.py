@@ -45,7 +45,9 @@ class JamieTests(unittest.TestCase):
             )
             return 'ALEX: ' + HANDOFF + '\n' + dialogue + '\nALEX: ' + RETURN
         self.assertTrue(status(block(150))['pass'])
-        self.assertFalse(status(block(157))['pass'])
+        self.assertTrue(status(block(157))['pass'])
+        self.assertTrue(status(block(173))['length_advisory'])
+        self.assertFalse(status(block(184))['pass'])
 
     def test_abandoned_inline_speaker_cue_is_not_spoken(self):
         core = '### SEGMENT 5 — Close\nALEX: Keep the close.\n'
