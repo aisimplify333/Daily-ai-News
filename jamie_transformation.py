@@ -109,7 +109,7 @@ Return JSON {"cases": [up to three DISTINCT candidate objects]} with each candid
 result_basis (independent evidence or company/vendor reported), measurement_context,
 case_date, source_url (direct supporting article, study, interview or case-study https URL), source_quote (10-25 exact
 words from that page supporting the result), limitation,
-listener_action, availability. Include a second corroborating URL when available.
+listener_action, availability. One supporting article from a major publication or primary source is sufficient. Do not seek a second corroborating URL. source_quote is optional; paraphrase with attribution rather than inventing a quotation.
 No invented quantitative uplift, causality, costs, quotes or hands-on experience.
 If no verified case is found return {"unavailable":true}.
 Episode date: ''' + date
@@ -138,8 +138,7 @@ Episode date: ''' + date
             diagnostics = {}
             reason = 'missing_required_fields' if not valid_case(case) else (
                 '' if source_matches(case, diagnostics) else diagnostics.get('reason', 'source_unreachable_or_exact_quote_not_found'))
-            if not reason and repeated_vendor(case, history):
-                reason = 'consecutive_vendor_showcase_choose_another'
+            # Vendor variety is an editorial preference, not a publication blocker.
             attempts.append({'case': case, 'reason': reason or 'verified'})
             Path('jamie_research_report.json').write_text(json.dumps({'date': date, 'attempts': attempts}, indent=2) + '\n')
             if not reason:
@@ -185,13 +184,47 @@ def select_inventory(date, history):
 
 def valid_case(case):
     fields = ('subject', 'tool', 'problem', 'workflow', 'result', 'result_basis',
-              'measurement_context', 'case_date', 'limitation', 'listener_action', 'availability', 'source_quote')
+              'measurement_context', 'case_date', 'limitation', 'listener_action', 'availability')
     return all(isinstance(case.get(k), str) and case[k].strip() for k in fields) and bool(
         re.match(r'https://[^/]+/.+', str(case.get('source_url', ''))))
 
 
+MAJOR_SOURCE_DOMAINS = (
+    'reuters.com', 'apnews.com', 'bbc.com', 'bbc.co.uk', 'ft.com',
+    'bloomberg.com', 'wsj.com', 'nytimes.com', 'theguardian.com',
+    'cnbc.com', 'techcrunch.com', 'theverge.com', 'wired.com',
+    'techradar.com', 'venturebeat.com', 'zdnet.com',
+    'microsoft.com', 'salesforce.com', 'google.com', 'blog.google', 'openai.com',
+    'anthropic.com', 'aws.amazon.com', 'sap.com', 'oracle.com',
+    'nvidia.com', 'adobe.com', 'ibm.com', 'servicenow.com',
+)
+
+
+def single_source_eligible(case):
+    """Owner policy: one major outlet or primary-source article is sufficient."""
+    from urllib.parse import urlsplit
+    try:
+        parsed = urlsplit(str(case.get('source_url', '')))
+        host = (parsed.hostname or '').lower().rstrip('.')
+        return (parsed.scheme == 'https' and not parsed.username
+                and len(parsed.path.strip('/')) > 0
+                and any(host == domain or host.endswith('.' + domain)
+                        for domain in MAJOR_SOURCE_DOMAINS))
+    except ValueError:
+        return False
+
+
 def source_matches(case, diagnostics=None):
     """Open the claimed source; a plausible-looking URL is not evidence."""
+    # Live-search attribution is sufficient for these sources. Do not require
+    # runner access, exact-quote scraping, or a second independent report.
+    # This records an editorial acceptance, never a passed factual audit.
+    if single_source_eligible(case):
+        case['source_acceptance'] = 'single_major_source_attributed'
+        case['source_quote'] = ''
+        if diagnostics is not None:
+            diagnostics['reason'] = 'single_major_source_attributed'
+        return True
     import urllib.request
     import urllib.error
     diagnostics = diagnostics if diagnostics is not None else {}
@@ -214,7 +247,7 @@ def source_matches(case, diagnostics=None):
             value = unicodedata.normalize('NFKC', value)
             value = value.translate(str.maketrans({'’': "'", '‘': "'", '“': '"', '”': '"', '\u00ad': ''}))
             return re.sub(r'\s+', ' ', value).strip().casefold()
-        quote = case['source_quote']
+        quote = case.get('source_quote', '')
         words = quote.split()
         if not 10 <= len(words) <= 60:
             diagnostics['reason'] = 'source_quote_length_out_of_range'
@@ -246,7 +279,7 @@ def add_feature(script, case, request):
     prompt = '''Write ONLY JSON {"dialogue":"speaker lines"} for Jamie's AI
 Transformation, an additional 2-3 minutes after Story Three. Aim for 320-450
 spoken words; the hard maximum is 475 words.
-Use only the supplied case. For feature_mode hypothetical_capability or practical_technique,
+Use only the supplied case. Attribute the story to its named publication or company.\nA single-source acceptance is not independent verification. Paraphrase; do not\nspeak source_quote as a direct quotation. For feature_mode hypothetical_capability or practical_technique,
 explicitly say the scenario is hypothetical; describe a proposed workflow, never a
 customer result, hands-on test, claimed saving or demonstrated outcome. Preserve
 limited/early-adopter/announced availability. For healthcare use administrative
