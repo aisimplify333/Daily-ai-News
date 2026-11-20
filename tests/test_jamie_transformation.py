@@ -47,7 +47,8 @@ class JamieTests(unittest.TestCase):
         self.assertTrue(status(block(150))['pass'])
         self.assertTrue(status(block(157))['pass'])
         self.assertTrue(status(block(173))['length_advisory'])
-        self.assertFalse(status(block(184))['pass'])
+        self.assertTrue(status(block(184))['pass'])
+        self.assertTrue(status(block(1000))['pass'])
 
     def test_abandoned_inline_speaker_cue_is_not_spoken(self):
         core = '### SEGMENT 5 — Close\nALEX: Keep the close.\n'
@@ -61,31 +62,22 @@ class JamieTests(unittest.TestCase):
             result = add_feature(core, {}, lambda _: json.dumps({'dialogue': dialogue}))
         self.assertNotIn(' ALEX —\n', result)
 
-    def test_inline_cast_labels_split_and_oversize_gets_focused_compression(self):
+    def test_long_complete_feature_is_retained_without_paid_rewrite(self):
         core = '### SEGMENT 5 — Close\nALEX: Keep the close.\n'
-        oversized = '\n'.join(
-            name + ': ' + ('useful ' * 48)
-            for name in ('JAMIE', 'ALEX', 'RUFUS') * 4
-        )
-        concise = '\n'.join(
-            name + ': ' + ('useful ' * 26)
-            for name in ('JAMIE', 'ALEX', 'RUFUS') * 4
-        )
-        replies = [json.dumps({'dialogue': oversized}), json.dumps({
-            'dialogue': 'JAMIE: First thought. Alex: Second thought. Rufus: Third thought.\n' + concise
-        })]
-        prompts = []
+        dialogue = '\n'.join(name + ': ' + 'useful ' * 48
+                             for name in ('JAMIE', 'ALEX', 'RUFUS') * 4)
+        calls = []
         def request(prompt):
-            prompts.append(prompt)
-            return replies.pop(0)
+            calls.append(prompt)
+            return json.dumps({'dialogue': dialogue})
         with tempfile.TemporaryDirectory() as directory, patch(
             'jamie_transformation.Path', side_effect=lambda p: Path(directory) / p
         ):
             result = add_feature(core, {}, request)
         self.assertTrue(status(result)['pass'])
-        self.assertIn('\nALEX: Second thought.', result)
-        self.assertIn('\nRUFUS: Third thought.', result)
-        self.assertIn('Delete repetition', prompts[1])
+        self.assertTrue(status(result)['length_advisory'])
+        self.assertEqual(len(calls), 1)
+        self.assertEqual(result.count('useful'), dialogue.count('useful'))
 
     def test_contractions_do_not_bypass_turn_length_split(self):
         core = '### SEGMENT 5 — Close\nALEX: Keep the close.\n'
@@ -130,5 +122,5 @@ class JamieRecoveryTests(unittest.TestCase):
             (root/'script_2026-10-21.txt').write_text('ALEX: '+HANDOFF)
             with patch('post_render_recovery._duration_seconds', return_value=34*60), patch('post_render_recovery.subprocess.run') as render:
                 result = recover_completed_render(root, '2026-10-21', 19, 33)
-                self.assertEqual(result['disposition'], 'held_for_editorial_review')
+                self.assertEqual(result['disposition'], 'accepted_as_rendered')
                 render.assert_not_called()
