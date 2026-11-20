@@ -579,6 +579,7 @@ def build_grounded_story_slate(
                     refill += "\nACCEPTED (retain, do not repeat unless upgrading a weak source): " + json.dumps([
                         {"headline": s["headline"], "source_url": s["source_url"], "source_tier": s["source_tier"]} for s in normalized])
                     refill += "\nDISCOVERY LEADS (verify independently): " + json.dumps(seeds[:15])
+                    refill += "\nBefore broad discovery, upgrade the strongest weak-source event by opening its originating company or institution announcement. Search the exact product/event name on that organization's official domain. Retain its original event key and actual date; replace unsupported summary claims with primary-source facts. A publisher label alone is not verification. Prioritize supplied editor canonical URLs, then seek a distinct missing story. Never change a date to force freshness."
                     refill += "\nREJECTIONS TO RESOLVE, NOT BYPASS: " + json.dumps(report["attempts"][:-1])
                     refill += "\nTARGETED FINAL PASS: search individual discovery headlines, open their original articles, and fill the missing slots only. Prioritize documented useful applications and discoveries when the accepted slate is risk-heavy. If a date is unknown, omit the item; never guess a timestamp."
                 text = _recovery_search(refill)
