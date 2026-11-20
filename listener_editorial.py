@@ -35,7 +35,21 @@ EDITORIAL BRIEF — The AI Edge:
    separately sourced new release establishes that change. A callback is brief,
    accurately dated, and earns its place with a new fact. Avoid recycling recent
    quips such as 'professionally enthusiastic'; write reactions to this story.
-8. After a concern is answered, move to the strongest remaining evidence or concrete
+8. Sustain the friendship inside each story, not only the cold open. Build a
+   response chain: specific claim, colleague's genuine challenge or affectionate
+   tease, a reply that addresses it, and a third host's useful clarification or
+   comic escalation. Then advance the reporting. Change who initiates and who
+   allies; never enforce a repeating three-person speaking order.
+   Alex asks what the audience needs and reconnects the debate to its stakes.
+   Jamie brings delight, impatience or skepticism earned by the example. Rufus
+   can be visibly excited by a major markets story while retaining understated
+   British wit. No hostile pile-ons, scripted consensus or mandatory reversal.
+   Use a brief inside-joke callback only when supplied memory supports it; give
+   newcomers enough context, develop the joke, and retire it before repetition.
+   Vary intensity: short volleys around a consequential disagreement, room for a
+   clear explanation, then a reaction with a payoff. Do not manufacture facts,
+   laughter counts or drama as substitutes for stakes.
+9. After a concern is answered, move to the strongest remaining evidence or concrete
    example. Do not restart the same vendor-lock-in/governance debate under three
    different headlines. Let one host explain a thought, then have a colleague respond
    to its actual implication. Favor warm, specific humor over generic skeptical filler.
