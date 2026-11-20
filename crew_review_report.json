@@ -2,76 +2,232 @@
   "basis": "model editorial review plus local safeguards; not listening",
   "listened": false,
   "requested_calls": 1,
-  "accepted_edits": 5,
+  "accepted_edits": 3,
   "edits": [
     {
       "accepted": true,
-      "reason": "Removes passive 'I hadn't thought of it that way'; keeps Rufus's factual correction and Jamie's dry landing.",
+      "reason": "Isolated 'Heh.' is an unanchored vocal filler with no conversational trigger; deleting removes the artefact.",
       "segment": 2
     },
     {
-      "accepted": false,
-      "reason": "numeric_receipts_changed"
-    },
-    {
       "accepted": true,
-      "reason": "Removes duplicated handoff; keeps the single correct navigation marker.",
+      "reason": "Duplicate midroll intro; line 78 carries the full sponsor transition and must be the surviving line.",
       "segment": 3
     },
     {
       "accepted": false,
-      "reason": "feature_navigation_protected"
+      "reason": "new_editorial_warning_original_span_preserved"
     },
     {
       "accepted": true,
-      "reason": "Folds the transitional re-entry into Jamie's line and leads directly into Rufus's 'mishap' beat without restating the conclusion.",
-      "segment": 3
-    },
-    {
-      "accepted": true,
-      "reason": "Removes the unfinished non-sequitur; keeps Alex's substantive question that drives the model-vs-agent exchange.",
-      "segment": 4
-    },
-    {
-      "accepted": true,
-      "reason": "Removes spoken production note 'Show notes'; the two-line comic beat that follows still makes sense without it.",
-      "segment": 4
+      "reason": "Restores approved order: show tagline, then cast farewell, then follow invitation — all after audience question and sponsor read.",
+      "segment": 5
     }
   ],
-  "input_sha256": "e8f4b724880cd036257b9f0eb956af51a5b5667e6d83c2f46b2c2de8de594373",
+  "input_sha256": "ef983bb6fe3b16f248640cac915a3df4c991fcfe67750824b47a0ee453b4077d",
   "review_before_repairs": {
     "scenes": [
       {
         "segment": 2,
-        "chemistry": "Shareable exchange at lines 44-51 is specific and earned; Rufus's 'Welcome to the IPO' lands quietly. Jamie and Alex trade real positions. Rufus's teasing of Alex's moral-compass framing is present but light.",
-        "discovery": "Voting-class structure and selling-stockholder implication are developed through genuine back-and-forth, not summary.",
-        "repetition": "Lines 51-52: Rufus corrects Jamie's ceiling reading, then Alex says 'I hadn't thought of it that way' — passive filler that adds nothing after the point has landed."
+        "chemistry": "Lines 19-25 show genuine pushback and counter-pushback; Rufus's 'slow intern who asks permission to use the stapler' earns a specific defence from Jamie. Lines 28-42 develop the 'isolated window' thread organically.",
+        "discovery": "Lines 28-43 surface the visibility-vs-sandboxing distinction and the unanswered session-log question — both sourced, both specific.",
+        "repetition": "Line 46 ('Heh.') is an isolated vocal filler with no prior or following beat; it lands as a production artefact, not an earned reaction."
       },
       {
         "segment": 3,
-        "chemistry": "Jamie carries the technical explanation well; Rufus's 'mishap' dry line at 83 is the best beat in the segment. But lines 71-72 are a doubled handoff to Rufus that breaks the scene awkwardly.",
-        "discovery": "Master-key analogy is clean and specific. The practical audit advice at 102-105 arrives naturally.",
-        "repetition": "Lines 71 and 72 are the same handoff spoken twice. Line 79 ('And the employee presumably did not know that') repeats the point already made at line 77. Lines 80-81 reopen a scene that had already moved forward."
+        "chemistry": "Lines 57-73 distribute challenge across all three; Jamie's fragmentation concern (line 68) draws a substantive Rufus reply rather than a summary. Alex's pushback on 'protectionism' (line 71) is specific and followed up by Jamie.",
+        "discovery": "Lines 61 and 69 deliver the data-sovereignty mechanism and the 'sovereign AI stacks' consequence clearly and without repetition.",
+        "repetition": "Lines 77-78: the midroll intro is duplicated verbatim ('a quick midroll' then the full line again). One must be cut."
       },
       {
         "segment": 4,
-        "chemistry": "Rufus-Jamie tension on the timing-coincidence reading at 131-132 is genuine and unresolved in a good way. Alex's 'I was trying not to say that' at 148 is an earned reaction.",
-        "discovery": "Model-vs-agent distinction at 141-146 adds real depth and connects cleanly back to Segment 3.",
-        "repetition": "Lines 138-139: Alex says 'I was going to say I should try it for something' then immediately asks a separate question — the first line goes nowhere and can be cut. Line 153 'Show notes' is an orphaned production note spoken aloud."
+        "chemistry": "Lines 95-109 sustain the junior-colleague / output-quality thread across all three hosts with shifting alliances; Rufus's executive observation (line 100) earns specific comic payoff from both Alex and Jamie.",
+        "discovery": "Lines 104-106 honestly flag the unresolved tone-vs-specificity variable — the script does not oversell the research.",
+        "repetition": "None detected within the segment. The Apple aside (lines 113-119) is flagged as 'not our lead' by Rufus, which is appropriate, but the Apple content slightly dilutes the story-three landing."
+      },
+      {
+        "segment": 5,
+        "chemistry": "The closing three-way distribution gives each host a distinct register: Jamie practical, Rufus cautionary, Alex openly uncertain. Line 128 connects back to a prior episode frame without replaying a punchline.",
+        "discovery": "Line 125 names the session-log gap as the specific unanswered question — a concrete follow-on rather than a generic 'watch this space'.",
+        "repetition": "Lines 129-131 place the sign-off before the audience question and sponsor read, then resume with the follow invitation at line 135. The farewell sequencing is inverted from the approved order (farewell must follow audience question, sponsor, and follow invitation)."
       }
     ],
-    "rufus_feature": "Lines 55-57 are labelled as an imagined scene but deliver only one atmospheric sentence and two non-reactive lines. Jamie's reply ('And the answer to that is basically we don't know yet') does not follow from anything Rufus actually described. The studio exchange is two lines, neither of which develops the imagined scene. This is a label, not a scene.",
+    "rufus_feature": "Lines 66-67 open with a concrete named setting (New York financial district, a risk committee meeting), use 'Picture' as required, and inhabit the scene rather than merely labelling it. The studio exchange at lines 68-73 is responsive: Jamie's fragmentation challenge leads to Rufus's 'sovereign AI stacks' answer, then Alex complicates it with the SpaceX-specific risk context. The feature earns its setting. Word count is within advisory band. No eyewitness claim is made.",
     "remaining_issues": [
-      "Doubled handoff at lines 71-72 creates a production seam audible on playback.",
-      "Rufus feature (lines 55-57) lacks a concrete imagined detail and a responsive studio exchange; it reads as a placeholder.",
-      "Line 79 repeats line 77's point with different wording; redundant.",
-      "Lines 80-81 reopen a closed beat unnecessarily.",
-      "Line 138 is an unfinished thought that receives no response before Alex pivots away.",
-      "Line 153 'Show notes' is a spoken production note with no dialogue function.",
-      "Lines 51-52: Rufus's correction is good; Alex's 'I hadn't thought of it that way' is a passive acknowledgement that dilutes the exchange."
+      "Line 46: isolated 'Heh.' with no conversational anchor; functions as a stage direction artefact.",
+      "Lines 77-78: midroll intro duplicated verbatim; one line must be deleted.",
+      "Lines 129-131: sign-off ('I'm Jamie', 'I'm Rufus', 'See you then') placed before audience question (line 132), sponsor read (line 133), and follow invitation (line 135), violating the approved farewell order.",
+      "Scene 4 Apple aside (lines 113-119): useful but slightly underdeveloped as a coda; the Bloomberg qualifier ('job listings, not a product') is preserved, which is correct, but the aside slightly softens the story-three landing without a bridging line."
     ]
   },
   "remaining_production_language": [],
-  "output_sha256": "f57153145e606dd502715be85644fdb9765e8ef7cb96d4ffc228db8a7c3db8ff",
+  "producer_evidence": {
+    "basis": "model observations on input script; citations checked against output",
+    "blocking": false,
+    "listened": false,
+    "quality_score": null,
+    "input_sha256": "ef983bb6fe3b16f248640cac915a3df4c991fcfe67750824b47a0ee453b4077d",
+    "output_sha256": "932927ec107c2f262906b13e205f835ed1e2d6bfc576e42e24eb20eb39a09f05",
+    "areas": {
+      "opening": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "ALEX: Google just gave Gemini on Mac a hand. Literally — it can now click, type, and fill out forms across your apps and the web on your behalf.",
+          "JAMIE: And it shows you a live preview while it does it, which is either reassuring or deeply unsettling depending on how messy your desktop is.",
+          "RUFUS: I find it both, simultaneously.",
+          "ALEX: Welcome to The AI Edge. I'm Alex, with Jamie and Rufus. Today: desktop agents are real, SpaceX is picking sides in AI geopolitics, and your tone of voice may be costing you better answers."
+        ],
+        "observation": "Lines 2-4 deliver the real development (Gemini clicks and types on your behalf) with a specific visual detail (live preview) and a tonal contrast (reassuring vs unsettling) before the music sting. Line 6 names all three stories and gives a reason to stay for each. The opening earns attention without overpromising.",
+        "next_edit": ""
+      },
+      "cast_identity": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "RUFUS: That approval step is what I want to pull on. In principle: you stay in control. In practice, if you're approving every single click, you've hired a very slow intern who asks permission to use the stapler.",
+          "JAMIE: Fair, but the live preview is doing more work than it sounds. You can stop it mid-task. You see it heading somewhere wrong before it commits.",
+          "RUFUS: Is it? Or does a tool that fires approvals at you eventually train you to click through without reading them?",
+          "RUFUS: This is the one I've been watching. Because on the surface it looks like a corporate IT decision. What it actually signals is something more structural — how high-security organizations think about where their AI comes from.",
+          "JAMIE: \"AI supply chain\" — explain that without the compliance memo energy.",
+          "ALEX: Back to the wider story. Though I'd push back slightly on framing this as pure protectionism — SpaceX operates in a sector where adversarial data extraction is a documented concern, not a hypothetical. That's a different risk calculation than a consumer app.",
+          "JAMIE: I've been waiting for this one to surface because I've suspected it for months and now I feel vindicated.",
+          "RUFUS: You have been unusually polite to your laptop.",
+          "JAMIE: I've been strategically polite. There's a difference.",
+          "RUFUS: I want to flag something slightly counterintuitive here. This research suggests that people who habitually write in short, authoritative, no-pleasantries-required language — which describes a significant portion of senior executives — may be systematically getting worse AI outputs than their more junior colleagues who naturally write in more elaborated, deferential styles.",
+          "JAMIE: To be fair, you say \"please\" to spreadsheets, Rufus."
+        ],
+        "observation": "Rufus identifies the structural implication before the others notice it (line 56) and uses composed understatement ('slow intern who asks permission to use the stapler', line 19). Jamie defends the live-preview mechanism with specific reasoning (line 20) and teases Rufus's jargon ('compliance memo energy', line 57). Alex is the one who admits residual uncertainty and asks the obvious question throughout. Lines cannot swap names without changing the register. Line 108 ('you say please to spreadsheets, Rufus') is relationship-specific, not generic.",
+        "next_edit": ""
+      },
+      "responsive_exchange": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "RUFUS: Is it? Or does a tool that fires approvals at you eventually train you to click through without reading them?",
+          "JAMIE: That's a sharp point. The permission model is only as useful as your attention to it.",
+          "ALEX: Google does say users choose which apps get access — so you're scoping it, not handing over everything at once.",
+          "JAMIE: Which helps. But I want to know what \"isolated window\" actually means. If Gemini is controlling my mouse, it's interacting with my system by definition. That's not isolated.",
+          "ALEX: I think \"isolated\" means it runs in a visible window you can monitor — not silently in the background.",
+          "RUFUS: Visible isolation rather than computational isolation.",
+          "JAMIE: Right. That's a meaningful distinction. It's transparent, not sandboxed in any security sense. Which is good for trust. Less clear on what happens when it hits an unexpected dialog box from an app it's never seen.",
+          "RUFUS: Does the distinction matter if the output is the same?",
+          "ALEX: That's actually a good question. I think it matters for what you do about it. If a colleague is upset, you manage the relationship. If a model is producing worse outputs because of your phrasing, you change the phrasing. Same fix, different reason.",
+          "JAMIE: Right. And the practical implication is really simple: polite, specific, clear prompts perform better than curt, vague, or hostile ones. Not because the AI cares about your tone emotionally. But because the structure of a polite, specific prompt is usually also a better-structured prompt."
+        ],
+        "observation": "Lines 25-31: Rufus raises approval-fatigue as a tool problem; Alex rebuts it as a user problem; Rufus presses the rebuttal ('does a tool that fires approvals at you eventually train you to click through'); Jamie concedes the point then introduces the 'isolated window' question. Each turn follows the previous one specifically. Lines 95-97 repeat the pattern for the offended-vs-calibrating distinction: challenge, answer with reasoning, practical implication.",
+        "next_edit": ""
+      },
+      "scene_variety": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "ALEX: So. Gemini on Mac can now do your clicking for you. Google announced this on November nineteenth, and the headline is: describe a workflow, and Gemini handles the mouse and keyboard while you watch.",
+          "ALEX: Our second story. SpaceX's AI coding unit, Cursor, is reportedly weighing a policy to phase out Chinese-developed AI models from its internal workflows. Reuters broke this yesterday. And the reason cited isn't performance — it's geopolitics.",
+          "ALEX: Our third story is about something that affects every person using an AI tool right now, and it involves research showing that the tone you use with AI actually changes the quality of what you get back.",
+          "ALEX: The thing that actually shifts my view here — slightly — is the third-story combination we've now set up without meaning to. We have an AI agent watching your screen and waiting for your approval. We have a supply chain built on models with opaque origins.",
+          "ALEX: And now we have research saying the way you talk to these things affects what they give you. The human side of this interaction is not passive."
+        ],
+        "observation": "Story 1 (desktop agent, permission surfaces, session memory) is investigative and practical. Story 2 (geopolitics, supply chain, sovereign stacks) is structural and policy-oriented with an imagined location. Story 3 (tone and prompt quality, training-data mirror) is behavioural and self-referential. The through-line at lines 110-112 names the thematic connection without flattening the differences. Emotional movement differs: curiosity to caution (S1), seriousness to honest uncertainty (S2), amusement to slight unease (S3).",
+        "next_edit": ""
+      },
+      "comic_payoff": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "RUFUS: That approval step is what I want to pull on. In principle: you stay in control. In practice, if you're approving every single click, you've hired a very slow intern who asks permission to use the stapler.",
+          "JAMIE: Fair, but the live preview is doing more work than it sounds. You can stop it mid-task. You see it heading somewhere wrong before it commits.",
+          "JAMIE: Or spend that time approving things.",
+          "ALEX: Heh. The boss types \"summarize\" and gets three bullet points. The intern types \"could you help me understand the key arguments in this document and maybe flag anything that seems contradictory\" and gets a genuinely useful analysis.",
+          "JAMIE: And then the boss looks at both outputs and concludes the AI isn't that impressive.",
+          "RUFUS: Dryly correct.",
+          "JAMIE: To be fair, you say \"please\" to spreadsheets, Rufus.",
+          "RUFUS: They behave better for it."
+        ],
+        "observation": "Line 19 (slow intern, stapler) earns a specific defence from Jamie at line 20 — the joke is answered, not ignored. Line 36 ('Or spend that time approving things') is Jamie's dry callback to Rufus's approval-fatigue point, landing without explanation. Lines 101-103: Alex's boss/intern scenario earns Jamie's punchline ('the boss concludes the AI isn't impressive') and Rufus's 'Dryly correct' — a three-beat payoff where nobody explains it. Line 109 ('They behave better for it') lands quietly after the spreadsheet tease.",
+        "next_edit": ""
+      },
+      "discovery": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "JAMIE: Which helps. But I want to know what \"isolated window\" actually means. If Gemini is controlling my mouse, it's interacting with my system by definition. That's not isolated.",
+          "ALEX: I think \"isolated\" means it runs in a visible window you can monitor — not silently in the background.",
+          "RUFUS: Visible isolation rather than computational isolation.",
+          "JAMIE: Right. That's a meaningful distinction. It's transparent, not sandboxed in any security sense. Which is good for trust. Less clear on what happens when it hits an unexpected dialog box from an app it's never seen.",
+          "RUFUS: It answers visibility. It doesn't answer memory.",
+          "ALEX: So the question people should actually be asking before they hand this a task isn't just 'which apps' — it's 'does this leave a session record somewhere I haven't consented to?'",
+          "RUFUS: Right. It's about data sovereignty — which basically means: does your data stay within legal boundaries you actually control? The worry is that if a model was trained on data from one jurisdiction, or its weights are controlled by an entity in another, you've got dependencies you can't fully audit.",
+          "RUFUS: That is the uncomfortable implication. If this logic propagates — and it's already moving in defense and finance — you could end up with what some analysts are calling sovereign AI stacks. American firms on American-trained models, European firms on European-trained models, each with different capability ceilings.",
+          "ALEX: So it's not that the AI is offended. It's that \"here's how conversations after aggressive inputs tend to go\" is baked into the training.",
+          "JAMIE: Exactly. It's mirroring social patterns from the data it learned on. Which means — and this is the slightly unsettling part — your AI is running a statistical model of human social dynamics, and you're not exempt from that model.",
+          "JAMIE: Yes. And the specificity might be doing as much work as the politeness. But they tend to co-occur in human communication, so in the training data they're associated.",
+          "JAMIE: The honest answer is we don't have clean experimental separation between those two variables from this research. What the research supports is that rude prompts correlate with worse outputs. Whether that's entirely because tone cues a different response pattern, or partly because rude prompts are also typically less specific — that's not fully resolved."
+        ],
+        "observation": "Line 31 surfaces the visibility-vs-sandboxing distinction as a named, sourced mechanism. Lines 42-43 advance it to the memory question ('isolated window answers visibility, not memory'). Line 61 explains data sovereignty concretely (jurisdiction, training data, weight control). Line 69 names 'sovereign AI stacks' as a consequence with a specific fragmentation risk. Lines 91-92 explain the training-data mirror mechanism clearly. Line 99 honestly flags the tone/specificity co-occurrence without overclaiming. Each discovery is tied to a sourced fact.",
+        "next_edit": ""
+      },
+      "rufus_feature": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "RUFUS: Picture a risk committee somewhere in New York's financial district — Wall Street, or one of the law firms that handles AI compliance for half the defense contractors in the city. It's the morning after Reuters runs this piece. Someone just forwarded it with two words in the subject line —",
+          "RUFUS: \"See this?\" The question they're now asking isn't \"is this model fast?\" It's \"can we defend where it came from?\" That question is becoming a standing agenda item, and SpaceX giving it public weight accelerates that considerably.",
+          "JAMIE: But if every country's firms end up using only domestically sourced models, don't we just get a fragmented ecosystem where the best tool is irrelevant if it's from the wrong place?",
+          "RUFUS: That is the uncomfortable implication. If this logic propagates — and it's already moving in defense and finance — you could end up with what some analysts are calling sovereign AI stacks. American firms on American-trained models, European firms on European-trained models, each with different capability ceilings.",
+          "JAMIE: Which might mean worse AI for everyone, depending on who happens to be ahead this year.",
+          "ALEX: Back to the wider story. Though I'd push back slightly on framing this as pure protectionism — SpaceX operates in a sector where adversarial data extraction is a documented concern, not a hypothetical. That's a different risk calculation than a consumer app.",
+          "JAMIE: And Reuters makes clear this isn't SpaceX alone. There's been intensified scrutiny across AI supply chains broadly. They're early, not isolated.",
+          "RUFUS: Though \"considering\" should still be doing some work in how we talk about it. It's a signal, not a policy. Important distinction."
+        ],
+        "observation": "Line 66 opens with a concrete named setting (New York financial district risk committee) and uses 'Picture' as required. The scene is inhabited through the two-word email subject line detail, which is specific and credible. The studio exchange follows immediately: Jamie's fragmentation challenge (line 68) draws a substantive answer (line 69), Alex complicates it with the SpaceX-specific risk context (line 71), Jamie adds the 'not isolated' qualifier (line 72), and Rufus preserves the 'considering' caveat (line 73). No eyewitness claim. The return to studio is natural.",
+        "next_edit": ""
+      },
+      "listener_value": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "JAMIE: And right now that's not answered by the announcement. Worth checking before you point it at anything sensitive.",
+          "RUFUS: For routine, non-confidential admin — moving public data between tabs, filling in a shipping address — that uncertainty is a low stake. For anything personal or financial, I'd want it answered first.",
+          "JAMIE: Simple, repetitive form-filling. Data entry across a couple of apps. Web lookups that feed into a document. That kind of thing — probably yes.",
+          "RUFUS: Complex multi-step workflows where something unexpected happens halfway through — probably not yet. The experimental label is doing real work there.",
+          "ALEX: So the answer is: some of your daily admin, today, with your attention on it. Not all of it, not unattended.",
+          "JAMIE: And how you describe the task matters. Specific instructions get you somewhere. \"Sort out my inbox\" gets you a very confused mouse cursor.",
+          "RUFUS: If you're responsible for AI tooling at any organization touching sensitive data, defense contracts, or regulated industries — find out where your models come from. Not because there's necessarily a problem today. Because someone is shortly going to ask you, and you'll want an answer ready.",
+          "JAMIE: And if that question hasn't reached your sector yet, SpaceX is a reasonable signal for when it will.",
+          "JAMIE: The honest answer is we don't have clean experimental separation between those two variables from this research. What the research supports is that rude prompts correlate with worse outputs. Whether that's entirely because tone cues a different response pattern, or partly because rude prompts are also typically less specific — that's not fully resolved.",
+          "ALEX: So politeness probably helps at the margin, but specificity is doing the heavier lift.",
+          "JAMIE: Genuinely some of them. Today. Right now, if you're a Mac user, you can try it. Routine form-filling, moving information between apps, repetitive web lookups — those are plausibly within reach, especially if you describe the task clearly.",
+          "RUFUS: The limits are real and stated: it's experimental, it requires your approval at each step, and complex multi-step workflows where unexpected things happen are still risky. The live preview is the useful safeguard — you can stop it before it does something wrong.",
+          "ALEX: What nobody told you before today: the session-log question — where does the agent's work record go — is the one Google hasn't answered yet. That's what I'd sort out before handing it anything sensitive.",
+          "JAMIE: And the prompting research from story three connects directly to this. How you describe the task to Gemini will meaningfully affect what it does. Specific, clear instructions — with the app context, the goal, the constraints — will work better than vague ones."
+        ],
+        "observation": "Story 1 closes with a tiered practical answer: simple form-filling probably yes today, complex multi-step probably not, and a specific unanswered question (session log) to resolve before trusting it with sensitive data (lines 44-51, echoed at line 125). Story 2 gives a concrete audit instruction (line 75) and a signal for non-defence sectors (line 76). Story 3 gives a specific prompt-writing implication (line 106) with an honest qualification about what the research does and does not support (line 105). Each story answers its own stated question.",
+        "next_edit": ""
+      },
+      "portable_exchanges": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "RUFUS: Does the distinction matter if the output is the same?",
+          "ALEX: That's actually a good question. I think it matters for what you do about it. If a colleague is upset, you manage the relationship. If a model is producing worse outputs because of your phrasing, you change the phrasing. Same fix, different reason.",
+          "JAMIE: Right. And the practical implication is really simple: polite, specific, clear prompts perform better than curt, vague, or hostile ones. Not because the AI cares about your tone emotionally. But because the structure of a polite, specific prompt is usually also a better-structured prompt.",
+          "RUFUS: I want to flag something slightly counterintuitive here. This research suggests that people who habitually write in short, authoritative, no-pleasantries-required language — which describes a significant portion of senior executives — may be systematically getting worse AI outputs than their more junior colleagues who naturally write in more elaborated, deferential styles.",
+          "ALEX: Heh. The boss types \"summarize\" and gets three bullet points. The intern types \"could you help me understand the key arguments in this document and maybe flag anything that seems contradictory\" and gets a genuinely useful analysis.",
+          "JAMIE: And then the boss looks at both outputs and concludes the AI isn't that impressive.",
+          "RUFUS: Dryly correct."
+        ],
+        "observation": "Exchange 1 (lines 95-97): Rufus asks whether the offended/calibrating distinction matters; Alex explains why it does (relationship management vs phrasing change); Jamie draws the practical prompt-quality implication. Named subjects (AI model, colleague), qualifications retained, stands alone. Exchange 2 (lines 100-103): Rufus names the senior-executive prompting disadvantage with specificity; Alex provides the boss/intern scenario; Jamie delivers the punchline; Rufus confirms. Named roles, sourced mechanism, complete without episode context.",
+        "next_edit": ""
+      },
+      "closing_payoff": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "ALEX: So. Can Gemini's new Mac agent actually handle your daily admin tasks?",
+          "JAMIE: Genuinely some of them. Today. Right now, if you're a Mac user, you can try it. Routine form-filling, moving information between apps, repetitive web lookups — those are plausibly within reach, especially if you describe the task clearly.",
+          "RUFUS: The limits are real and stated: it's experimental, it requires your approval at each step, and complex multi-step workflows where unexpected things happen are still risky. The live preview is the useful safeguard — you can stop it before it does something wrong.",
+          "ALEX: What nobody told you before today: the session-log question — where does the agent's work record go — is the one Google hasn't answered yet. That's what I'd sort out before handing it anything sensitive.",
+          "JAMIE: And the prompting research from story three connects directly to this. How you describe the task to Gemini will meaningfully affect what it does. Specific, clear instructions — with the app context, the goal, the constraints — will work better than vague ones.",
+          "RUFUS: What I'll be watching: whether the permission model stays granular — per-app, per-action — or whether users start granting broad access and then stop paying attention. That's where the real risk is in agentic tools, and it's the same question we were arguing about with agents on November nineteenth.",
+          "ALEX: Which still doesn't have a clean answer. The question we asked listeners then — if an AI agent had access to your internal communications, would you feel more productive or more exposed — is exactly the frame for this Gemini feature. And my guess is most people would say \"both.\"",
+          "ALEX: Today’s question for you: When you delegate a task to an AI, do you treat it like a tool or a junior coworker?"
+        ],
+        "observation": "Line 122 restates the episode title question directly, connecting the close to the opening promise. Lines 123-128 distribute distinct practical takeaways (Jamie: what works now; Rufus: where the risk lives; Alex: the unanswered question) rather than repeating verdicts. Line 126 connects the prompting research back to the Gemini agent as a through-line without replaying a punchline. Line 128 references the prior episode frame ('if an AI agent had access to your internal communications') as an earned callback. Line 132 poses the audience question naturally from the episode's material. Farewell s",
+        "next_edit": "Restore approved sign-off order: audience question (132), sponsor read (133), show tagline (134), cast farewell, follow invitation — per edits above."
+      }
+    }
+  },
+  "output_sha256": "932927ec107c2f262906b13e205f835ed1e2d6bfc576e42e24eb20eb39a09f05",
   "status": "repairs_applied_need_audio_review"
 }
