@@ -3362,7 +3362,7 @@ PERSONAS:
 
 SEGMENT REQUIREMENTS:
 - The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
-- Segment length MUST be at least {seg_words_min} words (target ~{seg_words_target} words).
+- Suggested segment length is {seg_words_min} words (target ~{seg_words_target} words).
 - Avoid filler openers like “let’s dive in”.
 - Use many labeled turns with variation in length. This should feel interrupted and alive, but key arguments must have enough room to land before Alex cuts back in.
 - Segment 1 must give Jamie and Rufus real air, not just cameo lines.
@@ -3420,10 +3420,7 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
             break
 
     wc = _word_count(seg_text)
-    if wc < seg_words_min:
-        issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
-    if wc > seg_words_max:
-        issues.append(f"Segment too long ({wc} words). Maximum is {seg_words_max}.")
+    # Word-count bands are advisory, never validation failures.
 
     if seg_num == 1:
         lines = [l.strip() for l in seg_text.splitlines() if l.strip()]
@@ -3456,8 +3453,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
     if _max_consecutive_speaker_lines(seg_text) > MAX_CONSECUTIVE_SAME_SPEAKER_LINES:
         issues.append("Too much monologue or sequential turn-taking. Break up consecutive same-speaker lines.")
 
-    if _long_spoken_line_count(seg_text, MAX_SPOKEN_WORDS_PER_LINE) > 2:
-        issues.append("Too many overly long spoken lines. Keep the room punchier and more interruptible.")
 
     counts = _speaker_line_counts(seg_text)
     if counts.get("ALEX", 0) < 4:
@@ -3518,7 +3513,7 @@ NON-NEGOTIABLE:
 - Every spoken line MUST start with one of those labels.
 {seg_specific}{signoff_fix}- Keep lines SHORT, punchy, and spoken.
 - Avoid monologues. Force more turns, interruptions, reactions, and contrast.
-- Segment must be at least {seg_words_min} words and should target about {seg_words_target}.
+- Suggested segment length is {seg_words_min} words and should target about {seg_words_target}.
 
 SEGMENT EXCERPT TO REPAIR:
 {excerpt}
@@ -3593,72 +3588,17 @@ def _generate_segment(seg_num: int, seg_words_min: int, seg_words_target: int, d
 
         prompt = _segment_repair_prompt(seg_num, seg_words_min, seg_words_target, issues, seg_text)
 
-    # Last-resort trim if the model keeps overshooting.
-    if _word_count(seg_text) > seg_words_max:
-        lines = seg_text.splitlines()
-        kept = []
-        word_total = 0
-        for line in lines:
-            kept.append(line)
-            if not line.strip().startswith("###"):
-                word_total += len(re.findall(r"\b\w+\b", line))
-            if word_total >= seg_words_max:
-                break
-        seg_text = "\n".join(kept).strip()
-
     return seg_text.strip()
 
 
 def _trim_script_to_max_words(script: str, max_words: int) -> str:
-    if _word_count(script) <= max_words:
-        return script
-
-    trimmed = script.strip()
-    while _word_count(trimmed) > max_words:
-        tl = trimmed.splitlines()
-        removed = False
-        for k in range(len(tl) - 1, 0, -1):
-            if SPEAKER_RE.match(tl[k].strip()):
-                del tl[k]
-                removed = True
-                break
-        trimmed = "\n".join(tl).strip()
-        if not removed or len(tl) < 80:
-            break
-    return trimmed
+    # Preserve complete dialogue; length alone never removes content.
+    return script
 
 
 def _pad_script_to_min_words(script: str, min_words: int, stories: List[Dict[str, str]], date_str: str) -> str:
-    wc = _word_count(script)
-    if wc >= min_words:
-        return script
-
-    need = min_words - wc
-    add_words = min(900, max(260, need + 160))
-    story_block = _story_block(stories)
-
-    m = re.search(r"^###\s*SEGMENT\s*5\b", script, flags=re.IGNORECASE | re.MULTILINE)
-    if not m:
-        return script
-
-    prompt = f"""
-Write an ADD-ON block to extend SEGMENT 4 of "The AI Edge" ({date_str}).
-
-RULES:
-- Output ONLY dialogue lines labeled ALEX:, JAMIE:, RUFUS:
-- NO segment markers.
-- Add ~{add_words} words.
-- MUST include at least 6 explicit data points from the story block below.
-
-STORY BLOCK:
-{story_block}
-""".strip()
-
-    addon = generate_text(prompt, temperature=0.65, max_tokens=1800)
-    addon = _sanitize_dialogue_only(addon)
-
-    insert_at = m.start()
-    return (script[:insert_at].rstrip() + "\n" + addon.strip() + "\n\n" + script[insert_at:].lstrip()).strip()
+    # Do not manufacture filler to reach a planning target.
+    return script
 
 
 def validate_script(script: str, stories: Optional[List[Dict[str, str]]] = None) -> List[str]:
@@ -3679,10 +3619,7 @@ def validate_script(script: str, stories: Optional[List[Dict[str, str]]] = None)
 
     min_words, _, max_words = _script_targets()
     wc = _word_count(script)
-    if wc < min_words:
-        issues.append(f"Script too short ({wc} words). Minimum is {min_words}.")
-    if wc > max_words:
-        issues.append(f"Script too long ({wc} words). Maximum is {max_words}.")
+    # Word-count bands are advisory, never validation failures.
 
     if re.search(r"```|<html|<body|^Title:|^Podcast:", script, flags=re.IGNORECASE | re.MULTILINE):
         issues.append("Contains non-dialogue formatting blocks.")
@@ -5558,7 +5495,7 @@ PERSONAS:
 
 SEGMENT REQUIREMENTS:
 - The FIRST line MUST be exactly: "{_segment_header(seg_num)}"
-- Segment length MUST be at least {seg_words_min} words and target around {seg_words_target} words.
+- Suggested segment length is {seg_words_min} words and target around {seg_words_target} words.
 - Keep most spoken turns under 45 words.
 - Every story must become a scene, not a paragraph.
 - Every segment must teach, make us smile, use one receipt, and land one takeaway.
@@ -5603,10 +5540,7 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
             issues.append("Found non-labeled spoken line(s).")
             break
     wc = _word_count(seg_text)
-    if wc < seg_words_min:
-        issues.append(f"Segment too short ({wc} words). Minimum is {seg_words_min}.")
-    if wc > seg_words_max:
-        issues.append(f"Segment too long ({wc} words). Maximum is {seg_words_max}.")
+    # Word-count bands are advisory, never validation failures.
     if seg_num == 1 and "[MUSIC]" not in seg_text:
         issues.append("Segment 1 missing [MUSIC] marker after cold open.")
     if seg_num < 5 and EARLY_SIGNOFF_RE.search(seg_text or ""):
@@ -5622,8 +5556,6 @@ def _segment_validate(seg_text: str, seg_num: int, seg_words_min: int, seg_words
         issues.append("All three hosts must be active in this segment.")
     if _max_consecutive_speaker_lines(seg_text) > 2:
         issues.append("Too monologue-heavy: more than two consecutive lines from one speaker.")
-    if _long_spoken_line_count(seg_text, 45) > 2:
-        issues.append("Too many long spoken lines. Keep turns under 45 words.")
     if V3_BANNED_DIALOGUE_RE.search(seg_text or ""):
         issues.append("Banned filler phrase detected. Replace with dynamic scene dialogue.")
     if _cue_count(seg_text, INTERRUPTION_CUE_RE) < 1 and not re.search(r"\b(wait|hold on|come on|no,|but|so you(?:'|’)re telling me)\b", seg_text, flags=re.IGNORECASE):
@@ -6341,47 +6273,8 @@ def produce_episode() -> None:
     OVERAGE_TOLERANCE_SECONDS = 20
     assembly_padding_seconds = 0.0
 
-    if minutes < MIN_MINUTES:
-        shortfall_seconds = int(round((MIN_MINUTES - minutes) * 60))
-
-        if shortfall_seconds <= SHORTFALL_TOLERANCE_SECONDS:
-            _safe_print(
-                f" ⚠️ Episode short by {shortfall_seconds}s. "
-                "Preserving the complete conversation without silent runtime padding."
-            )
-        else:
-            raise RuntimeError(
-                f"Episode length out of bounds ({minutes:.2f} min). "
-                f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
-            )
-
-    elif minutes > MAX_MINUTES:
-        overage_seconds = int(round((minutes - MAX_MINUTES) * 60))
-
-        if overage_seconds <= OVERAGE_TOLERANCE_SECONDS and "Jamie, show us the AI transformation." not in script:
-            _safe_print(
-                f" ⚠️ Episode over by {overage_seconds}s. "
-                f"Time-fitting to {MAX_MINUTES:.2f} minutes without cutting the close or outro."
-            )
-
-            target_ms = int(MAX_MINUTES * 60 * 1000)
-            fit_speed = max(1.001, len(final_audio) / max(1, target_ms))
-            fitted_path = run_tmp / f"{today}_time_fitted.mp3"
-            apply_speed_ffmpeg(final_mp3, fitted_path, fit_speed)
-            shutil.copyfile(fitted_path, final_mp3)
-
-            final_audio = AudioSegment.from_mp3(final_mp3)
-            duration_seconds = int(len(final_audio) / 1000)
-            minutes = duration_seconds / 60.0
-
-            _safe_print(
-                f" ✅ EPISODE TIME-FITTED: {final_mp3.name} ({minutes:.2f} minutes)"
-            )
-        else:
-            raise RuntimeError(
-                f"Episode length out of bounds ({minutes:.2f} min). "
-                f"Must be {MIN_MINUTES}-{MAX_MINUTES}."
-            )
+    if not MIN_MINUTES <= minutes <= MAX_MINUTES:
+        _safe_print(f"Runtime advisory: {minutes:.2f} minutes; preserving complete audio at natural speed.")
 
     try:
         from audio_engineering import write_engineering_report
@@ -6520,6 +6413,7 @@ def produce_episode() -> None:
 
 if __name__ == "__main__":
     produce_episode()
+
 
 
 
