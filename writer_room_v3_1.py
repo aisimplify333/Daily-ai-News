@@ -1234,6 +1234,16 @@ Return exactly this JSON:
       "rufus": "what he notices and wants to explore with his friends"}},
     "relationship_beat": "a possible personal response to a friend, not a required joke or sequence",
     "scene_movement": "the opening question and where this conversation might arrive; uncertainty allowed",
+    "scene_shape": "choose a shape suited to this evidence: test a tempting claim, unpack a surprising mechanism, or work through an explicitly hypothetical decision; vary across the three stories",
+    "sustained_exchange": {{"trigger": "specific sourced detail that catches one host",
+      "challenge": "strongest real objection or curious follow-up",
+      "answer": "source-supported answer that directly addresses it",
+      "complication": "what another friend notices that changes the question",
+      "landing": "useful resolution or clearly stated remaining uncertainty"}},
+    "turning_point": "exact supplied fact that advances the scene beyond its opening opinion; never invent a revelation",
+    "pace_contrast": "where brief responsive turns give way to a clear explanation or sincere reaction",
+    "portable_exchange": "a candidate standalone exchange naming the subject, retaining its qualification and earning a useful or funny payoff",
+    "ending_answer": "specific answer to this story's question and one action or observable development to watch",
     "discovery": "source-backed possibility worth curiosity or delight, or honest absence"}},
     {{"story_index": 2, "instruction": "same fields for Story 2"}},
     {{"story_index": 3, "instruction": "same fields for Story 3"}}],
@@ -1436,6 +1446,18 @@ global-desk fallback honestly. Do not borrow facts from another story.
 
 SCENE PLAN (not additional reporting):
 {json.dumps(board.get('story_scenes') or [], ensure_ascii=False)}
+
+MAKE THE SCENES AUDIBLY DIFFERENT:
+Use each scene's shape to develop a conversation, not merely rearrange summaries.
+Stay with the strongest exchange long enough for the challenged person to answer,
+for a friend to respond to that answer, and for the evidence to move the conversation.
+Do not print the planning field names or force a five-turn pattern. A quiet shared
+discovery can carry a story as well as disagreement. Keep the three scene shapes varied.
+Build two candidate standalone exchanges across the episode: one useful explanation
+and one characterful surprise, when the facts support them. Name their subject within
+the exchange and retain attribution and uncertainty. Do not call them clips on air.
+Give a consequential fact room to land; shorten the surrounding setup instead of
+repeating the conclusion. End on the story's actual answer, then move on.
 
 CONTINUITY (optional relevant callback after the opening; no invented outcome):
 {json.dumps({k: fuel.get(k, []) for k in ('callbacks', 'poll_callbacks', 'running_jokes', 'banned_phrases')}, ensure_ascii=False)}
@@ -3408,6 +3430,7 @@ def install_v3_1(g: Dict[str, Any]) -> None:
     g["V3_1_WRITER_ROOM_INSTALLED"] = True
     g["V3_2_HARD_DEBATE_WRITER_ROOM_INSTALLED"] = True
     g["V3_3_CONNECTION_FIRST_WRITER_ROOM_INSTALLED"] = True
+
 
 
 
