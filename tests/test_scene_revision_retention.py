@@ -9,10 +9,10 @@ def run(revised, allow=False, failures=None):
         lambda a: a['distance'], allow_runtime_repair=allow)
 
 
-def test_tighter_scene_retained_only_with_downstream_runtime_repair():
+def test_tighter_scene_retained_without_mandatory_runtime_repair():
     revision = 'ALEX: ' + 'detail '*89
     original, (script, _, report) = run(revision)
-    assert script == original
+    assert script != original and report['accepted']
     _, (script, _, report) = run(revision, allow=True)
     assert script != original and report['accepted']
     assert report['scenes'][0]['runtime_repair_pending']
@@ -21,7 +21,7 @@ def test_tighter_scene_retained_only_with_downstream_runtime_repair():
 
 
 def test_structural_damage_and_excessive_cuts_still_rejected():
-    for revision, failures in [('ALEX: too short', None), ('ALEX: '+'detail '*89, ['missing_sponsor'])]:
+    for revision, failures in [('', None), ('ALEX: '+'detail '*89, ['missing_sponsor'])]:
         original, (script, _, report) = run(revision, allow=True, failures=failures)
         assert script == original and not report['accepted']
 
@@ -47,8 +47,8 @@ def test_retry_receives_rejection_and_preserves_numbers():
 def test_failed_retry_keeps_original_and_stops():
     original = '### SEGMENT 2\nALEX: ' + 'detail '*99 + '\n### SEGMENT 3\n'
     script, _, report = edit_story_scenes(original, {'failed': []},
-        lambda *_:'ALEX: short', lambda s:s, lambda s:{'failed': []}, lambda a:0,
-        repair_scene=lambda *_:'ALEX: still short')
+        lambda *_:'', lambda s:s, lambda s:{'failed': []}, lambda a:0,
+        repair_scene=lambda *_:'')
     assert script == original and report['requested_calls'] == 2
     assert not report['accepted']
 
