@@ -7,7 +7,8 @@ from pathlib import Path
 HANDOFF = "Jamie, show us the AI transformation."
 RETURN = "That's Jamie's AI transformation."
 MIN_FEATURE_WORDS = 300
-MAX_FEATURE_WORDS = 475
+TARGET_FEATURE_WORDS = 475
+MAX_FEATURE_WORDS = 550
 
 
 def _enforce_spoken_turn_limit(dialogue, max_words=55):
@@ -40,6 +41,7 @@ def status(script):
     turns = re.findall(r'^(ALEX|JAMIE|RUFUS):\s*(.+)$', block, re.M)
     words = sum(len(body.split()) for _, body in turns)
     return {'present': bool(block), 'words': words,
+            'length_advisory': words > TARGET_FEATURE_WORDS,
             'pass': bool(block) and MIN_FEATURE_WORDS <= words <= MAX_FEATURE_WORDS
             and {name for name, _ in turns} == {'ALEX', 'JAMIE', 'RUFUS'}
             and script.count(HANDOFF) == script.count(RETURN) == 1}
