@@ -26,3 +26,11 @@ Research up to five distinct businesses across industries, then select for surpr
 Jamie research now compares up to five candidates and prioritizes named businesses with actual agent actions. Feature suggestion expanded to 650–900 words with no minimum or maximum. Writer direction calls for specific questions, answers, earned pushback, teasing with comebacks, rotating alliances and meaningful callbacks. Preserve warm recognizable voices. Length comes from useful substance, not repeated summaries. Remaining obsolete runtime test updated; production tests and preflight passed.
 
 Judge script, audio generation, public playback and actual listening separately. Prompt changes alone are not evidence listeners can hear the improvement.
+
+## Completion recovery — November 23, 2026
+
+Inspected completed run 45209627178 and its production artifact 14835987966. Actual blocker: `five_segments` structural failure. All three news discussions were present, but the story-two heading was absent, merging Black Friday dialogue into segment 2. Failure occurred before TTS; logs confirm no `.tts_cache` files and no voice-recovery artifact. No paid voice takes were discarded.
+
+Committed a digest-keyed recovery edit for saved `script_fact_candidate_2026-11-23.txt`: retain the later `script_pre_tts` draft (including expanded Unilever NOVA discovery and cast exchanges), restoring `### SEGMENT 3` at the existing Black Friday transition. Same-day research and storyboard are reused through the existing recovery loader. NVIDIA reinstatement and ongoing investigation were rechecked against its November 23 newsroom release; Microsoft's October 26 NOVA case confirms the eleven-market pilot scope and attributed results.
+
+Started one bounded recovery through PRODUCTION_RUN_ONCE: https://github.com/aisimplify333/Daily-ai-News/actions/runs/45220618884 . Observed active; do not duplicate. Approved voice configuration unchanged. No email or social messages sent. Public RSS, full audio, episode page and Spotify arrival are NOT yet verified. Text review only; no actual listening performed. Completion watch remains enabled pending public verification.
