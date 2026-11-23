@@ -1,67 +1,26 @@
 {
-  "date": "2026-11-17",
+  "date": "2026-11-23",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Automated clinical trial recruitment screening",
-        "tool": "Oracle Clinical One",
-        "problem": "Healthcare research teams spent excessive administrative time manually reviewing thousands of potential patient electronic health records (EHR) to see if they met complex, multi-variable criteria for clinical trials.",
-        "workflow": "The AI-driven agentic system automatically pulls and analyzes anonymized patient data against trial protocols, flagging potential matches for human clinical researchers to review and confirm. It autonomously coordinates the initial filtering of large datasets, but the final determination of patient eligibility remains with a human clinician.",
-        "result": "Reduced the administrative burden on clinical staff, allowing them to focus on high-touch patient assessment rather than manual record-sifting, resulting in faster identification of eligible candidates for study participation.",
-        "result_basis": "Oracle reported outcome through their Life Sciences suite documentation and industry case examples.",
-        "measurement_context": "Shift from manual, days-long chart review cycles to automated, near-instantaneous screening alerts for investigators.",
-        "case_date": "2026-09-15",
-        "source_url": "https://www.oracle.com/industries/life-sciences/clinical-one/",
-        "source_quote": "Clinical One leverages intelligent automation to streamline trial processes, enabling teams to reduce manual administrative tasks and focus on patient care and safety.",
-        "limitation": "The agent operates only on integrated, clean data; if the source EHR data is unstructured or poorly documented, the agent's ability to screen accurately is significantly diminished. Human clinician verification is mandatory for every flagged candidate.",
-        "listener_action": "Ask your local hospital or research clinic if their clinical trial team currently uses automated record screening or if the process remains entirely manual.",
-        "availability": "Generally available within the Oracle Clinical One platform.",
-        "episode_date": "2026-11-17"
+        "subject": "Unilever logistics and order management",
+        "tool": "Microsoft Copilot Agents (Multi-agent orchestration)",
+        "problem": "Global supply chains struggle with 'messy' incoming orders\u2014discrepancies in product codes, pricing, or shipping data\u2014which historically required manual staff intervention to investigate and correct, causing significant delays in transaction processing.",
+        "workflow": "Unilever deployed a multi-agent system where autonomous agents ingest incoming orders and cross-reference them against internal inventory and pricing databases. If an order contains a mismatch, the agent flags it, retrieves the necessary context from historical logs, and proposes a corrected transaction. Human supply chain managers retain final authority, reviewing the agent's proposed fix and the supporting evidence before approving the transaction for fulfillment.",
+        "result": "The agents transition previously stalled, manual reconciliation tasks into checked, ready-to-process transactions, reducing the cognitive load on human staff who only intervene to approve exceptions.",
+        "result_basis": "Microsoft corporate case study; UK Stories feature",
+        "measurement_context": "Qualitative improvement in order throughput and reduction in manual intervention; Unilever reports efficiency gains in processing messy transactional data.",
+        "case_date": "2026-11-23 (Reference: UK Stories/Microsoft features)",
+        "source_url": "https://ukstories.microsoft.com/features/unilevers-multi-agent-creating-customer-value-at-global-scale/",
+        "source_quote": "",
+        "limitation": "The system's efficacy relies on the accuracy of the underlying master data and historical transaction logs; complex exceptions still require human expertise.",
+        "listener_action": "Identify the 'messy' data bottleneck in your department where someone manually corrects the same error daily; ask if your existing systems allow for an agent-based reconciliation pilot.",
+        "availability": "Generally available within the Microsoft Copilot agent framework.",
+        "episode_date": "2026-11-23",
+        "source_acceptance": "single_major_source_attributed"
       },
-      "reason": "source_http_404"
-    },
-    {
-      "case": {
-        "feature_mode": "real_case",
-        "subject": "Clinical trial data management",
-        "tool": "Oracle Clinical One",
-        "problem": "Clinical trial teams faced fragmented, siloed data systems that led to manual reconciliation, data quality issues, and excessive administrative overhead during study startup and execution.",
-        "workflow": "Research teams use Clinical One to harmonize data from diverse sources\u2014including EHRs, sensors, and labs\u2014into a single platform, replacing disjointed manual entry and reconciliation with automated, unified data flows.",
-        "result": "Reduced administrative burden and operational complexity, allowing study teams to build and manage trials independently, accelerate study timelines, and conduct mid-study adjustments without costly programming delays.",
-        "result_basis": "Vendor-reported case documentation and industry-aligned study solutions.",
-        "measurement_context": "Shift from relying on third-party firms and manual, multi-system integration to a unified, self-managed platform environment.",
-        "case_date": "2025-07-28",
-        "source_url": "https://www.oracle.com/news/announcement/hcor-speeds-clinical-trials-with-oracle-clinical-one-data-collection-072825/",
-        "source_quote": "Clinical One leverages intelligent automation to streamline trial processes, enabling teams to reduce manual administrative tasks and focus on patient care and safety.",
-        "limitation": "The platform requires robust data integration; if source systems (such as EHRs) are not configured for interoperability, the benefit of unified data capture is limited. Human oversight remains mandatory for clinical validation.",
-        "listener_action": "Ask your local clinical research coordinator if their site still manages multiple disconnected systems for data entry and whether they have moved to a unified clinical trial platform.",
-        "availability": "Generally available as part of the Oracle Clinical One platform.",
-        "episode_date": "2026-11-17"
-      },
-      "reason": "source_http_404"
-    },
-    {
-      "case": {
-        "feature_mode": "real_case",
-        "subject": "Automated clinical trial recruitment and data integration",
-        "tool": "Oracle Clinical One",
-        "problem": "Clinical trial teams face fragmented, siloed data systems and excessive administrative burden from manually reconciling information from EHRs, labs, and diverse patient sources.",
-        "workflow": "Research teams use the platform to unify clinical data collection and automate workflows by connecting EHRs and other sources directly into a single, cloud-based platform, replacing manual entry with integrated, automated data flows.",
-        "result": "Reduced administrative burden and operational complexity, allowing study teams to independently manage trial setups and mid-study adjustments without costly programming delays.",
-        "result_basis": "Vendor-reported case documentation and industry-aligned study solutions.",
-        "measurement_context": "Shift from relying on third-party firms and manual, multi-system integration to a unified, self-managed platform environment, with some trial setups reduced by 50% or more.",
-        "case_date": "2025-07-28",
-        "source_url": "https://www.oracle.com/news/announcement/hcor-speeds-clinical-trials-with-oracle-clinical-one-data-collection-072825/",
-        "source_quote": "With Oracle Clinical One Data Collection, we have built two important immunology trials independently using Oracle's robust and reliable platform",
-        "limitation": "The platform requires robust data integration; if source systems (such as EHRs) are not configured for interoperability, the benefit of unified data capture is limited. Human oversight remains mandatory for clinical validation.",
-        "listener_action": "Ask your local clinical research coordinator if their site manages multiple disconnected systems for data entry and whether they have moved to a unified clinical trial platform.",
-        "availability": "Generally available as part of the Oracle Clinical One platform.",
-        "episode_date": "2026-11-17"
-      },
-      "reason": "source_http_404"
+      "reason": "verified"
     }
-  ],
-  "fallback": "verified_editorial_inventory",
-  "selected": "Can the house hear the punchline?"
+  ]
 }
