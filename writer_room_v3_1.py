@@ -1356,10 +1356,11 @@ def _writer_prompt(stories: List[Dict[str, Any]], sponsors: List[Dict[str, Any]]
                    date_str: str, board: Dict[str, Any], fuel: Dict[str, Any]) -> str:
     return f"""Write The AI Edge for {date_str}. Return the full spoken script only.
 
-LENGTH: Aim for 3800 spoken words across the complete episode. Build the length through
+LENGTH: Around 3800 words for the core show is a suggestion, with room for the expanded Jamie feature. No word count or runtime is a hard stop. Build the length through
 source-backed follow-up questions, differing interpretations and practical examples,
 not longer monologues. Give each story a sustained exchange before its payoff.
 Keep individual turns short and responsive. Do not invent facts to fill time.
+AUDIBLE CAST UPGRADE: Make exchanges build: one host notices a concrete detail, another questions its consequence, the first answers, and the third advances or playfully complicates it. Let a specific tease earn a comeback, and bring back an earlier observation when it adds meaning. Rotate alliances. Jamie can surprise the others with operational detail; Rufus can concede enthusiastically; Alex can be the one challenged. Use earned reactions and pacing contrast, not generic agreement, forced conflict, repeated summaries or extra monologues.
 
 PUBLIC TITLE: {board.get('published_title', _hard_title(stories))}
 LISTENER BENEFIT: {board.get('listener_promise', LISTENER_PROMISE)}
