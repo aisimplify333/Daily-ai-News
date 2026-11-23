@@ -115,6 +115,12 @@ listener_action, availability. One supporting article from a major publication o
 No invented quantitative uplift, causality, costs, quotes or hands-on experience.
 If no verified case is found return {"unavailable":true}.
 Episode date: ''' + date
+    if date == "2026-11-23":
+        prompt += """\nProducer discovery shortlist: independently open and assess these real deployments:
+Unilever NOVA: https://ukstories.microsoft.com/features/unilevers-multi-agent-creating-customer-value-at-global-scale/
+AT&T: https://siliconangle.com/2026/11/14/att-uses-agentic-ai-to-reinvent-business-processes-from-the-ground-up/
+Ryanair: https://aws.amazon.com/solutions/case-studies/innovators/ryanair-agentic-ai/
+Prefer Unilever's messy orders becoming checked transactions as the main case, with AT&T as a contrasting example if supported. Cover more than one business only with each source, workflow and evidence limits recorded explicitly in the returned case fields. These are historical deployments, not today's breaking announcements. Keep reported pilot scope; do not claim enterprise-wide outcomes. Do not imply Ryanair's agent independently issues refunds merely because it answers refund questions."""
     if path.exists():
         prompt += '\nPrevious case to avoid: ' + path.read_text()
     history = recent_features()
