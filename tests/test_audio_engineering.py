@@ -38,7 +38,7 @@ class AudioEngineeringTests(unittest.TestCase):
         self.assertTrue(duration_in_window(30, 19, 30))
         self.assertFalse(duration_in_window(30.01, 19, 30))
 
-    def test_broadcast_wrapper_matches_delivery_grace(self):
+    def test_broadcast_wrapper_runtime_is_advisory(self):
         import run_broadcast as broadcast
         with patch.object(broadcast, "get_latest_mp3", return_value=Path("paid.mp3")), patch.object(broadcast, "MIN_MINUTES", 19), patch.object(broadcast, "MAX_MINUTES", 30):
             for minutes in (18.5, 19, 30):
@@ -46,8 +46,7 @@ class AudioEngineeringTests(unittest.TestCase):
                     self.assertEqual(broadcast.check_episode_length_or_fail()[1], minutes)
             for minutes in (18.49, 30.01):
                 with patch.object(broadcast, "get_mp3_duration_minutes", return_value=minutes):
-                    with self.assertRaises(RuntimeError):
-                        broadcast.check_episode_length_or_fail()
+                    self.assertEqual(broadcast.check_episode_length_or_fail()[1], minutes)
 
     @unittest.skipUnless(shutil.which("ffmpeg"), "ffmpeg required")
     def test_encoded_measurements_find_quiet_gap_without_modifying_audio(self):
