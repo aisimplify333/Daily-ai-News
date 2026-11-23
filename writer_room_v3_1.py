@@ -2878,6 +2878,20 @@ def install_v3_1(g: Dict[str, Any]) -> None:
             )
             selected, freshness = _freshen_story_order(selected, history)
             selected = _three_story_order(selected)
+            # Apply date-scoped owner lead preference only to verified stories.
+            try:
+                brief = json.loads(Path("editor_discovery.json").read_text())
+            except (OSError, ValueError):
+                brief = {}
+            keywords = brief.get("lead_keywords", [])
+            if brief.get("episode_date") == episode_date and keywords:
+                for index, story in enumerate(selected):
+                    headline = _headline(story).lower()
+                    if all(str(word).lower() in headline for word in keywords):
+                        selected.insert(0, selected.pop(index))
+                        for rank, row in enumerate(selected, 1):
+                            row["rank"] = rank
+                        break
             write_grounded_slate_report(selected, episode_date)
             _safe_print(
                 g,
