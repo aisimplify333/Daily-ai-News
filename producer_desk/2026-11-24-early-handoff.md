@@ -45,3 +45,35 @@ Cast continuity: Alex asks what changed for the reviewer; Jamie argues for recov
 
 ## Recommended next reversible repairs
 Remove duplicate feature injection before rendering; keep one named-business case and a genuine closing. Add advisory checks for unsupported hypothetical outcome numbers, source-publication versus discovery dates and discount-versus-margin wording. Improve context requirements for clip selection. None warrants discarding completed audio or launching a duplicate run. Full-script fact clearance, actual listening and Tuesday public delivery remain outstanding.
+
+## 02:30 Pacific research recovery check — November 24
+
+Tuesday production run [45356385990](https://github.com/aisimplify333/Daily-ai-News/actions/runs/45356385990) failed before scripting/TTS: only two trusted stories, three required. Artifact 14902682300 contains research, scores and diagnostic reports only; no script, master or paid voice cache. Preserve the checkpoint and all previous paid assets.
+
+At this check the public feed/archive still lead with November 23. Its audio returns HTTP 200, Content-Length 37,591,533 matching RSS; prior same-day full decode established 26:06 playable media. November 24 master is absent in repository and its public URL returns 404. Pages deployment success cannot establish Tuesday publication. Deadline remains 03:30 Pacific / 06:30 Eastern. Five consecutive on-time weekdays remains a target.
+
+Committed date-scoped editor_discovery.json source refill, retaining freshness/source/three-story and five-segment checks. Existing research restore is used; no production-code, voice, hosting, secret or subscription changes.
+
+### Newly verified factual correction
+Saved GOSH candidate incorrectly describes confirmed live diagnostic-support deployment. Hyland's November 24 release describes a phased 15-month evaluation alongside manual processes, beginning with supplier reconciliation and policy lookup, not autonomous clinical decisions. Flagged in the production brief; do not promote the old candidate as verified clinical deployment.
+Source: https://www.prnewswire.com/news-releases/great-ormond-street-hospital-announces-first-of-its-kind-agentic-ai-programme-in-an-nhs-hospital-in-collaboration-with-hyland-and-amazon-web-services-302948750.html
+
+Direct recovery leads checked:
+- Anthropic, November 23: https://claude.com/resources/articles/introducing-claude-ship . PR Steward repairs; separate Approvals applies team policy. Beta availability and paid usage must stay qualified.
+- Meta, page dated November 23: https://about.fb.com/news/2026/11/introducing-muse-in-the-uk-a-personal-ai-agent-you-control/ . UK expansion for adults; company says approval before emails/purchases. Do not claim globally UK-only. ICO November 24 statement independently confirms UK launch and voluntary monitoring, not certification: https://ico.org.uk/about-the-ico/media-centre/news-and-blogs/2026/11/statement-on-uk-launch-of-meta-muse/
+- DeepMind, November 23: https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/ . Mathematical algorithm improvements, not operational fusion/medical results.
+
+### Next-cycle packaging and practical use
+Conditional candidates; refresh sources and exclude anything aired by this recovery:
+1. Claude Ship: Who Gets to Approve AI-Written Code?
+2. Meta Muse Comes to the UK: What Should Your AI Be Allowed to Buy?
+3. DeepMind's AI Agents Improve Quantum Algorithms—What Has Actually Been Proven?
+
+Jamie candidate: a clearly hypothetical small-team pull request with a failing check, PR Steward's proposed repair, then a human approval decision; explain observe mode and costs. TELUS/Carvana examples may be attributed to Anthropic, not portrayed as our testing or guaranteed time savings. If used today, choose a fresh business for Wednesday. Preserve latest expanded-feature owner direction; a focused 2–3 minute practical demonstration may sit within it without duplicating it in the close.
+
+Cast: Alex asks the actual listener question; Jamie tests recovered human time; Rufus tests evidence and authority. Retain the November 23 grand-unified-thesis running joke sparingly and 'follow the receipts, not the demo'; explicit imagined location, no invented reporting trip. Warm rebuttals should answer the last person's point, not repeat governance summaries.
+
+### Marketing Engine readiness
+No Tuesday audio/clip is ready at this checkpoint. Hold native publication until dated public media and a self-contained clip hook/payoff are verified. Monday's earlier script/audio caveats above remain. Spotify exact-title search returned other podcasts, not an identifiable match; ingestion/playability remains unverified, not proven absent. No private analytics accessed or published. No native clips, polls, comments or promotion actions performed. No actual listening claim.
+
+The accompanying PRODUCTION_RUN_ONCE change requests one bounded research recovery. A request is not proof of a started run, deployment or playable publication; inspect its associated Actions run before taking further action.
