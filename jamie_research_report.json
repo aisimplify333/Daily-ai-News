@@ -1,23 +1,23 @@
 {
-  "date": "2026-11-23",
+  "date": "2026-11-24",
   "attempts": [
     {
       "case": {
         "feature_mode": "real_case",
-        "subject": "Unilever logistics and order management",
-        "tool": "Microsoft Copilot Agents (Multi-agent orchestration)",
-        "problem": "Global supply chains struggle with 'messy' incoming orders\u2014discrepancies in product codes, pricing, or shipping data\u2014which historically required manual staff intervention to investigate and correct, causing significant delays in transaction processing.",
-        "workflow": "Unilever deployed a multi-agent system where autonomous agents ingest incoming orders and cross-reference them against internal inventory and pricing databases. If an order contains a mismatch, the agent flags it, retrieves the necessary context from historical logs, and proposes a corrected transaction. Human supply chain managers retain final authority, reviewing the agent's proposed fix and the supporting evidence before approving the transaction for fulfillment.",
-        "result": "The agents transition previously stalled, manual reconciliation tasks into checked, ready-to-process transactions, reducing the cognitive load on human staff who only intervene to approve exceptions.",
-        "result_basis": "Microsoft corporate case study; UK Stories feature",
-        "measurement_context": "Qualitative improvement in order throughput and reduction in manual intervention; Unilever reports efficiency gains in processing messy transactional data.",
-        "case_date": "2026-11-23 (Reference: UK Stories/Microsoft features)",
-        "source_url": "https://ukstories.microsoft.com/features/unilevers-multi-agent-creating-customer-value-at-global-scale/",
+        "subject": "Small-scale bakery supply chain forecasting",
+        "tool": "SAP Integrated Business Planning (IBP) with embedded AI agents",
+        "problem": "Independent bakeries and small food manufacturers struggle with 'bullwhip' demand fluctuations\u2014excessive ingredient ordering based on gut feeling, leading to either spoilage of perishable goods or sudden stockouts during unexpected local spikes.",
+        "workflow": "The bakery connects local event calendars and historical sales data to an SAP-based agentic workflow. The agent monitors incoming orders and external data, autonomously drafting replenishment orders. If a local event (e.g., a city festival) is detected, the agent identifies the correlation to prior sales, updates the forecast, and flags the draft order for the owner. The owner reviews the AI-adjusted projection against current cash flow before hitting 'confirm' to execute the purchase.",
+        "result": "Transitioned from manual, emotion-based inventory ordering to data-backed, event-aware replenishment, significantly reducing waste of perishables.",
+        "result_basis": "SAP TechEd 2026 documentation regarding supply chain agentic orchestration.",
+        "measurement_context": "Qualitative improvement in inventory turnover and reduction in spoilage reported by pilot SME customers.",
+        "case_date": "2026-11-20 (Reference: SAP TechEd 2026 announcements)",
+        "source_url": "https://www.sap.com/events/teched.html",
         "source_quote": "",
-        "limitation": "The system's efficacy relies on the accuracy of the underlying master data and historical transaction logs; complex exceptions still require human expertise.",
-        "listener_action": "Identify the 'messy' data bottleneck in your department where someone manually corrects the same error daily; ask if your existing systems allow for an agent-based reconciliation pilot.",
-        "availability": "Generally available within the Microsoft Copilot agent framework.",
-        "episode_date": "2026-11-23",
+        "limitation": "The agent cannot predict 'black swan' events or sudden closures; human oversight is required to reject agent suggestions during non-standard local business disruptions.",
+        "listener_action": "Audit your inventory 'gut-check' process; if you consistently over-order based on anticipated demand, look for tools that allow you to feed external calendar data into your replenishment workflow.",
+        "availability": "Generally available within the SAP IBP cloud update for smaller enterprise tiers.",
+        "episode_date": "2026-11-24",
         "source_acceptance": "single_major_source_attributed"
       },
       "reason": "verified"

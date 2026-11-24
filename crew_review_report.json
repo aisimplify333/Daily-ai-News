@@ -2,67 +2,85 @@
   "basis": "model editorial review plus local safeguards; not listening",
   "listened": false,
   "requested_calls": 1,
-  "accepted_edits": 3,
+  "accepted_edits": 7,
   "edits": [
     {
       "accepted": false,
-      "reason": "nonunique_or_wrong_scene"
+      "reason": "new_editorial_warning_original_span_preserved"
     },
     {
       "accepted": true,
-      "reason": "Cuts near-verbatim repeat of line 83's inbox-risk warning; replaces with a forward-looking note matching the investigation qualifier.",
+      "reason": "Cuts UK-only restatement already given at line 59; replaces with the retailer-decision consequence that extends the story.",
+      "segment": 3
+    },
+    {
+      "accepted": true,
+      "reason": "Trims filler sponsor turns to one clean read; Rufus's 'procrastination' line was the best, but three turns on a mid-roll reads as padding.",
+      "segment": 3
+    },
+    {
+      "accepted": true,
+      "reason": "Collapses restatement of lines 110-111; adds the replication point that Rufus echoes at line 151 as a natural setup.",
       "segment": 4
     },
     {
-      "accepted": false,
-      "reason": "nonunique_or_wrong_scene"
+      "accepted": true,
+      "reason": "Removes spoken production note ('I want to flag for the shareable moment') — direction language on air.",
+      "segment": 4
     },
     {
       "accepted": true,
-      "reason": "Removes double 'operational resolution' verdict landing; Jamie's closing line now points forward to the open investigation rather than re-closing a landed point.",
-      "segment": 2
+      "reason": "Preserves the handoff to Rufus's dinner-table summary without the deleted production prompt.",
+      "segment": 4
     },
     {
       "accepted": true,
-      "reason": "Replaces three sequential verdict deliveries with a brief exchange adding the timing variable; retains all sourced qualifications and practical actions; stays within runtime band.",
+      "reason": "Replaces three repeated verdicts with one integrating observation that connects all three stories without restating conclusions already landed.",
+      "segment": 5
+    },
+    {
+      "accepted": true,
+      "reason": "Collapses two consecutive farewell beats into one clean close with follow invitation intact.",
       "segment": 5
     }
   ],
-  "input_sha256": "ed5a80023da0b29ea62efc29f06dc5b7ba4e17543a71359ef376c2f24b38037b",
+  "input_sha256": "5bb42f01c70ca1f6865ebd47846f05f59a7f6670c59126f468dceb8cdab45323",
   "review_before_repairs": {
     "scenes": [
       {
         "segment": 2,
-        "chemistry": "The Huang reinstatement scene builds well: Rufus normalises the dual-announcement, Jamie flags the internal distraction risk, Alex holds the press-release contradiction without forcing resolution. Alliance shifts around lines 20-24 are earned. No mechanical three-host rotation.",
-        "discovery": "Lines 16-17 deliver the specific CFO-interim-knowledge gap; lines 25-31 land the operational-vs-governance split as a sourced, useful distinction. Both are advances, not restatements.",
-        "repetition": "Lines 32 and 30 both close on 'operational resolution'; trim one verdict. Jamie's line 88 (segment 4 bleed) partially echoes her line 83 — different segment, still worth noting."
+        "chemistry": "The 'three weeks / one sprint' back-and-forth (lines 27-28) is tight and characterful. Jamie's reframe of beta access as 'trading access for signal' (line 44) draws a genuine pushback from Alex and a defended reply. Rufus's CI/CD gloss (line 48) is responsive rather than inserted.",
+        "discovery": "The distinction between PR Steward (cannot approve) and Claude Approvals (can approve) is built through dialogue, not summary. Jamie's point that the AI won't surface its own uncertainty the way a nervous junior dev would (lines 51-52) is the sharpest sourced insight.",
+        "repetition": "Lines 54-55 restate the HIPAA exclusion already covered at line 37 and the policy-audit point already made at line 50. The closing verdict runs slightly long after the story has landed."
       },
       {
         "segment": 3,
-        "chemistry": "Rufus's scene-entry is clean; Jamie immediately challenges on volume outcome (line 39), Rufus concedes scope (line 40), Alex re-centres (line 42). Short back-and-forth contrast with Rufus's longer airline/hotel history (line 47) works. Comic fax callback (lines 140-141) earns its landing.",
-        "discovery": "The 40-to-30 percentage-point example (line 38) is specific and sourced. The competitive-retailer point (line 57) is a genuine listener action, not generic advice. Anonymous-source qualification restated at line 50 — appropriate given the Reuters caveat.",
-        "repetition": "Lines 135 and 136 repeat the phrase 'start with the measurement you already have access to' word-for-word across consecutive speaker turns. One instance should be cut or paraphrased."
+        "chemistry": "Rufus's 'at least by design' (line 63) earns Jamie's dry comeback immediately. The upstream-value exchange (lines 78-82) is genuinely responsive: Jamie builds a specific scenario, Rufus complicates it, Jamie concedes the limit honestly.",
+        "discovery": "The prompt-injection explanation (lines 65-66) is the clearest mechanistic passage in the episode — Rufus names the vector and the guard in plain language. The 'agent is the interface' observation (line 71) advances the retail-distribution consequence.",
+        "repetition": "Lines 83-84 restate the UK-only point already established at line 59. The sponsor re-read at lines 85-88 is structurally placed but the Rufus line ('marvellous way to postpone deciding anything') is the best of the three and the other two are filler."
       },
       {
         "segment": 4,
-        "chemistry": "EU Academy scene opens with shared concern and builds through a genuine three-way mechanism debate (lines 74-78). Rufus's spearphishing elaboration (line 82) follows Jamie's credential point specifically. The 'grand thesis' comic break (lines 89-95) is well-timed and character-consistent: Rufus intercepts, Jamie piles on, Alex defends with self-aware good humour.",
-        "discovery": "Lines 75-77 distinguish adaptive probing from phishing-credential routes with practical consequence. Line 81 names the specific targeting value of EU Academy user data — an advance beyond 'names and emails were taken'.",
-        "repetition": "Jamie's line 88 restates her line 83 almost verbatim ('your inbox is now a higher-risk environment… anything that looks like it's from the Commission… be skeptical'). One is redundant and should be cut."
+        "chemistry": "Jamie's 'let me earn it' (line 94) in answer to Rufus's challenge is the best single turn in the episode. The dinner-table summary Rufus constructs (lines 121-122) is built from what was just said, and Jamie's flat confirmation ('I mean. That is what happened.') lands without explanation.",
+        "discovery": "The distinction between 'AI uses a quantum computer' and 'AI designs better programs for a quantum computer' (lines 100) is a genuinely clarifying reframe. The Lean framework explanation (lines 102-103) is sourced, speakable and advances understanding.",
+        "repetition": "Lines 117-118 restate the method-not-timeline point already made at lines 110-111. Rufus's pre-empt at line 119 ('I want to flag for the shareable moment') is a production note spoken aloud and should be cut."
       },
       {
         "segment": 5,
-        "chemistry": "Closing editorial lines 144-147 are functional but thin: Rufus and Jamie deliver verdicts without friction or development. The Jamie transformation closing exchange (lines 185-189) is livelier but line 189 duplicates the intake-form conclusion already stated at line 188.",
-        "discovery": "Lines 144-145 add the 'material event' framing for the investigation finding — a genuine forward-looking consequence. Lines 146-147 consolidate practical actions correctly.",
-        "repetition": "Line 189 restates 'The intake form is where the expertise lives now' immediately after line 188 uses the identical phrase. Delete one."
+        "chemistry": "The three closing verdicts (lines 145-154) are individually coherent but mechanically share the same three-line rotation as the previous episode's close — each host delivers one line in order. Jamie's checkable-prediction (line 148) is the strongest moment here.",
+        "discovery": "Jamie's six-month prediction (line 148) is the one new idea in this segment. Alex's 'map the gaps / edge cases your human reviewers handle with judgment' (line 149) is a useful sourced consequence. The rest restates already-landed conclusions.",
+        "repetition": "Lines 152-154 restate the approve-lane shift, the policy-audit advice and the observe-only recommendation — all three already stated in this segment and in segment 2. Lines 155-158 contain two farewell beats ('That's The AI Edge' then 'Follow The AI Edge now') where one would close cleanly."
       }
     ],
-    "rufus_feature": "The Scene 3 dispatch opens with a concrete office setting (pricing operations room, analysts, screen with margin-flagging tool) and grounds it in the Reuters story. Rufus names the anonymous skincare example with the exact figures (40% to 30%). Jamie's immediate challenge on volume outcome (line 39) and Rufus's scope concession (line 40) constitute a genuine responsive studio exchange. The desk acknowledgement ('global markets desk') is clean. The scene does not overclaim eyewitness detail. Limitation: the studio exchange is only two turns before Alex re-centres; a third beat would deepen it without padding.",
+    "rufus_feature": "The Ocado dispatch (lines 70-73) names a concrete setting, makes an architecturally specific observation ('you bring Muse to the retailer, the agent is the interface'), and draws a genuine studio response from Jamie. It is an honest imagined scene with real sourced texture. The studio exchange (lines 72-76) is responsive: Jamie picks up the retail-distribution implication, Rufus extends it to the search-visibility consequence, and Alex asks the follow question. It functions as a scene, not merely a label.",
     "remaining_issues": [
-      "Lines 135-136: exact phrase 'start with the measurement you already have access to' spoken twice consecutively by different hosts — replace Rufus's echo with a brief dry addendum or cut it.",
-      "Lines 83 and 88: Jamie's EU Academy inbox-risk warning is substantively repeated within the same segment; line 88 should be cut or replaced with the downstream investigation note.",
-      "Lines 188-189: 'The intake form is where the expertise lives now' appears twice in immediate succession; line 189 also contains a syntactically broken sentence fragment ('Who also never had a Tuesday afternoon') that reads as an editing artefact.",
-      "Segment 5 editorial close (lines 144-147) lacks friction or development — three sequential verdict deliveries with no pushback or follow-on question; one substantive exchange would replace the thinnest verdict.",
-      "Line 32 and line 30 both close segment 2 on the 'operational resolution' verdict; line 32 adds the 'not nothing' framing but the double-landing weakens both."
+      "Lines 54-55: HIPAA exclusion and policy-audit advice repeated from lines 37 and 50 without new evidence.",
+      "Lines 83-84: UK-only scope restated from line 59 without development.",
+      "Lines 117-118: Method-not-timeline conclusion repeats lines 110-111 almost verbatim.",
+      "Line 119: Rufus speaks a production note ('I want to flag for the shareable moment') as dialogue — must be removed.",
+      "Lines 152-154: Three-line approval-lane / policy-audit / observe-only restatement adds nothing after line 149 already landed the same points.",
+      "Lines 157-158: Two consecutive farewell beats — 'That's The AI Edge' and 'Follow The AI Edge now' — should be one.",
+      "Segment 5 closing rotation is mechanically identical to a standard three-host-in-order verdict pattern noted in direction as a risk."
     ]
   },
   "remaining_production_language": [],
@@ -71,171 +89,167 @@
     "blocking": false,
     "listened": false,
     "quality_score": null,
-    "input_sha256": "ed5a80023da0b29ea62efc29f06dc5b7ba4e17543a71359ef376c2f24b38037b",
-    "output_sha256": "68df3b221e0cac5b902f3331c14a4da1306fc2e3a66644321d41d09e8900b897",
+    "input_sha256": "5bb42f01c70ca1f6865ebd47846f05f59a7f6670c59126f468dceb8cdab45323",
+    "output_sha256": "83209a90b0dea4170acd8567b21f32fb115bd73b3eeb111129e39056551200f4",
     "areas": {
       "opening": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Jensen Huang resigned eleven days ago. Today NVIDIA's board put him back.",
-          "JAMIE: As President, CEO, *and* board director. All three titles. Same day.",
-          "RUFUS: And the investigation into why he left in the first place is still running.",
-          "ALEX: So he's back in the chair with an open file sitting on the desk."
+          "ALEX: Anthropic just handed a piece of your code pipeline to an AI. Not to review it. Not to flag it. To *approve* it and merge it.",
+          "JAMIE: That's the part that stops me. It's not suggesting anymore. It's deciding.",
+          "RUFUS: And they've made the beta free to try, with ten thousand dollars in credits dangled in front of anyone willing to find out what that actually means."
         ],
-        "observation": "Four consecutive lines establish the reversal (resignation to reinstatement), the scope (all three titles), the unresolved element (open investigation) and a memorable image (back in the chair with an open file). Each line adds a new fact; none repeats. The listener has a reason to stay before the theme music.",
+        "observation": "Alex names the specific new authority (approve and merge, not just flag), Jamie isolates the precise shift (deciding not suggesting), and Rufus attaches a concrete incentive ($10,000 credits). Three distinct entry points on the same development in four lines.",
         "next_edit": ""
       },
       "cast_identity": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "JAMIE: The press release itself is interesting. It's not triumphant. It's very measured. It says the board concluded he should return. It doesn't say the matter is settled.",
-          "RUFUS: Because it isn't. The investigation into the original scandal — whatever triggered the resignation — is still active. Still open. They were explicit about that.",
-          "RUFUS: And Jensen's return resolves the immediate operational question. He's the person who knows where every chip program is. Kress is excellent, but that institutional knowledge is not transferable in eleven days.",
-          "RUFUS: —or entirely normal for a board that needs continuity today and legal closure eventually. Corporations do this. You don't freeze the company while counsel finishes its work.",
-          "JAMIE: Potentially. If employees are waiting to find out what the investigation concludes, that's a distraction sitting underneath every roadmap meeting.",
-          "RUFUS: Which is, from the brand's perspective, the goal. They want margin protection. AI is the tool that gives them data-backed confidence to hold the price higher than instinct might.",
-          "RUFUS: Which has always been true of pricing algorithms broadly. Dynamic pricing in hotels and airlines has worked this way for years. What's different now is that it's coming to categories — clothing, skincare, everyday retail — that shoppers historically assumed were either static prices or straightforward seasonal discounts.",
-          "JAMIE: It could be adaptive probing — AI systematically testing defenses, varying its approach faster than traditional security tools can flag it. It could be AI-generated phishing content, convincing enough to get credentials out of real people. AP says AI-generated cyberattack; it doesn't break down the mechanism.",
-          "RUFUS: Which matters practically. The defense you build depends entirely on which part of the attack the AI was running.",
-          "RUFUS: Spearphishing, essentially. Personalized, contextually plausible, much harder to dismiss as obvious spam."
+          "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
+          "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
+          "JAMIE: Three weeks if you're lucky.",
+          "RUFUS: One sprint if you're not.",
+          "JAMIE: I didn't say it was bad. It's how software betas work. You're trading access for signal.",
+          "RUFUS: The more interesting question to me is what this reveals about where Anthropic thinks the value is. They've moved from \"Claude helps you write code\" to \"Claude governs whether code ships.\"",
+          "JAMIE: Which might actually make it the most consequential of the three.",
+          "RUFUS: That's a bold pre-empt.",
+          "JAMIE: Let me earn it."
         ],
-        "observation": "Jamie reads the press release's tone (line 13); Rufus supplies the institutional-knowledge argument (line 17) and normalises dual announcements via corporate practice (line 20); Alex asks the operational consequence question (line 15) and the mechanism question (line 74). In the retail scene Jamie pushes margin direction (line 44), Rufus supplies the airline/hotel history (line 47). Lines are not interchangeable. The EU mechanism debate (lines 75-77) shows all three noticing different things about the same gap.",
-        "next_edit": "Segment 5 editorial close (lines 144-147 pre-edit) flattens voices into consecutive verdicts; the proposed edit restores a brief Alex-Rufus exchange."
+        "observation": "Rufus's 'reassuringly cautious or mildly terrifying' is composed understatement; Alex follows with the VP-impatience scenario; Jamie and Rufus trade sprint lengths in short, differentiated lines. Jamie's 'trading access for signal' defends a point Alex called cynical. Jamie's 'let me earn it' answers Rufus's challenge with a specific promise rather than a concession.",
+        "next_edit": "Segment 5's three-line verdict rotation (lines 145-154) is the one place where lines could swap names — addressed in edit to line 152-154."
       },
       "responsive_exchange": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Right. But here's the thing I keep coming back to. He's reinstated. The investigation is open. Those two facts are sitting side by side in the same press release.",
-          "JAMIE: Which is strange if you think about it too carefully—",
-          "RUFUS: —or entirely normal for a board that needs continuity today and legal closure eventually. Corporations do this. You don't freeze the company while counsel finishes its work.",
-          "JAMIE: Fair. But it does mean the story isn't closed. The board is effectively saying: we need him running the company, and we also need to know what actually happened.",
-          "JAMIE: But we don't know if the volume held. The tool recommended thirty. We don't know if shoppers responded the same way.",
-          "RUFUS: We don't. Reuters is reporting the recommendation and the intent, not the outcome. Which is precisely the right qualification.",
-          "ALEX: What does AI-generated actually mean here? Because that phrase is doing a lot of work and I don't want to just nod at it.",
-          "JAMIE: It could be adaptive probing — AI systematically testing defenses, varying its approach faster than traditional security tools can flag it. It could be AI-generated phishing content, convincing enough to get credentials out of real people. AP says AI-generated cyberattack; it doesn't break down the mechanism.",
-          "RUFUS: Which matters practically. The defense you build depends entirely on which part of the attack the AI was running.",
-          "ALEX: Right — if someone's inbox got a very convincing fake email and handed over a password, that's one problem. If a system vulnerability was found and exploited automatically, that's a different problem with different answers.",
-          "JAMIE: And we don't know which."
+          "RUFUS: With one important condition. Every transaction requires your explicit approval through a secure credentials store.",
+          "JAMIE: So it cannot spend your money without asking.",
+          "RUFUS: At least by design.",
+          "JAMIE: That qualifier is doing a lot of work in a very small space.",
+          "RUFUS: It is. And I want to explain why, because it matters. The acknowledged open problem here is prompt injection — which sounds technical but isn't a complicated idea. Someone buries text in a product listing that looks like an instruction to the agent. Muse reads the page, reads the hidden command —",
+          "RUFUS: and follows it instead of yours. Meta has listed this as a known issue. The purchase-approval step is the main practical guard against it.",
+          "JAMIE: So someone could theoretically put something in a grocery listing that tells Muse to do something you never asked for.",
+          "RUFUS: Theoretically, yes. No specific mitigation has been published. The approval step is what's standing between you and that.",
+          "JAMIE: I've been thinking about this. It depends entirely on what Muse does before the approval. If it's already found the cheapest return train to Edinburgh, checked three departure times, cross-referenced your calendar, and is now presenting you with one button — the approval takes three seconds. That's not a limitation. That's a finish line.",
+          "RUFUS: But if it's presenting you the same list you'd have found yourself in four clicks, the approval step is friction with branding on it.",
+          "JAMIE: Yes. And that is the thing we genuinely cannot answer yet, because this launched yesterday. We're working from what Meta described, not from three weeks of people actually using it.",
+          "ALEX: So the value is entirely in what happens upstream of the confirmation.",
+          "JAMIE: Exactly. The curation, the comparison, the decision. If that's good, the approval is painless. If that's mediocre, the approval is annoying and you just go back to doing it yourself."
         ],
-        "observation": "Lines 18-21: Alex flags the two-facts-in-one-press-release tension, Jamie begins a response, Rufus interrupts with the corporate-continuity counter, Jamie concedes the mechanism but preserves the narrative point. Each turn follows the previous. Lines 74-78: Alex refuses to nod at 'AI-generated,' Jamie distinguishes two attack types, Rufus names the practical consequence, Alex applies it concretely, Jamie closes the gap. Neither exchange reaches a tidy resolution.",
+        "observation": "Jamie names the purchase-control condition, Rufus qualifies it ('at least by design'), Jamie's response ('that qualifier is doing a lot of work') prompts Rufus to explain prompt injection specifically. The upstream-value exchange builds: Jamie constructs a scenario, Rufus reverses it with the low-curation countercase, Jamie concedes the limit and pins the reason.",
         "next_edit": ""
       },
       "scene_variety": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Okay. Eleven days. Jensen Huang steps down, NVIDIA loses its center of gravity, markets go sideways for a week, and then — official investor relations press release, today — he's reinstated as President, CEO, and board director.",
-          "ALEX: So the Reuters piece is essentially saying — AI is now in the room when brands are deciding how much to discount.",
-          "ALEX: Our third story. And I want to be clear — we've gestured at AI-assisted cyberattacks plenty of times. This is not a gesture.",
-          "JAMIE: The European Commission. Its own platform. EU Academy — the Commission's online learning and training site for EU staff and stakeholders. Hit by an AI-generated cyberattack last month.",
-          "JAMIE: Two million orders a year. PDFs, photos, emails, spreadsheets, the occasional fax that nobody admits to still sending. Every single one of them arriving in a format that your system cannot read on its own."
+          "ALEX: Okay. Claude Ship. Let's actually explain what this is, because the name does not tell you.",
+          "ALEX: Our second story — Meta launched something in the UK yesterday that I genuinely think is worth pausing on. It is not vaporware. It is in people's phones.",
+          "ALEX: Our third story is different in texture from the other two. No product you can download. No beta you can sign up for.",
+          "JAMIE: Which might actually make it the most consequential of the three."
         ],
-        "observation": "Story 1 opens on a governance crisis and unresolved investigation — deliberative, measured tone. Story 2 opens on a commercial mechanism with a live shopper consequence — brisk, practical. Story 3 opens on a public institution breach with privacy stakes — the register shifts to concern. Jamie's transformation uses a hypothetical practitioner and builds to a craft-of-prompting insight. The opening questions differ: 'what does the return actually mean,' 'is AI making holiday shopping cheaper,' 'what does AI-generated actually mean here,' 'what can a caseworker do.'",
+        "observation": "Story 1 is technical and procedural (what does each agent actually do, what can go wrong). Story 2 is consumer and commercial (what does the experience feel like, who gets stranded). Story 3 is prospective scientific (what did the method demonstrate, what stays open). Alex's framing of Story 3 as 'different in texture' (line 91) is honest rather than announced.",
         "next_edit": ""
       },
       "comic_payoff": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: Don't.",
-          "ALEX: I wasn't going to do the grand unified —",
-          "RUFUS: You absolutely were.",
-          "ALEX: I had one connecting observation —",
-          "JAMIE: He had a whole thesis, Rufus. I could see him building it from story two.",
-          "ALEX: It was a good thesis. Really tied things together nicely.",
-          "RUFUS: I'm sure it was magnificent. Take it to your grave.",
-          "RUFUS: Please tell me it involves at least one agent with an ominous name.",
-          "JAMIE: I will disappoint you on the drama. Five agents, sensibly numbered. Four of them handle ingestion, interpretation, and extraction across all those different formats. The fifth does verification. It checks whether the extracted data makes sense before anything moves forward.",
-          "RUFUS: The fax sender somewhere is now deeply worried.",
-          "JAMIE: The fax sender is sending a photo of the fax. NOVA will handle it.",
-          "RUFUS: Heh. That's a real thing. Tired Tuesday afternoon correspondence.",
-          "ALEX: I have sent emails I regret from tired Tuesday afternoons.",
-          "JAMIE: We all have. But for a caseworker whose letters directly affect her clients' housing situations, tired Tuesday afternoon is a professional risk. The AI draft removes that variable."
+          "JAMIE: The name sounds like a logistics startup that failed in 2019.",
+          "ALEX: Heh. So — Anthropic released this on November twenty-third. It's a suite of three AI agents built specifically around GitHub pull requests. Code Review is generally available. PR Steward and Claude Approvals are both in beta.",
+          "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
+          "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
+          "JAMIE: Three weeks if you're lucky.",
+          "RUFUS: One sprint if you're not.",
+          "RUFUS: Picture explaining this to someone over dinner. AI didn't use a quantum computer. AI designed a better program for a quantum computer. Formally verified. And the target applications include plasma fusion and drug discovery. Someone will say \"so the robots are doing physics homework now?\" And the answer is — kind of, yes —",
+          "RUFUS: and the homework got a perfect score.",
+          "JAMIE: I mean. That is what happened.",
+          "RUFUS: I want to find fault with this and I cannot.",
+          "JAMIE: There's the warmth. Precisely rationed as always.",
+          "RUFUS: Don't push it."
         ],
-        "observation": "Lines 89-95: Rufus intercepts before Alex states the thesis; Alex defends with mock dignity; Jamie piles on with 'I could see him building it from story two'; Rufus's 'Take it to your grave' lands without explanation. The joke is about Alex's tendency to over-synthesise — earned from prior story discussion. Lines 140-141: fax callback pays off a running thread started in line 101. Line 168: 'tired Tuesday afternoon' gets a specific personal echo from Alex (line 169) before Jamie re-applies it with professional stakes (line 170) — the joke earns its seriousness.",
+        "observation": "Jamie's logistics-startup line (12) gets a beat before Alex moves on — it lands quietly. Rufus's 'reassuringly cautious or mildly terrifying' earns Alex's specific follow-on scenario; the sprint-length exchange is a two-line payoff with no explanation. Rufus's dinner-table summary ending in 'the homework got a perfect score' (122) gets Jamie's flat confirmation (123) — no over-explanation. Jamie's 'precisely rationed as always' (141) closes the feature without a cue.",
         "next_edit": ""
       },
       "discovery": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: And Jensen's return resolves the immediate operational question. He's the person who knows where every chip program is. Kress is excellent, but that institutional knowledge is not transferable in eleven days.",
-          "RUFUS: According to Reuters, in at least one anonymized case, yes. The planned discount went from forty percent to thirty. That's ten percentage points of margin preserved on a category where margins are already thin.",
-          "RUFUS: Which has always been true of pricing algorithms broadly. Dynamic pricing in hotels and airlines has worked this way for years. What's different now is that it's coming to categories — clothing, skincare, everyday retail — that shoppers historically assumed were either static prices or straightforward seasonal discounts.",
-          "JAMIE: It could be adaptive probing — AI systematically testing defenses, varying its approach faster than traditional security tools can flag it. It could be AI-generated phishing content, convincing enough to get credentials out of real people. AP says AI-generated cyberattack; it doesn't break down the mechanism.",
-          "ALEX: Right — if someone's inbox got a very convincing fake email and handed over a password, that's one problem. If a system vulnerability was found and exploited automatically, that's a different problem with different answers.",
-          "ALEX: And the downstream risk from names and emails specifically — EU Academy users are EU staff, people in Commission training programs. If an attacker knows someone is enrolled in EU policy training, that's not random data. That's targeting information for the next campaign.",
-          "JAMIE: According to the Microsoft case study, citing Unilever operations leadership, that first order-to-cash processing stage went from fifteen to twenty minutes per order down to roughly ninety seconds. Ninety-five percent of orders now process without any human intervention at all.",
-          "JAMIE: Yes. The measurement is for the first order-to-cash processing stage specifically. It is not a claim about the entire order fulfilment cycle. The ninety seconds is the ingestion and extraction step, not delivery confirmation or dispute resolution or anything downstream. The scope matters and the Microsoft piece does describe it with that context.",
-          "JAMIE: That's the number that surprised me when I looked at this category. For a letter she'd previously spend forty-five minutes drafting, the review and adjustment is typically ten to fifteen minutes. For a standard extension request that's fairly templated, it can be under five.",
-          "JAMIE: Exactly. The other thing it doesn't do is catch errors in the intake form. If she enters the wrong deadline, the letter will cite the wrong deadline very professionally. Garbage in, garbage out — just better dressed."
+          "RUFUS: Code Review analyses your code — that's the familiar part, AI as reader. PR Steward goes one step further: it handles merge conflicts, pushes fixes, responds to feedback. But it cannot actually approve a merge.",
+          "JAMIE: And that's where Claude Approvals comes in.",
+          "RUFUS: Exactly. Claude Approvals is the one that can authorize the merge itself, based on policies that the team defines.",
+          "JAMIE: Honestly? Audit your existing policies first. Before you hand approval authority to any system — human or AI — you need to know what your policies actually say. Because if they're vague, the AI will make a judgment call. It just won't tell you it made one.",
+          "ALEX: That's the useful bit. The AI will not surface its own uncertainty the way a nervous junior dev might ping you at ten p.m. saying \"I wasn't sure about this one.\"",
+          "JAMIE: Right. It approved it. Done. You find out later.",
+          "RUFUS: It is. And I want to explain why, because it matters. The acknowledged open problem here is prompt injection — which sounds technical but isn't a complicated idea. Someone buries text in a product listing that looks like an instruction to the agent. Muse reads the page, reads the hidden command —",
+          "RUFUS: and follows it instead of yours. Meta has listed this as a known issue. The purchase-approval step is the main practical guard against it.",
+          "RUFUS: What's architecturally interesting is that Muse isn't a tab inside Ocado's app. You bring Muse to the retailer. The agent is the interface.",
+          "JAMIE: Right. This isn't \"AI uses a quantum computer.\" It's \"AI helps design better programs for quantum computers.\" Different thing entirely.",
+          "JAMIE: DeepMind links to something called the Lean framework. Lean is a proof-checking system used in mathematics — it doesn't just test whether a proof seems right, it verifies that it actually is. So the improved algorithms weren't just run and observed, they were checked analytically.",
+          "RUFUS: Which matters. In quantum computing, empirical testing is expensive and noisy. Formal verification catches errors before you ever run the hardware."
         ],
-        "observation": "Line 17 (institutional knowledge not transferable in eleven days) explains *why* Kress interim was inadequate beyond 'uncertainty.' Line 38 (40% to 30% with thin-margin qualifier) is a specific sourced mechanism. Line 47 (categories that shoppers assumed were static) names the novelty precisely. Lines 75-77 distinguish attack-type consequences. Line 81 (targeting value of EU Academy enrollment data) advances beyond 'names and emails.' Line 115 (ninety seconds, eleven markets, 95% no-human) gives measurable pilot scope. Line 129 qualifies the ninety-second figure to one processing stage — an ad",
+        "observation": "PR Steward / Claude Approvals distinction built through dialogue at 16-18. The 'AI won't surface its own uncertainty' point at 51-52 is the sharpest sourced insight in the episode. Prompt injection explained mechanistically at 65-66 without jargon. 'AI designs better programs for quantum computers' reframe at 100 is clarifying and accurate. Lean framework explanation at 102-103 is sourced and speakable.",
         "next_edit": ""
       },
       "rufus_feature": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: Right. Picture a mid-size brand's pricing operations room this week — analysts pulling last year's Black Friday numbers, a tool on screen flagging where planned discounts look too deep relative to current margin targets. That's the Reuters story. No single exchange is named because this is happening across brands simultaneously —",
-          "RUFUS: so I'm working from the global markets desk.",
-          "JAMIE: And the brand actually takes the advice?",
-          "RUFUS: According to Reuters, in at least one anonymized case, yes. The planned discount went from forty percent to thirty. That's ten percentage points of margin preserved on a category where margins are already thin.",
-          "JAMIE: But we don't know if the volume held. The tool recommended thirty. We don't know if shoppers responded the same way.",
-          "RUFUS: We don't. Reuters is reporting the recommendation and the intent, not the outcome. Which is precisely the right qualification.",
-          "ALEX: Back to the wider story."
+          "ALEX: Rufus, take us on location.",
+          "RUFUS: Right. Picture the digital checkout queue at Ocado — Britain's grocery delivery platform, entirely software-defined, no physical stores, everything lives in an app. Muse, as of yesterday, can operate inside that environment on your behalf. It browses, builds a basket, presents it to you, and when you approve, it completes the purchase.",
+          "RUFUS: What's architecturally interesting is that Muse isn't a tab inside Ocado's app. You bring Muse to the retailer. The agent is the interface.",
+          "JAMIE: Which tells you something about where the confidence in this model is coming from.",
+          "RUFUS: It does. And it has a sharp implication for anyone not currently integrated with Muse. The customer may never visit your website the way they used to.",
+          "ALEX: Back to the wider story. So what happens to retailers who aren't in the system yet?",
+          "RUFUS: Good if you're indexed and showing up in results. Potentially quite bad if you're not. The parallel to search isn't subtle — you either appear or you don't exist.",
+          "JAMIE: Right now Ocado, M&S, and Trainline are in. Everyone else is watching."
         ],
-        "observation": "Scene opens with a named concrete setting (pricing operations room, analysts, margin-flagging tool on screen). Rufus grounds the scene in the Reuters story, names the anonymous skincare example with exact figures. Jamie's immediate challenge on volume outcome (line 39) and Rufus's scope concession (line 40) form a genuine two-turn studio exchange. Alex re-centres at line 41. The desk acknowledgement is honest about the anonymous sourcing. Limitation: the studio exchange closes after two turns; a third beat would prevent it reading like a brief Q-and-A.",
-        "next_edit": "After line 40, add one Rufus turn naming the competitive-retailer consequence before Alex re-centres — deepens the exchange without padding."
+        "observation": "Setting is named in first sentence (Ocado, entirely software-defined). 'You bring Muse to the retailer, the agent is the interface' is architecturally specific. Jamie picks up the implication immediately (line 72), Rufus extends to search-visibility consequence (line 73, 75), Alex asks the follow question (line 74). Studio exchange is responsive, not decorative.",
+        "next_edit": ""
       },
       "listener_value": {
-        "status": "input_evidence_retained_needs_editorial_review",
+        "status": "changed_by_repair_needs_review",
         "retained_lines": [
-          "ALEX: So what changed today, concretely?",
-          "RUFUS: The executive vacuum is closed. The market had a week of pricing in various worst cases. The reinstatement resets the baseline.",
-          "JAMIE: And the investigation becomes the thing to watch. Not because we know it'll produce a damaging finding, but because it's unresolved and it involves the same circumstances that caused a brief but real leadership crisis at the most important company in AI hardware.",
-          "ALEX: The question the press release doesn't answer — and can't answer right now — is whether Huang's return means the scandal is behind NVIDIA, or whether the investigation is a clock that's still running.",
-          "ALEX: And genuinely useful to know if you're planning your shopping this week. The practical reality is: blanket deep discounts in some categories may be smaller this year, and AI is part of why.",
-          "JAMIE: Check across retailers. The brand using the AI tool might be holding at thirty percent while a competitor is still running forty.",
-          "RUFUS: Competition between retailers is probably the best consumer protection here. If one brand's AI says thirty percent and a competing brand is at forty, the shopper who checks both wins.",
-          "ALEX: That's actually an action item. Don't assume the first big discount you see is the best one this week.",
-          "ALEX: What should organizations watching this actually do?",
-          "RUFUS: Audit the parts of their defenses that signature-based tools struggle with — adaptive probing, generated phishing content, credential stuffing at scale. Those are the attack surfaces that AI-assisted campaigns exploit most effectively.",
-          "JAMIE: And if your security team is still filing AI-driven attacks under \"emerging threats,\" today's disclosure is a reasonable argument for moving them to \"current.\"",
-          "ALEX: The Commission hasn't confirmed how many users are affected — that detail may come from the ongoing investigation. What's concrete today is the warning, the data types, and the fact that defenses actively applied in October still didn't hold.",
-          "ALEX: What is the first move for someone listening who runs a team drowning in unstructured incoming documents?",
-          "JAMIE: Before anything else, audit one task. Pick the most common unstructured thing arriving in your team's inbox. Email attachments, PDFs, photos, whatever it is. Count how many minutes of manual extraction each one costs. Do that honestly before you talk to anyone about a multi-agent pilot. Because if that number is small —",
-          "JAMIE: the case for automation is weak. If that number is large and it repeats hundreds of times a week, you have a concrete problem worth solving and a concrete way to measure whether a solution is actually working."
+          "ALEX: And Claude Approvals is now one of those checkpoints. So what do you actually do if your team is considering this?",
+          "JAMIE: Honestly? Audit your existing policies first. Before you hand approval authority to any system — human or AI — you need to know what your policies actually say. Because if they're vague, the AI will make a judgment call. It just won't tell you it made one.",
+          "ALEX: Okay. What changed: AI agents can now hold approval authority in a software pipeline, not just advisory positions. Who benefits first: fast-moving dev teams with high AI-generated code volume, if they invest the time upfront to define rigorous policies. Who should wait: anyone in HIPAA environments —",
+          "JAMIE: Researchers, primarily. If you're in quantum computing, you have a potentially faster path to algorithm improvement with formal verification as the quality gate. That's immediately interesting to the field.",
+          "RUFUS: And for people in fusion or chemistry — this is worth watching not because the tool is in your hands today, but because the timeline on quantum advantage for real problems may have moved. We don't know by how much.",
+          "JAMIE: There's a checkable prediction here: in six months, we will start seeing reports from teams about what their observe-only period revealed — either \"this would have caught more than we expected\" or \"this would have approved things we'd have blocked.\" Those reports will tell you whether the beta warning is real caution or just liability language.",
+          "ALEX: That is the thing to watch. And the thing to do if your team is considering this: before you define the policies, map the gaps. Find the edge cases your current human reviewers handle with judgment rather than a written rule, because those are exactly the cases the AI will either miss or flatten."
         ],
-        "observation": "Story 1 closes with a named watch-item (investigation timing as material event). Story 2 closes with a concrete shopping action (compare across retailers; first discount may not be best). Story 3 closes with a named defence audit and an inbox-risk warning for EU Academy users. The transformation closes with a replicable first-move (audit one task, count extraction time). Each story answers its stated question with a development to watch or an action.",
-        "next_edit": ""
+        "observation": "Story 1: audit policies before defining them, map judgment-based edge cases. Story 2: UK listeners told to notice how the approval step feels specifically; non-UK told what to watch for. Story 3: researchers told the timeline question is open; pharma/fusion told to watch replication. Jamie's six-month checkable prediction (148) is the strongest single listener-value moment.",
+        "next_edit": "Lines 54-55 repeat already-given advice — addressed in edit."
       },
       "portable_exchanges": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: So what changed today, concretely?",
-          "RUFUS: The executive vacuum is closed. The market had a week of pricing in various worst cases. The reinstatement resets the baseline.",
-          "JAMIE: And the investigation becomes the thing to watch. Not because we know it'll produce a damaging finding, but because it's unresolved and it involves the same circumstances that caused a brief but real leadership crisis at the most important company in AI hardware.",
-          "ALEX: The question the press release doesn't answer — and can't answer right now — is whether Huang's return means the scandal is behind NVIDIA, or whether the investigation is a clock that's still running.",
-          "RUFUS: Honestly? Both are true simultaneously. The operational uncertainty is resolved. The governance question is not.",
-          "ALEX: What does AI-generated actually mean here? Because that phrase is doing a lot of work and I don't want to just nod at it.",
-          "JAMIE: It could be adaptive probing — AI systematically testing defenses, varying its approach faster than traditional security tools can flag it. It could be AI-generated phishing content, convincing enough to get credentials out of real people. AP says AI-generated cyberattack; it doesn't break down the mechanism.",
-          "RUFUS: Which matters practically. The defense you build depends entirely on which part of the attack the AI was running.",
-          "ALEX: Right — if someone's inbox got a very convincing fake email and handed over a password, that's one problem. If a system vulnerability was found and exploited automatically, that's a different problem with different answers.",
-          "JAMIE: And we don't know which."
+          "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
+          "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
+          "JAMIE: Three weeks if you're lucky.",
+          "RUFUS: One sprint if you're not.",
+          "JAMIE: Right. This isn't \"AI uses a quantum computer.\" It's \"AI helps design better programs for quantum computers.\" Different thing entirely.",
+          "ALEX: What's the formal verification piece?",
+          "JAMIE: DeepMind links to something called the Lean framework. Lean is a proof-checking system used in mathematics — it doesn't just test whether a proof seems right, it verifies that it actually is. So the improved algorithms weren't just run and observed, they were checked analytically.",
+          "RUFUS: Which matters. In quantum computing, empirical testing is expensive and noisy. Formal verification catches errors before you ever run the hardware."
         ],
-        "observation": "Exchange 1 (lines 25-29): Alex asks 'what changed today, concretely?' — Rufus names the baseline reset, Jamie names the investigation as the forward watch-item, Alex states the unresolved press-release contradiction, Rufus supplies both-simultaneously. Named subject (NVIDIA/Jensen Huang), sourced qualifications retained, stands alone. Exchange 2 (lines 74-78): Alex refuses to nod at 'AI-generated,' Jamie distinguishes adaptive probing from phishing, Rufus names the defence-specificity consequence, Alex applies it, Jamie closes the gap. Named subject (EU Academy attack), qualifications preserve",
+        "observation": "Exchange 1 (lines 25-28): Rufus names the observe-only trade-off, Alex pins the VP-impatience scenario, Jamie and Rufus trade sprint-length punchlines. Named subject (Claude Approvals observe-only mode), qualifications retained, self-contained. Exchange 2 (lines 100-103): Jamie reframes AI-and-quantum-computers distinction, Alex confirms, Jamie explains Lean with the 'it doesn't just test, it verifies' qualification. Named subject (DeepMind Gemini 4 formal verification), sourced, portable.",
         "next_edit": ""
       },
       "closing_payoff": {
-        "status": "changed_by_repair_needs_review",
+        "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Today’s question for you: NVIDIA Board Reinstates Jensen Huang as President, CEO, and Board Director: what actually changes, who benefits, and what remains uncertain?",
-          "RUFUS: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
+          "ALEX: Okay. The title question: what is Claude Ship actually changing?",
+          "JAMIE: The authority structure inside a software team. Not just what AI can do — who AI can be.",
+          "RUFUS: Before yesterday, the AI was an advisor. Now, with Claude Approvals, it's a decision-maker with defined scope.",
+          "ALEX: And that scope matters enormously. Because the policies you define are the ceiling of safety in this system. Anthropic says run it in observe-only first. The teams that do that carefully will get different results than the teams that give it three days and move on.",
+          "JAMIE: There's a checkable prediction here: in six months, we will start seeing reports from teams about what their observe-only period revealed — either \"this would have caught more than we expected\" or \"this would have approved things we'd have blocked.\" Those reports will tell you whether the beta warning is real caution or just liability language.",
+          "ALEX: That is the thing to watch. And the thing to do if your team is considering this: before you define the policies, map the gaps. Find the edge cases your current human reviewers handle with judgment rather than a written rule, because those are exactly the cases the AI will either miss or flatten.",
+          "ALEX: Today’s question for you: Anthropic Launches Claude Ship to Automate Pull Request Approval: what actually changes, who benefits, and what remains uncertain?",
+          "JAMIE: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
           "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
           "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
         ],
-        "observation": "Line 190's audience question directly names the opening promise (Huang reinstatement, what changes, who benefits, what remains uncertain). Lines 191-193 deliver sponsor, follow invitation and sign-off in correct order. The closing editorial (lines 144-147 pre-edit) answers the opening question but loses character voice in three sequential verdicts. Post-edit the Rufus timing-variable exchange restores a live moment before the sign-off sequence.",
-        "next_edit": "Apply proposed segment 5 edit to restore one exchange before the verdicts land."
+        "observation": "Jamie's six-month prediction (148) and Alex's edge-case-mapping advice (149) answer the opening promise (AI as approver — what does that actually mean). The double farewell at 157-158 is redundant and dilutes the close.",
+        "next_edit": "Edit to lines 157-158 collapses to one clean farewell with follow invitation — see edits above."
       }
     }
   },
-  "output_sha256": "68df3b221e0cac5b902f3331c14a4da1306fc2e3a66644321d41d09e8900b897",
+  "output_sha256": "83209a90b0dea4170acd8567b21f32fb115bd73b3eeb111129e39056551200f4",
   "status": "repairs_applied_need_audio_review"
 }

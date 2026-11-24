@@ -1,91 +1,43 @@
 {
   "version": "grounded-story-slate-v1",
-  "date": "2026-11-17",
+  "date": "2026-11-24",
   "pass": true,
   "candidate_target": 5,
   "required_air_stories": 3,
   "selected": [
     {
-      "event_key": "openai-chatgpt-healthcare-computer-use-agents-2026-11-16",
-      "headline": "OpenAI expands ChatGPT for Healthcare with computer-use agents and new clinical tools",
-      "title": "OpenAI expands ChatGPT for Healthcare with computer-use agents and new clinical tools",
-      "publisher": "OpenAI",
-      "published": "2026-11-16T00:00:00Z",
-      "published_at": "2026-11-16T00:00:00Z",
-      "source_url": "https://openai.com/index/more-ways-to-move-care-forward-with-chatgpt-for-healthcare/",
-      "link": "https://openai.com/index/more-ways-to-move-care-forward-with-chatgpt-for-healthcare/",
-      "summary": "OpenAI said on November 16, 2026 that it is adding computer-use agents, improved trusted clinical search, and more than 20 healthcare plugins to ChatGPT for Healthcare. The company said the new tools are meant to help healthcare teams move across existing systems and spend less time on manual workflows. OpenAI also said the computer-use agent capability is available in ChatGPT Work, Codex, and the API, and that the healthcare offering works with existing healthcare software. The announcement is paired with a second post focused on healthcare-team workflows and safety/results.",
+      "event_key": "anthropic-claude-ship-launch-2026-11-23",
+      "headline": "Anthropic Launches Claude Ship to Automate Pull Request Approval",
+      "title": "Anthropic Launches Claude Ship to Automate Pull Request Approval",
+      "publisher": "Anthropic",
+      "published": "2026-11-23T00:00:00Z",
+      "published_at": "2026-11-23T00:00:00Z",
+      "source_url": "https://claude.com/resources/articles/introducing-claude-ship",
+      "link": "https://claude.com/resources/articles/introducing-claude-ship",
+      "summary": "Anthropic released 'Claude Ship' on November 23, 2026, a suite of three AI agents designed to automate the code review and approval process for GitHub pull requests. The system includes 'Code Review' for analysis, 'PR Steward' for pushing fixes, and 'Claude Approvals,' which allows an AI to approve routine code changes based on user-defined policies. The product is currently in beta for Team and Enterprise customers, aiming to remove the bottleneck of human review in AI-heavy development workflows.",
       "facts": [
-        "OpenAI announced the update on November 16, 2026.",
-        "The release adds computer-use agents, improved trusted clinical search, and new healthcare plugins.",
-        "OpenAI says the tools are available in ChatGPT for Healthcare and related work products.",
-        "The company says the capability is designed to help teams work across existing healthcare software.",
-        "OpenAI framed the release around reducing manual workflow burden in care settings."
+        "Claude Ship consists of Code Review (generally available), PR Steward (beta), and Claude Approvals (beta).",
+        "Claude Approvals allows AI to merge code based on team-defined policies.",
+        "Eligible enterprise organizations can claim $10,000 in credits by January 15, 2027.",
+        "PR Steward handles merge conflicts and feedback but cannot approve merges itself.",
+        "The system is available for projects hosted on GitHub."
       ],
       "data_points": [
-        "November 16, 2026",
-        "more than 20 new plugins"
+        "$10,000 in credits for eligible organizations",
+        "January 15, 2027 deadline"
       ],
       "limitations_or_qualifiers": [
-        "This is a product announcement, not a regulatory approval for medical decision-making.",
-        "The capability depends on workspace settings and the healthcare software environment."
+        "Not available to organizations using HIPAA-configured environments or customer-managed encryption keys.",
+        "Beta product; Anthropic recommends running in 'observe-only' mode initially."
       ],
-      "why_it_matters": "It is a concrete step toward AI agents doing real administrative work in healthcare, which could affect throughput, costs, and clinician time.",
+      "why_it_matters": "By allowing AI to grant its own approvals, this launch shifts AI agents from code-writing tools to autonomous components of the software release pipeline.",
       "editorial_case": {
-        "new_development": "OpenAI moved from general healthcare assistance to computer-use agents and plugin-based workflow execution in healthcare environments.",
-        "affected_listener": "Healthcare organizations, clinicians, authorization teams, and IT leaders who manage patient-care workflows are directly affected.",
-        "why_today": "This is one of the largest practical AI-product changes in the window and has immediate operational relevance.",
-        "distinct_question": "Can AI now do real work inside healthcare software instead of just answering questions?",
-        "new_since_prior_coverage": "This is a new product expansion beyond prior healthcare assistant coverage and adds agentic execution capability.",
-        "practical_payoff": "Healthcare teams can test whether agentic automation reduces manual admin work, while vendors should watch how quickly these tools are adopted in regulated workflows."
-      },
-      "editorial_scores": {
-        "human_consequence": 5,
-        "novelty": 4,
-        "explanatory_value": 5,
-        "evidence_depth": 5
-      },
-      "story_age_hours": 32.56,
-      "source_tier": 3,
-      "grounded": true,
-      "rank": 1,
-      "story_tier": "primary",
-      "topic_family": "science_access",
-      "story_role": "top_ai_event",
-      "bucket": "grounded_top_ai_event"
-    },
-    {
-      "event_key": "google-admob-gemini-ai-tools-app-developers-2026-11-16",
-      "headline": "Google adds Gemini-backed AI tools to AdMob for app developers",
-      "title": "Google adds Gemini-backed AI tools to AdMob for app developers",
-      "publisher": "Google",
-      "published": "2026-11-16T00:00:00Z",
-      "published_at": "2026-11-16T00:00:00Z",
-      "source_url": "https://blog.google/products/publisher-connections/new-google-admob-tools/",
-      "link": "https://blog.google/products/publisher-connections/new-google-admob-tools/",
-      "summary": "Google said on November 16, 2026 that it is introducing Ask AdMob, AdMob agent tools, agent skills, and an MCP server for app developers. Google said Ask AdMob is a conversational agent built with Gemini and that it lives directly in the AdMob account. The company framed the launch around helping developers fix integration errors, manage ad setups, audit brand safety, and grow revenue. Google positioned the tools as a way to make app monetization and operations faster.",
-      "facts": [
-        "Google announced the AdMob tools on November 16, 2026.",
-        "Ask AdMob is built with Gemini.",
-        "The tools are designed for app developers using AdMob.",
-        "Google says the tools help with build, fix, and growth tasks.",
-        "The release includes Ask AdMob, agent tools, agent skills, and an MCP server."
-      ],
-      "data_points": [
-        "November 16, 2026"
-      ],
-      "limitations_or_qualifiers": [
-        "This is a developer tool, not a general consumer assistant.",
-        "The tools work inside the AdMob environment and focus on monetization workflows."
-      ],
-      "why_it_matters": "It is a practical AI release for a large developer audience, especially anyone trying to manage app revenue and ad operations.",
-      "editorial_case": {
-        "new_development": "Google added Gemini-powered agents and helper tools directly into AdMob for developer workflows.",
-        "affected_listener": "Mobile app developers, app businesses, and monetization teams are the primary audience.",
-        "why_today": "It has clear commercial utility and is a fresh product announcement within the 48-hour window.",
-        "distinct_question": "How can AI help app developers manage monetization and brand safety inside AdMob?",
-        "new_since_prior_coverage": "This is a new AdMob product release, not a general Gemini model refresh.",
-        "practical_payoff": "Developers can try the tools to troubleshoot monetization and growth issues faster, while watching how much control the agent actually gets."
+        "new_development": "Introduction of AI-led code approval authority within the software development lifecycle.",
+        "affected_listener": "Software engineers and dev-ops teams looking to streamline high-velocity coding workflows.",
+        "why_today": "It represents a significant step in 'agentic' software development where the AI assumes responsibility for the quality-gate process.",
+        "distinct_question": "How much risk are organizations willing to accept by letting AI agents approve their own code changes?",
+        "new_since_prior_coverage": "This moves beyond 'writing' code to 'governing' the deployment of that code.",
+        "practical_payoff": "Development teams should audit their current CI/CD policies before implementing AI-led approval processes to avoid introducing fragile dependencies."
       },
       "editorial_scores": {
         "human_consequence": 4,
@@ -93,7 +45,56 @@
         "explanatory_value": 4,
         "evidence_depth": 5
       },
-      "story_age_hours": 32.56,
+      "story_age_hours": 34.72,
+      "source_tier": 3,
+      "grounded": true,
+      "rank": 1,
+      "story_tier": "primary",
+      "topic_family": "products",
+      "story_role": "top_ai_event",
+      "bucket": "grounded_top_ai_event"
+    },
+    {
+      "event_key": "meta-muse-uk-launch-2026-11-23",
+      "headline": "Meta Launches Muse AI Agent for Personal Shopping in the UK",
+      "title": "Meta Launches Muse AI Agent for Personal Shopping in the UK",
+      "publisher": "Meta",
+      "published": "2026-11-24T06:00:40Z",
+      "published_at": "2026-11-24T06:00:40Z",
+      "source_url": "https://about.fb.com/news/2026/11/introducing-muse-in-the-uk-a-personal-ai-agent-you-control/",
+      "link": "https://about.fb.com/news/2026/11/introducing-muse-in-the-uk-a-personal-ai-agent-you-control/",
+      "summary": "Meta officially launched its personal AI agent, Muse, for users in the United Kingdom on November 23, 2026. The agent integrates with local retail and travel platforms, allowing users to automate shopping tasks like grocery purchasing and travel booking. Notably, the product includes 'purchase controls' requiring explicit user approval for every transaction to address security and autonomy concerns.",
+      "facts": [
+        "Muse launched in the UK on November 23, 2026, for users 18 and older.",
+        "The agent supports task execution across partners like Marks & Spencer, Ocado, and Trainline.",
+        "Every transaction requires explicit user approval through a secure credentials store.",
+        "Muse is available via iOS, Android, WhatsApp, and the web.",
+        "It is free for most uses, with optional paid tiers."
+      ],
+      "data_points": [
+        "18+ age restriction",
+        "November 23, 2026 launch date"
+      ],
+      "limitations_or_qualifiers": [
+        "Prompt injection remains an acknowledged, open security challenge.",
+        "Initial launch is limited to the UK market."
+      ],
+      "why_it_matters": "This represents the first mass-market deployment of an AI agent that actively interacts with personal finances and retail commerce in a major economy.",
+      "editorial_case": {
+        "new_development": "First major-market retail launch of a consumer-facing AI agent with transaction-approval guardrails.",
+        "affected_listener": "UK consumers now have a tool to manage routine shopping, while retailers must adapt to agent-driven procurement.",
+        "why_today": "This is a direct, practical example of how AI agents are changing the consumer's role in digital commerce.",
+        "distinct_question": "Does requiring human approval for every purchase limit the agent's usefulness or effectively solve for safety?",
+        "new_since_prior_coverage": "This confirms the specific implementation of purchase guardrails in a real-world, high-traffic consumer product.",
+        "practical_payoff": "Consumers should observe how 'purchase controls' affect their time-to-task; retailers should evaluate their platform integration readiness."
+      },
+      "editorial_scores": {
+        "human_consequence": 4,
+        "novelty": 4,
+        "explanatory_value": 4,
+        "evidence_depth": 4
+      },
+      "story_age_hours": 4.71,
       "source_tier": 3,
       "grounded": true,
       "rank": 2,
@@ -103,47 +104,47 @@
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "openai-research-access-200000-academic-researchers-2026-11-16",
-      "headline": "OpenAI broadens free frontier-model access for 200,000 researchers worldwide",
-      "title": "OpenAI broadens free frontier-model access for 200,000 researchers worldwide",
-      "publisher": "OpenAI",
-      "published": "2026-11-16T00:00:00Z",
-      "published_at": "2026-11-16T00:00:00Z",
-      "source_url": "https://openai.com/index/broadening-access-to-ai-for-scientists/",
-      "link": "https://openai.com/index/broadening-access-to-ai-for-scientists/",
-      "summary": "OpenAI said on November 16, 2026 that it is expanding its ChatGPT for Academic Researchers program to offer 200,000 researchers worldwide free access to its frontier models. The company described the move as an expansion of research access rather than a consumer product launch. OpenAI paired the announcement with a separate report on how more than 1,800 scientists use ChatGPT in research. The release positions AI as a scientific productivity tool, not just a chat interface.",
+      "event_key": "google-deepmind-quantum-agents-formal-verification-2026-11-23",
+      "headline": "Google DeepMind says Gemini agents helped improve quantum algorithms for fusion, chemistry, and enzymes",
+      "title": "Google DeepMind says Gemini agents helped improve quantum algorithms for fusion, chemistry, and enzymes",
+      "publisher": "Google DeepMind",
+      "published": "2026-11-23T00:00:00Z",
+      "published_at": "2026-11-23T00:00:00Z",
+      "source_url": "https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/",
+      "link": "https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/",
+      "summary": "Google DeepMind published a November 23, 2026 research post describing work in which Gemini 4 agents helped improve established quantum algorithms. The company says the result produced highly efficient quantum circuits that could one day support simulations relevant to fusion energy, chemistry, and enzymes. DeepMind says the work used agent teams and formal verification, and it links the result to a paper and the Lean framework. The post frames the advance as a research milestone rather than a product release for general users.",
       "facts": [
-        "OpenAI announced the expansion on November 16, 2026.",
-        "The program offers free access to frontier models for 200,000 researchers worldwide.",
-        "OpenAI says the program is for academic researchers.",
-        "The announcement is linked to OpenAI's broader science-research reporting.",
-        "The release emphasizes scientific use rather than general consumer use."
+        "Google DeepMind published the research post on November 23, 2026.",
+        "The work used teams of Gemini 4 agents.",
+        "The result was improved quantum algorithms and highly efficient quantum circuits.",
+        "DeepMind says the applications could include fusion energy, chemistry, and enzymes.",
+        "The post emphasizes formal verification.",
+        "DeepMind links to a paper and the Lean framework."
       ],
       "data_points": [
-        "200,000 researchers",
-        "worldwide",
-        "November 16, 2026"
+        "2026-11-23"
       ],
       "limitations_or_qualifiers": [
-        "Access is limited to eligible academic researchers.",
-        "This is research access, not a public consumer plan."
+        "This is research, not a public consumer product.",
+        "The article does not claim deployed commercial availability.",
+        "The post says the work could one day help, so the impact is prospective."
       ],
-      "why_it_matters": "It lowers the cost of access for a large scientific user base, which could shape adoption of frontier models in labs and universities.",
+      "why_it_matters": "It shows agentic AI being used as a research tool to speed up scientific algorithm design, which matters for future compute-heavy science.",
       "editorial_case": {
-        "new_development": "OpenAI expanded a research-access program from a smaller or narrower offering to a large global group of academic users.",
-        "affected_listener": "Researchers, university labs, and scientific-support staff are the immediate beneficiaries.",
-        "why_today": "The scale is large enough to matter for scientific AI adoption and it is fresh within the window.",
-        "distinct_question": "Who gets free access to frontier AI for research now, and what does that unlock?",
-        "new_since_prior_coverage": "This is a new access expansion, not just a new study about scientists.",
-        "practical_payoff": "Academic teams can watch whether free access changes citation workflows, experiment planning, or grant-era productivity."
+        "new_development": "Google DeepMind reported a new research result using Gemini 4 agents and formal verification to improve quantum algorithms.",
+        "affected_listener": "Researchers in quantum computing, chemistry, and fusion science are affected because the method may compress work that traditionally takes years.",
+        "why_today": "It is a fresh science result from a top AI lab inside the window and it answers a different listener question than product launches or policy stories.",
+        "distinct_question": "Can AI agents help scientists design better quantum algorithms instead of just writing code or chat replies?",
+        "new_since_prior_coverage": "New since prior coverage: a specific research breakthrough in quantum algorithm design, not a general claim about model capability.",
+        "practical_payoff": "Scientists should watch whether agent-assisted formal verification becomes a repeatable workflow for quantum and other hard-science problems."
       },
       "editorial_scores": {
-        "human_consequence": 4,
+        "human_consequence": 3,
         "novelty": 4,
         "explanatory_value": 5,
-        "evidence_depth": 5
+        "evidence_depth": 4
       },
-      "story_age_hours": 32.56,
+      "story_age_hours": 34.72,
       "source_tier": 3,
       "grounded": true,
       "rank": 3,
@@ -153,99 +154,97 @@
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "openai-csam-image-classifier-2026-11-16",
-      "headline": "OpenAI says it has new CSAM image-classification tools for approved organizations",
-      "title": "OpenAI says it has new CSAM image-classification tools for approved organizations",
-      "publisher": "OpenAI",
-      "published": "2026-11-16T00:00:00Z",
-      "published_at": "2026-11-16T00:00:00Z",
-      "source_url": "https://openai.com/products/release-notes/",
-      "link": "https://openai.com/products/release-notes/",
-      "summary": "OpenAI's November 16, 2026 release notes say approved organizations can use an OpenAI CSAM Image Classifier at no cost to help prioritize images for human review. OpenAI said the model returns separate signals for potential CSAM and potential AI-generated CSAM. The release is aimed at safety and moderation workflows rather than consumer use. OpenAI also linked the tool to broader child-safety efforts in its news feed.",
+      "event_key": "gosh-nhs-agentic-ai-launch-2026-11-24",
+      "headline": "Great Ormond Street Hospital launches first NHS agentic AI clinical program",
+      "title": "Great Ormond Street Hospital launches first NHS agentic AI clinical program",
+      "publisher": "Morningstar",
+      "published": "2026-11-24T08:00:00Z",
+      "published_at": "2026-11-24T08:00:00Z",
+      "source_url": "https://www.morningstar.com/news/business-wire/20261124844391/great-ormond-street-hospital-announces-first-of-its-kind-agentic-ai-programme-in-an-nhs-hospital-in-collaboration-with-hyland-and-amazon-web-services",
+      "link": "https://www.morningstar.com/news/business-wire/20261124844391/great-ormond-street-hospital-announces-first-of-its-kind-agentic-ai-programme-in-an-nhs-hospital-in-collaboration-with-hyland-and-amazon-web-services",
+      "summary": "Great Ormond Street Hospital (GOSH) in London has officially launched an agentic AI program to automate administrative and diagnostic support workflows. The initiative, developed in collaboration with Hyland and Amazon Web Services, is the first of its kind within the UK's National Health Service. The agents are designed to assist clinicians by handling data entry and processing patient records, aiming to reduce manual paperwork and improve clinical efficiency.",
       "facts": [
-        "OpenAI listed the CSAM Image Classifier in release notes dated November 16, 2026.",
-        "Approved organizations can use it at no cost.",
-        "The classifier returns separate signals for potential CSAM and AI-generated CSAM.",
-        "The intended use is prioritizing images for human review.",
-        "The tool is positioned for organizational safety workflows."
+        "The program is the first deployment of agentic AI within an NHS hospital setting.",
+        "Collaboration includes technology and infrastructure support from Hyland and Amazon Web Services.",
+        "Primary task is the automation of administrative and diagnostic support workflows.",
+        "The project aims to reduce the burden of manual data entry for clinicians."
       ],
       "data_points": [
-        "November 16, 2026",
-        "at no cost"
+        "November 24, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Access is limited to approved organizations.",
-        "The classifier supports human review and does not replace it."
+        "Deployment is specific to Great Ormond Street Hospital (London) within the NHS ecosystem.",
+        "Clinical use is currently focused on support workflows, not autonomous decision-making."
       ],
-      "why_it_matters": "It is a concrete safety tool that could improve moderation throughput for organizations dealing with child-safety content.",
+      "why_it_matters": "This represents a critical move from research-phase clinical AI to live, agentic deployment in a high-stakes, public-sector healthcare environment.",
       "editorial_case": {
-        "new_development": "OpenAI released a dedicated safety classifier that separates suspected real and AI-generated CSAM signals for review workflows.",
-        "affected_listener": "Trust-and-safety teams, platform moderators, and child-safety organizations are the immediate users.",
-        "why_today": "It is a fresh safety release with operational consequences, not just a policy statement.",
-        "distinct_question": "How are platforms supposed to triage AI-generated abuse imagery more efficiently?",
-        "new_since_prior_coverage": "This is a new operational tool, not the earlier general child-safety announcement.",
-        "practical_payoff": "Safety teams can use it to prioritize review queues, while noting it is limited to approved organizations and human oversight remains required."
+        "new_development": "Official launch of a live agentic AI program within a major public hospital.",
+        "affected_listener": "Healthcare administrators, clinicians and NHS patients who may see faster record processing but must navigate new AI data workflows.",
+        "why_today": "This moves clinical AI from pilot-testing to actual NHS operational infrastructure, providing a benchmark for hospital automation.",
+        "distinct_question": "Can agentic AI handle high-stakes clinical data in the NHS without increasing error rates?",
+        "new_since_prior_coverage": "Confirmed live deployment in a nationalized health system, distinct from prior research-only announcements.",
+        "practical_payoff": "Hospital leaders should monitor GOSH's deployment as a template for integrating AI agents into existing clinical EHR (Electronic Health Record) systems."
       },
       "editorial_scores": {
-        "human_consequence": 4,
-        "novelty": 3,
+        "human_consequence": 5,
+        "novelty": 4,
         "explanatory_value": 4,
-        "evidence_depth": 5
+        "evidence_depth": 4
       },
-      "story_age_hours": 32.56,
-      "source_tier": 3,
+      "story_age_hours": 2.72,
+      "source_tier": 1,
       "grounded": true,
       "rank": 4,
       "story_tier": "supporting",
-      "topic_family": "products",
+      "topic_family": "science_access",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "openai-child-safety-abuse-defenses-2026-11-16",
-      "headline": "OpenAI says it is strengthening anti-abuse defenses against online child sexual exploitation",
-      "title": "OpenAI says it is strengthening anti-abuse defenses against online child sexual exploitation",
-      "publisher": "OpenAI",
-      "published": "2026-11-16T00:00:00Z",
-      "published_at": "2026-11-16T00:00:00Z",
-      "source_url": "https://openai.com/index/strengthening-the-fight-against-online-child-sexual-abuse/",
-      "link": "https://openai.com/index/strengthening-the-fight-against-online-child-sexual-abuse/",
-      "summary": "OpenAI said on November 16, 2026 that it is introducing new tools, practical guidance, and partnerships to help prevent, detect, and respond to online child sexual exploitation and abuse. The company framed the effort as part of its safety work rather than a consumer feature. OpenAI said the initiative is meant to improve prevention and response across online systems. The announcement sits alongside the company's other safety and healthcare releases on the same date.",
+      "event_key": "meta-shareholder-lawsuit-funding-pause-2026-11-24",
+      "headline": "Meta pauses $60 billion AI funding vehicle following shareholder lawsuit",
+      "title": "Meta pauses $60 billion AI funding vehicle following shareholder lawsuit",
+      "publisher": "Tech in Asia",
+      "published": "2026-11-24T03:57:00Z",
+      "published_at": "2026-11-24T03:57:00Z",
+      "source_url": "https://www.techinasia.com/meta-pauses-60b-ai-stock-sale-over-shareholder-lawsuit",
+      "link": "https://www.techinasia.com/meta-pauses-60b-ai-stock-sale-over-shareholder-lawsuit",
+      "summary": "Meta has halted a planned issuance of nonvoting shares, which was set to serve as a $60 billion funding vehicle for its AI development roadmap. The decision follows a legal challenge in Delaware where shareholders accused the company of insufficient governance in its AI investment strategies. This pause significantly impacts Meta's immediate capital deployment plans for data center expansion and model training.",
       "facts": [
-        "OpenAI announced the safety effort on November 16, 2026.",
-        "The initiative includes new tools, practical guidance, and partnerships.",
-        "OpenAI says the effort is aimed at prevention, detection, and response.",
-        "The announcement is focused on online child sexual exploitation and abuse.",
-        "The company positioned it as safety work rather than product expansion."
+        "Meta paused a $60 billion share issuance.",
+        "The delay is a direct result of an active shareholder lawsuit in Delaware.",
+        "The funds were intended for AI-related capital expenditure and infrastructure.",
+        "Legal challenges focus on the governance of large-scale AI investment."
       ],
       "data_points": [
-        "November 16, 2026"
+        "$60 billion",
+        "November 24, 2026"
       ],
       "limitations_or_qualifiers": [
-        "The release does not by itself establish the effectiveness of the measures.",
-        "This is a safety initiative, not a consumer-facing product."
+        "The pause is an immediate response to legal proceedings.",
+        "Long-term impact depends on the court's upcoming rulings."
       ],
-      "why_it_matters": "It signals continued investment in abuse prevention at a time when platform safety remains a major AI governance issue.",
+      "why_it_matters": "This highlights a growing trend where shareholder activism and corporate governance lawsuits are acting as tangible speed bumps for massive AI investments.",
       "editorial_case": {
-        "new_development": "OpenAI publicly added new anti-abuse tooling and partnerships to its safety program.",
-        "affected_listener": "Platform safety teams, child-safety groups, and policymakers tracking abuse prevention are the audience.",
-        "why_today": "It is a fresh safety disclosure from a major AI vendor and belongs in a serious news lineup.",
-        "distinct_question": "What is OpenAI actually doing to reduce AI-enabled online child abuse?",
-        "new_since_prior_coverage": "This is a new safety initiative, not a repeat of the general November 16 safety news.",
-        "practical_payoff": "Watch for whether platforms adopt the tools or guidance in moderation and abuse-response pipelines."
+        "new_development": "Meta is legally forced to pause a major capital-raising event for AI infrastructure.",
+        "affected_listener": "Investors, competitors, and infrastructure partners are affected because Meta's massive AI spending spree faces a liquidity delay.",
+        "why_today": "This is a rare example of a legal mechanism directly stalling the 'AI arms race' at a top-tier firm.",
+        "distinct_question": "Can shareholder litigation actually slow down the rapid deployment of AI infrastructure in Big Tech?",
+        "new_since_prior_coverage": "The formal confirmation of the pause due to the lawsuit is new information, shifting this from a potential to a realized delay.",
+        "practical_payoff": "Investors and vendors should recalibrate their expectations for Meta's Q1 2027 infrastructure spending, as the funding pipeline is currently blocked."
       },
       "editorial_scores": {
         "human_consequence": 4,
-        "novelty": 3,
-        "explanatory_value": 4,
+        "novelty": 4,
+        "explanatory_value": 5,
         "evidence_depth": 4
       },
-      "story_age_hours": 32.56,
-      "source_tier": 3,
+      "story_age_hours": 6.77,
+      "source_tier": 1,
       "grounded": true,
       "rank": 5,
       "story_tier": "supporting",
-      "topic_family": "security",
+      "topic_family": "governance",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     }
