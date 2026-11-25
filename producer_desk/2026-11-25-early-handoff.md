@@ -54,3 +54,6 @@ Cast continuity: Alex asks what changes in an ordinary workday; Jamie defends re
 1. Add source-backed public correction notes for the specific Tuesday factual errors; preserve master and paid takes.
 2. Repair pre-TTS feature selection to reject unsupported real-case particulars and invented first-person test results, while retaining clearly hypothetical examples and bounded factual repairs.
 3. Remove duplicate practical-slot insertion; require current dated audio-review evidence and report missing atmosphere honestly. These findings do not authorize duplicate production or wholesale TTS regeneration.
+
+## Completion of this check
+Wednesday run 45577568817 passed compile/preflight and entered broadcast production. No second production run started. Added a dated correction notice to episodes/2026-11-24/index.html in commit 7f50eee0de66cb5ecbead5ade154c673928bb4cb; repository read-back verified, original transcript/audio retained. Public deployment of this new notice is pending and must be checked separately. This completes prioritized item 1 at the repository level; it is not an audio repair or Spotify update.
