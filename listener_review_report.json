@@ -4,20 +4,20 @@
   "entertainment_rating": null,
   "blocking": false,
   "story_families": [
-    "products",
-    "products",
-    "products"
+    "science_access",
+    "markets",
+    "other"
   ],
-  "first_story_seconds": 67.84,
+  "first_story_seconds": 66.569,
   "audio_measurements": {
-    "integrated_lufs": -16.31,
-    "true_peak_dbtp": -1.45,
-    "loudness_range_lu": 2.9
+    "integrated_lufs": -16.29,
+    "true_peak_dbtp": -1.73,
+    "loudness_range_lu": 3.0
   },
   "dialogue_editor_accepted": true,
-  "storyboard_status": "source_only_fallback",
+  "storyboard_status": "model_plan",
   "issues": [
-    "All storyboard providers unavailable; source-only plan used."
+    "Rufus feature outside its 100-220 word budget."
   ],
   "requires_listening": [
     "responsive chemistry",
@@ -32,13 +32,15 @@
     "entertainment_rating": null,
     "rufus_feature": {
       "mode": "on_location",
-      "word_count": 115,
+      "word_count": 245,
       "handoff_and_return": true,
       "clearly_framed": true,
-      "duration_in_word_band": true,
+      "duration_in_word_band": false,
       "present": true
     },
-    "issues": [],
+    "issues": [
+      "Rufus feature outside its 100-220 word budget."
+    ],
     "requires_editorial_review": [
       "distinct listener consequences across three stories",
       "technical terms explained on first use",
@@ -60,209 +62,263 @@
           "responsive_banter": {
             "pass": true,
             "evidence": [
-              "JAMIE: That's the part that stops me. It's not suggesting anymore. It's deciding.",
-              "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-              "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
-              "JAMIE: Three weeks if you're lucky.",
-              "RUFUS: One sprint if you're not.",
-              "JAMIE: I didn't say it was bad. It's how software betas work. You're trading access for signal.",
-              "JAMIE: I mean. That is what happened.",
-              "RUFUS: I want to find fault with this and I cannot.",
-              "JAMIE: There's the warmth. Precisely rationed as always.",
-              "RUFUS: Don't push it."
+              "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
+              "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
+              "JAMIE: Okay, but here's my immediate question. A \"dedicated index\" \u2014 does that mean it stops hallucinating citations? Because I've watched these models confidently manufacture journal articles that don't exist. Plausible author names, real-sounding titles, volume numbers \u2014 none of it real.",
+              "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice. The API can now summarize clinical evidence beautifully. The moment a real patient's data is involved, the legal scaffolding has to exist first. The API is ready; the compliance layer may not be.",
+              "JAMIE: I want to push on that, though. Drug interactions, trial summaries \u2014 those are exactly the situations where a wrong answer has consequences. A hallucinated citation in a drug-interaction summary isn't embarrassing. It could affect a treatment decision.",
+              "RUFUS: Which, to be fair, is how most decision-support software already operates. You'd be surprised how many clinical tools have carried exactly that disclaimer for years.",
+              "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+              "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
+              "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
+              "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
+              "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+              "ALEX: I'd start with a better question. The Ledger offers five focused briefings to help you think through what the news means for your next decision.",
+              "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+              "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+              "RUFUS: Which tells you immediately that this isn't a technical problem. There's no architectural reason Muse can't access Amazon. It's a commercial argument about who gets paid, and \u2014 more importantly \u2014 who owns the relationship with the customer at the end of the transaction.",
+              "JAMIE: Right, because if Muse walks someone through finding a blender and buying it on Amazon, Amazon wants to know: did *they* sell that blender, or did Meta?",
+              "ALEX: Meanwhile the person just wants the blender.",
+              "JAMIE: This is always how it goes.",
+              "JAMIE: And somewhere, a person gets a blender.",
+              "RUFUS: Eventually. Probably."
             ],
             "evidence_line_numbers": [
               3,
-              25,
-              26,
-              27,
-              28,
-              44,
-              120,
-              137,
-              138,
-              139
+              4,
+              14,
+              19,
+              21,
+              23,
+              24,
+              45,
+              46,
+              60,
+              61,
+              62,
+              63,
+              64,
+              73,
+              74,
+              76,
+              77,
+              91,
+              92
             ],
-            "reason": "The episode sustains genuine three-way responsiveness across all segments. In Story 1, Alex, Jamie and Rufus build a real collaborative argument about what observe-only actually means and how long it will last, with each voice adding a distinct perspective rather than summarising in turn. Alex participates as a questioner who pushes the conversation forward rather than just moderating. Jamie's challenge to Rufus's 'trading access for signal' remark (line 43-44) is a small but real moment of pushback that resolves naturally. Story 2 develops the approval-as-friction-or-finish-line tension between Jamie and Rufus (lines 78-82) with Alex synthesising at line 81. Story 3 opens with Jamie's pre-empt and Rufus's dry challenge (lines 91-93), earns its answer, and closes with the AI-transformation exchange where Rufus's 'I want to find fault with this and I cannot' and Jamie's teasing reply are genuinely in-character and responsive to what just happened. The pattern across the episode is consistent engagement, not isolated quips.",
+            "reason": "The episode sustains genuine three-way engagement across all segments. In Story 1, Jamie launches a specific, substantive challenge about hallucinated citations; Alex and Rufus respond with layered distinctions (what the index does vs. what it guarantees, the BAA gatekeeping step) rather than validation. The exchange builds cumulatively rather than recycling the same point. Alex participates as a questioner and challenger ('I want to push on that'), not merely a moderator. In Story 2, Jamie's challenge about what 'climbed too far' actually means prompts a genuinely analytic Rufus reply; Jamie then reframes to the retirement-fund angle, which Rufus picks up and extends. In Story 3, the blender thread runs through multiple speakers and becomes a recurring shared joke without losing analytical content. The midroll is woven into character voice (the warmth exchange). Weak spots: lines 58\u201359 repeat the 'different clocks' observation almost verbatim (lines 49/59 and Rufus's echo), suggesting the script recycled a beat; and line 31 ('I'll grant you that') is a mild 'fair point' pivot, though the specific developer-warning that follows redeems it. Overall pattern is engaged and reciprocal rather than alternating monologues.",
             "story_notes": {
-              "segment_2_story_1": "Challenge: Jamie (line 20-22) argues the pull-request approval is 'the last human checkpoint' and that Anthropic is replacing the person, not assisting them. Rufus responds with the observe-only on-ramp (line 23), Jamie immediately interrogates that qualifier (line 24), and Rufus acknowledges the ambiguity with the 'reassuringly cautious or mildly terrifying' line (line 25). Alex then extends it to the VP-pressure scenario (line 26), Jamie and Rufus complete the joke in two beats (lines 27-28). The dispute about what observe-only actually means continues implicitly through the policy-gap discussion (lines 50-53). The exchange develops; it does not fizzle after a 'fair point'.",
-              "segment_3_story_2": "Challenge: Alex (line 77) directly asks whether the per-transaction approval saves time or is just 'a very polished extra step.' Jamie responds with a concrete conditional (lines 78): Edinburgh train, three departure times, calendar check, one button. Rufus counters with the same-list-you-found-yourself scenario (line 79). Jamie concedes the uncertainty honestly (line 80) and both land on 'the value is upstream of the confirmation' (lines 81-82). The exchange is a genuine unresolved disagreement resolved by naming what is not yet knowable, which is an honest outcome rather than a fizzle.",
-              "segment_4_story_3": "Challenge: Jamie's pre-empt ('might actually be the most consequential of the three', line 91) is challenged by Rufus ('bold pre-empt', line 92) and Jamie commits to earning it (line 93). The story then tracks whether the claim is justified through the formal-verification explanation and the dinner-table Rufus scene. The AI-transformation block (lines 124-139) is a live demonstration that extends Story 3's themes; Jamie's limitation admission (lines 132-134) and Rufus's dry capitulation keep it from becoming a monologue. No long stretch of interchangeable summaries was identified."
+              "segment_2_story_1": "Challenge: Jamie asks at line 14 whether a 'dedicated index' eliminates hallucinated citations and grounds it in observed model behavior. Response: Alex at line 15 confirms the question is correct and reports OpenAI does not claim elimination; Rufus at line 17 adds the PHI/BAA gatekeeping layer that sharpens the limitation further. The exchange develops through lines 18\u201333, building a three-part distinction (index finds real sources / summaries still uncertain / compliance blocks clinical use). Jamie at line 24 makes the structurally meaningful point that any API organization can build now, which Rufus validates and sharpens at line 25 and 28. The discussion does not fizzle; it reaches a concrete shared conclusion at lines 29\u201333. No long stretch of interchangeable summaries.",
+              "segment_3_story_2": "Challenge: Jamie at line 43 presses Rufus on what 'climbed too far' actually means, noting it is an overused phrase. Rufus at line 44 gives a specific mechanistic answer (yesterday's gain was belief, today's reversal was doubt). Jamie then reframes at line 45 to the index-fund investor who had no AI opinion, which Rufus picks up at line 46 as 'actually the significant thing.' The exchange develops usefully. Lines 54\u201357 (what to watch) are more Q&A than banter, but they carry specific analytical content. Line 58 partially repeats the 'both things simultaneously' observation Jamie made at line 48, and Rufus's 'different clocks' reply at line 59 exactly echoes line 49\u2014a recycled beat that slightly flattens the ending of this segment.",
+              "segment_4_story_3": "Challenge and development: Jamie at line 68 asks what 'blockade' means; Alex explains concretely at line 69. Rufus at line 73 reframes from technical to commercial, which Jamie immediately picks up and dramatizes at line 74 (the blender attribution question). Rufus extends at line 75 with the advertising-empire framing. The exchange builds a coherent argument about whose data signal is at stake. Rufus's admission at line 78 ('I'll admit I didn't expect this quite yet') adds a moment of genuine intellectual engagement. Lines 83\u201392 carry the analysis through to concrete outcomes. The blender motif is a shared running joke that lands without undercutting the substance. No long interchangeable summaries."
             },
             "verified_evidence": [
-              "JAMIE: That's the part that stops me. It's not suggesting anymore. It's deciding.",
-              "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-              "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
-              "JAMIE: Three weeks if you're lucky.",
-              "RUFUS: One sprint if you're not.",
-              "JAMIE: I didn't say it was bad. It's how software betas work. You're trading access for signal.",
-              "JAMIE: I mean. That is what happened.",
-              "RUFUS: I want to find fault with this and I cannot.",
-              "JAMIE: There's the warmth. Precisely rationed as always.",
-              "RUFUS: Don't push it.",
-              "JAMIE: That's the part that stops me. It's not suggesting anymore. It's deciding.",
-              "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-              "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
-              "JAMIE: Three weeks if you're lucky.",
-              "RUFUS: One sprint if you're not.",
-              "JAMIE: I didn't say it was bad. It's how software betas work. You're trading access for signal.",
-              "JAMIE: I mean. That is what happened.",
-              "RUFUS: I want to find fault with this and I cannot.",
-              "JAMIE: There's the warmth. Precisely rationed as always.",
-              "RUFUS: Don't push it."
+              "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
+              "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
+              "JAMIE: Okay, but here's my immediate question. A \"dedicated index\" \u2014 does that mean it stops hallucinating citations? Because I've watched these models confidently manufacture journal articles that don't exist. Plausible author names, real-sounding titles, volume numbers \u2014 none of it real.",
+              "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice. The API can now summarize clinical evidence beautifully. The moment a real patient's data is involved, the legal scaffolding has to exist first. The API is ready; the compliance layer may not be.",
+              "JAMIE: I want to push on that, though. Drug interactions, trial summaries \u2014 those are exactly the situations where a wrong answer has consequences. A hallucinated citation in a drug-interaction summary isn't embarrassing. It could affect a treatment decision.",
+              "RUFUS: Which, to be fair, is how most decision-support software already operates. You'd be surprised how many clinical tools have carried exactly that disclaimer for years.",
+              "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+              "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
+              "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
+              "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
+              "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+              "ALEX: I'd start with a better question. The Ledger offers five focused briefings to help you think through what the news means for your next decision.",
+              "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+              "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+              "RUFUS: Which tells you immediately that this isn't a technical problem. There's no architectural reason Muse can't access Amazon. It's a commercial argument about who gets paid, and \u2014 more importantly \u2014 who owns the relationship with the customer at the end of the transaction.",
+              "JAMIE: Right, because if Muse walks someone through finding a blender and buying it on Amazon, Amazon wants to know: did *they* sell that blender, or did Meta?",
+              "ALEX: Meanwhile the person just wants the blender.",
+              "JAMIE: This is always how it goes.",
+              "JAMIE: And somewhere, a person gets a blender.",
+              "RUFUS: Eventually. Probably.",
+              "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
+              "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
+              "JAMIE: Okay, but here's my immediate question. A \"dedicated index\" \u2014 does that mean it stops hallucinating citations? Because I've watched these models confidently manufacture journal articles that don't exist. Plausible author names, real-sounding titles, volume numbers \u2014 none of it real.",
+              "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice. The API can now summarize clinical evidence beautifully. The moment a real patient's data is involved, the legal scaffolding has to exist first. The API is ready; the compliance layer may not be.",
+              "JAMIE: I want to push on that, though. Drug interactions, trial summaries \u2014 those are exactly the situations where a wrong answer has consequences. A hallucinated citation in a drug-interaction summary isn't embarrassing. It could affect a treatment decision.",
+              "RUFUS: Which, to be fair, is how most decision-support software already operates. You'd be surprised how many clinical tools have carried exactly that disclaimer for years.",
+              "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+              "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
+              "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
+              "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
+              "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+              "ALEX: I'd start with a better question. The Ledger offers five focused briefings to help you think through what the news means for your next decision.",
+              "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+              "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+              "RUFUS: Which tells you immediately that this isn't a technical problem. There's no architectural reason Muse can't access Amazon. It's a commercial argument about who gets paid, and \u2014 more importantly \u2014 who owns the relationship with the customer at the end of the transaction.",
+              "JAMIE: Right, because if Muse walks someone through finding a blender and buying it on Amazon, Amazon wants to know: did *they* sell that blender, or did Meta?",
+              "ALEX: Meanwhile the person just wants the blender.",
+              "JAMIE: This is always how it goes.",
+              "JAMIE: And somewhere, a person gets a blender.",
+              "RUFUS: Eventually. Probably."
             ]
           },
           "cast_warmth": {
             "pass": true,
             "evidence": [
-              "JAMIE: The name sounds like a logistics startup that failed in 2019.",
-              "ALEX: Heh. So \u2014 Anthropic released this on November twenty-third.",
-              "JAMIE: Three weeks if you're lucky.",
-              "RUFUS: One sprint if you're not.",
-              "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-              "RUFUS: You volunteered. I have the message.",
-              "RUFUS: I want to find fault with this and I cannot.",
-              "JAMIE: There's the warmth. Precisely rationed as always.",
-              "RUFUS: Don't push it."
+              "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
+              "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
+              "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice.",
+              "JAMIE: A sandbox with citations.",
+              "RUFUS: Agreed. We can say AI-linked volatility produced a 1.5% drop in the Nasdaq on November 24th.",
+              "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
+              "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+              "ALEX: I'd start with a better question.",
+              "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+              "RUFUS: My warmth is very precisely rationed.",
+              "RUFUS: What I find genuinely interesting \u2014 and I'll admit I didn't expect this quite yet \u2014",
+              "JAMIE: And somewhere, a person gets a blender.",
+              "RUFUS: Eventually. Probably.",
+              "ALEX: I'll believe it when I see the blender."
             ],
             "evidence_line_numbers": [
-              12,
-              13,
-              27,
-              28,
-              25,
-              123,
-              137,
-              138,
-              139
+              3,
+              4,
+              19,
+              18,
+              53,
+              60,
+              61,
+              62,
+              63,
+              64,
+              78,
+              91,
+              92,
+              100
             ],
-            "reason": "Alex's 'Heh' at line 13 is a small but real in-character response to Jamie's joke, not a scripted acknowledgement. The sprint/three-weeks exchange (lines 27-28) shows Jamie and Rufus finishing each other's rhythm without prompting. Rufus's 'You volunteered. I have the message.' (line 123) is light and teasing. The 'I want to find fault with this and I cannot' / 'There's the warmth. Precisely rationed as always' / 'Don't push it' sequence (lines 137-139) is the clearest evidence: Rufus gives genuine credit in character, Jamie teases his reticence in character, and Rufus's rebuff is affectionate rather than hostile. These moments are distributed across segments rather than clustered, confirming an underlying warmth rather than a single inserted beat.",
+            "reason": "Warmth is expressed through character-consistent behavior rather than explicit declarations. Jamie teases Rufus about rationed warmth (line 60) and Rufus leans into the joke rather than deflecting (line 61, 64). The 'shall we both maintain our dignity' line from Rufus shows self-aware dry humor. Alex's 'I'll believe it when I see the blender' (line 100) shows genuine playful investment in the shared joke. Rufus's admission at line 78 ('I'll admit I didn't expect this quite yet') is a small but real moment of intellectual candor that fits his composed character without being out of character. Disagreements (lines 21\u201323 on drug-interaction risks, lines 43\u201344 on 'climbed too far') are analytical rather than hostile; Rufus's 'to be fair' at line 23 is concessive without being sycophantic. The warmth is embedded in exchanges, not announced.",
             "verified_evidence": [
-              "JAMIE: The name sounds like a logistics startup that failed in 2019.",
-              "ALEX: Heh. So \u2014 Anthropic released this on November twenty-third.",
-              "JAMIE: Three weeks if you're lucky.",
-              "RUFUS: One sprint if you're not.",
-              "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-              "RUFUS: You volunteered. I have the message.",
-              "RUFUS: I want to find fault with this and I cannot.",
-              "JAMIE: There's the warmth. Precisely rationed as always.",
-              "RUFUS: Don't push it.",
-              "JAMIE: The name sounds like a logistics startup that failed in 2019.",
-              "ALEX: Heh. So \u2014 Anthropic released this on November twenty-third. It's a suite of three AI agents built specifically around GitHub pull requests. Code Review is generally available. PR Steward and Claude Approvals are both in beta.",
-              "JAMIE: Three weeks if you're lucky.",
-              "RUFUS: One sprint if you're not.",
-              "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-              "RUFUS: You volunteered. I have the message.",
-              "RUFUS: I want to find fault with this and I cannot.",
-              "JAMIE: There's the warmth. Precisely rationed as always.",
-              "RUFUS: Don't push it."
+              "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
+              "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
+              "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice.",
+              "JAMIE: A sandbox with citations.",
+              "RUFUS: Agreed. We can say AI-linked volatility produced a 1.5% drop in the Nasdaq on November 24th.",
+              "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
+              "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+              "ALEX: I'd start with a better question.",
+              "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+              "RUFUS: My warmth is very precisely rationed.",
+              "RUFUS: What I find genuinely interesting \u2014 and I'll admit I didn't expect this quite yet \u2014",
+              "JAMIE: And somewhere, a person gets a blender.",
+              "RUFUS: Eventually. Probably.",
+              "ALEX: I'll believe it when I see the blender.",
+              "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
+              "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
+              "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice. The API can now summarize clinical evidence beautifully. The moment a real patient's data is involved, the legal scaffolding has to exist first. The API is ready; the compliance layer may not be.",
+              "JAMIE: A sandbox with citations.",
+              "RUFUS: Agreed. We can say AI-linked volatility produced a 1.5% drop in the Nasdaq on November 24th. We can't say exactly what triggered every trade.",
+              "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
+              "RUFUS: A short sponsor break for The Ledger. Alex, would you call today's AI news manageable, or shall we both maintain our dignity?",
+              "ALEX: I'd start with a better question. The Ledger offers five focused briefings to help you think through what the news means for your next decision.",
+              "JAMIE: So The Ledger is the practical part, and Rufus supplies the emotional support? That's a bold staffing decision, Alex.",
+              "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+              "RUFUS: What I find genuinely interesting \u2014 and I'll admit I didn't expect this quite yet \u2014 is that the negotiation is happening at all. Six months ago Amazon could simply ignore this. The blockade was comfortable. The fact that there are now high-level talks, per Fortune's characterization \u2014",
+              "JAMIE: And somewhere, a person gets a blender.",
+              "RUFUS: Eventually. Probably.",
+              "ALEX: I'll believe it when I see the blender."
             ]
           },
           "useful_discovery": {
             "pass": true,
             "evidence": [
-              "JAMIE: Imagine you're on a team that's been moving fast, writing a lot of AI-generated code, and your review queue is backed up. That's specifically the problem Anthropic is targeting here, by the way \u2014 AI-heavy workflows that produce more code than human reviewers can keep pace with.",
-              "JAMIE: Genuinely useful. It caught the \"could one day\" language immediately \u2014 exactly the soft future-tense that disappears in a fast read. It also cross-referenced the Lean mention with what Lean actually does, which I'd have had to look up separately anyway.",
-              "JAMIE: Fusion energy \u2014 simulations of plasma behavior. Chemistry \u2014 molecular simulations for drug discovery or materials science. Enzymes \u2014 which connects to pharmaceutical biology. Three different fields where simulation is currently the bottleneck.",
-              "RUFUS: And for people in fusion or chemistry \u2014 this is worth watching not because the tool is in your hands today, but because the timeline on quantum advantage for real problems may have moved.",
-              "JAMIE: Then it's fast and quite precise. Forty-minute careful read became a ten-minute review. That's real time back, consistently.",
-              "JAMIE: If it's already found the cheapest return train to Edinburgh, checked three departure times, cross-referenced your calendar, and is now presenting you with one button \u2014 the approval takes three seconds. That's not a limitation. That's a finish line."
+              "ALEX: Before this, you'd be pointing a general-purpose model at the general web if you wanted it to look up medical evidence. Now there's a targeted index \u2014 specifically medical literature \u2014 baked into the configuration. The model is set up to find, compare, and summarize that evidence.",
+              "ALEX: what you can do today \u2014 right now \u2014 is prototype an evidence-summarizing tool. Something that answers clinical questions using published research with citations. Drug-interaction lookups, summaries of recent trial evidence on a treatment. That's not nothing.",
+              "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+              "RUFUS: That's the genuinely meaningful change. The barrier to building a clinical evidence application dropped considerably this week.",
+              "RUFUS: The barrier to exploration dropped this week \u2014 the barrier to deployment did not."
             ],
             "evidence_line_numbers": [
-              30,
-              130,
-              104,
-              115,
-              136,
-              78
+              13,
+              20,
+              24,
+              25,
+              28
             ],
-            "reason": "Multiple concrete beneficial applications are grounded in the source records. The volume-gap argument (line 30) explains a real productivity benefit for AI-heavy dev teams. The Muse Edinburgh-train scenario (line 78) illustrates genuine time compression for routine tasks. The DeepMind quantum application to fusion, drug discovery and enzyme simulation (line 104) is a substantive scientific benefit explained clearly. The AI-transformation block demonstrates a real, specific workflow improvement with a measurable outcome (40 minutes to 10 minutes, line 136). These are distinct use cases across three stories, not repackaged risk framing.",
+            "reason": "Story 1 provides a concrete, grounded useful discovery: developers can now prototype clinical evidence-summarizing tools\u2014drug-interaction lookups, trial summaries with citations\u2014using a dedicated medical index in OpenAI's API, available to any API organization without a special enterprise workspace. The script names specific use cases (drug interactions, trial evidence) and draws a precise distinction between what is newly possible (exploration and prototyping) and what remains gated (clinical deployment requiring BAA). This teaches listeners something they could act on or be curious about, beyond a harm-and-compliance framing.",
             "verified_evidence": [
-              "JAMIE: Imagine you're on a team that's been moving fast, writing a lot of AI-generated code, and your review queue is backed up. That's specifically the problem Anthropic is targeting here, by the way \u2014 AI-heavy workflows that produce more code than human reviewers can keep pace with.",
-              "JAMIE: Genuinely useful. It caught the \"could one day\" language immediately \u2014 exactly the soft future-tense that disappears in a fast read. It also cross-referenced the Lean mention with what Lean actually does, which I'd have had to look up separately anyway.",
-              "JAMIE: Fusion energy \u2014 simulations of plasma behavior. Chemistry \u2014 molecular simulations for drug discovery or materials science. Enzymes \u2014 which connects to pharmaceutical biology. Three different fields where simulation is currently the bottleneck.",
-              "RUFUS: And for people in fusion or chemistry \u2014 this is worth watching not because the tool is in your hands today, but because the timeline on quantum advantage for real problems may have moved.",
-              "JAMIE: Then it's fast and quite precise. Forty-minute careful read became a ten-minute review. That's real time back, consistently.",
-              "JAMIE: Imagine you're on a team that's been moving fast, writing a lot of AI-generated code, and your review queue is backed up. That's specifically the problem Anthropic is targeting here, by the way \u2014 AI-heavy workflows that produce more code than human reviewers can keep pace with.",
-              "JAMIE: Genuinely useful. It caught the \"could one day\" language immediately \u2014 exactly the soft future-tense that disappears in a fast read. It also cross-referenced the Lean mention with what Lean actually does, which I'd have had to look up separately anyway.",
-              "JAMIE: Fusion energy \u2014 simulations of plasma behavior. Chemistry \u2014 molecular simulations for drug discovery or materials science. Enzymes \u2014 which connects to pharmaceutical biology. Three different fields where simulation is currently the bottleneck.",
-              "RUFUS: And for people in fusion or chemistry \u2014 this is worth watching not because the tool is in your hands today, but because the timeline on quantum advantage for real problems may have moved. We don't know by how much.",
-              "JAMIE: Then it's fast and quite precise. Forty-minute careful read became a ten-minute review. That's real time back, consistently.",
-              "JAMIE: I've been thinking about this. It depends entirely on what Muse does before the approval. If it's already found the cheapest return train to Edinburgh, checked three departure times, cross-referenced your calendar, and is now presenting you with one button \u2014 the approval takes three seconds. That's not a limitation. That's a finish line."
+              "ALEX: Before this, you'd be pointing a general-purpose model at the general web if you wanted it to look up medical evidence. Now there's a targeted index \u2014 specifically medical literature \u2014 baked into the configuration. The model is set up to find, compare, and summarize that evidence.",
+              "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+              "RUFUS: That's the genuinely meaningful change. The barrier to building a clinical evidence application dropped considerably this week.",
+              "ALEX: Before this, you'd be pointing a general-purpose model at the general web if you wanted it to look up medical evidence. Now there's a targeted index \u2014 specifically medical literature \u2014 baked into the configuration. The model is set up to find, compare, and summarize that evidence.",
+              "ALEX: Which is a real barrier. But what you can do today \u2014 right now \u2014 is prototype an evidence-summarizing tool. Something that answers clinical questions using published research with citations. Drug-interaction lookups, summaries of recent trial evidence on a treatment. That's not nothing.",
+              "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+              "RUFUS: That's the genuinely meaningful change. The barrier to building a clinical evidence application dropped considerably this week.",
+              "RUFUS: Which is what makes it structurally different from previous clinical AI tools that required a vendor relationship before you could even see the index. The barrier to exploration dropped this week \u2014 the barrier to deployment did not."
             ]
           },
           "rufus_scene": {
             "pass": true,
             "evidence": [
               "ALEX: Rufus, take us on location.",
-              "RUFUS: Right. Picture the digital checkout queue at Ocado \u2014 Britain's grocery delivery platform, entirely software-defined, no physical stores, everything lives in an app. Muse, as of yesterday, can operate inside that environment on your behalf. It browses, builds a basket, presents it to you, and when you approve, it completes the purchase.",
-              "RUFUS: What's architecturally interesting is that Muse isn't a tab inside Ocado's app. You bring Muse to the retailer. The agent is the interface.",
-              "JAMIE: Which tells you something about where the confidence in this model is coming from.",
-              "RUFUS: It does. And it has a sharp implication for anyone not currently integrated with Muse. The customer may never visit your website the way they used to.",
+              "RUFUS: Picture the floor just before close on November 24th \u2014 Wall Street, New York. The Dow has actually managed a gain on the day. 423 points up. So there's this strange split on the screen: the old-economy index holding, the tech-heavy index sliding. The Nasdaq closes at 23,733.54, down 356.02 points.",
+              "RUFUS: AP's reporting is specific \u2014 AI-related stocks were the weight pulling it down. Not one company, not one announcement. A category reversal. And the anxiety driving it, according to AP, is that AI valuations may have climbed too far, too fast. At that point investor sentiment becomes its own event.",
+              "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
+              "RUFUS: Fair. What it means in practice is that enough investors decided the previous day's gain wasn't supported by new evidence of actual value \u2014 earnings, products, contracts \u2014 and started selling. Yesterday's price move was the belief. Today's reversal was the doubt. That's what AP is describing.",
               "ALEX: Back to the wider story."
             ],
             "evidence_line_numbers": [
-              69,
-              70,
-              71,
-              72,
-              73,
-              74
+              40,
+              41,
+              42,
+              43,
+              44,
+              47
             ],
-            "reason": "Alex's handoff is at line 69. The scene has a concrete imagined location (Ocado's digital environment), a specific architectural observation with dry wit ('You bring Muse to the retailer. The agent is the interface.' \u2014 line 71), and a useful payoff (retailers not in the system may become invisible to customers, line 73). Jamie's challenge at line 72 ('Which tells you something about where the confidence in this model is coming from') is a genuine interrogative observation, and Rufus responds directly and substantively at line 73. Alex's return is at line 74. The interaction requirement is met.",
+            "reason": "Alex's handoff at line 40 opens the scene. Rufus establishes a concrete imagined situation (the floor before close, Wall Street, the split between Dow up 423 and Nasdaq down 356) with specific figures and a vivid framing ('strange split on the screen'). Jamie challenges at line 43 with a pointed, earned question about the phrase 'climbed too far.' Rufus responds directly at line 44 with a mechanistic explanation (belief vs. doubt) that is both dry in tone and analytically useful. Alex closes the scene at line 47. The scene contains an explicitly imagined concrete location, a Jamie challenge with a Rufus responsive reply, and a payoff (the belief/doubt distinction explaining the reversal). Requirements are met.",
             "verified_evidence": [
               "ALEX: Rufus, take us on location.",
-              "RUFUS: Right. Picture the digital checkout queue at Ocado \u2014 Britain's grocery delivery platform, entirely software-defined, no physical stores, everything lives in an app. Muse, as of yesterday, can operate inside that environment on your behalf. It browses, builds a basket, presents it to you, and when you approve, it completes the purchase.",
-              "RUFUS: What's architecturally interesting is that Muse isn't a tab inside Ocado's app. You bring Muse to the retailer. The agent is the interface.",
-              "JAMIE: Which tells you something about where the confidence in this model is coming from.",
-              "RUFUS: It does. And it has a sharp implication for anyone not currently integrated with Muse. The customer may never visit your website the way they used to.",
+              "RUFUS: Picture the floor just before close on November 24th \u2014 Wall Street, New York. The Dow has actually managed a gain on the day. 423 points up. So there's this strange split on the screen: the old-economy index holding, the tech-heavy index sliding. The Nasdaq closes at 23,733.54, down 356.02 points.",
+              "RUFUS: AP's reporting is specific \u2014 AI-related stocks were the weight pulling it down. Not one company, not one announcement. A category reversal. And the anxiety driving it, according to AP, is that AI valuations may have climbed too far, too fast. At that point investor sentiment becomes its own event.",
+              "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
+              "RUFUS: Fair. What it means in practice is that enough investors decided the previous day's gain wasn't supported by new evidence of actual value \u2014 earnings, products, contracts \u2014 and started selling. Yesterday's price move was the belief. Today's reversal was the doubt. That's what AP is describing.",
               "ALEX: Back to the wider story.",
               "ALEX: Rufus, take us on location.",
-              "RUFUS: Right. Picture the digital checkout queue at Ocado \u2014 Britain's grocery delivery platform, entirely software-defined, no physical stores, everything lives in an app. Muse, as of yesterday, can operate inside that environment on your behalf. It browses, builds a basket, presents it to you, and when you approve, it completes the purchase.",
-              "RUFUS: What's architecturally interesting is that Muse isn't a tab inside Ocado's app. You bring Muse to the retailer. The agent is the interface.",
-              "JAMIE: Which tells you something about where the confidence in this model is coming from.",
-              "RUFUS: It does. And it has a sharp implication for anyone not currently integrated with Muse. The customer may never visit your website the way they used to.",
-              "ALEX: Back to the wider story. So what happens to retailers who aren't in the system yet?"
+              "RUFUS: Picture the floor just before close on November 24th \u2014 Wall Street, New York. The Dow has actually managed a gain on the day. 423 points up. So there's this strange split on the screen: the old-economy index holding, the tech-heavy index sliding. The Nasdaq closes at 23,733.54, down 356.02 points.",
+              "RUFUS: AP's reporting is specific \u2014 AI-related stocks were the weight pulling it down. Not one company, not one announcement. A category reversal. And the anxiety driving it, according to AP, is that AI valuations may have climbed too far, too fast. At that point investor sentiment becomes its own event.",
+              "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
+              "RUFUS: Fair. What it means in practice is that enough investors decided the previous day's gain wasn't supported by new evidence of actual value \u2014 earnings, products, contracts \u2014 and started selling. Yesterday's price move was the belief. Today's reversal was the doubt. That's what AP is describing.",
+              "ALEX: Back to the wider story."
             ]
           },
           "single_endings": {
             "pass": true,
             "evidence": [
-              "ALEX: Okay. What changed: AI agents can now hold approval authority in a software pipeline, not just advisory positions. Who benefits first: fast-moving dev teams with high AI-generated code volume, if they invest the time upfront to define rigorous policies. Who should wait: anyone in HIPAA environments \u2014 or any team that hasn't yet formalized what \"good enough to merge\" actually means.",
-              "ALEX: So the value is entirely in what happens upstream of the confirmation.",
-              "RUFUS: Fairly standard for a forty-eight-hour window.",
-              "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+              "ALEX: Watch for which companies actually integrate this with real patient records \u2014 that's where you'll see whether the compliance path is as navigable as the technical one.",
+              "ALEX: What to watch: Fortune says talks are ongoing. An official integration announcement is the signal that one side moved. When that happens, look at whatever gets disclosed about data-sharing terms. That's where the actual winner is named. We'll be back after this.",
+              "ALEX: Today's question for you: Would you trust an AI agent to manage your medical research or shopping list?",
+              "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
               "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
               "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
             ],
             "evidence_line_numbers": [
-              54,
-              55,
-              81,
-              112,
-              151,
-              152,
-              153
+              34,
+              93,
+              101,
+              102,
+              103,
+              104
             ],
-            "reason": "Story 1 ends cleanly at lines 54-55 with no restart. Story 2 ends at line 83 (Rufus restates the retailer point as a live decision) with no second discussion after the sign-off; the midroll at lines 84-87 is the approved conversational placement and does not reopen the story. Story 3 ends at line 116 with an honest summary; lines 117-139 are the explicitly marked AI-transformation block, which is an approved additional feature with its own payoff and is not a restarted story ending. Segment 5 (lines 141-149) is the approved closing synthesis across all three stories. The listener question (line 150), closing sponsor credit (line 151), house tag (line 152), and follow CTA (line 153) form one closing block. No duplicated ad fragments, no abandoned placements, and no early thanks-for-listening before the final block were found. The opening sponsor read (lines 7-8), midroll (lines 84-87), and closing credit (line 151) are three distinct approved placements.",
+            "reason": "Story 1 ends with a single forward-look at line 34 (watch for real patient-record integrations). Story 2 ends at line 57 with a 'what to watch' forward look; lines 58\u201359 briefly revisit the dual-fact observation but function as a brief synthesis coda rather than a restarted discussion, and the segment closes cleanly before the midroll. Story 3 ends with a single payoff at line 93. Segment 5 provides a brief synthesis closing at lines 95\u2013100, then the listener question (line 101), closing sponsor credit (line 102), house tag (line 103), and follow CTA (line 104) form one approved closing block. The midroll at lines 61\u201364 is the approved conversational placement. The opening sponsor read is at lines 7\u20138. No duplicate ad fragments or abandoned setups are present. No early 'thanks for listening' false ending appears before the closing block.",
             "verified_evidence": [
-              "ALEX: So the value is entirely in what happens upstream of the confirmation.",
-              "RUFUS: Fairly standard for a forty-eight-hour window.",
-              "JAMIE: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+              "ALEX: Watch for which companies actually integrate this with real patient records \u2014 that's where you'll see whether the compliance path is as navigable as the technical one.",
+              "ALEX: What to watch: Fortune says talks are ongoing. An official integration announcement is the signal that one side moved. When that happens, look at whatever gets disclosed about data-sharing terms. That's where the actual winner is named. We'll be back after this.",
+              "ALEX: Today's question for you: Would you trust an AI agent to manage your medical research or shopping list?",
+              "RUFUS: A quick final note: today's episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
               "ALEX: What changed. Who wins. What you do next. That's The AI Edge.",
               "ALEX: Follow The AI Edge now. Join us next episode for what changes next.",
-              "ALEX: Okay. What changed: AI agents can now hold approval authority in a software pipeline, not just advisory positions. Who benefits first: fast-moving dev teams with high AI-generated code volume, if they invest the time upfront to define rigorous policies. Who should wait: anyone in HIPAA environments \u2014",
-              "ALEX: or any team that hasn't yet formalized what \"good enough to merge\" actually means.",
-              "ALEX: So the value is entirely in what happens upstream of the confirmation.",
-              "RUFUS: Fairly standard for a forty-eight-hour window.",
-              "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+              "ALEX: Watch for which companies actually integrate this with real patient records \u2014 that's where you'll see whether the compliance path is as navigable as the technical one.",
+              "ALEX: What to watch: Fortune says talks are ongoing. An official integration announcement is the signal that one side moved. When that happens, look at whatever gets disclosed about data-sharing terms. That's where the actual winner is named. We'll be back after this.",
+              "ALEX: Today\u2019s question for you: Would you trust an AI agent to manage your medical research or shopping list?",
+              "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
               "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
               "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
             ]
           }
         },
-        "feature_word_band_advisory": false,
-        "script_sha256": "83209a90b0dea4170acd8567b21f32fb115bd73b3eeb111129e39056551200f4"
+        "feature_word_band_advisory": true,
+        "script_sha256": "32ac74aa872d35bdcba2e5bae02107f050982efa69176af11cd977c5682e5e32"
       }
     ],
     "repair": null,
@@ -271,204 +327,187 @@
     "pass": true,
     "status": "review_passed",
     "unresolved_flags": [],
-    "output_sha256": "83209a90b0dea4170acd8567b21f32fb115bd73b3eeb111129e39056551200f4"
+    "output_sha256": "32ac74aa872d35bdcba2e5bae02107f050982efa69176af11cd977c5682e5e32"
   },
   "producer_evidence": {
     "basis": "model observations on input script; citations checked against output",
     "blocking": false,
     "listened": false,
     "quality_score": null,
-    "input_sha256": "5bb42f01c70ca1f6865ebd47846f05f59a7f6670c59126f468dceb8cdab45323",
-    "output_sha256": "83209a90b0dea4170acd8567b21f32fb115bd73b3eeb111129e39056551200f4",
+    "input_sha256": "e8a55c0299b782fa15e73838e6148e7df8063ea84881b136623cfa4a610223aa",
+    "output_sha256": "32ac74aa872d35bdcba2e5bae02107f050982efa69176af11cd977c5682e5e32",
     "areas": {
       "opening": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Anthropic just handed a piece of your code pipeline to an AI. Not to review it. Not to flag it. To *approve* it and merge it.",
-          "JAMIE: That's the part that stops me. It's not suggesting anymore. It's deciding.",
-          "RUFUS: And they've made the beta free to try, with ten thousand dollars in credits dangled in front of anyone willing to find out what that actually means."
+          "ALEX: OpenAI just gave healthcare developers a dedicated medical search index inside their API. Not a demo \u2014 live, available today.",
+          "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
+          "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
+          "ALEX: Welcome to The AI Edge for November 25th, 2026. I'm Alex, with Jamie and Rufus. AI just walked into the exam room \u2014 and the stock market \u2014 and your shopping cart."
         ],
-        "observation": "Alex names the specific new authority (approve and merge, not just flag), Jamie isolates the precise shift (deciding not suggesting), and Rufus attaches a concrete incentive ($10,000 credits). Three distinct entry points on the same development in four lines.",
-        "next_edit": ""
+        "observation": "Lines 2\u20134 establish the specific new development (dedicated medical search index, live), surface the disclaimer as a point of genuine inquiry, and Rufus's line 4 gives a reason to stay. Line 6 names all three story areas cleanly.",
+        "next_edit": "No change needed; opening earns attention with a specific sourced fact and a character-revealing reaction before the music."
       },
       "cast_identity": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-          "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
-          "JAMIE: Three weeks if you're lucky.",
-          "RUFUS: One sprint if you're not.",
-          "JAMIE: I didn't say it was bad. It's how software betas work. You're trading access for signal.",
-          "RUFUS: The more interesting question to me is what this reveals about where Anthropic thinks the value is. They've moved from \"Claude helps you write code\" to \"Claude governs whether code ships.\"",
-          "JAMIE: Which might actually make it the most consequential of the three.",
-          "RUFUS: That's a bold pre-empt.",
-          "JAMIE: Let me earn it."
+          "JAMIE: Okay, but here's my immediate question. A \"dedicated index\" \u2014 does that mean it stops hallucinating citations? Because I've watched these models confidently manufacture journal articles that don't exist. Plausible author names, real-sounding titles, volume numbers \u2014 none of it real.",
+          "RUFUS: And even before accuracy becomes the question, there's a gatekeeping step that gets buried. If you want to use actual patient data \u2014 real protected health information \u2014 you need a Business Associate Agreement in place, plus other eligibility requirements. Without that, you're not running this in a clinical environment. You're in a sandbox.",
+          "ALEX: Which is a real barrier. But what you can do today \u2014 right now \u2014 is prototype an evidence-summarizing tool. Something that answers clinical questions using published research with citations. Drug-interaction lookups, summaries of recent trial evidence on a treatment. That's not nothing.",
+          "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
+          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
+          "RUFUS: Which tells you immediately that this isn't a technical problem. There's no architectural reason Muse can't access Amazon. It's a commercial argument about who gets paid, and \u2014 more importantly \u2014 who owns the relationship with the customer at the end of the transaction.",
+          "RUFUS: What I find genuinely interesting \u2014 and I'll admit I didn't expect this quite yet \u2014 is that the negotiation is happening at all. Six months ago Amazon could simply ignore this. The blockade was comfortable. The fact that there are now high-level talks, per Fortune's characterization \u2014"
         ],
-        "observation": "Rufus's 'reassuringly cautious or mildly terrifying' is composed understatement; Alex follows with the VP-impatience scenario; Jamie and Rufus trade sprint lengths in short, differentiated lines. Jamie's 'trading access for signal' defends a point Alex called cynical. Jamie's 'let me earn it' answers Rufus's challenge with a specific promise rather than a concession.",
-        "next_edit": "Segment 5's three-line verdict rotation (lines 145-154) is the one place where lines could swap names \u2014 addressed in edit to line 152-154."
+        "observation": "Jamie probes hallucination risk (14), Rufus surfaces the BAA gatekeeping detail (17), Alex defends the prototype utility (20). In segment 3, Alex provides the epistemic check (49), Jamie thinks in terms of real people's retirement accounts (44), Rufus supplies the market mechanism (41). Lines are not interchangeable.",
+        "next_edit": "Segment 4 line 75 \u2014 Rufus's admission of surprise is characterful; ensure it is not smoothed away if edits touch that exchange."
       },
       "responsive_exchange": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: With one important condition. Every transaction requires your explicit approval through a secure credentials store.",
-          "JAMIE: So it cannot spend your money without asking.",
-          "RUFUS: At least by design.",
-          "JAMIE: That qualifier is doing a lot of work in a very small space.",
-          "RUFUS: It is. And I want to explain why, because it matters. The acknowledged open problem here is prompt injection \u2014 which sounds technical but isn't a complicated idea. Someone buries text in a product listing that looks like an instruction to the agent. Muse reads the page, reads the hidden command \u2014",
-          "RUFUS: and follows it instead of yours. Meta has listed this as a known issue. The purchase-approval step is the main practical guard against it.",
-          "JAMIE: So someone could theoretically put something in a grocery listing that tells Muse to do something you never asked for.",
-          "RUFUS: Theoretically, yes. No specific mitigation has been published. The approval step is what's standing between you and that.",
-          "JAMIE: I've been thinking about this. It depends entirely on what Muse does before the approval. If it's already found the cheapest return train to Edinburgh, checked three departure times, cross-referenced your calendar, and is now presenting you with one button \u2014 the approval takes three seconds. That's not a limitation. That's a finish line.",
-          "RUFUS: But if it's presenting you the same list you'd have found yourself in four clicks, the approval step is friction with branding on it.",
-          "JAMIE: Yes. And that is the thing we genuinely cannot answer yet, because this launched yesterday. We're working from what Meta described, not from three weeks of people actually using it.",
-          "ALEX: So the value is entirely in what happens upstream of the confirmation.",
-          "JAMIE: Exactly. The curation, the comparison, the decision. If that's good, the approval is painless. If that's mediocre, the approval is annoying and you just go back to doing it yourself."
+          "JAMIE: Okay, but here's my immediate question. A \"dedicated index\" \u2014 does that mean it stops hallucinating citations? Because I've watched these models confidently manufacture journal articles that don't exist. Plausible author names, real-sounding titles, volume numbers \u2014 none of it real.",
+          "ALEX: That's exactly the right question, and OpenAI doesn't claim it eliminates that. They say it can search and return citations. The release note explicitly says the configurations do not replace professional medical judgment.",
+          "JAMIE: So the index helps you find real sources. It doesn't guarantee the summary of those sources is correct.",
+          "RUFUS: And even before accuracy becomes the question, there's a gatekeeping step that gets buried. If you want to use actual patient data \u2014 real protected health information \u2014 you need a Business Associate Agreement in place, plus other eligibility requirements. Without that, you're not running this in a clinical environment. You're in a sandbox.",
+          "JAMIE: A sandbox with citations.",
+          "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
+          "RUFUS: Fair. What it means in practice is that enough investors decided the previous day's gain wasn't supported by new evidence of actual value \u2014 earnings, products, contracts \u2014 and started selling. Yesterday's price move was the belief. Today's reversal was the doubt. That's what AP is describing.",
+          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
+          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this."
         ],
-        "observation": "Jamie names the purchase-control condition, Rufus qualifies it ('at least by design'), Jamie's response ('that qualifier is doing a lot of work') prompts Rufus to explain prompt injection specifically. The upstream-value exchange builds: Jamie constructs a scenario, Rufus reverses it with the low-curation countercase, Jamie concedes the limit and pins the reason.",
-        "next_edit": ""
+        "observation": "Lines 14\u201318 form a complete chain: Jamie challenges the index claim, Alex answers with the citation-but-not-accuracy distinction, Rufus adds the BAA complication, Jamie names it 'sandbox with citations.' Each turn follows the previous speaker's exact point. Lines 42\u201345 repeat this quality in segment 3.",
+        "next_edit": "None required; the responsive chain is the strongest feature of both segments."
       },
       "scene_variety": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Okay. Claude Ship. Let's actually explain what this is, because the name does not tell you.",
-          "ALEX: Our second story \u2014 Meta launched something in the UK yesterday that I genuinely think is worth pausing on. It is not vaporware. It is in people's phones.",
-          "ALEX: Our third story is different in texture from the other two. No product you can download. No beta you can sign up for.",
-          "JAMIE: Which might actually make it the most consequential of the three."
+          "ALEX: So. OpenAI released healthcare model configurations through their Responses API, and the specific new thing is a dedicated medical search index \u2014 web search for clinical evidence, with citations. Available to API organizations as of November 24th, no special ChatGPT healthcare workspace required.",
+          "ALEX: Our second story. The Nasdaq dropped 356 points on November 24th \u2014 that's 1.5% \u2014 and AP reported that AI stocks were the reason the rally from the day before evaporated that fast.",
+          "ALEX: Alright, story three \u2014 and this one's a different beast. Fortune is reporting that Meta and Amazon are in high-level negotiations to end a blockade that's been keeping Meta's shopping AI agent, Muse, away from Amazon's platform."
         ],
-        "observation": "Story 1 is technical and procedural (what does each agent actually do, what can go wrong). Story 2 is consumer and commercial (what does the experience feel like, who gets stranded). Story 3 is prospective scientific (what did the method demonstrate, what stays open). Alex's framing of Story 3 as 'different in texture' (line 91) is honest rather than announced.",
-        "next_edit": ""
+        "observation": "Story 1 is a developer-tool question worked through a hypothetical clinic scenario; story 2 is a market-mechanism explanation grounded in specific numbers; story 3 is a corporate negotiation with a consumer-consequence thread. Question, shape and emotional register differ across all three.",
+        "next_edit": "No structural change needed; monitor that edits to segment 2 do not drift toward the market-analysis register of segment 3."
       },
       "comic_payoff": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "JAMIE: The name sounds like a logistics startup that failed in 2019.",
-          "ALEX: Heh. So \u2014 Anthropic released this on November twenty-third. It's a suite of three AI agents built specifically around GitHub pull requests. Code Review is generally available. PR Steward and Claude Approvals are both in beta.",
-          "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-          "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
-          "JAMIE: Three weeks if you're lucky.",
-          "RUFUS: One sprint if you're not.",
-          "RUFUS: Picture explaining this to someone over dinner. AI didn't use a quantum computer. AI designed a better program for a quantum computer. Formally verified. And the target applications include plasma fusion and drug discovery. Someone will say \"so the robots are doing physics homework now?\" And the answer is \u2014 kind of, yes \u2014",
-          "RUFUS: and the homework got a perfect score.",
-          "JAMIE: I mean. That is what happened.",
-          "RUFUS: I want to find fault with this and I cannot.",
-          "JAMIE: There's the warmth. Precisely rationed as always.",
-          "RUFUS: Don't push it."
+          "JAMIE: A sandbox with citations.",
+          "RUFUS: Specifically the sentence about the Business Associate Agreement.",
+          "JAMIE: That exact sentence.",
+          "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
+          "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
+          "ALEX: Meanwhile the person just wants the blender.",
+          "JAMIE: And somewhere, a person gets a blender.",
+          "RUFUS: Eventually. Probably.",
+          "RUFUS: Hopefully with Muse successfully purchasing something.",
+          "ALEX: I'll believe it when I see the blender."
         ],
-        "observation": "Jamie's logistics-startup line (12) gets a beat before Alex moves on \u2014 it lands quietly. Rufus's 'reassuringly cautious or mildly terrifying' earns Alex's specific follow-on scenario; the sprint-length exchange is a two-line payoff with no explanation. Rufus's dinner-table summary ending in 'the homework got a perfect score' (122) gets Jamie's flat confirmation (123) \u2014 no over-explanation. Jamie's 'precisely rationed as always' (141) closes the feature without a cue.",
-        "next_edit": ""
+        "observation": "Line 18 'sandbox with citations' is answered by its callback at lines 31\u201332 without explanation. Line 57 Jamie's warmth tease earns the callback at line 61 in Rufus's own words. Line 73 'meanwhile the person just wants the blender' earns lines 88\u201389 and 97\u201398 as a running bit that develops rather than replays.",
+        "next_edit": "Blender callback at lines 97\u201398 lands well; ensure the closing edit at line 96 does not break the transition into it."
       },
       "discovery": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: Code Review analyses your code \u2014 that's the familiar part, AI as reader. PR Steward goes one step further: it handles merge conflicts, pushes fixes, responds to feedback. But it cannot actually approve a merge.",
-          "JAMIE: And that's where Claude Approvals comes in.",
-          "RUFUS: Exactly. Claude Approvals is the one that can authorize the merge itself, based on policies that the team defines.",
-          "JAMIE: Honestly? Audit your existing policies first. Before you hand approval authority to any system \u2014 human or AI \u2014 you need to know what your policies actually say. Because if they're vague, the AI will make a judgment call. It just won't tell you it made one.",
-          "ALEX: That's the useful bit. The AI will not surface its own uncertainty the way a nervous junior dev might ping you at ten p.m. saying \"I wasn't sure about this one.\"",
-          "JAMIE: Right. It approved it. Done. You find out later.",
-          "RUFUS: It is. And I want to explain why, because it matters. The acknowledged open problem here is prompt injection \u2014 which sounds technical but isn't a complicated idea. Someone buries text in a product listing that looks like an instruction to the agent. Muse reads the page, reads the hidden command \u2014",
-          "RUFUS: and follows it instead of yours. Meta has listed this as a known issue. The purchase-approval step is the main practical guard against it.",
-          "RUFUS: What's architecturally interesting is that Muse isn't a tab inside Ocado's app. You bring Muse to the retailer. The agent is the interface.",
-          "JAMIE: Right. This isn't \"AI uses a quantum computer.\" It's \"AI helps design better programs for quantum computers.\" Different thing entirely.",
-          "JAMIE: DeepMind links to something called the Lean framework. Lean is a proof-checking system used in mathematics \u2014 it doesn't just test whether a proof seems right, it verifies that it actually is. So the improved algorithms weren't just run and observed, they were checked analytically.",
-          "RUFUS: Which matters. In quantum computing, empirical testing is expensive and noisy. Formal verification catches errors before you ever run the hardware."
+          "RUFUS: And even before accuracy becomes the question, there's a gatekeeping step that gets buried. If you want to use actual patient data \u2014 real protected health information \u2014 you need a Business Associate Agreement in place, plus other eligibility requirements. Without that, you're not running this in a clinical environment. You're in a sandbox.",
+          "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice. The API can now summarize clinical evidence beautifully. The moment a real patient's data is involved, the legal scaffolding has to exist first. The API is ready; the compliance layer may not be.",
+          "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+          "RUFUS: That's the genuinely meaningful change. The barrier to building a clinical evidence application dropped considerably this week.",
+          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
+          "RUFUS: Which tells you immediately that this isn't a technical problem. There's no architectural reason Muse can't access Amazon. It's a commercial argument about who gets paid, and \u2014 more importantly \u2014 who owns the relationship with the customer at the end of the transaction.",
+          "JAMIE: Right, because if Muse walks someone through finding a blender and buying it on Amazon, Amazon wants to know: did *they* sell that blender, or did Meta?",
+          "RUFUS: Exactly. Amazon has built a substantial advertising business on knowing what people searched for before they bought something. If that journey now runs through Meta's interface, Amazon loses that signal. And Meta has its own advertising empire. So you have two advertising giants arguing about who gets credit for one blender.",
+          "RUFUS: Which is the thing I'd actually watch. If the integration happens on Amazon's terms \u2014 capped data access, Amazon-controlled revenue splits \u2014 then Muse isn't really an independent advocate for the shopper. It's another surface in Amazon's commercial system."
         ],
-        "observation": "PR Steward / Claude Approvals distinction built through dialogue at 16-18. The 'AI won't surface its own uncertainty' point at 51-52 is the sharpest sourced insight in the episode. Prompt injection explained mechanistically at 65-66 without jargon. 'AI designs better programs for quantum computers' reframe at 100 is clarifying and accurate. Lean framework explanation at 102-103 is sourced and speakable.",
-        "next_edit": ""
+        "observation": "Line 17 reveals BAA as the real gatekeeper; line 19 makes it concrete with a named scenario (small practice, symptom-reference tool); lines 24\u201325 identify the workspace-access democratisation as the meaningful change. Line 45 delivers the passive-investor consequence. Lines 70\u201372 unpack the commercial-not-technical nature of the Amazon blockade.",
+        "next_edit": "Proposed edit to lines 27\u201329 adds the workspace-access sourced detail as a second discovery beat in segment 2, strengthening this area."
       },
       "rufus_feature": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Rufus, take us on location.",
-          "RUFUS: Right. Picture the digital checkout queue at Ocado \u2014 Britain's grocery delivery platform, entirely software-defined, no physical stores, everything lives in an app. Muse, as of yesterday, can operate inside that environment on your behalf. It browses, builds a basket, presents it to you, and when you approve, it completes the purchase.",
-          "RUFUS: What's architecturally interesting is that Muse isn't a tab inside Ocado's app. You bring Muse to the retailer. The agent is the interface.",
-          "JAMIE: Which tells you something about where the confidence in this model is coming from.",
-          "RUFUS: It does. And it has a sharp implication for anyone not currently integrated with Muse. The customer may never visit your website the way they used to.",
-          "ALEX: Back to the wider story. So what happens to retailers who aren't in the system yet?",
-          "RUFUS: Good if you're indexed and showing up in results. Potentially quite bad if you're not. The parallel to search isn't subtle \u2014 you either appear or you don't exist.",
-          "JAMIE: Right now Ocado, M&S, and Trainline are in. Everyone else is watching."
+          "RUFUS: Picture the floor just before close on November 24th \u2014 Wall Street, New York. The Dow has actually managed a gain on the day. 423 points up. So there's this strange split on the screen: the old-economy index holding, the tech-heavy index sliding. The Nasdaq closes at 23,733.54, down 356.02 points.",
+          "RUFUS: AP's reporting is specific \u2014 AI-related stocks were the weight pulling it down. Not one company, not one announcement. A category reversal. And the anxiety driving it, according to AP, is that AI valuations may have climbed too far, too fast. At that point investor sentiment becomes its own event.",
+          "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
+          "RUFUS: Fair. What it means in practice is that enough investors decided the previous day's gain wasn't supported by new evidence of actual value \u2014 earnings, products, contracts \u2014 and started selling. Yesterday's price move was the belief. Today's reversal was the doubt. That's what AP is describing.",
+          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
+          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
+          "ALEX: Back to the wider story."
         ],
-        "observation": "Setting is named in first sentence (Ocado, entirely software-defined). 'You bring Muse to the retailer, the agent is the interface' is architecturally specific. Jamie picks up the implication immediately (line 72), Rufus extends to search-visibility consequence (line 73, 75), Alex asks the follow question (line 74). Studio exchange is responsive, not decorative.",
-        "next_edit": ""
+        "observation": "Lines 40\u201341 name the setting (Wall Street floor, November 24th), cite exact figures (Nasdaq 23,733.54, Dow +423, Nasdaq \u2212356.02), identify the mechanism (category reversal), and state the AP-sourced anxiety. Lines 42\u201345 show Jamie and Alex responding to what Rufus actually said, not waiting for a cue.",
+        "next_edit": "Return marker at line 46 is functional but abrupt; if word count allows, one additional Rufus line before the return would give the studio exchange a cleaner landing."
       },
       "listener_value": {
-        "status": "changed_by_repair_needs_review",
-        "retained_lines": [
-          "ALEX: And Claude Approvals is now one of those checkpoints. So what do you actually do if your team is considering this?",
-          "JAMIE: Honestly? Audit your existing policies first. Before you hand approval authority to any system \u2014 human or AI \u2014 you need to know what your policies actually say. Because if they're vague, the AI will make a judgment call. It just won't tell you it made one.",
-          "ALEX: Okay. What changed: AI agents can now hold approval authority in a software pipeline, not just advisory positions. Who benefits first: fast-moving dev teams with high AI-generated code volume, if they invest the time upfront to define rigorous policies. Who should wait: anyone in HIPAA environments \u2014",
-          "JAMIE: Researchers, primarily. If you're in quantum computing, you have a potentially faster path to algorithm improvement with formal verification as the quality gate. That's immediately interesting to the field.",
-          "RUFUS: And for people in fusion or chemistry \u2014 this is worth watching not because the tool is in your hands today, but because the timeline on quantum advantage for real problems may have moved. We don't know by how much.",
-          "JAMIE: There's a checkable prediction here: in six months, we will start seeing reports from teams about what their observe-only period revealed \u2014 either \"this would have caught more than we expected\" or \"this would have approved things we'd have blocked.\" Those reports will tell you whether the beta warning is real caution or just liability language.",
-          "ALEX: That is the thing to watch. And the thing to do if your team is considering this: before you define the policies, map the gaps. Find the edge cases your current human reviewers handle with judgment rather than a written rule, because those are exactly the cases the AI will either miss or flatten."
-        ],
-        "observation": "Story 1: audit policies before defining them, map judgment-based edge cases. Story 2: UK listeners told to notice how the approval step feels specifically; non-UK told what to watch for. Story 3: researchers told the timeline question is open; pharma/fusion told to watch replication. Jamie's six-month checkable prediction (148) is the strongest single listener-value moment.",
-        "next_edit": "Lines 54-55 repeat already-given advice \u2014 addressed in edit."
-      },
-      "portable_exchanges": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: Which is either reassuringly cautious or mildly terrifying, depending on how long your team actually runs it that way before someone gets impatient.",
-          "ALEX: That is the question, isn't it. How long does \"observe-only\" last before a VP says \"okay this seems fine, ship it.\"",
-          "JAMIE: Three weeks if you're lucky.",
-          "RUFUS: One sprint if you're not.",
-          "JAMIE: Right. This isn't \"AI uses a quantum computer.\" It's \"AI helps design better programs for quantum computers.\" Different thing entirely.",
-          "ALEX: What's the formal verification piece?",
-          "JAMIE: DeepMind links to something called the Lean framework. Lean is a proof-checking system used in mathematics \u2014 it doesn't just test whether a proof seems right, it verifies that it actually is. So the improved algorithms weren't just run and observed, they were checked analytically.",
-          "RUFUS: Which matters. In quantum computing, empirical testing is expensive and noisy. Formal verification catches errors before you ever run the hardware."
+          "ALEX: Watch for which companies actually integrate this with real patient records \u2014 that's where you'll see whether the compliance path is as navigable as the technical one.",
+          "RUFUS: Whether the volatility persists into next week. If AI-linked names stay choppy and the broader index stays choppy with them, that tells you something. One-day rebalancing looks very different from a sentiment shift that keeps going.",
+          "ALEX: What to watch: Fortune says talks are ongoing. An official integration announcement is the signal that one side moved. When that happens, look at whatever gets disclosed about data-sharing terms. That's where the actual winner is named. We'll be back after this."
         ],
-        "observation": "Exchange 1 (lines 25-28): Rufus names the observe-only trade-off, Alex pins the VP-impatience scenario, Jamie and Rufus trade sprint-length punchlines. Named subject (Claude Approvals observe-only mode), qualifications retained, self-contained. Exchange 2 (lines 100-103): Jamie reframes AI-and-quantum-computers distinction, Alex confirms, Jamie explains Lean with the 'it doesn't just test, it verifies' qualification. Named subject (DeepMind Gemini 4 formal verification), sourced, portable.",
-        "next_edit": ""
+        "observation": "Line 33 names a specific watch signal (which companies integrate with real patient records). Line 54 gives a concrete observation criterion (volatility persisting into next week). Line 90 tells listeners what disclosure to look for when an integration announcement arrives (data-sharing terms).",
+        "next_edit": "All three story-ending watch signals are specific and actionable; no change needed."
+      },
+      "portable_exchanges": {
+        "status": "changed_by_repair_needs_review",
+        "retained_lines": [
+          "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
+          "RUFUS: That's the genuinely meaningful change. The barrier to building a clinical evidence application dropped considerably this week.",
+          "ALEX: So. Breakthrough or liability trap?",
+          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
+          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
+          "ALEX: Back to the wider story."
+        ],
+        "observation": "Exchange at lines 24\u201328 (shareable exchange confirmed by runtime diagnostics): subject is OpenAI healthcare API, fact is democratised access, qualification is compliance path. Second candidate: lines 44\u201346, subject is AI market volatility, fact is passive investors are exposed, qualification is AP correlation not causation.",
+        "next_edit": "Proposed edit to lines 27\u201329 must preserve the subject/fact/qualification structure of the first candidate exchange."
       },
       "closing_payoff": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Okay. The title question: what is Claude Ship actually changing?",
-          "JAMIE: The authority structure inside a software team. Not just what AI can do \u2014 who AI can be.",
-          "RUFUS: Before yesterday, the AI was an advisor. Now, with Claude Approvals, it's a decision-maker with defined scope.",
-          "ALEX: And that scope matters enormously. Because the policies you define are the ceiling of safety in this system. Anthropic says run it in observe-only first. The teams that do that carefully will get different results than the teams that give it three days and move on.",
-          "JAMIE: There's a checkable prediction here: in six months, we will start seeing reports from teams about what their observe-only period revealed \u2014 either \"this would have caught more than we expected\" or \"this would have approved things we'd have blocked.\" Those reports will tell you whether the beta warning is real caution or just liability language.",
-          "ALEX: That is the thing to watch. And the thing to do if your team is considering this: before you define the policies, map the gaps. Find the edge cases your current human reviewers handle with judgment rather than a written rule, because those are exactly the cases the AI will either miss or flatten.",
-          "ALEX: Today\u2019s question for you: Anthropic Launches Claude Ship to Automate Pull Request Approval: what actually changes, who benefits, and what remains uncertain?",
-          "JAMIE: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
+          "ALEX: Okay. The title question we opened with: can AI safely summarize your medical evidence?",
+          "JAMIE: Safe to use as a research tool, with citations, with a professional reading the output. Not safe to use as a replacement for that professional.",
+          "RUFUS: And genuinely only relevant to patient data once someone has sorted the compliance layer. The API is real. The clinical deployment path is long.",
+          "ALEX: So the answer is: yes, carefully, in a specific role, and not yet at scale in real clinical settings. That's an honest answer, not a hedge.",
+          "RUFUS: Hopefully with Muse successfully purchasing something.",
+          "ALEX: I'll believe it when I see the blender.",
+          "ALEX: Today\u2019s question for you: Would you trust an AI agent to manage your medical research or shopping list?",
+          "RUFUS: A quick final note: today\u2019s episode was brought to you by The Ledger\u2014decision-grade AI signal for people who cannot afford to be late.",
           "ALEX: What changed. Who wins. What you do next. That\u2019s The AI Edge.",
           "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
         ],
-        "observation": "Jamie's six-month prediction (148) and Alex's edge-case-mapping advice (149) answer the opening promise (AI as approver \u2014 what does that actually mean). The double farewell at 157-158 is redundant and dilutes the close.",
-        "next_edit": "Edit to lines 157-158 collapses to one clean farewell with follow invitation \u2014 see edits above."
+        "observation": "Lines 92\u201395 answer the title question in three distinct voices without restating each other's exact words. The blender callback at 97\u201398 earns warmth. The audience question at 99 connects both medical and shopping threads. Sponsor read and follow invitation close cleanly.",
+        "next_edit": "Remove line 96 'We'll be back tomorrow' per proposed edit; it weakens the transition into the blender callback and duplicates the closing at line 102."
       }
     }
   },
-  "performance_plan_turns": 190,
+  "performance_plan_turns": 151,
   "performance_direction_usage": {
     "ALEX": {
-      "planned": 52,
+      "planned": 38,
       "sponsor": 3,
       "heuristic": 1
     },
     "JAMIE": {
-      "planned": 70,
-      "sponsor": 3
+      "planned": 47,
+      "heuristic": 4,
+      "sponsor": 1
     },
     "RUFUS": {
-      "planned": 51,
-      "heuristic": 2,
-      "sponsor": 1
+      "planned": 43,
+      "sponsor": 3
     }
   },
   "jamie_performance": {
     "basis": "recorded provider calls; requested delivery is not verified emotion",
-    "calls": 73,
+    "calls": 52,
     "moods": {
-      "amused": 6,
-      "concern": 9,
+      "amused": 3,
+      "concern": 5,
       "concession": 2,
-      "curiosity": 5,
-      "delight": 11,
-      "dry_wit": 1,
-      "explainer": 22,
-      "neutral": 7,
-      "pushback": 3,
+      "curiosity": 3,
+      "delight": 6,
+      "disbelief": 1,
+      "dry_wit": 4,
+      "explainer": 9,
+      "neutral": 5,
+      "pushback": 7,
       "warmth": 7
     },
     "listened": false,

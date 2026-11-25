@@ -1,189 +1,190 @@
 {
   "version": "grounded-story-slate-v1",
-  "date": "2026-11-24",
+  "date": "2026-11-25",
   "pass": true,
   "candidate_target": 5,
   "required_air_stories": 3,
   "selected": [
     {
-      "event_key": "anthropic-claude-ship-launch-2026-11-23",
-      "headline": "Anthropic Launches Claude Ship to Automate Pull Request Approval",
-      "title": "Anthropic Launches Claude Ship to Automate Pull Request Approval",
-      "publisher": "Anthropic",
-      "published": "2026-11-23T00:00:00Z",
-      "published_at": "2026-11-23T00:00:00Z",
-      "source_url": "https://claude.com/resources/articles/introducing-claude-ship",
-      "link": "https://claude.com/resources/articles/introducing-claude-ship",
-      "summary": "Anthropic released 'Claude Ship' on November 23, 2026, a suite of three AI agents designed to automate the code review and approval process for GitHub pull requests. The system includes 'Code Review' for analysis, 'PR Steward' for pushing fixes, and 'Claude Approvals,' which allows an AI to approve routine code changes based on user-defined policies. The product is currently in beta for Team and Enterprise customers, aiming to remove the bottleneck of human review in AI-heavy development workflows.",
+      "event_key": "openai-healthcare-model-configurations-api-2026-11-24",
+      "headline": "OpenAI releases healthcare model configurations in the API for clinical search and evidence synthesis",
+      "title": "OpenAI releases healthcare model configurations in the API for clinical search and evidence synthesis",
+      "publisher": "OpenAI",
+      "published": "2026-11-24T00:00:00Z",
+      "published_at": "2026-11-24T00:00:00Z",
+      "source_url": "https://help.openai.com/en/articles/20001656-healthcare-model-configurations-in-the-openai-api",
+      "link": "https://help.openai.com/en/articles/20001656-healthcare-model-configurations-in-the-openai-api",
+      "summary": "OpenAI says healthcare model configurations are now available in the Responses API. The company says they pair select models with a healthcare-specific harness and, when web search is enabled, can search a dedicated medical index to help applications find, compare, and summarize medical evidence with citations. OpenAI says the configurations are available to API organizations and do not require a ChatGPT for Healthcare workspace. OpenAI also says the configurations do not replace professional medical judgment and that access to protected health information requires the appropriate legal and account setup.",
       "facts": [
-        "Claude Ship consists of Code Review (generally available), PR Steward (beta), and Claude Approvals (beta).",
-        "Claude Approvals allows AI to merge code based on team-defined policies.",
-        "Eligible enterprise organizations can claim $10,000 in credits by January 15, 2027.",
-        "PR Steward handles merge conflicts and feedback but cannot approve merges itself.",
-        "The system is available for projects hosted on GitHub."
+        "OpenAI says healthcare model configurations are available in the API.",
+        "OpenAI says the configurations work through the Responses API.",
+        "OpenAI says they can search a dedicated healthcare index when web search is enabled.",
+        "OpenAI says developers can use them to build applications that answer clinical questions and summarize medical evidence with citations.",
+        "OpenAI says the configurations are available to API organizations and do not require a ChatGPT for Healthcare workspace.",
+        "OpenAI says the configurations do not replace professional medical judgment.",
+        "OpenAI says processing PHI requires an applicable BAA and account/tool configuration requirements."
       ],
       "data_points": [
-        "$10,000 in credits for eligible organizations",
-        "January 15, 2027 deadline"
+        "2026-11-24"
       ],
       "limitations_or_qualifiers": [
-        "Not available to organizations using HIPAA-configured environments or customer-managed encryption keys.",
-        "Beta product; Anthropic recommends running in 'observe-only' mode initially."
+        "Not a substitute for professional medical judgment.",
+        "PHI use requires a BAA and other eligibility/configuration requirements.",
+        "Web search must be enabled to use the healthcare search index."
       ],
-      "why_it_matters": "By allowing AI to grant its own approvals, this launch shifts AI agents from code-writing tools to autonomous components of the software release pipeline.",
+      "why_it_matters": "This gives developers a new clinical-search workflow inside OpenAI’s API, which is practically useful for healthcare applications but bounded by safety and compliance limits.",
       "editorial_case": {
-        "new_development": "Introduction of AI-led code approval authority within the software development lifecycle.",
-        "affected_listener": "Software engineers and dev-ops teams looking to streamline high-velocity coding workflows.",
-        "why_today": "It represents a significant step in 'agentic' software development where the AI assumes responsibility for the quality-gate process.",
-        "distinct_question": "How much risk are organizations willing to accept by letting AI agents approve their own code changes?",
-        "new_since_prior_coverage": "This moves beyond 'writing' code to 'governing' the deployment of that code.",
-        "practical_payoff": "Development teams should audit their current CI/CD policies before implementing AI-led approval processes to avoid introducing fragile dependencies."
+        "new_development": "OpenAI introduced a healthcare-specific API configuration that combines model behavior with clinical search and citations.",
+        "affected_listener": "Healthcare software builders, clinicians using decision-support tools, and compliance teams are affected because it changes what can be built on the API today.",
+        "why_today": "It is a fresh product update with immediate developer access and a clearly described medical use case.",
+        "distinct_question": "What can developers now do in OpenAI’s API for healthcare that they could not do before?",
+        "new_since_prior_coverage": "The new fact is API access to healthcare configurations with dedicated medical search.",
+        "practical_payoff": "Healthcare developers can prototype evidence-summarizing tools now, but they must still verify outputs and handle PHI only if their compliance setup allows it."
       },
       "editorial_scores": {
         "human_consequence": 4,
         "novelty": 4,
-        "explanatory_value": 4,
+        "explanatory_value": 5,
         "evidence_depth": 5
       },
-      "story_age_hours": 34.72,
+      "story_age_hours": 32.61,
       "source_tier": 3,
       "grounded": true,
       "rank": 1,
       "story_tier": "primary",
-      "topic_family": "products",
+      "topic_family": "science_access",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "meta-muse-uk-launch-2026-11-23",
-      "headline": "Meta Launches Muse AI Agent for Personal Shopping in the UK",
-      "title": "Meta Launches Muse AI Agent for Personal Shopping in the UK",
-      "publisher": "Meta",
-      "published": "2026-11-24T06:00:40Z",
-      "published_at": "2026-11-24T06:00:40Z",
-      "source_url": "https://about.fb.com/news/2026/11/introducing-muse-in-the-uk-a-personal-ai-agent-you-control/",
-      "link": "https://about.fb.com/news/2026/11/introducing-muse-in-the-uk-a-personal-ai-agent-you-control/",
-      "summary": "Meta officially launched its personal AI agent, Muse, for users in the United Kingdom on November 23, 2026. The agent integrates with local retail and travel platforms, allowing users to automate shopping tasks like grocery purchasing and travel booking. Notably, the product includes 'purchase controls' requiring explicit user approval for every transaction to address security and autonomy concerns.",
+      "event_key": "ai-stocks-market-selloff-2026-11-24-ap",
+      "headline": "AP reports U.S. stocks fell after AI shares reversed their rally",
+      "title": "AP reports U.S. stocks fell after AI shares reversed their rally",
+      "publisher": "Associated Press",
+      "published": "2026-11-24T21:19:48Z",
+      "published_at": "2026-11-24T21:19:48Z",
+      "source_url": "https://apnews.com/article/6cc4e580290aadf304ee316d6d46dd81",
+      "link": "https://apnews.com/article/6cc4e580290aadf304ee316d6d46dd81",
+      "summary": "AP reported that AI stocks dragged U.S. markets lower on November 24 after the prior day’s surge quickly faded. The report said the Nasdaq composite fell 356.02 points, or 1.5%, to 23,733.54. A separate AP story said the Dow gained 423 points earlier in the day but tech stocks and AI-related names still weighed heavily on the market. The reporting also linked investor anxiety to fears that AI valuations had climbed too far.",
       "facts": [
-        "Muse launched in the UK on November 23, 2026, for users 18 and older.",
-        "The agent supports task execution across partners like Marks & Spencer, Ocado, and Trainline.",
-        "Every transaction requires explicit user approval through a secure credentials store.",
-        "Muse is available via iOS, Android, WhatsApp, and the web.",
-        "It is free for most uses, with optional paid tiers."
+        "AP reported on November 24, 2026 that AI stocks dragged U.S. markets lower.",
+        "AP said the Nasdaq composite fell 356.02 points, or 1.5%, to 23,733.54.",
+        "AP said the AI-stock rally from the prior day quickly fizzled.",
+        "AP linked the move to concerns that AI valuations may have risen too far.",
+        "AP described the decline as affecting the broader market.",
+        "AP’s coverage tied the move to AI-related stocks rather than a single company."
       ],
       "data_points": [
-        "18+ age restriction",
-        "November 23, 2026 launch date"
+        "356.02 points",
+        "1.5%",
+        "23,733.54"
       ],
       "limitations_or_qualifiers": [
-        "Prompt injection remains an acknowledged, open security challenge.",
-        "Initial launch is limited to the UK market."
+        "This is market reporting, not a company announcement.",
+        "The story describes a same-day move and does not by itself prove the cause of every individual stock move."
       ],
-      "why_it_matters": "This represents the first mass-market deployment of an AI agent that actively interacts with personal finances and retail commerce in a major economy.",
+      "why_it_matters": "This matters because AI-linked names now have enough weight to move major indexes, which affects retirement accounts and capital costs beyond the AI sector.",
       "editorial_case": {
-        "new_development": "First major-market retail launch of a consumer-facing AI agent with transaction-approval guardrails.",
-        "affected_listener": "UK consumers now have a tool to manage routine shopping, while retailers must adapt to agent-driven procurement.",
-        "why_today": "This is a direct, practical example of how AI agents are changing the consumer's role in digital commerce.",
-        "distinct_question": "Does requiring human approval for every purchase limit the agent's usefulness or effectively solve for safety?",
-        "new_since_prior_coverage": "This confirms the specific implementation of purchase guardrails in a real-world, high-traffic consumer product.",
-        "practical_payoff": "Consumers should observe how 'purchase controls' affect their time-to-task; retailers should evaluate their platform integration readiness."
+        "new_development": "AP reported that the latest AI-stock rally reversed and pulled the Nasdaq down on November 24.",
+        "affected_listener": "Investors, retirement savers, and AI-linked public companies are affected because AI valuation swings are now large enough to move broad markets.",
+        "why_today": "It is a consequential market consequence story that helps explain the scale of AI’s financial footprint.",
+        "distinct_question": "Are AI stocks still moving the whole market after the latest reversal?",
+        "new_since_prior_coverage": "The new fact is the intraday reversal and index decline on November 24.",
+        "practical_payoff": "Listeners should watch whether AI-linked volatility keeps spilling into broad indexes and funding conditions."
       },
       "editorial_scores": {
         "human_consequence": 4,
-        "novelty": 4,
+        "novelty": 3,
         "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 4.71,
+      "story_age_hours": 11.28,
       "source_tier": 3,
       "grounded": true,
       "rank": 2,
       "story_tier": "primary",
-      "topic_family": "products",
+      "topic_family": "markets",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "google-deepmind-quantum-agents-formal-verification-2026-11-23",
-      "headline": "Google DeepMind says Gemini agents helped improve quantum algorithms for fusion, chemistry, and enzymes",
-      "title": "Google DeepMind says Gemini agents helped improve quantum algorithms for fusion, chemistry, and enzymes",
-      "publisher": "Google DeepMind",
-      "published": "2026-11-23T00:00:00Z",
-      "published_at": "2026-11-23T00:00:00Z",
-      "source_url": "https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/",
-      "link": "https://deepmind.google/blog/finding-faster-quantum-algorithms-with-agents-and-formal-verification/",
-      "summary": "Google DeepMind published a November 23, 2026 research post describing work in which Gemini 4 agents helped improve established quantum algorithms. The company says the result produced highly efficient quantum circuits that could one day support simulations relevant to fusion energy, chemistry, and enzymes. DeepMind says the work used agent teams and formal verification, and it links the result to a paper and the Lean framework. The post frames the advance as a research milestone rather than a product release for general users.",
+      "event_key": "meta-amazon-muse-shopping-bot-negotiations-2026-11-25",
+      "headline": "Meta and Amazon discuss ending Muse shopping bot blockade",
+      "title": "Meta and Amazon discuss ending Muse shopping bot blockade",
+      "publisher": "Fortune",
+      "published": "2026-11-25T08:01:00Z",
+      "published_at": "2026-11-25T08:01:00Z",
+      "source_url": "https://fortune.com/2026/11/25/meta-amazon-muse-shopping-bot-blockade-negotiations/",
+      "link": "https://fortune.com/2026/11/25/meta-amazon-muse-shopping-bot-blockade-negotiations/",
+      "summary": "Meta and Amazon are reportedly in high-level discussions to resolve a blockade preventing the Muse AI agent from accessing Amazon's e-commerce platform. The dispute centers on data control, advertising revenue, and search traffic attribution as Meta's shopping agents gain popularity. Negotiators are attempting to reach a technical and commercial agreement that would allow Muse to integrate with Amazon, a key step for Meta's retail ambitions.",
       "facts": [
-        "Google DeepMind published the research post on November 23, 2026.",
-        "The work used teams of Gemini 4 agents.",
-        "The result was improved quantum algorithms and highly efficient quantum circuits.",
-        "DeepMind says the applications could include fusion energy, chemistry, and enzymes.",
-        "The post emphasizes formal verification.",
-        "DeepMind links to a paper and the Lean framework."
+        "Meta and Amazon are currently negotiating terms to allow Muse AI agent access to Amazon's retail platform.",
+        "The current blockade restricts Muse from interacting with Amazon product data and checkout flows.",
+        "Key issues include advertising revenue sharing, search data usage, and platform traffic attribution.",
+        "Muse was recently launched in the UK, making integration with major retailers a primary strategic goal for Meta."
       ],
       "data_points": [
-        "2026-11-23"
+        "November 25, 2026"
       ],
       "limitations_or_qualifiers": [
-        "This is research, not a public consumer product.",
-        "The article does not claim deployed commercial availability.",
-        "The post says the work could one day help, so the impact is prospective."
+        "Negotiations are ongoing and subject to failure.",
+        "No official agreement has been signed; users cannot currently use Muse on Amazon."
       ],
-      "why_it_matters": "It shows agentic AI being used as a research tool to speed up scientific algorithm design, which matters for future compute-heavy science.",
+      "why_it_matters": "The outcome of these talks will determine whether AI shopping agents can operate across the entire retail landscape or remain limited to specific, platform-approved partners.",
       "editorial_case": {
-        "new_development": "Google DeepMind reported a new research result using Gemini 4 agents and formal verification to improve quantum algorithms.",
-        "affected_listener": "Researchers in quantum computing, chemistry, and fusion science are affected because the method may compress work that traditionally takes years.",
-        "why_today": "It is a fresh science result from a top AI lab inside the window and it answers a different listener question than product launches or policy stories.",
-        "distinct_question": "Can AI agents help scientists design better quantum algorithms instead of just writing code or chat replies?",
-        "new_since_prior_coverage": "New since prior coverage: a specific research breakthrough in quantum algorithm design, not a general claim about model capability.",
-        "practical_payoff": "Scientists should watch whether agent-assisted formal verification becomes a repeatable workflow for quantum and other hard-science problems."
+        "new_development": "Formal, high-level discussions between Meta and Amazon regarding AI agent access.",
+        "affected_listener": "Consumers using AI agents for shopping and retail competitors concerned about platform lock-in.",
+        "why_today": "Highlights the growing friction between AI agent developers and legacy e-commerce platforms.",
+        "distinct_question": "Will major retailers allow third-party AI agents to interface with their inventory, or will they wall off their ecosystems?",
+        "new_since_prior_coverage": "Moves the story from a reported blockade to an active negotiation phase.",
+        "practical_payoff": "Consumers should watch for platform integration updates; e-commerce sellers should prepare for potential changes in traffic sources."
       },
       "editorial_scores": {
-        "human_consequence": 3,
-        "novelty": 4,
-        "explanatory_value": 5,
-        "evidence_depth": 4
+        "human_consequence": 4,
+        "novelty": 3,
+        "explanatory_value": 4,
+        "evidence_depth": 3
       },
-      "story_age_hours": 34.72,
-      "source_tier": 3,
+      "story_age_hours": 0.59,
+      "source_tier": 2,
       "grounded": true,
       "rank": 3,
       "story_tier": "primary",
-      "topic_family": "products",
+      "topic_family": "other",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "gosh-nhs-agentic-ai-launch-2026-11-24",
-      "headline": "Great Ormond Street Hospital launches first NHS agentic AI clinical program",
-      "title": "Great Ormond Street Hospital launches first NHS agentic AI clinical program",
-      "publisher": "Morningstar",
-      "published": "2026-11-24T08:00:00Z",
-      "published_at": "2026-11-24T08:00:00Z",
-      "source_url": "https://www.morningstar.com/news/business-wire/20261124844391/great-ormond-street-hospital-announces-first-of-its-kind-agentic-ai-programme-in-an-nhs-hospital-in-collaboration-with-hyland-and-amazon-web-services",
-      "link": "https://www.morningstar.com/news/business-wire/20261124844391/great-ormond-street-hospital-announces-first-of-its-kind-agentic-ai-programme-in-an-nhs-hospital-in-collaboration-with-hyland-and-amazon-web-services",
-      "summary": "Great Ormond Street Hospital (GOSH) in London has officially launched an agentic AI program to automate administrative and diagnostic support workflows. The initiative, developed in collaboration with Hyland and Amazon Web Services, is the first of its kind within the UK's National Health Service. The agents are designed to assist clinicians by handling data entry and processing patient records, aiming to reduce manual paperwork and improve clinical efficiency.",
+      "event_key": "california-clinical-ai-privacy-legislation-2026-11-25",
+      "headline": "California Enacts New Safeguards For Clinical AI And Health Care Chatbot Privacy",
+      "title": "California Enacts New Safeguards For Clinical AI And Health Care Chatbot Privacy",
+      "publisher": "Legal 500",
+      "published": "2026-11-25T08:23:46Z",
+      "published_at": "2026-11-25T08:23:46Z",
+      "source_url": "https://www.legal500.com/developments/california-enacts-new-safeguards-for-clinical-ai-and-health-care-chatbot-privacy/",
+      "link": "https://www.legal500.com/developments/california-enacts-new-safeguards-for-clinical-ai-and-health-care-chatbot-privacy/",
+      "summary": "California has introduced new legislative safeguards governing the use of clinical AI and consumer-facing healthcare chatbots. The regulations mandate strict data privacy standards, requiring developers to ensure that AI models do not retain patient health information for secondary training purposes without explicit, revocable consent. The policy creates a compliance framework for health tech companies operating within the state, effective immediately for new deployments.",
       "facts": [
-        "The program is the first deployment of agentic AI within an NHS hospital setting.",
-        "Collaboration includes technology and infrastructure support from Hyland and Amazon Web Services.",
-        "Primary task is the automation of administrative and diagnostic support workflows.",
-        "The project aims to reduce the burden of manual data entry for clinicians."
+        "California's new mandate requires explicit, revocable consent for patient data use in AI model training.",
+        "The legislation targets both high-level clinical AI tools and consumer-facing healthcare chatbots.",
+        "Companies are prohibited from retaining patient health information for secondary training without authorization.",
+        "The policy creates a mandatory compliance framework for all health tech entities operating in California."
       ],
       "data_points": [
-        "November 24, 2026"
+        "November 25, 2026"
       ],
       "limitations_or_qualifiers": [
-        "Deployment is specific to Great Ormond Street Hospital (London) within the NHS ecosystem.",
-        "Clinical use is currently focused on support workflows, not autonomous decision-making."
+        "Geographically limited to operations involving California residents or entities.",
+        "Focuses on data retention and privacy; does not regulate clinical efficacy directly."
       ],
-      "why_it_matters": "This represents a critical move from research-phase clinical AI to live, agentic deployment in a high-stakes, public-sector healthcare environment.",
+      "why_it_matters": "This legislation marks a significant tightening of the regulatory environment for healthcare AI, forcing companies to choose between data-hungry model training and patient privacy.",
       "editorial_case": {
-        "new_development": "Official launch of a live agentic AI program within a major public hospital.",
-        "affected_listener": "Healthcare administrators, clinicians and NHS patients who may see faster record processing but must navigate new AI data workflows.",
-        "why_today": "This moves clinical AI from pilot-testing to actual NHS operational infrastructure, providing a benchmark for hospital automation.",
-        "distinct_question": "Can agentic AI handle high-stakes clinical data in the NHS without increasing error rates?",
-        "new_since_prior_coverage": "Confirmed live deployment in a nationalized health system, distinct from prior research-only announcements.",
-        "practical_payoff": "Hospital leaders should monitor GOSH's deployment as a template for integrating AI agents into existing clinical EHR (Electronic Health Record) systems."
+        "new_development": "New state-level legislative mandate restricting AI data usage in healthcare.",
+        "affected_listener": "Patients, health tech developers, and hospital administrators in California who must update their data handling practices.",
+        "why_today": "Provides a fresh regulatory counter-balance to the rapid deployment of clinical AI agents reported recently.",
+        "distinct_question": "How do these new state-level privacy rules affect the ability of healthcare AI providers to improve their models through real-world data?",
+        "new_since_prior_coverage": "Confirmed new legal mandate replacing prior voluntary industry guidelines.",
+        "practical_payoff": "Health tech providers should immediately audit their data retention workflows to ensure compliance with the new California consent requirements."
       },
       "editorial_scores": {
         "human_consequence": 5,
@@ -191,7 +192,7 @@
         "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 2.72,
+      "story_age_hours": 0.21,
       "source_tier": 1,
       "grounded": true,
       "rank": 4,
@@ -201,50 +202,50 @@
       "bucket": "grounded_top_ai_event"
     },
     {
-      "event_key": "meta-shareholder-lawsuit-funding-pause-2026-11-24",
-      "headline": "Meta pauses $60 billion AI funding vehicle following shareholder lawsuit",
-      "title": "Meta pauses $60 billion AI funding vehicle following shareholder lawsuit",
-      "publisher": "Tech in Asia",
-      "published": "2026-11-24T03:57:00Z",
-      "published_at": "2026-11-24T03:57:00Z",
-      "source_url": "https://www.techinasia.com/meta-pauses-60b-ai-stock-sale-over-shareholder-lawsuit",
-      "link": "https://www.techinasia.com/meta-pauses-60b-ai-stock-sale-over-shareholder-lawsuit",
-      "summary": "Meta has halted a planned issuance of nonvoting shares, which was set to serve as a $60 billion funding vehicle for its AI development roadmap. The decision follows a legal challenge in Delaware where shareholders accused the company of insufficient governance in its AI investment strategies. This pause significantly impacts Meta's immediate capital deployment plans for data center expansion and model training.",
+      "event_key": "ai-agent-reliability-benchmark-shellbench-2026-11-25",
+      "headline": "OpenClaw’s ShellBench finds top AI agents still fail about 4 in 10 everyday tasks",
+      "title": "OpenClaw’s ShellBench finds top AI agents still fail about 4 in 10 everyday tasks",
+      "publisher": "Crypto Briefing",
+      "published": "2026-11-25T05:08:28Z",
+      "published_at": "2026-11-25T05:08:28Z",
+      "source_url": "https://cryptobriefing.com/openclaw-shellbench-ai-agent-failure-rates/",
+      "link": "https://cryptobriefing.com/openclaw-shellbench-ai-agent-failure-rates/",
+      "summary": "A new industry benchmark, ShellBench, developed by OpenClaw, has evaluated the performance of leading AI agents in executing everyday digital tasks. The study found that top-tier models currently fail approximately 40% of requested actions involving multi-step workflows, such as file management, email scheduling, and basic research. The findings highlight persistent issues with agentic reasoning, planning, and tool-use reliability despite recent advancements.",
       "facts": [
-        "Meta paused a $60 billion share issuance.",
-        "The delay is a direct result of an active shareholder lawsuit in Delaware.",
-        "The funds were intended for AI-related capital expenditure and infrastructure.",
-        "Legal challenges focus on the governance of large-scale AI investment."
+        "ShellBench tested leading AI agents across various multi-step digital workflows.",
+        "The study reports a 40% failure rate for agents when executing common everyday tasks.",
+        "Failures are attributed to weaknesses in long-term planning, multi-step reasoning, and tool-use accuracy.",
+        "The benchmark evaluates performance on tasks like file manipulation, scheduling, and information retrieval."
       ],
       "data_points": [
-        "$60 billion",
-        "November 24, 2026"
+        "40% failure rate (approx. 4 in 10 tasks)",
+        "November 25, 2026"
       ],
       "limitations_or_qualifiers": [
-        "The pause is an immediate response to legal proceedings.",
-        "Long-term impact depends on the court's upcoming rulings."
+        "Benchmark performance may vary depending on the specific model architecture and task difficulty.",
+        "The scope is limited to everyday digital tasks; does not reflect performance in specialized domains."
       ],
-      "why_it_matters": "This highlights a growing trend where shareholder activism and corporate governance lawsuits are acting as tangible speed bumps for massive AI investments.",
+      "why_it_matters": "This benchmark provides a much-needed, sobering counter-narrative to claims of 'agentic' mastery, suggesting that current tools are still prone to significant error rates.",
       "editorial_case": {
-        "new_development": "Meta is legally forced to pause a major capital-raising event for AI infrastructure.",
-        "affected_listener": "Investors, competitors, and infrastructure partners are affected because Meta's massive AI spending spree faces a liquidity delay.",
-        "why_today": "This is a rare example of a legal mechanism directly stalling the 'AI arms race' at a top-tier firm.",
-        "distinct_question": "Can shareholder litigation actually slow down the rapid deployment of AI infrastructure in Big Tech?",
-        "new_since_prior_coverage": "The formal confirmation of the pause due to the lawsuit is new information, shifting this from a potential to a realized delay.",
-        "practical_payoff": "Investors and vendors should recalibrate their expectations for Meta's Q1 2027 infrastructure spending, as the funding pipeline is currently blocked."
+        "new_development": "Release of a new, evidence-based performance benchmark for AI agents.",
+        "affected_listener": "Enterprise users and developers relying on agentic tools for workflow automation.",
+        "why_today": "Offers a necessary reality check following a period of high-frequency AI agent product launches.",
+        "distinct_question": "Can we trust AI agents to execute multi-step tasks autonomously given the current 40% failure rate?",
+        "new_since_prior_coverage": "Provides concrete failure metrics for agents, contrasting with vague vendor performance claims.",
+        "practical_payoff": "Users should implement manual oversight or 'human-in-the-loop' verification for any agentic workflows, especially those involving file management or scheduling."
       },
       "editorial_scores": {
-        "human_consequence": 4,
-        "novelty": 4,
-        "explanatory_value": 5,
+        "human_consequence": 3,
+        "novelty": 3,
+        "explanatory_value": 4,
         "evidence_depth": 4
       },
-      "story_age_hours": 6.77,
+      "story_age_hours": 3.47,
       "source_tier": 1,
       "grounded": true,
       "rank": 5,
       "story_tier": "supporting",
-      "topic_family": "governance",
+      "topic_family": "products",
       "story_role": "top_ai_event",
       "bucket": "grounded_top_ai_event"
     }
