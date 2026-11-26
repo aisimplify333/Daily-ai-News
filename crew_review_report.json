@@ -5,55 +5,64 @@
   "accepted_edits": 3,
   "edits": [
     {
-      "accepted": true,
-      "reason": "Replaces three redundant conclusion-restatements with sourced detail about workspace access and a distinguishing structural point; adds runtime within the minimum band.",
-      "segment": 2
+      "accepted": false,
+      "reason": "new_editorial_warning_original_span_preserved"
     },
     {
       "accepted": true,
-      "reason": "Removes the redundant 'systemic factor' restatement; replaces with a sourced contrast (healthcare API versus market selloff in same cycle) that advances the scene and adds runtime.",
+      "reason": "Removes duplicate 'AI is the whole market' conclusion; keeps Alex's specific sourced observation about passive investors.",
       "segment": 3
     },
     {
       "accepted": true,
-      "reason": "Removes duplicate sign-off 'We'll be back tomorrow' that competes with the established closing at line 102.",
-      "segment": 5
+      "reason": "Consolidates the closing watch point; removes second restatement of the sector-is-the-market conclusion.",
+      "segment": 3
+    },
+    {
+      "accepted": true,
+      "reason": "Trims one full redundant turn; retains Jamie's specific policy-attachment observation and Rufus's dry closing line.",
+      "segment": 4
+    },
+    {
+      "accepted": false,
+      "reason": "sponsor_protected"
     }
   ],
-  "input_sha256": "e8a55c0299b782fa15e73838e6148e7df8063ea84881b136623cfa4a610223aa",
+  "input_sha256": "5fc562276197cd1887c9b3e7e1bfa7a5d0e5d74ddec022780ceb2ed9ed7834a4",
   "review_before_repairs": {
     "scenes": [
       {
         "segment": 2,
-        "chemistry": "Lines 14–32 show genuine back-and-forth: Jamie's hallucination challenge lands, Alex answers it specifically, Rufus adds the BAA gatekeeping point, Jamie's 'sandbox with citations' reply earns the callback at line 31. Alliances shift naturally.",
-        "discovery": "Lines 17–25 develop the BAA requirement as the real barrier, distinguish the prototype from clinical deployment, and land on a specific access change dated November 24th. Sourced mechanism drives understanding.",
-        "repetition": "Lines 27–29 restate the prototype-versus-clinical-product conclusion three times in succession across Rufus, Alex. One of those turns is redundant."
+        "chemistry": "Rufus/Jamie alliance on workforce gap (lines 25-29) is specific and earned; Alex's startup framing (line 30) draws a useful personal angle. Rufus deflating Alex's timeline hope (line 31) lands without announcement.",
+        "discovery": "Workforce pipeline problem (lines 25-29) is sourced and advances beyond the headline; $265B as pledged-not-spent distinction (line 35) adds precision.",
+        "repetition": "Line 44 restates the strategic-hedge conclusion already landed at lines 33-34. Trim the restatement."
       },
       {
         "segment": 3,
-        "chemistry": "Lines 42–57 carry genuine disagreement: Jamie's 'climbed too far' challenge is answered, her 401k point shifts Rufus's framing, Alex's caveat at line 49 is a real epistemic check. Line 57 tease earns the callback at 61.",
-        "discovery": "Lines 45 and 48 deliver the sourced mechanism: AI is now large enough inside broad indexes that sentiment swings hit passive investors. Specific numbers anchor the claim.",
-        "repetition": "Lines 47–48 restate 'AI stocks are a systemic factor' immediately after Rufus has already established the same point at line 45. The beat lands once then echoes."
+        "chemistry": "'Hostage situation' exchange (lines 73-76) earns the laugh and gets a specific reply. Jamie/Rufus structural-dependency argument (lines 71-72) is genuine friction that neither side concedes.",
+        "discovery": "Index-fund passive-exposure mechanism (lines 54-55) is the clearest sourced explanation; Broadcom diversification contrast (line 70) is a useful distinction.",
+        "repetition": "Lines 77 and 83 both restate 'AI is no longer just a sector / you are holding this volatility.' One landing is enough."
       },
       {
         "segment": 4,
-        "chemistry": "Lines 70–89 show shifting alliances: Rufus admits surprise at line 75, Jamie and Alex jointly close the blender bit across lines 73–74 and 88–89, Rufus complicates Jamie's optimism at lines 80–82. No fixed winner.",
-        "discovery": "Lines 70–72 unpack why the blockade is commercial not technical, then lines 80–82 specify the agent-independence risk. The sourced revenue-attribution dispute drives both discoveries.",
-        "repetition": "Lines 86–87 restate the 'both parties want the same prize' conclusion that lines 80–82 already established. Minor but audible."
+        "chemistry": "Jamie's 'remarkable amount of executive-branch involvement' (line 96) is a genuine observation; Rufus's 'not purely a private company' counter (line 97) is a real push-back. Jamie's precision correction (line 106) is the best cast-identity moment in the segment.",
+        "discovery": "Jamie's point about committee hearings creating a formal record (line 102) and Rufus's denial-as-signal inference (line 108) are substantive. The connection between story 2 and story 3 is flagged as editorial inference, not reporting—correct and useful.",
+        "repetition": "Lines 110-113 restate 'watch the appearance' across four turns after the point has already landed at line 111. Cut at least one restatement."
       },
       {
         "segment": 5,
-        "chemistry": "Lines 92–98 close with three distinct framings—Jamie practical, Rufus compliance-focused, Alex synthesising—followed by a brief blender callback that earns warmth without forcing it.",
-        "discovery": "No new sourced fact in segment 5; the closing correctly summarises rather than introduces, which is appropriate for this segment.",
-        "repetition": "Lines 96 and 102 both issue a 'we'll be back' invitation. One is the genuine sign-off; the other pads the close."
+        "chemistry": "Listener question at lines 116-119 is split across Jamie and Alex in a way that creates a minor confusion about who is closing. The farewell at line 118 precedes the question at line 119, reversing the required order.",
+        "discovery": "No new sourced observation in segment 5; it functions as navigation only, which is acceptable for this segment.",
+        "repetition": "Lines 120-122 contain two sponsor references and a show-follow CTA that could be tightened without losing required copy."
       }
     ],
-    "rufus_feature": "Lines 40–41 deliver a genuinely imagined Wall Street scene with specific numbers (Nasdaq 23,733.54, Dow +423, Nasdaq −356.02), a named mechanism (category reversal, not one company), and an honest uncertainty signal. The studio exchange follows immediately at lines 42–56 with Jamie and Alex both responding to what Rufus actually said. This qualifies as substance, not merely a label. The return marker at line 46 is brief but functional.",
+    "rufus_feature": "Segment 3 (lines 65-67) is a genuine imagined scene with a named setting, a concrete market detail, and an honest disclaimer ('this is not an on-location report'). It earns its place. Jamie's 'recovery' reply (line 68) is a direct studio response. The feature runs slightly long across three speaker blocks but each block adds something: intraday lurch, repricing explanation, structural-dependency conclusion. Acceptable as written; could trim the 'kettle' simile without loss.",
     "remaining_issues": [
-      "Lines 27–29: three consecutive turns restate the prototype-versus-clinical-product conclusion without adding evidence; one should be replaced with a sourced exchange.",
-      "Lines 47–48: Alex's restatement of 'AI is now systemic' duplicates Rufus's point at line 45 within four lines; the weaker restatement should be cut or deepened.",
-      "Lines 96 and 102: dual sign-off language; line 96 'We'll be back tomorrow' competes with the established closing at line 102 and should be removed or absorbed.",
-      "Episode word count is 2448 against a minimum band of 3150; removing the redundant turns above without replacement will worsen the shortfall—each cut must be paired with a sourced exchange of equal or greater length."
+      "Segment 5 farewell (line 118) appears before the listener question (line 119), violating required closing order: audience question must precede sponsor and follow invitation.",
+      "Line 44 and lines 33-34 repeat the strategic-hedge conclusion; trim line 44 or replace with a forward-looking watch point not already stated.",
+      "Lines 77 and 83 both close segment 3 with the same 'AI is now the whole market' conclusion; one should be cut or converted to a distinct observation.",
+      "Lines 110-113 extend the segment 4 landing past the point where it has resolved; the final two turns add no new evidence or complication.",
+      "Story 3 (Nvidia/Vance) has the lowest word count (581) and no imagined dispatch; the segment is complete but leans on inference rather than sourced mechanism for its second half."
     ]
   },
   "remaining_production_language": [],
@@ -62,149 +71,135 @@
     "blocking": false,
     "listened": false,
     "quality_score": null,
-    "input_sha256": "e8a55c0299b782fa15e73838e6148e7df8063ea84881b136623cfa4a610223aa",
-    "output_sha256": "32ac74aa872d35bdcba2e5bae02107f050982efa69176af11cd977c5682e5e32",
+    "input_sha256": "5fc562276197cd1887c9b3e7e1bfa7a5d0e5d74ddec022780ceb2ed9ed7834a4",
+    "output_sha256": "7b0a1ab2abbefa7359da66c5bf143743c539b64562b77476dc51192e8feacb72",
     "areas": {
       "opening": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: OpenAI just gave healthcare developers a dedicated medical search index inside their API. Not a demo — live, available today.",
-          "JAMIE: And the fine print says it doesn't replace professional medical judgment, which is either reassuring or doing a lot of heavy lifting, depending on your day.",
-          "RUFUS: I keep thinking about what it means that we now need that sentence in an API release note.",
-          "ALEX: Welcome to The AI Edge for November 25th, 2026. I'm Alex, with Jamie and Rufus. AI just walked into the exam room — and the stock market — and your shopping cart."
+          "ALEX: Trump is heading to Arizona on December 4th for a chip factory groundbreaking. Not a ribbon cutting on a finished plant — a groundbreaking. The dirt hasn't moved yet.",
+          "JAMIE: And TSMC has pledged two hundred and sixty-five billion dollars in total U.S. investment. That's not a press release number. That's a commitment that has to clear customs in every economic cycle for the next decade.",
+          "RUFUS: The president of the United States is attending a sod-turning ceremony for a factory that won't make chips for years. That is either industrial policy at its most serious, or the most expensive photo opportunity in semiconductor history.",
+          "ALEX: Either way, we have three stories today that together tell you something real about where the AI economy actually is in late 2026. Stay with us."
         ],
-        "observation": "Lines 2–4 establish the specific new development (dedicated medical search index, live), surface the disclaimer as a point of genuine inquiry, and Rufus's line 4 gives a reason to stay. Line 6 names all three story areas cleanly.",
-        "next_edit": "No change needed; opening earns attention with a specific sourced fact and a character-revealing reaction before the music."
+        "observation": "All three hosts land distinct framings in the cold open: Alex on timing ('dirt hasn't moved'), Jamie on the commitment scale, Rufus on the irony of a sod-turning ceremony. Line 5 gives a reason to stay without over-promising.",
+        "next_edit": ""
       },
       "cast_identity": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "JAMIE: Okay, but here's my immediate question. A \"dedicated index\" — does that mean it stops hallucinating citations? Because I've watched these models confidently manufacture journal articles that don't exist. Plausible author names, real-sounding titles, volume numbers — none of it real.",
-          "RUFUS: And even before accuracy becomes the question, there's a gatekeeping step that gets buried. If you want to use actual patient data — real protected health information — you need a Business Associate Agreement in place, plus other eligibility requirements. Without that, you're not running this in a clinical environment. You're in a sandbox.",
-          "ALEX: Which is a real barrier. But what you can do today — right now — is prototype an evidence-summarizing tool. Something that answers clinical questions using published research with citations. Drug-interaction lookups, summaries of recent trial evidence on a treatment. That's not nothing.",
-          "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
-          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
-          "RUFUS: Which tells you immediately that this isn't a technical problem. There's no architectural reason Muse can't access Amazon. It's a commercial argument about who gets paid, and — more importantly — who owns the relationship with the customer at the end of the transaction.",
-          "RUFUS: What I find genuinely interesting — and I'll admit I didn't expect this quite yet — is that the negotiation is happening at all. Six months ago Amazon could simply ignore this. The blockade was comfortable. The fact that there are now high-level talks, per Fortune's characterization —"
+          "JAMIE: Those are White House estimates on a project still under construction. I'd hold them loosely. Twenty-one thousand jobs sounds significant until you ask what kind. Cleanroom operators, process engineers, equipment technicians — these require years of specialized training that doesn't yet exist at scale in Arizona.",
+          "RUFUS: Partly. But the more interesting thing AP flagged is structural. Technology companies focused on AI now have enough market weight to move the major indexes. That's not commentary about hype. It's a mechanical fact about how the market is built.",
+          "JAMIE: What I can't quite get past is the sequence. He resigns. He comes back eleven days later at the president's urging. Then the vice president goes on record saying no pardon is needed. That's a remarkable amount of executive-branch involvement in the leadership of one private company.",
+          "JAMIE: Although — and I want to be precise here — AP's market coverage didn't cite the congressional testimony as a cause of yesterday's move. These are parallel developments. The connection is reasonable but it's ours, not the reporting's.",
+          "RUFUS: What I will say is this: the White House felt it necessary to publicly address pardon speculation. You don't volunteer a denial unless someone is asking seriously enough that silence becomes its own answer."
         ],
-        "observation": "Jamie probes hallucination risk (14), Rufus surfaces the BAA gatekeeping detail (17), Alex defends the prototype utility (20). In segment 3, Alex provides the epistemic check (49), Jamie thinks in terms of real people's retirement accounts (44), Rufus supplies the market mechanism (41). Lines are not interchangeable.",
-        "next_edit": "Segment 4 line 75 — Rufus's admission of surprise is characterful; ensure it is not smoothed away if edits touch that exchange."
+        "observation": "Jamie's workforce-gap challenge (25) and her precision correction disowning a causal link (106) are her sharpest identity moments. Rufus's structural-dependency observation (52) and denial-as-signal inference (108) are distinct from what either co-host would say. Alex's startup framing (30) is the clearest example of his grounded curiosity. No line is fully interchangeable.",
+        "next_edit": "Segment 4 lines 110-113 blur Jamie and Rufus into a shared 'watch the hearing' conclusion; proposed edit restores the distinction."
       },
       "responsive_exchange": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "JAMIE: Okay, but here's my immediate question. A \"dedicated index\" — does that mean it stops hallucinating citations? Because I've watched these models confidently manufacture journal articles that don't exist. Plausible author names, real-sounding titles, volume numbers — none of it real.",
-          "ALEX: That's exactly the right question, and OpenAI doesn't claim it eliminates that. They say it can search and return citations. The release note explicitly says the configurations do not replace professional medical judgment.",
-          "JAMIE: So the index helps you find real sources. It doesn't guarantee the summary of those sources is correct.",
-          "RUFUS: And even before accuracy becomes the question, there's a gatekeeping step that gets buried. If you want to use actual patient data — real protected health information — you need a Business Associate Agreement in place, plus other eligibility requirements. Without that, you're not running this in a clinical environment. You're in a sandbox.",
-          "JAMIE: A sandbox with citations.",
-          "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
-          "RUFUS: Fair. What it means in practice is that enough investors decided the previous day's gain wasn't supported by new evidence of actual value — earnings, products, contracts — and started selling. Yesterday's price move was the belief. Today's reversal was the doubt. That's what AP is describing.",
-          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
-          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this."
+          "ALEX: So what's the point of the presidential visit? Just optics?",
+          "JAMIE: I don't think it's only optics. There's something real in the signal. The president showing up says, with his physical presence, that this is a national priority. That changes how suppliers, engineers, and states compete for the downstream contracts.",
+          "RUFUS: And from a capital-allocation standpoint, two hundred and sixty-five billion dollars anchoring in the United States reshapes the geography of the global semiconductor industry over twenty years. That's not trivial, even if it doesn't fix the GPU shortage in Q1.",
+          "JAMIE: Which is why I keep coming back to this index question. Is it healthy that one company's executive situation can push the S&P 500 negative?",
+          "RUFUS: Healthy might be the wrong frame. It's the logical consequence of that company becoming as large as it has. When a single equity represents the market capitalisation Nvidia does, it cannot help but move the index. That's arithmetic.",
+          "JAMIE: So \"the market is basically an Nvidia fan club\" isn't entirely wrong.",
+          "RUFUS: It's more of a hostage situation, really."
         ],
-        "observation": "Lines 14–18 form a complete chain: Jamie challenges the index claim, Alex answers with the citation-but-not-accuracy distinction, Rufus adds the BAA complication, Jamie names it 'sandbox with citations.' Each turn follows the previous speaker's exact point. Lines 42–45 repeat this quality in segment 3.",
-        "next_edit": "None required; the responsive chain is the strongest feature of both segments."
+        "observation": "Alex's 'just optics?' (21) draws Jamie's specific signal argument (22) and Rufus's capital-geography counter (23) — a genuine three-turn build. The 'fan club / hostage situation' exchange (73-74) is a direct response chain that earns line 75.",
+        "next_edit": ""
       },
       "scene_variety": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: So. OpenAI released healthcare model configurations through their Responses API, and the specific new thing is a dedicated medical search index — web search for clinical evidence, with citations. Available to API organizations as of November 24th, no special ChatGPT healthcare workspace required.",
-          "ALEX: Our second story. The Nasdaq dropped 356 points on November 24th — that's 1.5% — and AP reported that AI stocks were the reason the rally from the day before evaporated that fast.",
-          "ALEX: Alright, story three — and this one's a different beast. Fortune is reporting that Meta and Amazon are in high-level negotiations to end a blockade that's been keeping Meta's shopping AI agent, Muse, away from Amazon's platform."
+          "ALEX: So. Trump flies to Arizona on December 4th. TSMC is breaking ground on a new chip foundry — AP confirmed this yesterday. The question I keep coming back to: does any of this actually help the AI industry get chips faster?",
+          "ALEX: Second story. AP reported yesterday that AI stocks fell for a second consecutive day, pulling the S&P 500 down with them. Rufus, you said on yesterday's show that if AI-linked stocks stayed choppy into next week, that would signal a broader sentiment shift rather than just one-day rebalancing. How's that looking?",
+          "ALEX: Our third story. Nvidia. And I want to flag upfront — this feels adjacent to the chip supply chain we just talked about, but the specific development is distinct enough to sit on its own."
         ],
-        "observation": "Story 1 is a developer-tool question worked through a hypothetical clinic scenario; story 2 is a market-mechanism explanation grounded in specific numbers; story 3 is a corporate negotiation with a consumer-consequence thread. Question, shape and emotional register differ across all three.",
-        "next_edit": "No structural change needed; monitor that edits to segment 2 do not drift toward the market-analysis register of segment 3."
+        "observation": "Story 1 is a long-game infrastructure question with a quiet workforce complication. Story 2 is high-energy market mechanics with a dry punchline landing. Story 3 is a sober political-inference scene with Jamie providing the precision check. Distinct question, shape and emotional register in each.",
+        "next_edit": "Story 3 would benefit from one more sourced mechanism rather than a third inference turn; noted in remaining issues."
       },
       "comic_payoff": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "JAMIE: A sandbox with citations.",
-          "RUFUS: Specifically the sentence about the Business Associate Agreement.",
-          "JAMIE: That exact sentence.",
-          "JAMIE: Your warmth is precisely rationed, Rufus. We've noticed.",
-          "RUFUS: My warmth is very precisely rationed. The Ledger link is in our show notes. Now, back to the discussion.",
-          "ALEX: Meanwhile the person just wants the blender.",
-          "JAMIE: And somewhere, a person gets a blender.",
-          "RUFUS: Eventually. Probably.",
-          "RUFUS: Hopefully with Muse successfully purchasing something.",
-          "ALEX: I'll believe it when I see the blender."
+          "JAMIE: So \"the market is basically an Nvidia fan club\" isn't entirely wrong.",
+          "RUFUS: It's more of a hostage situation, really.",
+          "ALEX: Heh.",
+          "JAMIE: I'm putting that on a mug."
         ],
-        "observation": "Line 18 'sandbox with citations' is answered by its callback at lines 31–32 without explanation. Line 57 Jamie's warmth tease earns the callback at line 61 in Rufus's own words. Line 73 'meanwhile the person just wants the blender' earns lines 88–89 and 97–98 as a running bit that develops rather than replays.",
-        "next_edit": "Blender callback at lines 97–98 lands well; ensure the closing edit at line 96 does not break the transition into it."
+        "observation": "'Fan club' (73) earns 'hostage situation' (74) which earns a short laugh (75) and a specific callback ('putting that on a mug', 76). The joke is not explained and the reply is direct. The Intel Ohio aside (19) lands quietly without a laugh cue.",
+        "next_edit": ""
       },
       "discovery": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: And even before accuracy becomes the question, there's a gatekeeping step that gets buried. If you want to use actual patient data — real protected health information — you need a Business Associate Agreement in place, plus other eligibility requirements. Without that, you're not running this in a clinical environment. You're in a sandbox.",
-          "RUFUS: Precisely. Picture a developer building a symptom-reference tool for a small practice. The API can now summarize clinical evidence beautifully. The moment a real patient's data is involved, the legal scaffolding has to exist first. The API is ready; the compliance layer may not be.",
-          "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
-          "RUFUS: That's the genuinely meaningful change. The barrier to building a clinical evidence application dropped considerably this week.",
-          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
-          "RUFUS: Which tells you immediately that this isn't a technical problem. There's no architectural reason Muse can't access Amazon. It's a commercial argument about who gets paid, and — more importantly — who owns the relationship with the customer at the end of the transaction.",
-          "JAMIE: Right, because if Muse walks someone through finding a blender and buying it on Amazon, Amazon wants to know: did *they* sell that blender, or did Meta?",
-          "RUFUS: Exactly. Amazon has built a substantial advertising business on knowing what people searched for before they bought something. If that journey now runs through Meta's interface, Amazon loses that signal. And Meta has its own advertising empire. So you have two advertising giants arguing about who gets credit for one blender.",
-          "RUFUS: Which is the thing I'd actually watch. If the integration happens on Amazon's terms — capped data access, Amazon-controlled revenue splits — then Muse isn't really an independent advocate for the shopper. It's another surface in Amazon's commercial system."
+          "JAMIE: Those are White House estimates on a project still under construction. I'd hold them loosely. Twenty-one thousand jobs sounds significant until you ask what kind. Cleanroom operators, process engineers, equipment technicians — these require years of specialized training that doesn't yet exist at scale in Arizona.",
+          "RUFUS: That's the quiet problem inside the headline. You can build the building before you build the workforce.",
+          "JAMIE: Possibly. TSMC had real difficulties staffing its first Arizona facility — that's documented. The skills gap doesn't get solved by a groundbreaking ceremony.",
+          "JAMIE: Right, and the mechanism is index funds. Passive investments — which is where most people's retirement savings actually live — they hold these companies at whatever weight the index assigns. So when Nvidia drops three-point-nine percent, everyone who owns a broad market fund absorbs that hit.",
+          "RUFUS: Whether they intended to make an AI bet or not.",
+          "JAMIE: Sometimes it is. But it creates a formal record. What he says under oath, what questions get asked in public — that determines what investigators, journalists and competitors can see and act on going forward.",
+          "RUFUS: What I will say is this: the White House felt it necessary to publicly address pardon speculation. You don't volunteer a denial unless someone is asking seriously enough that silence becomes its own answer."
         ],
-        "observation": "Line 17 reveals BAA as the real gatekeeper; line 19 makes it concrete with a named scenario (small practice, symptom-reference tool); lines 24–25 identify the workspace-access democratisation as the meaningful change. Line 45 delivers the passive-investor consequence. Lines 70–72 unpack the commercial-not-technical nature of the Amazon blockade.",
-        "next_edit": "Proposed edit to lines 27–29 adds the workspace-access sourced detail as a second discovery beat in segment 2, strengthening this area."
+        "observation": "Workforce-pipeline problem (25-28) is the clearest sourced mechanism in segment 2. Passive-fund exposure explanation (54-55) is the best sourced discovery in segment 3. Jamie's formal-record argument (102) and Rufus's denial-as-signal inference (108) carry segment 4, though the latter is flagged as editorial inference, not reporting.",
+        "next_edit": ""
       },
       "rufus_feature": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "RUFUS: Picture the floor just before close on November 24th — Wall Street, New York. The Dow has actually managed a gain on the day. 423 points up. So there's this strange split on the screen: the old-economy index holding, the tech-heavy index sliding. The Nasdaq closes at 23,733.54, down 356.02 points.",
-          "RUFUS: AP's reporting is specific — AI-related stocks were the weight pulling it down. Not one company, not one announcement. A category reversal. And the anxiety driving it, according to AP, is that AI valuations may have climbed too far, too fast. At that point investor sentiment becomes its own event.",
-          "JAMIE: What does \"climbed too far\" actually mean, though? That phrase gets used every time anything goes up.",
-          "RUFUS: Fair. What it means in practice is that enough investors decided the previous day's gain wasn't supported by new evidence of actual value — earnings, products, contracts — and started selling. Yesterday's price move was the belief. Today's reversal was the doubt. That's what AP is describing.",
-          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
-          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
-          "ALEX: Back to the wider story."
+          "RUFUS: Imagine a reconstruction of the New York Stock Exchange on Wednesday; this is not an on-location report. The boards are red. Nvidia is down more than nine percent intraday — that's not a dip, that's a lurch. Traders are watching the ticker the way you watch a kettle that's starting to boil. And the thing is —",
+          "RUFUS: most of what they're reacting to isn't a product failure or a scandal. It's repricing. The rally Monday was real, the enthusiasm was real, and now the question is: did we pay too much for the relief? AP reported it closed at three-point-nine percent down, which is a recovery from the intraday low —",
+          "RUFUS: but the S&P 500 stayed negative. When one company's afternoon matters that much to the whole index, that's not normal sector volatility. That's a structural dependency.",
+          "JAMIE: What gets me is the word \"recovery.\" It closed down less than ten percent, so we're calling it a recovery."
         ],
-        "observation": "Lines 40–41 name the setting (Wall Street floor, November 24th), cite exact figures (Nasdaq 23,733.54, Dow +423, Nasdaq −356.02), identify the mechanism (category reversal), and state the AP-sourced anxiety. Lines 42–45 show Jamie and Alex responding to what Rufus actually said, not waiting for a cue.",
-        "next_edit": "Return marker at line 46 is functional but abrupt; if word count allows, one additional Rufus line before the return would give the studio exchange a cleaner landing."
+        "observation": "Opens with named setting and honest disclaimer in the same sentence. Intraday lurch detail (65) is sourced and specific. Repricing explanation (66) adds to the story rather than repeating it. Jamie's 'recovery' reply (68) is a direct, amused studio response. The 'kettle' simile is the one moment that could be trimmed.",
+        "next_edit": "Optional: cut 'the way you watch a kettle that's starting to boil' to tighten the dispatch without losing substance."
       },
       "listener_value": {
-        "status": "input_evidence_retained_needs_editorial_review",
-        "retained_lines": [
-          "ALEX: Watch for which companies actually integrate this with real patient records — that's where you'll see whether the compliance path is as navigable as the technical one.",
-          "RUFUS: Whether the volatility persists into next week. If AI-linked names stay choppy and the broader index stays choppy with them, that tells you something. One-day rebalancing looks very different from a sentiment shift that keeps going.",
-          "ALEX: What to watch: Fortune says talks are ongoing. An official integration announcement is the signal that one side moved. When that happens, look at whatever gets disclosed about data-sharing terms. That's where the actual winner is named. We'll be back after this."
-        ],
-        "observation": "Line 33 names a specific watch signal (which companies integrate with real patient records). Line 54 gives a concrete observation criterion (volatility persisting into next week). Line 90 tells listeners what disclosure to look for when an integration announcement arrives (data-sharing terms).",
-        "next_edit": "All three story-ending watch signals are specific and actionable; no change needed."
-      },
-      "portable_exchanges": {
         "status": "changed_by_repair_needs_review",
         "retained_lines": [
-          "JAMIE: That's true. The difference is this one is available to any API developer starting now, not just large enterprise vendors who've already negotiated the compliance stack.",
-          "RUFUS: That's the genuinely meaningful change. The barrier to building a clinical evidence application dropped considerably this week.",
-          "ALEX: So. Breakthrough or liability trap?",
-          "JAMIE: Okay, but here's what I keep coming back to. When the Nasdaq drops 1.5% because \"AI stocks reversed,\" people with index funds just had a bad day and they probably don't know why. They didn't make a bet on AI valuations.",
-          "RUFUS: That's actually the significant thing here. AI is now a large enough category inside broad indexes that its sentiment swings hit people who have no opinion about AI whatsoever. If your retirement fund tracks the Nasdaq, you felt this.",
-          "ALEX: Back to the wider story."
+          "JAMIE: What it might shift is your longer thinking. If you believe this investment completes — and there's real reason to — then over five to seven years, the domestic chip supply picture looks meaningfully different. It changes whether you build your infrastructure around U.S.-sourced supply chains at all.",
+          "JAMIE: Construction milestones. Real hiring numbers against the projections. And whether workforce training gets funded at anything like the scale the facility will eventually need.",
+          "JAMIE: Right, and the mechanism is index funds. Passive investments — which is where most people's retirement savings actually live — they hold these companies at whatever weight the index assigns. So when Nvidia drops three-point-nine percent, everyone who owns a broad market fund absorbs that hit.",
+          "RUFUS: Whether the pullback extends into next week — that's the signal I said I'd take seriously as a real sentiment shift. And how the Huang testimony lands. That could move things in either direction.",
+          "JAMIE: Sometimes it is. But it creates a formal record. What he says under oath, what questions get asked in public — that determines what investigators, journalists and competitors can see and act on going forward."
         ],
-        "observation": "Exchange at lines 24–28 (shareable exchange confirmed by runtime diagnostics): subject is OpenAI healthcare API, fact is democratised access, qualification is compliance path. Second candidate: lines 44–46, subject is AI market volatility, fact is passive investors are exposed, qualification is AP correlation not causation.",
-        "next_edit": "Proposed edit to lines 27–29 must preserve the subject/fact/qualification structure of the first candidate exchange."
+        "observation": "Story 1 closes with concrete watch points: construction milestones, real hiring numbers, workforce training funding (42). Story 2 delivers the index-fund exposure mechanism (54) and a specific signal to track (81). Story 3 identifies the committee record as the practical consequence (102) and chip-policy legislation as a secondary watch point (112).",
+        "next_edit": ""
+      },
+      "portable_exchanges": {
+        "status": "input_evidence_retained_needs_editorial_review",
+        "retained_lines": [
+          "ALEX: So what's the point of the presidential visit? Just optics?",
+          "JAMIE: I don't think it's only optics. There's something real in the signal. The president showing up says, with his physical presence, that this is a national priority. That changes how suppliers, engineers, and states compete for the downstream contracts.",
+          "RUFUS: And from a capital-allocation standpoint, two hundred and sixty-five billion dollars anchoring in the United States reshapes the geography of the global semiconductor industry over twenty years. That's not trivial, even if it doesn't fix the GPU shortage in Q1.",
+          "ALEX: The White House is claiming ten thousand direct jobs and eleven thousand indirect.",
+          "JAMIE: Those are White House estimates on a project still under construction. I'd hold them loosely. Twenty-one thousand jobs sounds significant until you ask what kind. Cleanroom operators, process engineers, equipment technicians — these require years of specialized training that doesn't yet exist at scale in Arizona.",
+          "JAMIE: So \"the market is basically an Nvidia fan club\" isn't entirely wrong.",
+          "RUFUS: It's more of a hostage situation, really.",
+          "ALEX: Heh.",
+          "JAMIE: I'm putting that on a mug."
+        ],
+        "observation": "Exchange 1 (lines 21-25): Alex questions optics, Jamie defends the signal, Rufus adds capital-geography scale, Alex cites the jobs figure — a self-contained four-turn sequence with named subjects, qualifications retained, and a clear question answered. Exchange 2 (lines 73-76): 'fan club / hostage situation' exchange is six-word shareable with a named subject (Nvidia/index) and an earned reaction.",
+        "next_edit": ""
       },
       "closing_payoff": {
         "status": "input_evidence_retained_needs_editorial_review",
         "retained_lines": [
-          "ALEX: Okay. The title question we opened with: can AI safely summarize your medical evidence?",
-          "JAMIE: Safe to use as a research tool, with citations, with a professional reading the output. Not safe to use as a replacement for that professional.",
-          "RUFUS: And genuinely only relevant to patient data once someone has sorted the compliance layer. The API is real. The clinical deployment path is long.",
-          "ALEX: So the answer is: yes, carefully, in a specific role, and not yet at scale in real clinical settings. That's an honest answer, not a hedge.",
-          "RUFUS: Hopefully with Muse successfully purchasing something.",
-          "ALEX: I'll believe it when I see the blender.",
-          "ALEX: Today’s question for you: Would you trust an AI agent to manage your medical research or shopping list?",
-          "RUFUS: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
+          "ALEX: We opened today asking why the president of the United States is flying to a construction site. Here's what we actually know.",
+          "JAMIE: Before we go — your question for today. We spent the whole week on agentic AI tools entering healthcare, finance, and retail. Yesterday we asked whether you'd trust an AI agent to manage your medical research or your shopping list. Today, given everything we talked about with chips, markets, and Washington scrutiny —",
+          "ALEX: Today’s question for you: If you had to choose, would you trust an AI agent to manage your home network security?",
+          "JAMIE: A quick final note: today’s episode was brought to you by The Ledger—decision-grade AI signal for people who cannot afford to be late.",
           "ALEX: What changed. Who wins. What you do next. That’s The AI Edge.",
           "ALEX: Follow The AI Edge now. Join us next episode for what changes next."
         ],
-        "observation": "Lines 92–95 answer the title question in three distinct voices without restating each other's exact words. The blender callback at 97–98 earns warmth. The audience question at 99 connects both medical and shopping threads. Sponsor read and follow invitation close cleanly.",
-        "next_edit": "Remove line 96 'We'll be back tomorrow' per proposed edit; it weakens the transition into the blender callback and duplicates the closing at line 102."
+        "observation": "Line 115 echoes the opening promise ('why is the president flying to a construction site'). The listener question (119) connects to the week's agentic-security thread. However, the farewell at line 118 precedes the question at 119, breaking required order. Proposed edit in edits array restores the sequence.",
+        "next_edit": "Apply edit to lines 116-122 to place audience question before sponsor copy and follow invitation."
       }
     }
   },
-  "output_sha256": "32ac74aa872d35bdcba2e5bae02107f050982efa69176af11cd977c5682e5e32",
+  "output_sha256": "7b0a1ab2abbefa7359da66c5bf143743c539b64562b77476dc51192e8feacb72",
   "status": "repairs_applied_need_audio_review"
 }
